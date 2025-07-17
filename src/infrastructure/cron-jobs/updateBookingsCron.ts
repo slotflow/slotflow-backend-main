@@ -8,22 +8,21 @@ const updateBookingStatusCronUseCase = new UpdateBookingStatusCronUseCase(bookin
 
 let lastSuccessfulRunDateForBookings: string | null = null;
 
-cron.schedule("* * * * *", async () => {
-    const today = dayjs().format("YYYY-MM-DD");
+setInterval(async () => {
+  const today = dayjs().format("YYYY-MM-DD");
+  if (lastSuccessfulRunDateForBookings === today) return;
 
-    if (lastSuccessfulRunDateForBookings === today) {
-        return;
-    }
-
-    console.log('[CRON] Running updateAppointmentStatuses...');
+  console.log("[INTERVAL] Running updateBookingStatus...");
+  try {
     const result = await updateBookingStatusCronUseCase.execute();
 
-    console.log("result : ",result);
-
     if (result === true) {
-        lastSuccessfulRunDateForBookings = today;
-        console.log('[CRON] Status updated successfully.');
+      lastSuccessfulRunDateForBookings = today;
+      console.log("[INTERVAL] Status updated successfully.");
     } else {
-        console.log('[CRON] No update made or failed. Will retry...');
+      console.log("[INTERVAL] No update made or failed. Will retry...");
     }
-});
+  } catch (error) {
+    console.error("[INTERVAL ERROR]:", error);
+  }
+}, 10 * 60 * 1000);
