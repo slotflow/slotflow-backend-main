@@ -37,11 +37,14 @@ export interface FetchProviderSubscriptionsRequest extends ApiPaginationRequest 
 //// **** 4.2 Used as the response type for fetching subscriptions with planName and plan price of a specific provider for the provider side and admin side
 export type FindSubscriptionsByProviderIdResponse = Array<
   Pick<Subscription, "_id" | "startDate" | "endDate" | "subscriptionStatus"> &
-  Pick<Plan, "planName" | "price">>;
-export type PopulatedSubscription = Omit<Subscription, 'subscriptionPlanId'> & {
+  Partial<Pick<Plan, "planName">>> &
+  Partial<Pick<Payment, "totalAmount">>;
+export type PopulatedSubscription = Omit<Subscription, 'subscriptionPlanId' | "paymentId" > & {
   subscriptionPlanId: {
     planName: string;
-    price: number;
+  },
+  paymentId: {
+    totalAmount: string;
   }
 };
 

@@ -65,7 +65,9 @@ export class ProviderServiceRepositoryImpl implements IProviderServiceRepository
                                     $expr: {
                                         $and: [
                                             { $eq: ["$_id", "$$providerId"] },
-                                            { $eq: ["$isAdminVerified", true] }
+                                            { $eq: ["$isAdminVerified", true] },
+                                            { $eq: ["$isBlocked", false] },
+                                            { $eq: ["$isEmailVerified", true] },
                                         ]
                                     }
                                 }
@@ -75,6 +77,31 @@ export class ProviderServiceRepositoryImpl implements IProviderServiceRepository
                     }
                 },
                 { $unwind: "$provider" },
+                {
+                    $lookup: {
+                        from: "subscriptions",
+                        let: { providerId: "$provider._id" },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $and: [
+                                            { $eq: ["$providerId", "$$providerId"] },
+                                            { $eq: ["$subscriptionStatus", "Active"] },
+                                            { $gt: ["$endDate", new Date()] },
+                                        ]
+                                    }
+                                }
+                            },
+                            { $sort: { endDate: -1 } },
+                            { $limit: 1 }
+                        ],
+                        as: "activeSubscriptions"
+                    }
+                },
+                {
+                    $unwind: "$activeSubscription"
+                },
                 {
                     $lookup: {
                         from: "services",
