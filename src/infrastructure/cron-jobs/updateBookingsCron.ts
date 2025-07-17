@@ -1,5 +1,4 @@
 import dayjs from "dayjs";
-import cron from "node-cron";
 import { BookingRepositoryImpl } from "../database/booking/booking.repository.impl";
 import { UpdateBookingStatusCronUseCase } from "../../application/cron-job.use-case/updateBookingStatusCron.use-case";
 

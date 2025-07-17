@@ -128,7 +128,7 @@ export type UserFetchProviderServiceAvailabilityResponse = FontendAvailabilityFo
 
 
 // user fetch providers for chat side bar
-export type UserFetchProvidersForChatSidebar = Array<Pick<Provider, "_id" | "username" | "profileImage" >>;
+export type UserFetchProvidersForChatSidebarResponse = Array<Pick<Provider, "_id" | "username" | "profileImage" >>;
 
 
 

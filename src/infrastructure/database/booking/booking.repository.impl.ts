@@ -7,7 +7,7 @@ import { Provider } from "../../../domain/entities/provider.entity";
 import { ProviderFetchUsersForChatSideBar } from "../../dtos/provider.dto";
 import dayjs from "dayjs";
 import { User } from "../../../domain/entities/user.entity";
-import { UserFetchProvidersForChatSidebar } from "../../dtos/user.dto";
+import { UserFetchProvidersForChatSidebarResponse } from "../../dtos/user.dto";
 
 export class BookingRepositoryImpl implements IBookingRepository {
     private mapToEntity(booking: IBooking): Booking {
@@ -170,7 +170,7 @@ export class BookingRepositoryImpl implements IBookingRepository {
         }
     }
 
-    async findProvidersforChatSideBar(userId: User["_id"]): Promise<UserFetchProvidersForChatSidebar> {
+    async findProvidersforChatSideBar(userId: User["_id"]): Promise<UserFetchProvidersForChatSidebarResponse> {
         try{
 
             const providers = await BookingModel.aggregate([

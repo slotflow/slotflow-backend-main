@@ -13,6 +13,7 @@ import {
   UserFetchProviderServiceAvailabilityRequest,
   FindProvidersUsingServiceCategoryIdsResponse,
   UserFetchProviderServiceAvailabilityResponse,
+  UserFetchProvidersForChatSidebarResponse,
 } from "../../infrastructure/dtos/user.dto";
 import { generateSignedUrl } from "../../config/aws_s3";
 import { extractS3Key } from "../../infrastructure/helpers/helper";
@@ -191,13 +192,13 @@ export class UserFetchProvidersForChatSidebar {
     private bookingRepositoryImpl: BookingRepositoryImpl
   ) { }
 
-  async execute(userId: User["_id"]): Promise<ApiResponse<UserFetchProvidersForChatSidebar>> {
+  async execute(userId: User["_id"]): Promise<ApiResponse<UserFetchProvidersForChatSidebarResponse>> {
 
     Validator.validateObjectId(userId, "User Id");
 
     const result = await this.bookingRepositoryImpl.findProvidersforChatSideBar(userId);
 
-    const updatedResult: UserFetchProvidersForChatSidebar = await Promise.all(
+    const updatedResult: UserFetchProvidersForChatSidebarResponse = await Promise.all(
             result.map(async (provider) => {
                 let profileImageUrl = provider?.profileImage;
 
