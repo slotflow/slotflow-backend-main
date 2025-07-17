@@ -96,7 +96,7 @@ export class ProviderServiceRepositoryImpl implements IProviderServiceRepository
                             { $sort: { endDate: -1 } },
                             { $limit: 1 }
                         ],
-                        as: "activeSubscriptions"
+                        as: "activeSubscription"
                     }
                 },
                 {
