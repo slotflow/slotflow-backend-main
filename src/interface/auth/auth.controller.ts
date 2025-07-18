@@ -51,7 +51,7 @@ export class AuthController {
       res.cookie("token", result.authUser.token, {
         maxAge: 2 * 24 * 60 * 60 * 1000,
         httpOnly: true,
-        sameSite: 'strict',
+        sameSite: appConfig.nodeEnv === 'development' ? 'lax' : 'none',
         secure: appConfig.nodeEnv !== 'development'
       });
 
@@ -101,7 +101,7 @@ export class AuthController {
       res.cookie("token", authUser.token, {
         maxAge: 2 * 24 * 60 * 60 * 1000,
         httpOnly: true,
-        sameSite: 'strict',
+        sameSite: appConfig.nodeEnv === 'development' ? 'lax' : 'none',
         secure: appConfig.nodeEnv !== 'development'
       });
       const { token: token, ...authUserWithoutToken } = authUser;
