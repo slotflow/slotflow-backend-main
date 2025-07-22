@@ -111,6 +111,7 @@ export class AuthController {
       };
       res.status(200).json(resultWithoutToken);
     } catch (error) {
+      console.log("error : ",error);
       HandleError.handle(error, res);
     }
   }

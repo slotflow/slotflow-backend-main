@@ -1,19 +1,19 @@
-import { S3Client } from "@aws-sdk/client-s3";
-import { Upload } from "@aws-sdk/lib-storage";
-import { aws_s3Config } from "../../config/env";
-import { generateSignedUrl } from "../../config/aws_s3";
-import { extractS3Key } from "../../infrastructure/helpers/helper";
-import { validateOrThrow, Validator } from "../../infrastructure/validator/validator";
-import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
-import { 
-    UserFetchProfileDetailsResponse, 
-    UserUpdateProfileImageResponse, 
-    UserFetchProfileRequest, 
+import {
+    UserFetchProfileDetailsResponse,
+    UserUpdateProfileImageResponse,
+    UserFetchProfileRequest,
     UsrUpdateProfileImageRequest,
     UserUpdateUserInfoRequest,
-    UserUpdateUserInfoResponse, 
+    UserUpdateUserInfoResponse,
 } from "../../infrastructure/dtos/user.dto";
+import { awsConfig } from "../../config/env";
+import { S3Client } from "@aws-sdk/client-s3";
+import { Upload } from "@aws-sdk/lib-storage";
 import { ApiResponse } from "../../infrastructure/dtos/common.dto";
+import { generateS3Key } from "../../infrastructure/helpers/generateS3Key";
+import { generateSignedUrl } from "../../infrastructure/services/signedUrl.service";
+import { validateOrThrow, Validator } from "../../infrastructure/validator/validator";
+import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 
 
 export class UserFetchProfileDetailsUseCase {
@@ -24,7 +24,7 @@ export class UserFetchProfileDetailsUseCase {
         if (!userId) throw new Error("Invalid request.");
 
         Validator.validateObjectId(userId, "userId");
-        
+
         const user = await this.userRepositoryImpl.findUserById(userId);
         if (!user) throw new Error("User not found.");
         const { _id, password, profileImage, updatedAt, addressId, bookingsId, verificationToken, ...rest } = user;
@@ -39,7 +39,7 @@ export class UserUpdateProfileImageUseCase {
     ) { }
 
     async execute(data: UsrUpdateProfileImageRequest): Promise<ApiResponse<UserUpdateProfileImageResponse>> {
-        const { userId, file} = data;
+        const { userId, file } = data;
         if (!userId || !file) throw new Error("Invalid request.");
 
         Validator.validateObjectId(userId, "userId");
@@ -49,8 +49,12 @@ export class UserUpdateProfileImageUseCase {
         if (!user) throw new Error("User not found.");
         try {
             const params = {
-                Bucket: aws_s3Config.bucketName as string,
-                Key: `userProfileImages/${userId}.${file.originalname.split('.').pop()}`,
+                Bucket: awsConfig.aws_s3Bucket_name as string,
+                Key: generateS3Key({
+                    folder: "slotflow-user-profileImage",
+                    userId: userId,
+                    originalname: file.originalname,
+                }),
                 Body: file.buffer,
                 ContentType: file.mimetype,
             };
@@ -67,11 +71,11 @@ export class UserUpdateProfileImageUseCase {
             const updatedUser = await this.userRepositoryImpl.updateUser(user);
             if (!updatedUser) throw new Error("Profile image returning failed.");
 
-            const s3Key = await extractS3Key(updatedUser.profileImage);
-            const signedUrl = await generateSignedUrl(s3Key);
+            const signedUrl = await generateSignedUrl(updatedUser.profileImage);
             return { success: true, message: "Profile Image updated successfully.", data: signedUrl };
 
-        } catch {
+        } catch (error){
+            console.log("Error : ",error);
             throw new Error("Unexpected error occured while updating profile image.");
         }
     }
@@ -80,19 +84,19 @@ export class UserUpdateProfileImageUseCase {
 
 export class UserUpdateProviderInfoUseCase {
     constructor(
-        private userRepositoryImpl: UserRepositoryImpl 
+        private userRepositoryImpl: UserRepositoryImpl
     ) { }
 
-    async execute(data: UserUpdateUserInfoRequest) : Promise<ApiResponse<UserUpdateUserInfoResponse>> {
+    async execute(data: UserUpdateUserInfoRequest): Promise<ApiResponse<UserUpdateUserInfoResponse>> {
         const { userId, username, phone } = data;
-        if(!userId || !username || !phone) throw new Error("Invalid request");
+        if (!userId || !username || !phone) throw new Error("Invalid request");
 
-        Validator.validateObjectId(userId,"userId");
+        Validator.validateObjectId(userId, "userId");
         Validator.validatePhone(phone);
-        validateOrThrow("username",username);
+        validateOrThrow("username", username);
 
         const user = await this.userRepositoryImpl.findUserById(userId);
-        if(!user) throw new Error("No user found");
+        if (!user) throw new Error("No user found");
 
         const userData = {
             ...user,
@@ -101,7 +105,7 @@ export class UserUpdateProviderInfoUseCase {
         }
 
         const updatedUser = await this.userRepositoryImpl.updateUser(userData);
-        if(!updatedUser) throw new Error("Info adding failed, please try again");
+        if (!updatedUser) throw new Error("Info adding failed, please try again");
 
         const updatedData = { username: updatedUser.username, phone: updatedUser.phone };
 

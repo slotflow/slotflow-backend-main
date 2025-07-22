@@ -1,17 +1,17 @@
+import { awsConfig } from "../../config/env";
 import { S3Client } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
-import { aws_s3Config } from "../../config/env";
-import { 
+import {
     ProviderUpdateProviderInfoRequest,
-    ProviderUpdateprofileImageResponse, 
+    ProviderUpdateprofileImageResponse,
     ProviderFetchProfileDetailsRequest,
-    ProviderUpdateProviderInfoResponse, 
-    ProviderFetchProfileDetailsResponse, 
-    ProviderUpdateprofileImageRequestPayload, 
+    ProviderUpdateProviderInfoResponse,
+    ProviderFetchProfileDetailsResponse,
+    ProviderUpdateprofileImageRequestPayload,
 } from "../../infrastructure/dtos/provider.dto";
-import { generateSignedUrl } from "../../config/aws_s3";
 import { ApiResponse } from "../../infrastructure/dtos/common.dto";
-import { extractS3Key } from "../../infrastructure/helpers/helper";
+import { generateS3Key } from "../../infrastructure/helpers/generateS3Key";
+import { generateSignedUrl } from "../../infrastructure/services/signedUrl.service";
 import { validateOrThrow, Validator } from "../../infrastructure/validator/validator";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 
@@ -20,15 +20,15 @@ export class ProviderFetchProfileDetailsUseCase {
     constructor(private providerRepositoryImpl: ProviderRepositoryImpl) { }
 
     async execute({ providerId }: ProviderFetchProfileDetailsRequest): Promise<ApiResponse<ProviderFetchProfileDetailsResponse>> {
-        
+
         if (!providerId) throw new Error("Invalid request.");
 
         Validator.validateObjectId(providerId, "providerId");
 
         const provider = await this.providerRepositoryImpl.findProviderById(providerId);
-        if(provider === null) return { success: true, message: "Provider prfile not addedd.", data: {} };
+        if (provider === null) return { success: true, message: "Provider prfile not addedd.", data: {} };
         if (!provider) throw new Error("Provider profile fetching error.");
-        const { _id, password, addressId, serviceId, subscription, updatedAt, profileImage,  ...rest } = provider;
+        const { _id, password, addressId, serviceId, subscription, updatedAt, profileImage, ...rest } = provider;
         return { success: true, message: "Provider prfile detailed fetched.", data: rest };
     }
 }
@@ -52,8 +52,12 @@ export class ProviderUpdateProfileImageUseCase {
 
         try {
             const params = {
-                Bucket: aws_s3Config.bucketName as string,
-                Key: `providerProfileImages/${providerId}.${file.originalname.split('.').pop()}`,
+                Bucket: awsConfig.aws_s3Bucket_name as string,
+                Key: generateS3Key({
+                    folder: "slotflow-provider-profileImage",
+                    userId: providerId,
+                    originalname: file.originalname,
+                }),
                 Body: file.buffer,
                 ContentType: file.mimetype,
             };
@@ -70,8 +74,7 @@ export class ProviderUpdateProfileImageUseCase {
             const updatedProvider = await this.providerRepositoryImpl.updateProvider(provider);
             if (!updatedProvider) throw new Error("Profile image returning failed.");
 
-            const s3Key = await extractS3Key(updatedProvider.profileImage);
-            const signedUrl = await generateSignedUrl(s3Key);
+            const signedUrl = await generateSignedUrl(updatedProvider.profileImage);
             return { success: true, message: "Profile Image updated successfully.", data: signedUrl };
 
         } catch {
@@ -85,16 +88,16 @@ export class ProviderUpdateProviderInfoUseCase {
         private providerRepositoryImpl: ProviderRepositoryImpl
     ) { }
 
-    async execute({ providerId, username, phone }: ProviderUpdateProviderInfoRequest) : Promise<ApiResponse<ProviderUpdateProviderInfoResponse>> {
+    async execute({ providerId, username, phone }: ProviderUpdateProviderInfoRequest): Promise<ApiResponse<ProviderUpdateProviderInfoResponse>> {
 
-        if(!providerId || !username || !phone) throw new Error("Invalid request");
+        if (!providerId || !username || !phone) throw new Error("Invalid request");
 
-        Validator.validateObjectId(providerId,"providerId");
+        Validator.validateObjectId(providerId, "providerId");
         Validator.validatePhone(phone);
-        validateOrThrow("username",username);
+        validateOrThrow("username", username);
 
         const provider = await this.providerRepositoryImpl.findProviderById(providerId);
-        if(!provider) throw new Error("No user found");
+        if (!provider) throw new Error("No user found");
 
         const providerData = {
             ...provider,
@@ -103,7 +106,7 @@ export class ProviderUpdateProviderInfoUseCase {
         }
 
         const updatedProvider = await this.providerRepositoryImpl.updateProvider(providerData);
-        if(!updatedProvider) throw new Error("Info adding failed, please try again");
+        if (!updatedProvider) throw new Error("Info adding failed, please try again");
 
         const updatedData = { username: updatedProvider.username, phone: updatedProvider.phone };
 

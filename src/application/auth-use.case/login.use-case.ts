@@ -1,12 +1,12 @@
 import { adminConfig } from "../../config/env";
-import { generateSignedUrl } from "../../config/aws_s3";
 import { User } from "../../domain/entities/user.entity";
 import { JWTService } from "../../infrastructure/security/jwt";
 import { Provider } from "../../domain/entities/provider.entity";
 import { validateOrThrow } from "../../infrastructure/validator/validator";
 import { PasswordHasher } from "../../infrastructure/security/password-hashing";
-import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { LoginRequest, LoginResponse } from "../../infrastructure/dtos/auth.dto";
+import { generateSignedUrl } from "../../infrastructure/services/signedUrl.service";
+import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 
 

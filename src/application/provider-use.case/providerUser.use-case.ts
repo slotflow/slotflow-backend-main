@@ -1,10 +1,9 @@
 import { Provider } from "../../domain/entities/provider.entity";
 import { ApiResponse } from "../../infrastructure/dtos/common.dto";
 import { Validator } from "../../infrastructure/validator/validator";
+import { generateSignedUrl } from "../../infrastructure/services/signedUrl.service";
 import { ProviderFetchUsersForChatSideBar } from "../../infrastructure/dtos/provider.dto";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
-import { extractS3Key } from "../../infrastructure/helpers/helper";
-import { generateSignedUrl } from "../../config/aws_s3";
 
 export class ProviderFetchUserForChatSidebarUseCase {
     constructor(
@@ -21,8 +20,7 @@ export class ProviderFetchUserForChatSidebarUseCase {
                 let profileImageUrl = user?.profileImage;
 
                 if (profileImageUrl) {
-                    const s3Key = await extractS3Key(profileImageUrl);
-                    const signedUrl = await generateSignedUrl(s3Key);
+                    const signedUrl = await generateSignedUrl(profileImageUrl);
                     user.profileImage = signedUrl;
                 }
 

@@ -10,8 +10,8 @@ import {
     AdminFetchProviderServiceAvailabilityRequest,
     AdminFetchProviderServiceAvailabilityResponse,
 } from "../../../infrastructure/dtos/admin.dto";
-import { generateSignedUrl } from "../../../config/aws_s3";
 import { Validator } from "../../../infrastructure/validator/validator";
+import { generateSignedUrl } from "../../../infrastructure/services/signedUrl.service";
 import { AddressRepositoryImpl } from "../../../infrastructure/database/address/address.repository.impl";
 import { PaymentRepositoryImpl } from "../../../infrastructure/database/payment/payment.repository.impl";
 import { ProviderRepositoryImpl } from "../../../infrastructure/database/provider/provider.repository.impl";

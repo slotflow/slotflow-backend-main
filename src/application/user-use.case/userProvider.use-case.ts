@@ -15,17 +15,16 @@ import {
   UserFetchProviderServiceAvailabilityResponse,
   UserFetchProvidersForChatSidebarResponse,
 } from "../../infrastructure/dtos/user.dto";
-import { generateSignedUrl } from "../../config/aws_s3";
-import { extractS3Key } from "../../infrastructure/helpers/helper";
+import { User } from "../../domain/entities/user.entity";
 import { ApiResponse } from "../../infrastructure/dtos/common.dto";
 import { Validator } from "../../infrastructure/validator/validator";
+import { generateSignedUrl } from "../../infrastructure/services/signedUrl.service";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
+import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { AddressRepositoryImpl } from "../../infrastructure/database/address/address.repository.impl";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { ProviderServiceRepositoryImpl } from "../../infrastructure/database/providerService/providerService.repository.impl";
 import { ServiceAvailabilityRepositoryImpl } from "../../infrastructure/database/serviceAvailability/serviceAvailability.repository.impl";
-import { User } from "../../domain/entities/user.entity";
-import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 
 
 export class UserFetchServiceProvidersUseCase {
@@ -50,8 +49,7 @@ export class UserFetchServiceProvidersUseCase {
         let profileImageUrl = provider?.provider?.profileImage;
 
         if (profileImageUrl) {
-          const s3Key = await extractS3Key(profileImageUrl);
-          const signedUrl = await generateSignedUrl(s3Key);
+          const signedUrl = await generateSignedUrl(profileImageUrl);
           provider.provider.profileImage = signedUrl;
         }
 
@@ -83,8 +81,7 @@ export class UserFetchServiceProviderProfileDetailsUseCase {
     if (!provider) throw new Error("No provider found");
 
     if (provider.profileImage) {
-      const s3Key = await extractS3Key(provider.profileImage);
-      const signedUrl = await generateSignedUrl(s3Key);
+      const signedUrl = await generateSignedUrl(provider.profileImage);
       provider.profileImage = signedUrl;
     }
 
@@ -203,8 +200,7 @@ export class UserFetchProvidersForChatSidebar {
                 let profileImageUrl = provider?.profileImage;
 
                 if (profileImageUrl) {
-                    const s3Key = await extractS3Key(profileImageUrl);
-                    const signedUrl = await generateSignedUrl(s3Key);
+                    const signedUrl = await generateSignedUrl(profileImageUrl);
                     provider.profileImage = signedUrl;
                 }
 
