@@ -90,13 +90,7 @@ export class AdminFetchProviderServiceUseCase {
         const providerCertifiacteUrl = service.providerCertificateUrl;
         if (!providerCertifiacteUrl) throw new Error("Service details fetching error.");
 
-        const urlParts = providerCertifiacteUrl?.split('/');
-        if (!urlParts) throw new Error("UrlParts error.");
-
-        const s3Key = urlParts.slice(3).join('/');
-        if (!s3Key) throw new Error("Image retrieving.");
-
-        const signedUrl = await generateSignedUrl(s3Key);
+        const signedUrl = await generateSignedUrl(providerCertifiacteUrl);
         if (!signedUrl) throw new Error("Image fetching error.");
 
         service.providerCertificateUrl = signedUrl;
