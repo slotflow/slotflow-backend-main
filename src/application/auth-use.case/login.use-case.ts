@@ -63,11 +63,7 @@ export class LoginUseCase {
         if (userOrProvider.profileImage) {
             const userOrProviderProfileUrl = userOrProvider.profileImage;
             if (!userOrProviderProfileUrl) throw new Error("Profile image fetching error.");
-            const urlParts = userOrProviderProfileUrl?.split('/');
-            if (!urlParts) throw new Error("UrlParts error.");
-            const s3Key = urlParts.slice(3).join('/');
-            if (!s3Key) throw new Error("Image retrieving.");
-            const signedUrl = await generateSignedUrl(s3Key);
+            const signedUrl = await generateSignedUrl(userOrProviderProfileUrl);
             if (!signedUrl) throw new Error("Image fetching error.");
             updateProfileImage = signedUrl
         }
