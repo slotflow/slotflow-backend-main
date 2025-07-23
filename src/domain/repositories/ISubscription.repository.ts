@@ -18,6 +18,12 @@ export interface findSubscriptionFullDetailsResProps extends SubscriptionProps {
     paymentId: PaymentsProps,
 }
 
+export interface PlanNameOnly {
+    subscriptionPlanId : {
+        planName: string
+    }
+}
+
 export interface ISubscriptionRepository {
 
     createSubscription(subscription: CreateSubscriptionPayloadProps, options: { session: any }): Promise<Subscription>;
@@ -31,5 +37,7 @@ export interface ISubscriptionRepository {
     findSubscriptionFullDetails(subscriptionId: Types.ObjectId): Promise<findSubscriptionFullDetailsResProps | {}>;
 
     findSbuscriptionsForUpdatinStatus():Promise<boolean>;
+
+    findSubscribedPlan(subscriptionId: Types.ObjectId): Promise<Plan["planName"] | boolean>;
 
 }

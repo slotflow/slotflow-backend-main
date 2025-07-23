@@ -8,10 +8,16 @@ import { LoginRequest, LoginResponse } from "../../infrastructure/dtos/auth.dto"
 import { generateSignedUrl } from "../../infrastructure/services/signedUrl.service";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
+import { Types } from "mongoose";
+import { SubscriptionRepositoryImpl } from "../../infrastructure/database/subscription/subscription.repository.impl";
 
 
 export class LoginUseCase {
-    constructor(private userRepositoryImpl: UserRepositoryImpl, private providerRepositoryImpl: ProviderRepositoryImpl) { }
+    constructor(
+        private userRepositoryImpl: UserRepositoryImpl, 
+        private providerRepositoryImpl: ProviderRepositoryImpl,
+        private subscriptionRepositoryImpl: SubscriptionRepositoryImpl
+    ) { }
 
     async execute(data: LoginRequest): Promise<LoginResponse> {
         const { email, password, role } = data;
@@ -52,12 +58,18 @@ export class LoginUseCase {
         let isServiceAvailabilityAdded;
         let isAdminApproved;
         let updateProfileImage;
+        let providerSubscription;
 
         if (role === "PROVIDER") {
             isAddressAdded = (userOrProvider as Provider).addressId ? true : false;
             isServiceDetailsAdded = (userOrProvider as Provider).serviceId ? true : false;
             isServiceAvailabilityAdded = (userOrProvider as Provider).serviceAvailabilityId ? true : false;
             isAdminApproved = (userOrProvider as Provider).isAdminVerified ? true : false;
+            let subscriptions:Types.ObjectId[] | [] = (userOrProvider as Provider).subscription;
+            if(subscriptions.length > 0) {
+                const subscriptionId = subscriptions[0];
+                providerSubscription = await this.subscriptionRepositoryImpl.findSubscribedPlan(subscriptionId);
+            }
         }
 
         if (userOrProvider.profileImage) {
@@ -81,7 +93,8 @@ export class LoginUseCase {
                 isAddressAdded, 
                 isServiceDetailsAdded, 
                 isServiceAvailabilityAdded, 
-                isAdminApproved 
+                isAdminApproved,
+                providerSubscription
             }
         };
 

@@ -11,11 +11,13 @@ import { UpdatePasswordUseCase } from '../../application/auth-use.case/updatePas
 import { CheckUserStatusUseCase } from '../../application/auth-use.case/checkUserStatus.use-case';
 import { ProviderRepositoryImpl } from '../../infrastructure/database/provider/provider.repository.impl';
 import { LoginZodSchema, OTPVerificationZodSchema, RegisterZodSchema, ResendOTPZodSchema, UpdatePasswordZodSchema } from '../../infrastructure/zod/auth.zod';
+import { SubscriptionRepositoryImpl } from '../../infrastructure/database/subscription/subscription.repository.impl';
 
 const userRepositoryImpl = new UserRepositoryImpl();
 const providerRepositoryImpl = new ProviderRepositoryImpl();
+const subscriptionRepositoryImpl = new SubscriptionRepositoryImpl();
 
-const loginUseCase = new LoginUseCase(userRepositoryImpl, providerRepositoryImpl);
+const loginUseCase = new LoginUseCase(userRepositoryImpl, providerRepositoryImpl, subscriptionRepositoryImpl);
 const registerUseCase = new RegisterUseCase(userRepositoryImpl, providerRepositoryImpl);
 const verifyOTPUseCase = new VerifyOTPUseCase(userRepositoryImpl, providerRepositoryImpl);
 const resendOtpUseCase = new ResendOtpUseCase(userRepositoryImpl, providerRepositoryImpl);

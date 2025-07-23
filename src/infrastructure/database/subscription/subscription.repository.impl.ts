@@ -2,8 +2,9 @@ import { Types } from "mongoose";
 import { ISubscription, SubscriptionModel } from "./subscription.model";
 import { AdminFetchAllSubscriptionsResponse } from "../../dtos/admin.dto";
 import { Subscription } from "../../../domain/entities/subscription.entity";
-import { CreateSubscriptionPayloadProps, findSubscriptionFullDetailsResProps, ISubscriptionRepository } from "../../../domain/repositories/ISubscription.repository";
+import { CreateSubscriptionPayloadProps, findSubscriptionFullDetailsResProps, ISubscriptionRepository, PlanNameOnly } from "../../../domain/repositories/ISubscription.repository";
 import { ApiPaginationRequest, ApiResponse, FetchProviderSubscriptionsRequest, FindSubscriptionsByProviderIdResponse, PopulatedSubscription } from "../../dtos/common.dto";
+import { Plan } from "../../../domain/entities/plan.entity";
 
 export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
     private mapToEntity(subscription: ISubscription): Subscription {
@@ -134,6 +135,18 @@ export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
             );
 
             return updated.modifiedCount > 0;
+        } catch {
+            return false;
+        }
+    }
+
+    async findSubscribedPlan(subscriptionId: Types.ObjectId): Promise<Plan["planName"] | boolean> {
+        try{
+            const subscription = await SubscriptionModel.findById(subscriptionId)
+                .populate<PlanNameOnly>("subscriptionPlanId", { planName: 1, _id: 0 })
+                .select("subscriptionPlanId -_id")
+                .lean();
+            return subscription ? subscription.subscriptionPlanId.planName : false;
         } catch {
             return false;
         }

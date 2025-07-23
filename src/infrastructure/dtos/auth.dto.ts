@@ -1,5 +1,6 @@
 import { Types } from "mongoose";
 import { CommonResponse } from "./common.dto";
+import { Plan } from "../../domain/entities/plan.entity";
 
 // **** Register usec case **** \\
 // user or provider register usecase request payload interface
@@ -56,7 +57,8 @@ export interface LoginResponse extends CommonResponse {
         isAddressAdded?: boolean, 
         isServiceDetailsAdded?: boolean, 
         isServiceAvailabilityAdded?: boolean, 
-        isAdminApproved?: boolean 
+        isAdminApproved?: boolean;
+        providerSubscription?: Plan["planName"] | boolean;
     }
 }
 
