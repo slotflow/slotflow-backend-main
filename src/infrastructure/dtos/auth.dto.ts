@@ -53,10 +53,10 @@ export interface LoginResponse extends CommonResponse {
         role: string, 
         token: string, 
         isLoggedIn: boolean,  
-        address?: boolean, 
-        serviceDetails?: boolean, 
-        serviceAvailability?: boolean, 
-        approved?: boolean 
+        isAddressAdded?: boolean, 
+        isServiceDetailsAdded?: boolean, 
+        isServiceAvailabilityAdded?: boolean, 
+        isAdminApproved?: boolean 
     }
 }
 

@@ -47,17 +47,17 @@ export class LoginUseCase {
 
         const token = JWTService.generateToken({ userOrProviderId: userOrProvider._id, role: role });
 
-        let address;
-        let serviceDetails;
-        let serviceAvailability;
-        let approved;
+        let isAddressAdded;
+        let isServiceDetailsAdded;
+        let isServiceAvailabilityAdded;
+        let isAdminApproved;
         let updateProfileImage;
 
         if (role === "PROVIDER") {
-            address = (userOrProvider as Provider).addressId ? true : false;
-            serviceDetails = (userOrProvider as Provider).serviceId ? true : false;
-            serviceAvailability = (userOrProvider as Provider).serviceAvailabilityId ? true : false;
-            approved = (userOrProvider as Provider).isAdminVerified ? true : false;
+            isAddressAdded = (userOrProvider as Provider).addressId ? true : false;
+            isServiceDetailsAdded = (userOrProvider as Provider).serviceId ? true : false;
+            isServiceAvailabilityAdded = (userOrProvider as Provider).serviceAvailabilityId ? true : false;
+            isAdminApproved = (userOrProvider as Provider).isAdminVerified ? true : false;
         }
 
         if (userOrProvider.profileImage) {
@@ -68,6 +68,23 @@ export class LoginUseCase {
             updateProfileImage = signedUrl
         }
 
-        return { success: true, message: 'Logged In Successfully.', authUser: { uid: userOrProvider._id, username: userOrProvider.username, profileImage: updateProfileImage ? updateProfileImage : userOrProvider.profileImage, role: role, token, isLoggedIn: true, address, serviceDetails, serviceAvailability, approved } };
+        return { 
+            success: true, 
+            message: 'Logged In Successfully.', 
+            authUser: { 
+                uid: userOrProvider._id, 
+                username: userOrProvider.username, 
+                profileImage: updateProfileImage ? updateProfileImage : userOrProvider.profileImage, 
+                role: role, 
+                token, 
+                isLoggedIn: true, 
+                isAddressAdded, 
+                isServiceDetailsAdded, 
+                isServiceAvailabilityAdded, 
+                isAdminApproved 
+            }
+        };
+
+
     }
 }
