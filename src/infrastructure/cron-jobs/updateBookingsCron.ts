@@ -28,4 +28,4 @@ setInterval(async () => {
   } catch (error) {
     console.error("[INTERVAL ERROR] updateBookingStatus failed:", error);
   }
-}, 10 * 60 * 1000);
+}, 60 * 60 * 1000 * 24);
