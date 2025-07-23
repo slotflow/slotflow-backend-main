@@ -45,6 +45,7 @@ export class ProviderServiceRepositoryImpl implements IProviderServiceRepository
     async findProvidersUsingServiceCategoryIds(serviceCategoryIds: Types.ObjectId[]): Promise<Array<FindProvidersUsingServiceCategoryIdsResponse> | []> {
         try {
             const pipeline: any[] = [];
+            const now = new Date();
 
             if (serviceCategoryIds.length > 0) {
                 pipeline.push({
@@ -88,7 +89,7 @@ export class ProviderServiceRepositoryImpl implements IProviderServiceRepository
                                         $and: [
                                             { $eq: ["$providerId", "$$providerId"] },
                                             { $eq: ["$subscriptionStatus", "Active"] },
-                                            { $gt: ["$endDate", new Date()] },
+                                            { $gt: ["$endDate", now] },
                                         ]
                                     }
                                 }
@@ -128,7 +129,6 @@ export class ProviderServiceRepositoryImpl implements IProviderServiceRepository
                     }
                 }
             );
-
             const providers = await ProviderServiceModel.aggregate(pipeline);
             return providers;
         } catch (error) {

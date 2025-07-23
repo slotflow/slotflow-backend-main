@@ -29,4 +29,7 @@ export interface ISubscriptionRepository {
     findAllSubscriptions({ page, limit }: ApiPaginationRequest): Promise<ApiResponse<AdminFetchAllSubscriptionsResponse>>
 
     findSubscriptionFullDetails(subscriptionId: Types.ObjectId): Promise<findSubscriptionFullDetailsResProps | {}>;
+
+    findSbuscriptionsForUpdatinStatus():Promise<boolean>;
+
 }

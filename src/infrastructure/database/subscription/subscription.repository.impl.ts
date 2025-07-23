@@ -118,4 +118,24 @@ export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
             throw new Error("Subscription details fetching error.");
         }
     }
+
+    async findSbuscriptionsForUpdatinStatus(): Promise<boolean> {
+        try {
+            const now = new Date();
+
+            const updated = await SubscriptionModel.updateMany(
+                {
+                    subscriptionStatus: "Active",
+                    endDate: { $lt: now }
+                },
+                {
+                    $set: { subscriptionStatus: "Expired" }
+                }
+            );
+
+            return updated.modifiedCount > 0;
+        } catch {
+            return false;
+        }
+    }
 }
