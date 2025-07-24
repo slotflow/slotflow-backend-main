@@ -2,12 +2,13 @@ import { Types } from "mongoose";
 import { BookingModel, IBooking } from "./booking.model";
 import { Booking } from "../../../domain/entities/booking.entity";
 import { FetchBookingsRequest, ApiResponse, FetchBookingsResponse, userIdAndServiceProviderId } from "../../dtos/common.dto";
-import { CreateBookingPayloadProps, IBookingRepository } from "../../../domain/repositories/IBooking.repository";
+import { BookingStatsResult, CreateBookingPayloadProps, IBookingRepository } from "../../../domain/repositories/IBooking.repository";
 import { Provider } from "../../../domain/entities/provider.entity";
 import { ProviderFetchUsersForChatSideBar } from "../../dtos/provider.dto";
 import dayjs from "dayjs";
 import { User } from "../../../domain/entities/user.entity";
 import { UserFetchProvidersForChatSidebarResponse } from "../../dtos/user.dto";
+import { startOfToday, startOfTomorrow } from "date-fns";
 
 export class BookingRepositoryImpl implements IBookingRepository {
     private mapToEntity(booking: IBooking): Booking {
@@ -164,14 +165,14 @@ export class BookingRepositoryImpl implements IBookingRepository {
                 }
             ]);
             return users;
-            
+
         } catch {
             throw new Error("Users fetching failed");
         }
     }
 
     async findProvidersforChatSideBar(userId: User["_id"]): Promise<UserFetchProvidersForChatSidebarResponse> {
-        try{
+        try {
 
             const providers = await BookingModel.aggregate([
                 {
@@ -209,8 +210,54 @@ export class BookingRepositoryImpl implements IBookingRepository {
             ]);
             return providers;
 
-        }catch {
+        } catch {
             throw new Error("providers fetching failed");
+        }
+    }
+
+    async findBookingStatsDataForDashboard(providerId: Provider["_id"]): Promise<BookingStatsResult> {
+        try {
+            const today = startOfToday();
+            const tomorrow = startOfTomorrow();
+
+            const result = await BookingModel.aggregate([
+                { $match: { providerId: providerId } },
+                {
+                    $facet: {
+                        totalAppointments: [
+                            { $count: "count" }
+                        ],
+                        completedAppointments: [
+                            { $match: { status: "Completed" } },
+                            { $count: "count" }
+                        ],
+                        missedAppointments: [
+                            { $match: { status: "Not Attended" } },
+                            { $count: "count" }
+                        ],
+                        cancelledAppointmentsByUser: [
+                            { $match: { status: "Cancelled" } },
+                            { $count: "count" }
+                        ],
+                        rejectedAppointmentsByProvider: [
+                            { $match: { status: "Rejected By Provider" } },
+                            { $count: "count" }
+                        ],
+                        todaysAppointments: [
+                            {
+                                $match: {
+                                    appointmentDate: { $gte: today, $lt: tomorrow },
+                                    status: "Booked"
+                                }
+                            },
+                            { $count: "count" }
+                        ]
+                    }
+                }
+            ]);
+            return result[0] as BookingStatsResult;
+        } catch {
+            throw new Error("Dashboard stats fetching failed");
         }
     }
 }

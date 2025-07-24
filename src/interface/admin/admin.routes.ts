@@ -34,6 +34,5 @@ router.patch('/changePlanBlockStatus', authMiddleware, adminPlanController.chang
 router.get('/getSubscriptions', authMiddleware, adminSubscriptionController.getAllSubscriptions);
 router.get('/getSubscription/:subscriptionId', authMiddleware, adminSubscriptionController.getSubscriptionDetails);
 
-
 router.get('/getPayments', authMiddleware, adminPaymentController.getAllPayments);
 export default router;

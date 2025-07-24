@@ -14,6 +14,7 @@ import {
     UserAppointmentBookingViaStripeRequest, 
 } from "../../infrastructure/dtos/user.dto";
 import { Validator } from "../../infrastructure/validator/validator";
+import { PaymentFor, PaymentGateway } from "../../domain/entities/payment.entity";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -141,12 +142,13 @@ export class UserSaveBookingAfterStripePaymentUseCase {
                 transactionId: paymentIntent.toString(),
                 paymentStatus: paymentStatus,
                 paymentMethod: paymentType,
-                paymentGateway: "Stripe",
-                paymentFor: "Appointment Booking",
+                paymentGateway: PaymentGateway.Stripe,
+                paymentFor: PaymentFor.AppointmentBooking,
                 initialAmount: Number(initialAmount) / 100,
                 discountAmount: 0,
                 totalAmount: Number(totalAmount) / 100,
                 userId: new Types.ObjectId(userId),
+                providerId: new Types.ObjectId(providerId),
             }, { session: mongoSession });
 
             if (!payment) throw new Error("Unexpected error, payment saving error.");

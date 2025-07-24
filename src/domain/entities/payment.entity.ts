@@ -1,13 +1,26 @@
 import { Types } from "mongoose";
 
+export enum PaymentFor {
+    ProviderSubscription = "ProviderSubscription",
+    AppointmentBooking = "AppointmentBooking",
+    ProviderPayout = "ProviderPayout",
+    CancelBooking = "CancelBooking"
+}
+
+export enum PaymentGateway {
+    Stripe = "Stripe",
+    Razorpay = "Razorpay",
+    Paypal = "Paypal",
+}
+
 export class Payment {
     constructor(
         public _id: Types.ObjectId,
         public transactionId: string, // Stripe payment_intent || razorpay's payment_id || paypals capture_id
         public paymentStatus: string,
         public paymentMethod: string,
-        public paymentGateway: string,
-        public paymentFor: string,
+        public paymentGateway: PaymentGateway,
+        public paymentFor: PaymentFor,
         public initialAmount: number,
         public discountAmount: number,
         public totalAmount: number,

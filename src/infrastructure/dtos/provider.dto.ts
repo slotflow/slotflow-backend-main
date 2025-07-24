@@ -144,3 +144,27 @@ export type ProviderFetchUsersForChatSideBar = Array<Pick<User, "_id" | "usernam
 
 
 
+// ************ used in providerDashboard.use-case  ************ \\
+// Used as the return interface for the provider fetch dashboard data
+export interface ProviderFetchDashboardStatsDataResponse {
+    totalAppointments: number;
+    completedAppointments: number;
+    missedAppointments: number;
+    cancelledAppointmentsByUser: number;
+    rejectedAppointmentsByProvider: number;
+    todaysAppointments: number;
+
+    totalSubscriptionPaidAmount: number;
+    totalEarnings: number;
+    totalEarningsThroughStripe: number;
+    totalEarningsThroughRazorpay: number;
+    totalEarningsThroughPaypal: number;
+    todaysEarnings: number;
+    totalPayoutsMade: number;
+    pendingPayout: number;
+}
+
+export type BookingStatsData = Pick<ProviderFetchDashboardStatsDataResponse, "totalAppointments" | "completedAppointments" | "missedAppointments" | "cancelledAppointmentsByUser" | "rejectedAppointmentsByProvider" | "todaysAppointments"  >;
+export type PaymentStatsData = Pick<ProviderFetchDashboardStatsDataResponse, "totalSubscriptionPaidAmount" | "totalEarnings" | "totalEarningsThroughStripe" | "totalEarningsThroughRazorpay" | "totalEarningsThroughPaypal" | "todaysEarnings" | "todaysEarnings" | "totalPayoutsMade" | "pendingPayout" >;
+
+

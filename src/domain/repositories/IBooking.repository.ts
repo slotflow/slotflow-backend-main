@@ -8,6 +8,19 @@ import { UserFetchProvidersForChatSidebarResponse } from "../../infrastructure/d
 
 export type CreateBookingPayloadProps = Pick<Booking, "serviceProviderId" | "userId" | "appointmentDate" | "appointmentTime" | "appointmentMode" | "appointmentStatus" | "slotId" | "paymentId">;
 
+export interface BookingStatsFacetCount {
+  count: number;
+}
+
+export interface BookingStatsResult {
+  totalAppointments: BookingStatsFacetCount[];
+  completedAppointments: BookingStatsFacetCount[];
+  missedAppointments: BookingStatsFacetCount[];
+  cancelledAppointmentsByUser: BookingStatsFacetCount[];
+  rejectedAppointmentsByProvider: BookingStatsFacetCount[];
+  todaysAppointments: BookingStatsFacetCount[];
+}
+
 export interface IBookingRepository {
 
     createBooking(booking : CreateBookingPayloadProps, options : { session : any }) : Promise<Booking>;
@@ -25,4 +38,6 @@ export interface IBookingRepository {
     findUsersforChatSideBar(providerId: Provider["_id"]): Promise<ProviderFetchUsersForChatSideBar>;
     
     findProvidersforChatSideBar(userId: User["_id"]): Promise<UserFetchProvidersForChatSidebarResponse>;
+
+    findBookingStatsDataForDashboard(providerId: Provider["_id"]): Promise<BookingStatsResult>;
 }

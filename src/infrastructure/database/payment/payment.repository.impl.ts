@@ -1,8 +1,10 @@
 import { Types } from "mongoose";
 import { IPayment, PaymentModel } from "./payment.model";
-import { Payment } from "../../../domain/entities/payment.entity";
+import { Provider } from "../../../domain/entities/provider.entity";
+import { endOfDay, startOfMonth, startOfToday, startOfTomorrow } from "date-fns";
+import { Payment, PaymentFor, PaymentGateway } from "../../../domain/entities/payment.entity";
 import { ApiResponse, FetchPaymentResponse, FetchPaymentsRequest, userIdAndProviderId } from "../../dtos/common.dto";
-import { CreatePaymentForBookingProps, CreatePaymentForSubscriptionProps, IPaymentRepository, UpdateForCancelBookingRefundReqProps } from "../../../domain/repositories/IPayment.repository";
+import { CreatePaymentForBookingProps, CreatePaymentForSubscriptionProps, IPaymentRepository, PaymentStatsDashboardResult, UpdateForCancelBookingRefundReqProps } from "../../../domain/repositories/IPayment.repository";
 
 export class PaymentRepositoryImpl implements IPaymentRepository {
     private mapToEntity(payment: IPayment): Payment {
@@ -53,8 +55,8 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
         try {
             const skip = (page - 1) * limit;
             const filter: userIdAndProviderId = {};
-            if (userId) { filter.userId = userId;}
-            if (providerId) { filter.providerId = providerId;}
+            if (userId) { filter.userId = userId; }
+            if (providerId) { filter.providerId = providerId; }
             const [payments, totalCount] = await Promise.all([
                 PaymentModel.find(filter, {
                     _id: 1,
@@ -99,6 +101,145 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
             return updatedPayment ? this.mapToEntity(updatedPayment) : null;
         } catch (error) {
             throw new Error("Payment updating error");
+        }
+    }
+
+    async findPaymentStatsDataForDashboard(providerId: Provider["_id"]): Promise<PaymentStatsDashboardResult> {
+        try {
+            const today = startOfToday();
+            const tomorrow = startOfTomorrow();
+
+            const startOfThisMonth = startOfMonth(new Date());
+            const endOfToday = endOfDay(new Date());
+
+            const result = await PaymentModel.aggregate([
+                {
+                    $match: {
+                        providerId: providerId,
+                        paymentStatus: "Paid",
+                    }
+                },
+                {
+                    $facet: {
+                        totalSubscriptionPaidAmount: [
+                            { $match: { paymentFor: PaymentFor.ProviderSubscription } },
+                            {
+                                $group: {
+                                    _id: null,
+                                    amount: { $sum: "$totalAmount" },
+                                }
+                            }
+                        ],
+                        totalEarnings: [
+                            {
+                                $match: {
+                                    PaymentFor: PaymentFor.AppointmentBooking
+                                }
+                            },
+                            {
+                                $group: {
+                                    _id: null,
+                                    amount: { $sum: "$totalAmount" },
+                                }
+                            }
+                        ],
+                        totalEarningsThroughStripe: [
+                            {
+                                $match: {
+                                    paymentFor: PaymentFor.AppointmentBooking,
+                                    paymentGateway: PaymentGateway.Stripe,
+                                }
+                            },
+                            {
+                                $group: {
+                                    _id: null,
+                                    amount: { $sum: "$totalAmount" },
+                                }
+                            }
+                        ],
+                        totalEarningsThroughRazorpay: [
+                            {
+                                $match: {
+                                    paymentFor: PaymentFor.AppointmentBooking,
+                                    paymentGateway: PaymentGateway.Razorpay,
+                                }
+                            },
+                            {
+                                $group: {
+                                    _id: null,
+                                    amount: { $sum: "$totalAmount" },
+                                }
+                            }
+                        ],
+                        totalEarningsThroughPaypal: [
+                            {
+                                $match: {
+                                    paymentFor: PaymentFor.AppointmentBooking,
+                                    paymentGateway: PaymentGateway.Paypal,
+                                }
+                            },
+                            {
+                                $group: {
+                                    _id: null,
+                                    amount: { $sum: "$totalAmount" },
+                                }
+                            }
+                        ],
+                        todaysEarnings: [
+                            {
+                                $match: {
+                                    paymentFor: PaymentFor.AppointmentBooking,
+                                    createdAt: { $gt: today, $lt: tomorrow },
+                                }
+                            },
+                            {
+                                $group: {
+                                    _id: null,
+                                    amount: { $sum: "$totalAmount" },
+                                }
+                            }
+                        ],
+                        totalPayoutsMade: [
+                            {
+                                $match: { paymentFor: PaymentFor.ProviderPayout }
+                            },
+                            {
+                                $group: {
+                                    _id: null,
+                                    amount: { $sum: "$totalAmount" },
+                                }
+                            }
+                        ],
+                        pendingPayout: [
+                            {
+                                $match: {
+                                    paymentFor: PaymentFor.AppointmentBooking,
+                                    paymentStatus: "Paid",
+                                    providerId: providerId,
+                                    createdAt: { $gte: startOfThisMonth, $lte: endOfToday },
+                                },
+                            },
+                            {
+                                $group: {
+                                    _id: null,
+                                    grossEarnings: { $sum: "$totalAmount" },
+                                },
+                            },
+                            {
+                                $project: {
+                                    _id: 0,
+                                    amount: {
+                                        $multiply: ["$grossEarnings", 0.95],
+                                    },
+                                },
+                            },
+                        ]
+                    }
+                }
+            ]);
+            return result[0] as PaymentStatsDashboardResult;
+        } catch {
+            throw new Error("Dashboard payment stats fetching error ")
         }
     }
 }

@@ -11,6 +11,7 @@ import { providerAppServiceController } from './providerAppService.controller';
 import { providerSubscriptionController } from './providerSubscription.controller';
 import { providerServiceAvailabilityController } from './providerServiceAvailability.controller';
 import { providerUserController } from './providerUser.controller';
+import { providerDashboardController } from './providerDashboardController';
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -43,7 +44,9 @@ router.get('/getPayments', authMiddleware, providerPaymentController.getPayments
 
 router.get('/getBookingAppointments', authMiddleware, providerBookingController.fetchBookingAppointments);
 
-router.get('/getUsersForCahtSidebar', authMiddleware, providerUserController.fetchUsersForChatSideBar)
+router.get('/getUsersForCahtSidebar', authMiddleware, providerUserController.fetchUsersForChatSideBar);
+
+router.get('/getDashboardStats', authMiddleware, providerDashboardController.getDashboardStats);
 
 
 export default router;  

@@ -1,12 +1,13 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
+import { PaymentFor, PaymentGateway } from "../../../domain/entities/payment.entity";
 
 export interface IPayment extends Document {
     _id: Types.ObjectId;
     transactionId: string;
     paymentStatus: string;
     paymentMethod: string;
-    paymentGateway: string;
-    paymentFor: string;
+    paymentGateway: PaymentGateway;
+    paymentFor: PaymentFor;
     initialAmount: number;
     discountAmount: number;
     totalAmount: number;
@@ -48,18 +49,12 @@ const PaymentSchema = new Schema<IPayment>({
     },
     paymentGateway: {
         type: String,
-        enum: {
-            values: ["Stripe", "Paypal", "Razorpay"],
-            message: "Payment gateway must be one of: Stripe, Paypal, or Razorpay",
-        },
+        enum: Object.values(PaymentGateway),
         required: [true, "Payment gateway is required"],
     },
     paymentFor: {
         type: String,
-        enum: {
-            values: ["Provider Subscription", "Appointment Booking", "Provider Payout"],
-            message: "Payment purpose must be one of: Provider Subscription, Appointment Booking, or Provider Payout",
-        },
+        enum: Object.values(PaymentFor), 
         required: [true, "Payment purpose is required"],
     },
     initialAmount: {
