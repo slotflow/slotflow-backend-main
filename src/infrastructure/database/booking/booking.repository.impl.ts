@@ -4,7 +4,7 @@ import { Booking } from "../../../domain/entities/booking.entity";
 import { FetchBookingsRequest, ApiResponse, FetchBookingsResponse, userIdAndServiceProviderId } from "../../dtos/common.dto";
 import { BookingStatsResult, CreateBookingPayloadProps, IBookingRepository } from "../../../domain/repositories/IBooking.repository";
 import { Provider } from "../../../domain/entities/provider.entity";
-import { ProviderFetchUsersForChatSideBar } from "../../dtos/provider.dto";
+import { ProviderFetchDashboardGraphDataResponse, ProviderFetchUsersForChatSideBar } from "../../dtos/provider.dto";
 import dayjs from "dayjs";
 import { User } from "../../../domain/entities/user.entity";
 import { UserFetchProvidersForChatSidebarResponse } from "../../dtos/user.dto";
@@ -258,6 +258,193 @@ export class BookingRepositoryImpl implements IBookingRepository {
             return result[0] as BookingStatsResult;
         } catch {
             throw new Error("Dashboard stats fetching failed");
+        }
+    }
+
+    async findBookingGraphDataForDashboard(providerId: Provider["_id"]):Promise<ProviderFetchDashboardGraphDataResponse> {
+        try {
+
+            const startDate = new Date();
+            startDate.setHours(0, 0, 0, 0);
+            startDate.setDate(startDate.getDate() - 6);
+
+            const result = await BookingModel.aggregate([
+                {
+                    $match: {
+                        serviceProviderId: providerId,
+                        appointmentDate: { $gte: startDate },
+                    },
+                },
+                {
+                    $facet: {
+                        appointmentsOvertimeChartData: [
+                            {
+                                $group: {
+                                    _id: {
+                                        $dateToString: { format: "%Y-%m-%d", date: "$appointmentDate" },
+                                    },
+                                    completed: {
+                                        $sum: {
+                                            $cond: [{ $eq: ["$appointmentStatus", "Completed"] }, 1, 0],
+                                        },
+                                    },
+                                    missed: {
+                                        $sum: {
+                                            $cond: [{ $eq: ["$appointmentStatus", "Not Attended"] }, 1, 0],
+                                        },
+                                    },
+                                    cancelled: {
+                                        $sum: {
+                                            $cond: [{ $eq: ["$appointmentStatus", "Cancelled"] }, 1, 0],
+                                        },
+                                    },
+                                },
+                            },
+                            {
+                                $project: {
+                                    date: "$_id",
+                                    completed: 1,
+                                    missed: 1,
+                                    cancelled: 1,
+                                    _id: 0,
+                                },
+                            },
+                            { $sort: { date: 1 } },
+                        ],
+
+                        peakBookingHoursChartData: [
+                            {
+                                $group: {
+                                    _id: {
+                                        date: { $dateToString: { format: "%Y-%m-%d", date: "$appointmentDate" } },
+                                        hour: "$appointmentTime",
+                                    },
+                                    bookings: { $sum: 1 },
+                                },
+                            },
+                            {
+                                $project: {
+                                    date: "$_id.date",
+                                    hour: "$_id.hour",
+                                    bookings: 1,
+                                    _id: 0,
+                                },
+                            },
+                            { $sort: { bookings: -1 } },
+                        ],
+
+                        appointmentModeChartData: [
+                            {
+                                $group: {
+                                    _id: {
+                                        date: { $dateToString: { format: "%Y-%m-%d", date: "$appointmentDate" } },
+                                    },
+                                    online: {
+                                        $sum: {
+                                            $cond: [{ $eq: ["$appointmentMode", "Online"] }, 1, 0],
+                                        },
+                                    },
+                                    offline: {
+                                        $sum: {
+                                            $cond: [{ $eq: ["$appointmentMode", "Offline"] }, 1, 0],
+                                        },
+                                    },
+                                },
+                            },
+                            {
+                                $project: {
+                                    date: "$_id.date",
+                                    online: 1,
+                                    offline: 1,
+                                    _id: 0,
+                                },
+                            },
+                            { $sort: { date: 1 } },
+                        ],
+
+                        completionBreakdownChartData: [
+                            {
+                                $group: {
+                                    _id: "$appointmentStatus",
+                                    value: { $sum: 1 },
+                                },
+                            },
+                            {
+                                $project: {
+                                    status: {
+                                        $switch: {
+                                            branches: [
+                                                { case: { $eq: ["$_id", "Completed"] }, then: "completed" },
+                                                { case: { $eq: ["$_id", "Not Attended"] }, then: "missed" },
+                                                { case: { $eq: ["$_id", "Cancelled"] }, then: "cancelled" },
+                                                { case: { $eq: ["$_id", "Rejected By Provider"] }, then: "rejected" },
+                                            ],
+                                            default: "other",
+                                        },
+                                    },
+                                    value: 1,
+                                    _id: 0,
+                                },
+                            },
+                        ],
+
+                        newVsReturningUsersChartData: [
+                            { $sort: { createdAt: 1 } },
+                            {
+                                $group: {
+                                    _id: "$userId",
+                                    firstAppointmentDate: { $first: "$appointmentDate" },
+                                },
+                            },
+                            {
+                                $project: {
+                                    date: {
+                                        $dateToString: { format: "%Y-%m-%d", date: "$firstAppointmentDate" },
+                                    },
+                                },
+                            },
+                            {
+                                $group: {
+                                    _id: "$date",
+                                    newUsers: { $sum: 1 },
+                                },
+                            },
+                            {
+                                $project: {
+                                    date: "$_id",
+                                    newUsers: 1,
+                                    returningUsers: { $literal: 0 },
+                                    _id: 0,
+                                },
+                            },
+                            { $sort: { date: 1 } },
+                        ],
+
+                        topBookingDaysChartData: [
+                            {
+                                $group: {
+                                    _id: {
+                                        $dateToString: { format: "%Y-%m-%d", date: "$appointmentDate" },
+                                    },
+                                    count: { $sum: 1 },
+                                },
+                            },
+                            {
+                                $project: {
+                                    day: "$_id",
+                                    count: 1,
+                                    _id: 0,
+                                },
+                            },
+                            { $sort: { count: -1 } },
+                            { $limit: 5 },
+                        ],
+                    },
+                },
+            ]);
+            return result[0];
+        } catch {
+            throw new Error("Dashboard graph data fetching error");
         }
     }
 }

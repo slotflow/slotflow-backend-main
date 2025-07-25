@@ -18,11 +18,6 @@ export class ProviderFetchDashboardStatsUseCase {
             if (!providerId) throw new Error("Invalid request");
             Validator.validateObjectId(providerId, "providerId");
             
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            const tomorrow = new Date(today);
-            tomorrow.setDate(today.getDate() + 1);
-            
             const [
                 bookingStatsArray,
                 paymentStatsArray

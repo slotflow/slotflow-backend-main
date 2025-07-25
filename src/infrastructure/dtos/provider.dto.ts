@@ -27,7 +27,7 @@ export type ProviderFetchAddressResponse = Pick<Address, "_id" | "addressLine" |
 // provider add service details use case request payload interface
 type AddServiceDetailsRequest = Pick<ProviderService, "providerId" | "serviceCategory" | "serviceName" | "serviceDescription" | "servicePrice" | "providerAdhaar" | "providerExperience">;
 export interface ProviderAddServiceDetailsRequest extends AddServiceDetailsRequest {
-        file: Express.Multer.File
+    file: Express.Multer.File
 }
 
 
@@ -163,8 +163,45 @@ export interface ProviderFetchDashboardStatsDataResponse {
     totalPayoutsMade: number;
     pendingPayout: number;
 }
+export type BookingStatsData = Pick<ProviderFetchDashboardStatsDataResponse, "totalAppointments" | "completedAppointments" | "missedAppointments" | "cancelledAppointmentsByUser" | "rejectedAppointmentsByProvider" | "todaysAppointments">;
+export type PaymentStatsData = Pick<ProviderFetchDashboardStatsDataResponse, "totalSubscriptionPaidAmount" | "totalEarnings" | "totalEarningsThroughStripe" | "totalEarningsThroughRazorpay" | "totalEarningsThroughPaypal" | "todaysEarnings" | "todaysEarnings" | "totalPayoutsMade" | "pendingPayout">;
 
-export type BookingStatsData = Pick<ProviderFetchDashboardStatsDataResponse, "totalAppointments" | "completedAppointments" | "missedAppointments" | "cancelledAppointmentsByUser" | "rejectedAppointmentsByProvider" | "todaysAppointments"  >;
-export type PaymentStatsData = Pick<ProviderFetchDashboardStatsDataResponse, "totalSubscriptionPaidAmount" | "totalEarnings" | "totalEarningsThroughStripe" | "totalEarningsThroughRazorpay" | "totalEarningsThroughPaypal" | "todaysEarnings" | "todaysEarnings" | "totalPayoutsMade" | "pendingPayout" >;
 
+// ************ used in providerDashboard.use-case  ************ \\
+// Used as the return interface for the provider fetch dashboard graph data
+export interface ProviderFetchDashboardGraphDataResponse {
+appointmentsOvertimeChartData: Array<{
+    date: string;
+    completed: number;
+    missed: number;
+    cancelled: number;
+  }>;
 
+  peakBookingHoursChartData: Array<{
+    date: string;
+    hour: string;
+    bookings: number;
+  }>;
+
+  appointmentModeChartData: Array<{
+    date: string;
+    online: number;
+    offline: number;
+  }>;
+
+  completionBreakdownChartData: Array<{
+    status: 'completed' | 'missed' | 'cancelled' | 'rejected';
+    value: number;
+  }>;
+
+  newVsReturningUsersChartData: Array<{
+    date: string;
+    newUsers: number;
+    returningUsers: number;
+  }>;
+
+  topBookingDaysChartData: Array<{
+    day: string;
+    count: number;
+  }>;
+}

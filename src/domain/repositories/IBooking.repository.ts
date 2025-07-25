@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 import { Booking } from "../entities/booking.entity";
 import { ApiResponse, FetchBookingsRequest, FetchBookingsResponse } from "../../infrastructure/dtos/common.dto";
 import { Provider } from "../entities/provider.entity";
-import { ProviderFetchUsersForChatSideBar } from "../../infrastructure/dtos/provider.dto";
+import { ProviderFetchDashboardGraphDataResponse, ProviderFetchUsersForChatSideBar } from "../../infrastructure/dtos/provider.dto";
 import { User } from "../entities/user.entity";
 import { UserFetchProvidersForChatSidebarResponse } from "../../infrastructure/dtos/user.dto";
 
@@ -40,4 +40,6 @@ export interface IBookingRepository {
     findProvidersforChatSideBar(userId: User["_id"]): Promise<UserFetchProvidersForChatSidebarResponse>;
 
     findBookingStatsDataForDashboard(providerId: Provider["_id"]): Promise<BookingStatsResult>;
+
+    findBookingGraphDataForDashboard(providerId: Provider["_id"]): Promise<ProviderFetchDashboardGraphDataResponse>;
 }

@@ -47,6 +47,7 @@ router.get('/getBookingAppointments', authMiddleware, providerBookingController.
 router.get('/getUsersForCahtSidebar', authMiddleware, providerUserController.fetchUsersForChatSideBar);
 
 router.get('/getDashboardStats', authMiddleware, providerDashboardController.getDashboardStats);
+router.get('/getDashboardGraphData', authMiddleware, providerDashboardController.getDashboardGraphData);
 
 
 export default router;  
