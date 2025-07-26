@@ -9,9 +9,6 @@ export type UpdateForCancelBookingRefundReqProps = Pick<Payment, "_id" | "transa
 export interface PaymentStatsDashboardResult {
   totalSubscriptionPaidAmount: { amount: number }[];
   totalEarnings: { amount: number }[];
-  totalEarningsThroughStripe: { amount: number }[];
-  totalEarningsThroughRazorpay: { amount: number }[];
-  totalEarningsThroughPaypal: { amount: number }[];
   todaysEarnings: { amount: number }[];
   totalPayoutsMade: { amount: number }[];
   pendingPayout: { amount: number }[];

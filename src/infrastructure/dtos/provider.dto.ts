@@ -156,15 +156,12 @@ export interface ProviderFetchDashboardStatsDataResponse {
 
     totalSubscriptionPaidAmount: number;
     totalEarnings: number;
-    totalEarningsThroughStripe: number;
-    totalEarningsThroughRazorpay: number;
-    totalEarningsThroughPaypal: number;
     todaysEarnings: number;
     totalPayoutsMade: number;
     pendingPayout: number;
 }
 export type BookingStatsData = Pick<ProviderFetchDashboardStatsDataResponse, "totalAppointments" | "completedAppointments" | "missedAppointments" | "cancelledAppointmentsByUser" | "rejectedAppointmentsByProvider" | "todaysAppointments">;
-export type PaymentStatsData = Pick<ProviderFetchDashboardStatsDataResponse, "totalSubscriptionPaidAmount" | "totalEarnings" | "totalEarningsThroughStripe" | "totalEarningsThroughRazorpay" | "totalEarningsThroughPaypal" | "todaysEarnings" | "todaysEarnings" | "totalPayoutsMade" | "pendingPayout">;
+export type PaymentStatsData = Pick<ProviderFetchDashboardStatsDataResponse, "totalSubscriptionPaidAmount" | "totalEarnings" | "todaysEarnings" | "todaysEarnings" | "totalPayoutsMade" | "pendingPayout">;
 
 
 // ************ used in providerDashboard.use-case  ************ \\

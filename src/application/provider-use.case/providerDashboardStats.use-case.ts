@@ -39,9 +39,6 @@ export class ProviderFetchDashboardStatsUseCase {
             const paymentStats: PaymentStatsData = {
                 totalSubscriptionPaidAmount: paymentStatsArray.totalSubscriptionPaidAmount[0]?.amount || 0,
                 totalEarnings: paymentStatsArray.totalEarnings[0]?.amount || 0,
-                totalEarningsThroughStripe: paymentStatsArray.totalEarningsThroughStripe[0]?.amount || 0,
-                totalEarningsThroughRazorpay: paymentStatsArray.totalEarningsThroughRazorpay[0]?.amount || 0,
-                totalEarningsThroughPaypal: paymentStatsArray.totalEarningsThroughPaypal[0]?.amount || 0,
                 todaysEarnings: paymentStatsArray.todaysEarnings[0]?.amount || 0,
                 totalPayoutsMade: paymentStatsArray.totalPayoutsMade[0]?.amount || 0,
                 pendingPayout: paymentStatsArray.pendingPayout[0]?.amount || 0,
@@ -59,9 +56,6 @@ export class ProviderFetchDashboardStatsUseCase {
     
                     totalSubscriptionPaidAmount: paymentStats.totalSubscriptionPaidAmount,
                     totalEarnings: paymentStats.totalEarnings,
-                    totalEarningsThroughStripe: paymentStats.totalEarningsThroughStripe,
-                    totalEarningsThroughRazorpay:paymentStats.totalEarningsThroughRazorpay,
-                    totalEarningsThroughPaypal: paymentStats.totalEarningsThroughPaypal,
                     todaysEarnings: paymentStats.todaysEarnings,
                     totalPayoutsMade: paymentStats.totalPayoutsMade,
                     pendingPayout: paymentStats.pendingPayout,

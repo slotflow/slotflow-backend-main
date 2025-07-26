@@ -157,34 +157,6 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                                 }
                             }
                         ],
-                        totalEarningsThroughRazorpay: [
-                            {
-                                $match: {
-                                    paymentFor: PaymentFor.AppointmentBooking,
-                                    paymentGateway: PaymentGateway.Razorpay,
-                                }
-                            },
-                            {
-                                $group: {
-                                    _id: null,
-                                    amount: { $sum: "$totalAmount" },
-                                }
-                            }
-                        ],
-                        totalEarningsThroughPaypal: [
-                            {
-                                $match: {
-                                    paymentFor: PaymentFor.AppointmentBooking,
-                                    paymentGateway: PaymentGateway.Paypal,
-                                }
-                            },
-                            {
-                                $group: {
-                                    _id: null,
-                                    amount: { $sum: "$totalAmount" },
-                                }
-                            }
-                        ],
                         todaysEarnings: [
                             {
                                 $match: {
