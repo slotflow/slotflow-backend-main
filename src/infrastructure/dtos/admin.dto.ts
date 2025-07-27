@@ -184,6 +184,83 @@ export type AdminChangePlanIsBlockedStatusRequest = {
 
 
 
+// **** used in adminDashboard.use-case **** \\
+// used as the return type of the admin fetch dashboard user stats data
+export interface AdminFetchDashboardUserStatsDataResponse {
+    totalUsers: number;
+    emailVerifiedUsers: number;
+    blockedUsers: number;
+}
+
+// used as the return type of the admin fetch dashboard provider stats data
+export interface AdminFetchDashboardProviderStatsDataResponse {
+    totalProviders: number;
+    emailVerifiedProviders: number;
+    adminVerifiedProviders: number;
+    blockedProviders: number;
+    addressAddedProviders: number;
+    serviceAddedProviders: number;
+    availabilityAddedProviders: number;
+}
+
+// used as the return type of the admin fetch dashboard subscription stats data
+export interface AdminFetchDashboardSubscriptionStatsDataResponse {
+    activeSubscriptions: number;
+    expiredSubscriptions: number;
+    notSubscribedProviders: number;
+    
+    subscriptionsByFreePlan: number;
+    subscriptionsByStarterPlan: number;
+    subscriptionsByProfessionalPlan: number;
+    subscriptionsByEnterprisePlan: number;
+}
+
+// used as the return type of the admin fetch dashboard revenue stats data
+export interface AdminFetchDashboardRevenueStatsDataResponse {
+    totalRevenue: number;
+    totalRevenueViaSubscriptions: number;
+    revenueByStarterPlan: number;
+    revenueByProfessionalPlan: number;
+    revenueByEnterprisePlan: number;
+    totalRevenueViaAppointments: number;
+}
+
+// used as the return type of the admin fetch dashboard payment stats data
+export interface AdminFetchDashboardPaymentStatsDataResponse {
+    totalRefundsIssued: number;
+    totalFailedPayments: number;
+    
+    revenueByStripe: number;
+    revenueByRazorpay: number;
+    revenueByPaypal: number;
+    
+    totalPayoutsToProviders: number;
+}
+
+// used as the return type of the admin fetch dashboard appointments stats data
+export interface AdminFetchDashboardAppointmentStatsDataResponse {
+    totalAppointments: number;
+    completedAppointments: number;
+    cancelledAppointments: number;
+    missedAppointments: number;
+    rejectedAppointments: number;
+}
+
+// used as the return type of the admin fetch dashboard todays stats data
+export interface AdminFetchDashboardTodayStatsDataResponse {
+  newUsers: number;
+  newProviders: number;
+
+  todaysTotalRevenue: number;
+  todaysTotalPayouts: number;
+
+  todaysAppointments: number;
+  todaysCancelledAppointments: number;
+}
+
+
+
+
 
 
 

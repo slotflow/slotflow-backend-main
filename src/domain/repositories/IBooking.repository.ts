@@ -1,25 +1,12 @@
 import { Types } from "mongoose";
-import { Booking } from "../entities/booking.entity";
-import { ApiResponse, FetchBookingsRequest, FetchBookingsResponse } from "../../infrastructure/dtos/common.dto";
-import { Provider } from "../entities/provider.entity";
-import { ProviderFetchDashboardGraphDataResponse, ProviderFetchUsersForChatSideBar } from "../../infrastructure/dtos/provider.dto";
 import { User } from "../entities/user.entity";
+import { Booking } from "../entities/booking.entity";
+import { Provider } from "../entities/provider.entity";
 import { UserFetchProvidersForChatSidebarResponse } from "../../infrastructure/dtos/user.dto";
+import { ApiResponse, FetchBookingsRequest, FetchBookingsResponse } from "../../infrastructure/dtos/common.dto";
+import { ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardGraphDataResponse, ProviderFetchUsersForChatSideBar } from "../../infrastructure/dtos/provider.dto";
 
 export type CreateBookingPayloadProps = Pick<Booking, "serviceProviderId" | "userId" | "appointmentDate" | "appointmentTime" | "appointmentMode" | "appointmentStatus" | "slotId" | "paymentId">;
-
-export interface BookingStatsFacetCount {
-  count: number;
-}
-
-export interface BookingStatsResult {
-  totalAppointments: BookingStatsFacetCount[];
-  completedAppointments: BookingStatsFacetCount[];
-  missedAppointments: BookingStatsFacetCount[];
-  cancelledAppointmentsByUser: BookingStatsFacetCount[];
-  rejectedAppointmentsByProvider: BookingStatsFacetCount[];
-  todaysAppointments: BookingStatsFacetCount[];
-}
 
 export interface IBookingRepository {
 
@@ -39,7 +26,7 @@ export interface IBookingRepository {
     
     findProvidersforChatSideBar(userId: User["_id"]): Promise<UserFetchProvidersForChatSidebarResponse>;
 
-    findBookingStatsDataForDashboard(providerId: Provider["_id"]): Promise<BookingStatsResult>;
+    findBookingStatsDataForDashboard(providerId: Provider["_id"]): Promise<ProviderFetchDashboardBookingStatsDataResponse>;
 
     findBookingGraphDataForDashboard(providerId: Provider["_id"]): Promise<ProviderFetchDashboardGraphDataResponse>;
 }

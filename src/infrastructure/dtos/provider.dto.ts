@@ -146,22 +146,23 @@ export type ProviderFetchUsersForChatSideBar = Array<Pick<User, "_id" | "usernam
 
 // ************ used in providerDashboard.use-case  ************ \\
 // Used as the return interface for the provider fetch dashboard data
-export interface ProviderFetchDashboardStatsDataResponse {
+export interface ProviderFetchDashboardStatsDataResponse extends ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardPaymentStatsDataResponse {}
+export interface ProviderFetchDashboardBookingStatsDataResponse {
     totalAppointments: number;
     completedAppointments: number;
     missedAppointments: number;
     cancelledAppointmentsByUser: number;
     rejectedAppointmentsByProvider: number;
     todaysAppointments: number;
-
-    totalSubscriptionPaidAmount: number;
-    totalEarnings: number;
-    todaysEarnings: number;
-    totalPayoutsMade: number;
-    pendingPayout: number;
 }
-export type BookingStatsData = Pick<ProviderFetchDashboardStatsDataResponse, "totalAppointments" | "completedAppointments" | "missedAppointments" | "cancelledAppointmentsByUser" | "rejectedAppointmentsByProvider" | "todaysAppointments">;
-export type PaymentStatsData = Pick<ProviderFetchDashboardStatsDataResponse, "totalSubscriptionPaidAmount" | "totalEarnings" | "todaysEarnings" | "todaysEarnings" | "totalPayoutsMade" | "pendingPayout">;
+export interface ProviderFetchDashboardPaymentStatsDataResponse {
+    totalAppointments: number;
+    completedAppointments: number;
+    missedAppointments: number;
+    cancelledAppointmentsByUser: number;
+    rejectedAppointmentsByProvider: number;
+    todaysAppointments: number;
+}
 
 
 // ************ used in providerDashboard.use-case  ************ \\

@@ -24,7 +24,6 @@ export class ProviderDashboardController {
         try{
             const providerId = req.user.userOrProviderId;
             const result = await this.providerFetchDashboardStatsUseCase.execute(new Types.ObjectId(providerId));
-            console.log("provider get dashboard stats result : ",result.data);
             res.status(200).json(result);
         } catch(error) {
             console.log("provider get dashboard stats error : ",error);

@@ -2,18 +2,11 @@ import { Types } from "mongoose";
 import { Payment } from "../entities/payment.entity";
 import { ApiResponse, FetchPaymentResponse, FetchPaymentsRequest } from "../../infrastructure/dtos/common.dto";
 import { Provider } from "../entities/provider.entity";
+import { ProviderFetchDashboardPaymentStatsDataResponse } from "../../infrastructure/dtos/provider.dto";
 
 export type CreatePaymentForSubscriptionProps = Pick<Payment, "transactionId" | "paymentStatus" | "paymentMethod" | "paymentGateway" | "paymentFor" | "initialAmount" | "discountAmount" | "providerId" | "totalAmount" >;
 export type CreatePaymentForBookingProps = Pick<Payment, "transactionId" | "paymentStatus" | "paymentMethod" | "paymentGateway" | "paymentFor" | "initialAmount" | "discountAmount" | "userId" | "totalAmount" | "providerId" >;
 export type UpdateForCancelBookingRefundReqProps = Pick<Payment, "_id" | "transactionId" | "paymentStatus" | "paymentMethod" | "paymentGateway" | "paymentFor" | "initialAmount" | "discountAmount" | "userId" | "totalAmount" | "refundAmount" | "chargeId" | "refundAt" | "refundId" | "refundReason" | 'refundStatus'>;
-export interface PaymentStatsDashboardResult {
-  totalSubscriptionPaidAmount: { amount: number }[];
-  totalEarnings: { amount: number }[];
-  todaysEarnings: { amount: number }[];
-  totalPayoutsMade: { amount: number }[];
-  pendingPayout: { amount: number }[];
-}
-
 
 export interface IPaymentRepository {
 
@@ -27,6 +20,6 @@ export interface IPaymentRepository {
 
     updateForCancelBookingRefund(payment: UpdateForCancelBookingRefundReqProps, options?: { session?: any }): Promise<Payment | null>;
 
-    findPaymentStatsDataForDashboard(providerId: Provider["_id"]): Promise<PaymentStatsDashboardResult>;
+    findPaymentStatsDataForDashboard(providerId: Provider["_id"]): Promise<ProviderFetchDashboardPaymentStatsDataResponse>;
 
 }

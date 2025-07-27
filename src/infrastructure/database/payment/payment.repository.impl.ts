@@ -1,10 +1,11 @@
 import { Types } from "mongoose";
 import { IPayment, PaymentModel } from "./payment.model";
 import { Provider } from "../../../domain/entities/provider.entity";
+import { Payment, PaymentFor } from "../../../domain/entities/payment.entity";
 import { endOfDay, startOfMonth, startOfToday, startOfTomorrow } from "date-fns";
-import { Payment, PaymentFor, PaymentGateway } from "../../../domain/entities/payment.entity";
+import { ProviderFetchDashboardPaymentStatsDataResponse } from "../../dtos/provider.dto";
 import { ApiResponse, FetchPaymentResponse, FetchPaymentsRequest, userIdAndProviderId } from "../../dtos/common.dto";
-import { CreatePaymentForBookingProps, CreatePaymentForSubscriptionProps, IPaymentRepository, PaymentStatsDashboardResult, UpdateForCancelBookingRefundReqProps } from "../../../domain/repositories/IPayment.repository";
+import { CreatePaymentForBookingProps, CreatePaymentForSubscriptionProps, IPaymentRepository, UpdateForCancelBookingRefundReqProps } from "../../../domain/repositories/IPayment.repository";
 
 export class PaymentRepositoryImpl implements IPaymentRepository {
     private mapToEntity(payment: IPayment): Payment {
@@ -104,7 +105,7 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
         }
     }
 
-    async findPaymentStatsDataForDashboard(providerId: Provider["_id"]): Promise<PaymentStatsDashboardResult> {
+    async findPaymentStatsDataForDashboard(providerId: Provider["_id"]): Promise<ProviderFetchDashboardPaymentStatsDataResponse> {
         try {
             const today = startOfToday();
             const tomorrow = startOfTomorrow();
@@ -134,20 +135,6 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                             {
                                 $match: {
                                     PaymentFor: PaymentFor.AppointmentBooking
-                                }
-                            },
-                            {
-                                $group: {
-                                    _id: null,
-                                    amount: { $sum: "$totalAmount" },
-                                }
-                            }
-                        ],
-                        totalEarningsThroughStripe: [
-                            {
-                                $match: {
-                                    paymentFor: PaymentFor.AppointmentBooking,
-                                    paymentGateway: PaymentGateway.Stripe,
                                 }
                             },
                             {
@@ -207,9 +194,18 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                             },
                         ]
                     }
+                },
+                {
+                    $project: {
+                        totalSubscriptionPaidAmount: { $ifNull: [{ $arrayElemAt: ["$totalSubscriptionPaidAmount.amount", 0] }, 0] },
+                        totalEarnings: { $ifNull: [{ $arrayElemAt: ["$totalEarnings.amount", 0] }, 0] },
+                        todaysEarnings: { $ifNull: [{ $arrayElemAt: ["$todaysEarnings.amount", 0] }, 0] },
+                        totalPayoutsMade: { $ifNull: [{ $arrayElemAt: ["$totalPayoutsMade.amount", 0] }, 0] },
+                        pendingPayout: { $ifNull: [{ $arrayElemAt: ["$pendingPayout.amount", 0] }, 0] },
+                    }
                 }
             ]);
-            return result[0] as PaymentStatsDashboardResult;
+            return result[0];
         } catch {
             throw new Error("Dashboard payment stats fetching error ")
         }

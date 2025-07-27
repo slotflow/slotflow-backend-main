@@ -1,14 +1,14 @@
-import { Types } from "mongoose";
-import { BookingModel, IBooking } from "./booking.model";
-import { Booking } from "../../../domain/entities/booking.entity";
-import { FetchBookingsRequest, ApiResponse, FetchBookingsResponse, userIdAndServiceProviderId } from "../../dtos/common.dto";
-import { BookingStatsResult, CreateBookingPayloadProps, IBookingRepository } from "../../../domain/repositories/IBooking.repository";
-import { Provider } from "../../../domain/entities/provider.entity";
-import { ProviderFetchDashboardGraphDataResponse, ProviderFetchUsersForChatSideBar } from "../../dtos/provider.dto";
 import dayjs from "dayjs";
-import { User } from "../../../domain/entities/user.entity";
-import { UserFetchProvidersForChatSidebarResponse } from "../../dtos/user.dto";
+import { Types } from "mongoose";
 import { startOfToday, startOfTomorrow } from "date-fns";
+import { BookingModel, IBooking } from "./booking.model";
+import { User } from "../../../domain/entities/user.entity";
+import { Booking } from "../../../domain/entities/booking.entity";
+import { Provider } from "../../../domain/entities/provider.entity";
+import { UserFetchProvidersForChatSidebarResponse } from "../../dtos/user.dto";
+import { CreateBookingPayloadProps, IBookingRepository } from "../../../domain/repositories/IBooking.repository";
+import { FetchBookingsRequest, ApiResponse, FetchBookingsResponse, userIdAndServiceProviderId } from "../../dtos/common.dto";
+import { ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardGraphDataResponse, ProviderFetchUsersForChatSideBar } from "../../dtos/provider.dto";
 
 export class BookingRepositoryImpl implements IBookingRepository {
     private mapToEntity(booking: IBooking): Booking {
@@ -215,7 +215,7 @@ export class BookingRepositoryImpl implements IBookingRepository {
         }
     }
 
-    async findBookingStatsDataForDashboard(providerId: Provider["_id"]): Promise<BookingStatsResult> {
+    async findBookingStatsDataForDashboard(providerId: Provider["_id"]): Promise<ProviderFetchDashboardBookingStatsDataResponse> {
         try {
             const today = startOfToday();
             const tomorrow = startOfTomorrow();
@@ -253,15 +253,25 @@ export class BookingRepositoryImpl implements IBookingRepository {
                             { $count: "count" }
                         ]
                     }
+                },
+                {
+                    $project: {
+                        totalAppointments: { $ifNull: [{ $arrayElemAt: ["$totalAppointments.count", 0] }, 0] },
+                        completedAppointments: { $ifNull: [{ $arrayElemAt: ["$completedAppointments.count", 0] }, 0] },
+                        missedAppointments: { $ifNull: [{ $arrayElemAt: ["$missedAppointments.count", 0] }, 0] },
+                        cancelledAppointmentsByUser: { $ifNull: [{ $arrayElemAt: ["$cancelledAppointmentsByUser.count", 0] }, 0] },
+                        rejectedAppointmentsByProvider: { $ifNull: [{ $arrayElemAt: ["$rejectedAppointmentsByProvider.count", 0] }, 0] },
+                        todaysAppointments: { $ifNull: [{ $arrayElemAt: ["$todaysAppointments.count", 0] }, 0] },
+                    }
                 }
             ]);
-            return result[0] as BookingStatsResult;
+            return result[0];
         } catch {
             throw new Error("Dashboard stats fetching failed");
         }
     }
 
-    async findBookingGraphDataForDashboard(providerId: Provider["_id"]):Promise<ProviderFetchDashboardGraphDataResponse> {
+    async findBookingGraphDataForDashboard(providerId: Provider["_id"]): Promise<ProviderFetchDashboardGraphDataResponse> {
         try {
 
             const startDate = new Date();

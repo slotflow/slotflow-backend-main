@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 import { IUser, UserModel } from "./user.model";
 import { User } from "../../../domain/entities/user.entity";
 import { CreateUserProps, IUserRepository } from "../../../domain/repositories/IUser.repository";
-import { AdminFetchAllUsers } from "../../dtos/admin.dto";
+import { AdminFetchAllUsers, AdminFetchDashboardUserStatsDataResponse } from "../../dtos/admin.dto";
 import { ApiPaginationRequest, ApiResponse } from "../../dtos/common.dto";
 
 export class UserRepositoryImpl implements IUserRepository {
@@ -92,6 +92,38 @@ export class UserRepositoryImpl implements IUserRepository {
             return user ? this.mapToEntity(user) : null;
         } catch (error) {
             throw new Error("User not found.");
+        }
+    }
+
+    async findUsersStatsData(): Promise<AdminFetchDashboardUserStatsDataResponse> {
+        try {
+            const userStatsData = await UserModel.aggregate([
+                {
+                    $facet: {
+                        totalUsers: [
+                            { $count: "count" }
+                        ],
+                        emailVerifiedUsers: [
+                            { $match: { isEmailVerified: true } },
+                            { $count: "count" }
+                        ],
+                        blockedUsers: [
+                            { $match: { isBlocked: true } },
+                            { $count: "count" }
+                        ]
+                    }
+                },
+                {
+                    $project: {
+                        totalUsers: { $ifNull: [{ $arrayElemAt: ["$totalUsers.count", 0] }, 0] },
+                        emailVerifiedUsers: { $ifNull: [{ $arrayElemAt: ["$emailVerifiedUsers.count", 0] }, 0] },
+                        blockedUsers: { $ifNull: [{ $arrayElemAt: ["$blockedUsers.count", 0] }, 0] }
+                    }
+                }
+            ]);
+            return userStatsData[0];
+        } catch (error) {
+            throw new Error("User stats data fetching failed");
         }
     }
 }

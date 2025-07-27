@@ -6,6 +6,7 @@ import { adminServiceController } from "./adminService.Controller";
 import { adminPaymentController } from "./adminPayment.Controller";
 import { adminProviderController } from "./adminProvider.controller";
 import { adminSubscriptionController } from "./adminSubscription.Controller";
+import { adminDashboardController } from "./adminDashboard.controller";
 
 const router = Router();
 
@@ -35,4 +36,7 @@ router.get('/getSubscriptions', authMiddleware, adminSubscriptionController.getA
 router.get('/getSubscription/:subscriptionId', authMiddleware, adminSubscriptionController.getSubscriptionDetails);
 
 router.get('/getPayments', authMiddleware, adminPaymentController.getAllPayments);
+
+router.get('/getDashboardTodayStats', authMiddleware, adminDashboardController.fetchUserStats);
+
 export default router;
