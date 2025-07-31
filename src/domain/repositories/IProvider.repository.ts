@@ -17,4 +17,7 @@ export interface IProviderRepository {
     findAllProviders({page,limit}: ApiPaginationRequest): Promise<ApiResponse<AdiminFetchAllProviders>>;
     
     findProviderById(providerId: Types.ObjectId): Promise<Provider | null>;
+
+    findProvidersCount(today?: { today : boolean }): Promise<number>;
+
 }

@@ -38,5 +38,6 @@ router.get('/getSubscription/:subscriptionId', authMiddleware, adminSubscription
 router.get('/getPayments', authMiddleware, adminPaymentController.getAllPayments);
 
 router.get('/getDashboardTodayStats', authMiddleware, adminDashboardController.fetchUserStats);
+router.get('/getDashboardUserStats', authMiddleware, adminDashboardController.fetchUserStats);
 
 export default router;

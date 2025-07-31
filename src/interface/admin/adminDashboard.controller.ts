@@ -11,6 +11,16 @@ export class AdminDashboardController {
         private adminFetchDashboardUserStatsDataUseCase: AdminFetchDashboardUserStatsDataUseCase,
     ) {
         this.fetchUserStats = this.fetchUserStats.bind(this);
+        this.fetchTodaysData = this.fetchTodaysData.bind(this);
+    }
+
+    async fetchTodaysData(req: Request, res: Response) {
+        try {
+            const result = await this.adminFetchDashboardUserStatsDataUseCase.execute();
+            res.status(200).json(result);
+        }catch(error) {
+            HandleError.handle(error, res);
+        }
     }
 
     async fetchUserStats(req: Request, res: Response) {

@@ -20,4 +20,6 @@ export interface IUserRepository {
   findUserById(userId: Types.ObjectId): Promise<User | null>;
   
   findUsersStatsData(): Promise<AdminFetchDashboardUserStatsDataResponse>;
+
+  findUsersCount(today?: { today : boolean }): Promise<number>;
 }

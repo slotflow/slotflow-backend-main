@@ -4,6 +4,7 @@ import { User } from "../../../domain/entities/user.entity";
 import { CreateUserProps, IUserRepository } from "../../../domain/repositories/IUser.repository";
 import { AdminFetchAllUsers, AdminFetchDashboardUserStatsDataResponse } from "../../dtos/admin.dto";
 import { ApiPaginationRequest, ApiResponse } from "../../dtos/common.dto";
+import dayjs from "dayjs";
 
 export class UserRepositoryImpl implements IUserRepository {
     private mapToEntity(user: IUser): User {
@@ -124,6 +125,21 @@ export class UserRepositoryImpl implements IUserRepository {
             return userStatsData[0];
         } catch (error) {
             throw new Error("User stats data fetching failed");
+        }
+    }
+
+    async findUsersCount(today?: { today : boolean }): Promise<number> {
+        const startOfDay = dayjs().startOf('day').toDate();
+        const endOfDay = dayjs().endOf('day').toDate();
+        try {
+            const count = today
+                ? await UserModel.countDocuments({
+                    createdAt: { $gte: startOfDay, $lte: endOfDay }
+                })
+                : await UserModel.estimatedDocumentCount();
+            return count;
+        } catch (error) {
+            throw new Error("Users count fetching failed");
         }
     }
 }

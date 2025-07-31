@@ -22,4 +22,6 @@ export interface IPaymentRepository {
 
     findPaymentStatsDataForDashboard(providerId: Provider["_id"]): Promise<ProviderFetchDashboardPaymentStatsDataResponse>;
 
+    
+
 }
