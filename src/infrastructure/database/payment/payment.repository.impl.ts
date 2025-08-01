@@ -210,4 +210,24 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
             throw new Error("Dashboard payment stats fetching error ")
         }
     }
+
+    async findTodayPaymentStatsForAdminDashboard(): Promise<{}> {
+        try {
+            const result = await PaymentModel.aggregate([
+                {
+                    $facet : {
+                        todaysTotalRevenue : [
+                            { $match : { paymentStatus : "Paid",  }}
+                        ],
+                        todaysTotalPayouts : [
+
+                        ]
+                    }
+                }
+            ])
+            return {};
+        } catch {
+            throw new Error("Admin dashboard today payment stats fetching failed")
+        }
+    }
 }

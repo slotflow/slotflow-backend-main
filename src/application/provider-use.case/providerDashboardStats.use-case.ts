@@ -1,9 +1,9 @@
 import { Provider } from "../../domain/entities/provider.entity";
 import { ApiResponse } from "../../infrastructure/dtos/common.dto";
 import { Validator } from "../../infrastructure/validator/validator";
+import { ProviderFetchDashboardStatsDataResponse } from "../../infrastructure/dtos/provider.dto";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
-import { ProviderFetchDashboardStatsDataResponse } from "../../infrastructure/dtos/provider.dto";
 
 export class ProviderFetchDashboardStatsUseCase {
     constructor(
