@@ -106,16 +106,18 @@ export class ProviderRepositoryImpl implements IProviderRepository {
         }
     }
 
-    async findProvidersCount(today?: { today: boolean }): Promise<number> {
-        const startOfDay = dayjs().startOf('day').toDate();
-        const endOfDay = dayjs().endOf('day').toDate();
+    async findProvidersCount(params?: { today: boolean }): Promise<number> {
         try {
-            const count = today
-                ? await ProviderModel.countDocuments({
+            if (params?.today) {
+                const startOfDay = dayjs().startOf('day').toDate();
+                const endOfDay = dayjs().endOf('day').toDate();
+
+                return await ProviderModel.countDocuments({
                     createdAt: { $gte: startOfDay, $lte: endOfDay }
-                })
-                : await ProviderModel.estimatedDocumentCount();
-            return count;
+                });
+            } else {
+                return await ProviderModel.estimatedDocumentCount();
+            }
         } catch (error) {
             throw new Error("Providers count fetching failed");
         }

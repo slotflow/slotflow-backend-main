@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 import { IPayment, PaymentModel } from "./payment.model";
 import { Provider } from "../../../domain/entities/provider.entity";
 import { Payment, PaymentFor } from "../../../domain/entities/payment.entity";
-import { endOfDay, startOfMonth, startOfToday, startOfTomorrow } from "date-fns";
+import { endOfDay, startOfDay, startOfMonth, startOfToday, startOfTomorrow } from "date-fns";
 import { ProviderFetchDashboardPaymentStatsDataResponse } from "../../dtos/provider.dto";
 import { ApiResponse, FetchPaymentResponse, FetchPaymentsRequest, userIdAndProviderId } from "../../dtos/common.dto";
 import { CreatePaymentForBookingProps, CreatePaymentForSubscriptionProps, IPaymentRepository, UpdateForCancelBookingRefundReqProps } from "../../../domain/repositories/IPayment.repository";
@@ -213,19 +213,71 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
 
     async findTodayPaymentStatsForAdminDashboard(): Promise<{}> {
         try {
+
+            const startOfToday = startOfDay(new Date());
+            const endOfToday = endOfDay(new Date());
+
             const result = await PaymentModel.aggregate([
                 {
-                    $facet : {
-                        todaysTotalRevenue : [
-                            { $match : { paymentStatus : "Paid",  }}
+                    $match: {
+                        createdAt: { $gte: startOfToday, $lte: endOfToday },
+                    },
+                },
+                {
+                    $facet: {
+                        todaysTotalRevenue: [
+                            {
+                                $match : { $nte : { paymentFor : PaymentFor.ProviderPayout } }
+                            },
+                            {
+                                $group: {
+                                    _id: null,
+                                    totalPaid: {
+                                        $sum: {
+                                            $cond: [{ $eq: ["$paymentStatus", "Paid"] }, "$totalAmount", 0],
+                                        },
+                                    },
+                                    totalRefunded: {
+                                        $sum: {
+                                            $cond: [{ $eq: ["$paymentStatus", "Refunded"] }, "$refundAmount", 0],
+                                        },
+                                    },
+                                },
+                            },
+                            {
+                                $project: {
+                                    _id: 0,
+                                    amount: { $subtract: ["$totalPaid", "$totalRefunded"] },
+                                },
+                            },
                         ],
-                        todaysTotalPayouts : [
-
+                        todaysTotalPayouts: [
+                            {
+                                $match: { payoutStatus: "Paid", paymentFor: PaymentFor.ProviderPayout },
+                            },
+                            {
+                                $group: {
+                                    _id: null,
+                                    amount: { $sum: "$totalAmount" },
+                                },
+                            },
+                            {
+                                $project: {
+                                    _id: 0,
+                                    amount: 1,
+                                },
+                            },
                         ]
+                    }
+                },
+                {
+                    $project: {
+                        todaysTotalRevenue: { $ifNull: [{ $arrayElemAt: ["$todaysTotalRevenue.amount", 0] }, 0] },
+                        todaysTotalPayouts: { $ifNull: [{ $arrayElemAt: ["$todaysTotalPayouts.amount", 0] }, 0] },
                     }
                 }
             ])
-            return {};
+            return result[0];
         } catch {
             throw new Error("Admin dashboard today payment stats fetching failed")
         }

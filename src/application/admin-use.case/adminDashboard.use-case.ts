@@ -18,14 +18,26 @@ export class AdminFetchDashboardTodaysDataUseCase {
             const [
                 usersData,
                 providersData,
-                // paymentData,
-                // appointmentData
+                paymentData,
+                appointmentData
             ] = await Promise.all([
-                this.userRepositoryImppl.findUsersCount({ today : true }),
-                this.providerRepositoryImpl.findProvidersCount({ today : true }),
-                // this.paymentRepositoryImpl.
-            ])
-            return { success: true, message: "Fetched successfully" }
+                this.userRepositoryImppl.findUsersCount({ today: true }),
+                this.providerRepositoryImpl.findProvidersCount({ today: true }),
+                this.paymentRepositoryImpl.findTodayPaymentStatsForAdminDashboard(),
+                this.bookingRepositoryImpl.findTodayBookingStatsForAdminDashboard()
+            ]);
+
+            const responseData: AdminFetchDashboardTodayStatsDataResponse = {
+                newUsers: usersData,
+                newProviders: providersData,
+                todaysTotalRevenue: paymentData.todaysTotalRevenue,
+                todaysTotalPayouts: paymentData.todaysTotalPayouts,
+                todaysAppointments: appointmentData.todaysBookedAppointments,
+                todaysCancelledAppointments: appointmentData.todaysCancelledAppointments,
+                todaysCompletedAppointments: appointmentData.todaysCompletedAppointments
+            };
+
+            return { success: true, message: "Fetched successfully", data: responseData }
         } catch (error) {
             console.log("Admin dahsboard todays data fetching error");
             throw new Error("Admin dashboard todays data fetching error");

@@ -128,16 +128,18 @@ export class UserRepositoryImpl implements IUserRepository {
         }
     }
 
-    async findUsersCount(today?: { today : boolean }): Promise<number> {
-        const startOfDay = dayjs().startOf('day').toDate();
-        const endOfDay = dayjs().endOf('day').toDate();
+    async findUsersCount(params?: { today: boolean }): Promise<number> {
         try {
-            const count = today
-                ? await UserModel.countDocuments({
+            if (params?.today) {
+                const startOfDay = dayjs().startOf('day').toDate();
+                const endOfDay = dayjs().endOf('day').toDate();
+
+                return await UserModel.countDocuments({
                     createdAt: { $gte: startOfDay, $lte: endOfDay }
-                })
-                : await UserModel.estimatedDocumentCount();
-            return count;
+                });
+            } else {
+                return await UserModel.estimatedDocumentCount();
+            }
         } catch (error) {
             throw new Error("Users count fetching failed");
         }

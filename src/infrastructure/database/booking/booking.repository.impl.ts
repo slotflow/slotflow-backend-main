@@ -1,9 +1,9 @@
 import dayjs from "dayjs";
 import { Types } from "mongoose";
-import { startOfToday, startOfTomorrow } from "date-fns";
+import { endOfDay, startOfDay, startOfToday, startOfTomorrow } from "date-fns";
 import { BookingModel, IBooking } from "./booking.model";
 import { User } from "../../../domain/entities/user.entity";
-import { Booking } from "../../../domain/entities/booking.entity";
+import { AppointmentStatus, Booking } from "../../../domain/entities/booking.entity";
 import { Provider } from "../../../domain/entities/provider.entity";
 import { UserFetchProvidersForChatSidebarResponse } from "../../dtos/user.dto";
 import { CreateBookingPayloadProps, IBookingRepository } from "../../../domain/repositories/IBooking.repository";
@@ -455,6 +455,48 @@ export class BookingRepositoryImpl implements IBookingRepository {
             return result[0];
         } catch {
             throw new Error("Dashboard graph data fetching error");
+        }
+    }
+
+    async findTodayBookingStatsForAdminDashboard(): Promise<{}> {
+        try {
+
+            const startOfToday = startOfDay(new Date());
+            const endOfToday = endOfDay(new Date());
+
+            const result = await BookingModel.aggregate([
+                {
+                    $match: {
+                        createdAt: { $gte: startOfToday, $lte: endOfToday },
+                    },
+                },
+                {
+                    $facet: {
+                        todaysBookedAppointments: [
+                            { $match: { appointmentStatus: AppointmentStatus.Booked } },
+                            { $count: "count" }
+                        ],
+                        todaysCancelledAppointments: [
+                            { $match: { appointmentStatus: AppointmentStatus.Cancelled } },
+                            { $count: "count" }
+                        ],
+                        todaysCompletedAppointments: [
+                            { $match: { appointmentStatus: AppointmentStatus.Completed } },
+                            { $count: "count" }
+                        ],
+                    }
+                },
+                {
+                    $project: {
+                        todaysBookedAppointments: { $ifNull: [{ $arrayElemAt: ["$todaysBookedAppointments.count", 0] }, 0] },
+                        todaysCancelledAppointments: { $ifNull: [{ $arrayElemAt: ["$todaysCancelledAppointments.count", 0] }, 0] },
+                        todaysCompletedAppointments: { $ifNull: [{ $arrayElemAt: ["$todaysCompletedAppointments.count", 0] }, 0] },
+                    }
+                }
+            ])
+            return result[0];
+        } catch {
+            throw new Error("Admin dashboard today booking stats fetching failed")
         }
     }
 }

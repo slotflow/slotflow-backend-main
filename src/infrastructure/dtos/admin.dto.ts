@@ -256,6 +256,7 @@ export interface AdminFetchDashboardTodayStatsDataResponse {
 
   todaysAppointments: number;
   todaysCancelledAppointments: number;
+  todaysCompletedAppointments: number;
 }
 
 
