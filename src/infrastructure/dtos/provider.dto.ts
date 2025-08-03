@@ -146,7 +146,7 @@ export type ProviderFetchUsersForChatSideBar = Array<Pick<User, "_id" | "usernam
 
 // ************ used in providerDashboard.use-case  ************ \\
 // Used as the return interface for the provider fetch dashboard data
-export interface ProviderFetchDashboardStatsDataResponse extends ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardPaymentStatsDataResponse {}
+export interface ProviderFetchDashboardStatsDataResponse extends ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardPaymentStatsDataResponse { }
 export interface ProviderFetchDashboardBookingStatsDataResponse {
     totalAppointments: number;
     completedAppointments: number;
@@ -156,50 +156,49 @@ export interface ProviderFetchDashboardBookingStatsDataResponse {
     todaysAppointments: number;
 }
 export interface ProviderFetchDashboardPaymentStatsDataResponse {
-    totalAppointments: number;
-    completedAppointments: number;
-    missedAppointments: number;
-    cancelledAppointmentsByUser: number;
-    rejectedAppointmentsByProvider: number;
-    todaysAppointments: number;
+    totalSubscriptionPaidAmount: number;
+    totalEarnings: number;
+    todaysEarnings: number;
+    totalPayoutsMade: number;
+    pendingPayout: number;
 }
 
 
 // ************ used in providerDashboard.use-case  ************ \\
 // Used as the return interface for the provider fetch dashboard graph data
 export interface ProviderFetchDashboardGraphDataResponse {
-appointmentsOvertimeChartData: Array<{
-    date: string;
-    completed: number;
-    missed: number;
-    cancelled: number;
-  }>;
+    appointmentsOvertimeChartData: Array<{
+        date: string;
+        completed: number;
+        missed: number;
+        cancelled: number;
+    }>;
 
-  peakBookingHoursChartData: Array<{
-    date: string;
-    hour: string;
-    bookings: number;
-  }>;
+    peakBookingHoursChartData: Array<{
+        date: string;
+        hour: string;
+        bookings: number;
+    }>;
 
-  appointmentModeChartData: Array<{
-    date: string;
-    online: number;
-    offline: number;
-  }>;
+    appointmentModeChartData: Array<{
+        date: string;
+        online: number;
+        offline: number;
+    }>;
 
-  completionBreakdownChartData: Array<{
-    status: 'completed' | 'missed' | 'cancelled' | 'rejected';
-    value: number;
-  }>;
+    completionBreakdownChartData: Array<{
+        status: 'completed' | 'missed' | 'cancelled' | 'rejected';
+        value: number;
+    }>;
 
-  newVsReturningUsersChartData: Array<{
-    date: string;
-    newUsers: number;
-    returningUsers: number;
-  }>;
+    newVsReturningUsersChartData: Array<{
+        date: string;
+        newUsers: number;
+        returningUsers: number;
+    }>;
 
-  topBookingDaysChartData: Array<{
-    day: string;
-    count: number;
-  }>;
+    topBookingDaysChartData: Array<{
+        day: string;
+        count: number;
+    }>;
 }

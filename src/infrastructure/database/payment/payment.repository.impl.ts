@@ -5,7 +5,7 @@ import { Payment, PaymentFor } from "../../../domain/entities/payment.entity";
 import { endOfDay, startOfDay, startOfMonth, startOfToday, startOfTomorrow } from "date-fns";
 import { ProviderFetchDashboardPaymentStatsDataResponse } from "../../dtos/provider.dto";
 import { ApiResponse, FetchPaymentResponse, FetchPaymentsRequest, userIdAndProviderId } from "../../dtos/common.dto";
-import { CreatePaymentForBookingProps, CreatePaymentForSubscriptionProps, IPaymentRepository, UpdateForCancelBookingRefundReqProps } from "../../../domain/repositories/IPayment.repository";
+import { AdminFetchDashboardTodayPaymentStatsDataResponse, CreatePaymentForBookingProps, CreatePaymentForSubscriptionProps, fetchDatashboardStatsParams, IPaymentRepository, UpdateForCancelBookingRefundReqProps } from "../../../domain/repositories/IPayment.repository";
 
 export class PaymentRepositoryImpl implements IPaymentRepository {
     private mapToEntity(payment: IPayment): Payment {
@@ -280,6 +280,33 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
             return result[0];
         } catch {
             throw new Error("Admin dashboard today payment stats fetching failed")
+        }
+    }
+
+    async fetchPaymentDataForDashboardStats(params: fetchDatashboardStatsParams): Promise<ProviderFetchDashboardPaymentStatsDataResponse | AdminFetchDashboardTodayPaymentStatsDataResponse> {
+        try {
+            const providerId = params.providerId;
+            const today = params.today;
+            const fromDate = params.fromDate;
+            const toDate = params.toDate;
+
+            if(!providerId && today) { // admin today payment data
+
+            } else if(!providerId && !today) { // admin overall payment data
+
+            } else if(providerId && today) { // provider today payment data
+
+            } else { // provider overall data
+
+            }
+
+             const result = await PaymentModel.aggregate([
+
+             ]);
+             return result[0];
+            
+        } catch {
+            throw new Error("Payments dashboard data fetching failed");
         }
     }
 }
