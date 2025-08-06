@@ -227,7 +227,7 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                     $facet: {
                         todaysTotalRevenue: [
                             {
-                                $match : { $nte : { paymentFor : PaymentFor.ProviderPayout } }
+                                $match: { $nte: { paymentFor: PaymentFor.ProviderPayout } }
                             },
                             {
                                 $group: {
@@ -283,30 +283,212 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
         }
     }
 
-    async fetchPaymentDataForDashboardStats(params: fetchDatashboardStatsParams): Promise<ProviderFetchDashboardPaymentStatsDataResponse | AdminFetchDashboardTodayPaymentStatsDataResponse> {
-        try {
-            const providerId = params.providerId;
-            const today = params.today;
-            const fromDate = params.fromDate;
-            const toDate = params.toDate;
 
-            if(!providerId && today) { // admin today payment data
+    // async fetchPaymentDataForDashboardStats(params: fetchDatashboardStatsParams): Promise<ProviderFetchDashboardPaymentStatsDataResponse | AdminFetchDashboardTodayPaymentStatsDataResponse> {
+    //     try {
 
-            } else if(!providerId && !today) { // admin overall payment data
+    //         interface MatchStage {
+    //             createdAt?: {
+    //                 $gte?: Date;
+    //                 $lte?: Date;
+    //             };
+    //             providerId?: Types.ObjectId;
+    //         }
 
-            } else if(providerId && today) { // provider today payment data
+    //         const matchStage: MatchStage = {};
 
-            } else { // provider overall data
+    //         const providerId = params.providerId;
+    //         const today = params.today;
+    //         const fromDate = params.fromDate;
+    //         const toDate = params.toDate;
 
-            }
+    //         const startOfToday = startOfDay(new Date());
+    //         const endOfToday = endOfDay(new Date());
 
-             const result = await PaymentModel.aggregate([
+    //         if (fromDate && toDate) {
+    //             matchStage.createdAt = { $gte: fromDate, $lte: toDate };
+    //         } else if (today){
+    //             matchStage.createdAt = { $gte: startOfToday, $lte: endOfToday };
+    //         }
 
-             ]);
-             return result[0];
-            
-        } catch {
-            throw new Error("Payments dashboard data fetching failed");
-        }
-    }
+    //         if (providerId) {
+    //             matchStage.providerId = providerId;
+    //         }
+
+    //         if (!providerId && today) {
+    //             const result = await PaymentModel.aggregate([
+    //                 {
+    //                     $match: matchStage,
+    //                 },
+    //                 {
+    //                     $facet: {
+    //                         todaysTotalRevenue: [
+    //                             {
+    //                                 $match: { $nte: { paymentFor: PaymentFor.ProviderPayout } }
+    //                             },
+    //                             {
+    //                                 $group: {
+    //                                     _id: null,
+    //                                     totalPaid: {
+    //                                         $sum: {
+    //                                             $cond: [{ $eq: ["$paymentStatus", "Paid"] }, "$totalAmount", 0],
+    //                                         },
+    //                                     },
+    //                                     totalRefunded: {
+    //                                         $sum: {
+    //                                             $cond: [{ $eq: ["$paymentStatus", "Refunded"] }, "$refundAmount", 0],
+    //                                         },
+    //                                     },
+    //                                 },
+    //                             },
+    //                             {
+    //                                 $project: {
+    //                                     _id: 0,
+    //                                     amount: { $subtract: ["$totalPaid", "$totalRefunded"] },
+    //                                 },
+    //                             },
+    //                         ],
+    //                         todaysTotalPayouts: [
+    //                             {
+    //                                 $match: { payoutStatus: "Paid", paymentFor: PaymentFor.ProviderPayout },
+    //                             },
+    //                             {
+    //                                 $group: {
+    //                                     _id: null,
+    //                                     amount: { $sum: "$totalAmount" },
+    //                                 },
+    //                             },
+    //                             {
+    //                                 $project: {
+    //                                     _id: 0,
+    //                                     amount: 1,
+    //                                 },
+    //                             },
+    //                         ]
+    //                     }
+    //                 },
+    //                 {
+    //                     $project: {
+    //                         todaysTotalRevenue: { $ifNull: [{ $arrayElemAt: ["$todaysTotalRevenue.amount", 0] }, 0] },
+    //                         todaysTotalPayouts: { $ifNull: [{ $arrayElemAt: ["$todaysTotalPayouts.amount", 0] }, 0] },
+    //                     }
+    //                 }
+    //             ])
+    //             return result[0];
+
+    //         } else if (!providerId && !today) { // admin overall payment data
+
+    //         } else if (providerId) { // provider today payment data
+    //             // const today = startOfToday();
+    //             const tomorrow = startOfTomorrow();
+
+    //             const startOfThisMonth = startOfMonth(new Date());
+    //             const endOfToday = endOfDay(new Date());
+
+    //             const result = await PaymentModel.aggregate([
+    //                 {
+    //                     $match: {
+    //                         providerId: providerId,
+    //                         paymentStatus: "Paid",
+    //                     }
+    //                 },
+    //                 {
+    //                     $facet: {
+    //                         totalSubscriptionPaidAmount: [
+    //                             { $match: { paymentFor: PaymentFor.ProviderSubscription } },
+    //                             {
+    //                                 $group: {
+    //                                     _id: null,
+    //                                     amount: { $sum: "$totalAmount" },
+    //                                 }
+    //                             }
+    //                         ],
+    //                         totalEarnings: [
+    //                             {
+    //                                 $match: {
+    //                                     PaymentFor: PaymentFor.AppointmentBooking
+    //                                 }
+    //                             },
+    //                             {
+    //                                 $group: {
+    //                                     _id: null,
+    //                                     amount: { $sum: "$totalAmount" },
+    //                                 }
+    //                             }
+    //                         ],
+    //                         todaysEarnings: [
+    //                             {
+    //                                 $match: {
+    //                                     paymentFor: PaymentFor.AppointmentBooking,
+    //                                     createdAt: { $gt: today, $lt: tomorrow },
+    //                                 }
+    //                             },
+    //                             {
+    //                                 $group: {
+    //                                     _id: null,
+    //                                     amount: { $sum: "$totalAmount" },
+    //                                 }
+    //                             }
+    //                         ],
+    //                         totalPayoutsMade: [
+    //                             {
+    //                                 $match: { paymentFor: PaymentFor.ProviderPayout }
+    //                             },
+    //                             {
+    //                                 $group: {
+    //                                     _id: null,
+    //                                     amount: { $sum: "$totalAmount" },
+    //                                 }
+    //                             }
+    //                         ],
+    //                         pendingPayout: [
+    //                             {
+    //                                 $match: {
+    //                                     paymentFor: PaymentFor.AppointmentBooking,
+    //                                     paymentStatus: "Paid",
+    //                                     providerId: providerId,
+    //                                     createdAt: { $gte: startOfThisMonth, $lte: endOfToday },
+    //                                 },
+    //                             },
+    //                             {
+    //                                 $group: {
+    //                                     _id: null,
+    //                                     grossEarnings: { $sum: "$totalAmount" },
+    //                                 },
+    //                             },
+    //                             {
+    //                                 $project: {
+    //                                     _id: 0,
+    //                                     amount: {
+    //                                         $multiply: ["$grossEarnings", 0.95],
+    //                                     },
+    //                                 },
+    //                             },
+    //                         ]
+    //                     }
+    //                 },
+    //                 {
+    //                     $project: {
+    //                         totalSubscriptionPaidAmount: { $ifNull: [{ $arrayElemAt: ["$totalSubscriptionPaidAmount.amount", 0] }, 0] },
+    //                         totalEarnings: { $ifNull: [{ $arrayElemAt: ["$totalEarnings.amount", 0] }, 0] },
+    //                         todaysEarnings: { $ifNull: [{ $arrayElemAt: ["$todaysEarnings.amount", 0] }, 0] },
+    //                         totalPayoutsMade: { $ifNull: [{ $arrayElemAt: ["$totalPayoutsMade.amount", 0] }, 0] },
+    //                         pendingPayout: { $ifNull: [{ $arrayElemAt: ["$pendingPayout.amount", 0] }, 0] },
+    //                     }
+    //                 }
+    //             ]);
+    //             return result[0];
+    //         } else { // provider overall data
+
+    //         }
+
+    //         const result = await PaymentModel.aggregate([
+
+    //         ]);
+    //         return result[0];
+
+    //     } catch {
+    //         throw new Error("Payments dashboard data fetching failed");
+    //     }
+    // }
 }

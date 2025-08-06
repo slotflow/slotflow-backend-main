@@ -32,5 +32,5 @@ export interface IPaymentRepository {
 
     findTodayPaymentStatsForAdminDashboard(): Promise<{}>;
 
-    fetchPaymentDataForDashboardStats(params: fetchDatashboardStatsParams): Promise<ProviderFetchDashboardPaymentStatsDataResponse | AdminFetchDashboardTodayPaymentStatsDataResponse>
+    // fetchPaymentDataForDashboardStats(params: fetchDatashboardStatsParams): Promise<ProviderFetchDashboardPaymentStatsDataResponse | AdminFetchDashboardTodayPaymentStatsDataResponse>
 }
