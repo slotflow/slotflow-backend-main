@@ -28,9 +28,9 @@ export interface IBookingRepository {
     
     findProvidersforChatSideBar(userId: User["_id"]): Promise<UserFetchProvidersForChatSidebarResponse>;
 
-    findBookingStatsDataForDashboard(providerId: Provider["_id"]): Promise<ProviderFetchDashboardBookingStatsDataResponse>;
+    findBookingStatsDataForProviderDashboard(providerId: Provider["_id"]): Promise<ProviderFetchDashboardBookingStatsDataResponse>;
 
-    findBookingGraphDataForDashboard(providerId: Provider["_id"]): Promise<ProviderFetchDashboardGraphDataResponse>;
+    findBookingGraphDataForProviderDashboard(providerId: Provider["_id"]): Promise<ProviderFetchDashboardGraphDataResponse>;
 
     findTodayBookingStatsForAdminDashboard(): Promise<AdminFetchTodaysBookingStatsForDashboardResponse>;
 }

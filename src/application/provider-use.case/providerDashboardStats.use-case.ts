@@ -22,8 +22,8 @@ export class ProviderFetchDashboardStatsUseCase {
                 bookingStatsArray,
                 paymentStatsArray
             ] = await Promise.all([
-                this.bookingRepositoryImpl.findBookingStatsDataForDashboard(providerId),
-                this.paymentRepositoryImpl.findPaymentStatsDataForDashboard(providerId)
+                this.bookingRepositoryImpl.findBookingStatsDataForProviderDashboard(providerId),
+                this.paymentRepositoryImpl.findPaymentStatsDataForProviderDashboard(providerId)
             ])
             
             return { success: true, message: "Dashboard stats fetched successfully", data: {...bookingStatsArray,...paymentStatsArray} }

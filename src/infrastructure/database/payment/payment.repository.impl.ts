@@ -105,7 +105,7 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
         }
     }
 
-    async findPaymentStatsDataForDashboard(providerId: Provider["_id"]): Promise<ProviderFetchDashboardPaymentStatsDataResponse> {
+    async findPaymentStatsDataForProviderDashboard(providerId: Provider["_id"]): Promise<ProviderFetchDashboardPaymentStatsDataResponse> {
         try {
             const today = startOfToday();
             const tomorrow = startOfTomorrow();
@@ -206,8 +206,9 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                 }
             ]);
             return result[0];
-        } catch {
-            throw new Error("Dashboard payment stats fetching error ")
+        } catch(error) {
+            console.log("Dashboard payment stats fetching failed : ",error);
+            throw new Error("Dashboard payment stats fetching failed")
         }
     }
 
@@ -227,7 +228,7 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                     $facet: {
                         todaysTotalRevenue: [
                             {
-                                $match: { $nte: { paymentFor: PaymentFor.ProviderPayout } }
+                                $match: { paymentFor: { $ne: PaymentFor.ProviderPayout } }
                             },
                             {
                                 $group: {
@@ -278,7 +279,8 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                 }
             ])
             return result[0];
-        } catch {
+        } catch(error) {
+            console.log("Admin dashboard today payment stats fetching failed from repository : ",error);
             throw new Error("Admin dashboard today payment stats fetching failed")
         }
     }

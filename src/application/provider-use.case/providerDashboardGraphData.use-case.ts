@@ -15,7 +15,7 @@ export class ProviderFetchDashboardGraphDataUseCase {
             if (!providerId) throw new Error("Invalid request");
             Validator.validateObjectId(providerId, "providerId");
 
-            const resultArray = await this.bookingRepository.findBookingGraphDataForDashboard(providerId);
+            const resultArray = await this.bookingRepository.findBookingGraphDataForProviderDashboard(providerId);
             const dashboardGraphData: ProviderFetchDashboardGraphDataResponse = { 
                 appointmentsOvertimeChartData: resultArray.appointmentsOvertimeChartData,
                 peakBookingHoursChartData: resultArray.peakBookingHoursChartData,

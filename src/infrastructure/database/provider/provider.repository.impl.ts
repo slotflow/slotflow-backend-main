@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 import { IProvider, ProviderModel } from "./provider.model";
-import { AdiminFetchAllProviders } from "../../dtos/admin.dto";
+import { AdiminFetchAllProviders, AdminFetchDashboardProviderStatsDataResponse } from "../../dtos/admin.dto";
 import { CreateProviderRequest } from "../../dtos/provider.dto";
 import { Provider } from "../../../domain/entities/provider.entity";
 import { ApiPaginationRequest, ApiResponse } from "../../dtos/common.dto";
@@ -120,6 +120,58 @@ export class ProviderRepositoryImpl implements IProviderRepository {
             }
         } catch (error) {
             throw new Error("Providers count fetching failed");
+        }
+    }
+
+    async findProvidersStatsForAdminDashboard(): Promise<AdminFetchDashboardProviderStatsDataResponse> {
+        try {
+            const providerStatsData = await ProviderModel.aggregate([
+                {
+                    $facet: {
+                        totalProviders: [
+                            { $count: "count" }
+                        ],
+                        emailVerifiedProviders: [
+                            { $match: { isEmailVerified: true } },
+                            { $count: "count" }
+                        ],
+                        adminVerifiedProviders: [
+                            { $match: { isAdminVerified: true } },
+                            { $count: "count" }
+                        ],
+                        blockedProviders: [
+                            { $match: { isBlocked: true } },
+                            { $count: "count" }
+                        ],
+                        addressAddedProviders: [
+                            { $match: { addressId: { $exists: true, $ne: null } } }, 
+                            { $count: "count" }
+                        ],
+                        serviceAddedProviders: [
+                            { $match: { serviceId: { $exists: true, $ne: null } } }, 
+                            { $count: "count" }
+                        ],
+                        availabilityAddedProviders: [
+                            { $match: { serviceAvailabilityId: { $exists: true, $ne: null } } },
+                            { $count: "count" }
+                        ],
+                    }
+                },
+                {
+                    $project: {
+                        totalProviders: { $ifNull: [{ $arrayElemAt: ["$totalProviders.count", 0] }, 0] },
+                        emailVerifiedProviders: { $ifNull: [{ $arrayElemAt: ["$emailVerifiedProviders.count", 0] }, 0] },
+                        adminVerifiedProviders: { $ifNull: [{ $arrayElemAt: ["$adminVerifiedProviders.count", 0] }, 0] },
+                        blockedProviders: { $ifNull: [{ $arrayElemAt: ["$blockedProviders.count", 0] }, 0] },
+                        addressAddedProviders: { $ifNull: [{ $arrayElemAt: ["$addressAddedProviders.count", 0] }, 0] },
+                        serviceAddedProviders: { $ifNull: [{ $arrayElemAt: ["$serviceAddedProviders.count", 0] }, 0] },
+                        availabilityAddedProviders: { $ifNull: [{ $arrayElemAt: ["$availabilityAddedProviders.count", 0] }, 0] }
+                    }
+                }
+            ]);
+            return providerStatsData[0];
+        } catch (error) {
+            throw new Error("Provider stats data fetching failed");
         }
     }
 

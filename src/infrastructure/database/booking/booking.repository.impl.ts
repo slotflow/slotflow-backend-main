@@ -215,7 +215,7 @@ export class BookingRepositoryImpl implements IBookingRepository {
         }
     }
 
-    async findBookingStatsDataForDashboard(providerId: Provider["_id"]): Promise<ProviderFetchDashboardBookingStatsDataResponse> {
+    async findBookingStatsDataForProviderDashboard(providerId: Provider["_id"]): Promise<ProviderFetchDashboardBookingStatsDataResponse> {
         try {
             const today = startOfToday();
             const tomorrow = startOfTomorrow();
@@ -271,7 +271,7 @@ export class BookingRepositoryImpl implements IBookingRepository {
         }
     }
 
-    async findBookingGraphDataForDashboard(providerId: Provider["_id"]): Promise<ProviderFetchDashboardGraphDataResponse> {
+    async findBookingGraphDataForProviderDashboard(providerId: Provider["_id"]): Promise<ProviderFetchDashboardGraphDataResponse> {
         try {
 
             const startDate = new Date();
