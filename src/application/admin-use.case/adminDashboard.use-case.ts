@@ -32,7 +32,7 @@ export class AdminFetchDashboardTodaysDataUseCase {
                 newProviders: providersData,
                 todaysTotalRevenue: paymentData.todaysTotalRevenue,
                 todaysTotalPayouts: paymentData.todaysTotalPayouts,
-                todaysAppointments: appointmentData.todaysBookedAppointments,
+                todaysAppointments: appointmentData.todaysAppointments,
                 todaysCancelledAppointments: appointmentData.todaysCancelledAppointments,
                 todaysCompletedAppointments: appointmentData.todaysCompletedAppointments
             };

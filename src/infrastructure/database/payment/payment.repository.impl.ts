@@ -211,7 +211,7 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
         }
     }
 
-    async findTodayPaymentStatsForAdminDashboard(): Promise<{}> {
+    async findTodayPaymentStatsForAdminDashboard(): Promise<AdminFetchDashboardTodayPaymentStatsDataResponse> {
         try {
 
             const startOfToday = startOfDay(new Date());

@@ -1,24 +1,32 @@
 import { Request, Response } from "express";
 import { HandleError } from "../../infrastructure/error/error";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
-import { AdminFetchDashboardUserStatsDataUseCase } from "../../application/admin-use.case/adminDashboard.use-case";
+import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
+import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
+import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
+import { AdminFetchDashboardTodaysDataUseCase, AdminFetchDashboardUserStatsDataUseCase } from "../../application/admin-use.case/adminDashboard.use-case";
 
 const userRepositoryImpl = new UserRepositoryImpl();
-const adminFetchDashboardUserStatsDataUseCase = new AdminFetchDashboardUserStatsDataUseCase( userRepositoryImpl );
+const providerRepositoryImpl = new ProviderRepositoryImpl();
+const paymentRepositoryImpl = new PaymentRepositoryImpl();
+const bookingRepositoryImpl = new BookingRepositoryImpl();
+const adminFetchDashboardUserStatsDataUseCase = new AdminFetchDashboardUserStatsDataUseCase(userRepositoryImpl);
+const adminFetchDashboardTodaysDataUseCase = new AdminFetchDashboardTodaysDataUseCase(userRepositoryImpl, providerRepositoryImpl, paymentRepositoryImpl, bookingRepositoryImpl);
 
 export class AdminDashboardController {
     constructor(
+        private adminFetchDashboardTodaysDataUseCase: AdminFetchDashboardTodaysDataUseCase,
         private adminFetchDashboardUserStatsDataUseCase: AdminFetchDashboardUserStatsDataUseCase,
     ) {
-        this.fetchUserStats = this.fetchUserStats.bind(this);
         this.fetchTodaysData = this.fetchTodaysData.bind(this);
+        this.fetchUserStats = this.fetchUserStats.bind(this);
     }
 
     async fetchTodaysData(req: Request, res: Response) {
         try {
-            const result = await this.adminFetchDashboardUserStatsDataUseCase.execute();
+            const result = await this.adminFetchDashboardTodaysDataUseCase.execute();
             res.status(200).json(result);
-        }catch(error) {
+        } catch (error) {
             HandleError.handle(error, res);
         }
     }
@@ -27,11 +35,11 @@ export class AdminDashboardController {
         try {
             const result = await this.adminFetchDashboardUserStatsDataUseCase.execute();
             res.status(200).json(result);
-        }catch(error) {
+        } catch (error) {
             HandleError.handle(error, res);
         }
     }
 }
 
-const adminDashboardController = new AdminDashboardController( adminFetchDashboardUserStatsDataUseCase );
+const adminDashboardController = new AdminDashboardController(adminFetchDashboardTodaysDataUseCase, adminFetchDashboardUserStatsDataUseCase);
 export { adminDashboardController }

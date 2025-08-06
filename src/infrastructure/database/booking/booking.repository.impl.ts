@@ -6,7 +6,7 @@ import { User } from "../../../domain/entities/user.entity";
 import { AppointmentStatus, Booking } from "../../../domain/entities/booking.entity";
 import { Provider } from "../../../domain/entities/provider.entity";
 import { UserFetchProvidersForChatSidebarResponse } from "../../dtos/user.dto";
-import { CreateBookingPayloadProps, IBookingRepository } from "../../../domain/repositories/IBooking.repository";
+import { AdminFetchTodaysBookingStatsForDashboardResponse, CreateBookingPayloadProps, IBookingRepository } from "../../../domain/repositories/IBooking.repository";
 import { FetchBookingsRequest, ApiResponse, FetchBookingsResponse, userIdAndServiceProviderId } from "../../dtos/common.dto";
 import { ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardGraphDataResponse, ProviderFetchUsersForChatSideBar } from "../../dtos/provider.dto";
 
@@ -458,7 +458,7 @@ export class BookingRepositoryImpl implements IBookingRepository {
         }
     }
 
-    async findTodayBookingStatsForAdminDashboard(): Promise<{}> {
+    async findTodayBookingStatsForAdminDashboard(): Promise<AdminFetchTodaysBookingStatsForDashboardResponse> {
         try {
 
             const startOfToday = startOfDay(new Date());
