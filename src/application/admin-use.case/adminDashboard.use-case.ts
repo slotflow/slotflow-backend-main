@@ -1,9 +1,10 @@
 import { ApiResponse } from "../../infrastructure/dtos/common.dto";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
-import { AdminFetchDashboardProviderStatsDataResponse, AdminFetchDashboardTodayStatsDataResponse, AdminFetchDashboardUserStatsDataResponse } from "../../infrastructure/dtos/admin.dto";
+import { AdminFetchDashboardProviderStatsDataResponse, AdminFetchDashboardSubscriptionStatsDataResponse, AdminFetchDashboardTodayStatsDataResponse, AdminFetchDashboardUserStatsDataResponse } from "../../infrastructure/dtos/admin.dto";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
+import { SubscriptionRepositoryImpl } from "../../infrastructure/database/subscription/subscription.repository.impl";
 
 export class AdminFetchDashboardTodaysDataUseCase {
     constructor(
@@ -37,8 +38,6 @@ export class AdminFetchDashboardTodaysDataUseCase {
                 todaysCompletedAppointments: appointmentData.todaysCompletedAppointments
             };
 
-            console.log("responseData : ",responseData);
-
             return { success: true, message: "Fetched successfully", data: responseData }
         } catch (error) {
             console.log("Admin dahsboard todays data fetching error : ",error);
@@ -55,16 +54,15 @@ export class AdminFetchDashboardUserStatsDataUseCase {
 
     async execute(): Promise<ApiResponse<AdminFetchDashboardUserStatsDataResponse>> {
         try {
-
-            const dashboardUserStatsData = await this.userRepositoryImpl.findUsersStatsData();
-            return { success: true, message: "Fetched successfully", data: dashboardUserStatsData };
-
+            const userData = await this.userRepositoryImpl.findUsersStatsData();
+            return { success: true, message: "Fetched successfully", data: userData };
         } catch (error) {
             console.log("Admin dashboard user stats fetching usecase error : ", error);
             throw new Error("Admin dashboard user stats fetching error");
         }
     }
 }
+
 
 export class AdminFetchDashboardProviderStatsDataUseCase {
     constructor(
@@ -73,12 +71,28 @@ export class AdminFetchDashboardProviderStatsDataUseCase {
 
     async execute(): Promise<ApiResponse<AdminFetchDashboardProviderStatsDataResponse>> {
         try {
-
-            const dashboardProviderStatsData = await this.providerRepositoryImpl.findProvidersStatsForAdminDashboard();
-            return { success: true, message: "Fetched successfully", data: dashboardProviderStatsData };
+            const providerData = await this.providerRepositoryImpl.findProvidersStatsForAdminDashboard();
+            return { success: true, message: "Fetched successfully", data: providerData };
         } catch (error) {
             console.log("Admin dashboard provider stats fetching usecase error : ", error);
             throw new Error("Admin dashboard provider stats fetching error");
+        }
+    }
+}
+
+
+export class AdminFetchDashboardSubscriptionStatsDataUseCase {
+    constructor(
+        private subscriptionRepositoryImpl: SubscriptionRepositoryImpl
+    ) { }
+
+    async execute(): Promise<ApiResponse<AdminFetchDashboardSubscriptionStatsDataResponse>> {
+        try {
+            const subscriptionData = await this.subscriptionRepositoryImpl.findSubscriptionStatsForAdminDashboard();
+            return { success: true, message: "Fetched successfully", data: subscriptionData }
+        } catch(error) {
+            console.log("Admin dashboard subscription stats fetching usecase error : ", error);
+            throw new Error("Admin dashboard subscription stats fetching error");
         }
     }
 }

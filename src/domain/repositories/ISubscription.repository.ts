@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 import { Plan } from "../entities/plan.entity";
 import { Payment } from "../entities/payment.entity";
 import { Subscription } from "../entities/subscription.entity";
-import { AdminFetchAllSubscriptionsResponse } from "../../infrastructure/dtos/admin.dto";
+import { AdminFetchAllSubscriptionsResponse, AdminFetchDashboardSubscriptionStatsDataResponse } from "../../infrastructure/dtos/admin.dto";
 import { ApiPaginationRequest, ApiResponse, FetchProviderSubscriptionsRequest, FindSubscriptionsByProviderIdResponse } from "../../infrastructure/dtos/common.dto";
 
 export type CreateSubscriptionPayloadProps = Pick<Subscription, "providerId" | "subscriptionPlanId" | "startDate" | "endDate" | "subscriptionStatus" | "paymentId" >;
@@ -39,5 +39,7 @@ export interface ISubscriptionRepository {
     findSbuscriptionsForUpdatinStatus():Promise<boolean>;
 
     findSubscribedPlan(subscriptionId: Types.ObjectId): Promise<Plan["planName"] | boolean>;
+
+    findSubscriptionStatsForAdminDashboard(): Promise<AdminFetchDashboardSubscriptionStatsDataResponse>;
 
 }

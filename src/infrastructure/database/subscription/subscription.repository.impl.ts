@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 import { ISubscription, SubscriptionModel } from "./subscription.model";
-import { AdminFetchAllSubscriptionsResponse } from "../../dtos/admin.dto";
+import { AdminFetchAllSubscriptionsResponse, AdminFetchDashboardSubscriptionStatsDataResponse } from "../../dtos/admin.dto";
 import { Subscription } from "../../../domain/entities/subscription.entity";
 import { CreateSubscriptionPayloadProps, findSubscriptionFullDetailsResProps, ISubscriptionRepository, PlanNameOnly } from "../../../domain/repositories/ISubscription.repository";
 import { ApiPaginationRequest, ApiResponse, FetchProviderSubscriptionsRequest, FindSubscriptionsByProviderIdResponse, PopulatedSubscription } from "../../dtos/common.dto";
@@ -52,7 +52,7 @@ export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
                 }).populate<PopulatedSubscription>([{
                     path: "subscriptionPlanId",
                     select: "-_id planName price"
-                },{
+                }, {
                     path: "paymentId",
                     select: "-_id totalAmount"
                 }]).skip(skip).limit(limit).lean(),
@@ -141,7 +141,7 @@ export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
     }
 
     async findSubscribedPlan(subscriptionId: Types.ObjectId): Promise<Plan["planName"] | boolean> {
-        try{
+        try {
             const subscription = await SubscriptionModel.findById(subscriptionId)
                 .populate<PlanNameOnly>("subscriptionPlanId", { planName: 1, _id: 0 })
                 .select("subscriptionPlanId -_id")
@@ -149,6 +149,65 @@ export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
             return subscription ? subscription.subscriptionPlanId.planName : false;
         } catch {
             return false;
+        }
+    }
+
+    async findSubscriptionStatsForAdminDashboard(): Promise<AdminFetchDashboardSubscriptionStatsDataResponse> {
+        try {
+            const subscriptionStatsData = await SubscriptionModel.aggregate([
+                {
+                    $lookup: {
+                        from: "plans",
+                        localField: "subscriptionPlanId",
+                        foreignField: "_id",
+                        as: "plan"
+                    }
+                },
+                { $unwind: "$plan" },
+                {
+                    $facet: {
+                        activeSubscriptions: [
+                            { $match: { subscriptionStatus: "Active" } },
+                            { $count: "count" }
+                        ],
+                        expiredSubscriptions: [
+                            { $match: { subscriptionStatus: "Expired" } },
+                            { $count: "count" }
+                        ],
+                        subscriptionsByFreePlan: [
+                            { $match: { "plan.planName": "Free" } },
+                            { $count: "count" }
+                        ],
+                        subscriptionsByStarterPlan: [
+                            { $match: { "plan.planName": "Starter" } },
+                            { $count: "count" }
+                        ],
+                        subscriptionsByProfessionalPlan: [
+                            { $match: { "plan.planName": "Professional" } },
+                            { $count: "count" }
+                        ],
+                        subscriptionsByEnterprisePlan: [
+                            { $match: { "plan.planName": "Enterprise" } },
+                            { $count: "count" }
+                        ]
+                    }
+                },
+                {
+                    $project: {
+                        activeSubscriptions: { $ifNull: [{ $arrayElemAt: ["$activeSubscriptions.count", 0] }, 0] },
+                        expiredSubscriptions: { $ifNull: [{ $arrayElemAt: ["$expiredSubscriptions.count", 0] }, 0] },
+                        notSubscribedProviders: { $ifNull: [{ $arrayElemAt: ["$notSubscribedProviders.count", 0] }, 0] },
+                        subscriptionsByFreePlan: { $ifNull: [{ $arrayElemAt: ["$subscriptionsByFreePlan.count", 0] }, 0] },
+                        subscriptionsByStarterPlan: { $ifNull: [{ $arrayElemAt: ["$subscriptionsByStarterPlan.count", 0] }, 0] },
+                        subscriptionsByProfessionalPlan: { $ifNull: [{ $arrayElemAt: ["$subscriptionsByProfessionalPlan.count", 0] }, 0] },
+                        subscriptionsByEnterprisePlan: { $ifNull: [{ $arrayElemAt: ["$subscriptionsByEnterprisePlan.count", 0] }, 0] }
+                    }
+                }
+            ]);
+            return subscriptionStatsData[0];
+        } catch (error) {
+            console.log("findSubscriptionStatsForAdminDashboard error : ", error);
+            throw new Error("Subscription stats fetching failed");
         }
     }
 }

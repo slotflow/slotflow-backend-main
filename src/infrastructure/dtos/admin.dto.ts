@@ -207,8 +207,6 @@ export interface AdminFetchDashboardProviderStatsDataResponse {
 export interface AdminFetchDashboardSubscriptionStatsDataResponse {
     activeSubscriptions: number;
     expiredSubscriptions: number;
-    notSubscribedProviders: number;
-    
     subscriptionsByFreePlan: number;
     subscriptionsByStarterPlan: number;
     subscriptionsByProfessionalPlan: number;

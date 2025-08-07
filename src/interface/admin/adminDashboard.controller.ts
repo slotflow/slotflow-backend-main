@@ -23,6 +23,7 @@ export class AdminDashboardController {
         this.fetchTodaysData = this.fetchTodaysData.bind(this);
         this.fetchUserStats = this.fetchUserStats.bind(this);
         this.fetchProviderStats = this.fetchProviderStats.bind(this);
+        this.fetchSubscriptionStats = this.fetchSubscriptionStats.bind(this);
     }
 
     async fetchTodaysData(req: Request, res: Response) {
@@ -44,6 +45,15 @@ export class AdminDashboardController {
     }
 
     async fetchProviderStats(req: Request, res: Response) {
+        try {
+            const result = await this.adminFetchDashboardProviderStatsDataUseCase.execute();
+            res.status(200).json(result);
+        } catch (error) {
+            HandleError.handle(error, res);
+        }
+    }
+
+    async fetchSubscriptionStats(req: Request, res: Response) {
         try {
             const result = await this.adminFetchDashboardProviderStatsDataUseCase.execute();
             res.status(200).json(result);
