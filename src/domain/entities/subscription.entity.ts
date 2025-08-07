@@ -1,5 +1,11 @@
 import { Types } from "mongoose";
 
+export enum SubscriptionStatus {
+    Active = "Active",
+    Expired = "Expired",
+    Cancelled = "Cancelled",
+}
+
 export class Subscription {
     constructor(
         public _id: Types.ObjectId,
@@ -7,7 +13,7 @@ export class Subscription {
         public subscriptionPlanId: Types.ObjectId,
         public startDate: Date,
         public endDate: Date,
-        public subscriptionStatus: string,
+        public subscriptionStatus: SubscriptionStatus,
         public paymentId: Types.ObjectId | null,
         public createdAt: Date,
         public updatedAt: Date,

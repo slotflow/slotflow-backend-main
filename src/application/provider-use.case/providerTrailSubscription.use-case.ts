@@ -6,6 +6,7 @@ import { ProviderTrialSubscriptionRequest } from "../../infrastructure/dtos/prov
 import { PlanRepositoryImpl } from "../../infrastructure/database/plan/plan.repository.impl";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { SubscriptionRepositoryImpl } from "../../infrastructure/database/subscription/subscription.repository.impl";
+import { SubscriptionStatus } from "../../domain/entities/subscription.entity";
 
 export class ProviderTrialSubscriptionUseCase {
     constructor(
@@ -43,7 +44,7 @@ export class ProviderTrialSubscriptionUseCase {
             subscriptionPlanId: new Types.ObjectId(trialPlanId),
             startDate: new Date(),
             endDate: dayjs().add(Number(7), "day").toDate(),
-            subscriptionStatus: "Active",
+            subscriptionStatus: SubscriptionStatus.Active,
             paymentId: null
         });
 

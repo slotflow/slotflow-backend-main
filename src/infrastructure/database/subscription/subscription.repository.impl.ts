@@ -1,10 +1,10 @@
 import { Types } from "mongoose";
-import { ISubscription, SubscriptionModel } from "./subscription.model";
-import { AdminFetchAllSubscriptionsResponse, AdminFetchDashboardSubscriptionStatsDataResponse } from "../../dtos/admin.dto";
-import { Subscription } from "../../../domain/entities/subscription.entity";
-import { CreateSubscriptionPayloadProps, findSubscriptionFullDetailsResProps, ISubscriptionRepository, PlanNameOnly } from "../../../domain/repositories/ISubscription.repository";
-import { ApiPaginationRequest, ApiResponse, FetchProviderSubscriptionsRequest, FindSubscriptionsByProviderIdResponse, PopulatedSubscription } from "../../dtos/common.dto";
 import { Plan } from "../../../domain/entities/plan.entity";
+import { ISubscription, SubscriptionModel } from "./subscription.model";
+import { Subscription, SubscriptionStatus } from "../../../domain/entities/subscription.entity";
+import { AdminFetchAllSubscriptionsResponse, AdminFetchDashboardSubscriptionStatsDataResponse } from "../../dtos/admin.dto";
+import { ApiPaginationRequest, ApiResponse, FetchProviderSubscriptionsRequest, FindSubscriptionsByProviderIdResponse, PopulatedSubscription } from "../../dtos/common.dto";
+import { CreateSubscriptionPayloadProps, findSubscriptionFullDetailsResProps, ISubscriptionRepository, PlanNameOnly } from "../../../domain/repositories/ISubscription.repository";
 
 export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
     private mapToEntity(subscription: ISubscription): Subscription {
@@ -126,11 +126,11 @@ export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
 
             const updated = await SubscriptionModel.updateMany(
                 {
-                    subscriptionStatus: "Active",
+                    subscriptionStatus: SubscriptionStatus.Active,
                     endDate: { $lt: now }
                 },
                 {
-                    $set: { subscriptionStatus: "Expired" }
+                    $set: { subscriptionStatus: SubscriptionStatus.Expired }
                 }
             );
 
@@ -167,11 +167,11 @@ export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
                 {
                     $facet: {
                         activeSubscriptions: [
-                            { $match: { subscriptionStatus: "Active" } },
+                            { $match: { subscriptionStatus: SubscriptionStatus.Active } },
                             { $count: "count" }
                         ],
                         expiredSubscriptions: [
-                            { $match: { subscriptionStatus: "Expired" } },
+                            { $match: { subscriptionStatus: SubscriptionStatus.Cancelled } },
                             { $count: "count" }
                         ],
                         subscriptionsByFreePlan: [
