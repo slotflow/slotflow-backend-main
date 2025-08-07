@@ -41,5 +41,6 @@ router.get('/getDashboardTodayStats', authMiddleware, adminDashboardController.f
 router.get('/getDashboardUserStats', authMiddleware, adminDashboardController.fetchUserStats);
 router.get('/getDashboardProviderStats', authMiddleware, adminDashboardController.fetchProviderStats);
 router.get('/getDashboardSubscriptionStats', authMiddleware, adminDashboardController.fetchSubscriptionStats);
+router.get('/getDashboardRevenueStats', authMiddleware, adminDashboardController.fetchRevenueStats);
 
 export default router;

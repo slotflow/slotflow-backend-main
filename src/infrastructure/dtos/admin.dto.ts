@@ -217,9 +217,9 @@ export interface AdminFetchDashboardSubscriptionStatsDataResponse {
 export interface AdminFetchDashboardRevenueStatsDataResponse {
     totalRevenue: number;
     totalRevenueViaSubscriptions: number;
-    revenueByStarterPlan: number;
-    revenueByProfessionalPlan: number;
-    revenueByEnterprisePlan: number;
+    revenueByStripe: number;
+    revenueByRazorpay: number;
+    revenueByPaypal: number;
     totalRevenueViaAppointments: number;
 }
 

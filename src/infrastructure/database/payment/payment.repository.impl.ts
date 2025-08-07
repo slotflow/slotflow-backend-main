@@ -1,11 +1,12 @@
 import { Types } from "mongoose";
 import { IPayment, PaymentModel } from "./payment.model";
 import { Provider } from "../../../domain/entities/provider.entity";
-import { Payment, PaymentFor } from "../../../domain/entities/payment.entity";
+import { Payment, PaymentFor, PaymentGateway } from "../../../domain/entities/payment.entity";
 import { endOfDay, startOfDay, startOfMonth, startOfToday, startOfTomorrow } from "date-fns";
 import { ProviderFetchDashboardPaymentStatsDataResponse } from "../../dtos/provider.dto";
 import { ApiResponse, FetchPaymentResponse, FetchPaymentsRequest, userIdAndProviderId } from "../../dtos/common.dto";
 import { AdminFetchDashboardTodayPaymentStatsDataResponse, CreatePaymentForBookingProps, CreatePaymentForSubscriptionProps, fetchDatashboardStatsParams, IPaymentRepository, UpdateForCancelBookingRefundReqProps } from "../../../domain/repositories/IPayment.repository";
+import { AdminFetchDashboardRevenueStatsDataResponse } from "../../dtos/admin.dto";
 
 export class PaymentRepositoryImpl implements IPaymentRepository {
     private mapToEntity(payment: IPayment): Payment {
@@ -206,8 +207,8 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                 }
             ]);
             return result[0];
-        } catch(error) {
-            console.log("Dashboard payment stats fetching failed : ",error);
+        } catch (error) {
+            console.log("Dashboard payment stats fetching failed : ", error);
             throw new Error("Dashboard payment stats fetching failed")
         }
     }
@@ -279,9 +280,93 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                 }
             ])
             return result[0];
-        } catch(error) {
-            console.log("Admin dashboard today payment stats fetching failed from repository : ",error);
+        } catch (error) {
+            console.log("findTodayPaymentStatsForAdminDashboard from repository : ", error);
             throw new Error("Admin dashboard today payment stats fetching failed")
+        }
+    }
+
+    async fetchPaymentStatsForAdminDashboard(): Promise<AdminFetchDashboardRevenueStatsDataResponse> {
+        try {
+            const paymentData = await PaymentModel.aggregate([
+                {
+                    $match: {
+                        paymentStatus: "Paid", 
+                    }
+                },
+                {
+                    $facet: {
+                        totalRevenue: [
+                            { $match: { paymentFor: { $in: [PaymentFor.ProviderSubscription, PaymentFor.AppointmentBooking] } } },
+                            {
+                                $group: {
+                                    _id: null,
+                                    amount: { $sum: "$totalAmount" }
+                                }
+                            }
+                        ],
+                        totalRevenueViaSubscriptions: [
+                            { $match: { paymentFor: PaymentFor.ProviderSubscription } },
+                            {
+                                $group: {
+                                    _id: null,
+                                    amount: { $sum: "$totalAmount" }
+                                }
+                            }
+                        ],
+                        totalRevenueViaAppointments: [
+                            { $match: { paymentFor: PaymentFor.AppointmentBooking } },
+                            {
+                                $group: {
+                                    _id: null,
+                                    amount: { $sum: "$totalAmount" }
+                                }
+                            }
+                        ],
+                        revenueByStripe: [
+                            { $match: { paymentGateway: PaymentGateway.Stripe } },
+                            {
+                                $group: {
+                                    _id: null,
+                                    amount: { $sum: "$totalAmount" }
+                                }
+                            }
+                        ],
+                        revenueByRazorpay: [
+                            { $match: { paymentGateway: PaymentGateway.Razorpay } },
+                            {
+                                $group: {
+                                    _id: null,
+                                    amount: { $sum: "$totalAmount" }
+                                }
+                            }
+                        ],
+                        revenueByPaypal: [
+                            { $match: { paymentGateway: PaymentGateway.Paypal } },
+                            {
+                                $group: {
+                                    _id: null,
+                                    amount: { $sum: "$totalAmount" }
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    $project: {
+                        totalRevenue: { $ifNull: [{ $arrayElemAt: ["$totalRevenue.amount", 0] }, 0] },
+                        totalRevenueViaSubscriptions: { $ifNull: [{ $arrayElemAt: ["$totalRevenueViaSubscriptions.amount", 0] }, 0] },
+                        revenueByStripe: { $ifNull: [{ $arrayElemAt: ["$revenueByStripe.amount", 0] }, 0] },
+                        revenueByRazorpay: { $ifNull: [{ $arrayElemAt: ["$revenueByRazorpay.amount", 0] }, 0] },
+                        revenueByPaypal: { $ifNull: [{ $arrayElemAt: ["$revenueByPaypal.amount", 0] }, 0] },
+                        totalRevenueViaAppointments: { $ifNull: [{ $arrayElemAt: ["$totalRevenueViaAppointments.amount", 0] }, 0] },
+                    }
+                }
+            ]);
+            return paymentData[0];
+        } catch (error) {
+            console.log("fetchPaymentStatsForAdminDashboard from repository : ", error);
+            throw new Error("Admin dashboard payment stats fetching failed")
         }
     }
 

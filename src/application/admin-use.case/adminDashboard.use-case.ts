@@ -4,7 +4,7 @@ import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/pay
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { SubscriptionRepositoryImpl } from "../../infrastructure/database/subscription/subscription.repository.impl";
-import { AdminFetchDashboardProviderStatsDataResponse, AdminFetchDashboardSubscriptionStatsDataResponse, AdminFetchDashboardTodayStatsDataResponse, AdminFetchDashboardUserStatsDataResponse } from "../../infrastructure/dtos/admin.dto";
+import { AdminFetchDashboardProviderStatsDataResponse, AdminFetchDashboardRevenueStatsDataResponse, AdminFetchDashboardSubscriptionStatsDataResponse, AdminFetchDashboardTodayStatsDataResponse, AdminFetchDashboardUserStatsDataResponse } from "../../infrastructure/dtos/admin.dto";
 
 export class AdminFetchDashboardTodaysDataUseCase {
     constructor(
@@ -93,6 +93,23 @@ export class AdminFetchDashboardSubscriptionStatsDataUseCase {
         } catch(error) {
             console.log("Admin dashboard subscription stats fetching usecase error : ", error);
             throw new Error("Admin dashboard subscription stats fetching error");
+        }
+    }
+}
+
+
+export class AdminFetchDashboardRevenueStatsDataUseCase {
+    constructor(
+        private paymentRepositoryImpl: PaymentRepositoryImpl
+    ) { }
+
+    async execute(): Promise<ApiResponse<AdminFetchDashboardRevenueStatsDataResponse>> {
+        try {
+            const revenueData = await this.paymentRepositoryImpl.fetchPaymentStatsForAdminDashboard();
+            return { success: true, message: "FetchedSuccessfully", data: revenueData }
+        } catch (error) {
+            console.log("Admin dashboard revenue stats fetching usecase error : ", error);
+            throw new Error("Admin dashboard revenue stats fetching error");
         }
     }
 }
