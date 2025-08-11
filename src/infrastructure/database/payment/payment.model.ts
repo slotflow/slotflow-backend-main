@@ -34,7 +34,7 @@ const PaymentSchema = new Schema<IPayment>({
     paymentStatus: {
         type: String,
         enum: {
-            values: ["Cancelled", "Pending", "Paid", "Unpaid", "Refund"],
+            values: ["Cancelled", "Pending", "Paid", "Failed", "Refund"],
             message: "Payment status must be one of: Cancelled, Pending, Paid, or Unpaid",
         },
         required: [true, "Payment status is required"],

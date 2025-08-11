@@ -221,6 +221,9 @@ export interface AdminFetchDashboardRevenueStatsDataResponse {
     revenueByRazorpay: number;
     revenueByPaypal: number;
     totalRevenueViaAppointments: number;
+    totalRefundsIssued: number;
+    totalFailedPayments: number;
+    totalPayoutsToProviders: number;
 }
 
 // used as the return type of the admin fetch dashboard payment stats data

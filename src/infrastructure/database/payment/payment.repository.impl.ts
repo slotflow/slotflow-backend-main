@@ -349,6 +349,33 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                                     amount: { $sum: "$totalAmount" }
                                 }
                             }
+                        ],
+                        totalRefundsIssued: [
+                            { $match: { paymentStatus: "Refund" } },
+                            {
+                                $group: {
+                                    _id: null,
+                                    amount: { $sum: "$totalAmount" }
+                                }
+                            }
+                        ],
+                        totalFailedPayments: [
+                            { $match: { paymentStatus: "Failed" } },
+                            {
+                                $group: {
+                                    _id: null,
+                                    count: { $sum: "$Count" }
+                                }
+                            }
+                        ],
+                        totalPayoutsToProviders: [
+                            { $match: { PaymentFor: PaymentFor.ProviderPayout } },
+                            {
+                                $group: {
+                                    _id: null,
+                                    amount: { $sum: "$totalAmount" }
+                                }
+                            }
                         ]
                     }
                 },
@@ -360,6 +387,9 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                         revenueByRazorpay: { $ifNull: [{ $arrayElemAt: ["$revenueByRazorpay.amount", 0] }, 0] },
                         revenueByPaypal: { $ifNull: [{ $arrayElemAt: ["$revenueByPaypal.amount", 0] }, 0] },
                         totalRevenueViaAppointments: { $ifNull: [{ $arrayElemAt: ["$totalRevenueViaAppointments.amount", 0] }, 0] },
+                        totalRefundsIssued: { $ifNull: [{ $arrayElemAt: ["$totalRefundsIssued.amount", 0] }, 0] },
+                        totalFailedPayments: { $ifNull: [{ $arrayElemAt: ["$totalFailedPayments.count", 0] }, 0] },
+                        totalPayoutsToProviders: { $ifNull: [{ $arrayElemAt: ["$totalPayoutsToProviders.amount", 0] }, 0] },
                     }
                 }
             ]);
