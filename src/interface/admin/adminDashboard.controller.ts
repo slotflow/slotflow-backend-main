@@ -4,8 +4,8 @@ import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repo
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
-import { AdminFetchDashboardProviderStatsDataUseCase, AdminFetchDashboardRevenueStatsDataUseCase, AdminFetchDashboardSubscriptionStatsDataUseCase, AdminFetchDashboardTodaysDataUseCase, AdminFetchDashboardUserStatsDataUseCase } from "../../application/admin-use.case/adminDashboard.use-case";
 import { SubscriptionRepositoryImpl } from "../../infrastructure/database/subscription/subscription.repository.impl";
+import { AdminFetchDashboardAppointmentsStatsDataUseCase, AdminFetchDashboardProviderStatsDataUseCase, AdminFetchDashboardRevenueStatsDataUseCase, AdminFetchDashboardSubscriptionStatsDataUseCase, AdminFetchDashboardTodaysDataUseCase, AdminFetchDashboardUserStatsDataUseCase } from "../../application/admin-use.case/adminDashboard.use-case";
 
 const userRepositoryImpl = new UserRepositoryImpl();
 const providerRepositoryImpl = new ProviderRepositoryImpl();
@@ -17,6 +17,7 @@ const adminFetchDashboardTodaysDataUseCase = new AdminFetchDashboardTodaysDataUs
 const adminFetchDashboardProviderStatsDataUseCase = new AdminFetchDashboardProviderStatsDataUseCase(providerRepositoryImpl);
 const adminFetchDashboardSubscriptionStatsDataUseCase = new AdminFetchDashboardSubscriptionStatsDataUseCase(subscriptionRepositoryImpl);
 const adminFetchDashboardRevenueStatsDataUseCase = new AdminFetchDashboardRevenueStatsDataUseCase(paymentRepositoryImpl);
+const adminFetchDashboardAppointmentsStatsDataUseCase = new AdminFetchDashboardAppointmentsStatsDataUseCase(bookingRepositoryImpl)
 
 export class AdminDashboardController {
     constructor(
@@ -25,12 +26,14 @@ export class AdminDashboardController {
         private adminFetchDashboardProviderStatsDataUseCase: AdminFetchDashboardProviderStatsDataUseCase,
         private adminFetchDashboardSubscriptionStatsDataUseCase: AdminFetchDashboardSubscriptionStatsDataUseCase,
         private adminFetchDashboardRevenueStatsDataUseCase: AdminFetchDashboardRevenueStatsDataUseCase,
+        private adminFetchDashboardAppointmentsStatsDataUseCase: AdminFetchDashboardAppointmentsStatsDataUseCase,
     ) {
         this.fetchTodaysData = this.fetchTodaysData.bind(this);
         this.fetchUserStats = this.fetchUserStats.bind(this);
         this.fetchProviderStats = this.fetchProviderStats.bind(this);
         this.fetchSubscriptionStats = this.fetchSubscriptionStats.bind(this);
         this.fetchRevenueStats = this.fetchRevenueStats.bind(this);
+        this.fetchAppointmentsStats = this.fetchAppointmentsStats.bind(this);
     }
 
     async fetchTodaysData(req: Request, res: Response) {
@@ -78,7 +81,23 @@ export class AdminDashboardController {
         }
     }
 
+    async fetchAppointmentsStats(req: Request, res: Response) {
+        try {
+            const result = await this.adminFetchDashboardAppointmentsStatsDataUseCase.execute();
+            res.status(200).json(result);
+        } catch (error) {
+            HandleError.handle(error, res);
+        }
+    }
+
 }
 
-const adminDashboardController = new AdminDashboardController(adminFetchDashboardTodaysDataUseCase, adminFetchDashboardUserStatsDataUseCase, adminFetchDashboardProviderStatsDataUseCase, adminFetchDashboardSubscriptionStatsDataUseCase, adminFetchDashboardRevenueStatsDataUseCase );
+const adminDashboardController = new AdminDashboardController(
+    adminFetchDashboardTodaysDataUseCase,
+    adminFetchDashboardUserStatsDataUseCase,
+    adminFetchDashboardProviderStatsDataUseCase,
+    adminFetchDashboardSubscriptionStatsDataUseCase,
+    adminFetchDashboardRevenueStatsDataUseCase,
+    adminFetchDashboardAppointmentsStatsDataUseCase
+);
 export { adminDashboardController }

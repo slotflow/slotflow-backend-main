@@ -9,6 +9,7 @@ import { UserFetchProvidersForChatSidebarResponse } from "../../dtos/user.dto";
 import { AdminFetchTodaysBookingStatsForDashboardResponse, CreateBookingPayloadProps, IBookingRepository } from "../../../domain/repositories/IBooking.repository";
 import { FetchBookingsRequest, ApiResponse, FetchBookingsResponse, userIdAndServiceProviderId } from "../../dtos/common.dto";
 import { ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardGraphDataResponse, ProviderFetchUsersForChatSideBar } from "../../dtos/provider.dto";
+import { AdminFetchDashboardAppointmentStatsDataResponse } from "../../dtos/admin.dto";
 
 export class BookingRepositoryImpl implements IBookingRepository {
     private mapToEntity(booking: IBooking): Booking {
@@ -223,49 +224,46 @@ export class BookingRepositoryImpl implements IBookingRepository {
             const result = await BookingModel.aggregate([
                 { $match: { providerId: providerId } },
                 {
-                    $facet: {
-                        totalAppointments: [
-                            { $count: "count" }
-                        ],
-                        completedAppointments: [
-                            { $match: { status: "Completed" } },
-                            { $count: "count" }
-                        ],
-                        missedAppointments: [
-                            { $match: { status: "Not Attended" } },
-                            { $count: "count" }
-                        ],
-                        cancelledAppointmentsByUser: [
-                            { $match: { status: "Cancelled" } },
-                            { $count: "count" }
-                        ],
-                        rejectedAppointmentsByProvider: [
-                            { $match: { status: "Rejected By Provider" } },
-                            { $count: "count" }
-                        ],
-                        todaysAppointments: [
-                            {
-                                $match: {
-                                    appointmentDate: { $gte: today, $lt: tomorrow },
-                                    status: "Booked"
-                                }
-                            },
-                            { $count: "count" }
-                        ]
-                    }
-                },
-                {
-                    $project: {
-                        totalAppointments: { $ifNull: [{ $arrayElemAt: ["$totalAppointments.count", 0] }, 0] },
-                        completedAppointments: { $ifNull: [{ $arrayElemAt: ["$completedAppointments.count", 0] }, 0] },
-                        missedAppointments: { $ifNull: [{ $arrayElemAt: ["$missedAppointments.count", 0] }, 0] },
-                        cancelledAppointmentsByUser: { $ifNull: [{ $arrayElemAt: ["$cancelledAppointmentsByUser.count", 0] }, 0] },
-                        rejectedAppointmentsByProvider: { $ifNull: [{ $arrayElemAt: ["$rejectedAppointmentsByProvider.count", 0] }, 0] },
-                        todaysAppointments: { $ifNull: [{ $arrayElemAt: ["$todaysAppointments.count", 0] }, 0] },
+                    $group: {
+                        _id: null,
+                        totalAppointments: { $sum: 1 },
+                        completedAppointments: {
+                            $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Completed] }, 1, 0] }
+                        },
+                        missedAppointments: {
+                            $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.NotAttended] }, 1, 0] }
+                        },
+                        cancelledAppointmentsByUser: {
+                            $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Cancelled] }, 1, 0] }
+                        },
+                        rejectedAppointmentsByProvider: {
+                            $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Rejected] }, 1, 0] }
+                        },
+                        todaysAppointments: {
+                            $sum: {
+                                $cond: [
+                                    {
+                                        $and: [
+                                            { $gte: ["$appointmentDate", today] },
+                                            { $lt: ["$appointmentDate", tomorrow] },
+                                            { $eq: ["$appointmentStatus", AppointmentStatus.Booked] }
+                                        ]
+                                    }, 1, 0
+                                ]
+                            }
+                        }
                     }
                 }
-            ]);
-            return result[0];
+
+            ])
+            return result[0] || {
+                totalAppointments: 0,
+                completedAppointments: 0,
+                missedAppointments: 0,
+                cancelledAppointmentsByUser: 0,
+                rejectedAppointmentsByProvider: 0,
+                todaysAppointments: 0
+            };
         } catch {
             throw new Error("Dashboard stats fetching failed");
         }
@@ -471,32 +469,53 @@ export class BookingRepositoryImpl implements IBookingRepository {
                     },
                 },
                 {
-                    $facet: {
-                        todaysBookedAppointments: [
-                            { $match: { appointmentStatus: AppointmentStatus.Booked } },
-                            { $count: "count" }
-                        ],
-                        todaysCancelledAppointments: [
-                            { $match: { appointmentStatus: AppointmentStatus.Cancelled } },
-                            { $count: "count" }
-                        ],
-                        todaysCompletedAppointments: [
-                            { $match: { appointmentStatus: AppointmentStatus.Completed } },
-                            { $count: "count" }
-                        ],
+                    $group: {
+                        _id: null,
+                        todaysBookedAppointments: {
+                            $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Booked] }, 1, 0] }
+                        },
+                        todaysCancelledAppointments: {
+                            $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Cancelled] }, 1, 0] }
+                        },
+                        todaysCompletedAppointments: {
+                            $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Completed] }, 1, 0] }
+                        }
                     }
                 },
-                {
-                    $project: {
-                        todaysBookedAppointments: { $ifNull: [{ $arrayElemAt: ["$todaysBookedAppointments.count", 0] }, 0] },
-                        todaysCancelledAppointments: { $ifNull: [{ $arrayElemAt: ["$todaysCancelledAppointments.count", 0] }, 0] },
-                        todaysCompletedAppointments: { $ifNull: [{ $arrayElemAt: ["$todaysCompletedAppointments.count", 0] }, 0] },
-                    }
-                }
             ])
-            return result[0];
+            return result[0] || {
+                todaysBookedAppointments: 0,
+                todaysCancelledAppointments: 0,
+                todaysCompletedAppointments: 0
+            };
         } catch {
             throw new Error("Admin dashboard today booking stats fetching failed")
+        }
+    }
+
+    async findBookingStatsForAdminDashboard(): Promise<AdminFetchDashboardAppointmentStatsDataResponse> {
+        try {
+            const result = await BookingModel.aggregate([
+                {
+                    $group: {
+                        _id: null,
+                        totalAppointments: { $sum: 1 },
+                        completedAppointments: { $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Completed] }, 1, 0] } },
+                        cancelledAppointments: { $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Cancelled] }, 1, 0] } },
+                        missedAppointments: { $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.NotAttended] }, 1, 0] } },
+                        rejectedAppointments: { $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Rejected] }, 1, 0] } }
+                    }
+                },
+            ])
+            return result[0] || {
+                totalAppointments: 0,
+                completedAppointments: 0,
+                cancelledAppointments: 0,
+                missedAppointments: 0,
+                rejectedAppointments: 0
+            };
+        } catch (error) {
+            throw new Error("Admin dashboard booking stats fetching failed")
         }
     }
 }

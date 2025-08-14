@@ -226,18 +226,6 @@ export interface AdminFetchDashboardRevenueStatsDataResponse {
     totalPayoutsToProviders: number;
 }
 
-// used as the return type of the admin fetch dashboard payment stats data
-export interface AdminFetchDashboardPaymentStatsDataResponse {
-    totalRefundsIssued: number;
-    totalFailedPayments: number;
-    
-    revenueByStripe: number;
-    revenueByRazorpay: number;
-    revenueByPaypal: number;
-    
-    totalPayoutsToProviders: number;
-}
-
 // used as the return type of the admin fetch dashboard appointments stats data
 export interface AdminFetchDashboardAppointmentStatsDataResponse {
     totalAppointments: number;

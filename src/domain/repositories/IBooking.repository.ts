@@ -5,7 +5,7 @@ import { Provider } from "../entities/provider.entity";
 import { UserFetchProvidersForChatSidebarResponse } from "../../infrastructure/dtos/user.dto";
 import { ApiResponse, FetchBookingsRequest, FetchBookingsResponse } from "../../infrastructure/dtos/common.dto";
 import { ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardGraphDataResponse, ProviderFetchUsersForChatSideBar } from "../../infrastructure/dtos/provider.dto";
-import { AdminFetchDashboardTodayStatsDataResponse } from "../../infrastructure/dtos/admin.dto";
+import { AdminFetchDashboardAppointmentStatsDataResponse, AdminFetchDashboardTodayStatsDataResponse } from "../../infrastructure/dtos/admin.dto";
 
 export type CreateBookingPayloadProps = Pick<Booking, "serviceProviderId" | "userId" | "appointmentDate" | "appointmentTime" | "appointmentMode" | "appointmentStatus" | "slotId" | "paymentId">;
 export type AdminFetchTodaysBookingStatsForDashboardResponse = Pick<AdminFetchDashboardTodayStatsDataResponse, "todaysAppointments" | "todaysCancelledAppointments" | "todaysCompletedAppointments">;
@@ -33,4 +33,6 @@ export interface IBookingRepository {
     findBookingGraphDataForProviderDashboard(providerId: Provider["_id"]): Promise<ProviderFetchDashboardGraphDataResponse>;
 
     findTodayBookingStatsForAdminDashboard(): Promise<AdminFetchTodaysBookingStatsForDashboardResponse>;
+
+    findBookingStatsForAdminDashboard(): Promise<AdminFetchDashboardAppointmentStatsDataResponse>;
 }
