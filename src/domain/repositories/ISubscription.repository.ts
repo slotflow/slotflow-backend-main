@@ -7,9 +7,6 @@ import { ApiPaginationRequest, ApiResponse, FetchProviderSubscriptionsRequest, F
 
 export type CreateSubscriptionPayloadProps = Pick<Subscription, "providerId" | "subscriptionPlanId" | "startDate" | "endDate" | "subscriptionStatus" | "paymentId" >;
 
-type FindAllSubscriptions= Pick<Subscription, "_id" | "createdAt" | "providerId" | "startDate" | "endDate" | "subscriptionStatus">;
-export type FindAllSubscriptionsResProps = FindAllSubscriptions & Partial<Pick<Plan, "planName" | "price">>;
-
 type SubscriptionProps = Pick<Subscription, "startDate" | "endDate" | "subscriptionStatus" | "createdAt">;
 type PaymentsProps = Pick<Payment, "transactionId" | "discountAmount" | "initialAmount" | "paymentFor" | "paymentGateway" | "paymentMethod" | "paymentStatus" | "totalAmount">;
 type PlanProps = Pick<Plan, "planName" | "price" | "adVisibility" | "maxBookingPerMonth">;

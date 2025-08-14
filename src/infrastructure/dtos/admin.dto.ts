@@ -142,7 +142,8 @@ export interface AdminChnageServiceIsBlockedStatusRequest {
 // **** used in adminSubscription.use-case **** \\
 
 // Admin fetch all subscriptions use case response interface 
-export type AdminFetchAllSubscriptionsResponse = Array<Pick<Subscription, "_id" | "createdAt" | "providerId" | "startDate" | "endDate" | "subscriptionStatus">>;
+// export type AdminFetchAllSubscriptionsResponse = Array<Pick<Subscription, "_id" | "createdAt" | "providerId" | "startDate" | "endDate" | "subscriptionStatus">>;
+export type AdminFetchAllSubscriptionsResponse = Array<Pick<Subscription, "_id" | "startDate" | "endDate" | "subscriptionStatus"> & Pick<Plan, "planName">>;
 
 // admin fetch subscription details use case request payload interface 
 export interface AdminFetchSubscriptionDetailsRequest {

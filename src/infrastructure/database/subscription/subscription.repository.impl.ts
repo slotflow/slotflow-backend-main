@@ -88,12 +88,22 @@ export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
                     startDate: 1,
                     endDate: 1,
                     subscriptionStatus: 1,
-                }).skip(skip).limit(limit).lean(),
+                }).skip(skip).limit(limit)
+                    .populate<PlanNameOnly>([{
+                        path: "subscriptionPlanId",
+                        select: "planName"
+                    }]).lean(),
                 SubscriptionModel.countDocuments(),
             ])
             const totalPages = Math.ceil(totalCount / limit);
             return {
-                data: subscriptions.map(this.mapToEntity),
+                data: subscriptions.map(sub => ({
+                    _id: sub._id,
+                    startDate: sub.startDate,
+                    endDate: sub.endDate,
+                    subscriptionStatus: sub.subscriptionStatus,
+                    planName: (sub.subscriptionPlanId as any)?.planName ?? ""
+                })),
                 totalPages,
                 currentPage: page,
                 totalCount
