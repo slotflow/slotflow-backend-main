@@ -1,14 +1,10 @@
+import { User } from "../../domain/entities/user.entity";
 import { Plan } from "../../domain/entities/plan.entity";
 import { Address } from "../../domain/entities/address.entity";
 import { Service } from "../../domain/entities/service.entity";
 import { Provider } from "../../domain/entities/provider.entity";
 import { ProviderService } from "../../domain/entities/providerService.entity";
 import { FontendAvailabilityForResponse, FrontendAvailabilityForRequest } from "../../domain/entities/serviceAvailability.entity";
-import { User } from "../../domain/entities/user.entity";
-
-
-// **** Used as the request type for creating a provider
-export type CreateProviderRequest = Pick<Provider, "username" | "email" | "password" | "verificationToken">;
 
 
 // ************ used in providerAddress.use-case ************ \\

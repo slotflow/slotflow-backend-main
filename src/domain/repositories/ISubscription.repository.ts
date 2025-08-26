@@ -29,4 +29,6 @@ export interface ISubscriptionRepository {
     findAllSubscriptions({ page, limit }: ApiPaginationRequest): Promise<ApiResponse<AdminFetchAllSubscriptionsResponse>>
 
     findSubscriptionFullDetails(subscriptionId: Types.ObjectId): Promise<findSubscriptionFullDetailsResProps | {}>;
+
+    findTodaysBookingForCronjob() : Promise<boolean>;
 }

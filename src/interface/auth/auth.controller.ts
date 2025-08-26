@@ -6,16 +6,20 @@ import { LoginUseCase } from '../../application/auth-use.case/login.use-case';
 import { RegisterUseCase } from '../../application/auth-use.case/register.use-case';
 import { ResendOtpUseCase } from '../../application/auth-use.case/resend-otp.use-case';
 import { VerifyOTPUseCase } from '../../application/auth-use.case/verify-otp.use-case';
+import { PlanRepositoryImpl } from '../../infrastructure/database/plan/plan.repository.impl';
 import { UserRepositoryImpl } from '../../infrastructure/database/user/user.repository.impl';
 import { UpdatePasswordUseCase } from '../../application/auth-use.case/updatePassword.use-case';
 import { CheckUserStatusUseCase } from '../../application/auth-use.case/checkUserStatus.use-case';
 import { ProviderRepositoryImpl } from '../../infrastructure/database/provider/provider.repository.impl';
+import { SubscriptionRepositoryImpl } from '../../infrastructure/database/subscription/subscription.repository.impl';
 import { LoginZodSchema, OTPVerificationZodSchema, RegisterZodSchema, ResendOTPZodSchema, UpdatePasswordZodSchema } from '../../infrastructure/zod/auth.zod';
 
 const userRepositoryImpl = new UserRepositoryImpl();
 const providerRepositoryImpl = new ProviderRepositoryImpl();
+const planRepositoryImpl = new PlanRepositoryImpl();
+const subscriptionRepositoryImpl = new SubscriptionRepositoryImpl();
 
-const loginUseCase = new LoginUseCase(userRepositoryImpl, providerRepositoryImpl);
+const loginUseCase = new LoginUseCase(userRepositoryImpl, providerRepositoryImpl, planRepositoryImpl, subscriptionRepositoryImpl);
 const registerUseCase = new RegisterUseCase(userRepositoryImpl, providerRepositoryImpl);
 const verifyOTPUseCase = new VerifyOTPUseCase(userRepositoryImpl, providerRepositoryImpl);
 const resendOtpUseCase = new ResendOtpUseCase(userRepositoryImpl, providerRepositoryImpl);
@@ -139,7 +143,8 @@ export class AuthController {
   async checkUserStatus(req: Request, res: Response) {
     try {
       const user = req.user;
-      const result = await this.checkUserStatusUseCase.execute({id: new Types.ObjectId(user.userOrProviderId), role: user.role});
+      if(!user) throw new Error("")
+      const result = await this.checkUserStatusUseCase.execute({_id: new Types.ObjectId(user.userOrProviderId), role: user.role});
       res.status(result.status).json(result);
     } catch (error) {
       HandleError.handle(error, res);

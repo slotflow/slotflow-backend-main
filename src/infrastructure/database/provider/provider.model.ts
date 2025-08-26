@@ -15,6 +15,7 @@ export interface IProvider extends Document {
   serviceAvailabilityId: Types.ObjectId;
   subscription: Types.ObjectId[];
   verificationToken: string;
+  googleId: string;
   trustedBySlotflow: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -87,6 +88,10 @@ const ProviderSchema = new Schema<IProvider>({
     default: []
   },
   verificationToken: {
+    type: String,
+    default: null
+  },
+  googleId: {
     type: String,
     default: null
   },

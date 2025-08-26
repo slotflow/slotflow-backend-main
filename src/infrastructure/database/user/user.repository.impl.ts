@@ -19,6 +19,7 @@ export class UserRepositoryImpl implements IUserRepository {
             user.addressId,
             user.bookingsId,
             user.verificationToken,
+            user.googleId,
             user.createdAt,
             user.updatedAt,
         );
@@ -92,6 +93,16 @@ export class UserRepositoryImpl implements IUserRepository {
             return user ? this.mapToEntity(user) : null;
         } catch (error) {
             throw new Error("User not found.");
+        }
+    }
+
+    async findUserByGoogleId(googleId: string): Promise<User | null> {
+        try {
+            const user = await UserModel.findOne({googleId});
+            return user ? this.mapToEntity(user) : null;
+        } catch (error) {
+            console.log("findUserByGoogleId error : error");
+            throw new Error("User finding using googleId failed");
         }
     }
 }

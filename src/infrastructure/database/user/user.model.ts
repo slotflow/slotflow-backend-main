@@ -12,6 +12,7 @@ export interface IUser extends Document {
   addressId: Types.ObjectId;
   bookingsId: Types.ObjectId;
   verificationToken: string;
+  googleId: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -70,7 +71,10 @@ const UserSchema = new Schema<IUser>({
   },
   verificationToken: {
     type: String,
-    required: [true, "Verification token is required"],
+    default: null
+  },
+  googleId: {
+    type: String,
     default: null
   },
 }, {

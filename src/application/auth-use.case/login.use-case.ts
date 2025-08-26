@@ -8,10 +8,18 @@ import { PasswordHasher } from "../../infrastructure/security/password-hashing";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { LoginRequest, LoginResponse } from "../../infrastructure/dtos/auth.dto";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
+import { Types } from "mongoose";
+import { PlanRepositoryImpl } from "../../infrastructure/database/plan/plan.repository.impl";
+import { SubscriptionRepositoryImpl } from "../../infrastructure/database/subscription/subscription.repository.impl";
 
 
 export class LoginUseCase {
-    constructor(private userRepositoryImpl: UserRepositoryImpl, private providerRepositoryImpl: ProviderRepositoryImpl) { }
+    constructor(
+        private userRepositoryImpl: UserRepositoryImpl,
+        private providerRepositoryImpl: ProviderRepositoryImpl,
+        private planRepositoryImpl: PlanRepositoryImpl,
+        private subscriptionRepositoryImpl: SubscriptionRepositoryImpl,
+    ) { }
 
     async execute(data: LoginRequest): Promise<LoginResponse> {
         const { email, password, role } = data;
@@ -38,7 +46,6 @@ export class LoginUseCase {
         }
 
         if (!userOrProvider) throw new Error("Invalid credentials")
-
         if (userOrProvider.isBlocked) throw new Error("Your account is blocked, please contact us.");
         if (!userOrProvider.isEmailVerified) throw new Error("Your registration was incomplete, please register again.");
 
@@ -47,17 +54,39 @@ export class LoginUseCase {
 
         const token = JWTService.generateToken({ userOrProviderId: userOrProvider._id, role: role });
 
-        let address;
-        let serviceDetails;
-        let serviceAvailability;
-        let approved;
+        let isAddressAdded;
+        let isServiceDetailsAdded;
+        let isServiceAvailabilityAdded;
+        let isAdminApproved;
         let updateProfileImage;
+        let subscriptiondId;
+        let subscription;
+        let subscribedPlanId;
+        let subscribedPlan;
+        let providerSubscription;
 
         if (role === "PROVIDER") {
-            address = (userOrProvider as Provider).addressId ? true : false;
-            serviceDetails = (userOrProvider as Provider).serviceId ? true : false;
-            serviceAvailability = (userOrProvider as Provider).serviceAvailabilityId ? true : false;
-            approved = (userOrProvider as Provider).isAdminVerified ? true : false;
+            isAddressAdded = (userOrProvider as Provider).addressId ? true : false;
+            isServiceDetailsAdded = (userOrProvider as Provider).serviceId ? true : false;
+            isServiceAvailabilityAdded = (userOrProvider as Provider).serviceAvailabilityId ? true : false;
+            isAdminApproved = (userOrProvider as Provider).isAdminVerified ? true : false;
+            subscriptiondId = (userOrProvider as Provider).subscription[0];
+            subscription = await this.subscriptionRepositoryImpl.findSubscriptionById(subscriptiondId);
+            if (subscription) {
+                const now = new Date();
+                const isActive = subscription.subscriptionStatus === "Active" && new Date(subscription.endDate) > now;
+                if (isActive) {
+                    subscribedPlanId = subscription.subscriptionPlanId;
+                    console.log("subscribedPlanId : ",subscribedPlanId);
+                    subscribedPlan = await this.planRepositoryImpl.findPlanById(subscribedPlanId);
+                    console.log("subscribedPlan : ", subscribedPlan);
+                    providerSubscription = subscribedPlan?.planName;
+                    console.log("providerSubscription : ", providerSubscription);
+                } else {
+                    providerSubscription = "NoSubscription"
+                    console.log("Subscription is expired or inactive");
+                }
+            }
         }
 
         if (userOrProvider.profileImage) {
@@ -72,6 +101,22 @@ export class LoginUseCase {
             updateProfileImage = signedUrl
         }
 
-        return { success: true, message: 'Logged In Successfully.', authUser: { uid: userOrProvider._id, username: userOrProvider.username, profileImage: updateProfileImage ? updateProfileImage : userOrProvider.profileImage, role: role, token, isLoggedIn: true, address, serviceDetails, serviceAvailability, approved } };
+        return {
+            success: true,
+            message: 'Logged In Successfully.',
+            authUser: {
+                uid: userOrProvider._id,
+                username: userOrProvider.username,
+                profileImage: updateProfileImage ? updateProfileImage : userOrProvider.profileImage,
+                role: role,
+                token,
+                isLoggedIn: true,
+                isAddressAdded,
+                isServiceDetailsAdded,
+                isServiceAvailabilityAdded,
+                isAdminApproved,
+                providerSubscription,
+            }
+        };
     }
 }

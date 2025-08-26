@@ -1,10 +1,9 @@
 import { Types } from "mongoose";
 import { IProvider, ProviderModel } from "./provider.model";
 import { AdiminFetchAllProviders } from "../../dtos/admin.dto";
-import { CreateProviderRequest } from "../../dtos/provider.dto";
 import { Provider } from "../../../domain/entities/provider.entity";
 import { ApiPaginationRequest, ApiResponse } from "../../dtos/common.dto";
-import {  IProviderRepository } from '../../../domain/repositories/IProvider.repository';
+import {  CreateProviderProps, IProviderRepository } from '../../../domain/repositories/IProvider.repository';
 
 export class ProviderRepositoryImpl implements IProviderRepository {
     private mapToEntity(provider: IProvider): Provider {
@@ -23,13 +22,14 @@ export class ProviderRepositoryImpl implements IProviderRepository {
             provider.serviceAvailabilityId,
             provider.subscription,
             provider.verificationToken,
+            provider.googleId,
             provider.trustedBySlotflow,
             provider.createdAt,
             provider.updatedAt,
         )
     }
 
-    async createProvider(provider: CreateProviderRequest): Promise<Provider | null> {
+    async createProvider(provider: CreateProviderProps): Promise<Provider | null> {
         try {
             if(!provider) throw new Error("Invalid request.");
             const createdProvider = await ProviderModel.create(provider);
@@ -102,6 +102,16 @@ export class ProviderRepositoryImpl implements IProviderRepository {
             return provider ? this.mapToEntity(provider) : null;
         }catch(error){
             throw new Error('Provider finding error.');
+        }
+    }
+
+    async findProviderByGoogleId(googleId: string): Promise<Provider | null> {
+        try {
+            const provider = await ProviderModel.findOne({googleId});
+            return provider ? this.mapToEntity(provider) : null;
+        } catch (error) {
+            console.log("findProviderByGoogleId error : ",error);
+            throw new Error("Provider finding using googleId failed.");
         }
     }
     

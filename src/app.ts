@@ -2,6 +2,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 import express from 'express';
+import passport from 'passport';
 import cookieParser from 'cookie-parser';
 import authRoutes from './interface/auth/auth.routes';
 import userRouter from './interface/user/user.routes';

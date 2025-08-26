@@ -51,7 +51,7 @@ export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
                 }).populate<PopulatedSubscription>([{
                     path: "subscriptionPlanId",
                     select: "-_id planName price"
-                },{
+                }, {
                     path: "paymentId",
                     select: "-_id totalAmount"
                 }]).skip(skip).limit(limit).lean(),
@@ -116,6 +116,25 @@ export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
             return subscriptionDetails || {};
         } catch (error) {
             throw new Error("Subscription details fetching error.");
+        }
+    }
+
+    async findTodaysBookingForCronjob(): Promise<boolean> {
+        try {
+            const now = new Date();
+
+            const subscriptions = await SubscriptionModel.updateMany(
+                {
+                    subscriptionStatus: "Active",
+                    endDate: { $lt: now }
+                },
+                {
+                    $set: { appointmentStatus: "Expired" }
+                }
+            );
+            return subscriptions.modifiedCount > 0;
+        } catch (error) {
+            return false;
         }
     }
 }

@@ -1,9 +1,7 @@
 import dotenv from 'dotenv';
-
 dotenv.config();
 
 export const mongoConfig = {
-    port: process.env.MONGODB_PORT || 5000,
     mongoURL : process.env.NODE_ENV !== "development" ? process.env.MONGO_URI_DEV : process.env.MONGO_URI 
 }
 
@@ -35,4 +33,9 @@ export const aws_s3Config = {
 export const redisConfig = {
     redisUrl: process.env.REDIS_URL,
     redisToken: process.env.REDIS_TOKEN
+}
+
+export const googleClientConfig = {
+    googleClientId: process.env.GOOGLE_CLIENT_ID,
+    googleClientSecret: process.env.GOOGLE_CLIENT_SECRET
 }

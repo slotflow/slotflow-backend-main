@@ -53,10 +53,11 @@ export interface LoginResponse extends CommonResponse {
         role: string, 
         token: string, 
         isLoggedIn: boolean,  
-        address?: boolean, 
-        serviceDetails?: boolean, 
-        serviceAvailability?: boolean, 
-        approved?: boolean 
+        isAddressAdded?: boolean, 
+        isServiceDetailsAdded?: boolean, 
+        isServiceAvailabilityAdded?: boolean, 
+        isAdminApproved?: boolean 
+        providerSubscription?: string;
     }
 }
 
@@ -73,7 +74,7 @@ export interface UpdatePasswordRequest {
 // **** Check status **** \\
 // check user status use case request payload interface
 export interface CheckUserStatusRequest {
-    id: Types.ObjectId;
+    _id: Types.ObjectId;
     role: string;
 }
 // check user status use case response interface

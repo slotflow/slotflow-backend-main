@@ -1,12 +1,25 @@
 import { Types } from "mongoose";
 import { Provider } from "../entities/provider.entity";
 import { AdiminFetchAllProviders } from "../../infrastructure/dtos/admin.dto";
-import { CreateProviderRequest } from "../../infrastructure/dtos/provider.dto";
 import { ApiPaginationRequest, ApiResponse } from "../../infrastructure/dtos/common.dto";
 
+export type CreateLocalProvider = {
+  username: Provider["username"];
+  email: Provider["email"];
+  password: Provider["password"];
+  verificationToken: Provider["verificationToken"];
+};
+
+export type CreateGoogleProvider = {
+  username: Provider["username"];
+  email: Provider["email"];
+  googleId: Provider["googleId"];
+};
+
+export type CreateProviderProps = CreateLocalProvider | CreateGoogleProvider;
 
 export interface IProviderRepository {
-    createProvider(provider : CreateProviderRequest) : Promise<Provider | null>;
+    createProvider(provider : CreateProviderProps) : Promise<Provider | null>;
 
     verifyProvider(verificationToken: string): Promise<Provider | null>;
     
@@ -17,4 +30,6 @@ export interface IProviderRepository {
     findAllProviders({page,limit}: ApiPaginationRequest): Promise<ApiResponse<AdiminFetchAllProviders>>;
     
     findProviderById(providerId: Types.ObjectId): Promise<Provider | null>;
+
+    findProviderByGoogleId(googleId: string): Promise<Provider | null>;
 }

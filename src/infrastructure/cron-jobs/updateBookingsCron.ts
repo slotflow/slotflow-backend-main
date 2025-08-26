@@ -17,11 +17,11 @@ setInterval(async () => {
 
     if (result === true) {
       lastSuccessfulRunDateForBookings = today;
-      console.log("[INTERVAL] Status updated successfully.");
+      console.log("[INTERVAL] Booking status updated successfully.");
     } else {
-      console.log("[INTERVAL] No update made or failed. Will retry...");
+      console.log("[INTERVAL] No booking update made or failed. Will retry...");
     }
   } catch (error) {
-    console.error("[INTERVAL ERROR]:", error);
+    console.error("[INTERVAL ERROR in booking status update]:", error);
   }
 }, 10 * 60 * 1000);
