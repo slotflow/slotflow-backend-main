@@ -70,21 +70,17 @@ export class LoginUseCase {
             isServiceDetailsAdded = (userOrProvider as Provider).serviceId ? true : false;
             isServiceAvailabilityAdded = (userOrProvider as Provider).serviceAvailabilityId ? true : false;
             isAdminApproved = (userOrProvider as Provider).isAdminVerified ? true : false;
-            subscriptiondId = (userOrProvider as Provider).subscription[0];
+            subscriptiondId = (userOrProvider as Provider).subscription[(userOrProvider as Provider).subscription.length - 1];
             subscription = await this.subscriptionRepositoryImpl.findSubscriptionById(subscriptiondId);
             if (subscription) {
                 const now = new Date();
                 const isActive = subscription.subscriptionStatus === "Active" && new Date(subscription.endDate) > now;
                 if (isActive) {
                     subscribedPlanId = subscription.subscriptionPlanId;
-                    console.log("subscribedPlanId : ",subscribedPlanId);
                     subscribedPlan = await this.planRepositoryImpl.findPlanById(subscribedPlanId);
-                    console.log("subscribedPlan : ", subscribedPlan);
                     providerSubscription = subscribedPlan?.planName;
-                    console.log("providerSubscription : ", providerSubscription);
                 } else {
                     providerSubscription = "NoSubscription"
-                    console.log("Subscription is expired or inactive");
                 }
             }
         }

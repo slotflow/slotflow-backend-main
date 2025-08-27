@@ -117,6 +117,9 @@ export interface ProviderSaveSubscriptionRequest {
     providerId: Provider["_id"];
     sessionId: string
 }
+export interface ProviderSaveSubscriptionResponse {
+    planName?: string
+}; 
 
 
 

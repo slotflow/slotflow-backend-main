@@ -3,6 +3,7 @@ import Stripe from "stripe";
 import { startSession, Types } from "mongoose";
 import { 
     ProviderSaveSubscriptionRequest, 
+    ProviderSaveSubscriptionResponse, 
     ProviderStripeSubscriptionCreateSessionIdRequest, 
     ProviderStripeSubscriptionCreateSessionIdResponse, 
 } from "../../infrastructure/dtos/provider.dto";
@@ -66,6 +67,7 @@ export class ProviderStripeSubscriptionCreateSessionIdUseCase {
                 success_url: `http://localhost:5173/provider/payment-success/?session_id={CHECKOUT_SESSION_ID}`,
                 cancel_url: `http://localhost:5173/provider/payment-failed/`,
                 metadata: {
+                    planName: plan.planName,
                     providerId: providerId.toString(),
                     planId: planId.toString(),
                     planDuration: planDuration,
@@ -84,7 +86,7 @@ export class ProviderSaveSubscriptionUseCase {
         private subscriptionRepositoryImpl: SubscriptionRepositoryImpl,
     ) { }
 
-    async execute({ providerId, sessionId }: ProviderSaveSubscriptionRequest): Promise<ApiResponse> {
+    async execute({ providerId, sessionId }: ProviderSaveSubscriptionRequest): Promise<ApiResponse<ProviderSaveSubscriptionResponse>> {
 
         if (!providerId || !sessionId) throw new Error("Invalid request.");
 
@@ -97,6 +99,7 @@ export class ProviderSaveSubscriptionUseCase {
         const session = await stripe.checkout.sessions.retrieve(sessionId);
 
         const pId = session?.metadata?.providerId;
+        const planName = session?.metadata?.planName;
         const totalAmount = Number(session?.metadata?.totalAmount);
         const initialAmount = Number(session?.metadata?.initialAmount);
         const paymentStatus = session?.payment_status === "paid" ? "Paid" : "Pending";
@@ -144,7 +147,7 @@ export class ProviderSaveSubscriptionUseCase {
             await mongoSession.commitTransaction();
             mongoSession.endSession();
 
-            return { success: true, message: "Your Subscription has been activated." };
+            return { success: true, message: "Your Subscription has been activated.", data: { planName } };
         } catch(error) {
             await mongoSession.abortTransaction();
             mongoSession.endSession();
