@@ -1,6 +1,5 @@
 import { Types } from "mongoose";
 import { CommonResponse } from "./common.dto";
-import { Plan } from "../../domain/entities/plan.entity";
 
 // **** Register usec case **** \\
 // user or provider register usecase request payload interface
@@ -57,8 +56,8 @@ export interface LoginResponse extends CommonResponse {
         isAddressAdded?: boolean, 
         isServiceDetailsAdded?: boolean, 
         isServiceAvailabilityAdded?: boolean, 
-        isAdminApproved?: boolean;
-        providerSubscription?: Plan["planName"] | boolean;
+        isAdminApproved?: boolean 
+        providerSubscription?: string;
     }
 }
 
@@ -75,7 +74,7 @@ export interface UpdatePasswordRequest {
 // **** Check status **** \\
 // check user status use case request payload interface
 export interface CheckUserStatusRequest {
-    id: Types.ObjectId;
+    _id: Types.ObjectId;
     role: string;
 }
 // check user status use case response interface

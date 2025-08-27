@@ -55,7 +55,7 @@ export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
                 }, {
                     path: "paymentId",
                     select: "-_id totalAmount"
-                }]).skip(skip).limit(limit).lean(),
+                }]).sort({ startDate: -1 }).skip(skip).limit(limit).lean(),
                 SubscriptionModel.countDocuments({ providerId: providerId }),
             ])
             const totalPages = Math.ceil(totalCount / limit);

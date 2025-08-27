@@ -1,12 +1,27 @@
 import { Types } from "mongoose";
 import { Provider } from "../entities/provider.entity";
-import { AdiminFetchAllProviders, AdminFetchDashboardProviderStatsDataResponse } from "../../infrastructure/dtos/admin.dto";
-import { CreateProviderRequest } from "../../infrastructure/dtos/provider.dto";
 import { ApiPaginationRequest, ApiResponse } from "../../infrastructure/dtos/common.dto";
+import { AdiminFetchAllProviders, AdminFetchDashboardProviderStatsDataResponse } from "../../infrastructure/dtos/admin.dto";
 
+export type CreateLocalProvider = {
+  username: Provider["username"];
+  email: Provider["email"];
+  password: Provider["password"];
+  verificationToken: Provider["verificationToken"];
+};
+
+export type CreateGoogleProvider = {
+  username: Provider["username"];
+  email: Provider["email"];
+  googleId: Provider["googleId"];
+  profileImage: Provider["profileImage"];
+  isEmailVerified: Provider["isEmailVerified"];
+};
+
+export type CreateProviderProps = CreateLocalProvider | CreateGoogleProvider;
 
 export interface IProviderRepository {
-    createProvider(provider : CreateProviderRequest) : Promise<Provider | null>;
+    createProvider(provider : CreateProviderProps) : Promise<Provider | null>;
 
     verifyProvider(verificationToken: string): Promise<Provider | null>;
     
@@ -22,4 +37,5 @@ export interface IProviderRepository {
 
     findProvidersStatsForAdminDashboard(): Promise<AdminFetchDashboardProviderStatsDataResponse>;
 
+    findProviderByGoogleId(googleId: string): Promise<Provider | null>;
 }

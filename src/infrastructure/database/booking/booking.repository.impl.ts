@@ -93,7 +93,7 @@ export class BookingRepositoryImpl implements IBookingRepository {
                     $set: { appointmentStatus: "Not Attended" }
                 }
             );
-            return bookings.modifiedCount > 0 ? true : false;
+            return bookings.modifiedCount > 0;
         } catch {
             return false;
         }

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { authController } from './auth.controller';
 import { authMiddleware } from '../middleware/auth.middleware';
+import { googleAuthController } from './googleAuth.controller';
 
 const router = Router();
 
@@ -11,5 +12,8 @@ router.post("/signin", authController.login);
 router.post('/signout', authController.logout);
 router.put('/updatePassword',authController.updatePassword);
 router.post('/checkUserStatus',authMiddleware,authController.checkUserStatus);
+
+router.get('/google', googleAuthController.googleAuth);
+router.get('/google/callback', googleAuthController.googleAuthCallback);
 
 export default router;
