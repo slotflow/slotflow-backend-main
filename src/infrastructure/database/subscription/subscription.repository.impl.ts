@@ -129,9 +129,11 @@ export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
                     endDate: { $lt: now }
                 },
                 {
-                    $set: { appointmentStatus: "Expired" }
+                    $set: { subscriptionStatus: "Expired" }
                 }
             );
+
+            console.log("subscriptions : ",subscriptions)
             return subscriptions.modifiedCount > 0;
         } catch (error) {
             return false;

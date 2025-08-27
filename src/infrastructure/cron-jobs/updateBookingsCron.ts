@@ -24,4 +24,4 @@ setInterval(async () => {
   } catch (error) {
     console.error("[INTERVAL ERROR in booking status update]:", error);
   }
-}, 10 * 60 * 1000);
+}, 1000 * 60 * 60);
