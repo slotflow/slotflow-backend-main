@@ -19,7 +19,17 @@ passport.use(
         },
         async (req, accessToken, refreshToken, profile, done) => {
             try {
-                const role = (req.query.state as string) || "USER";
+                let role;
+                if (req.query.state) {
+                    try {
+                        const parsed = JSON.parse(req.query.state as string);
+                        if (parsed.role === "PROVIDER" || parsed.role === "USER") {
+                            role = parsed.role;
+                        }
+                    } catch (e) {
+                        console.warn("Failed to parse state:", req.query.state);
+                    }
+                }
 
                 const entity = await googleAuthUseCase.execute({
                     googleId: profile.id,
@@ -29,10 +39,9 @@ passport.use(
                     image: profile.photos?.[0]?.value || null,
                 });
 
-                console.log("entity : ",entity);
-
-                return done(null, entity);
+                return done(null, entity, {role});
             } catch (error) {
+                console.log("Passport error : ",error);
                 return done(error, undefined);
             }
         }

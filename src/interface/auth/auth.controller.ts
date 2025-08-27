@@ -1,5 +1,6 @@
 import { Types } from 'mongoose';
 import { Request, Response } from 'express';
+import { DecodedUser } from '../../express';
 import { appConfig } from '../../config/env';
 import { HandleError } from '../../infrastructure/error/error';
 import { LoginUseCase } from '../../application/auth-use.case/login.use-case';
@@ -142,7 +143,7 @@ export class AuthController {
 
   async checkUserStatus(req: Request, res: Response) {
     try {
-      const user = req.user;
+      const user = (req.user as DecodedUser);
       if(!user) throw new Error("")
       const result = await this.checkUserStatusUseCase.execute({_id: new Types.ObjectId(user.userOrProviderId), role: user.role});
       res.status(result.status).json(result);

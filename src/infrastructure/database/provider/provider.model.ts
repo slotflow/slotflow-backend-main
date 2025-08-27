@@ -40,7 +40,9 @@ const ProviderSchema = new Schema<IProvider>({
   },
   password: {
     type: String,
-    required: [true, "Password is required"],
+    required: function () {
+      return !this.googleId;
+    },
     minlength: [8, "Password must be at least 8 characters"],
     maxlength: [100, "Password must be at most 100 characters"],
     match: [/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,100}$/, "Invalid password"]
@@ -93,7 +95,10 @@ const ProviderSchema = new Schema<IProvider>({
   },
   googleId: {
     type: String,
-    default: null
+    default: null,
+    required: function () {
+      return !this.password;
+    }
   },
   trustedBySlotflow: {
     type: Boolean,

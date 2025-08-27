@@ -26,34 +26,39 @@ export class GoogleAuthUseCase {
                 }
 
                 if (!user) {
-                    await this.userRepositoryImpl.createUser({
+                    user = await this.userRepositoryImpl.createUser({
                         username: profile.name,
                         email: profile.email,
                         googleId: profile.googleId,
+                        profileImage: profile.image ?? "",
+                        isEmailVerified: true
                     })
                 }
-
+                
                 return user as User;
-            } else if (profile.role === "PROVIDER") {
+            }
+            
+            if (profile.role === "PROVIDER") {
                 let provider = await this.providerRepositoryImpl.findProviderByGoogleId(profile.googleId);
-
+                
                 if (!provider) {
                     provider = await this.providerRepositoryImpl.findProviderByEmail(profile.email);
                 }
-
+                
                 if (!provider) {
                     provider = await this.providerRepositoryImpl.createProvider({
                         username: profile.name,
                         email: profile.email,
                         googleId: profile.googleId,
+                        profileImage: profile.image ?? "",
+                        isEmailVerified: true,
                     })
                 }
+                console.log("Provider : ",provider);
                 return provider as Provider;
-            } else {
-
-                throw new Error("Invalid role");
             }
 
+            throw new Error("Invalid role");
         } catch (error) {
             console.log("GoogleAuthUseCase error : ", error);
             throw new Error("Google Auth failed");
