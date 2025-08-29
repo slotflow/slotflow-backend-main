@@ -35,7 +35,7 @@ router.put('/updaterUserInfo', authMiddleware, providerProfileController.updateP
 
 router.get('/getPlans', authMiddleware, providerPlanController.fetchAllPlans);
 
-router.get('/', authMiddleware, providerSubscriptionController.fetchProviderSubscriptions);
+router.get('/getSubscriptions', authMiddleware, providerSubscriptionController.fetchProviderSubscriptions);
 router.post('/createSubscriptionCheckoutSession', authMiddleware, providerSubscriptionController.subscribe);
 router.post('/saveSubscription', authMiddleware, providerSubscriptionController.saveSubscription);
 router.post('/subscribeToTrialPlan', authMiddleware, providerSubscriptionController.subsribetoTrialPlan);
@@ -43,6 +43,7 @@ router.post('/subscribeToTrialPlan', authMiddleware, providerSubscriptionControl
 router.get('/getPayments', authMiddleware, providerPaymentController.getPayments);
 
 router.get('/getBookingAppointments', authMiddleware, providerBookingController.fetchBookingAppointments);
+router.patch('/changeAppointmentStatus', authMiddleware, providerBookingController.updateBookingAppointmentStatus);
 
 router.get('/getUsersForCahtSidebar', authMiddleware, providerUserController.fetchUsersForChatSideBar);
 

@@ -5,6 +5,7 @@ import { Service } from "../../domain/entities/service.entity";
 import { Provider } from "../../domain/entities/provider.entity";
 import { ProviderService } from "../../domain/entities/providerService.entity";
 import { FontendAvailabilityForResponse, FrontendAvailabilityForRequest } from "../../domain/entities/serviceAvailability.entity";
+import { Booking } from "../../domain/entities/booking.entity";
 
 
 // ************ used in providerAddress.use-case ************ \\
@@ -201,3 +202,11 @@ export interface ProviderFetchDashboardGraphDataResponse {
         count: number;
     }>;
 }
+
+
+
+
+
+// ************ used in providerBooking.use-case  ************ \\
+// Used as the request type for the provider change booking appointment status
+export type ProviderChangeBookingAppoinmentStatusRequest = Pick<Booking, "_id" | "appointmentStatus">;
