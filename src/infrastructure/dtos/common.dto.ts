@@ -1,7 +1,7 @@
 import { Plan } from "../../domain/entities/plan.entity";
 import { User } from "../../domain/entities/user.entity";
 import { Address } from "../../domain/entities/address.entity";
-import { Payment } from "../../domain/entities/payment.entity";
+import { Payment, PaymentFor } from "../../domain/entities/payment.entity";
 import { Booking } from "../../domain/entities/booking.entity";
 import { Service } from "../../domain/entities/service.entity";
 import { Provider } from "../../domain/entities/provider.entity";
@@ -58,6 +58,7 @@ export type AddAddressRequest = Pick<Address, "userId" | "addressLine" | "place"
 export interface userIdAndProviderId {
   userId?: User["_id"];
   providerId?: Provider["_id"];
+  paymentFor?: PaymentFor | { $in : PaymentFor[] };
 }
 export interface FetchPaymentsRequest extends ApiPaginationRequest, userIdAndProviderId {}
 //// **** 6.1 Used as the response type fetching payments for admin, provider and user side

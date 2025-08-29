@@ -2,30 +2,27 @@ import dayjs from "dayjs";
 import { SubscriptionRepositoryImpl } from "../database/subscription/subscription.repository.impl";
 import { UpdateSubscriptionStatusUseCase } from "../../application/cron-job.use-case/updateSubscriptionStatusCron.use-case";
 
-const subscriptionRepositoryImpl = new SubscriptionRepositoryImpl()
-const updateSubscriptionStatusUseCase = new UpdateSubscriptionStatusUseCase(subscriptionRepositoryImpl);
+const subscriptionRepositoryImpl = new SubscriptionRepositoryImpl();
+const updateSubscriptionStatusCronUseCase = new UpdateSubscriptionStatusUseCase(subscriptionRepositoryImpl);
 
-let lastRunDate: string | null = null;
+let lastSuccessfulRunDateForBookings: string | null = null;
 
 setInterval(async () => {
+
   const today = dayjs().format("YYYY-MM-DD");
-  if (lastRunDate === today) {
-    console.log("[INTERVAL] Already executed successfully today. Skipping...");
-    return;
-  }
+  if (lastSuccessfulRunDateForBookings === today) return;
 
   console.log("[INTERVAL] Running updateSubscriptionStatus...");
-
   try {
-    const result = await updateSubscriptionStatusUseCase.execute();
+    const result = await updateSubscriptionStatusCronUseCase.execute();
 
     if (result === true) {
-      lastRunDate = today;
-      console.log("[INTERVAL] updateSubscriptionStatus executed successfully.");
+      lastSuccessfulRunDateForBookings = today;
+      console.log("[INTERVAL] Subscriptions status updated successfully.");
     } else {
-      console.warn("[INTERVAL] updateSubscriptionStatus did not update any records. Will retry later.");
+      console.log("[INTERVAL] No subscription status update made or failed. Will retry...");
     }
   } catch (error) {
-    console.error("[INTERVAL ERROR] updateSubscriptionStatus failed:", error);
+    console.error("[INTERVAL ERROR in subscription status update]:", error);
   }
-}, 60 * 60 * 1000 * 24);
+}, 1000 * 60  * 60);

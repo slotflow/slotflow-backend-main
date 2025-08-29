@@ -57,8 +57,14 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
         try {
             const skip = (page - 1) * limit;
             const filter: userIdAndProviderId = {};
-            if (userId) { filter.userId = userId; }
-            if (providerId) { filter.providerId = providerId; }
+            if (userId) { 
+                filter.userId = userId;
+                filter.paymentFor = PaymentFor.AppointmentBooking
+            }
+            if (providerId) { 
+                filter.providerId = providerId;
+                filter.paymentFor = { $in :[PaymentFor.ProviderPayout, PaymentFor.ProviderSubscription]}
+            }
             const [payments, totalCount] = await Promise.all([
                 PaymentModel.find(filter, {
                     _id: 1,
