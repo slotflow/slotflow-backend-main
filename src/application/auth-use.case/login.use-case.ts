@@ -101,12 +101,14 @@ export class LoginUseCase {
                 profileImage: updateProfileImage ? updateProfileImage : userOrProvider.profileImage,
                 role: role,
                 token,
+                isBlocked: userOrProvider.isBlocked,
                 isLoggedIn: true,
                 isAddressAdded,
                 isServiceDetailsAdded,
                 isServiceAvailabilityAdded,
                 isAdminApproved,
                 providerSubscription,
+                updatedAt: userOrProvider.updatedAt
             }
         };
     }

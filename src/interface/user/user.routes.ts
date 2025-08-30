@@ -15,7 +15,7 @@ const router = Router();
 
 router.get('/getProfileDetails', authMiddleware, userProfileController.getProfileDetails);
 router.post('/updateProfileImage', authMiddleware, upload.single("profileImage"), userProfileController.updateProfileImage);
-router.put('/updateUserInfo', authMiddleware, userProfileController.updateUserInfo);
+router.patch('/updateUserInfo', authMiddleware, userProfileController.updateUserInfo);
 
 router.post('/addAddress', authMiddleware, userAddressController.addAddress);
 router.get('/getAddress', authMiddleware, userAddressController.getAddress);

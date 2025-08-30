@@ -5,6 +5,7 @@ import { HandleError } from "../../infrastructure/error/error";
 import { UserOrProviderUpdateInfoZodSchema } from "../../infrastructure/zod/common.zod";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { ProviderFetchProfileDetailsUseCase, ProviderUpdateProfileImageUseCase, ProviderUpdateProviderInfoUseCase } from "../../application/provider-use.case/providerProfile.use-case";
+import { DecodedUser } from "../../express";
 
 const providerRepositoryImpl = new ProviderRepositoryImpl();
 
@@ -25,7 +26,7 @@ class ProviderProfileController {
 
     async getProfileDetails(req: Request, res: Response) {
         try{
-            const providerId = req.user.userOrProviderId;
+            const providerId = (req.user as DecodedUser).userOrProviderId;
             if(!providerId) throw new Error("Invalid request.");
             const result = await this.providerFetchProfileDetailsUseCase.execute({providerId: new Types.ObjectId(providerId)});
             res.status(200).json(result);
@@ -36,7 +37,7 @@ class ProviderProfileController {
 
     async updateProfileImage(req: Request, res: Response) {
         try{
-            const providerId = req.user.userOrProviderId;
+            const providerId = (req.user as DecodedUser).userOrProviderId;
             const file = req.file;
             if(!providerId || !file) throw new Error("Invalid request.");
             const result = await this.providerUpdateProfileImageUseCase.execute({providerId: new Types.ObjectId(providerId), file});
@@ -48,7 +49,7 @@ class ProviderProfileController {
 
     async updateProviderInfo(req: Request, res: Response) {
         try {
-            const providerId = req.user.userOrProviderId;
+            const providerId = (req.user as DecodedUser).userOrProviderId;
             const validateData = UserOrProviderUpdateInfoZodSchema.parse(req.body);
             const { username, phone } = validateData;
             if(!providerId || !username || !phone) throw new Error("Invalid request");

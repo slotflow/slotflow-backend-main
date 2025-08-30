@@ -52,12 +52,14 @@ export interface LoginResponse extends CommonResponse {
         profileImage: string | null, 
         role: string, 
         token: string, 
+        isBlocked?: boolean;
         isLoggedIn: boolean,  
         isAddressAdded?: boolean, 
         isServiceDetailsAdded?: boolean, 
         isServiceAvailabilityAdded?: boolean, 
         isAdminApproved?: boolean 
         providerSubscription?: string;
+        updatedAt?: Date;
     }
 }
 

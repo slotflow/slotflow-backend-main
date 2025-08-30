@@ -1,5 +1,5 @@
-import passport from "passport";
 import jwt from "jsonwebtoken";
+import passport from "passport";
 import { appConfig } from "../../config/env";
 import { NextFunction, Request, Response } from "express";
 
@@ -12,6 +12,7 @@ export class GoogleAuthController {
             const role = req.query.role;
             passport.authenticate("google", {
                 scope: ["openid", "profile", "email"],
+                prompt: "select_account",
                 session: false,
                 state: JSON.stringify({ role }),
             })(req, res, next);
@@ -23,7 +24,9 @@ export class GoogleAuthController {
     async googleAuthCallback(req: Request, res: Response) {
         try {
 
-            passport.authenticate("google", { session: false }, (err, user, info) => {
+            passport.authenticate("google", 
+                { session: false },
+                 (err, user, info) => {
                 if (err || !user) {
                     return res.redirect("/login?error=google_auth_failed");
                 }
@@ -53,4 +56,5 @@ export class GoogleAuthController {
 }
 
 const googleAuthController = new GoogleAuthController();
+
 export { googleAuthController };

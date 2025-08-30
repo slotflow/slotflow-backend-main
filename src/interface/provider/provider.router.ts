@@ -31,7 +31,7 @@ router.get('/getServiceAvailability', authMiddleware, providerServiceAvailabilit
 
 router.get('/getProfileDetails', authMiddleware, providerProfileController.getProfileDetails);
 router.post('/updateProfileImage', authMiddleware,upload.single('profileImage'), providerProfileController.updateProfileImage);
-router.put('/updaterUserInfo', authMiddleware, providerProfileController.updateProviderInfo);
+router.patch('/updaterUserInfo', authMiddleware, providerProfileController.updateProviderInfo);
 
 router.get('/getPlans', authMiddleware, providerPlanController.fetchAllPlans);
 
