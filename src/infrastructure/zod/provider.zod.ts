@@ -63,3 +63,5 @@ export const ProviderChangeBookingAppointmentStatusZodSchema = z.object({
   appointmentStatus: enumField("Appointment status",[AppointmentStatus.Confirmed,AppointmentStatus.Rejected])
 });
 
+
+

@@ -20,6 +20,7 @@ const router = Router();
 
 router.post('/addAddress',authMiddleware, provideAddressController.addAddress);
 router.get('/getAddress', authMiddleware, provideAddressController.getAddress);
+router.patch('/updateAddress/:addressId', authMiddleware, provideAddressController.updateAddress);
 
 router.get('/fetchAllAppServices', authMiddleware, providerAppServiceController.getAllAppServices);
 

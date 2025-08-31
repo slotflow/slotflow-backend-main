@@ -7,4 +7,8 @@ export interface IAddressRepository {
     createAddress(address: AddAddressRequest): Promise<Address>;
 
     findAddressByUserId(userId: Types.ObjectId): Promise<Address | null>;
+
+    findAddressById(addressId: Types.ObjectId): Promise<Address | null>;
+
+    updateAddress(address: Address): Promise<Address | null>;
 }

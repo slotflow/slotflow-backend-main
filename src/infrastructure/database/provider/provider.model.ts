@@ -82,7 +82,8 @@ const ProviderSchema = new Schema<IProvider>({
   },
   serviceAvailabilityId: {
     type: Schema.Types.ObjectId,
-    ref: "ServiceAvailability"
+    ref: "ServiceAvailability",
+    default: null
   },
   subscription: {
     type: [Schema.Types.ObjectId],

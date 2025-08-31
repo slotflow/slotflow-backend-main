@@ -28,16 +28,42 @@ export class AddressRepositoryImpl implements IAddressRepository {
             const newAddress = await AddressModel.create(address);
             return this.mapToEntity(newAddress);
         }catch(error){
-            throw new Error("Address adding error.");
+            console.log("createAddress error : ",error);
+            throw new Error("Address adding failed.");
         }
     }
-
+    
     async findAddressByUserId(userId: Types.ObjectId): Promise<Address | null> {
         try{
             const address = await AddressModel.findOne({ userId: userId });
             return address ? this.mapToEntity(address) : null;
         }catch(error){
-            throw new Error("Address fetching error.");
+            console.log("findAddressByUserId error : ",error);
+            throw new Error("Address fetching failed.");
+        }
+    }
+
+    async findAddressById(addressId: Types.ObjectId): Promise<Address | null> {
+        try{
+            const address = await AddressModel.findOne(addressId);
+            return address ? this.mapToEntity(address) : null;
+        }catch(error){
+            console.log("findAddressByUserId error : ",error);
+            throw new Error("Address fetching failed.");
+        }
+    }
+    
+    async updateAddress(address: Address): Promise<Address | null> {
+        try {
+            const updatedAddress = await AddressModel.findOneAndUpdate(
+                address._id,
+                { ...address },
+                { new : true }
+            );
+            return updatedAddress ? this.mapToEntity(updatedAddress) : null;
+        } catch (error) {
+            console.log("updateAddress error : ",error);
+            throw new Error("Address updating failed.");
         }
     }
 }

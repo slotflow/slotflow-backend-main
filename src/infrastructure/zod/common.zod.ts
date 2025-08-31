@@ -190,3 +190,11 @@ export const RequestQueryCommonZodSchema = z.object({
       message: "Limit must be a valid positive number",
     }),
 });
+
+// ObjectId validation
+export const ValidateObjectId = (id: string, name: string) => {
+  const schema = z.object({
+    id: objectIdField(name),
+  });
+  return schema.parse({ id });
+};

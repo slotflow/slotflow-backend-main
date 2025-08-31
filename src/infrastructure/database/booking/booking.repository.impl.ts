@@ -113,7 +113,7 @@ export class BookingRepositoryImpl implements IBookingRepository {
                     appointmentStatus: 1,
                     appointmentTime: 1,
                     createdAt: 1,
-                }).skip(skip).limit(limit).sort({ createdAt: 1 }).lean(),
+                }).skip(skip).limit(limit).sort({ createdAt: -1 }).lean(),
                 BookingModel.countDocuments(),
             ]);
             const totalPages = Math.ceil(totalCount / limit);

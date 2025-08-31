@@ -48,12 +48,12 @@ export class UserCancelBookingUseCase {
         const booking = await this.bookingRepositoryImpl.findBookingById(new Types.ObjectId(bookingId));
         if (!booking) throw new Error("No booking found");
 
-        if (booking.appointmentStatus === "Cancelled") {
+        if (booking.appointmentStatus === AppointmentStatus.Cancelled) {
             throw new Error("Already cancelled");
-        } else if(booking.appointmentStatus === "Completed") {
-            throw new Error("Appointment completed")
-        } else if(booking.appointmentStatus === "Rejected By Provider") {
-            throw new Error("Appointment rejected by the Service provider")
+        } else if(booking.appointmentStatus === AppointmentStatus.Completed) {
+            throw new Error("Appointment completed");
+        } else if(booking.appointmentStatus === AppointmentStatus.Rejected) {
+            throw new Error("Appointment rejected by the Service provider");
         }
 
         if (!booking.paymentId) throw new Error("No payment id found");

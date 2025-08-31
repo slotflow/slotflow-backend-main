@@ -9,7 +9,6 @@ import { FontendAvailabilityForResponse, TimeSlotForFrontendResponse } from "../
 
 
 // ************ used in userProfile.use-case ************ \\
-
 // user fetch profile use case request payload interface
 export interface UserFetchProfileRequest {
     userId: User["_id"];
@@ -47,7 +46,7 @@ export interface UserFetchUserAddressRequest {
     userId: User["_id"];
 }
 // user fetch user address use case response interface
-export type UserFetchAddressResponse = Pick<Address, "addressLine" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "googleMapLink"> | {};
+export type UserFetchAddressResponse = Pick<Address, "_id" | "addressLine" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "googleMapLink"> | {};
 
 
 // user add new address use case request payload interface

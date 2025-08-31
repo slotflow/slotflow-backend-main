@@ -64,8 +64,9 @@ export class LoginUseCase {
         let subscribedPlan;
         let providerSubscription;
 
+        isAddressAdded = userOrProvider.addressId ? true : false;
+        
         if (role === "PROVIDER") {
-            isAddressAdded = (userOrProvider as Provider).addressId ? true : false;
             isServiceDetailsAdded = (userOrProvider as Provider).serviceId ? true : false;
             isServiceAvailabilityAdded = (userOrProvider as Provider).serviceAvailabilityId ? true : false;
             isAdminApproved = (userOrProvider as Provider).isAdminVerified ? true : false;

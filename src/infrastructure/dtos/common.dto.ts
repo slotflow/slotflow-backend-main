@@ -79,3 +79,7 @@ export type FetchBookingsResponse = Array<Pick<Booking, "_id" | "appointmentDate
 //// **** 8. Used as the response type for fetching AppServices for provider and user side
 export type FetchAllAppServicesResponse = Array<Pick<Service, "_id" | "serviceName">>;
 
+//// **** 9. Used as the request type for updating address for provider and user side
+export type UpdateAddressRequest = Pick<Address,  "_id" | "userId" | "addressLine" | "place" | "phone" | "city" | "country" | "district" | "pincode" | "state" | "googleMapLink">;
+
+

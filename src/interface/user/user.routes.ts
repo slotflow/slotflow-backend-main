@@ -19,6 +19,7 @@ router.patch('/updateUserInfo', authMiddleware, userProfileController.updateUser
 
 router.post('/addAddress', authMiddleware, userAddressController.addAddress);
 router.get('/getAddress', authMiddleware, userAddressController.getAddress);
+router.patch('/updateAddress/:addressId', authMiddleware, userAddressController.updateAddress);
 
 router.get('/getAllServices', authMiddleware, userAppServiceController.fetchAllAppService);
 

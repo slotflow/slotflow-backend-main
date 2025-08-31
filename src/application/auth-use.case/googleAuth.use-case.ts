@@ -54,7 +54,6 @@ export class GoogleAuthUseCase {
                         isEmailVerified: true,
                     })
                 }
-                console.log("Provider : ",provider);
                 return provider as Provider;
             }
 
