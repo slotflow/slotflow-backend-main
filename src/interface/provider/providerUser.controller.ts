@@ -1,8 +1,9 @@
-import { Request, Response } from "express";
-import { HandleError } from "../../infrastructure/error/error";
-import { ProviderFetchUserForChatSidebarUseCase } from "../../application/provider-use.case/providerUser.use-case";
 import { Types } from "mongoose";
+import { Request, Response } from "express";
+import { DecodedUser } from "../../express";
+import { HandleError } from "../../infrastructure/error/error";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
+import { ProviderFetchUserForChatSidebarUseCase } from "../../application/provider-use.case/providerUser.use-case";
 
 const  bookingRepositoryImpl = new BookingRepositoryImpl();
 const providerFetchUserForChatSidebarUseCase = new ProviderFetchUserForChatSidebarUseCase( bookingRepositoryImpl );
@@ -16,7 +17,7 @@ export class ProviderUserController {
 
     async fetchUsersForChatSideBar(req: Request, res: Response) {
         try {
-            const providerId = req.user.userOrProviderId;
+            const providerId = (req.user as DecodedUser).userOrProviderId;
             const result = await this.providerFetchUserForChatSidebarUseCase.execute(new Types.ObjectId(providerId));
             console.log("result : ",result);
             res.status(200).json(result);

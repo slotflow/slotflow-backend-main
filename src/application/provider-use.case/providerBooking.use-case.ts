@@ -1,8 +1,10 @@
+import { v4 as uuidv4 } from 'uuid';
 import { Validator } from "../../infrastructure/validator/validator";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { ApiResponse, FetchBookingsRequest, FetchBookingsResponse } from "../../infrastructure/dtos/common.dto";
 import { ProviderChangeBookingAppoinmentStatusRequest } from "../../infrastructure/dtos/provider.dto";
+import { AppointmentStatus } from "../../domain/entities/booking.entity";
 
 
 export class ProviderFetchBookingAppointmentsUseCase {
@@ -39,6 +41,10 @@ export class ProviderChangeBookingAppointmentStatusUseCase {
 
             const booking = await this.bookingRepositoryImpl.findBookingById(_id);
             if(!booking) throw new Error("No booking found");
+
+            if(appointmentStatus === AppointmentStatus.Confirmed) {
+                booking.videoCallRoomId = uuidv4();
+            }
 
             booking.appointmentStatus = appointmentStatus;
 

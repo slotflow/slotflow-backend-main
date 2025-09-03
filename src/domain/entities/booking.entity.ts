@@ -20,6 +20,7 @@ export class Booking {
         public appointmentStatus: AppointmentStatus,
         public slotId: Types.ObjectId,
         public paymentId: Types.ObjectId | null,
+        public videoCallRoomId: string | null,
         public createdAt: Date,
         public updatedAt: Date,
     ) { }

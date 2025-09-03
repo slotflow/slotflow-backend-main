@@ -9,6 +9,8 @@ import userRouter from './interface/user/user.routes';
 import adminRoutes from './interface/admin/admin.routes';
 import providerRouter from './interface/provider/provider.router';
 
+import providerBookingRoutes from './interface/provider/routes/providerBooking.router';
+
 dotenv.config();
 
 const app = express();
@@ -29,5 +31,7 @@ app.use('/api/auth',authRoutes);
 app.use("/api/admin",adminRoutes);
 app.use('/api/provider',providerRouter);
 app.use('/api/user',userRouter);
+
+app.use('/api/provider/booking',providerBookingRoutes);
 
 export default app;

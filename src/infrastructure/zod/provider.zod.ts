@@ -59,7 +59,7 @@ export const ProviderPlanSubscribeZodSchema = z.object({
 // **** Provider Booking Controller **** \\
 // Validating the page and limit in the request query zod schema
 export const ProviderChangeBookingAppointmentStatusZodSchema = z.object({
-  appointmentId: objectIdField("Appointment Id"),
+  bookingId: objectIdField("Appointment Id"),
   appointmentStatus: enumField("Appointment status",[AppointmentStatus.Confirmed,AppointmentStatus.Rejected])
 });
 

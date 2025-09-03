@@ -20,8 +20,6 @@ export class HandleError {
             const messages = error.errors.map((err) => err.message);
             console.log("messages : ",messages);
             return;
-            res.status(400).json({ success: false, message: messages });
-            return;
         }
 
         if (error.name === "UnauthorizedError") {

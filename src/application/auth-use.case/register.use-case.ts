@@ -2,12 +2,12 @@ import { v4 as uuidv4 } from 'uuid';
 import { User } from '../../domain/entities/user.entity';
 import { JWTService } from '../../infrastructure/security/jwt';
 import { Provider } from '../../domain/entities/provider.entity';
-import { CustomValidator, validateOrThrow, Validator } from '../../infrastructure/validator/validator';
 import { OTPService } from '../../infrastructure/services/otp.service';
 import { PasswordHasher } from '../../infrastructure/security/password-hashing';
-import { UserRepositoryImpl } from '../../infrastructure/database/user/user.repository.impl';
-import { ProviderRepositoryImpl } from '../../infrastructure/database/provider/provider.repository.impl';
 import { RegisterRequest, RegisterResponse } from '../../infrastructure/dtos/auth.dto';
+import { UserRepositoryImpl } from '../../infrastructure/database/user/user.repository.impl';
+import { CustomValidator, validateOrThrow, Validator } from '../../infrastructure/validator/validator';
+import { ProviderRepositoryImpl } from '../../infrastructure/database/provider/provider.repository.impl';
 
 
 export class RegisterUseCase {

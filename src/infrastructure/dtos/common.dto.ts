@@ -6,6 +6,7 @@ import { Booking } from "../../domain/entities/booking.entity";
 import { Service } from "../../domain/entities/service.entity";
 import { Provider } from "../../domain/entities/provider.entity";
 import { Subscription } from "../../domain/entities/subscription.entity";
+import { Types } from "mongoose";
 
 // **** 1. Used as the request interface for the paginated request
 export interface ApiPaginationRequest {
@@ -82,4 +83,11 @@ export type FetchAllAppServicesResponse = Array<Pick<Service, "_id" | "serviceNa
 //// **** 9. Used as the request type for updating address for provider and user side
 export type UpdateAddressRequest = Pick<Address,  "_id" | "userId" | "addressLine" | "place" | "phone" | "city" | "country" | "district" | "pincode" | "state" | "googleMapLink">;
 
+//// **** 10. Used as the interface for the validate join room
+export interface ValidateJoinRoomRequest {
+  role: "USER" | "PROVIDER";
+  bookingId: Types.ObjectId;
+  roomId: string;
+  userOrProviderId: Types.ObjectId;
+}
 

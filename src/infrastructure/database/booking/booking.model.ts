@@ -11,6 +11,7 @@ export interface IBooking extends Document {
     appointmentStatus: AppointmentStatus,
     slotId: Types.ObjectId,
     paymentId: Types.ObjectId | null,
+    videoCallRoomId: string | null,
     createdAt: Date,
     updatedAt: Date,
 }
@@ -52,6 +53,10 @@ const BookingSchema = new Schema<IBooking>({
         type: mongoose.Schema.Types.ObjectId, 
         ref: "Payment" 
     },
+    videoCallRoomId: {
+        type: String,
+        default: null,
+    }
 }, {
     timestamps: true
 });
