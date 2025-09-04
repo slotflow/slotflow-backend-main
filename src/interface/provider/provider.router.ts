@@ -2,54 +2,56 @@ import multer from 'multer';
 import { Router } from 'express';
 import { authMiddleware } from '../middleware/auth.middleware';
 import { providerPlanController } from './providerPlan.controller';
-// import { provideAddressController } from './providerAddress.controller';
+import { providerUserController } from './providerUser.controller';
+import { provideAddressController } from './providerAddress.controller';
 import { providerServiceController } from './providerService.controller';
 import { providerProfileController } from './providerProfile.controller';
 import { providerPaymentController } from './providerPayment.controller';
-// import { providerBookingController } from './providerBooking.controller';
-// import { providerAppServiceController } from './providerAppService.controller';
+import { providerBookingController } from './providerBooking.controller';
+import { providerDashboardController } from './providerDashboardController';
+import { providerAppServiceController } from './providerAppService.controller';
 import { providerSubscriptionController } from './providerSubscription.controller';
 import { providerServiceAvailabilityController } from './providerServiceAvailability.controller';
-import { providerUserController } from './providerUser.controller';
-import { providerDashboardController } from './providerDashboardController';
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 const router = Router();
 
-// router.post('/addAddress',authMiddleware, provideAddressController.addAddress);
-// router.get('/getAddress', authMiddleware, provideAddressController.getAddress);
-// router.patch('/updateAddress/:addressId', authMiddleware, provideAddressController.updateAddress);
+// updated
+router.post('/addresses', authMiddleware, provideAddressController.addAddress);
+router.get('/address', authMiddleware, provideAddressController.getAddress);
+router.patch('/addresses/:addressId', authMiddleware, provideAddressController.updateAddress);
 
-// router.get('/fetchAllAppServices', authMiddleware, providerAppServiceController.getAllAppServices);
+router.get('/appservices', authMiddleware, providerAppServiceController.getAllAppServices);
 
-// router.post('/addServiceDetails', authMiddleware,upload.single('certificate'), providerServiceController.addServiceDetails);
-// router.get('/getServiceDetails', authMiddleware, providerServiceController.getServiceDetails);
+router.get('/bookings', authMiddleware, providerBookingController.fetchBookingAppointments);
+router.patch('/bookings/:bookingId', authMiddleware, providerBookingController.updateBookingAppointmentStatus);
+router.get('/bookings/:bookingId/can-join', authMiddleware, providerBookingController.validateRoom);
 
-// router.post('/addProviderServiceAvailability', authMiddleware, providerServiceAvailabilityController.addServiceAvailability);
-// router.get('/getServiceAvailability', authMiddleware, providerServiceAvailabilityController.getServiceAvailability);
+router.post('/service', authMiddleware,upload.single('certificate'), providerServiceController.addServiceDetails);
+router.get('/service', authMiddleware, providerServiceController.getServiceDetails);
 
-router.get('/getProfileDetails', authMiddleware, providerProfileController.getProfileDetails);
-router.post('/updateProfileImage', authMiddleware,upload.single('profileImage'), providerProfileController.updateProfileImage);
-router.patch('/updaterUserInfo', authMiddleware, providerProfileController.updateProviderInfo);
+router.post('/availabilities', authMiddleware, providerServiceAvailabilityController.addServiceAvailability);
+router.get('/availability', authMiddleware, providerServiceAvailabilityController.getServiceAvailability);
 
-router.get('/getPlans', authMiddleware, providerPlanController.fetchAllPlans);
+router.get('/profile', authMiddleware, providerProfileController.getProfileDetails);
+router.patch('/profile/image', authMiddleware,upload.single('profileImage'), providerProfileController.updateProfileImage);
+router.patch('/profile', authMiddleware, providerProfileController.updateProviderInfo);
 
-router.get('/getSubscriptions', authMiddleware, providerSubscriptionController.fetchProviderSubscriptions);
-router.post('/createSubscriptionCheckoutSession', authMiddleware, providerSubscriptionController.subscribe);
-router.post('/saveSubscription', authMiddleware, providerSubscriptionController.saveSubscription);
-router.post('/subscribeToTrialPlan', authMiddleware, providerSubscriptionController.subsribetoTrialPlan);
+router.get('/plans', authMiddleware, providerPlanController.fetchAllPlans);
 
-router.get('/getPayments', authMiddleware, providerPaymentController.getPayments);
+router.post('/subscriptions/checkout-session', authMiddleware, providerSubscriptionController.subscribe);
+router.post('/subscriptions', authMiddleware, providerSubscriptionController.saveSubscription);
+router.get('/subscriptions', authMiddleware, providerSubscriptionController.fetchProviderSubscriptions);
+router.post('/subscriptions/trial', authMiddleware, providerSubscriptionController.subscribeToTrialPlan);
 
-// router.get('/getBookingAppointments', authMiddleware, providerBookingController.fetchBookingAppointments);
-// router.patch('/changeAppointmentStatus', authMiddleware, providerBookingController.updateBookingAppointmentStatus);
+router.get('/payments', authMiddleware, providerPaymentController.getPayments);
 
-router.get('/getUsersForCahtSidebar', authMiddleware, providerUserController.fetchUsersForChatSideBar);
+router.get('/chat/users', authMiddleware, providerUserController.fetchUsersForChatSideBar);
 
-router.get('/getDashboardStats', authMiddleware, providerDashboardController.getDashboardStats);
-router.get('/getDashboardGraphData', authMiddleware, providerDashboardController.getDashboardGraphData);
+router.get('/dashboard/stats', authMiddleware, providerDashboardController.getDashboardStats);
+router.get('/dashboard/graph-data', authMiddleware, providerDashboardController.getDashboardGraphData);
 
 
 export default router;  

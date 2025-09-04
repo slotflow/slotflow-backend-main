@@ -31,7 +31,7 @@ export class ProviderSubscriptionController {
         this.subscribe = this.subscribe.bind(this);
         this.saveSubscription = this.saveSubscription.bind(this);
         this.fetchProviderSubscriptions = this.fetchProviderSubscriptions.bind(this);
-        this.subsribetoTrialPlan = this.subsribetoTrialPlan.bind(this);
+        this.subscribeToTrialPlan = this.subscribeToTrialPlan.bind(this);
     }
 
     async subscribe(req: Request, res: Response) {
@@ -73,7 +73,7 @@ export class ProviderSubscriptionController {
         }
     }
 
-    async subsribetoTrialPlan(req: Request, res: Response) {
+    async subscribeToTrialPlan(req: Request, res: Response) {
         try {
             const providerId = req.user.userOrProviderId;
             if (!providerId) throw new Error("Invalid request.");
