@@ -10,8 +10,8 @@ router.post('/verify-otp', authController.verifyOTP);
 router.post('/resendOtp', authController.resendOtp);
 router.post("/signin", authController.login);
 router.post('/signout', authController.logout);
-router.put('/updatePassword',authController.updatePassword);
-router.post('/checkUserStatus',authMiddleware,authController.checkUserStatus);
+router.patch('/password',authController.updatePassword);
+router.post('/status',authMiddleware,authController.checkUserStatus);
 
 router.get('/google', googleAuthController.googleAuth);
 router.get('/google/callback', googleAuthController.googleAuthCallback);

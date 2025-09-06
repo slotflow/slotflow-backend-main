@@ -18,7 +18,6 @@ const upload = multer({ storage: storage });
 
 const router = Router();
 
-// updated
 router.post('/addresses', authMiddleware, provideAddressController.addAddress);
 router.get('/address', authMiddleware, provideAddressController.getAddress);
 router.patch('/addresses/:addressId', authMiddleware, provideAddressController.updateAddress);
@@ -52,6 +51,5 @@ router.get('/chat/users', authMiddleware, providerUserController.fetchUsersForCh
 
 router.get('/dashboard/stats', authMiddleware, providerDashboardController.getDashboardStats);
 router.get('/dashboard/graph-data', authMiddleware, providerDashboardController.getDashboardGraphData);
-
 
 export default router;  

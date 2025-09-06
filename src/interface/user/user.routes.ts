@@ -1,5 +1,5 @@
-import multer from "multer";
 import { Router } from "express";
+import upload from "../../infrastructure/lib/multer";
 import { authMiddleware } from "../middleware/auth.middleware";
 import { userProfileController } from "./userProfile.controller";
 import { userAddressController } from './userAddress.controller';
@@ -8,20 +8,17 @@ import { userBookingController } from "./userBooking.controller";
 import { userProviderController } from "./userProvider.controller";
 import { userAppServiceController } from "./userAppService.controller";
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
-
 const router = Router();
 
-router.get('/getProfileDetails', authMiddleware, userProfileController.getProfileDetails);
-router.post('/updateProfileImage', authMiddleware, upload.single("profileImage"), userProfileController.updateProfileImage);
-router.patch('/updateUserInfo', authMiddleware, userProfileController.updateUserInfo);
+router.get('/profile', authMiddleware, userProfileController.getProfileDetails);
+router.post('/profile/image', authMiddleware, upload.single("profileImage"), userProfileController.updateProfileImage);
+router.patch('/profile', authMiddleware, userProfileController.updateUserInfo);
 
-router.post('/addAddress', authMiddleware, userAddressController.addAddress);
-router.get('/getAddress', authMiddleware, userAddressController.getAddress);
-router.patch('/updateAddress/:addressId', authMiddleware, userAddressController.updateAddress);
+router.post('/addresses', authMiddleware, userAddressController.addAddress);
+router.get('/address', authMiddleware, userAddressController.getAddress);
+router.patch('/addresses/:addressId', authMiddleware, userAddressController.updateAddress);
 
-router.get('/getAllServices', authMiddleware, userAppServiceController.fetchAllAppService);
+router.get('/appservices', authMiddleware, userAppServiceController.fetchAllAppService);
 
 router.get('/getServiceProviders/:selectedServices?', authMiddleware, userProviderController.fetchServiceProviders);
 router.get('/getServiceProviderProfileDetails/:providerId', authMiddleware, userProviderController.fetchServiceProviderProfileDetails);
