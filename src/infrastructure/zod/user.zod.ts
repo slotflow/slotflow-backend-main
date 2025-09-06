@@ -23,9 +23,7 @@ export const UserFetchAllProvidersZodSchema = z.object({
 // user fetch provider service details constoller zod validation
 // user fetch provider profile details controller zod validation
 // User fetch provider service availability controller zod validation
-const UserProviderControllerCommonZodSchema = z.object({
-    providerId: objectIdField("Provider ID"),
-});
+
 
 
 
@@ -67,7 +65,6 @@ const UserCancelBookingZodSchema = z.object({
 });
 
 export {
-    UserProviderControllerCommonZodSchema,
     UserCreateSessionIdForbookingViaStripeZodSchema,
     UserCancelBookingZodSchema
 };

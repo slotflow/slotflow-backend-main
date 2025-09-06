@@ -1,8 +1,8 @@
 import { Types } from "mongoose";
 import { Request, Response } from "express";
 import { HandleError } from "../../infrastructure/error/error";
-import { RequestQueryCommonZodSchema } from "../../infrastructure/zod/common.zod";
 import { PlanRepositoryImpl } from "../../infrastructure/database/plan/plan.repository.impl";
+import { RequestQueryCommonZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
 import { AdminAddNewPlanZodSchema, AdminChangePlanIsBlockStatusZodSchema } from "../../infrastructure/zod/admin.zod";
 import { AdminChangePlanBlockStatusUseCase, AdminCreatePlanUseCase, AdminPlanListUseCase } from "../../application/admin-use.case/adminPlan.use-case";
 
@@ -18,15 +18,15 @@ class AdminPlanController {
         private adminCreatePlanUseCase : AdminCreatePlanUseCase,
         private adminChangePlanBlockStatusUseCase : AdminChangePlanBlockStatusUseCase,
     ){
-        this.getAllPLans = this.getAllPLans.bind(this);
+        this.getAllPlans = this.getAllPlans.bind(this);
         this.addNewPlan = this.addNewPlan.bind(this);
         this.changePlanBlockStatus = this.changePlanBlockStatus.bind(this);
     }
 
-    async getAllPLans(req: Request, res: Response) {
+    async getAllPlans(req: Request, res: Response) {
         try{
-            const validateQueryData = RequestQueryCommonZodSchema.parse(req.query);
-            const { page, limit } = validateQueryData;
+            const validateQuery = RequestQueryCommonZodSchema.parse(req.query);
+            const { page, limit } = validateQuery;
             const result = await this.adminPlanListUseCase.execute({ page, limit });
             res.status(200).json(result);
         }catch(error){
@@ -36,8 +36,8 @@ class AdminPlanController {
 
     async addNewPlan(req: Request, res: Response) {
         try{
-            const validateData = AdminAddNewPlanZodSchema.parse(req.body);
-            const { planName, description, price, features, maxBookingPerMonth, adVisibility } = validateData;
+            const validateBody = AdminAddNewPlanZodSchema.parse(req.body);
+            const { planName, description, price, features, maxBookingPerMonth, adVisibility } = validateBody;
             const result = await this.adminCreatePlanUseCase.execute({planName, description, price, features, maxBookingPerMonth, adVisibility });
             res.status(200).json(result);
         }catch(error){
@@ -47,9 +47,11 @@ class AdminPlanController {
 
     async changePlanBlockStatus(req: Request, res: Response) {
         try{
-            const validateData = AdminChangePlanIsBlockStatusZodSchema.parse(req.body);
-            const { planId, isBlocked } = validateData;
-            const result = await this.adminChangePlanBlockStatusUseCase.execute({planId : new Types.ObjectId(planId as string), isBlocked });
+            const validateBody = AdminChangePlanIsBlockStatusZodSchema.parse(req.body);
+            const { blockStatus } = validateBody;
+            const validateParams = ValidateObjectId(req.params.planId, "Plan ID");
+            const { id: planId } = validateParams;
+            const result = await this.adminChangePlanBlockStatusUseCase.execute({planId : new Types.ObjectId(planId as string), isBlocked: blockStatus });
             res.status(200).json(result);
         }catch(error){
             HandleError.handle(error, res);

@@ -1,9 +1,9 @@
 import { Types } from "mongoose";
 import { Request, Response } from "express";
 import { HandleError } from "../../infrastructure/error/error";
-import { RequestQueryCommonZodSchema } from "../../infrastructure/zod/common.zod";
 import { AdminChangeUserBlockStatusZOdSchema } from "../../infrastructure/zod/admin.zod";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
+import { RequestQueryCommonZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
 import { AdminChangeUserBlockStatusUseCase, AdminUserListUseCase } from "../../application/admin-use.case/adminUser.use-case";
 
 const userRepositoryImpl = new UserRepositoryImpl();
@@ -21,8 +21,8 @@ class AdminUserController {
 
     async getAllUsers(req: Request, res: Response) {
         try{
-            const validateQueryData = RequestQueryCommonZodSchema.parse(req.query);
-            const { page, limit } = validateQueryData;
+            const validateQuery = RequestQueryCommonZodSchema.parse(req.query);
+            const { page, limit } = validateQuery;
             const result = await this.adminUserListUseCase.execute({ page, limit });
             res.status(200).json(result);
         }catch(error){
@@ -32,10 +32,12 @@ class AdminUserController {
 
     async changeUserBlockStatus(req: Request, res: Response) {
         try{
-            const validateData = AdminChangeUserBlockStatusZOdSchema.parse(req.body);
-            const { userId, isBlocked } = validateData;
-            if(!userId || isBlocked === null) throw new Error("Invalid request");
-            const result = await this.adminChangeUserBlockStatusUseCase.execute({userId : new Types.ObjectId(userId), isBlocked });
+            const validateBody = AdminChangeUserBlockStatusZOdSchema.parse(req.body);
+            const { blockStatus } = validateBody;
+            const validateParams = ValidateObjectId(req.params.userId, "User ID");
+            const { id: userId } = validateParams;
+            if(!userId || blockStatus === null) throw new Error("Invalid request");
+            const result = await this.adminChangeUserBlockStatusUseCase.execute({userId : new Types.ObjectId(userId), isBlocked: blockStatus });
             res.status(200).json(result);
         }catch(error){
             HandleError.handle(error, res);

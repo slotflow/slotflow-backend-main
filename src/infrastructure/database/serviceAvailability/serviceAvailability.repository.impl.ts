@@ -31,6 +31,8 @@ export class ServiceAvailabilityRepositoryImpl implements IServiceAvailabilityRe
 
     async findServiceAvailabilityByProviderId(providerId: Types.ObjectId, date: Date): Promise<FontendAvailabilityForResponse | null> {
 
+        console.log("providerId : ", providerId);
+        console.log("date : ", date);
         const startOfDay = new Date(date);
         startOfDay.setHours(0, 0, 0, 0);
 
@@ -58,6 +60,16 @@ export class ServiceAvailabilityRepositoryImpl implements IServiceAvailabilityRe
                                     }
                                 },
                                 0
+                            ]
+                        }
+                    }
+                },
+                {
+                    $addFields: {
+                        availabilityForDay: {
+                            $ifNull: [
+                                "$availabilityForDay",
+                                { day: targetDay, slots: [] }
                             ]
                         }
                     }

@@ -3,26 +3,14 @@ import { Types } from "mongoose";
 import { booleanField, numberField, objectIdField, stringField } from "./common.zod";
 
 // **** admin provider controller **** \\
-// Admin provider controllers provider id only zod schema
-const AdminProviderIdZodSchema = z.object({
-    providerId: objectIdField("Provider ID"),
-});
-
-// Admin provider approve controller zod validation
-const AdminApproveProviderZodSchema = z.object({
-    providerId: objectIdField("Provider ID"),
-});
-
 // Admin provider block status change controller zod validation
 const AdminChangeProviderStatusZodSchema = z.object({
-    providerId: objectIdField("Provider ID"),
-    isBlocked: booleanField("Provider isBlocked"),
+    blockStatus: booleanField("Provider isBlocked"),
 });
 
 // Admin provider trust tag change controller zod validation
 const AdminChangeProviderTrustedTagZodSchema = z.object({
-    providerId: objectIdField("Provider ID"),
-    trustedBySlotflow: booleanField("Provider trusted by slotflow"),
+    trustTag: booleanField("Provider trusted by slotflow"),
 });
 
 
@@ -32,8 +20,7 @@ const AdminChangeProviderTrustedTagZodSchema = z.object({
 // **** admin user controller **** \\
 // Admin user change block status controller zod validation
 const AdminChangeUserBlockStatusZOdSchema = z.object({
-    userId: objectIdField("User ID"),
-    isBlocked: booleanField("User isBlocked")
+    blockStatus: booleanField("User isBlocked")
 })
 
 
@@ -48,8 +35,7 @@ const AdminAddServiceXZodSchema = z.object({
 
 // Admin change app service block status controller zod validation
 const AdminChangeServiceBlockStatusZodSchema = z.object({
-    serviceId: objectIdField("Service ID"),
-    isBlocked: booleanField("Service iBlocked"),
+    blockStatus: booleanField("Service iBlocked"),
 });
 
 
@@ -77,8 +63,7 @@ const AdminAddNewPlanZodSchema = z.object({
 
 // Admin change plan block status controller zod validation
 const AdminChangePlanIsBlockStatusZodSchema = z.object({
-    planId: objectIdField("Plan Id"),
-    isBlocked: booleanField("Plan isBlocked")
+    blockStatus: booleanField("Plan isBlocked")
 });
 
 
@@ -95,9 +80,7 @@ const AdminGetSubscriptionDetailsParamsZodSchmea = z.object({
 
 export {
     AdminAddNewPlanZodSchema,
-    AdminProviderIdZodSchema,
     AdminAddServiceXZodSchema,
-    AdminApproveProviderZodSchema,
     AdminChangeUserBlockStatusZOdSchema,
     AdminChangeProviderStatusZodSchema,
     AdminChangeProviderTrustedTagZodSchema,

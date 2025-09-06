@@ -1,11 +1,11 @@
 import { Types } from "mongoose";
 import { Request, Response } from "express";
 import { HandleError } from "../../infrastructure/error/error";
-import { DateZodSchema } from "../../infrastructure/zod/common.zod";
+import { DateZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
+import { UserFetchAllProvidersZodSchema } from "../../infrastructure/zod/user.zod";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { AddressRepositoryImpl } from "../../infrastructure/database/address/address.repository.impl";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
-import { UserProviderControllerCommonZodSchema, UserFetchAllProvidersZodSchema } from "../../infrastructure/zod/user.zod";
 import { ProviderServiceRepositoryImpl } from "../../infrastructure/database/providerService/providerService.repository.impl";
 import { ServiceAvailabilityRepositoryImpl } from "../../infrastructure/database/serviceAvailability/serviceAvailability.repository.impl";
 import { 
@@ -74,8 +74,8 @@ export class UserProviderController {
     async fetchServiceProviderAddress(req: Request, res: Response) {
         try {
             const userId = req.user.userOrProviderId;
-            const validateParams = UserProviderControllerCommonZodSchema.parse(req.params);
-            const { providerId } = validateParams;
+            const validateParams = ValidateObjectId(req.params.providerId, "Provider ID");
+            const { id: providerId } = validateParams;
             if (!userId || !providerId) throw new Error("Invalid request");
             const result = await this.userFetchServiceProviderAddressUseCase.execute({userId: new Types.ObjectId(userId), providerId: new Types.ObjectId(providerId)});
             res.status(200).json(result);
@@ -87,8 +87,8 @@ export class UserProviderController {
     async fetchServiceProviderProfileDetails(req: Request, res: Response) {
         try {
             const userId = req.user.userOrProviderId;
-            const validateParams = UserProviderControllerCommonZodSchema.parse(req.params);
-            const { providerId } = validateParams;
+            const validateParams = ValidateObjectId(req.params.providerId, "Provider ID");
+            const { id: providerId } = validateParams;
             if (!userId || !providerId) throw new Error("Invalid request");
             const result = await this.userFetchServiceProviderProfileDetailsUseCase.execute({userId: new Types.ObjectId(userId), providerId: new Types.ObjectId(providerId)});
             res.status(200).json(result);
@@ -100,8 +100,8 @@ export class UserProviderController {
     async fetchServiceProviderServiceDetails(req: Request, res: Response) {
         try {
             const userId = req.user.userOrProviderId;
-            const validateParams = UserProviderControllerCommonZodSchema.parse(req.params)
-            const { providerId } = validateParams;
+            const validateParams = ValidateObjectId(req.params.providerId, "Provider ID");
+            const { id: providerId } = validateParams;
             if (!userId || !providerId) throw new Error("Invalid request");
             const result = await this.userFetchServiceProviderServiceDetailsUseCase.execute({userId: new Types.ObjectId(userId), providerId: new Types.ObjectId(providerId)});
             res.status(200).json(result);
@@ -113,9 +113,9 @@ export class UserProviderController {
     async fetchServiceProviderServiceAvailability(req: Request, res: Response) {
         try {
             const userId = req.user.userOrProviderId;
-            const validateParams = UserProviderControllerCommonZodSchema.parse(req.params);
+            const validateParams = ValidateObjectId(req.params.providerId, "Provider ID");
+            const { id: providerId } = validateParams;
             const validateQuery = DateZodSchema.parse(req.query);
-            const { providerId } = validateParams;
             const { date } = validateQuery;
             if (!userId || !providerId || !date) throw new Error("Invalid request");
             const result = await this.userFetchServiceProviderServiceAvailabilityUseCase.execute({userId: new Types.ObjectId(userId), providerId: new Types.ObjectId(providerId), date: new Date(date)});
