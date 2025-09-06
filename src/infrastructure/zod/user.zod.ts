@@ -16,7 +16,7 @@ export const UserUpdateInfoZOdSchema = z.object({
 // **** user provider controller **** \\
 // User fetch providers for the dashboard provider listing
 export const UserFetchAllProvidersZodSchema = z.object({
-    selectedServices: stringField("Selected services",3,200).optional(),
+    selectedServices: z.union([z.string(), z.array(z.string())]).optional(),
 });
 
 // User fetch provider address controller zod validation

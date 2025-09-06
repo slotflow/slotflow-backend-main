@@ -20,21 +20,19 @@ router.patch('/addresses/:addressId', authMiddleware, userAddressController.upda
 
 router.get('/appservices', authMiddleware, userAppServiceController.fetchAllAppService);
 
-router.get('/getServiceProviders/:selectedServices?', authMiddleware, userProviderController.fetchServiceProviders);
-router.get('/getServiceProviderProfileDetails/:providerId', authMiddleware, userProviderController.fetchServiceProviderProfileDetails);
-router.get('/getServiceProviderAddress/:providerId', authMiddleware, userProviderController.fetchServiceProviderAddress);
-router.get('/getServiceProviderServiceDetails/:providerId', authMiddleware, userProviderController.fetchServiceProviderServiceDetails);
-router.get('/getServiceProviderServiceAvailability/:providerId', authMiddleware, userProviderController.fetchServiceProviderServiceAvailability);
+router.get('/providers', authMiddleware, userProviderController.fetchServiceProviders);
+router.get('/providers/:providerId', authMiddleware, userProviderController.fetchServiceProviderProfileDetails);
+router.get('/providers/:providerId/address', authMiddleware, userProviderController.fetchServiceProviderAddress);
+router.get('/providers/:providerId/service', authMiddleware, userProviderController.fetchServiceProviderServiceDetails);
+router.get('/providers/:providerId/availability', authMiddleware, userProviderController.fetchServiceProviderServiceAvailability);
 
-router.post('/createBookingCheckoutSession', authMiddleware, userBookingController.createSessionIdForbookingViaStripe);
-router.post('/saveAppointmentBooking', authMiddleware, userBookingController.saveBookingAfterStripePayment);
-router.get('/getBookings', authMiddleware, userBookingController.fetchBookings);
-router.put('/cancelBooking/:bookingId', authMiddleware, userBookingController.cancelBooking);
+router.post('/bookings/checkout-session', authMiddleware, userBookingController.createSessionIdForbookingViaStripe);
+router.post('/bookings', authMiddleware, userBookingController.saveBookingAfterStripePayment);
+router.get('/bookings', authMiddleware, userBookingController.fetchBookings);
+router.patch('/bookings/:bookingId', authMiddleware, userBookingController.cancelBooking);
 
-router.get('/getPayments', authMiddleware, userPaymentController.fetchPayments);
+router.get('/payments', authMiddleware, userPaymentController.fetchPayments);
 
-router.get('/getProvidersForChatSidebar', authMiddleware, userProviderController.fetchProvidersForChatSidebar);
-
-
+router.get('/chat/providers', authMiddleware, userProviderController.fetchProvidersForChatSidebar);
 
 export default router;

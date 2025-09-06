@@ -53,12 +53,16 @@ export class UserProviderController {
     async fetchServiceProviders(req: Request, res: Response) {
         try {
             const userId = req.user.userOrProviderId;
-            const validateParams = UserFetchAllProvidersZodSchema.parse(req.params);
+            const validateParams = UserFetchAllProvidersZodSchema.parse(req.query);
             const { selectedServices } = validateParams;
             if (!userId) throw new Error("Invalid request.");
             let serviceIds: Types.ObjectId[] = [];
             if (selectedServices) {
-                serviceIds = selectedServices.split(",").map(id => new Types.ObjectId(id));
+                const servicesArray = Array.isArray(selectedServices)
+                ? selectedServices
+                : selectedServices.split(",");
+
+            serviceIds = servicesArray.map(id => new Types.ObjectId(id));
             }
             const result = await this.userFetchServiceProvidersUseCase.execute({ userId: new Types.ObjectId(userId), serviceIds });
             res.status(200).json(result);
