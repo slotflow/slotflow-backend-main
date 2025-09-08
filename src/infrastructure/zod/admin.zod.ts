@@ -71,11 +71,6 @@ const AdminChangePlanIsBlockStatusZodSchema = z.object({
 
 
 // **** admin subscription controller **** \\
-// Admin fetch subsctiondetails controller zod validation
-const AdminGetSubscriptionDetailsParamsZodSchmea = z.object({
-    subscriptionId: objectIdField("Subscription ID")
-});
-
 
 
 export {
@@ -85,6 +80,5 @@ export {
     AdminChangeProviderStatusZodSchema,
     AdminChangeProviderTrustedTagZodSchema,
     AdminChangeServiceBlockStatusZodSchema,
-    AdminGetSubscriptionDetailsParamsZodSchmea,
     AdminChangePlanIsBlockStatusZodSchema
 };

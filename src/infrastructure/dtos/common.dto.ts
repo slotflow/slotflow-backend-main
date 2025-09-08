@@ -7,6 +7,7 @@ import { Service } from "../../domain/entities/service.entity";
 import { Provider } from "../../domain/entities/provider.entity";
 import { Subscription } from "../../domain/entities/subscription.entity";
 import { Types } from "mongoose";
+import { findSubscriptionFullDetailsResProps } from "../../domain/repositories/ISubscription.repository";
 
 // **** 1. Used as the request interface for the paginated request
 export interface ApiPaginationRequest {
@@ -91,3 +92,12 @@ export interface ValidateJoinRoomRequest {
   userOrProviderId: Types.ObjectId;
 }
 
+
+//// **** 11. fetch subscription details use case request payload interface 
+export interface FetchSubscriptionDetailsRequest {
+    subscriptionId: Subscription["_id"];
+}
+// admin fetch subscription details use case response interface 
+export interface FetchSubscriptionDetailsResponse extends CommonResponse {
+    subscriptionDetails: findSubscriptionFullDetailsResProps | {};
+}

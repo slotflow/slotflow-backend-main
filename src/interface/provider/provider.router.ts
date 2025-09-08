@@ -44,6 +44,8 @@ router.post('/subscriptions/checkout-session', authMiddleware, providerSubscript
 router.post('/subscriptions', authMiddleware, providerSubscriptionController.saveSubscription);
 router.get('/subscriptions', authMiddleware, providerSubscriptionController.fetchProviderSubscriptions);
 router.post('/subscriptions/trial', authMiddleware, providerSubscriptionController.subscribeToTrialPlan);
+router.get('/subscriptions/:subscriptionId', authMiddleware,);
+
 
 router.get('/payments', authMiddleware, providerPaymentController.getPayments);
 

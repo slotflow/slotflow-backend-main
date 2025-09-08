@@ -1,14 +1,15 @@
 import { Types } from "mongoose";
 import { Request, Response } from "express";
 import { HandleError } from "../../infrastructure/error/error";
-import { RequestQueryCommonZodSchema, SaveStripePaymentZodSchema } from "../../infrastructure/zod/common.zod";
 import { ProviderPlanSubscribeZodSchema } from "../../infrastructure/zod/provider.zod";
 import { PlanRepositoryImpl } from "../../infrastructure/database/plan/plan.repository.impl";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
+import { FetchSubscriptionDetailsUseCase } from "../../application/common-use.case/subscriptionCommon.use-case";
 import { SubscriptionRepositoryImpl } from "../../infrastructure/database/subscription/subscription.repository.impl";
 import { ProviderFetchAllSubscriptionsUseCase } from "../../application/provider-use.case/providerSubscription.use-case";
 import { ProviderTrialSubscriptionUseCase } from "../../application/provider-use.case/providerTrailSubscription.use-case";
+import { RequestQueryCommonZodSchema, SaveStripePaymentZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
 import { ProviderSaveSubscriptionUseCase, ProviderStripeSubscriptionCreateSessionIdUseCase } from "../../application/provider-use.case/providerStripeSubscription.use-case";
 
 const planRepositoryImpl = new PlanRepositoryImpl();
@@ -19,7 +20,8 @@ const subscriptionRepositoryImpl = new SubscriptionRepositoryImpl();
 const providerStripeSubscriptionCreateSessionIdUseCase = new ProviderStripeSubscriptionCreateSessionIdUseCase(planRepositoryImpl, providerRepositoryImpl, subscriptionRepositoryImpl);
 const providerSaveSubscriptionUseCase = new ProviderSaveSubscriptionUseCase(providerRepositoryImpl, paymentRepositoryImpl, subscriptionRepositoryImpl);
 const providerFetchAllSubscriptionsUseCase = new ProviderFetchAllSubscriptionsUseCase(providerRepositoryImpl, subscriptionRepositoryImpl);
-const providerTrialSubscriptionUseCase = new ProviderTrialSubscriptionUseCase(providerRepositoryImpl, subscriptionRepositoryImpl, planRepositoryImpl)
+const providerTrialSubscriptionUseCase = new ProviderTrialSubscriptionUseCase(providerRepositoryImpl, subscriptionRepositoryImpl, planRepositoryImpl);
+const fetchSubscriptionDetailsUseCase = new FetchSubscriptionDetailsUseCase(subscriptionRepositoryImpl)
 
 export class ProviderSubscriptionController {
     constructor(
@@ -27,6 +29,7 @@ export class ProviderSubscriptionController {
         private providerSaveSubscriptionUseCase: ProviderSaveSubscriptionUseCase,
         private providerFetchAllSubscriptionsUseCase: ProviderFetchAllSubscriptionsUseCase,
         private providerTrialSubscriptionUseCase: ProviderTrialSubscriptionUseCase,
+        private fetchSubscriptionDetailsUseCase: FetchSubscriptionDetailsUseCase,
     ) {
         this.subscribe = this.subscribe.bind(this);
         this.saveSubscription = this.saveSubscription.bind(this);
@@ -83,13 +86,26 @@ export class ProviderSubscriptionController {
             HandleError.handle(error, res);
         }
     }
+
+    async getSubscriptionDetails(req: Request, res: Response) {
+        try {
+            const validateParams = ValidateObjectId(req.params.subscriptionId, "Subscription Id");
+            const { id: subscriptionId } = validateParams;
+            if (!subscriptionId) throw new Error("Invalid request.");
+            const result = await this.fetchSubscriptionDetailsUseCase.execute({ subscriptionId: new Types.ObjectId(subscriptionId) });
+            res.status(200).json(result);
+        } catch (error) {
+            HandleError.handle(error, res);
+        }
+    }
 };
 
 const providerSubscriptionController = new ProviderSubscriptionController(
     providerStripeSubscriptionCreateSessionIdUseCase,
     providerSaveSubscriptionUseCase,
     providerFetchAllSubscriptionsUseCase,
-    providerTrialSubscriptionUseCase
+    providerTrialSubscriptionUseCase,
+    fetchSubscriptionDetailsUseCase
 );
 
 export { providerSubscriptionController };

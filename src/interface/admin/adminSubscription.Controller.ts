@@ -1,48 +1,51 @@
 import { Types } from "mongoose";
 import { Request, Response } from "express";
 import { HandleError } from "../../infrastructure/error/error";
-import { AdminGetSubscriptionDetailsParamsZodSchmea } from "../../infrastructure/zod/admin.zod";
+import { RequestQueryCommonZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
+import { AdminFetchAllSubscriptionsUseCase } from "../../application/admin-use.case/adminSubscription.use-case";
+import { FetchSubscriptionDetailsUseCase } from "../../application/common-use.case/subscriptionCommon.use-case";
 import { SubscriptionRepositoryImpl } from "../../infrastructure/database/subscription/subscription.repository.impl";
-import { AdminFetchAllSubscriptionsUseCase, AdminFetchSubscriptionDetailsUseCase } from "../../application/admin-use.case/adminSubscription.use-case";
-import { RequestQueryCommonZodSchema } from "../../infrastructure/zod/common.zod";
 
 const subscriptionRepositoryImpl = new SubscriptionRepositoryImpl();
 
 const adminFetchAllSubscriptionsUseCase = new AdminFetchAllSubscriptionsUseCase(subscriptionRepositoryImpl);
-const adminFetchSubscriptionDetailsUseCase = new AdminFetchSubscriptionDetailsUseCase(subscriptionRepositoryImpl);
+const fetchSubscriptionDetailsUseCase = new FetchSubscriptionDetailsUseCase(subscriptionRepositoryImpl);
 
 export class AdminSubscriptionController {
     constructor(
         private adminFetchAllSubscriptionsUseCase: AdminFetchAllSubscriptionsUseCase,
-        private adminFetchSubscriptionDetailsUseCase: AdminFetchSubscriptionDetailsUseCase,
-    ) { 
+        private fetchSubscriptionDetailsUseCase: FetchSubscriptionDetailsUseCase,
+    ) {
         this.getAllSubscriptions = this.getAllSubscriptions.bind(this);
         this.getSubscriptionDetails = this.getSubscriptionDetails.bind(this);
     }
 
-    async getAllSubscriptions(req:Request, res: Response) {
-        try{
+    async getAllSubscriptions(req: Request, res: Response) {
+        try {
             const validateQueryData = RequestQueryCommonZodSchema.parse(req.query);
             const { page, limit } = validateQueryData;
             const result = await this.adminFetchAllSubscriptionsUseCase.execute({ page, limit });
             res.status(200).json(result);
-        }catch (error) {
-            HandleError.handle(error,res);
+        } catch (error) {
+            HandleError.handle(error, res);
         }
     }
 
     async getSubscriptionDetails(req: Request, res: Response) {
-        try{
-            const validateParams = AdminGetSubscriptionDetailsParamsZodSchmea.parse(req.params);
-            const { subscriptionId } = validateParams;
-            if(!subscriptionId) throw new Error("Invalid request.");
-            const result = await this.adminFetchSubscriptionDetailsUseCase.execute({subscriptionId: new Types.ObjectId(subscriptionId)});
+        try {
+            const validateParams = ValidateObjectId(req.params.subscriptionId, "Subscription Id");
+            const { id: subscriptionId } = validateParams;
+            if (!subscriptionId) throw new Error("Invalid request.");
+            const result = await this.fetchSubscriptionDetailsUseCase.execute({ subscriptionId: new Types.ObjectId(subscriptionId) });
             res.status(200).json(result);
-        }catch (error) {
+        } catch (error) {
             HandleError.handle(error, res);
         }
     }
 }
 
-const adminSubscriptionController = new AdminSubscriptionController( adminFetchAllSubscriptionsUseCase, adminFetchSubscriptionDetailsUseCase );
+const adminSubscriptionController = new AdminSubscriptionController(
+    adminFetchAllSubscriptionsUseCase,
+    fetchSubscriptionDetailsUseCase
+);
 export { adminSubscriptionController }
