@@ -111,6 +111,7 @@ export class BookingRepositoryImpl implements IBookingRepository {
                     _id: 1,
                     appointmentDate: 1,
                     appointmentMode: 1,
+                    videoCallRoomId: 1,
                     appointmentStatus: 1,
                     appointmentTime: 1,
                     createdAt: 1,
