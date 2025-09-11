@@ -1,5 +1,6 @@
 import { Types } from "mongoose";
 import { Request, Response } from "express";
+import { DecodedUser } from "../../express";
 import { HandleError } from "../../infrastructure/error/error";
 import { ProviderPlanSubscribeZodSchema } from "../../infrastructure/zod/provider.zod";
 import { PlanRepositoryImpl } from "../../infrastructure/database/plan/plan.repository.impl";
@@ -39,9 +40,8 @@ export class ProviderSubscriptionController {
 
     async subscribe(req: Request, res: Response) {
         try {
-            const providerId = req.user.userOrProviderId;
-            const validateData = ProviderPlanSubscribeZodSchema.parse(req.body);
-            const { planId, planDuration } = validateData;
+            const providerId = (req.user as DecodedUser).userOrProviderId;
+            const { planId, planDuration } = ProviderPlanSubscribeZodSchema.parse(req.body);
             if (!providerId || !planId || !planDuration) throw new Error("Invalid request.");
             const result = await this.providerStripeSubscriptionCreateSessionIdUseCase.execute({ providerId: new Types.ObjectId(providerId), planId: new Types.ObjectId(planId), duration: planDuration });
             res.status(200).json(result);
@@ -52,9 +52,8 @@ export class ProviderSubscriptionController {
 
     async saveSubscription(req: Request, res: Response) {
         try {
-            const providerId = req.user.userOrProviderId;
-            const validateData = SaveStripePaymentZodSchema.parse(req.body);
-            const { sessionId } = validateData;
+            const providerId = (req.user as DecodedUser).userOrProviderId;
+            const { sessionId } = SaveStripePaymentZodSchema.parse(req.body);
             if (!providerId || !sessionId) throw new Error("Invalid request.");
             const result = await this.providerSaveSubscriptionUseCase.execute({ providerId: new Types.ObjectId(providerId), sessionId });
             res.status(200).json(result);
@@ -67,7 +66,7 @@ export class ProviderSubscriptionController {
         try {
             const validateQueryData = RequestQueryCommonZodSchema.parse(req.query);
             const { page, limit } = validateQueryData;
-            const providerId = req.user.userOrProviderId;
+            const providerId = (req.user as DecodedUser).userOrProviderId;
             if (!providerId) throw new Error("Invalid request.");
             const result = await this.providerFetchAllSubscriptionsUseCase.execute({ providerId: new Types.ObjectId(providerId), page, limit });
             res.status(200).json(result);
@@ -78,7 +77,7 @@ export class ProviderSubscriptionController {
 
     async subscribeToTrialPlan(req: Request, res: Response) {
         try {
-            const providerId = req.user.userOrProviderId;
+            const providerId = (req.user as DecodedUser).userOrProviderId;
             if (!providerId) throw new Error("Invalid request.");
             const result = await this.providerTrialSubscriptionUseCase.execute({ providerId: new Types.ObjectId(providerId) });
             res.status(200).json(result);
@@ -89,8 +88,7 @@ export class ProviderSubscriptionController {
 
     async getSubscriptionDetails(req: Request, res: Response) {
         try {
-            const validateParams = ValidateObjectId(req.params.subscriptionId, "Subscription Id");
-            const { id: subscriptionId } = validateParams;
+            const { id: subscriptionId } = ValidateObjectId(req.params.subscriptionId, "Subscription Id");
             if (!subscriptionId) throw new Error("Invalid request.");
             const result = await this.fetchSubscriptionDetailsUseCase.execute({ subscriptionId: new Types.ObjectId(subscriptionId) });
             res.status(200).json(result);

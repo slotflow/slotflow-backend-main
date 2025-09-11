@@ -25,8 +25,6 @@ export class ProviderFetchDashboardGraphDataUseCase {
                 topBookingDaysChartData: resultArray.topBookingDaysChartData,
             }
 
-            console.log("dashboardGraphData : ",dashboardGraphData);
-
             return { success: true, message: "Dashboard graph data fetched successfully", data: dashboardGraphData }
         } catch (error) {
             return { success: false, message: "Dashboard graph data fetching failed" }

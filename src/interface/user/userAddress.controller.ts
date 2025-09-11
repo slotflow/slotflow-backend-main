@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 import { Request, Response } from "express";
 import { DecodedUser } from "../../express";
 import { HandleError } from "../../infrastructure/error/error";
-import { AddAddressZodSchema } from "../../infrastructure/zod/common.zod";
+import { AddAddressZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { AddressRepositoryImpl } from "../../infrastructure/database/address/address.repository.impl";
 import { UserAddAddressUseCase, UserFetchAddressUseCase, UserUpdateAddressUseCase } from "../../application/user-use.case/userAddress.use-case";
@@ -38,8 +38,8 @@ export class UserAddressController {
 
     async addAddress(req: Request, res: Response) {
         try{
-            const validateData = AddAddressZodSchema.parse(req.body)
             const userId = (req.user as DecodedUser).userOrProviderId;
+            const validateData = AddAddressZodSchema.parse(req.body)
             const { addressLine, phone, place, city, district, pincode, state,  country, googleMapLink } = validateData;
             if(!userId || !phone || !place || !city || !district || !pincode || !state || !country || !googleMapLink) throw new Error("Invalid request.");
             const result = await this.userAddAddressUseCase.execute({userId: new Types.ObjectId(userId), addressLine, phone, place, city, district, pincode, state,  country, googleMapLink});
@@ -53,7 +53,7 @@ export class UserAddressController {
     async updateAddress(req: Request, res: Response) {
         try {
             const userId = (req.user as DecodedUser).userOrProviderId;
-            const addressId = req.params.addressId as string;
+            const { id: addressId } = ValidateObjectId(req.params.addressId, "Address ID");
             if(!addressId) throw new Error("Invalid request");
             const validateData = AddAddressZodSchema.parse(req.body);
             const { addressLine, phone, place, city, district, pincode, state,  country, googleMapLink } = validateData;
@@ -65,5 +65,9 @@ export class UserAddressController {
     }
 }
 
-const userAddressController = new UserAddressController( userFetchAddressUseCase, userAddAddressUseCase, userUpdateAddressUseCase );
+const userAddressController = new UserAddressController( 
+    userFetchAddressUseCase, 
+    userAddAddressUseCase, 
+    userUpdateAddressUseCase
+);
 export { userAddressController };

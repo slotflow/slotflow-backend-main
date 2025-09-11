@@ -30,6 +30,7 @@ router.post('/bookings/checkout-session', authMiddleware, userBookingController.
 router.post('/bookings', authMiddleware, userBookingController.saveBookingAfterStripePayment);
 router.get('/bookings', authMiddleware, userBookingController.fetchBookings);
 router.patch('/bookings/:bookingId', authMiddleware, userBookingController.cancelBooking);
+router.get('/bookings/:bookingId/can-join', authMiddleware, userBookingController.validateRoom);
 
 router.get('/payments', authMiddleware, userPaymentController.fetchPayments);
 

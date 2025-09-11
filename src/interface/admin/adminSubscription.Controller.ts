@@ -22,8 +22,7 @@ export class AdminSubscriptionController {
 
     async getAllSubscriptions(req: Request, res: Response) {
         try {
-            const validateQueryData = RequestQueryCommonZodSchema.parse(req.query);
-            const { page, limit } = validateQueryData;
+            const { page, limit } = RequestQueryCommonZodSchema.parse(req.query);
             const result = await this.adminFetchAllSubscriptionsUseCase.execute({ page, limit });
             res.status(200).json(result);
         } catch (error) {
@@ -33,8 +32,7 @@ export class AdminSubscriptionController {
 
     async getSubscriptionDetails(req: Request, res: Response) {
         try {
-            const validateParams = ValidateObjectId(req.params.subscriptionId, "Subscription Id");
-            const { id: subscriptionId } = validateParams;
+            const { id: subscriptionId } = ValidateObjectId(req.params.subscriptionId, "Subscription Id");
             if (!subscriptionId) throw new Error("Invalid request.");
             const result = await this.fetchSubscriptionDetailsUseCase.execute({ subscriptionId: new Types.ObjectId(subscriptionId) });
             res.status(200).json(result);

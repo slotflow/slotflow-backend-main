@@ -1,5 +1,5 @@
-import multer from 'multer';
 import { Router } from 'express';
+import upload from '../../infrastructure/lib/multer';
 import { authMiddleware } from '../middleware/auth.middleware';
 import { providerPlanController } from './providerPlan.controller';
 import { providerUserController } from './providerUser.controller';
@@ -12,9 +12,6 @@ import { providerDashboardController } from './providerDashboardController';
 import { providerAppServiceController } from './providerAppService.controller';
 import { providerSubscriptionController } from './providerSubscription.controller';
 import { providerServiceAvailabilityController } from './providerServiceAvailability.controller';
-
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
 
 const router = Router();
 
@@ -45,7 +42,6 @@ router.post('/subscriptions', authMiddleware, providerSubscriptionController.sav
 router.get('/subscriptions', authMiddleware, providerSubscriptionController.fetchProviderSubscriptions);
 router.post('/subscriptions/trial', authMiddleware, providerSubscriptionController.subscribeToTrialPlan);
 router.get('/subscriptions/:subscriptionId', authMiddleware,);
-
 
 router.get('/payments', authMiddleware, providerPaymentController.getPayments);
 

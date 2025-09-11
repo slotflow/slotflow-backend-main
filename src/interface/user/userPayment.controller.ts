@@ -1,10 +1,11 @@
 import { Types } from "mongoose";
 import { Request, Response } from "express";
+import { DecodedUser } from "../../express";
 import { HandleError } from "../../infrastructure/error/error";
+import { RequestQueryCommonZodSchema } from "../../infrastructure/zod/common.zod";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { UserFetchAllPaymentsUseCase } from "../../application/user-use.case/usePayment.use-case";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
-import { RequestQueryCommonZodSchema } from "../../infrastructure/zod/common.zod";
 
 const userRepositoryImpl = new UserRepositoryImpl();
 const paymentRepositoryImpl = new PaymentRepositoryImpl();
@@ -20,7 +21,7 @@ export class UserPaymentController {
 
     async fetchPayments(req: Request, res: Response) {
         try {
-            const userId = req.user.userOrProviderId;
+            const userId = (req.user as DecodedUser).userOrProviderId;
             const validateQueryData = RequestQueryCommonZodSchema.parse(req.query);
             const { page, limit } = validateQueryData;
             if (!userId) throw new Error("Invalid request");
@@ -33,5 +34,7 @@ export class UserPaymentController {
 
 }
 
-const userPaymentController = new UserPaymentController(userFetchAllPaymentsUseCase);
+const userPaymentController = new UserPaymentController(
+    userFetchAllPaymentsUseCase
+);
 export { userPaymentController };

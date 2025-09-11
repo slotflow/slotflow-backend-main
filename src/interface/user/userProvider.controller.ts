@@ -1,13 +1,6 @@
 import { Types } from "mongoose";
 import { Request, Response } from "express";
-import { HandleError } from "../../infrastructure/error/error";
-import { DateZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
-import { UserFetchAllProvidersZodSchema } from "../../infrastructure/zod/user.zod";
-import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
-import { AddressRepositoryImpl } from "../../infrastructure/database/address/address.repository.impl";
-import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
-import { ProviderServiceRepositoryImpl } from "../../infrastructure/database/providerService/providerService.repository.impl";
-import { ServiceAvailabilityRepositoryImpl } from "../../infrastructure/database/serviceAvailability/serviceAvailability.repository.impl";
+import { DecodedUser } from "../../express";
 import { 
     UserFetchServiceProvidersUseCase, 
     UserFetchServiceProviderAddressUseCase, 
@@ -16,7 +9,15 @@ import {
     UserFetchServiceProviderServiceAvailabilityUseCase,
     UserFetchProvidersForChatSidebar, 
 } from "../../application/user-use.case/userProvider.use-case";
+import { HandleError } from "../../infrastructure/error/error";
+import { DateZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
+import { UserFetchAllProvidersZodSchema } from "../../infrastructure/zod/user.zod";
+import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
+import { AddressRepositoryImpl } from "../../infrastructure/database/address/address.repository.impl";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
+import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
+import { ProviderServiceRepositoryImpl } from "../../infrastructure/database/providerService/providerService.repository.impl";
+import { ServiceAvailabilityRepositoryImpl } from "../../infrastructure/database/serviceAvailability/serviceAvailability.repository.impl";
 
 const userRepositoryImpl = new UserRepositoryImpl();
 const addressRepositoryImpl = new AddressRepositoryImpl();
@@ -52,9 +53,8 @@ export class UserProviderController {
 
     async fetchServiceProviders(req: Request, res: Response) {
         try {
-            const userId = req.user.userOrProviderId;
-            const validateParams = UserFetchAllProvidersZodSchema.parse(req.query);
-            const { selectedServices } = validateParams;
+            const userId = (req.user as DecodedUser).userOrProviderId;
+            const { selectedServices } = UserFetchAllProvidersZodSchema.parse(req.query);
             if (!userId) throw new Error("Invalid request.");
             let serviceIds: Types.ObjectId[] = [];
             if (selectedServices) {
@@ -73,9 +73,8 @@ export class UserProviderController {
 
     async fetchServiceProviderAddress(req: Request, res: Response) {
         try {
-            const userId = req.user.userOrProviderId;
-            const validateParams = ValidateObjectId(req.params.providerId, "Provider ID");
-            const { id: providerId } = validateParams;
+            const userId = (req.user as DecodedUser).userOrProviderId;
+            const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
             if (!userId || !providerId) throw new Error("Invalid request");
             const result = await this.userFetchServiceProviderAddressUseCase.execute({userId: new Types.ObjectId(userId), providerId: new Types.ObjectId(providerId)});
             res.status(200).json(result);
@@ -86,9 +85,8 @@ export class UserProviderController {
 
     async fetchServiceProviderProfileDetails(req: Request, res: Response) {
         try {
-            const userId = req.user.userOrProviderId;
-            const validateParams = ValidateObjectId(req.params.providerId, "Provider ID");
-            const { id: providerId } = validateParams;
+            const userId = (req.user as DecodedUser).userOrProviderId;
+            const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
             if (!userId || !providerId) throw new Error("Invalid request");
             const result = await this.userFetchServiceProviderProfileDetailsUseCase.execute({userId: new Types.ObjectId(userId), providerId: new Types.ObjectId(providerId)});
             res.status(200).json(result);
@@ -99,9 +97,8 @@ export class UserProviderController {
 
     async fetchServiceProviderServiceDetails(req: Request, res: Response) {
         try {
-            const userId = req.user.userOrProviderId;
-            const validateParams = ValidateObjectId(req.params.providerId, "Provider ID");
-            const { id: providerId } = validateParams;
+            const userId = (req.user as DecodedUser).userOrProviderId;
+            const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
             if (!userId || !providerId) throw new Error("Invalid request");
             const result = await this.userFetchServiceProviderServiceDetailsUseCase.execute({userId: new Types.ObjectId(userId), providerId: new Types.ObjectId(providerId)});
             res.status(200).json(result);
@@ -112,11 +109,9 @@ export class UserProviderController {
 
     async fetchServiceProviderServiceAvailability(req: Request, res: Response) {
         try {
-            const userId = req.user.userOrProviderId;
-            const validateParams = ValidateObjectId(req.params.providerId, "Provider ID");
-            const { id: providerId } = validateParams;
-            const validateQuery = DateZodSchema.parse(req.query);
-            const { date } = validateQuery;
+            const userId = (req.user as DecodedUser).userOrProviderId;
+            const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
+            const { date } = DateZodSchema.parse(req.query);
             if (!userId || !providerId || !date) throw new Error("Invalid request");
             const result = await this.userFetchServiceProviderServiceAvailabilityUseCase.execute({userId: new Types.ObjectId(userId), providerId: new Types.ObjectId(providerId), date: new Date(date)});
             res.status(200).json(result);
@@ -127,7 +122,7 @@ export class UserProviderController {
 
     async fetchProvidersForChatSidebar(req: Request, res: Response) {
         try {
-            const userId = req.user.userOrProviderId;
+            const userId = (req.user as DecodedUser).userOrProviderId;
             const result = await this.userFetchProvidersForChatSidebar.execute(new Types.ObjectId(userId));
             res.status(200).json(result);
         } catch (error) {

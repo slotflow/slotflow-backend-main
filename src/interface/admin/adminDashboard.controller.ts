@@ -12,6 +12,7 @@ const providerRepositoryImpl = new ProviderRepositoryImpl();
 const paymentRepositoryImpl = new PaymentRepositoryImpl();
 const bookingRepositoryImpl = new BookingRepositoryImpl();
 const subscriptionRepositoryImpl = new SubscriptionRepositoryImpl();
+
 const adminFetchDashboardUserStatsDataUseCase = new AdminFetchDashboardUserStatsDataUseCase(userRepositoryImpl);
 const adminFetchDashboardTodaysDataUseCase = new AdminFetchDashboardTodaysDataUseCase(userRepositoryImpl, providerRepositoryImpl, paymentRepositoryImpl, bookingRepositoryImpl);
 const adminFetchDashboardProviderStatsDataUseCase = new AdminFetchDashboardProviderStatsDataUseCase(providerRepositoryImpl);

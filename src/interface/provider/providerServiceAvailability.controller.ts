@@ -1,5 +1,6 @@
 import { Types } from "mongoose";
 import { Request, Response } from "express";
+import { DecodedUser } from "../../express";
 import { HandleError } from "../../infrastructure/error/error";
 import { DateZodSchema } from "../../infrastructure/zod/common.zod";
 import { ProviderAddServiceAvailabilityZodSchema } from "../../infrastructure/zod/provider.zod";
@@ -23,31 +24,33 @@ class ProviderServiceAvailabilityController {
     }
 
     async addServiceAvailability(req: Request, res: Response) {
-        try{
-            const providerId = req.user.userOrProviderId;
+        try {
+            const providerId = (req.user as DecodedUser).userOrProviderId;
             const availabilities = ProviderAddServiceAvailabilityZodSchema.parse(req.body);
-            if(!providerId || !availabilities || availabilities.length  === 0) throw new Error("Invalid request.");
-            const result = await this.providerAddServiceAvailabilitiesUseCase.execute({providerId: new Types.ObjectId(providerId), availabilities});
+            if (!providerId || !availabilities || availabilities.length === 0) throw new Error("Invalid request.");
+            const result = await this.providerAddServiceAvailabilitiesUseCase.execute({ providerId: new Types.ObjectId(providerId), availabilities });
             res.status(200).json(result);
-        }catch(error){
+        } catch (error) {
             HandleError.handle(error, res);
         }
     }
 
     async getServiceAvailability(req: Request, res: Response) {
-        try{
-            const providerId = req.user.userOrProviderId;
-            const validateQuery = DateZodSchema.parse(req.query);
-            const { date } = validateQuery;
-            if(!providerId || !date) throw new Error("Invalid request.");
-            const result = await this.providerFetchServiceAvailabilityUseCase.execute({providerId: new Types.ObjectId(providerId), date: new Date(date)});
+        try {
+            const providerId = (req.user as DecodedUser).userOrProviderId;
+            const { date } = DateZodSchema.parse(req.query);
+            if (!providerId || !date) throw new Error("Invalid request.");
+            const result = await this.providerFetchServiceAvailabilityUseCase.execute({ providerId: new Types.ObjectId(providerId), date: new Date(date) });
             res.status(200).json(result);
-        }catch(error){
-            HandleError.handle(error,res);
+        } catch (error) {
+            HandleError.handle(error, res);
         }
     }
 
 }
 
-const providerServiceAvailabilityController = new ProviderServiceAvailabilityController( providerAddServiceAvailabilitiesUseCase, providerFetchServiceAvailabilityUseCase );
+const providerServiceAvailabilityController = new ProviderServiceAvailabilityController(
+    providerAddServiceAvailabilitiesUseCase,
+    providerFetchServiceAvailabilityUseCase
+);
 export { providerServiceAvailabilityController };

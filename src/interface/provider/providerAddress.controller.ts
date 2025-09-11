@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 import { Request, Response } from "express";
 import { DecodedUser } from "../../express";
 import { HandleError } from "../../infrastructure/error/error";
-import { AddAddressZodSchema } from "../../infrastructure/zod/common.zod";
+import { AddAddressZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
 import { AddressRepositoryImpl } from "../../infrastructure/database/address/address.repository.impl";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { ProviderAddAddressUseCase, ProviderFetchAddressUseCase, ProviderUpdateAddressUseCase } from "../../application/provider-use.case/providerAddress.use-case";
@@ -52,7 +52,7 @@ class ProviderAddressController {
     async updateAddress(req: Request, res: Response) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
-            const addressId = req.params.addressId as string;
+            const { id: addressId } = ValidateObjectId(req.params.addressId, "Address ID");
             if(!addressId) throw new Error("Invalid request");
             const validateData = AddAddressZodSchema.parse(req.body);
             const { addressLine, phone, place, city, district, pincode, state,  country, googleMapLink } = validateData;

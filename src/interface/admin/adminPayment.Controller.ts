@@ -15,16 +15,17 @@ export class AdminPaymentController {
     }
 
     async getAllPayments(req: Request, res: Response) {
-        try{
-            const validateQueryData = RequestQueryCommonZodSchema.parse(req.query);
-            const { page, limit } = validateQueryData;
+        try {
+            const { page, limit } = RequestQueryCommonZodSchema.parse(req.query);
             const result = await this.adminFetchAllPaymentsUseCase.execute({ page, limit });
             res.status(200).json(result);
-        }catch (error) {
-            HandleError.handle(error,res);
+        } catch (error) {
+            HandleError.handle(error, res);
         }
     }
 }
 
-const adminPaymentController = new AdminPaymentController( adminFetchAllPaymentsUseCase );
+const adminPaymentController = new AdminPaymentController(
+    adminFetchAllPaymentsUseCase
+);
 export { adminPaymentController };

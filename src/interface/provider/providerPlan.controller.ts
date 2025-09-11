@@ -15,14 +15,16 @@ export class ProviderPlanController {
     }
 
     async fetchAllPlans(req: Request, res: Response) {
-        try{
+        try {
             const result = await this.providerFetchAllPlansUseCase.execute();
             res.status(200).json(result);
-        }catch(error){
-            HandleError.handle(error,res);
+        } catch (error) {
+            HandleError.handle(error, res);
         }
     }
 }
 
-const providerPlanController = new ProviderPlanController( providerFetchAllPlansUseCase );
+const providerPlanController = new ProviderPlanController(
+    providerFetchAllPlansUseCase
+);
 export { providerPlanController };

@@ -15,15 +15,17 @@ class ProviderAppServiceController {
     }
 
     async getAllAppServices(req: Request, res: Response) {
-        try{
+        try {
             const result = await this.providerFetchAllServicesUseCase.execute();
             res.status(200).json(result);
-        }catch(error){
-            HandleError.handle(error,res);
+        } catch (error) {
+            HandleError.handle(error, res);
         }
     }
 
 }
 
-const providerAppServiceController = new ProviderAppServiceController( providerFetchAllServicesUseCase );
+const providerAppServiceController = new ProviderAppServiceController(
+    providerFetchAllServicesUseCase
+);
 export { providerAppServiceController };

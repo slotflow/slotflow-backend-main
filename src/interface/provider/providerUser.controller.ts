@@ -5,8 +5,9 @@ import { HandleError } from "../../infrastructure/error/error";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { ProviderFetchUserForChatSidebarUseCase } from "../../application/provider-use.case/providerUser.use-case";
 
-const  bookingRepositoryImpl = new BookingRepositoryImpl();
-const providerFetchUserForChatSidebarUseCase = new ProviderFetchUserForChatSidebarUseCase( bookingRepositoryImpl );
+const bookingRepositoryImpl = new BookingRepositoryImpl();
+
+const providerFetchUserForChatSidebarUseCase = new ProviderFetchUserForChatSidebarUseCase(bookingRepositoryImpl);
 
 export class ProviderUserController {
     constructor(
@@ -19,13 +20,14 @@ export class ProviderUserController {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
             const result = await this.providerFetchUserForChatSidebarUseCase.execute(new Types.ObjectId(providerId));
-            console.log("result : ",result);
             res.status(200).json(result);
-        }catch(error) {
-            HandleError.handle(error,res);
+        } catch (error) {
+            HandleError.handle(error, res);
         }
     }
 }
 
-const providerUserController = new ProviderUserController( providerFetchUserForChatSidebarUseCase );
+const providerUserController = new ProviderUserController(
+    providerFetchUserForChatSidebarUseCase
+);
 export { providerUserController };

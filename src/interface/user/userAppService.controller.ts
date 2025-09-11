@@ -1,5 +1,5 @@
-import { Request, Response } from "express"
-import { HandleError } from "../../infrastructure/error/error"
+import { Request, Response } from "express";
+import { HandleError } from "../../infrastructure/error/error";
 import { UserFetchAllAppServiceUseCase } from "../../application/user-use.case/userAppService.use-case";
 import { ServiceRepositoryImpl } from "../../infrastructure/database/appservice/service.repository.impl";
 
@@ -22,6 +22,8 @@ export class UserAppServiceController {
     }
 }
 
-const userAppServiceController = new UserAppServiceController( userFetchAllAppServiceUseCase )
+const userAppServiceController = new UserAppServiceController( 
+    userFetchAllAppServiceUseCase
+);
 
-export { userAppServiceController }
+export { userAppServiceController };

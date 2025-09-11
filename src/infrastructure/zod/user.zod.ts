@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { Types } from "mongoose";
 import { objectIdField, stringField } from "./common.zod";
 
 // **** user profile controller **** \\
@@ -51,20 +50,6 @@ const UserCreateSessionIdForbookingViaStripeZodSchema = z.object({
 });
 
 
-
-
-
-// **** user booking controller **** \\
-const UserCancelBookingZodSchema = z.object({
-    bookingId: z.string({
-        required_error: "Booking ID is required",
-        invalid_type_error: "Booking ID must be a string"
-    }).refine(id => Types.ObjectId.isValid(id), {
-        message: "Invalid Booking ID",
-    }),
-});
-
 export {
     UserCreateSessionIdForbookingViaStripeZodSchema,
-    UserCancelBookingZodSchema
 };

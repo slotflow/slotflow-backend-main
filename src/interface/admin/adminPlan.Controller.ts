@@ -14,46 +14,43 @@ const adminChangePlanBlockStatusUseCase = new AdminChangePlanBlockStatusUseCase(
 
 class AdminPlanController {
     constructor(
-        private adminPlanListUseCase : AdminPlanListUseCase,
-        private adminCreatePlanUseCase : AdminCreatePlanUseCase,
-        private adminChangePlanBlockStatusUseCase : AdminChangePlanBlockStatusUseCase,
-    ){
+        private adminPlanListUseCase: AdminPlanListUseCase,
+        private adminCreatePlanUseCase: AdminCreatePlanUseCase,
+        private adminChangePlanBlockStatusUseCase: AdminChangePlanBlockStatusUseCase,
+    ) {
         this.getAllPlans = this.getAllPlans.bind(this);
         this.addNewPlan = this.addNewPlan.bind(this);
         this.changePlanBlockStatus = this.changePlanBlockStatus.bind(this);
     }
 
     async getAllPlans(req: Request, res: Response) {
-        try{
-            const validateQuery = RequestQueryCommonZodSchema.parse(req.query);
-            const { page, limit } = validateQuery;
+        try {
+            const { page, limit } = RequestQueryCommonZodSchema.parse(req.query);
             const result = await this.adminPlanListUseCase.execute({ page, limit });
             res.status(200).json(result);
-        }catch(error){
+        } catch (error) {
             HandleError.handle(error, res);
         }
     }
 
     async addNewPlan(req: Request, res: Response) {
-        try{
+        try {
             const validateBody = AdminAddNewPlanZodSchema.parse(req.body);
             const { planName, description, price, features, maxBookingPerMonth, adVisibility } = validateBody;
-            const result = await this.adminCreatePlanUseCase.execute({planName, description, price, features, maxBookingPerMonth, adVisibility });
+            const result = await this.adminCreatePlanUseCase.execute({ planName, description, price, features, maxBookingPerMonth, adVisibility });
             res.status(200).json(result);
-        }catch(error){
-            HandleError.handle(error,res);
+        } catch (error) {
+            HandleError.handle(error, res);
         }
     }
 
     async changePlanBlockStatus(req: Request, res: Response) {
-        try{
-            const validateBody = AdminChangePlanIsBlockStatusZodSchema.parse(req.body);
-            const { blockStatus } = validateBody;
-            const validateParams = ValidateObjectId(req.params.planId, "Plan ID");
-            const { id: planId } = validateParams;
-            const result = await this.adminChangePlanBlockStatusUseCase.execute({planId : new Types.ObjectId(planId as string), isBlocked: blockStatus });
+        try {
+            const { blockStatus } = AdminChangePlanIsBlockStatusZodSchema.parse(req.body);
+            const { id: planId } = ValidateObjectId(req.params.planId, "Plan ID");
+            const result = await this.adminChangePlanBlockStatusUseCase.execute({ planId: new Types.ObjectId(planId as string), isBlocked: blockStatus });
             res.status(200).json(result);
-        }catch(error){
+        } catch (error) {
             HandleError.handle(error, res);
         }
     }
@@ -61,5 +58,9 @@ class AdminPlanController {
     // TODO UPDATE PLAN
 }
 
-const adminPlanController = new AdminPlanController(adminPlanListUseCase,adminCreatePlanUseCase, adminChangePlanBlockStatusUseCase);
+const adminPlanController = new AdminPlanController(
+    adminPlanListUseCase,
+    adminCreatePlanUseCase,
+    adminChangePlanBlockStatusUseCase
+);
 export { adminPlanController };
