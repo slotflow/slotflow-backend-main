@@ -55,10 +55,10 @@ export class AdminChangeProviderBlockStatusUseCase {
 
         const provider = await this.providerRepositoryImpl.findProviderById(providerId);
         if (!provider) throw new Error("User not found.");
-        provider.isBlocked = isBlocked;
+        provider.isBlocked = !isBlocked;
         const updatedProvider = await this.providerRepositoryImpl.updateProvider(provider);
         if (!updatedProvider) throw new Error("Provider not found");
-        return { success: true, message: `Provider ${isBlocked ? "blocked" : "Unblocked"} successfully.` };
+        return { success: true, message: `Provider ${isBlocked ? "Unblocked" : "blocked"} successfully.` };
     }
 }
 
@@ -75,7 +75,7 @@ export class AdminChangeProviderTrustTagUseCase {
 
         const provider = await this.providerRepositoryImpl.findProviderById(providerId);
         if (!provider) throw new Error("User not found.");
-        provider.trustedBySlotflow = trustedBySlotflow;
+        provider.trustedBySlotflow = !trustedBySlotflow;
         const updatedProvider = await this.providerRepositoryImpl.updateProvider(provider);
         if (!updatedProvider) throw new Error("Provider not found");
         return { success: true, message: `Provider trust tag ${trustedBySlotflow ? "Given" : "Removed"} successfully.` };

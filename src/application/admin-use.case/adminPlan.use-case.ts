@@ -58,9 +58,9 @@ export class AdminChangePlanBlockStatusUseCase {
         
         const existingPlan = await this.planRepositoryImpl.findPlanById(planId);
         if(!existingPlan) throw new Error("Plan does not exists.");
-        existingPlan.isBlocked = isBlocked;
+        existingPlan.isBlocked = !isBlocked;
         const updatedPlan = await this.planRepositoryImpl.updatePlan(planId, existingPlan);
         if(!updatedPlan) throw new Error("Plan status changing failed.");
-        return { success: true, message: `Plan ${isBlocked ? "Blocked" : "Unblocked"} successfully.` }
+        return { success: true, message: `Plan ${isBlocked ? "unblocked" : "blocked"} successfully.` }
     }
 }

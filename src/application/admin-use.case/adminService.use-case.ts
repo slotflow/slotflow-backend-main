@@ -56,9 +56,9 @@ export class AdminChnageServiceBlockStatusUseCase {
 
         const existingService = await this.seriveRepositoryImpl.findServiceById(serviceId);
         if(!existingService) throw new Error("No service found.");
-        existingService.isBlocked = isBlocked;
+        existingService.isBlocked = !isBlocked;
         const updatedService = await this.seriveRepositoryImpl.updateService(serviceId, existingService);
         if (!updatedService) throw new Error("Service status changing error.");
-        return { success: true, message: `Service ${isBlocked ? "Blocked" : "Unblocked"} successfully.` }
+        return { success: true, message: `Service ${isBlocked ? "unblocked" : "blocked"} successfully.` }
     }
 }

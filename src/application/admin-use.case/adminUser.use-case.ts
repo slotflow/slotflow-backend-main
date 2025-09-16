@@ -31,9 +31,9 @@ export class AdminChangeUserBlockStatusUseCase {
 
         const user = await this.userRepositoryImpl.findUserById(userId);
         if(!user) throw new Error("No user found.");
-        user.isBlocked = isBlocked;
+        user.isBlocked = !isBlocked;
         const updatedUser = await this.userRepositoryImpl.updateUser(user);
         if (!updatedUser) throw new Error("User not found");
-        return { success: true, message: `User ${isBlocked ? "blocked" : "Unblocked"} successfully.` };
+        return { success: true, message: `User ${isBlocked ? "unblocked" : "blocked"} successfully.` };
     }
 }

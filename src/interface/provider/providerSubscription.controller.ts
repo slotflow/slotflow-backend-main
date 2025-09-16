@@ -36,6 +36,7 @@ export class ProviderSubscriptionController {
         this.saveSubscription = this.saveSubscription.bind(this);
         this.fetchProviderSubscriptions = this.fetchProviderSubscriptions.bind(this);
         this.subscribeToTrialPlan = this.subscribeToTrialPlan.bind(this);
+        this.getSubscriptionDetails = this.getSubscriptionDetails.bind(this);
     }
 
     async subscribe(req: Request, res: Response) {

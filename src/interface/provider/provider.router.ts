@@ -24,6 +24,7 @@ router.get('/appservices', authMiddleware, providerAppServiceController.getAllAp
 router.get('/bookings', authMiddleware, providerBookingController.fetchBookingAppointments);
 router.patch('/bookings/:bookingId', authMiddleware, providerBookingController.updateBookingAppointmentStatus);
 router.get('/bookings/:bookingId/can-join', authMiddleware, providerBookingController.validateRoom);
+// router.get('/bookings/:bookingId', authMiddleware, providerBookingController); //TODO
 
 router.post('/service', authMiddleware,upload.single('certificate'), providerServiceController.addServiceDetails);
 router.get('/service', authMiddleware, providerServiceController.getServiceDetails);
@@ -41,7 +42,7 @@ router.post('/subscriptions/checkout-session', authMiddleware, providerSubscript
 router.post('/subscriptions', authMiddleware, providerSubscriptionController.saveSubscription);
 router.get('/subscriptions', authMiddleware, providerSubscriptionController.fetchProviderSubscriptions);
 router.post('/subscriptions/trial', authMiddleware, providerSubscriptionController.subscribeToTrialPlan);
-router.get('/subscriptions/:subscriptionId', authMiddleware,);
+router.get('/subscriptions/:subscriptionId', authMiddleware, providerSubscriptionController.getSubscriptionDetails);
 
 router.get('/payments', authMiddleware, providerPaymentController.getPayments);
 
