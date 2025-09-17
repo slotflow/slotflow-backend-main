@@ -13,6 +13,7 @@ export class User {
         public addressId: Types.ObjectId,
         public bookingsId: Types.ObjectId,
         public verificationToken: string,
+        public googleConnected: boolean,
         public googleId: string,
         public createdAt: Date,
         public updatedAt: Date,

@@ -1,9 +1,10 @@
 import { Router } from "express";
+import { googleController } from "./google.controller";
 import { authMiddleware } from "../middleware/auth.middleware";
-import { googleCalendarController } from "./googleCalendar.controller";
 
 const router = Router();
 
-router.get('/calendar/:userId',authMiddleware, googleCalendarController.getUserEvents);
+router.get('/calendar',authMiddleware, googleController.getUserEvents);
+router.get("/connect", authMiddleware, googleController.connectGoogle);
 
 export default router;

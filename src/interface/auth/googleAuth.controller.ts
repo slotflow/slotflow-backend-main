@@ -9,7 +9,6 @@ export class GoogleAuthController {
     constructor() { }
 
     async googleAuth(req: Request, res: Response, next: NextFunction) {
-
         try {
             const role = req.query.role;
             passport.authenticate("google", {
@@ -35,12 +34,38 @@ export class GoogleAuthController {
             passport.authenticate("google", { session: false }, async (err, user, info) => {
 
                 if (err || !user) {
-                    return res.redirect("/login?error=google_auth_failed");
+                    if (info.connectOnly) {
+                        const errorPayload = {
+                            success: false,
+                            error: "GOOGLE_CONNECT_FAILED",
+                            googleConnect: false
+                        };
+
+                        const redirectData = encodeURIComponent(JSON.stringify(errorPayload));
+                        return res.redirect(
+                            `${appUrl.frontendUrl}/${info.role === "PROVIDER" ? "provider" : "user"}/settings?response=${redirectData}`
+                        );
+                    } else {
+                        return res.redirect(`${appUrl.frontendUrl}/login?error=google_auth_failed`);
+                    }
                 }
 
                 const role = info?.role || user.role;
+                const connectOnly = info.connectOnly;
+
+                await redis.set(`google:accessToken:${user._id}`, user.googleAccessToken, { ex: 3600 });
+                await redis.set(`google:refreshToken:${user._id}`, user.googleRefreshToken);
+
+                if (connectOnly) {
+                    const successPayload = {
+                        success: true,
+                        googleConnected: true,
+                    };
+                    const redirectData = encodeURIComponent(JSON.stringify(successPayload));
+                    return res.redirect(`${appUrl.frontendUrl}/${role === "PROVIDER" ? "provider" : "user"}/settings?response=${redirectData}`);
+                }
+
                 const token = jwt.sign({ userOrProviderId: user._id, role }, process.env.JWT_SECRET!, { expiresIn: "1h" });
-                const authUser = { ...user, token };
 
                 res.cookie("token", token, {
                     maxAge: 2 * 24 * 60 * 60 * 1000,
@@ -49,18 +74,14 @@ export class GoogleAuthController {
                     secure: appConfig.nodeEnv !== "development",
                 });
 
-                const { token: _, googleAccessToken, googleRefreshToken, ...authUserWithoutToken } = authUser;
+                const { token: _, googleAccessToken, googleRefreshToken, ...authUserWithoutToken } = user;
                 authUserWithoutToken.role = role;
                 authUserWithoutToken.googleConnected = !!user.googleAccessToken;
-
-                await redis.set(`google:accessToken:${user._id}`, googleAccessToken, { ex: 3600 });
-                await redis.set(`google:refreshToken:${user._id}`, googleRefreshToken);
 
                 const authUserWithoutTokenJson = JSON.stringify(authUserWithoutToken);
                 const frontendUrl = appUrl.frontendUrl;
                 return res.redirect(`${frontendUrl}?authUser=${encodeURIComponent(authUserWithoutTokenJson)}`);
             })(req, res);
-
         } catch (error) {
             HandleError.handle(error, res);
         }

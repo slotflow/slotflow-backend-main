@@ -16,6 +16,7 @@ export type CreateGoogleUser = {
   googleId: User["googleId"];
   profileImage: User["profileImage"];
   isEmailVerified: User["isEmailVerified"];
+  googleConnected: User["googleConnected"];
 };
 
 export type CreateUserProps = CreateLocalUser | CreateGoogleUser;

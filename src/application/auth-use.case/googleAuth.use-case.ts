@@ -31,7 +31,8 @@ export class GoogleAuthUseCase {
                         email: profile.email,
                         googleId: profile.googleId,
                         profileImage: profile.image ?? "",
-                        isEmailVerified: true
+                        isEmailVerified: true,
+                        googleConnected: true,
                     })
                 }
                 
@@ -52,6 +53,7 @@ export class GoogleAuthUseCase {
                         googleId: profile.googleId,
                         profileImage: profile.image ?? "",
                         isEmailVerified: true,
+                        googleConnected: true,
                     })
                 }
                 return provider as Provider;

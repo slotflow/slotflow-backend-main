@@ -16,6 +16,7 @@ export type CreateGoogleProvider = {
   googleId: Provider["googleId"];
   profileImage: Provider["profileImage"];
   isEmailVerified: Provider["isEmailVerified"];
+  googleConnected: Provider["googleConnected"];
 };
 
 export type CreateProviderProps = CreateLocalProvider | CreateGoogleProvider;

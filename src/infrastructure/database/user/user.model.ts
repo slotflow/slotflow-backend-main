@@ -12,6 +12,7 @@ export interface IUser extends Document {
   addressId: Types.ObjectId;
   bookingsId: Types.ObjectId;
   verificationToken: string;
+  googleConnected: boolean;
   googleId: string;
   createdAt: Date;
   updatedAt: Date;
@@ -74,6 +75,10 @@ const UserSchema = new Schema<IUser>({
   verificationToken: {
     type: String,
     default: null
+  },
+  googleConnected: {
+    type: Boolean,
+    default: false
   },
   googleId: {
     type: String,

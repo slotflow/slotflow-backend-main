@@ -7,8 +7,8 @@ import { PasswordHasher } from "../../infrastructure/security/password-hashing";
 import { LoginRequest, LoginResponse } from "../../infrastructure/dtos/auth.dto";
 import { generateSignedUrl } from "../../infrastructure/services/signedUrl.service";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
-import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { PlanRepositoryImpl } from "../../infrastructure/database/plan/plan.repository.impl";
+import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { SubscriptionRepositoryImpl } from "../../infrastructure/database/subscription/subscription.repository.impl";
 
 
@@ -109,6 +109,7 @@ export class LoginUseCase {
                 isServiceAvailabilityAdded,
                 isAdminApproved,
                 providerSubscription,
+                googleConnected: userOrProvider.googleConnected,
                 updatedAt: userOrProvider.updatedAt
             }
         };

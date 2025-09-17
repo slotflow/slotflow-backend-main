@@ -21,6 +21,7 @@ export class UserRepositoryImpl implements IUserRepository {
             user.addressId,
             user.bookingsId,
             user.verificationToken,
+            user.googleConnected,
             user.googleId,
             user.createdAt,
             user.updatedAt,
