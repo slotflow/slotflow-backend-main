@@ -7,7 +7,7 @@ import { endOfDay, startOfDay, startOfToday, startOfTomorrow } from "date-fns";
 import { UserFetchProvidersForChatSidebarResponse } from "../../dtos/user.dto";
 import { AppointmentStatus, Booking } from "../../../domain/entities/booking.entity";
 import { AdminFetchDashboardAppointmentStatsDataResponse } from "../../dtos/admin.dto";
-import { FetchBookingsRequest, ApiResponse, FetchBookingsResponse, userIdAndServiceProviderId, FetchOnlineBookingsResponse } from "../../dtos/common.dto";
+import { FetchBookingsRequest, ApiResponse, FetchBookingsResponse, userIdAndServiceProviderId, FetchOnlineBookingsForProviderResponse, FetchOnlineBookingsForUserResponse } from "../../dtos/common.dto";
 import { AdminFetchTodaysBookingStatsForDashboardResponse, CreateBookingPayloadProps, IBookingRepository } from "../../../domain/repositories/IBooking.repository";
 import { ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardGraphDataResponse, ProviderFetchUsersForChatSideBar } from "../../dtos/provider.dto";
 
@@ -100,7 +100,7 @@ export class BookingRepositoryImpl implements IBookingRepository {
         }
     }
 
-    async findAllBookings({ page, limit, userId, serviceProviderId, online, raw }: FetchBookingsRequest): Promise<ApiResponse<FetchBookingsResponse | FetchOnlineBookingsResponse>> {
+    async findAllBookings({ page, limit, userId, serviceProviderId, online, raw, role }: FetchBookingsRequest): Promise<ApiResponse<FetchBookingsResponse | FetchOnlineBookingsForProviderResponse | FetchOnlineBookingsForUserResponse>> {
         try {
             const skip = (page - 1) * limit;
 
@@ -126,6 +126,7 @@ export class BookingRepositoryImpl implements IBookingRepository {
                 createdAt: 1,
                 username: 1,
             }
+            
             const project = raw ? rawProject : online ? onlineProject : rawProject;
 
             let query = BookingModel.find(filter, project)
@@ -134,7 +135,9 @@ export class BookingRepositoryImpl implements IBookingRepository {
                 .sort({ createdAt: -1 })
                 .lean();
 
-            if (online) {
+            if (online && role === "USER") {
+                query = query.populate("serviceProviderId", "username -_id");
+            } else if (online && role === "PROVIDER") {
                 query = query.populate("userId", "username -_id");
             }
 

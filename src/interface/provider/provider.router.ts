@@ -15,8 +15,6 @@ import { providerServiceAvailabilityController } from './providerServiceAvailabi
 
 const router = Router();
 
-console.log("provider router called")
-
 router.post('/addresses', authMiddleware, provideAddressController.addAddress);
 router.get('/address', authMiddleware, provideAddressController.getAddress);
 router.patch('/addresses/:addressId', authMiddleware, provideAddressController.updateAddress);

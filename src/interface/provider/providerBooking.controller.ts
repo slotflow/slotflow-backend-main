@@ -3,23 +3,22 @@ import { Request, Response } from "express";
 import { DecodedUser } from "../../express";
 import { HandleError } from "../../infrastructure/error/error";
 import { AppointmentStatus } from "../../domain/entities/booking.entity";
-import { RequestQueryCommonZodSchema, RequestQueryForBookingCommonZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { ValidateJoinRoomUsecase } from "../../application/common-use.case/validateJoinRoom.use-case";
 import { ProviderChangeBookingAppointmentStatusZodSchema } from "../../infrastructure/zod/provider.zod";
-import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
-import { ProviderChangeBookingAppointmentStatusUseCase, ProviderFetchBookingAppointmentsUseCase } from "../../application/provider-use.case/providerBooking.use-case";
+import { RequestQueryForBookingCommonZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
+import { FetchBookingAppointmentsUseCase } from "../../application/common-use.case/fetchAllBookings.use-case";
+import { ProviderChangeBookingAppointmentStatusUseCase } from "../../application/provider-use.case/providerBooking.use-case";
 
 const bookingRepositoryImpl = new BookingRepositoryImpl();
-const providerRepositoryImpl = new ProviderRepositoryImpl();
 
-const providerFetchBookingAppointmentsUseCase = new ProviderFetchBookingAppointmentsUseCase(providerRepositoryImpl, bookingRepositoryImpl);
+const fetchBookingAppointmentsUseCase = new FetchBookingAppointmentsUseCase(bookingRepositoryImpl);
 const providerChangeBookingAppointmentStatusUseCase = new ProviderChangeBookingAppointmentStatusUseCase(bookingRepositoryImpl);
 const validateJoinRoomUsecase = new ValidateJoinRoomUsecase(bookingRepositoryImpl)
 
 export class ProviderBookingController {
     constructor(
-        private providerFetchBookingAppointmentsUseCase: ProviderFetchBookingAppointmentsUseCase,
+        private fetchBookingAppointmentsUseCase: FetchBookingAppointmentsUseCase,
         private providerChangeBookingAppointmentStatusUseCase: ProviderChangeBookingAppointmentStatusUseCase,
         private validateJoinRoomUsecase: ValidateJoinRoomUsecase,
     ) {
@@ -30,15 +29,16 @@ export class ProviderBookingController {
 
     async fetchBookingAppointments(req: Request, res: Response) {
         try {
-            const providerId = (req.user as DecodedUser).userOrProviderId;
+            const provider = (req.user as DecodedUser);
             const { page, limit, online, raw } = RequestQueryForBookingCommonZodSchema.parse(req.query);
-            if (!providerId) throw new Error("Invalid request");
-            const result = await this.providerFetchBookingAppointmentsUseCase.execute({ 
-                serviceProviderId: new Types.ObjectId(providerId), 
-                page, 
-                limit, 
-                online: online ? true : false, 
-                raw: raw ? true : false 
+            if (!provider) throw new Error("Invalid request");
+            const result = await this.fetchBookingAppointmentsUseCase.execute({
+                serviceProviderId: new Types.ObjectId(provider.userOrProviderId),
+                page,
+                limit,
+                online: online ? true : false,
+                raw: raw ? true : false,
+                role: provider.role as "PROVIDER"
             });
             res.status(200).json(result);
         } catch (error) {
@@ -72,7 +72,7 @@ export class ProviderBookingController {
 }
 
 const providerBookingController = new ProviderBookingController(
-    providerFetchBookingAppointmentsUseCase,
+    fetchBookingAppointmentsUseCase,
     providerChangeBookingAppointmentStatusUseCase,
     validateJoinRoomUsecase
 );

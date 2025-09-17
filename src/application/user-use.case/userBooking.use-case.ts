@@ -1,33 +1,14 @@
 import Stripe from "stripe";
 import mongoose, { Types } from "mongoose";
+import { ApiResponse } from "../../infrastructure/dtos/common.dto";
 import { Validator } from "../../infrastructure/validator/validator";
 import { AppointmentStatus } from "../../domain/entities/booking.entity";
 import { UserCancelBookingRequest } from "../../infrastructure/dtos/user.dto";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
-import { ApiResponse, FetchBookingsRequest, FetchBookingsResponse } from "../../infrastructure/dtos/common.dto";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-
-
-export class UserFetchBookingsUseCase {
-    constructor(
-        private bookingRepositoryImpl: BookingRepositoryImpl
-    ) { }
-
-    async execute({ userId, page, limit }: FetchBookingsRequest): Promise<ApiResponse<FetchBookingsResponse>> {
-        if (!userId) throw new Error("Invalid request");
-
-        Validator.validateObjectId(userId, "userId");
-
-        const result = await this.bookingRepositoryImpl.findAllBookings({page, limit, userId});
-        if (!result) throw new Error("Bookings fetching error");
-
-        return { data: result.data, totalPages: result.totalPages, currentPage: result.currentPage, totalCount: result.totalCount };
-    }
-}
-
 
 export class UserCancelBookingUseCase {
     constructor(

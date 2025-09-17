@@ -1,12 +1,12 @@
+import { Types } from "mongoose";
 import { Plan } from "../../domain/entities/plan.entity";
 import { User } from "../../domain/entities/user.entity";
 import { Address } from "../../domain/entities/address.entity";
-import { Payment, PaymentFor } from "../../domain/entities/payment.entity";
 import { Booking } from "../../domain/entities/booking.entity";
 import { Service } from "../../domain/entities/service.entity";
 import { Provider } from "../../domain/entities/provider.entity";
 import { Subscription } from "../../domain/entities/subscription.entity";
-import { Types } from "mongoose";
+import { Payment, PaymentFor } from "../../domain/entities/payment.entity";
 import { findSubscriptionFullDetailsResProps } from "../../domain/repositories/ISubscription.repository";
 
 // **** 1. Used as the request interface for the paginated request
@@ -76,11 +76,12 @@ export interface userIdAndServiceProviderId {
 export interface FetchBookingsRequest extends ApiPaginationRequest, userIdAndServiceProviderId {
   online: boolean;
   raw: boolean;
+  role: "USER" | "PROVIDER";
 }
 //// **** 7.2 Used as the response type for fetching bookings for admin, provider and user side
 export type FetchBookingsResponse = Array<Pick<Booking, "_id" | "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "videoCallRoomId" >>;
-export type FetchOnlineBookingsResponse = Array<Pick<Booking, "_id" | "appointmentDate" | "appointmentStatus" | "appointmentTime" | "videoCallRoomId" | "createdAt"> & Pick<User, "username">>;
-
+export type FetchOnlineBookingsForProviderResponse = Array<Pick<Booking, "_id" | "appointmentDate" | "appointmentStatus" | "appointmentTime" | "videoCallRoomId" | "createdAt"> & Pick<User, "username">>;
+export type FetchOnlineBookingsForUserResponse = Pick<Booking, "_id" | "appointmentDate" | "appointmentStatus" | "appointmentTime" | "videoCallRoomId" | "createdAt"> & Pick<Provider, "username">;
 
 //// **** 8. Used as the response type for fetching AppServices for provider and user side
 export type FetchAllAppServicesResponse = Array<Pick<Service, "_id" | "serviceName">>;
