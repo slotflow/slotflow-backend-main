@@ -3,7 +3,7 @@ import { User } from "../entities/user.entity";
 import { Booking } from "../entities/booking.entity";
 import { Provider } from "../entities/provider.entity";
 import { UserFetchProvidersForChatSidebarResponse } from "../../infrastructure/dtos/user.dto";
-import { ApiResponse, FetchBookingsRequest, FetchBookingsResponse } from "../../infrastructure/dtos/common.dto";
+import { ApiResponse, FetchBookingsRequest, FetchBookingsResponse, FetchOnlineBookingsResponse } from "../../infrastructure/dtos/common.dto";
 import { ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardGraphDataResponse, ProviderFetchUsersForChatSideBar } from "../../infrastructure/dtos/provider.dto";
 import { AdminFetchDashboardAppointmentStatsDataResponse, AdminFetchDashboardTodayStatsDataResponse } from "../../infrastructure/dtos/admin.dto";
 
@@ -22,7 +22,7 @@ export interface IBookingRepository {
 
     findTodaysBookingForCronjob() : Promise<boolean> ;
 
-    findAllBookings({ page, limit, userId, serviceProviderId }: FetchBookingsRequest) : Promise<ApiResponse<FetchBookingsResponse>>;
+    findAllBookings({ page, limit, userId, serviceProviderId, online, raw }: FetchBookingsRequest) : Promise<ApiResponse<FetchBookingsResponse | FetchOnlineBookingsResponse>>;
 
     findUsersforChatSideBar(providerId: Provider["_id"]): Promise<ProviderFetchUsersForChatSideBar>;
     

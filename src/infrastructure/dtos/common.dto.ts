@@ -73,9 +73,13 @@ export interface userIdAndServiceProviderId {
   userId?: User["_id"];
   serviceProviderId?: Provider["_id"];
 }
-export interface FetchBookingsRequest extends ApiPaginationRequest, userIdAndServiceProviderId {}
+export interface FetchBookingsRequest extends ApiPaginationRequest, userIdAndServiceProviderId {
+  online: boolean;
+  raw: boolean;
+}
 //// **** 7.2 Used as the response type for fetching bookings for admin, provider and user side
-export type FetchBookingsResponse = Array<Pick<Booking, "_id" | "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" >>;
+export type FetchBookingsResponse = Array<Pick<Booking, "_id" | "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "videoCallRoomId" >>;
+export type FetchOnlineBookingsResponse = Array<Pick<Booking, "_id" | "appointmentDate" | "appointmentStatus" | "appointmentTime" | "videoCallRoomId" | "createdAt"> & Pick<User, "username">>;
 
 
 //// **** 8. Used as the response type for fetching AppServices for provider and user side
@@ -95,9 +99,10 @@ export interface ValidateJoinRoomRequest {
 
 //// **** 11. fetch subscription details use case request payload interface 
 export interface FetchSubscriptionDetailsRequest {
-    subscriptionId: Subscription["_id"];
+  subscriptionId: Subscription["_id"];
 }
 // admin fetch subscription details use case response interface 
 export interface FetchSubscriptionDetailsResponse extends CommonResponse {
-    subscriptionDetails: findSubscriptionFullDetailsResProps | {};
+  subscriptionDetails: findSubscriptionFullDetailsResProps | {};
 }
+

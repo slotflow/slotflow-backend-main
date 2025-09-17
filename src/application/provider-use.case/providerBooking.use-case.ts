@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Validator } from "../../infrastructure/validator/validator";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
-import { ApiResponse, FetchBookingsRequest, FetchBookingsResponse } from "../../infrastructure/dtos/common.dto";
+import { ApiResponse, FetchBookingsRequest, FetchBookingsResponse, FetchOnlineBookingsResponse } from "../../infrastructure/dtos/common.dto";
 import { ProviderChangeBookingAppoinmentStatusRequest } from "../../infrastructure/dtos/provider.dto";
 import { AppointmentStatus } from "../../domain/entities/booking.entity";
 
@@ -13,16 +13,17 @@ export class ProviderFetchBookingAppointmentsUseCase {
         private bookingRepositoryImpl: BookingRepositoryImpl,
     ) { }
 
-    async execute({ serviceProviderId, page, limit } : FetchBookingsRequest): Promise<ApiResponse<FetchBookingsResponse>> {
+    async execute({ serviceProviderId, page, limit, online, raw } : FetchBookingsRequest): Promise<ApiResponse<FetchBookingsResponse | FetchOnlineBookingsResponse>> {
 
         if(!serviceProviderId) throw new Error("Invalid request");
-
         Validator.validateObjectId(serviceProviderId, "providerId");
+        Validator.validateBooleanValue(online, "Onnline filter");
+        Validator.validateBooleanValue(raw, "Raw filter");
         
         const provider = await this.providerRepositoryImpl.findProviderById(serviceProviderId);
         if(!provider) throw new Error("No user found");
 
-        const result = await this.bookingRepositoryImpl.findAllBookings({page, limit, serviceProviderId});
+        const result = await this.bookingRepositoryImpl.findAllBookings({page, limit, serviceProviderId, online, raw});
         if(!result) throw new Error("Appointments fetching error");
 
         return { data: result.data, totalPages: result.totalPages, currentPage: result.currentPage, totalCount: result.totalCount };

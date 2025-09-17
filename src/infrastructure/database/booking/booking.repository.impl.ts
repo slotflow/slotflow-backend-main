@@ -7,7 +7,7 @@ import { endOfDay, startOfDay, startOfToday, startOfTomorrow } from "date-fns";
 import { UserFetchProvidersForChatSidebarResponse } from "../../dtos/user.dto";
 import { AppointmentStatus, Booking } from "../../../domain/entities/booking.entity";
 import { AdminFetchDashboardAppointmentStatsDataResponse } from "../../dtos/admin.dto";
-import { FetchBookingsRequest, ApiResponse, FetchBookingsResponse, userIdAndServiceProviderId } from "../../dtos/common.dto";
+import { FetchBookingsRequest, ApiResponse, FetchBookingsResponse, userIdAndServiceProviderId, FetchOnlineBookingsResponse } from "../../dtos/common.dto";
 import { AdminFetchTodaysBookingStatsForDashboardResponse, CreateBookingPayloadProps, IBookingRepository } from "../../../domain/repositories/IBooking.repository";
 import { ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardGraphDataResponse, ProviderFetchUsersForChatSideBar } from "../../dtos/provider.dto";
 
@@ -100,27 +100,51 @@ export class BookingRepositoryImpl implements IBookingRepository {
         }
     }
 
-    async findAllBookings({ page, limit, userId, serviceProviderId }: FetchBookingsRequest): Promise<ApiResponse<FetchBookingsResponse>> {
+    async findAllBookings({ page, limit, userId, serviceProviderId, online, raw }: FetchBookingsRequest): Promise<ApiResponse<FetchBookingsResponse | FetchOnlineBookingsResponse>> {
         try {
             const skip = (page - 1) * limit;
+
             const filter: userIdAndServiceProviderId = {};
-            if (userId) { filter.userId = userId; }
-            if (serviceProviderId) { filter.serviceProviderId = serviceProviderId; }
-            const [payments, totalCount] = await Promise.all([
-                BookingModel.find(filter, {
-                    _id: 1,
-                    appointmentDate: 1,
-                    appointmentMode: 1,
-                    videoCallRoomId: 1,
-                    appointmentStatus: 1,
-                    appointmentTime: 1,
-                    createdAt: 1,
-                }).skip(skip).limit(limit).sort({ createdAt: -1 }).lean(),
-                BookingModel.countDocuments(),
+            if (userId) { filter.userId = userId; };
+            if (serviceProviderId) { filter.serviceProviderId = serviceProviderId; };
+
+            const rawProject: Record<string, number> = {
+                _id: 1,
+                appointmentDate: 1,
+                appointmentMode: 1,
+                videoCallRoomId: 1,
+                appointmentStatus: 1,
+                appointmentTime: 1,
+                createdAt: 1,
+            }
+            const onlineProject: Record<string, number> = {
+                _id: 1,
+                appointmentDate: 1,
+                videoCallRoomId: 1,
+                appointmentStatus: 1,
+                appointmentTime: 1,
+                createdAt: 1,
+                username: 1,
+            }
+            const project = raw ? rawProject : online ? onlineProject : rawProject;
+
+            let query = BookingModel.find(filter, project)
+                .skip(skip)
+                .limit(limit)
+                .sort({ createdAt: -1 })
+                .lean();
+
+            if (online) {
+                query = query.populate("userId", "username -_id");
+            }
+
+            const [bookings, totalCount] = await Promise.all([
+                query.exec(),
+                BookingModel.countDocuments(filter)
             ]);
             const totalPages = Math.ceil(totalCount / limit);
             return {
-                data: payments.map(this.mapToEntity),
+                data: bookings.map(this.mapToEntity),
                 totalPages,
                 currentPage: page,
                 totalCount

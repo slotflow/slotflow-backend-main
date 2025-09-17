@@ -15,6 +15,8 @@ import { providerServiceAvailabilityController } from './providerServiceAvailabi
 
 const router = Router();
 
+console.log("provider router called")
+
 router.post('/addresses', authMiddleware, provideAddressController.addAddress);
 router.get('/address', authMiddleware, provideAddressController.getAddress);
 router.patch('/addresses/:addressId', authMiddleware, provideAddressController.updateAddress);
@@ -24,7 +26,7 @@ router.get('/appservices', authMiddleware, providerAppServiceController.getAllAp
 router.get('/bookings', authMiddleware, providerBookingController.fetchBookingAppointments);
 router.patch('/bookings/:bookingId', authMiddleware, providerBookingController.updateBookingAppointmentStatus);
 router.get('/bookings/:bookingId/can-join', authMiddleware, providerBookingController.validateRoom);
-// router.get('/bookings/:bookingId', authMiddleware, providerBookingController); //TODO
+// router.get('/bookings/:bookingId', authMiddleware, providerBookingController); //TODO // details
 
 router.post('/service', authMiddleware,upload.single('certificate'), providerServiceController.addServiceDetails);
 router.get('/service', authMiddleware, providerServiceController.getServiceDetails);

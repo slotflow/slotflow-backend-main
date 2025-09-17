@@ -76,7 +76,7 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                     paymentStatus: 1,
                     discountAmount: 1,
                 }).skip(skip).limit(limit).sort({ createdAt: 1 }).lean(),
-                PaymentModel.countDocuments(),
+                PaymentModel.countDocuments(filter),
             ]);
             const totalPages = Math.ceil(totalCount / limit);
             return {

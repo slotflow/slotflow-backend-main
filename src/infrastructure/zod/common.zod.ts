@@ -191,6 +191,24 @@ export const RequestQueryCommonZodSchema = z.object({
     }),
 });
 
+// Validating the page and limit in the request query zod schema
+export const RequestQueryForBookingCommonZodSchema = z.object({
+  page: stringField("Request query parameter page")
+    .transform(Number)
+    .refine((val) => !isNaN(val) && val > 0, {
+      message: "Page must be a valid positive number",
+    }),
+    
+  limit: stringField("Request query parameter limit")
+    .transform(Number)
+    .refine((val) => !isNaN(val) && val > 0, {
+      message: "Limit must be a valid positive number",
+    }),
+
+    online: enumField("online filter",["true","false"]).optional(),
+    raw: enumField("raw filter",["true","false"]).optional(),
+});
+
 // ObjectId validation
 export const ValidateObjectId = (id: string, name: string) => {
   const schema = z.object({
