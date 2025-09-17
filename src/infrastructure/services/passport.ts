@@ -39,9 +39,11 @@ passport.use(
                     image: profile.photos?.[0]?.value || null,
                 });
 
-                return done(null, entity, {role});
+                const data = {...entity, googleAccessToken: accessToken, googleRefreshToken: refreshToken  }
+
+                return done(null, data, { role });
             } catch (error) {
-                console.log("Passport error : ",error);
+                console.log("Passport error : ", error);
                 return done(error, undefined);
             }
         }

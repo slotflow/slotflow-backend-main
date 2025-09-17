@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import authRoutes from './interface/auth/auth.routes';
 import userRouter from './interface/user/user.routes';
 import adminRoutes from './interface/admin/admin.routes';
+import googleRouter from './interface/google/google.router';
 import providerRouter from './interface/provider/provider.router';
 
 dotenv.config();
@@ -28,5 +29,6 @@ app.use('/api/auth',authRoutes);
 app.use("/api/admin",adminRoutes);
 app.use('/api/user',userRouter);
 app.use('/api/provider',providerRouter); 
+app.use('/api/google',googleRouter); 
 
 export default app;

@@ -1,32 +1,39 @@
 import jwt from "jsonwebtoken";
 import passport from "passport";
-import { appConfig } from "../../config/env";
+import { appConfig, appUrl } from "../../config/env";
+import { redis } from "../../infrastructure/lib/redis";
 import { NextFunction, Request, Response } from "express";
+import { HandleError } from "../../infrastructure/error/error";
 
 export class GoogleAuthController {
-    constructor() {}
+    constructor() { }
 
     async googleAuth(req: Request, res: Response, next: NextFunction) {
 
         try {
             const role = req.query.role;
             passport.authenticate("google", {
-                scope: ["openid", "profile", "email"],
+                scope: [
+                    "openid",
+                    "profile",
+                    "email",
+                    "https://www.googleapis.com/auth/calendar.events.owned",
+                    "https://www.googleapis.com/auth/calendar.events.owned.readonly"
+                ],
                 prompt: "select_account",
                 session: false,
                 state: JSON.stringify({ role }),
             })(req, res, next);
         } catch (error) {
-            console.log("google auth controller error : ", error);
+            HandleError.handle(error, res);
         }
     }
 
     async googleAuthCallback(req: Request, res: Response) {
         try {
 
-            passport.authenticate("google", 
-                { session: false },
-                 (err, user, info) => {
+            passport.authenticate("google", { session: false }, async (err, user, info) => {
+
                 if (err || !user) {
                     return res.redirect("/login?error=google_auth_failed");
                 }
@@ -42,15 +49,20 @@ export class GoogleAuthController {
                     secure: appConfig.nodeEnv !== "development",
                 });
 
-                const { token: _, ...authUserWithoutToken } = authUser;
+                const { token: _, googleAccessToken, googleRefreshToken, ...authUserWithoutToken } = authUser;
                 authUserWithoutToken.role = role;
+                authUserWithoutToken.googleConnected = !!user.googleAccessToken;
+
+                await redis.set(`google:accessToken:${user._id}`, googleAccessToken, { ex: 3600 });
+                await redis.set(`google:refreshToken:${user._id}`, googleRefreshToken);
 
                 const authUserWithoutTokenJson = JSON.stringify(authUserWithoutToken);
-                return res.redirect(`http://localhost:5173?authUser=${encodeURIComponent(authUserWithoutTokenJson)}`);
+                const frontendUrl = appUrl.frontendUrl;
+                return res.redirect(`${frontendUrl}?authUser=${encodeURIComponent(authUserWithoutTokenJson)}`);
             })(req, res);
 
         } catch (error) {
-            console.log("gooe auth callback error : ", error);
+            HandleError.handle(error, res);
         }
     }
 }
