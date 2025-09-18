@@ -21,7 +21,8 @@ export class GoogleCalendarService {
 
             const data = await response.json();
             return { success: true, message: "Fetched calendar events", data: data.items || []}
-        } catch {
+        } catch (error) {
+            console.log("GoogleCalendarService use case error : ",error);
             throw new Error("Calendar events fetching failed");
         }
     }

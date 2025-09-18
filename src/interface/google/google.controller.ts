@@ -18,8 +18,10 @@ export class GoogleController {
 
     async getUserEvents(req: Request, res: Response) {
         try {
+            console.log("Fetching calendar");
             const userId = (req.user as DecodedUser).userOrProviderId;
             const result = await this.googleCalendarService.fetchCalendarEvents(userId);
+            console.log("result : ",result);
             res.status(200).json(result);
         } catch (error) {
             HandleError.handle(error, res);
