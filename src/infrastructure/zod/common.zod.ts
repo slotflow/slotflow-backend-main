@@ -159,10 +159,7 @@ export const AddAddressZodSchema = z.object({
       required_error: "Google Map link is required",
       invalid_type_error: "Google Map link must be a string",
     })
-    .url("Invalid Google Map link")
-    .refine((val) => val.startsWith("https://maps.app.goo.gl/"), {
-      message: "Link must be from Google Maps (maps.app.goo.gl)",
-    }),
+    .url("Invalid Google Map link"),
   });
   
   // user or provider username and phone updation controller

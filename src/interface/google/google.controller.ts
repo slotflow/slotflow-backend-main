@@ -1,11 +1,20 @@
 import passport from "passport";
+import { Types } from "mongoose";
 import { DecodedUser } from "../../express";
 import { NextFunction, Request, Response } from "express";
 import { HandleError } from "../../infrastructure/error/error";
+import { AesEncryption } from "../../infrastructure/services/aesEncryption";
 import { GoogleCalendarService } from "../../infrastructure/services/googleCalendar";
-import { GoogleTokenService } from "../../infrastructure/services/googleTokenService";                  
+import { GoogleTokenService } from "../../infrastructure/services/googleTokenService";   
+import { CredentialRepositoryImpl } from "../../infrastructure/database/credential/credential.repository.impl";
+import { GetCredentialUseCase, UpdateCredentialUseCase } from "../../application/common-use.case/credential.use-case";
 
-const googleTokenService = new GoogleTokenService();
+const aesEncryption = new AesEncryption()
+const credentialRepositoryImpl = new CredentialRepositoryImpl()
+const getCredentialUseCase = new GetCredentialUseCase(credentialRepositoryImpl, aesEncryption);
+const updateCredentialUseCase = new UpdateCredentialUseCase(credentialRepositoryImpl, aesEncryption);
+
+const googleTokenService = new GoogleTokenService(getCredentialUseCase, updateCredentialUseCase);
 const googleCalendarService = new GoogleCalendarService(googleTokenService);
 
 export class GoogleController {
@@ -18,10 +27,8 @@ export class GoogleController {
 
     async getUserEvents(req: Request, res: Response) {
         try {
-            console.log("Fetching calendar");
             const userId = (req.user as DecodedUser).userOrProviderId;
-            const result = await this.googleCalendarService.fetchCalendarEvents(userId);
-            console.log("result : ",result);
+            const result = await this.googleCalendarService.execute(new Types.ObjectId(userId));
             res.status(200).json(result);
         } catch (error) {
             HandleError.handle(error, res);
@@ -29,7 +36,6 @@ export class GoogleController {
     }
 
     async connectGoogle(req: Request, res: Response, next: NextFunction) {
-        console.log("connecting google");
         try {
             const user = (req.user as DecodedUser);
             if (!user) throw new Error("no user found");

@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { ApiResponse } from "../dtos/common.dto";
 import { GoogleTokenService } from "./googleTokenService";
 
@@ -6,8 +7,9 @@ export class GoogleCalendarService {
         private googleTokenService: GoogleTokenService
     ) {}
 
-    async fetchCalendarEvents(userId: string): Promise<ApiResponse> {
+    async execute(userId: Types.ObjectId): Promise<ApiResponse> {
         try {
+
             const accessToken = await this.googleTokenService.getValidAccessToken(userId);
 
             const response = await fetch(

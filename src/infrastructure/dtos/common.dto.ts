@@ -8,6 +8,14 @@ import { Provider } from "../../domain/entities/provider.entity";
 import { Subscription } from "../../domain/entities/subscription.entity";
 import { Payment, PaymentFor } from "../../domain/entities/payment.entity";
 import { findSubscriptionFullDetailsResProps } from "../../domain/repositories/ISubscription.repository";
+import { Credential } from "../../domain/entities/credential";
+
+// Common Role
+export enum Role {
+    admin = "ADMIN",
+    user = "USER",
+    provider = "PROVIDER"
+}
 
 // **** 1. Used as the request interface for the paginated request
 export interface ApiPaginationRequest {
@@ -107,3 +115,6 @@ export interface FetchSubscriptionDetailsResponse extends CommonResponse {
   subscriptionDetails: findSubscriptionFullDetailsResProps | {};
 }
 
+
+//// **** 12 create credential 
+export type CreateCredential = Pick<Credential, "userId" | "accessToken" | "refreshToken" | "expiryDate" >

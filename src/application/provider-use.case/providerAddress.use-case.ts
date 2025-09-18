@@ -71,7 +71,6 @@ export class ProviderUpdateAddressUseCase {
 
     async execute(payload: UpdateAddressRequest): Promise<ApiResponse<ProviderFetchAddressResponse>> {
         try {
-            console.log("payload : ",payload);
             const { _id: addressId ,userId, addressLine, phone, place, city, district, pincode, state, country, googleMapLink } = payload;
             if(!userId || !addressLine || !phone || !place || !city || !district || !pincode || !state || !country || !googleMapLink) throw new Error("Invalid request.");
             
@@ -87,7 +86,6 @@ export class ProviderUpdateAddressUseCase {
             Validator.validateGoogleMapLink(googleMapLink);
             
             const existingAddress = await this.addressRepositoryImpl.findAddressById(addressId);
-            console.log("existingAddress : ",existingAddress);
             if(!existingAddress) throw new Error("Address not found");
 
             existingAddress.addressLine = payload.addressLine || existingAddress.addressLine;

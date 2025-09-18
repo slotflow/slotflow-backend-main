@@ -1,10 +1,10 @@
 import passport from 'passport';
+import { Types } from 'mongoose';
 import { googleClientConfig } from '../../config/env';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { UserRepositoryImpl } from '../database/user/user.repository.impl';
 import { ProviderRepositoryImpl } from '../database/provider/provider.repository.impl';
 import { GoogleAuthUseCase } from '../../application/auth-use.case/googleAuth.use-case';
-import { Types } from 'mongoose';
 
 const userRepositoryImpl = new UserRepositoryImpl();
 const providerRepositoryImpl = new ProviderRepositoryImpl();
@@ -20,6 +20,7 @@ passport.use(
         },
         async (req, accessToken, refreshToken, profile, done) => {
             try {
+
                 let role;
                 let connectOnly;
                 let entity;

@@ -85,7 +85,6 @@ export class Validator {
     // Google Map Link
     static validateGoogleMapLink(googleMapLink: string): void {
         if (!validator.isURL(googleMapLink)) throw new Error("Invalid Google Map link.");
-        if (!googleMapLink.startsWith("https://maps.app.goo.gl/")) throw new Error("Invalid google map url.");
     }
 
 

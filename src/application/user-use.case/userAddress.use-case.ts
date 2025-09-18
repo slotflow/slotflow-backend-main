@@ -75,7 +75,6 @@ export class UserUpdateAddressUseCase {
 
     async execute(payload: UpdateAddressRequest): Promise<ApiResponse<UserFetchAddressResponse>> {
         try {
-            console.log("payload : ",payload);
             const { _id: addressId ,userId, addressLine, phone, place, city, district, pincode, state, country, googleMapLink } = payload;
             if(!userId || !addressLine || !phone || !place || !city || !district || !pincode || !state || !country || !googleMapLink) throw new Error("Invalid request.");
             

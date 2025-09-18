@@ -1,3 +1,4 @@
+import validator from 'validator';
 import mongoose, { Document, Schema, Types } from "mongoose";
 
 export interface IAddress extends Document {
@@ -83,9 +84,9 @@ const addressSchema = new Schema<IAddress>({
         required: [true, "Google Map link is required"],
         validate: {
             validator: function (value) {
-                return value.startsWith("https://maps.app.goo.gl/");
+                return validator.isURL(value);
             },
-            message: "Google Map link must start with https://maps.app.goo.gl/",
+            message: "Invalid google map link",
         },
     },
 }, {
