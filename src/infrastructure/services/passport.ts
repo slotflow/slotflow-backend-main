@@ -1,5 +1,6 @@
 import passport from 'passport';
 import { Types } from 'mongoose';
+import { Role } from '../dtos/common.dto';
 import { googleClientConfig } from '../../config/env';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { UserRepositoryImpl } from '../database/user/user.repository.impl';
@@ -28,7 +29,7 @@ passport.use(
                 if (req.query.state) {
                     try {
                         const parsed = JSON.parse(req.query.state as string);
-                        if (parsed.role === "PROVIDER" || parsed.role === "USER") {
+                        if (parsed.role === Role.provider || parsed.role === Role.user) {
                             role = parsed.role;
                         }
                         connectOnly = parsed.connectOnly;
@@ -44,17 +45,17 @@ passport.use(
                         googleId: profile.id,
                         email: profile.emails?.[0].value || "",
                         name: profile.displayName || "",
-                        role: role as "USER" | "PROVIDER",
+                        role: role as Role,
                         image: profile.photos?.[0]?.value || null,
                     });
                 } else {
-                    if(role === "PROVIDER") {
+                    if(role === Role.provider) {
                         const provider = await providerRepositoryImpl.findProviderById(new Types.ObjectId(_id));
                         if(!provider) throw new Error("User not found");
                         provider.googleId = profile.id;
                         provider.googleConnected = true;
                         entity = await providerRepositoryImpl.updateProvider(provider);
-                    }else if(role === "USER") {
+                    }else if(role === Role.user) {
                         const user = await userRepositoryImpl.findUserById(new Types.ObjectId(_id));
                         if(!user) throw new Error("User not found");
                         user.googleId = profile.id;

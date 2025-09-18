@@ -1,4 +1,5 @@
 import { User } from "../../domain/entities/user.entity";
+import { Role } from "../../infrastructure/dtos/common.dto";
 import { Provider } from "../../domain/entities/provider.entity";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
@@ -13,12 +14,12 @@ export class GoogleAuthUseCase {
         googleId: string;
         email: string;
         name: string;
-        role: "USER" | "PROVIDER";
+        role: Role;
         image: string | null;
     }): Promise<User | Provider> {
         try {
 
-            if (profile.role === "USER") {
+            if (profile.role === Role.user) {
                 let user = await this.userRepositoryImpl.findUserByGoogleId(profile.googleId);
 
                 if (!user) {
@@ -39,7 +40,7 @@ export class GoogleAuthUseCase {
                 return user as User;
             }
             
-            if (profile.role === "PROVIDER") {
+            if (profile.role === Role.provider) {
                 let provider = await this.providerRepositoryImpl.findProviderByGoogleId(profile.googleId);
                 
                 if (!provider) {

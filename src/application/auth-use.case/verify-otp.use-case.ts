@@ -1,5 +1,5 @@
-import { ApiResponse } from '../../infrastructure/dtos/common.dto';
 import { OTPService } from '../../infrastructure/services/otp.service';
+import { ApiResponse, Role } from '../../infrastructure/dtos/common.dto';
 import { validateOrThrow } from '../../infrastructure/validator/validator';
 import { OTPVerificationRequest } from '../../infrastructure/dtos/auth.dto';
 import { UserRepositoryImpl } from '../../infrastructure/database/user/user.repository.impl';
@@ -19,14 +19,14 @@ export class VerifyOTPUseCase {
     const isValidOTP = await OTPService.verifyOTP(verificationToken, otp);
     if (!isValidOTP) throw new Error("Invalid or expired OTP.");  
       
-    if (role === "USER") {
+    if (role === Role.user) {
       const user = await this.userRepository.verifyUser(verificationToken);
       if(!user) throw new Error("Verification failed");
 
       user.isEmailVerified = true;
       await this.userRepository.updateUser(user);
       
-    } else if (role === "PROVIDER") {
+    } else if (role === Role.provider) {
       const provider = await this.providerRepository.verifyProvider(verificationToken);
       if(!provider) throw new Error("Verification failed");
 

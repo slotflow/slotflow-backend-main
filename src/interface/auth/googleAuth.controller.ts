@@ -8,6 +8,7 @@ import { HandleError } from "../../infrastructure/error/error";
 import { AesEncryption } from "../../infrastructure/services/aesEncryption";
 import { CreateCredentialUseCase } from "../../application/common-use.case/credential.use-case";
 import { CredentialRepositoryImpl } from "../../infrastructure/database/credential/credential.repository.impl";
+import { Role } from "../../infrastructure/dtos/common.dto";
 
 const aesEncryption = new AesEncryption();
 const credentialRepositoryImpl = new CredentialRepositoryImpl();
@@ -58,7 +59,7 @@ export class GoogleAuthController {
 
                         const redirectData = encodeURIComponent(JSON.stringify(errorPayload));
                         return res.redirect(
-                            `${appUrl.frontendUrl}/${info.role === "PROVIDER" ? "provider" : "user"}/settings?response=${redirectData}`
+                            `${appUrl.frontendUrl}/${info.role === Role.provider ? "provider" : "user"}/settings?response=${redirectData}`
                         );
                     } else {
                         return res.redirect(`${appUrl.frontendUrl}/login?error=google_auth_failed`);
@@ -89,7 +90,7 @@ export class GoogleAuthController {
                         googleConnected: true,
                     };
                     const redirectData = encodeURIComponent(JSON.stringify(successPayload));
-                    return res.redirect(`${appUrl.frontendUrl}/${role === "PROVIDER" ? "provider" : "user"}/settings?response=${redirectData}`);
+                    return res.redirect(`${appUrl.frontendUrl}/${role === Role.provider ? "provider" : "user"}/settings?response=${redirectData}`);
                 }
 
                 const token = jwt.sign({ userOrProviderId: user._id, role }, process.env.JWT_SECRET!, { expiresIn: "1h" });

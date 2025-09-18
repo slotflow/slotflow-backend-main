@@ -1,12 +1,13 @@
 import { v4 as uuidv4 } from 'uuid';
 import { User } from '../../domain/entities/user.entity';
+import { Role } from '../../infrastructure/dtos/common.dto';
 import { JWTService } from '../../infrastructure/security/jwt';
 import { Provider } from '../../domain/entities/provider.entity';
 import { OTPService } from '../../infrastructure/services/otp.service';
+import { validateOrThrow } from '../../infrastructure/validator/validator';
 import { PasswordHasher } from '../../infrastructure/security/password-hashing';
 import { RegisterRequest, RegisterResponse } from '../../infrastructure/dtos/auth.dto';
 import { UserRepositoryImpl } from '../../infrastructure/database/user/user.repository.impl';
-import { CustomValidator, validateOrThrow, Validator } from '../../infrastructure/validator/validator';
 import { ProviderRepositoryImpl } from '../../infrastructure/database/provider/provider.repository.impl';
 
 
@@ -25,10 +26,10 @@ export class RegisterUseCase {
 
     let userOrProvider: Partial<Provider> | Partial<User> | null;
 
-    if (role === "USER") {
+    if (role === Role.user) {
       userOrProvider = await this.userRepositoryImpl.findUserByEmail(email);
       if (userOrProvider?.isEmailVerified) throw new Error("Email already exist.");
-    } else if (role === "PROVIDER") {
+    } else if (role === Role.provider) {
       userOrProvider = await this.providerRepositoryImpl.findProviderByEmail(email);
       if (userOrProvider?.isEmailVerified) throw new Error("Email already exist.");
     } else {
@@ -48,20 +49,20 @@ export class RegisterUseCase {
     if (userOrProvider) {
       userOrProvider.verificationToken = verificationToken;
       userOrProvider.password = hashedPassword;
-      if (role === "USER") {
+      if (role === Role.user) {
         await this.userRepositoryImpl.updateUser(userOrProvider as User);
-      } else if (role === "PROVIDER") {
+      } else if (role === Role.provider) {
         await this.providerRepositoryImpl.updateProvider(userOrProvider as Provider);
       }
     } else {
-      if (role === "USER") {
+      if (role === Role.user) {
         await this.userRepositoryImpl.createUser({
           username: username,
           email: email,
           password: hashedPassword,
           verificationToken: verificationToken,
         });
-      } else if (role === "PROVIDER") {
+      } else if (role === Role.provider) {
         await this.providerRepositoryImpl.createProvider({
           username: username,
           email: email,

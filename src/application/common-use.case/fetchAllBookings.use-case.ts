@@ -1,6 +1,6 @@
 import { Validator } from "../../infrastructure/validator/validator";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
-import { ApiResponse, FetchBookingsRequest, FetchBookingsResponse, FetchOnlineBookingsForProviderResponse, FetchOnlineBookingsForUserResponse } from "../../infrastructure/dtos/common.dto";
+import { ApiResponse, FetchBookingsRequest, FetchBookingsResponse, FetchOnlineBookingsForProviderResponse, FetchOnlineBookingsForUserResponse, Role } from "../../infrastructure/dtos/common.dto";
 
 export class FetchBookingAppointmentsUseCase {
     constructor(
@@ -8,11 +8,11 @@ export class FetchBookingAppointmentsUseCase {
     ) { }
 
     async execute({ serviceProviderId, userId, page, limit, online, raw, role } : FetchBookingsRequest): Promise<ApiResponse<FetchBookingsResponse | FetchOnlineBookingsForProviderResponse | FetchOnlineBookingsForUserResponse>> {
-        if(role === "PROVIDER") {
+        if(role === Role.provider) {
             if(!serviceProviderId) throw new Error("Invalid request");
             Validator.validateObjectId(serviceProviderId, "providerId");
         }
-        if(role === "USER") {
+        if(role === Role.user) {
             if(!userId) throw new Error("Invalid request");
             Validator.validateObjectId(userId, "userId");
         }

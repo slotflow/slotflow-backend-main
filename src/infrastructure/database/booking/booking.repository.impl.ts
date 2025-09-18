@@ -7,7 +7,7 @@ import { endOfDay, startOfDay, startOfToday, startOfTomorrow } from "date-fns";
 import { UserFetchProvidersForChatSidebarResponse } from "../../dtos/user.dto";
 import { AppointmentStatus, Booking } from "../../../domain/entities/booking.entity";
 import { AdminFetchDashboardAppointmentStatsDataResponse } from "../../dtos/admin.dto";
-import { FetchBookingsRequest, ApiResponse, FetchBookingsResponse, userIdAndServiceProviderId, FetchOnlineBookingsForProviderResponse, FetchOnlineBookingsForUserResponse } from "../../dtos/common.dto";
+import { FetchBookingsRequest, ApiResponse, FetchBookingsResponse, userIdAndServiceProviderId, FetchOnlineBookingsForProviderResponse, FetchOnlineBookingsForUserResponse, Role } from "../../dtos/common.dto";
 import { AdminFetchTodaysBookingStatsForDashboardResponse, CreateBookingPayloadProps, IBookingRepository } from "../../../domain/repositories/IBooking.repository";
 import { ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardGraphDataResponse, ProviderFetchUsersForChatSideBar } from "../../dtos/provider.dto";
 
@@ -135,9 +135,9 @@ export class BookingRepositoryImpl implements IBookingRepository {
                 .sort({ createdAt: -1 })
                 .lean();
 
-            if (online && role === "USER") {
+            if (online && role === Role.user) {
                 query = query.populate("serviceProviderId", "username -_id");
-            } else if (online && role === "PROVIDER") {
+            } else if (online && role === Role.provider) {
                 query = query.populate("userId", "username -_id");
             }
 

@@ -1,10 +1,12 @@
 import dayjs from "dayjs";
 import { Types } from 'mongoose';
 import validator from 'validator';
+import { Role } from "../dtos/common.dto";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { validateEmail, validateOtp, validatePassword, validatePhone, validateUsername } from '@codebymk/validator';
 import { daysArray, subscriptionMonthArray, validSlotDuration } from "../helpers/constants";
+import { validateEmail, validateOtp, validatePassword, validatePhone, validateUsername } from '@codebymk/validator';
 
+const validRoles = Object.values(Role);
 dayjs.extend(customParseFormat);
 
 export class Validator {
@@ -275,8 +277,7 @@ export class Validator {
     }
 
     static validateRole(value: string): void {
-        const roles = ["ADMIN", "USER", "PROVIDER"];
-        if (!roles.includes(value)) {
+        if (!validRoles.includes(value as Role)) {
             throw new Error("Invalid role. Must be one of: Admin, User, Provider.");
         }
     }
@@ -367,8 +368,7 @@ export class CustomValidator {
             }
 
             case "role": {
-                const roles = ["ADMIN", "USER", "PROVIDER"];
-                if (!roles.includes(value as string)) {
+                if (!validRoles.includes(value as Role)) {
                     return { status: false, message: "Invalid role." };
                 }
                 return null;

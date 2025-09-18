@@ -1,6 +1,6 @@
 import { User } from "../../domain/entities/user.entity";
 import { Provider } from "../../domain/entities/provider.entity";
-import { ApiResponse } from "../../infrastructure/dtos/common.dto";
+import { ApiResponse, Role } from "../../infrastructure/dtos/common.dto";
 import { validateOrThrow } from "../../infrastructure/validator/validator";
 import { UpdatePasswordRequest } from "../../infrastructure/dtos/auth.dto";
 import { PasswordHasher } from "../../infrastructure/security/password-hashing";
@@ -20,14 +20,14 @@ export class UpdatePasswordUseCase {
 
         const hashedPassword = await PasswordHasher.hashPassword(password);
 
-        if (role === "USER") {
+        if (role === Role.user) {
             const user = await this.userRepositoryImpl.verifyUser(verificationToken);
             if (!user) throw new Error("User not found.");
 
             user.password = hashedPassword;
             await this.userRepositoryImpl.updateUser(user as User);
 
-        } else if (role === "PROVIDER") {
+        } else if (role === Role.provider) {
             const provider = await this.providerRepositoryImpl.verifyProvider(verificationToken);
             if (!provider) throw new Error("User not found.");
 

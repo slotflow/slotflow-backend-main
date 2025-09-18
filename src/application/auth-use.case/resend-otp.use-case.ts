@@ -1,8 +1,8 @@
 import { User } from '../../domain/entities/user.entity';
 import { Provider } from '../../domain/entities/provider.entity';
-import { ApiResponse } from '../../infrastructure/dtos/common.dto';
 import { ResendOtpRequest } from '../../infrastructure/dtos/auth.dto';
 import { OTPService } from '../../infrastructure/services/otp.service';
+import { ApiResponse, Role } from '../../infrastructure/dtos/common.dto';
 import { validateOrThrow } from '../../infrastructure/validator/validator';
 import { UserRepositoryImpl } from '../../infrastructure/database/user/user.repository.impl';
 import { ProviderRepositoryImpl } from '../../infrastructure/database/provider/provider.repository.impl';
@@ -30,18 +30,18 @@ export class ResendOtpUseCase {
     let userOrProvider: Provider | User | null = null;
 
     if (email && role) {
-      if (role === "USER") {
+      if (role ===Role.user) {
         userOrProvider = await this.userRepositoryImpl.findUserByEmail(email);
-      } else if (role === "PROVIDER") {
+      } else if (role === Role.provider) {
         userOrProvider = await this.providerRepositoryImpl.findProviderByEmail(email);
       } else {
         throw new Error("Invalid request.");
       }
 
     } else if (verificationToken && role) {
-      if (role === "USER") {
+      if (role === Role.user) {
         userOrProvider = await this.userRepositoryImpl.verifyUser(verificationToken);
-      } else if (role === "PROVIDER") {
+      } else if (role === Role.provider) {
         userOrProvider = await this.providerRepositoryImpl.verifyProvider(verificationToken);
       } else {
         throw new Error("Invalid request.");

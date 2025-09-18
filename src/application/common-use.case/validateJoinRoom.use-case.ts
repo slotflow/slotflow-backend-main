@@ -1,7 +1,7 @@
 import { isSameDay, startOfDay } from "date-fns";
 import { AppError } from "../../infrastructure/error/appError";
 import { AppointmentStatus } from "../../domain/entities/booking.entity";
-import { ApiResponse, ValidateJoinRoomRequest } from "../../infrastructure/dtos/common.dto";
+import { ApiResponse, Role, ValidateJoinRoomRequest } from "../../infrastructure/dtos/common.dto";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 
 export class ValidateJoinRoomUsecase {
@@ -24,11 +24,11 @@ export class ValidateJoinRoomUsecase {
             throw new AppError("Booking is not confirmed");
         }
 
-        if (role === "USER" && !booking.userId.equals(userOrProviderId)) {
+        if (role === Role.user && !booking.userId.equals(userOrProviderId)) {
             throw new AppError("You are not authorized for this booking", 403);
         }
 
-        if (role === "PROVIDER" && !booking.serviceProviderId.equals(userOrProviderId)) {
+        if (role === Role.provider && !booking.serviceProviderId.equals(userOrProviderId)) {
             throw new AppError("You are not authorized for this booking", 403);
         }
 

@@ -1,5 +1,6 @@
 import { adminConfig } from "../../config/env";
 import { User } from "../../domain/entities/user.entity";
+import { Role } from "../../infrastructure/dtos/common.dto";
 import { JWTService } from "../../infrastructure/security/jwt";
 import { Provider } from "../../domain/entities/provider.entity";
 import { validateOrThrow } from "../../infrastructure/validator/validator";
@@ -30,11 +31,11 @@ export class LoginUseCase {
 
         let userOrProvider: User | Provider | null = null;
 
-        if (role === "USER") {
+        if (role === Role.user) {
             userOrProvider = await this.userRepositoryImpl.findUserByEmail(email);
-        } else if (role === "PROVIDER") {
+        } else if (role === Role.provider) {
             userOrProvider = await this.providerRepositoryImpl.findProviderByEmail(email);
-        } else if (role === "ADMIN") {
+        } else if (role === Role.admin) {
             if (email !== adminConfig.adminEmail || password !== adminConfig.adminPassword) {
                 throw new Error("Invalid credentials.");
             }
@@ -66,7 +67,7 @@ export class LoginUseCase {
 
         isAddressAdded = userOrProvider.addressId ? true : false;
         
-        if (role === "PROVIDER") {
+        if (role === Role.provider) {
             isServiceDetailsAdded = (userOrProvider as Provider).serviceId ? true : false;
             isServiceAvailabilityAdded = (userOrProvider as Provider).serviceAvailabilityId ? true : false;
             isAdminApproved = (userOrProvider as Provider).isAdminVerified ? true : false;

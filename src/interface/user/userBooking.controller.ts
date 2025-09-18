@@ -1,19 +1,20 @@
 import { Types } from "mongoose";
 import { Request, Response } from "express";
 import { DecodedUser } from "../../express";
+import { Role } from "../../infrastructure/dtos/common.dto";
 import { HandleError } from "../../infrastructure/error/error";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
+import { UserCancelBookingUseCase } from "../../application/user-use.case/userBooking.use-case";
 import { UserCreateSessionIdForbookingViaStripeZodSchema } from "../../infrastructure/zod/user.zod";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { ValidateJoinRoomUsecase } from "../../application/common-use.case/validateJoinRoom.use-case";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
-import { UserCancelBookingUseCase } from "../../application/user-use.case/userBooking.use-case";
+import { FetchBookingAppointmentsUseCase } from "../../application/common-use.case/fetchAllBookings.use-case";
 import { ProviderServiceRepositoryImpl } from "../../infrastructure/database/providerService/providerService.repository.impl";
 import { RequestQueryForBookingCommonZodSchema, SaveStripePaymentZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
 import { ServiceAvailabilityRepositoryImpl } from "../../infrastructure/database/serviceAvailability/serviceAvailability.repository.impl";
 import { UserAppointmentBookingViaStripeUseCase, UserSaveBookingAfterStripePaymentUseCase } from "../../application/user-use.case/userStripeBooking.use-case";
-import { FetchBookingAppointmentsUseCase } from "../../application/common-use.case/fetchAllBookings.use-case";
 
 const userRepositoryImpl = new UserRepositoryImpl();
 const paymentRepositoryImpl = new PaymentRepositoryImpl();
@@ -54,7 +55,7 @@ export class UserBookingController {
                 limit,
                 online: online ? true : false,
                 raw: raw ? true : false,
-                role: user.role as "USER"
+                role: user.role as Role.user
             });
             res.status(200).json(result);
         } catch (error) {
@@ -110,7 +111,7 @@ export class UserBookingController {
             const { id: bookingId } = ValidateObjectId(req.params.bookingId, "Booking ID");
             const roomId = req.query.roomId;
             const providerId = (req.user as DecodedUser).userOrProviderId;
-            const result = await this.validateJoinRoomUsecase.execute({ bookingId: new Types.ObjectId(bookingId), roomId: roomId as string, role: "PROVIDER", userOrProviderId: new Types.ObjectId(providerId) });
+            const result = await this.validateJoinRoomUsecase.execute({ bookingId: new Types.ObjectId(bookingId), roomId: roomId as string, role: Role.provider, userOrProviderId: new Types.ObjectId(providerId) });
             res.status(200).json(result);
         } catch (error) {
             HandleError.handle(error, res);

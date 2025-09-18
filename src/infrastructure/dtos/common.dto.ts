@@ -84,7 +84,7 @@ export interface userIdAndServiceProviderId {
 export interface FetchBookingsRequest extends ApiPaginationRequest, userIdAndServiceProviderId {
   online: boolean;
   raw: boolean;
-  role: "USER" | "PROVIDER";
+  role: Role;
 }
 //// **** 7.2 Used as the response type for fetching bookings for admin, provider and user side
 export type FetchBookingsResponse = Array<Pick<Booking, "_id" | "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "videoCallRoomId" >>;
@@ -99,7 +99,7 @@ export type UpdateAddressRequest = Pick<Address,  "_id" | "userId" | "addressLin
 
 //// **** 10. Used as the interface for the validate join room
 export interface ValidateJoinRoomRequest {
-  role: "USER" | "PROVIDER";
+  role: Role;
   bookingId: Types.ObjectId;
   roomId: string;
   userOrProviderId: Types.ObjectId;

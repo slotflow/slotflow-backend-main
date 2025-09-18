@@ -1,6 +1,7 @@
 import { Types } from "mongoose";
 import { Request, Response } from "express";
 import { DecodedUser } from "../../express";
+import { Role } from "../../infrastructure/dtos/common.dto";
 import { HandleError } from "../../infrastructure/error/error";
 import { AppointmentStatus } from "../../domain/entities/booking.entity";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
@@ -38,7 +39,7 @@ export class ProviderBookingController {
                 limit,
                 online: online ? true : false,
                 raw: raw ? true : false,
-                role: provider.role as "PROVIDER"
+                role: provider.role as Role
             });
             res.status(200).json(result);
         } catch (error) {
@@ -62,7 +63,7 @@ export class ProviderBookingController {
             const { id: bookingId } = ValidateObjectId(req.params.bookingId, "Booking ID");
             const roomId = req.query.roomId;
             const providerId = (req.user as DecodedUser).userOrProviderId;
-            const result = await this.validateJoinRoomUsecase.execute({ bookingId: new Types.ObjectId(bookingId), roomId: roomId as string, role: "PROVIDER", userOrProviderId: new Types.ObjectId(providerId) });
+            const result = await this.validateJoinRoomUsecase.execute({ bookingId: new Types.ObjectId(bookingId), roomId: roomId as string, role: Role.provider, userOrProviderId: new Types.ObjectId(providerId) });
             res.status(200).json(result);
         } catch (error) {
             HandleError.handle(error, res);
