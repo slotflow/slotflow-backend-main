@@ -2,6 +2,7 @@ import { Types } from "mongoose";
 import { google } from "googleapis";
 import { GoogleTokenService } from "./googleTokenService";
 import { durationMap, EventData } from "../../utils/constant";
+import { AppointmentStatus } from "../../domain/entities/booking.entity";
 import { ApiResponse, CreateGoogleCalendarEventRequest, GoogleCalendarEvent, UpdateGoogleCalendarEventRequest, UserBookingAddingToCalendar, UserBookingFetchingFromCalendar } from "../dtos/common.dto";
 
 export class FethGoogleCalendarService {
@@ -144,6 +145,7 @@ export class UpdateEventFromGoogleCalendarService {
             if (!event) throw new Error("Event not found");
 
             const startDate = new Date(appointmentDate);
+            const backgroundColor = appointmentStatus === AppointmentStatus.Rejected || AppointmentStatus.Cancelled ? EventData.eventCancelBorderColor : EventData.eventAddBorderColor;
             event.description = `Appointment scheduled on ${startDate.toLocaleString("en-IN", {
                     dateStyle: "full",
                     timeStyle: "short",
@@ -151,8 +153,8 @@ export class UpdateEventFromGoogleCalendarService {
             event.extendedProperties = {
                     private: {
                         bookingStatus: appointmentStatus,
-                        title: EventData.eventTitle,
-                        backgroundColor: EventData.eventCancelBorderColor,
+                        title: EventData.eventTitle + " "+ appointmentStatus,
+                        backgroundColor: backgroundColor,
                         textColor: EventData.eventCancelTextColor,
                     }
                 }
