@@ -5,6 +5,7 @@ import { Validator } from "../../infrastructure/validator/validator";
 import { AppointmentStatus } from "../../domain/entities/booking.entity";
 import { UserCancelBookingRequest } from "../../infrastructure/dtos/user.dto";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
+import { UpdateEventFromGoogleCalendarService } from "../../infrastructure/services/googleCalendar";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
 
@@ -15,6 +16,7 @@ export class UserCancelBookingUseCase {
         private userRepositoryImpl: UserRepositoryImpl,
         private bookingRepositoryImpl: BookingRepositoryImpl,
         private paymentRepositoryImpl: PaymentRepositoryImpl,
+        private updateEventFromGoogleCalendarService: UpdateEventFromGoogleCalendarService,
     ) { }
 
     async execute({ userId, bookingId }: UserCancelBookingRequest): Promise<ApiResponse> {
@@ -47,7 +49,7 @@ export class UserCancelBookingUseCase {
         try {
 
             booking.appointmentStatus = AppointmentStatus.Cancelled;
-            const updateBooking = await this.bookingRepositoryImpl.updateBooking(booking);
+            const updateBooking = await this.bookingRepositoryImpl.updateBooking(booking, { session: mongooseSession });
             if (!updateBooking) throw new Error("Booking status updating error");
 
             if (payment.paymentGateway === "Stripe") {
@@ -92,9 +94,20 @@ export class UserCancelBookingUseCase {
                 }, { session: mongooseSession });
                 if (!updatedPayment) throw new Error("Refund failed");
 
+                if(booking.googleEventId) {
+                    const response = await this.updateEventFromGoogleCalendarService.execute({
+                        userId: booking.userId, 
+                        eventId: booking.googleEventId,
+                        appointmentDate: booking.appointmentDate,
+                        appointmentStatus: booking.appointmentStatus
+                });
+                    if(!response.success) {
+                        throw new Error("Booking cancel failed");
+                    }
+                }
+
                 await mongooseSession.commitTransaction();
                 mongooseSession.endSession();
-
 
                 return { success: true, message: "Booking cancelled" }
 
@@ -103,6 +116,7 @@ export class UserCancelBookingUseCase {
             }
 
         } catch (error) {
+            console.log("UserCancelBookingUseCase error : ",error);
             await mongooseSession.abortTransaction();
             mongooseSession.endSession();
             throw new Error("Booking cancel failed")

@@ -159,7 +159,17 @@ export class UserSaveBookingAfterStripePaymentUseCase {
 
             if (!payment) throw new Error("Unexpected error, payment saving error.");
 
-            const newBooking = await this.bookingRepositoryImpl.createBooking({
+
+            if(user.googleConnected) {
+                const response = await this.addEventToGoogleCalendarService.execute({
+                    userId,
+                    slotDuration,
+                    appointmentDate: new Date(dateString),
+                    appointmentStatus: AppointmentStatus.Booked,
+                });
+                if(!response.success) throw new Error("Booking saving failed");
+
+                const newBooking = await this.bookingRepositoryImpl.createBooking({
                 serviceProviderId: new Types.ObjectId(providerId),
                 userId: new Types.ObjectId(userId),
                 appointmentDate: new Date(dateString),
@@ -167,15 +177,13 @@ export class UserSaveBookingAfterStripePaymentUseCase {
                 appointmentStatus: AppointmentStatus.Booked,
                 appointmentTime: selectedSlot[0].time,
                 videoCallRoomId: "stw-" + uuidv4(),
+                googleEventId: response.data?.id!,
                 paymentId: payment._id,
                 slotId: selectedSlot[0]._id,
             }, { session: mongoSession });
 
             if (!newBooking) throw new Error("Error in slot booking, please try again");
 
-            if(user.googleConnected) {
-                const response = await this.addEventToGoogleCalendarService.execute(new Types.ObjectId(userId), newBooking, slotDuration);
-                if(!response.success) throw new Error("Booking saving failed");
             }
 
             await mongoSession.commitTransaction();

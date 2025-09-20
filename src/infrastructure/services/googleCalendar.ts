@@ -2,8 +2,7 @@ import { Types } from "mongoose";
 import { google } from "googleapis";
 import { GoogleTokenService } from "./googleTokenService";
 import { durationMap, EventData } from "../../utils/constant";
-import { Booking } from "../../domain/entities/booking.entity";
-import { ApiResponse, UserBookingAddingToCalendar, UserBookingFetchingFromCalendar } from "../dtos/common.dto";
+import { ApiResponse, CreateGoogleCalendarEventRequest, GoogleCalendarEvent, UpdateGoogleCalendarEventRequest, UserBookingAddingToCalendar, UserBookingFetchingFromCalendar } from "../dtos/common.dto";
 
 export class FethGoogleCalendarService {
     constructor(
@@ -58,8 +57,9 @@ export class AddEventToGoogleCalendarService {
         private googleTokenService: GoogleTokenService
     ) { }
 
-    async execute(userId: Types.ObjectId, booking: Booking, slotDuration: string): Promise<ApiResponse> {
+    async execute(payload: CreateGoogleCalendarEventRequest): Promise<ApiResponse<Pick<GoogleCalendarEvent, "id">>> {
         try {
+            const { userId, slotDuration, appointmentDate, appointmentStatus} = payload;
             console.log("Event adding");
             const accessToken = await this.googleTokenService.getValidAccessToken(userId);
             if (!accessToken) throw new Error("Event saving failed.");
@@ -69,7 +69,7 @@ export class AddEventToGoogleCalendarService {
 
             const calendar = google.calendar({ version: "v3", auth: oauth2Client });
 
-            const startDate = new Date(booking.appointmentDate);
+            const startDate = new Date(appointmentDate);
             const durationMinutes = durationMap[slotDuration] ?? 30;
             const endDate = new Date(startDate.getTime() + durationMinutes * 60 * 1000);
 
@@ -89,8 +89,7 @@ export class AddEventToGoogleCalendarService {
                 },
                 extendedProperties: {
                     private: {
-                        bookingStatus: booking.appointmentStatus,
-                        bookingId: booking._id.toString(),
+                        bookingStatus: appointmentStatus,
                         title: EventData.eventTitle,
                         backgroundColor: EventData.eventAddBorderColor,
                         textColor: EventData.eventAddTextColor,
@@ -98,20 +97,81 @@ export class AddEventToGoogleCalendarService {
                 }
             }
 
-                const response = await calendar.events.insert({
-                    calendarId: "primary",
-                    requestBody: event
-                });
+            const response = await calendar.events.insert({
+                calendarId: "primary",
+                requestBody: event
+            });
 
-                if(response?.data?.id) {
-                    return { success: true, message: "Booking event inserted" };
-                } else {
-                    return { success: false, message: "Booking event inserting failed" };
+            if (response?.data?.id) {
+                return { success: true, message: "Booking event inserted", data: { id: response.data.id }  };
+            } else {
+                return { success: false, message: "Booking event inserting failed" };
+            }
+
+        } catch (error) {
+            console.log("AddEventToGoogleCalendarUseCase error : ", error);
+            throw new Error("Booking event saving failed");
+        }
+    }
+}
+
+
+export class UpdateEventFromGoogleCalendarService {
+    constructor(
+        private googleTokenService: GoogleTokenService
+    ) {}
+
+    async execute(payload: UpdateGoogleCalendarEventRequest): Promise<ApiResponse> {
+        try {
+            const { userId, eventId, appointmentDate, appointmentStatus } = payload;
+            console.log("Deleting Google Calendar event");
+
+            const accessToken = await this.googleTokenService.getValidAccessToken(userId);
+            if (!accessToken) throw new Error("Failed to get valid access token");
+
+            const oauth2Client = new google.auth.OAuth2();
+            oauth2Client.setCredentials({ access_token: accessToken });
+
+            const calendar = google.calendar({ version: "v3", auth: oauth2Client });
+            if(!calendar) throw new Error("Event deleting failed");
+
+            const eventResponse = await calendar.events.get({
+                calendarId: "primary",
+                eventId,
+            });
+
+            const event = eventResponse.data;
+            if (!event) throw new Error("Event not found");
+
+            const startDate = new Date(appointmentDate);
+            event.description = `Appointment scheduled on ${startDate.toLocaleString("en-IN", {
+                    dateStyle: "full",
+                    timeStyle: "short",
+                })} has been cancelled`,
+            event.extendedProperties = {
+                    private: {
+                        bookingStatus: appointmentStatus,
+                        title: EventData.eventTitle,
+                        backgroundColor: EventData.eventCancelBorderColor,
+                        textColor: EventData.eventCancelTextColor,
+                    }
                 }
 
-            } catch (error) {
-                console.log("AddEventToGoogleCalendarUseCase error : ", error);
-                throw new Error("Booking event saving failed");
+            const updatedResponse = await calendar.events.update({
+                calendarId: "primary",
+                eventId,
+                requestBody: event,
+            });
+
+             if (updatedResponse?.data?.id) {
+                return { success: true, message: "Booking event updated", data: { id: updatedResponse.data.id }  };
+            } else {
+                return { success: false, message: "Booking event updation failed" };
             }
+
+        } catch (error) {
+            console.error("DeleteEventFromGoogleCalendarService error:", error);
+            return { success: false, message: "Booking event deletion failed" };
         }
+    }
 }

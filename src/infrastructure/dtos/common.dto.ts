@@ -9,6 +9,7 @@ import { Provider } from "../../domain/entities/provider.entity";
 import { Subscription } from "../../domain/entities/subscription.entity";
 import { Payment, PaymentFor } from "../../domain/entities/payment.entity";
 import { findSubscriptionFullDetailsResProps } from "../../domain/repositories/ISubscription.repository";
+import { ServiceAvailability } from "../../domain/entities/serviceAvailability.entity";
 
 // Common Role
 export enum Role {
@@ -122,7 +123,7 @@ export type CreateCredential = Pick<Credential, "userId" | "accessToken" | "refr
 
 //// **** 13 Google Event
 export interface GoogleCalendarEvent extends Partial<Booking> {
-  id?: string;
+  id: string;
   iCalUID?: string;
   kind?: string;
   eventType?: string;
@@ -180,3 +181,17 @@ export interface GoogleCalendarEvent extends Partial<Booking> {
 export type UserBookingAddingToCalendar = Pick<GoogleCalendarEvent, "summary" | "description" | "start" | "end" | "extendedProperties"> 
 
 export type UserBookingFetchingFromCalendar = Pick<GoogleCalendarEvent, "id" | "summary" | "description" | "start" | "end" | "creator" | "organizer" | "iCalUID" | "reminders" | "eventType" | "extendedProperties"> 
+
+export interface UpdateGoogleCalendarEventRequest {
+  userId: Types.ObjectId,
+  eventId: string, 
+  appointmentDate: Booking["appointmentDate"], 
+  appointmentStatus: Booking["appointmentStatus"],
+}
+
+export interface CreateGoogleCalendarEventRequest {
+  userId: Types.ObjectId,
+  appointmentDate: Booking["appointmentDate"], 
+  appointmentStatus: Booking["appointmentStatus"],
+  slotDuration: string,
+}

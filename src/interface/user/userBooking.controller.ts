@@ -6,7 +6,7 @@ import { HandleError } from "../../infrastructure/error/error";
 import { AesEncryption } from "../../infrastructure/services/aesEncryption";
 import { GoogleTokenService } from "../../infrastructure/services/googleTokenService";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
-import { AddEventToGoogleCalendarService } from "../../infrastructure/services/googleCalendar";
+import { AddEventToGoogleCalendarService, UpdateEventFromGoogleCalendarService } from "../../infrastructure/services/googleCalendar";
 import { UserCancelBookingUseCase } from "../../application/user-use.case/userBooking.use-case";
 import { UserCreateSessionIdForbookingViaStripeZodSchema } from "../../infrastructure/zod/user.zod";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
@@ -33,10 +33,11 @@ const serviceAvailabilityRepositoryImpl = new ServiceAvailabilityRepositoryImpl(
 const validateJoinRoomUsecase = new ValidateJoinRoomUsecase(bookingRepositoryImpl)
 const getCredentialUseCase = new GetCredentialUseCase(credentialRepositoryImpl, aesEncryption);
 const updateCredentialUseCase = new UpdateCredentialUseCase(credentialRepositoryImpl, aesEncryption);
-const googleTokenSerivice = new GoogleTokenService(getCredentialUseCase, updateCredentialUseCase);
-const addEventToGoogleCalendarService = new AddEventToGoogleCalendarService(googleTokenSerivice);
+const googleTokenService = new GoogleTokenService(getCredentialUseCase, updateCredentialUseCase);
+const updateEventFromGoogleCalendarService = new UpdateEventFromGoogleCalendarService(googleTokenService);
+const addEventToGoogleCalendarService = new AddEventToGoogleCalendarService(googleTokenService);
 const fetchBookingAppointmentsUseCase = new FetchBookingAppointmentsUseCase(bookingRepositoryImpl);
-const userCancelBookingUseCase = new UserCancelBookingUseCase(userRepositoryImpl, bookingRepositoryImpl, paymentRepositoryImpl);
+const userCancelBookingUseCase = new UserCancelBookingUseCase(userRepositoryImpl, bookingRepositoryImpl, paymentRepositoryImpl, updateEventFromGoogleCalendarService);
 const userAppointmentBookingViaStrpieUseCase = new UserAppointmentBookingViaStripeUseCase(proviserRepositoryImpl, providerServiceRepositoryImpl, serviceAvailabilityRepositoryImpl, bookingRepositoryImpl);
 const userSaveBookingAfterStripePaymentUseCase = new UserSaveBookingAfterStripePaymentUseCase(userRepositoryImpl, paymentRepositoryImpl, bookingRepositoryImpl, serviceAvailabilityRepositoryImpl, addEventToGoogleCalendarService);
 

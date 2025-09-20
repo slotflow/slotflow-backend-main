@@ -1,11 +1,13 @@
 import { ApiResponse } from "../../infrastructure/dtos/common.dto";
+import { UpdateEventFromGoogleCalendarService } from "../../infrastructure/services/googleCalendar";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { ProviderChangeBookingAppoinmentStatusRequest } from "../../infrastructure/dtos/provider.dto";
 
 
 export class ProviderChangeBookingAppointmentStatusUseCase {
     constructor(
-        private bookingRepositoryImpl: BookingRepositoryImpl
+        private bookingRepositoryImpl: BookingRepositoryImpl,
+        private updateEventFromGoogleCalendarService: UpdateEventFromGoogleCalendarService
     ) { }
 
     async execute(payload: ProviderChangeBookingAppoinmentStatusRequest): Promise<ApiResponse> {
@@ -16,6 +18,15 @@ export class ProviderChangeBookingAppointmentStatusUseCase {
             if(!booking) throw new Error("No booking found");
 
             booking.appointmentStatus = appointmentStatus;
+
+            const response = await this.updateEventFromGoogleCalendarService.execute({
+                userId: booking.userId,
+                eventId: booking.googleEventId,
+                appointmentDate: booking.appointmentDate,
+                appointmentStatus: appointmentStatus
+            });
+
+            if(!response.success) throw new Error("Booking status updating failed");
 
             const updatedBooking = await this.bookingRepositoryImpl.updateBooking(booking);
             if(!updatedBooking) throw new Error("Status updating failed");

@@ -12,6 +12,7 @@ export interface IBooking extends Document {
     slotId: Types.ObjectId,
     paymentId: Types.ObjectId | null,
     videoCallRoomId: string | null,
+    googleEventId: string,
     createdAt: Date,
     updatedAt: Date,
 }
@@ -54,6 +55,10 @@ const BookingSchema = new Schema<IBooking>({
         ref: "Payment" 
     },
     videoCallRoomId: {
+        type: String,
+        default: null,
+    },
+    googleEventId: {
         type: String,
         default: null,
     }

@@ -4,17 +4,28 @@ import { DecodedUser } from "../../express";
 import { Role } from "../../infrastructure/dtos/common.dto";
 import { HandleError } from "../../infrastructure/error/error";
 import { AppointmentStatus } from "../../domain/entities/booking.entity";
+import { AesEncryption } from "../../infrastructure/services/aesEncryption";
+import { GoogleTokenService } from "../../infrastructure/services/googleTokenService";
+import { UpdateEventFromGoogleCalendarService } from "../../infrastructure/services/googleCalendar";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { ValidateJoinRoomUsecase } from "../../application/common-use.case/validateJoinRoom.use-case";
 import { ProviderChangeBookingAppointmentStatusZodSchema } from "../../infrastructure/zod/provider.zod";
 import { RequestQueryForBookingCommonZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
 import { FetchBookingAppointmentsUseCase } from "../../application/common-use.case/fetchAllBookings.use-case";
+import { CredentialRepositoryImpl } from "../../infrastructure/database/credential/credential.repository.impl";
+import { GetCredentialUseCase, UpdateCredentialUseCase } from "../../application/common-use.case/credential.use-case";
 import { ProviderChangeBookingAppointmentStatusUseCase } from "../../application/provider-use.case/providerBooking.use-case";
 
+const aesEncryption = new AesEncryption();
 const bookingRepositoryImpl = new BookingRepositoryImpl();
+const credentialRepositoryImpl = new CredentialRepositoryImpl();
 
 const fetchBookingAppointmentsUseCase = new FetchBookingAppointmentsUseCase(bookingRepositoryImpl);
-const providerChangeBookingAppointmentStatusUseCase = new ProviderChangeBookingAppointmentStatusUseCase(bookingRepositoryImpl);
+const getCredentialUseCase = new GetCredentialUseCase(credentialRepositoryImpl, aesEncryption);
+const updateCredentialUseCase = new UpdateCredentialUseCase(credentialRepositoryImpl, aesEncryption);
+const googleTokenService = new GoogleTokenService(getCredentialUseCase, updateCredentialUseCase);
+const updateEventFromGoogleCalendarService = new UpdateEventFromGoogleCalendarService(googleTokenService);
+const providerChangeBookingAppointmentStatusUseCase = new ProviderChangeBookingAppointmentStatusUseCase(bookingRepositoryImpl, updateEventFromGoogleCalendarService);
 const validateJoinRoomUsecase = new ValidateJoinRoomUsecase(bookingRepositoryImpl)
 
 export class ProviderBookingController {

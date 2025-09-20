@@ -24,6 +24,7 @@ export class BookingRepositoryImpl implements IBookingRepository {
             booking.slotId,
             booking.paymentId,
             booking.videoCallRoomId,
+            booking.googleEventId,
             booking.createdAt,
             booking.updatedAt,
         )
@@ -62,12 +63,12 @@ export class BookingRepositoryImpl implements IBookingRepository {
         }
     }
 
-    async updateBooking(booking: Booking): Promise<Booking | null> {
+    async updateBooking(booking: Booking, options: { session?: any } = {}): Promise<Booking | null> {
         try {
             const updatedBooking = await BookingModel.findByIdAndUpdate(
                 booking._id,
                 { ...booking },
-                { new: true }
+                { new: true, ...options }
             );
             return updatedBooking ? this.mapToEntity(updatedBooking) : null;
         } catch (error) {

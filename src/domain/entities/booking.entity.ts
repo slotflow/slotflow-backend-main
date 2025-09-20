@@ -21,6 +21,7 @@ export class Booking {
         public slotId: Types.ObjectId,
         public paymentId: Types.ObjectId | null,
         public videoCallRoomId: string | null,
+        public googleEventId: string,
         public createdAt: Date,
         public updatedAt: Date,
     ) { }
