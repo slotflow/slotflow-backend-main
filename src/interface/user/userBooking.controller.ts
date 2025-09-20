@@ -3,7 +3,10 @@ import { Request, Response } from "express";
 import { DecodedUser } from "../../express";
 import { Role } from "../../infrastructure/dtos/common.dto";
 import { HandleError } from "../../infrastructure/error/error";
+import { AesEncryption } from "../../infrastructure/services/aesEncryption";
+import { GoogleTokenService } from "../../infrastructure/services/googleTokenService";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
+import { AddEventToGoogleCalendarService } from "../../infrastructure/services/googleCalendar";
 import { UserCancelBookingUseCase } from "../../application/user-use.case/userBooking.use-case";
 import { UserCreateSessionIdForbookingViaStripeZodSchema } from "../../infrastructure/zod/user.zod";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
@@ -11,23 +14,31 @@ import { BookingRepositoryImpl } from "../../infrastructure/database/booking/boo
 import { ValidateJoinRoomUsecase } from "../../application/common-use.case/validateJoinRoom.use-case";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { FetchBookingAppointmentsUseCase } from "../../application/common-use.case/fetchAllBookings.use-case";
+import { CredentialRepositoryImpl } from "../../infrastructure/database/credential/credential.repository.impl";
+import { GetCredentialUseCase, UpdateCredentialUseCase } from "../../application/common-use.case/credential.use-case";
 import { ProviderServiceRepositoryImpl } from "../../infrastructure/database/providerService/providerService.repository.impl";
-import { RequestQueryForBookingCommonZodSchema, SaveStripePaymentZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
 import { ServiceAvailabilityRepositoryImpl } from "../../infrastructure/database/serviceAvailability/serviceAvailability.repository.impl";
+import { RequestQueryForBookingCommonZodSchema, SaveStripePaymentZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
 import { UserAppointmentBookingViaStripeUseCase, UserSaveBookingAfterStripePaymentUseCase } from "../../application/user-use.case/userStripeBooking.use-case";
 
+const aesEncryption = new AesEncryption();
 const userRepositoryImpl = new UserRepositoryImpl();
 const paymentRepositoryImpl = new PaymentRepositoryImpl();
 const bookingRepositoryImpl = new BookingRepositoryImpl();
 const proviserRepositoryImpl = new ProviderRepositoryImpl();
+const credentialRepositoryImpl = new CredentialRepositoryImpl();
 const providerServiceRepositoryImpl = new ProviderServiceRepositoryImpl();
 const serviceAvailabilityRepositoryImpl = new ServiceAvailabilityRepositoryImpl();
 
 const validateJoinRoomUsecase = new ValidateJoinRoomUsecase(bookingRepositoryImpl)
+const getCredentialUseCase = new GetCredentialUseCase(credentialRepositoryImpl, aesEncryption);
+const updateCredentialUseCase = new UpdateCredentialUseCase(credentialRepositoryImpl, aesEncryption);
+const googleTokenSerivice = new GoogleTokenService(getCredentialUseCase, updateCredentialUseCase);
+const addEventToGoogleCalendarService = new AddEventToGoogleCalendarService(googleTokenSerivice);
 const fetchBookingAppointmentsUseCase = new FetchBookingAppointmentsUseCase(bookingRepositoryImpl);
 const userCancelBookingUseCase = new UserCancelBookingUseCase(userRepositoryImpl, bookingRepositoryImpl, paymentRepositoryImpl);
-const userSaveBookingAfterStripePaymentUseCase = new UserSaveBookingAfterStripePaymentUseCase(userRepositoryImpl, paymentRepositoryImpl, bookingRepositoryImpl, serviceAvailabilityRepositoryImpl);
 const userAppointmentBookingViaStrpieUseCase = new UserAppointmentBookingViaStripeUseCase(proviserRepositoryImpl, providerServiceRepositoryImpl, serviceAvailabilityRepositoryImpl, bookingRepositoryImpl);
+const userSaveBookingAfterStripePaymentUseCase = new UserSaveBookingAfterStripePaymentUseCase(userRepositoryImpl, paymentRepositoryImpl, bookingRepositoryImpl, serviceAvailabilityRepositoryImpl, addEventToGoogleCalendarService);
 
 export class UserBookingController {
     constructor(

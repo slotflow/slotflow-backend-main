@@ -4,7 +4,7 @@ import { DecodedUser } from "../../express";
 import { NextFunction, Request, Response } from "express";
 import { HandleError } from "../../infrastructure/error/error";
 import { AesEncryption } from "../../infrastructure/services/aesEncryption";
-import { GoogleCalendarService } from "../../infrastructure/services/googleCalendar";
+import { FethGoogleCalendarService } from "../../infrastructure/services/googleCalendar";
 import { GoogleTokenService } from "../../infrastructure/services/googleTokenService";   
 import { CredentialRepositoryImpl } from "../../infrastructure/database/credential/credential.repository.impl";
 import { GetCredentialUseCase, UpdateCredentialUseCase } from "../../application/common-use.case/credential.use-case";
@@ -15,11 +15,11 @@ const getCredentialUseCase = new GetCredentialUseCase(credentialRepositoryImpl, 
 const updateCredentialUseCase = new UpdateCredentialUseCase(credentialRepositoryImpl, aesEncryption);
 
 const googleTokenService = new GoogleTokenService(getCredentialUseCase, updateCredentialUseCase);
-const googleCalendarService = new GoogleCalendarService(googleTokenService);
+const fethGoogleCalendarService = new FethGoogleCalendarService(googleTokenService);
 
 export class GoogleController {
     constructor(
-        private googleCalendarService: GoogleCalendarService
+        private fethGoogleCalendarService: FethGoogleCalendarService
     ) {
         this.getUserEvents = this.getUserEvents.bind(this);
         this.connectGoogle = this.connectGoogle.bind(this);
@@ -27,8 +27,10 @@ export class GoogleController {
 
     async getUserEvents(req: Request, res: Response) {
         try {
+            console.log("getUserEvents constroller start");
             const userId = (req.user as DecodedUser).userOrProviderId;
-            const result = await this.googleCalendarService.execute(new Types.ObjectId(userId));
+            const result = await this.fethGoogleCalendarService.execute(new Types.ObjectId(userId));
+            console.log("getUserEvents constroller result : ",result);
             res.status(200).json(result);
         } catch (error) {
             HandleError.handle(error, res);
@@ -37,6 +39,7 @@ export class GoogleController {
 
     async connectGoogle(req: Request, res: Response, next: NextFunction) {
         try {
+            console.log("connectGoogle controller starting")
             const user = (req.user as DecodedUser);
             if (!user) throw new Error("no user found");
             const state = JSON.stringify({ connectOnly: true, role: user.role, userId: user.userOrProviderId });
@@ -62,6 +65,6 @@ export class GoogleController {
 }
 
 const googleController = new GoogleController(
-    googleCalendarService
+    fethGoogleCalendarService
 );
 export { googleController }

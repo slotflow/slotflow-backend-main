@@ -42,18 +42,27 @@ export class AesEncryption {
 
   async decrypt(encryptedText: string): Promise<string> {
     try {
+      console.log("🔑 Starting decryption...");
       const algorithm = aesConfig.algorithm as string;
       const inputEncoding = (aesConfig.inputEncoding) as BufferEncoding;
       const outputEncoding = (aesConfig.outputEncoding) as BufferEncoding;
       const separator = aesConfig.separator as string;
 
       const [ivStr, encrypted] = encryptedText.split(separator);
-      if (!ivStr || !encrypted) throw new Error("Invalid encrypted data format");
+
+    if (!ivStr || !encrypted) {
+      console.error("❌ Invalid encrypted data format, missing IV or encrypted part.");
+      throw new Error("Invalid encrypted data format");
+    }
 
       const iv = Buffer.from(ivStr, outputEncoding);
+
+      console.log("🛠️ Creating decipher instance...");
       const decipher = crypto.createDecipheriv(algorithm, this.key, iv);
 
+      console.log("🔓 Starting decryption process...");
       let decrypted = decipher.update(encrypted, outputEncoding, inputEncoding);
+
       decrypted += decipher.final(inputEncoding);
 
       return decrypted;

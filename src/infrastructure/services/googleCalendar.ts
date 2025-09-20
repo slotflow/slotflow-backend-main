@@ -1,15 +1,18 @@
 import { Types } from "mongoose";
-import { ApiResponse } from "../dtos/common.dto";
+import { google } from "googleapis";
 import { GoogleTokenService } from "./googleTokenService";
+import { durationMap, EventData } from "../../utils/constant";
+import { Booking } from "../../domain/entities/booking.entity";
+import { ApiResponse, UserBookingAddingToCalendar, UserBookingFetchingFromCalendar } from "../dtos/common.dto";
 
-export class GoogleCalendarService {
+export class FethGoogleCalendarService {
     constructor(
         private googleTokenService: GoogleTokenService
-    ) {}
+    ) { }
 
-    async execute(userId: Types.ObjectId): Promise<ApiResponse> {
+    async execute(userId: Types.ObjectId): Promise<ApiResponse<Array<UserBookingFetchingFromCalendar>>> {
         try {
-
+            console.log("FethGoogleCalendarService service start");
             const accessToken = await this.googleTokenService.getValidAccessToken(userId);
 
             const response = await fetch(
@@ -22,10 +25,93 @@ export class GoogleCalendarService {
             }
 
             const data = await response.json();
-            return { success: true, message: "Fetched calendar events", data: data.items || []}
+            console.log("FethGoogleCalendarService service end");
+            let result;
+
+            if (data.items.length > 0) {
+                result = data.items.map((event: UserBookingFetchingFromCalendar) => {
+                    return {
+                        id: event.id,
+                        start: event.start.dateTime,
+                        end: event.end.dateTime,
+                        summary: event.summary,
+                        description: event.description,
+                        creator: event.creator,
+                        organizer: event.organizer,
+                        iCalUID: event.iCalUID,
+                        reminders: event.reminders,
+                        eventType: event.eventType,
+                        ...event.extendedProperties?.private,
+                    }
+                })
+            }
+            return { success: true, message: "Fetched calendar events", data: result || [] }
         } catch (error) {
-            console.log("GoogleCalendarService use case error : ",error);
+            console.log("FethGoogleCalendarService use case error : ", error);
             throw new Error("Calendar events fetching failed");
         }
     }
+}
+
+export class AddEventToGoogleCalendarService {
+    constructor(
+        private googleTokenService: GoogleTokenService
+    ) { }
+
+    async execute(userId: Types.ObjectId, booking: Booking, slotDuration: string): Promise<ApiResponse> {
+        try {
+            console.log("Event adding");
+            const accessToken = await this.googleTokenService.getValidAccessToken(userId);
+            if (!accessToken) throw new Error("Event saving failed.");
+
+            const oauth2Client = new google.auth.OAuth2();
+            oauth2Client.setCredentials({ access_token: accessToken });
+
+            const calendar = google.calendar({ version: "v3", auth: oauth2Client });
+
+            const startDate = new Date(booking.appointmentDate);
+            const durationMinutes = durationMap[slotDuration] ?? 30;
+            const endDate = new Date(startDate.getTime() + durationMinutes * 60 * 1000);
+
+            const event: UserBookingAddingToCalendar = {
+                summary: `Service Appointment`,
+                description: `You have an appointment scheduled on ${startDate.toLocaleString("en-IN", {
+                    dateStyle: "full",
+                    timeStyle: "short",
+                })}`,
+                start: {
+                    dateTime: startDate.toISOString(),
+                    timeZone: EventData.eventTimeZone,
+                },
+                end: {
+                    dateTime: endDate.toISOString(),
+                    timeZone: EventData.eventTimeZone,
+                },
+                extendedProperties: {
+                    private: {
+                        bookingStatus: booking.appointmentStatus,
+                        bookingId: booking._id.toString(),
+                        title: EventData.eventTitle,
+                        backgroundColor: EventData.eventAddBorderColor,
+                        textColor: EventData.eventAddTextColor,
+                    }
+                }
+            }
+
+                const response = await calendar.events.insert({
+                    calendarId: "primary",
+                    requestBody: event
+                });
+
+                if(response?.data?.id) {
+                    return { success: true, message: "Booking event inserted" };
+                } else {
+                    return { success: false, message: "Booking event inserting failed" };
+                }
+
+            } catch (error) {
+                console.log("AddEventToGoogleCalendarUseCase error : ", error);
+                throw new Error("Booking event saving failed");
+            }
+        }
 }

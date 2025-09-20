@@ -42,14 +42,20 @@ export class GetCredentialUseCase {
 
     async execute(userId: Types.ObjectId): Promise<Credential> {
         try {
+            console.log("GetCredentialUseCase usecase start");
             if (!userId) throw new Error("Invalid request");
-
+            
             const credentials = await this.credentialRepositoryImpl.getCredentialByUserId(userId);
             if (!credentials) throw new Error("Credential fetching failed");
-
+            
+            console.log("accessToken decryption start")
             const decryptedAccessToken = await this.aesEncryption.decrypt(credentials.accessToken);
+            console.log("accessToken decryption end")
+            console.log("refreshToken decryption start")
             const decryptedRefreshToken = await this.aesEncryption.decrypt(credentials.refreshToken);
-
+            console.log("refreshToken decryption end")
+            
+            console.log("GetCredentialUseCase usecase end");
             return {
                 ...credentials,
                 accessToken: decryptedAccessToken,
@@ -71,19 +77,25 @@ export class UpdateCredentialUseCase {
 
     async execute(payload: Credential): Promise<ApiResponse> {
         try {
+            console.log("UpdateCredentialUseCase usecase start");
             const { _id, accessToken, createdAt, updatedAt, expiryDate, refreshToken, userId } = payload;
             if (!_id || !accessToken || !refreshToken || !createdAt || !updatedAt || !expiryDate || !userId) throw new Error("Creatial updation failed");
-
-            const decryptedAccessToken = await this.aesEncryption.decrypt(accessToken);
-            const decryptedRefreshToken = await this.aesEncryption.decrypt(refreshToken);
-
+            
+            console.log("accessToken decryption start");
+            const decryptedAccessToken = await this.aesEncryption.encrypt(accessToken);
+            console.log("accessToken decryption end");
+            console.log("refreshToken decryption start");
+            const decryptedRefreshToken = await this.aesEncryption.encrypt(refreshToken);
+            console.log("refreshToken decryption end");
+            
             const updatedCredentials = await this.credentialRepositoryImpl.updateCredential({
                 ...payload,
                 accessToken: decryptedAccessToken,
                 refreshToken: decryptedRefreshToken,
             });
             if(!updatedCredentials) throw new Error('Credentials updation failed');
-
+            
+            console.log("UpdateCredentialUseCase usecase end");
             return { success: true, message: "Credentials updated" };
         } catch (error) {
             console.log("Credentials updation failed");

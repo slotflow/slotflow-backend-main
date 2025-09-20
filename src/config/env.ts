@@ -51,5 +51,5 @@ export const aesConfig = {
     ivLength: parseInt(process.env.AES_IV_LENGTH as string),
     inputEncoding: process.env.AES_INPUT_ENCODING,
     outputEncoding: process.env.AES_OUTPUT_ENCODING,
-    separator: process.env.AES_SEPARATOR,
+    separator: ":",
 }

@@ -1,20 +1,22 @@
 import Stripe from "stripe";
+import { v4 as uuidv4 } from 'uuid';
+import { 
+    UserSaveAppoinmentBookingRequest, 
+    UserAppointmentBookingViaStripeRequest, 
+} from "../../infrastructure/dtos/user.dto";
 import { startSession, Types } from "mongoose";
 import { ApiResponse } from "../../infrastructure/dtos/common.dto";
+import { Validator } from "../../infrastructure/validator/validator";
 import { AppointmentStatus } from "../../domain/entities/booking.entity";
+import { PaymentFor, PaymentGateway } from "../../domain/entities/payment.entity";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
+import { AddEventToGoogleCalendarService } from "../../infrastructure/services/googleCalendar";
 import { FindProviderServiceResponse } from "../../domain/repositories/IProviderService.repository";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { ProviderServiceRepositoryImpl } from "../../infrastructure/database/providerService/providerService.repository.impl";
 import { ServiceAvailabilityRepositoryImpl } from "../../infrastructure/database/serviceAvailability/serviceAvailability.repository.impl";
-import { 
-    UserSaveAppoinmentBookingRequest, 
-    UserAppointmentBookingViaStripeRequest, 
-} from "../../infrastructure/dtos/user.dto";
-import { Validator } from "../../infrastructure/validator/validator";
-import { PaymentFor, PaymentGateway } from "../../domain/entities/payment.entity";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -81,6 +83,7 @@ export class UserAppointmentBookingViaStripeUseCase {
                 providerId: providerId.toString(),
                 selectedDay: providerServiceAvailability.day,
                 slotId: slotId.toString(),
+                slotDuration: providerServiceAvailability.duration,
                 appointmentDate: date.toString(),
                 selectedServiceMode: selectedServiceMode,
                 initialAmount: providerService.servicePrice * 100,
@@ -100,9 +103,11 @@ export class UserSaveBookingAfterStripePaymentUseCase {
         private paymentRepositoryImpl: PaymentRepositoryImpl,
         private bookingRepositoryImpl: BookingRepositoryImpl,
         private serviceAvailabilityRepositoryImpl: ServiceAvailabilityRepositoryImpl,
+        private addEventToGoogleCalendarService: AddEventToGoogleCalendarService,
     ) { }
 
     async execute({ userId, sessionId }: UserSaveAppoinmentBookingRequest): Promise<ApiResponse> {
+        console.log("saving booking");
         if (!userId || !sessionId) throw new Error("Invalid request");
 
         Validator.validateObjectId(userId, "userId");
@@ -123,8 +128,9 @@ export class UserSaveBookingAfterStripePaymentUseCase {
         const paymentType = session?.payment_method_types[0];
         const dateString = session?.metadata?.appointmentDate;
         const paymentIntent = session?.payment_intent;
+        const slotDuration = session?.metadata?.slotDuration;
 
-        if (!providerId || !selectedDay || !slotId || !selectedServiceMode || !initialAmount || !totalAmount || !paymentStatus || !paymentType || !dateString || !paymentIntent) throw new Error("Unexpected error, please try again");
+        if (!providerId || !selectedDay || !slotId || !selectedServiceMode || !initialAmount || !totalAmount || !paymentStatus || !paymentType || !dateString || !paymentIntent || !slotDuration) throw new Error("Unexpected error, please try again");
 
         const providerServiceAvailability = await this.serviceAvailabilityRepositoryImpl.findServiceAvailabilityByProviderId(new Types.ObjectId(providerId), new Date(dateString));
         if (!providerServiceAvailability) throw new Error("No availability found");
@@ -160,17 +166,24 @@ export class UserSaveBookingAfterStripePaymentUseCase {
                 appointmentMode: selectedServiceMode,
                 appointmentStatus: AppointmentStatus.Booked,
                 appointmentTime: selectedSlot[0].time,
+                videoCallRoomId: "stw-" + uuidv4(),
                 paymentId: payment._id,
                 slotId: selectedSlot[0]._id,
             }, { session: mongoSession });
 
             if (!newBooking) throw new Error("Error in slot booking, please try again");
 
+            if(user.googleConnected) {
+                const response = await this.addEventToGoogleCalendarService.execute(new Types.ObjectId(userId), newBooking, slotDuration);
+                if(!response.success) throw new Error("Booking saving failed");
+            }
+
             await mongoSession.commitTransaction();
             mongoSession.endSession();
 
             return { success: true, message: "Your booking have been confirmed" }
         } catch (error){
+            console.log("UserSaveBookingAfterStripePaymentUseCase error : ",error);
             await mongoSession.abortTransaction();
             mongoSession.endSession();
             throw new Error("Subscribing error.");

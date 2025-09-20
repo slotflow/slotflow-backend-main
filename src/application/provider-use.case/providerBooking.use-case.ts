@@ -1,6 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
 import { ApiResponse } from "../../infrastructure/dtos/common.dto";
-import { AppointmentStatus } from "../../domain/entities/booking.entity";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { ProviderChangeBookingAppoinmentStatusRequest } from "../../infrastructure/dtos/provider.dto";
 
@@ -16,10 +14,6 @@ export class ProviderChangeBookingAppointmentStatusUseCase {
 
             const booking = await this.bookingRepositoryImpl.findBookingById(_id);
             if(!booking) throw new Error("No booking found");
-
-            if(appointmentStatus === AppointmentStatus.Confirmed) {
-                booking.videoCallRoomId = uuidv4();
-            }
 
             booking.appointmentStatus = appointmentStatus;
 
