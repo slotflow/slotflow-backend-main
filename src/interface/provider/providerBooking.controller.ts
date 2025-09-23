@@ -81,6 +81,7 @@ export class ProviderBookingController {
             const result = await this.validateJoinRoomUsecase.execute({ bookingId: new Types.ObjectId(bookingId), roomId: roomId as string, role: Role.provider, userOrProviderId: new Types.ObjectId(providerId) });
             res.status(200).json(result);
         } catch (error) {
+            console.log("validateRoom erro : ",error);
             HandleError.handle(error, res);
         }
     }

@@ -124,12 +124,10 @@ export class UserBookingController {
 
     async validateRoom(req: Request, res: Response) {
         try {
-            console.log("Validating room id");
             const { id: bookingId } = ValidateObjectId(req.params.bookingId, "Booking ID");
             const roomId = req.query.roomId;
-            const providerId = (req.user as DecodedUser).userOrProviderId;
-            const result = await this.validateJoinRoomUsecase.execute({ bookingId: new Types.ObjectId(bookingId), roomId: roomId as string, role: Role.user, userOrProviderId: new Types.ObjectId(providerId) });
-            console.log("result : ",result);
+            const userId = (req.user as DecodedUser).userOrProviderId;
+            const result = await this.validateJoinRoomUsecase.execute({ bookingId: new Types.ObjectId(bookingId), roomId: roomId as string, role: Role.user, userOrProviderId: new Types.ObjectId(userId) });
             res.status(200).json(result);
         } catch (error) {
             console.log("validateRoom error : ", error);

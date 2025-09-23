@@ -1,5 +1,6 @@
 import { ApiResponse, Role, UpdateBookingTrackRequest } from "../../infrastructure/dtos/common.dto";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
+import { AppointmentStatus } from "../../domain/entities/booking.entity";
 
 export class UpdateBookingOnlineTrakingUseCase {
     constructor(
@@ -23,6 +24,11 @@ export class UpdateBookingOnlineTrakingUseCase {
                 booking.track.provider.joinedTime = joinedTime;
             } else if (joined && leftCallTime) {
                 booking.track.provider.leftCallTime = leftCallTime;
+                if(booking.track.user.joined) {
+                    if(booking.track.user.joinedTime && booking.track.user.leftCallTime) {
+                        booking.appointmentStatus = AppointmentStatus.Completed;
+                    }
+                }
             }
         } else if (role === Role.user) {
             if (joined && joinedTime) {
@@ -30,6 +36,11 @@ export class UpdateBookingOnlineTrakingUseCase {
                 booking.track.user.joinedTime = joinedTime;
             } else if (joined && leftCallTime) {
                 booking.track.user.leftCallTime = leftCallTime;
+                if(booking.track.provider.joined) {
+                    if(booking.track.provider.joinedTime && booking.track.provider.leftCallTime) {
+                        booking.appointmentStatus = AppointmentStatus.Completed;
+                    }
+                }
             }
         }
 
