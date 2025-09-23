@@ -6,7 +6,6 @@ import { HandleError } from "../../infrastructure/error/error";
 import { AesEncryption } from "../../infrastructure/services/aesEncryption";
 import { GoogleTokenService } from "../../infrastructure/services/googleTokenService";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
-import { AddEventToGoogleCalendarService, UpdateEventFromGoogleCalendarService } from "../../infrastructure/services/googleCalendar";
 import { UserCancelBookingUseCase } from "../../application/user-use.case/userBooking.use-case";
 import { UserCreateSessionIdForbookingViaStripeZodSchema } from "../../infrastructure/zod/user.zod";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
@@ -16,9 +15,11 @@ import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/p
 import { FetchBookingAppointmentsUseCase } from "../../application/common-use.case/fetchAllBookings.use-case";
 import { CredentialRepositoryImpl } from "../../infrastructure/database/credential/credential.repository.impl";
 import { GetCredentialUseCase, UpdateCredentialUseCase } from "../../application/common-use.case/credential.use-case";
+import { UpdateBookingOnlineTrakingUseCase } from "../../application/common-use.case/updateBookingOnlineTracking.use-case";
 import { ProviderServiceRepositoryImpl } from "../../infrastructure/database/providerService/providerService.repository.impl";
+import { AddEventToGoogleCalendarService, UpdateEventFromGoogleCalendarService } from "../../infrastructure/services/googleCalendar";
 import { ServiceAvailabilityRepositoryImpl } from "../../infrastructure/database/serviceAvailability/serviceAvailability.repository.impl";
-import { RequestQueryForBookingCommonZodSchema, SaveStripePaymentZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
+import { JoinOrLeftRoomZodSchema, RequestQueryForBookingCommonZodSchema, SaveStripePaymentZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
 import { UserAppointmentBookingViaStripeUseCase, UserSaveBookingAfterStripePaymentUseCase } from "../../application/user-use.case/userStripeBooking.use-case";
 
 const aesEncryption = new AesEncryption();
@@ -40,6 +41,7 @@ const fetchBookingAppointmentsUseCase = new FetchBookingAppointmentsUseCase(book
 const userCancelBookingUseCase = new UserCancelBookingUseCase(userRepositoryImpl, bookingRepositoryImpl, paymentRepositoryImpl, updateEventFromGoogleCalendarService);
 const userAppointmentBookingViaStrpieUseCase = new UserAppointmentBookingViaStripeUseCase(proviserRepositoryImpl, providerServiceRepositoryImpl, serviceAvailabilityRepositoryImpl, bookingRepositoryImpl);
 const userSaveBookingAfterStripePaymentUseCase = new UserSaveBookingAfterStripePaymentUseCase(userRepositoryImpl, paymentRepositoryImpl, bookingRepositoryImpl, serviceAvailabilityRepositoryImpl, addEventToGoogleCalendarService);
+const updateBookingOnlineTrakingUseCase = new UpdateBookingOnlineTrakingUseCase(bookingRepositoryImpl);
 
 export class UserBookingController {
     constructor(
@@ -47,13 +49,15 @@ export class UserBookingController {
         private userCancelBookingUseCase: UserCancelBookingUseCase,
         private userAppointmentBookingViaStripeUseCase: UserAppointmentBookingViaStripeUseCase,
         private userSaveBookingAfterStripePaymentUseCase: UserSaveBookingAfterStripePaymentUseCase,
-        private validateJoinRoomUsecase: ValidateJoinRoomUsecase
+        private validateJoinRoomUsecase: ValidateJoinRoomUsecase,
+        private updateBookingOnlineTrakingUseCase: UpdateBookingOnlineTrakingUseCase,
     ) {
         this.fetchBookings = this.fetchBookings.bind(this);
         this.cancelBooking = this.cancelBooking.bind(this);
         this.createSessionIdForbookingViaStripe = this.createSessionIdForbookingViaStripe.bind(this);
         this.saveBookingAfterStripePayment = this.saveBookingAfterStripePayment.bind(this);
         this.validateRoom = this.validateRoom.bind(this);
+        this.userJoinRoom = this.userJoinRoom.bind(this);
     }
 
     async fetchBookings(req: Request, res: Response) {
@@ -61,9 +65,9 @@ export class UserBookingController {
             const user = (req.user as DecodedUser);
             const { page, limit, online, raw } = RequestQueryForBookingCommonZodSchema.parse(req.query);
             if (!user) throw new Error("Invalid request");
-            const result = await this.fetchBookingAppointmentsUseCase.execute({ 
-                userId: new Types.ObjectId(user.userOrProviderId), 
-                page, 
+            const result = await this.fetchBookingAppointmentsUseCase.execute({
+                userId: new Types.ObjectId(user.userOrProviderId),
+                page,
                 limit,
                 online: online ? true : false,
                 raw: raw ? true : false,
@@ -120,12 +124,34 @@ export class UserBookingController {
 
     async validateRoom(req: Request, res: Response) {
         try {
+            console.log("Validating room id");
             const { id: bookingId } = ValidateObjectId(req.params.bookingId, "Booking ID");
             const roomId = req.query.roomId;
             const providerId = (req.user as DecodedUser).userOrProviderId;
-            const result = await this.validateJoinRoomUsecase.execute({ bookingId: new Types.ObjectId(bookingId), roomId: roomId as string, role: Role.provider, userOrProviderId: new Types.ObjectId(providerId) });
+            const result = await this.validateJoinRoomUsecase.execute({ bookingId: new Types.ObjectId(bookingId), roomId: roomId as string, role: Role.user, userOrProviderId: new Types.ObjectId(providerId) });
+            console.log("result : ",result);
             res.status(200).json(result);
         } catch (error) {
+            console.log("validateRoom error : ", error);
+            HandleError.handle(error, res);
+        }
+    }
+
+    async userJoinRoom(req: Request, res: Response) {
+        try {
+            const roomId = req.params.roomId;
+            const validatedData = JoinOrLeftRoomZodSchema.parse(req.body);
+            const { joined, joinedTime, leftCallTime, role } = validatedData;
+            const result = await this.updateBookingOnlineTrakingUseCase.execute({
+                roomId,
+                joined,
+                joinedTime: joinedTime ? new Date(joinedTime) : null,
+                leftCallTime: leftCallTime ? new Date(leftCallTime) : null,
+                role
+            });
+            res.status(200).json(result);
+        } catch (error) {
+            console.log("userJoinRoom error : ",error);
             HandleError.handle(error, res);
         }
     }
@@ -137,7 +163,8 @@ const userBookingController = new UserBookingController(
     userCancelBookingUseCase,
     userAppointmentBookingViaStrpieUseCase,
     userSaveBookingAfterStripePaymentUseCase,
-    validateJoinRoomUsecase
+    validateJoinRoomUsecase,
+    updateBookingOnlineTrakingUseCase
 );
 
 export { userBookingController };

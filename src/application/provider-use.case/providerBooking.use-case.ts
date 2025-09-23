@@ -3,7 +3,6 @@ import { UpdateEventFromGoogleCalendarService } from "../../infrastructure/servi
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { ProviderChangeBookingAppoinmentStatusRequest } from "../../infrastructure/dtos/provider.dto";
 
-
 export class ProviderChangeBookingAppointmentStatusUseCase {
     constructor(
         private bookingRepositoryImpl: BookingRepositoryImpl,

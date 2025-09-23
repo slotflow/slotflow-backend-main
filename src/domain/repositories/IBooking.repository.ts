@@ -18,6 +18,8 @@ export interface IBookingRepository {
 
     findBookingById(bookingId: Types.ObjectId): Promise<Booking | null>;
 
+    findBookingByroomId(roomId: string): Promise<Booking | null>;
+
     updateBooking(booking: Booking) : Promise<Booking | null>;
 
     findTodaysBookingForCronjob() : Promise<boolean> ;
@@ -35,4 +37,5 @@ export interface IBookingRepository {
     findTodayBookingStatsForAdminDashboard(): Promise<AdminFetchTodaysBookingStatsForDashboardResponse>;
 
     findBookingStatsForAdminDashboard(): Promise<AdminFetchDashboardAppointmentStatsDataResponse>;
+    
 }

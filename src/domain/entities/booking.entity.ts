@@ -8,6 +8,11 @@ export enum AppointmentStatus {
     NotAttended = "NotAttended",
     Confirmed = "Confirmed"
 }
+export interface ParticipantPresence {
+    joined: boolean;
+    joinedTime: Date | null;
+    leftCallTime: Date | null;
+}
 
 export class Booking {
     constructor(
@@ -22,6 +27,10 @@ export class Booking {
         public paymentId: Types.ObjectId | null,
         public videoCallRoomId: string | null,
         public googleEventId: string,
+        public track: {
+            user: ParticipantPresence;
+            provider: ParticipantPresence;
+        },
         public createdAt: Date,
         public updatedAt: Date,
     ) { }

@@ -1,16 +1,17 @@
 import { z } from "zod";
 import { Types } from "mongoose";
+import { limitedRoleField } from "./auth.zod";
 
 // ****** Common zod validations for reuse ****** \\
 
 // Object Id zod validation
 export const objectIdField = (fieldName = "ID") =>
-    z.string({
-        required_error: `${fieldName} is required`,
-        invalid_type_error: `${fieldName} must be a string`,
-    }).refine(id => Types.ObjectId.isValid(id), {
-        message: `Invalid ${fieldName} format`,
-    });
+  z.string({
+    required_error: `${fieldName} is required`,
+    invalid_type_error: `${fieldName} must be a string`,
+  }).refine(id => Types.ObjectId.isValid(id), {
+    message: `Invalid ${fieldName} format`,
+  });
 
 // Boolean field zod validation
 export const booleanField = (fieldName = "Boolean") =>
@@ -142,35 +143,35 @@ export const stringArrayField = (
 // **** Zod schema that is common for multiple controllers **** \\
 // Date zod validation alone for the date coming in req.query
 export const DateZodSchema = z.object({
-    date: dateField,
+  date: dateField,
 });
 
 // User and Provider addess adding controllerz zod validation
 export const AddAddressZodSchema = z.object({
-    addressLine: stringField("AddressLine",10,150,/^[a-zA-Z0-9 .,#-]{10,150}$/,"Address line must be 10–150 characters long and can only include letters, numbers, spaces, and the symbols . , # -") ,
-    phone: stringField("Phone",7,20,/^\+?[0-9\s\-().]{7,20}$/, "Invalid phone number. Only digits, spaces, dashes (-), dots (.), parentheses (), and an optional + at the beginning are allowed. Length must be between 7 to 20 characters."),
-    place: stringField("Place",3,50,/^[a-zA-Z .-]{3,50}$/, "Place name must be 3–50 characters long and can only include letters, spaces, dots, and hyphens"),
-    city: stringField("City",3,50,/^[a-zA-Z ]{3,50}$/,"City must only contain letters and spaces"),
-    district: stringField("District",2,50,/^[a-zA-Z ]{3,50}$/,"District must only contain letters and spaces"),
-    pincode: stringField("pincode",3,12,/^[A-Za-z0-9\s-]{3,12}$/,"Invalid postal code"),
-    state: stringField("State",2,50,/^[a-zA-Z ]{2,50}$/,"State must only contain letters and spaces"),
-    country: stringField("Country",2,50,/^[a-zA-Z ]{2,50}$/,"Country must only contain letters and spaces"),
-    googleMapLink: z.string({
-      required_error: "Google Map link is required",
-      invalid_type_error: "Google Map link must be a string",
-    })
+  addressLine: stringField("AddressLine", 10, 150, /^[a-zA-Z0-9 .,#-]{10,150}$/, "Address line must be 10–150 characters long and can only include letters, numbers, spaces, and the symbols . , # -"),
+  phone: stringField("Phone", 7, 20, /^\+?[0-9\s\-().]{7,20}$/, "Invalid phone number. Only digits, spaces, dashes (-), dots (.), parentheses (), and an optional + at the beginning are allowed. Length must be between 7 to 20 characters."),
+  place: stringField("Place", 3, 50, /^[a-zA-Z .-]{3,50}$/, "Place name must be 3–50 characters long and can only include letters, spaces, dots, and hyphens"),
+  city: stringField("City", 3, 50, /^[a-zA-Z ]{3,50}$/, "City must only contain letters and spaces"),
+  district: stringField("District", 2, 50, /^[a-zA-Z ]{3,50}$/, "District must only contain letters and spaces"),
+  pincode: stringField("pincode", 3, 12, /^[A-Za-z0-9\s-]{3,12}$/, "Invalid postal code"),
+  state: stringField("State", 2, 50, /^[a-zA-Z ]{2,50}$/, "State must only contain letters and spaces"),
+  country: stringField("Country", 2, 50, /^[a-zA-Z ]{2,50}$/, "Country must only contain letters and spaces"),
+  googleMapLink: z.string({
+    required_error: "Google Map link is required",
+    invalid_type_error: "Google Map link must be a string",
+  })
     .url("Invalid Google Map link"),
-  });
-  
-  // user or provider username and phone updation controller
-  export const UserOrProviderUpdateInfoZodSchema = z.object({
-    username: stringField("Username",4,30,/^[a-zA-Z ]{4,30}$/,"Invalid username"),
-    phone: stringField("Phone",7,20,/^\+?[0-9\s\-().]{7,20}$/, "Invalid phone number. Only digits, spaces, dashes (-), dots (.), parentheses (), and an optional + at the beginning are allowed. Length must be between 7 to 20 characters."),
+});
+
+// user or provider username and phone updation controller
+export const UserOrProviderUpdateInfoZodSchema = z.object({
+  username: stringField("Username", 4, 30, /^[a-zA-Z ]{4,30}$/, "Invalid username"),
+  phone: stringField("Phone", 7, 20, /^\+?[0-9\s\-().]{7,20}$/, "Invalid phone number. Only digits, spaces, dashes (-), dots (.), parentheses (), and an optional + at the beginning are allowed. Length must be between 7 to 20 characters."),
 });
 
 // Stripe Payment Schema
 export const SaveStripePaymentZodSchema = z.object({
-    sessionId: stringField("Stripe session Id",5,200,/^cs_test_[a-zA-Z0-9]{5,200}$/,"Invalid session ID")
+  sessionId: stringField("Stripe session Id", 5, 200, /^cs_test_[a-zA-Z0-9]{5,200}$/, "Invalid session ID")
 });
 
 // Validating the page and limit in the request query zod schema
@@ -180,7 +181,7 @@ export const RequestQueryCommonZodSchema = z.object({
     .refine((val) => !isNaN(val) && val > 0, {
       message: "Page must be a valid positive number",
     }),
-    
+
   limit: stringField("Request query parameter limit")
     .transform(Number)
     .refine((val) => !isNaN(val) && val > 0, {
@@ -195,15 +196,15 @@ export const RequestQueryForBookingCommonZodSchema = z.object({
     .refine((val) => !isNaN(val) && val > 0, {
       message: "Page must be a valid positive number",
     }),
-    
+
   limit: stringField("Request query parameter limit")
     .transform(Number)
     .refine((val) => !isNaN(val) && val > 0, {
       message: "Limit must be a valid positive number",
     }),
 
-    online: enumField("online filter",["true","false"]).optional(),
-    raw: enumField("raw filter",["true","false"]).optional(),
+  online: enumField("online filter", ["true", "false"]).optional(),
+  raw: enumField("raw filter", ["true", "false"]).optional(),
 });
 
 // ObjectId validation
@@ -213,3 +214,11 @@ export const ValidateObjectId = (id: string, name: string) => {
   });
   return schema.parse({ id });
 };
+
+
+export const JoinOrLeftRoomZodSchema = z.object({
+  joined: booleanField("joined"),
+  joinedTime: stringField("joinedTime").optional(),
+  leftCallTime: stringField("leftCallTime").optional(),
+  role: limitedRoleField,
+})

@@ -31,6 +31,7 @@ router.post('/bookings', authMiddleware, userBookingController.saveBookingAfterS
 router.get('/bookings', authMiddleware, userBookingController.fetchBookings);
 router.patch('/bookings/:bookingId', authMiddleware, userBookingController.cancelBooking);
 router.get('/bookings/:bookingId/can-join', authMiddleware, userBookingController.validateRoom);
+router.patch('/bookings/:roomId/join-left', authMiddleware, userBookingController.userJoinRoom);
 
 router.get('/payments', authMiddleware, userPaymentController.fetchPayments);
 

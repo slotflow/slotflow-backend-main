@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { Role } from '../dtos/common.dto';
 
 export const usernameField = z.string({
   required_error: "Username is required",
@@ -24,12 +25,12 @@ export const passwordField = z.string({
     "Invalid password"
   );
 
-export const roleField = z.enum(["USER", "PROVIDER", "ADMIN"] as const, {
+export const roleField = z.enum([Role.user, Role.provider, Role.admin] as const, {
   required_error: "Role is required",
   invalid_type_error: "Invalid role"
 });
 
-export const limitedRoleField = z.enum(["USER", "PROVIDER"], {
+export const limitedRoleField = z.enum([Role.user, Role.provider], {
   required_error: "Role is required",
   invalid_type_error: "Invalid role"
 });

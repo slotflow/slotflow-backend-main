@@ -60,7 +60,7 @@ export class AddEventToGoogleCalendarService {
 
     async execute(payload: CreateGoogleCalendarEventRequest): Promise<ApiResponse<Pick<GoogleCalendarEvent, "id">>> {
         try {
-            const { userId, slotDuration, appointmentDate, appointmentStatus} = payload;
+            const { userId, slotDuration, appointmentDate, appointmentStatus } = payload;
             console.log("Event adding");
             const accessToken = await this.googleTokenService.getValidAccessToken(userId);
             if (!accessToken) throw new Error("Event saving failed.");
@@ -104,7 +104,7 @@ export class AddEventToGoogleCalendarService {
             });
 
             if (response?.data?.id) {
-                return { success: true, message: "Booking event inserted", data: { id: response.data.id }  };
+                return { success: true, message: "Booking event inserted", data: { id: response.data.id } };
             } else {
                 return { success: false, message: "Booking event inserting failed" };
             }
@@ -120,7 +120,7 @@ export class AddEventToGoogleCalendarService {
 export class UpdateEventFromGoogleCalendarService {
     constructor(
         private googleTokenService: GoogleTokenService
-    ) {}
+    ) { }
 
     async execute(payload: UpdateGoogleCalendarEventRequest): Promise<ApiResponse> {
         try {
@@ -134,7 +134,7 @@ export class UpdateEventFromGoogleCalendarService {
             oauth2Client.setCredentials({ access_token: accessToken });
 
             const calendar = google.calendar({ version: "v3", auth: oauth2Client });
-            if(!calendar) throw new Error("Event deleting failed");
+            if (!calendar) throw new Error("Event deleting failed");
 
             const eventResponse = await calendar.events.get({
                 calendarId: "primary",
@@ -147,13 +147,13 @@ export class UpdateEventFromGoogleCalendarService {
             const startDate = new Date(appointmentDate);
             const backgroundColor = appointmentStatus === AppointmentStatus.Rejected || AppointmentStatus.Cancelled ? EventData.eventCancelBorderColor : EventData.eventAddBorderColor;
             event.description = `Appointment scheduled on ${startDate.toLocaleString("en-IN", {
-                    dateStyle: "full",
-                    timeStyle: "short",
-                })} has been cancelled`,
-            event.extendedProperties = {
+                dateStyle: "full",
+                timeStyle: "short",
+            })} has been cancelled`,
+                event.extendedProperties = {
                     private: {
                         bookingStatus: appointmentStatus,
-                        title: EventData.eventTitle + " "+ appointmentStatus,
+                        title: EventData.eventTitle + " " + appointmentStatus,
                         backgroundColor: backgroundColor,
                         textColor: EventData.eventCancelTextColor,
                     }
@@ -165,8 +165,8 @@ export class UpdateEventFromGoogleCalendarService {
                 requestBody: event,
             });
 
-             if (updatedResponse?.data?.id) {
-                return { success: true, message: "Booking event updated", data: { id: updatedResponse.data.id }  };
+            if (updatedResponse?.data?.id) {
+                return { success: true, message: "Booking event updated", data: { id: updatedResponse.data.id } };
             } else {
                 return { success: false, message: "Booking event updation failed" };
             }

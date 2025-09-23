@@ -25,6 +25,7 @@ export class BookingRepositoryImpl implements IBookingRepository {
             booking.paymentId,
             booking.videoCallRoomId,
             booking.googleEventId,
+            booking.track,
             booking.createdAt,
             booking.updatedAt,
         )
@@ -57,6 +58,15 @@ export class BookingRepositoryImpl implements IBookingRepository {
     async findBookingById(bookingId: Types.ObjectId): Promise<Booking | null> {
         try {
             const booking = await BookingModel.findById(bookingId);
+            return booking ? this.mapToEntity(booking) : null;
+        } catch (error) {
+            throw new Error("Finding booking failed");
+        }
+    }
+
+    async findBookingByroomId(roomId: string): Promise<Booking | null> {
+        try {
+            const booking = await BookingModel.findOne({videoCallRoomId: roomId});
             return booking ? this.mapToEntity(booking) : null;
         } catch (error) {
             throw new Error("Finding booking failed");

@@ -10,6 +10,7 @@ export class ValidateJoinRoomUsecase {
     ) { }
 
     async execute(payload: ValidateJoinRoomRequest): Promise<ApiResponse> {
+
         const { bookingId, roomId, userOrProviderId, role } = payload;
 
         const booking = await this.bookingRepositoryImpl.findBookingById(bookingId);
@@ -23,13 +24,26 @@ export class ValidateJoinRoomUsecase {
         if (booking.appointmentStatus !== AppointmentStatus.Confirmed) {
             throw new AppError("Booking is not confirmed");
         }
+        console.log("payload : ", payload);
+        console.log("booking : ", booking);
 
-        if (role === Role.user && !booking.userId.equals(userOrProviderId)) {
-            throw new AppError("You are not authorized for this booking", 403);
+        if (role === Role.user) {
+            console.log("Checking user authorization...");
+            if (String(booking.userId) !== String(userOrProviderId)) {
+                throw new AppError("You are not authorized for this booking", 403);
+            }
         }
-
-        if (role === Role.provider && !booking.serviceProviderId.equals(userOrProviderId)) {
-            throw new AppError("You are not authorized for this booking", 403);
+        // --- PROVIDER CHECK ---
+        else if (role === Role.provider) {
+            console.log("Checking provider authorization...");
+            console.log("String(booking.serviceProviderId) !== String(userOrProviderId", String(booking.serviceProviderId) === String(userOrProviderId));
+            if (String(booking.serviceProviderId) !== String(userOrProviderId)) {
+                throw new AppError("You are not authorized for this booking", 403);
+            }
+        }
+        // --- INVALID ROLE ---
+        else {
+            throw new AppError("Invalid role provided", 400);
         }
 
         if (booking.videoCallRoomId !== roomId) {

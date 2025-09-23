@@ -10,11 +10,12 @@ import { UpdateEventFromGoogleCalendarService } from "../../infrastructure/servi
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { ValidateJoinRoomUsecase } from "../../application/common-use.case/validateJoinRoom.use-case";
 import { ProviderChangeBookingAppointmentStatusZodSchema } from "../../infrastructure/zod/provider.zod";
-import { RequestQueryForBookingCommonZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
 import { FetchBookingAppointmentsUseCase } from "../../application/common-use.case/fetchAllBookings.use-case";
 import { CredentialRepositoryImpl } from "../../infrastructure/database/credential/credential.repository.impl";
 import { GetCredentialUseCase, UpdateCredentialUseCase } from "../../application/common-use.case/credential.use-case";
+import { UpdateBookingOnlineTrakingUseCase } from "../../application/common-use.case/updateBookingOnlineTracking.use-case";
 import { ProviderChangeBookingAppointmentStatusUseCase } from "../../application/provider-use.case/providerBooking.use-case";
+import { JoinOrLeftRoomZodSchema, RequestQueryForBookingCommonZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
 
 const aesEncryption = new AesEncryption();
 const bookingRepositoryImpl = new BookingRepositoryImpl();
@@ -26,17 +27,20 @@ const updateCredentialUseCase = new UpdateCredentialUseCase(credentialRepository
 const googleTokenService = new GoogleTokenService(getCredentialUseCase, updateCredentialUseCase);
 const updateEventFromGoogleCalendarService = new UpdateEventFromGoogleCalendarService(googleTokenService);
 const providerChangeBookingAppointmentStatusUseCase = new ProviderChangeBookingAppointmentStatusUseCase(bookingRepositoryImpl, updateEventFromGoogleCalendarService);
-const validateJoinRoomUsecase = new ValidateJoinRoomUsecase(bookingRepositoryImpl)
+const validateJoinRoomUsecase = new ValidateJoinRoomUsecase(bookingRepositoryImpl);
+const updateBookingOnlineTrakingUseCase = new UpdateBookingOnlineTrakingUseCase(bookingRepositoryImpl);
 
 export class ProviderBookingController {
     constructor(
         private fetchBookingAppointmentsUseCase: FetchBookingAppointmentsUseCase,
         private providerChangeBookingAppointmentStatusUseCase: ProviderChangeBookingAppointmentStatusUseCase,
         private validateJoinRoomUsecase: ValidateJoinRoomUsecase,
+        private updateBookingOnlineTrakingUseCase: UpdateBookingOnlineTrakingUseCase,
     ) {
         this.fetchBookingAppointments = this.fetchBookingAppointments.bind(this);
         this.updateBookingAppointmentStatus = this.updateBookingAppointmentStatus.bind(this);
         this.validateRoom = this.validateRoom.bind(this);
+        this.providerJoinRoom = this.providerJoinRoom.bind(this);
     }
 
     async fetchBookingAppointments(req: Request, res: Response) {
@@ -81,11 +85,31 @@ export class ProviderBookingController {
         }
     }
 
+    async providerJoinRoom(req: Request, res: Response) {
+            try {
+                const roomId = req.params.roomId;
+                const validatedData = JoinOrLeftRoomZodSchema.parse(req.body);
+                const { joined, joinedTime, leftCallTime, role } = validatedData;
+                const result = await this.updateBookingOnlineTrakingUseCase.execute({
+                    roomId,
+                    joined,
+                    joinedTime: joinedTime ? new Date(joinedTime) : null,
+                    leftCallTime: leftCallTime ? new Date(leftCallTime) : null,
+                    role
+                });
+                res.status(200).json(result);
+            } catch (error) {
+                console.log("userJoinRoom error : ",error);
+                HandleError.handle(error, res);
+            }
+        }
+
 }
 
 const providerBookingController = new ProviderBookingController(
     fetchBookingAppointmentsUseCase,
     providerChangeBookingAppointmentStatusUseCase,
-    validateJoinRoomUsecase
+    validateJoinRoomUsecase,
+    updateBookingOnlineTrakingUseCase
 );
 export { providerBookingController };

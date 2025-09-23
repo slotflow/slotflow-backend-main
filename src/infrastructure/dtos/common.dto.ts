@@ -3,7 +3,7 @@ import { Plan } from "../../domain/entities/plan.entity";
 import { User } from "../../domain/entities/user.entity";
 import { Credential } from "../../domain/entities/credential";
 import { Address } from "../../domain/entities/address.entity";
-import { Booking } from "../../domain/entities/booking.entity";
+import { Booking, ParticipantPresence } from "../../domain/entities/booking.entity";
 import { Service } from "../../domain/entities/service.entity";
 import { Provider } from "../../domain/entities/provider.entity";
 import { Subscription } from "../../domain/entities/subscription.entity";
@@ -194,4 +194,9 @@ export interface CreateGoogleCalendarEventRequest {
   appointmentDate: Booking["appointmentDate"], 
   appointmentStatus: Booking["appointmentStatus"],
   slotDuration: string,
+}
+
+export interface UpdateBookingTrackRequest extends ParticipantPresence {
+  role: Role,
+  roomId: string,
 }

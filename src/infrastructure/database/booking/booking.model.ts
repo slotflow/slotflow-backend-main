@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
-import { AppointmentStatus } from "../../../domain/entities/booking.entity";
+import { AppointmentStatus, ParticipantPresence } from "../../../domain/entities/booking.entity";
 
 export interface IBooking extends Document {
     _id: Types.ObjectId,
@@ -13,9 +13,19 @@ export interface IBooking extends Document {
     paymentId: Types.ObjectId | null,
     videoCallRoomId: string | null,
     googleEventId: string,
+    track: {
+        user: ParticipantPresence;
+        provider: ParticipantPresence;
+    },
     createdAt: Date,
     updatedAt: Date,
 }
+
+const ParticipantPresenceSchema = new Schema<ParticipantPresence>({
+    joined: { type: Boolean, default: false },
+    joinedTime: { type: Date, default: null },
+    leftCallTime: { type: Date, default: null },
+}, { _id: false });
 
 const BookingSchema = new Schema<IBooking>({
     serviceProviderId: { 
@@ -61,7 +71,11 @@ const BookingSchema = new Schema<IBooking>({
     googleEventId: {
         type: String,
         default: null,
-    }
+    },
+    track: {
+        user: { type: ParticipantPresenceSchema, default: () => ({}) },
+        provider: { type: ParticipantPresenceSchema, default: () => ({}) },
+    },
 }, {
     timestamps: true
 });
