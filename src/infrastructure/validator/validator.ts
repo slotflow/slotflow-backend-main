@@ -24,7 +24,7 @@ export class Validator {
             throw new Error("Allowed length is 4 to 40 characters.")
         }
     }
-    
+
 
 
     // Address Validation
@@ -64,7 +64,7 @@ export class Validator {
     }
 
     // Pincode
-    static validatePincode(pincode: string): void { 
+    static validatePincode(pincode: string): void {
         if (!pincode || pincode.trim().length < 3) throw new Error("Pincode is required and should have at least 3 characters.");
         if (pincode.trim().length > 12) throw new Error("Pincode should have less than 12 characters.");
         if (!/^[A-Za-z0-9\s-]{3,12}$/.test(pincode)) throw new Error("Invalid postal code");
@@ -128,7 +128,7 @@ export class Validator {
             throw new Error("Invalid adhaar number. Must be 6 digits.");
         }
 
-        
+
     }
 
     // Provider experience
@@ -230,7 +230,7 @@ export class Validator {
         for (const feature of features) {
             if (typeof feature !== "string" || feature.trim().length === 0)
                 throw new Error("Each feature must be a non-empty string.");
-            if(!/^[\w\d\s!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]{5,100}$/.test(feature.trim()))
+            if (!/^[\w\d\s!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]{5,100}$/.test(feature.trim()))
                 throw new Error("Invalid feature.");
         }
     }
@@ -251,7 +251,31 @@ export class Validator {
     }
 
 
+    // Review
+    static validateRating(rating: number): void {
+        if (typeof rating !== "number" || !Number.isInteger(rating)) {
+            throw new Error("Rating must be an integer.");
+        }
+        if (rating < 1 || rating > 5) {
+            throw new Error("Rating must be between 1 and 5.");
+        }
+    }
 
+    static validateReviewText(reviewText: string): void {
+        if (!reviewText || reviewText.trim().length < 5) {
+            throw new Error(
+                "Review text is required and should have at least 5 characters."
+            );
+        }
+        if (reviewText.trim().length > 1000) {
+            throw new Error("Review text should have less than 1000 characters.");
+        }
+        if (!/^[a-zA-Z0-9 .,!?'"()-]{5,500}$/.test(reviewText.trim())) {
+            throw new Error(
+                "Review text contains invalid characters."
+            );
+        }
+    }
 
 
 
@@ -381,8 +405,8 @@ export class CustomValidator {
 }
 
 export const validateOrThrow = (id: string, value: string | number) => {
-  const result = CustomValidator.validator(id, value);
-  if (result && result.status === false) {
-    throw new Error(result.message);
-  }
+    const result = CustomValidator.validator(id, value);
+    if (result && result.status === false) {
+        throw new Error(result.message);
+    }
 };

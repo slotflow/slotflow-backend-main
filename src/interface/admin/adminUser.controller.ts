@@ -36,7 +36,7 @@ class AdminUserController {
             const { id: userId } = ValidateObjectId(req.params.userId, "User ID");
             if (!userId || blockStatus === null) throw new Error("Invalid request");
             const result = await this.adminChangeUserBlockStatusUseCase.execute({ userId: new Types.ObjectId(userId), isBlocked: blockStatus });
-            res.status(200).json(result);
+            res.status(204).json(result);
         } catch (error) {
             HandleError.handle(error, res);
         }

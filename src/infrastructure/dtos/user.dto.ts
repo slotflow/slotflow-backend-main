@@ -6,6 +6,7 @@ import { Service } from "../../domain/entities/service.entity";
 import { Provider } from "../../domain/entities/provider.entity";
 import { ProviderService } from "../../domain/entities/providerService.entity";
 import { FontendAvailabilityForResponse, TimeSlotForFrontendResponse } from "../../domain/entities/serviceAvailability.entity";
+import { Review } from "../../domain/entities/review.entity";
 
 
 // ************ used in userProfile.use-case ************ \\
@@ -160,14 +161,11 @@ export interface UserCancelBookingRequest {
 
 
 
+// user create review request
+export type CreateReviewRequset = Pick<Review, "reviewText" | "rating" | "userId" | "providerId" | "bookingId">;
 
-
-
-
-
-
-
-
-
-
-
+// User delete review
+export interface UserDeleteReviewRequest {
+    reviewId: Review["_id"];
+    userId: User["_id"];
+}

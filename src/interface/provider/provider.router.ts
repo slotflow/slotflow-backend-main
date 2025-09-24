@@ -8,10 +8,11 @@ import { providerServiceController } from './providerService.controller';
 import { providerProfileController } from './providerProfile.controller';
 import { providerPaymentController } from './providerPayment.controller';
 import { providerBookingController } from './providerBooking.controller';
-import { providerDashboardController } from './providerDashboardController';
+import { providerDashboardController } from './providerDashboard.controller';
 import { providerAppServiceController } from './providerAppService.controller';
 import { providerSubscriptionController } from './providerSubscription.controller';
 import { providerServiceAvailabilityController } from './providerServiceAvailability.controller';
+import { providerReviewController } from './providerReview.controller';
 
 const router = Router();
 
@@ -51,5 +52,8 @@ router.get('/chat/users', authMiddleware, providerUserController.fetchUsersForCh
 
 router.get('/dashboard/stats', authMiddleware, providerDashboardController.getDashboardStats);
 router.get('/dashboard/graph-data', authMiddleware, providerDashboardController.getDashboardGraphData);
+
+router.get('/reviews', authMiddleware, providerReviewController.findAllReviews);
+router.patch('/reviews/:reviewId', authMiddleware, providerReviewController.reportReview);
 
 export default router;  

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { objectIdField, stringField } from "./common.zod";
+import { numberField, objectIdField, stringField } from "./common.zod";
 
 // **** user profile controller **** \\
 // User update user info controller zod validation
@@ -30,7 +30,7 @@ export const UserFetchAllProvidersZodSchema = z.object({
 
 // **** user booking controller **** \\
 // user create a session for appointment booking using stripe zod validation
-const UserCreateSessionIdForbookingViaStripeZodSchema = z.object({
+export const UserCreateSessionIdForbookingViaStripeZodSchema = z.object({
     providerId: objectIdField("Provider ID"),
     slotId: objectIdField("Slot ID"),
     date: z.preprocess((val) => {
@@ -50,6 +50,14 @@ const UserCreateSessionIdForbookingViaStripeZodSchema = z.object({
 });
 
 
-export {
-    UserCreateSessionIdForbookingViaStripeZodSchema,
-};
+
+
+
+// **** user review controller **** \\
+// user crea review
+export const UserCreateReviewZodSchema = z.object({
+    providerId: objectIdField("Provider Id"),
+    bookingId: objectIdField("Booking Id"),
+    reviewText: stringField("Review text", 5, 1000, ),
+    rating: numberField("Rating",1,5),
+})

@@ -49,7 +49,7 @@ class AdminPlanController {
             const { blockStatus } = AdminChangePlanIsBlockStatusZodSchema.parse(req.body);
             const { id: planId } = ValidateObjectId(req.params.planId, "Plan ID");
             const result = await this.adminChangePlanBlockStatusUseCase.execute({ planId: new Types.ObjectId(planId as string), isBlocked: blockStatus });
-            res.status(200).json(result);
+            res.status(204).json(result);
         } catch (error) {
             HandleError.handle(error, res);
         }

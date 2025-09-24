@@ -126,6 +126,7 @@ export class BookingRepositoryImpl implements IBookingRepository {
                 videoCallRoomId: 1,
                 appointmentStatus: 1,
                 appointmentTime: 1,
+                serviceProviderId: 1,
                 createdAt: 1,
             }
             const onlineProject: Record<string, number> = {

@@ -10,6 +10,7 @@ import { Payment, PaymentFor } from "../../domain/entities/payment.entity";
 import { Booking, ParticipantPresence } from "../../domain/entities/booking.entity";
 import { findSubscriptionFullDetailsResProps } from "../../domain/repositories/ISubscription.repository";
 import { Availability } from "../../domain/entities/serviceAvailability.entity";
+import { Review } from "../../domain/entities/review.entity";
 
 // Common Role
 export enum Role {
@@ -66,12 +67,12 @@ export type AddAddressRequest = Pick<Address, "userId" | "addressLine" | "place"
 
 
 //// **** 6.1 Used as the request interface fetching payments for admin, provider and user side
-export interface userIdAndProviderId {
+export interface userIdAndProviderIdFilterForFetchPayments {
   userId?: User["_id"];
   providerId?: Provider["_id"];
   paymentFor?: PaymentFor | { $in: PaymentFor[] };
 }
-export interface FetchPaymentsRequest extends ApiPaginationRequest, userIdAndProviderId { }
+export interface FetchPaymentsRequest extends ApiPaginationRequest, userIdAndProviderIdFilterForFetchPayments { }
 //// **** 6.1 Used as the response type fetching payments for admin, provider and user side
 export type FetchPaymentResponse = Array<Pick<Payment, "_id" | "createdAt" | "totalAmount" | "paymentFor" | "paymentGateway" | "paymentStatus" | "paymentMethod" | "discountAmount">>;
 
@@ -88,7 +89,7 @@ export interface FetchBookingsRequest extends ApiPaginationRequest, userIdAndSer
   role: Role;
 }
 //// **** 7.2 Used as the response type for fetching bookings for admin, provider and user side
-export type FetchBookingsResponse = Array<Pick<Booking, "_id" | "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "videoCallRoomId">>;
+export type FetchBookingsResponse = Array<Pick<Booking, "_id" | "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "videoCallRoomId" | "serviceProviderId">>;
 export type FetchOnlineBookingsForProviderResponse = Array<Pick<Booking, "_id" | "appointmentDate" | "appointmentStatus" | "appointmentTime" | "videoCallRoomId" | "createdAt"> & Pick<User, "username">>;
 export type FetchOnlineBookingsForUserResponse = Pick<Booking, "_id" | "appointmentDate" | "appointmentStatus" | "appointmentTime" | "videoCallRoomId" | "createdAt"> & Pick<Provider, "username">;
 
@@ -202,3 +203,18 @@ export interface UpdateBookingTrackRequest extends ParticipantPresence {
 }
 
 export type UpdateBookingTrackResponse = Pick<Availability, "duration">;
+
+
+
+//// **** Used as the request interface fetching reviews for admin, provider and user side
+export interface userIdAndProviderIdFilterForFetchReviews {
+  userId?: User["_id"];
+  providerId?: Provider["_id"];
+  role?: Role;
+}
+export interface FetchReviesRequest extends ApiPaginationRequest, userIdAndProviderIdFilterForFetchReviews { }
+//// **** Used as the response type fetching payments for admin, provider and user side
+export interface FetchReviewsResponse extends Pick<Review, "_id" | "createdAt" | "reviewText" | "rating" | "reported" | "isBlocked"> {
+  userId: Pick<User, "username" | "profileImage">;
+  providerId: Pick<Provider, "username" | "profileImage">;
+};

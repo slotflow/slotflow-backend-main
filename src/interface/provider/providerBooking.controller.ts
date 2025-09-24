@@ -16,10 +16,12 @@ import { GetCredentialUseCase, UpdateCredentialUseCase } from "../../application
 import { UpdateBookingOnlineTrakingUseCase } from "../../application/common-use.case/updateBookingOnlineTracking.use-case";
 import { ProviderChangeBookingAppointmentStatusUseCase } from "../../application/provider-use.case/providerBooking.use-case";
 import { JoinOrLeftRoomZodSchema, RequestQueryForBookingCommonZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
+import { ServiceAvailabilityRepositoryImpl } from "../../infrastructure/database/serviceAvailability/serviceAvailability.repository.impl";
 
 const aesEncryption = new AesEncryption();
 const bookingRepositoryImpl = new BookingRepositoryImpl();
 const credentialRepositoryImpl = new CredentialRepositoryImpl();
+const serviceAvailabilityRepositoryImpl = new ServiceAvailabilityRepositoryImpl()
 
 const fetchBookingAppointmentsUseCase = new FetchBookingAppointmentsUseCase(bookingRepositoryImpl);
 const getCredentialUseCase = new GetCredentialUseCase(credentialRepositoryImpl, aesEncryption);
@@ -28,7 +30,7 @@ const googleTokenService = new GoogleTokenService(getCredentialUseCase, updateCr
 const updateEventFromGoogleCalendarService = new UpdateEventFromGoogleCalendarService(googleTokenService);
 const providerChangeBookingAppointmentStatusUseCase = new ProviderChangeBookingAppointmentStatusUseCase(bookingRepositoryImpl, updateEventFromGoogleCalendarService);
 const validateJoinRoomUsecase = new ValidateJoinRoomUsecase(bookingRepositoryImpl);
-const updateBookingOnlineTrakingUseCase = new UpdateBookingOnlineTrakingUseCase(bookingRepositoryImpl);
+const updateBookingOnlineTrakingUseCase = new UpdateBookingOnlineTrakingUseCase(bookingRepositoryImpl, serviceAvailabilityRepositoryImpl);
 
 export class ProviderBookingController {
     constructor(
@@ -67,7 +69,7 @@ export class ProviderBookingController {
             const { id: bookingId } = ValidateObjectId(req.params.bookingId, "Booking ID");
             const validateData = ProviderChangeBookingAppointmentStatusZodSchema.parse(req.body);
             const result = await this.providerChangeBookingAppointmentStatusUseCase.execute({ _id: new Types.ObjectId(bookingId), appointmentStatus: validateData.appointmentStatus as AppointmentStatus });
-            res.status(200).json(result);
+            res.status(204).json(result);
         } catch (error) {
             HandleError.handle(error, res);
         }

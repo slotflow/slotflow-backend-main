@@ -7,6 +7,7 @@ import { userPaymentController } from "./userPayment.controller";
 import { userBookingController } from "./userBooking.controller";
 import { userProviderController } from "./userProvider.controller";
 import { userAppServiceController } from "./userAppService.controller";
+import { userReviewController } from "./userReview.controller";
 
 const router = Router();
 
@@ -36,5 +37,9 @@ router.patch('/bookings/:roomId/join-left', authMiddleware, userBookingControlle
 router.get('/payments', authMiddleware, userPaymentController.fetchPayments);
 
 router.get('/chat/providers', authMiddleware, userProviderController.fetchProvidersForChatSidebar);
+
+router.post('/reviews', authMiddleware, userReviewController.createReview);
+router.delete('/reviews/:reviewId', authMiddleware, userReviewController.deleteReview);
+router.get('/reviews/:providerId?', authMiddleware, userReviewController.findAllReviews);
 
 export default router;

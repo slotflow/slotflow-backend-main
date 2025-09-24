@@ -4,7 +4,7 @@ import { Provider } from "../../../domain/entities/provider.entity";
 import { Payment, PaymentFor, PaymentGateway } from "../../../domain/entities/payment.entity";
 import { endOfDay, startOfDay, startOfMonth, startOfToday, startOfTomorrow } from "date-fns";
 import { ProviderFetchDashboardPaymentStatsDataResponse } from "../../dtos/provider.dto";
-import { ApiResponse, FetchPaymentResponse, FetchPaymentsRequest, userIdAndProviderId } from "../../dtos/common.dto";
+import { ApiResponse, FetchPaymentResponse, FetchPaymentsRequest, userIdAndProviderIdFilterForFetchPayments } from "../../dtos/common.dto";
 import { AdminFetchDashboardTodayPaymentStatsDataResponse, CreatePaymentForBookingProps, CreatePaymentForSubscriptionProps, fetchDatashboardStatsParams, IPaymentRepository, UpdateForCancelBookingRefundReqProps } from "../../../domain/repositories/IPayment.repository";
 import { AdminFetchDashboardRevenueStatsDataResponse } from "../../dtos/admin.dto";
 
@@ -56,7 +56,7 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
     async findAllPayments({ page, limit, userId, providerId }: FetchPaymentsRequest): Promise<ApiResponse<FetchPaymentResponse>> {
         try {
             const skip = (page - 1) * limit;
-            const filter: userIdAndProviderId = {};
+            const filter: userIdAndProviderIdFilterForFetchPayments = {};
             if (userId) { 
                 filter.userId = userId;
                 filter.paymentFor = PaymentFor.AppointmentBooking

@@ -41,7 +41,7 @@ export class UserProfileController {
             const file = req.file;
             if(!userId || !file) throw new Error("Invalid request.");
             const result = await this.userUpdateProfileImageUseCase.execute({userId: new Types.ObjectId(userId), file});
-            res.status(200).json(result);
+            res.status(204).json(result);
         }catch(error){
             HandleError.handle(error, res);
         }
@@ -53,7 +53,7 @@ export class UserProfileController {
             const { username, phone } = UserOrProviderUpdateInfoZodSchema.parse(req.body);
             if(!userId || !username || !phone) throw new Error("Invalid request");
             const result = await this.userUpdateProviderInfoUseCase.execute({ userId: new Types.ObjectId(userId), username, phone })
-            res.status(200).json(result)
+            res.status(204).json(result)
         } catch(error){ 
             HandleError.handle(error,res);
         }
