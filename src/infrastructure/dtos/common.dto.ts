@@ -3,13 +3,13 @@ import { Plan } from "../../domain/entities/plan.entity";
 import { User } from "../../domain/entities/user.entity";
 import { Credential } from "../../domain/entities/credential";
 import { Address } from "../../domain/entities/address.entity";
-import { Booking, ParticipantPresence } from "../../domain/entities/booking.entity";
 import { Service } from "../../domain/entities/service.entity";
 import { Provider } from "../../domain/entities/provider.entity";
 import { Subscription } from "../../domain/entities/subscription.entity";
 import { Payment, PaymentFor } from "../../domain/entities/payment.entity";
+import { Booking, ParticipantPresence } from "../../domain/entities/booking.entity";
 import { findSubscriptionFullDetailsResProps } from "../../domain/repositories/ISubscription.repository";
-import { ServiceAvailability } from "../../domain/entities/serviceAvailability.entity";
+import { Availability } from "../../domain/entities/serviceAvailability.entity";
 
 // Common Role
 export enum Role {
@@ -200,3 +200,5 @@ export interface UpdateBookingTrackRequest extends ParticipantPresence {
   role: Role,
   roomId: string,
 }
+
+export type UpdateBookingTrackResponse = Pick<Availability, "duration">;

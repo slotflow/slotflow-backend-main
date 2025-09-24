@@ -20,7 +20,6 @@ import { ServiceAvailabilityRepositoryImpl } from "../../infrastructure/database
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-
 export class UserAppointmentBookingViaStripeUseCase {
     constructor(
         private providerRepositoryImpl: ProviderRepositoryImpl,
@@ -39,6 +38,8 @@ export class UserAppointmentBookingViaStripeUseCase {
         Validator.validateServiceMode(selectedServiceMode);
         Validator.validateDate(date);
 
+        console.log("date : ",date);
+
         const provider = await this.providerRepositoryImpl.findProviderById(providerId);
         if (!provider) throw new Error("No provider found");
 
@@ -54,8 +55,11 @@ export class UserAppointmentBookingViaStripeUseCase {
         const providerServiceAvailability = await this.serviceAvailabilityRepositoryImpl.findServiceAvailabilityByProviderId(providerId, date);
         if (!providerServiceAvailability) throw new Error("No availability found");
 
+        console.log("usecase availability");
+        console.dir(providerServiceAvailability, { depth: null, colors: true });
+
         const selectedSlot = providerServiceAvailability.slots.filter((slot) => slot._id.toString() === slotId.toString());
-        
+        console.log("selectedSlot : ",selectedSlot);
         if (!selectedSlot || selectedSlot.length === 0) throw new Error("Not slot found");
 
         if (!selectedSlot[0].available) throw new Error("This slot is not available for today");

@@ -169,12 +169,13 @@ export class UserFetchServiceProviderServiceAvailabilityUseCase {
 
     const availability = await this.serviceAvailabilityRepositoryImpl.findServiceAvailabilityByProviderId(new Types.ObjectId(providerId), date);
     if (availability == null) return { success: true, message: "Service availability fetched successfully.", data: {} };
+
     const updatedSlots = availability.slots.map((slot) => {
       const slotDateTime = dayjs(`${selectedDate} ${slot.time}`, 'YYYY-MM-DD hh:mm A');
       const isWithin2Hours = slotDateTime.diff(currentDateTime, 'minute') < 120;
       return {
         ...slot,
-        available: !isWithin2Hours
+        available: slot.available && !isWithin2Hours
       }
     });
 

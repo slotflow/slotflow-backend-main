@@ -32,12 +32,15 @@ export class ServiceAvailabilityRepositoryImpl implements IServiceAvailabilityRe
     async findServiceAvailabilityByProviderId(providerId: Types.ObjectId, date: Date): Promise<FontendAvailabilityForResponse | null> {
 
         const startOfDay = new Date(date);
+        console.log("startOfDay : ",startOfDay);
         startOfDay.setHours(0, 0, 0, 0);
 
         const endOfDay = new Date(date);
+        console.log("endOfDay : ",endOfDay);
         endOfDay.setHours(23, 59, 59, 999);
 
         const targetDay = daysOfWeek[date.getDay()];
+        console.log("targetDay : ",targetDay);
 
         try {
             const availability = await ServiceAvailabilityModel.aggregate([
@@ -133,9 +136,11 @@ export class ServiceAvailabilityRepositoryImpl implements IServiceAvailabilityRe
                     $replaceWith: "$availabilityForDay"
                 },
             ]);
+
             return availability[0] || null;
 
         } catch (error) {
+            console.log("findServiceAvailabiltiyByProviderId rror : ",error);
             throw new Error("Service availability fetching error.");
         }
     }
@@ -177,4 +182,5 @@ export class ServiceAvailabilityRepositoryImpl implements IServiceAvailabilityRe
             throw new Error("Availability fetching error");
         }
     }
+    
 }
