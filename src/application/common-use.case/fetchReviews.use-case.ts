@@ -1,6 +1,7 @@
 import { Validator } from "../../infrastructure/validator/validator";
 import { ReviewRepositoryImpl } from "../../infrastructure/database/review/review.repository.impl";
 import { ApiResponse, FetchReviesRequest, FetchReviewsResponse } from "../../infrastructure/dtos/common.dto";
+import { generateSignedUrl } from "../../infrastructure/services/signedUrl.service";
 
 
 export class FetchAllReviewsUseCase {
@@ -19,8 +20,26 @@ export class FetchAllReviewsUseCase {
         }
 
         const result = await this.reviewRepositoryImpl.findAllReviews({limit, page,providerId, userId, role});
-        if(!result) throw new Error("No reviews found");
+        if(!result || !result.data) throw new Error("No reviews found");
+
+         const updatedData = await Promise.all(
+            result.data.map(async (review) => {
+                if (review.userId?.profileImage) {
+                    const signedUrl = await generateSignedUrl(review.userId.profileImage);
+                    if (!signedUrl) throw new Error("Image fetching error.");
+                    review.userId.profileImage = signedUrl;
+                }
+
+                if (review.providerId?.profileImage) {
+                    const signedUrl = await generateSignedUrl(review.providerId.profileImage);
+                    if (!signedUrl) throw new Error("Image fetching error.");
+                    review.providerId.profileImage = signedUrl;
+                }
+
+                return review;
+            })
+        );
      
-        return { data: result.data, totalPages: result.totalPages, currentPage: result.currentPage, totalCount: result.totalCount };
+        return { data: updatedData, totalPages: result.totalPages, currentPage: result.currentPage, totalCount: result.totalCount };
     }
 }

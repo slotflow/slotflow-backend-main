@@ -21,7 +21,7 @@ export class UserReviewController {
         private fetchAllReviewsUseCase: FetchAllReviewsUseCase,
     ) {
         this.createReview = this.createReview.bind(this);
-        this.findAllReviews = this.findAllReviews.bind(this);
+        this.findAllReviewsOfUser = this.findAllReviewsOfUser.bind(this);
         this.deleteReview = this.deleteReview.bind(this);
     }
 
@@ -59,16 +59,15 @@ export class UserReviewController {
         }
     }
 
-    async findAllReviews(req: Request, res: Response) {
+    async findAllReviewsOfUser(req: Request, res: Response) {
         try {
+            console.log("fetching all reviews");
             const userId = (req.user as DecodedUser).userOrProviderId;
-            const providerId = req.params.providerId;
-            const { limit, page } = RequestQueryCommonZodSchema.parse(req.body);
+            const { limit, page } = RequestQueryCommonZodSchema.parse(req.query);
             const result = await this.fetchAllReviewsUseCase.execute({
                 page,
                 limit,
                 userId: new Types.ObjectId(userId),
-                providerId: new Types.ObjectId(providerId),
                 role: Role.user
             });
             res.status(200).json(result)

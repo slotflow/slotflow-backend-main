@@ -39,7 +39,7 @@ router.get('/payments', authMiddleware, userPaymentController.fetchPayments);
 router.get('/chat/providers', authMiddleware, userProviderController.fetchProvidersForChatSidebar);
 
 router.post('/reviews', authMiddleware, userReviewController.createReview);
+router.get('/reviews', authMiddleware, userReviewController.findAllReviewsOfUser);
 router.delete('/reviews/:reviewId', authMiddleware, userReviewController.deleteReview);
-router.get('/reviews/:providerId?', authMiddleware, userReviewController.findAllReviews);
 
 export default router;

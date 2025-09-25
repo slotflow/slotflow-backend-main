@@ -32,6 +32,11 @@ export class AdminFetchProviderDetailsUseCase {
 
         const providerData = await this.providerRepository.findProviderById(providerId);
         if (providerData == null) return { success: true, message: "Provider details fetched", data: {} };
+
+        if(providerData.profileImage) {
+            providerData.profileImage = await generateSignedUrl(providerData.profileImage);
+        }
+        
         const { addressId, subscription, serviceId, serviceAvailabilityId, verificationToken, password, updatedAt, ...provider } = providerData;
         return { success: true, message: "Provider details fetched", data: provider };
     }
