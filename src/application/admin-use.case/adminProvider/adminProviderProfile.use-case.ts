@@ -3,16 +3,13 @@ import {
     FindProviderServiceResponse,
     AdminFetchProviderServiceRequest,
     AdminFetchProviderDetailsRequest,
-    AdminFetchProviderAddressRequest,
     AdminFetchProviderServiceResponse,
     AdminFetchProviderDetailsResponse,
-    AdminFetchProviderAddressResponse,
     AdminFetchProviderServiceAvailabilityRequest,
     AdminFetchProviderServiceAvailabilityResponse,
 } from "../../../infrastructure/dtos/admin.dto";
 import { Validator } from "../../../infrastructure/validator/validator";
 import { generateSignedUrl } from "../../../infrastructure/services/signedUrl.service";
-import { AddressRepositoryImpl } from "../../../infrastructure/database/address/address.repository.impl";
 import { PaymentRepositoryImpl } from "../../../infrastructure/database/payment/payment.repository.impl";
 import { ProviderRepositoryImpl } from "../../../infrastructure/database/provider/provider.repository.impl";
 import { SubscriptionRepositoryImpl } from "../../../infrastructure/database/subscription/subscription.repository.impl";
@@ -39,29 +36,6 @@ export class AdminFetchProviderDetailsUseCase {
         
         const { addressId, subscription, serviceId, serviceAvailabilityId, verificationToken, password, updatedAt, ...provider } = providerData;
         return { success: true, message: "Provider details fetched", data: provider };
-    }
-}
-
-
-export class AdminFetchProviderAddressUseCase {
-    constructor(
-        private providerRepository: ProviderRepositoryImpl,
-        private addressRepository: AddressRepositoryImpl,) { }
-
-    async execute({ providerId }: AdminFetchProviderAddressRequest): Promise<ApiResponse<AdminFetchProviderAddressResponse>> {
-
-        if (!providerId) throw new Error("Invalid request.");
-
-        Validator.validateObjectId(providerId, "providerId");
-
-        const provider = await this.providerRepository.findProviderById(providerId);
-        if (!provider) throw new Error("No user found.");
-
-        const addressData = await this.addressRepository.findAddressByUserId(providerId);
-        if (addressData == null) return { success: true, message: "Address not yet added.", data: {} };
-
-        const { _id, ...address } = addressData;
-        return { success: true, message: "Address fetched successfully.", data: address };
     }
 }
 

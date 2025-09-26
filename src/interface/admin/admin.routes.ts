@@ -24,6 +24,7 @@ router.get('/providers/:providerId/payments', authMiddleware,adminProviderContro
 
 router.get('/users',authMiddleware, adminUserController.getAllUsers);
 router.get('/users/:userId/profile', authMiddleware, adminUserController.fetchUserDetails);
+router.get('/users/:userId/address', authMiddleware, adminUserController.fetchUserAddress);
 router.patch('/users/:userId',authMiddleware,adminUserController.changeUserBlockStatus);
 
 router.get('/services',authMiddleware, adminServiceController.getAllServices);

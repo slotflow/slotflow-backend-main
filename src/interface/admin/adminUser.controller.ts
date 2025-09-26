@@ -4,23 +4,29 @@ import { HandleError } from "../../infrastructure/error/error";
 import { AdminChangeUserBlockStatusZOdSchema } from "../../infrastructure/zod/admin.zod";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { RequestQueryCommonZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
+import { AddressRepositoryImpl } from "../../infrastructure/database/address/address.repository.impl";
+import { AdminFetchUserOrProviderAddressUseCase } from "../../application/admin-use.case/adminAddress.use-case";
 import { AdminChangeUserBlockStatusUseCase, AdminFetchUserDetailsUseCase, AdminUserListUseCase } from "../../application/admin-use.case/adminUser.use-case";
 
 const userRepositoryImpl = new UserRepositoryImpl();
+const addressRepositoryImpl = new AddressRepositoryImpl();
 
 const adminUserListUseCase = new AdminUserListUseCase(userRepositoryImpl);
 const adminFetchUserDetailsUseCase = new AdminFetchUserDetailsUseCase(userRepositoryImpl);
 const adminChangeUserBlockStatusUseCase = new AdminChangeUserBlockStatusUseCase(userRepositoryImpl);
+const adminFetchUserOrProviderAddressUseCase = new AdminFetchUserOrProviderAddressUseCase(addressRepositoryImpl);
 
 class AdminUserController {
     constructor(
         private adminUserListUseCase: AdminUserListUseCase,
         private adminChangeUserBlockStatusUseCase: AdminChangeUserBlockStatusUseCase,
         private adminFetchUserDetailsUseCase: AdminFetchUserDetailsUseCase,
+        private adminFetchUserOrProviderAddressUseCase: AdminFetchUserOrProviderAddressUseCase
     ) {
         this.getAllUsers = this.getAllUsers.bind(this);
         this.changeUserBlockStatus = this.changeUserBlockStatus.bind(this);
         this.fetchUserDetails = this.fetchUserDetails.bind(this);
+        this.fetchUserAddress = this.fetchUserAddress.bind(this);
     }
 
     async getAllUsers(req: Request, res: Response) {
@@ -55,12 +61,24 @@ class AdminUserController {
             HandleError.handle(error,res);
         }
     }
+
+    async fetchUserAddress(req:Request, res: Response) {
+        try{
+            const { id: userId } = ValidateObjectId(req.params.userId, "User ID");
+            if(!userId) throw new Error("Invalid request.");
+            const result = await this.adminFetchUserOrProviderAddressUseCase.execute(new Types.ObjectId(userId));
+            res.status(200).json(result);
+        }catch(error){
+            HandleError.handle(error,res);
+        }
+    }
 }
 
 const adminUserController = new AdminUserController(
     adminUserListUseCase,
     adminChangeUserBlockStatusUseCase,
-    adminFetchUserDetailsUseCase
+    adminFetchUserDetailsUseCase,
+    adminFetchUserOrProviderAddressUseCase
 );
 export { adminUserController };
 

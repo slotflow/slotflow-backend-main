@@ -53,12 +53,8 @@ export type AdminFetchProviderDetailsResponse = Pick<Provider, "_id" | "username
 
 
 // **** adminFetchProviderAddress
-// Used as the request interface of admin fetch provider address
-export interface AdminFetchProviderAddressRequest {
-    providerId: Provider["_id"];
-}
 // Used as the request type of admin fetch provider address
-export type AdminFetchProviderAddressResponse = Pick<Address, "userId" | "addressLine" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "googleMapLink"> | {};
+export type AdminFetchUserOrProviderAddressResponse = Pick<Address, "userId" | "addressLine" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "googleMapLink"> | {};
 
 
 
