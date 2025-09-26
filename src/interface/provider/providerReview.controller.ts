@@ -18,12 +18,13 @@ export class ProviderReviewController {
         private providerReportReviewUseCase: ProviderReportReviewUseCase,
     ) {
         this.findAllReviews = this.findAllReviews.bind(this);
+        this.chnageReportReview = this.chnageReportReview.bind(this);
     }
 
     async findAllReviews(req: Request, res: Response) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
-            const { limit, page } = RequestQueryCommonZodSchema.parse(req.body);
+            const { limit, page } = RequestQueryCommonZodSchema.parse(req.query);
             const result = await this.fetchAllReviewsUseCase.execute({
                 page,
                 limit,
@@ -37,11 +38,15 @@ export class ProviderReviewController {
         }
     }
     
-    async reportReview(req: Request, res: Response) {
+    async chnageReportReview(req: Request, res: Response) {
         try {
+            console.log("Review reporting")
             const providerId = (req.user as DecodedUser).userOrProviderId;
             const reviewId = req.params.reviewId;
+            console.log("providerId : ",providerId);
+            console.log("reviewId : ",reviewId);
             const result = await this.providerReportReviewUseCase.execute(new Types.ObjectId(reviewId), new Types.ObjectId(providerId));
+            console.log("result : ",result);
             res.status(204).json(result);
         } catch(error) {
             console.log("reportReview error : ",error);

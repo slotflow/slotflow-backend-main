@@ -114,7 +114,6 @@ export class UserProviderController {
             const { date } = DateZodSchema.parse(req.query);
             if (!userId || !providerId || !date) throw new Error("Invalid request");
             const result = await this.userFetchServiceProviderServiceAvailabilityUseCase.execute({userId: new Types.ObjectId(userId), providerId: new Types.ObjectId(providerId), date: new Date(date)});
-            // console.log("result : ",result);
             res.status(200).json(result);
         } catch (error) {
             HandleError.handle(error, res);

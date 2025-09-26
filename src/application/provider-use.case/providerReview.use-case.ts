@@ -19,11 +19,13 @@ export class ProviderReportReviewUseCase {
 
         if(review.providerId.toString() !== providerId.toString()) throw new Error("You are not permitted to report this review");
 
-        review.reported = true;
+        review.reported = !review.reported;
 
         const updatedReview = await this.reviewRepositoryImpl.updateReview(review);
         if(!updatedReview) throw new Error("Review reporting failed");
 
-        return { success: true, message: "Review reported" };
+        console.log("updatedReview : ",updatedReview);
+
+        return { success: true, message: `Review ${updatedReview.reported ? "reported" : "unreported"} successfully` };
     }
 }

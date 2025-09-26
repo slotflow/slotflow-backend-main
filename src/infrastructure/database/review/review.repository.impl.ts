@@ -1,4 +1,4 @@
-import { Types } from "mongoose";
+import { FilterQuery, Types } from "mongoose";
 import { IReview, ReviewModel } from "./review.model";
 import { CreateReviewRequset } from "../../dtos/user.dto";
 import { Review } from "../../../domain/entities/review.entity";
@@ -40,15 +40,15 @@ export class ReviewRepositoryImpl implements IReviewRepository {
 
             const skip = (page - 1) * limit;
 
-            const filter: Record<string, Types.ObjectId> = {};
+            const filter: FilterQuery<typeof Review> = {};
 
             if (role === Role.user && userId) {
                 filter.userId = userId;
             } else if (role === Role.provider && providerId) {
                 filter.providerId = providerId;
-            } else if (role === Role.admin) {
-                if (providerId) filter.providerId = providerId;
-                if (userId) filter.userId = userId;
+            } else if(role === Role.user && providerId) {
+                filter.providerId = providerId;
+                filter.isBlocked = false;
             }
 
             const [reviews, totalCount] = await Promise.all([

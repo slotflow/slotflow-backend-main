@@ -222,3 +222,20 @@ export const JoinOrLeftRoomZodSchema = z.object({
   leftCallTime: stringField("leftCallTime").optional(),
   role: limitedRoleField,
 })
+
+
+
+export const RequestQueryFetchAllReviewsZodSchema = z.object({
+  page: stringField("Request query parameter page")
+    .transform(Number)
+    .refine((val) => !isNaN(val) && val > 0, {
+      message: "Page must be a valid positive number",
+    }),
+
+  limit: stringField("Request query parameter limit")
+    .transform(Number)
+    .refine((val) => !isNaN(val) && val > 0, {
+      message: "Limit must be a valid positive number",
+    }),
+  role: limitedRoleField,
+});

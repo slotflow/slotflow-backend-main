@@ -16,11 +16,11 @@ export class AdminReviewController {
         private fetchAllReviewsUseCase: FetchAllReviewsUseCase,
         private adminUpdateReviewBlockStatusUseCase: AdminUpdateReviewBlockStatusUseCase,
     ) {
-        this.findAllReviews = this.findAllReviews.bind(this);
+        this.findAllReviewsOfUser = this.findAllReviewsOfUser.bind(this);
         this.updateReviewBlockStatus = this.updateReviewBlockStatus.bind(this);
     }
     
-    async findAllReviews(req: Request, res: Response) {
+    async findAllReviewsOfUser(req: Request, res: Response) {
         try {
             const userId = req.params.userId;
             const { limit, page, role } = RequestQueryFetchAllReviewsZodSchema.parse(req.query);
@@ -42,9 +42,7 @@ export class AdminReviewController {
     async updateReviewBlockStatus(req: Request, res: Response) {
         try {
             const reviewId = req.params.reviewId;
-            console.log("reviewId : ",reviewId);
             const result = await this.adminUpdateReviewBlockStatusUseCase.execute(new Types.ObjectId(reviewId));
-            console.log("result : ",result);
             res.status(204).json(result);
         } catch (error) {
             console.log("updateReviewBlockStatus error : ",error);

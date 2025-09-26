@@ -54,6 +54,6 @@ router.get('/dashboard/stats', authMiddleware, providerDashboardController.getDa
 router.get('/dashboard/graph-data', authMiddleware, providerDashboardController.getDashboardGraphData);
 
 router.get('/reviews', authMiddleware, providerReviewController.findAllReviews);
-router.patch('/reviews/:reviewId', authMiddleware, providerReviewController.reportReview);
+router.patch('/reviews/:reviewId', authMiddleware, providerReviewController.chnageReportReview);
 
 export default router;  

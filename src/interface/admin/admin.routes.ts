@@ -1,13 +1,13 @@
 import { Router } from "express";
-import { adminPlanController } from "./adminPlan.Controller";
-import { adminUserController } from "./adminUser.Controller";
+import { adminPlanController } from "./adminPlan.controller";
+import { adminUserController } from "./adminUser.controller";
 import { authMiddleware } from "../middleware/auth.middleware";
 import { adminReviewController } from "./adminReview.controller";
-import { adminServiceController } from "./adminService.Controller";
-import { adminPaymentController } from "./adminPayment.Controller";
+import { adminServiceController } from "./adminService.controller";
+import { adminPaymentController } from "./adminPayment.controller";
 import { adminProviderController } from "./adminProvider.controller";
 import { adminDashboardController } from "./adminDashboard.controller";
-import { adminSubscriptionController } from "./adminSubscription.Controller";
+import { adminSubscriptionController } from "./adminSubscription.controller";
 
 const router = Router();
 
@@ -46,8 +46,7 @@ router.get('/dashboard/revenue', authMiddleware, adminDashboardController.fetchR
 router.get('/dashboard/appointments', authMiddleware, adminDashboardController.fetchAppointmentsStats);
 router.get('/dashboard/graph', authMiddleware, adminDashboardController.fetchAppointmentsStats); // TODO
 
-router.get('/reviews/users/:userId', authMiddleware, adminReviewController.findAllReviewsOfUser);
-router.get('/reviews/providers/:providerId', authMiddleware, adminReviewController.findAllReviewsOfProvider);
+router.get('/reviews/:userId', authMiddleware, adminReviewController.findAllReviews);
 router.patch("/reviews/:reviewId", authMiddleware, adminReviewController.updateReviewBlockStatus);
 
 export default router;
