@@ -4,20 +4,23 @@ import { HandleError } from "../../infrastructure/error/error";
 import { AdminChangeUserBlockStatusZOdSchema } from "../../infrastructure/zod/admin.zod";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { RequestQueryCommonZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
-import { AdminChangeUserBlockStatusUseCase, AdminUserListUseCase } from "../../application/admin-use.case/adminUser.use-case";
+import { AdminChangeUserBlockStatusUseCase, AdminFetchUserDetailsUseCase, AdminUserListUseCase } from "../../application/admin-use.case/adminUser.use-case";
 
 const userRepositoryImpl = new UserRepositoryImpl();
 
 const adminUserListUseCase = new AdminUserListUseCase(userRepositoryImpl);
+const adminFetchUserDetailsUseCase = new AdminFetchUserDetailsUseCase(userRepositoryImpl);
 const adminChangeUserBlockStatusUseCase = new AdminChangeUserBlockStatusUseCase(userRepositoryImpl);
 
 class AdminUserController {
     constructor(
         private adminUserListUseCase: AdminUserListUseCase,
         private adminChangeUserBlockStatusUseCase: AdminChangeUserBlockStatusUseCase,
+        private adminFetchUserDetailsUseCase: AdminFetchUserDetailsUseCase,
     ) {
         this.getAllUsers = this.getAllUsers.bind(this);
         this.changeUserBlockStatus = this.changeUserBlockStatus.bind(this);
+        this.fetchUserDetails = this.fetchUserDetails.bind(this);
     }
 
     async getAllUsers(req: Request, res: Response) {
@@ -41,11 +44,23 @@ class AdminUserController {
             HandleError.handle(error, res);
         }
     }
+
+    async fetchUserDetails(req: Request, res: Response) {
+         try{
+            const { id: userId } = ValidateObjectId(req.params.userId, "User ID");
+            if(!userId) throw new Error("Invalid request.");
+            const result = await this.adminFetchUserDetailsUseCase.execute(new Types.ObjectId(userId));
+            res.status(200).json(result);
+        }catch(error){
+            HandleError.handle(error,res);
+        }
+    }
 }
 
 const adminUserController = new AdminUserController(
     adminUserListUseCase,
-    adminChangeUserBlockStatusUseCase
+    adminChangeUserBlockStatusUseCase,
+    adminFetchUserDetailsUseCase
 );
 export { adminUserController };
 

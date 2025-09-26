@@ -108,6 +108,10 @@ export interface AdminChangeUserIsBlockedStatusRequest {
     isBlocked: User["isBlocked"];
 }
 
+// **** AdminFetchUserDetailsUseCase
+// Used as the response type of admin fetch user profile details
+export type AdminFetchUserProfileDetailsResponse = Pick<User, "username" | "phone" | "profileImage" | "isEmailVerified" | "isBlocked" | "email" | "createdAt"> | {};
+
 
 
 
