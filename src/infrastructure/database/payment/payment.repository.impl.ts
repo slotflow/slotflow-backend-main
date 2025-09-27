@@ -433,6 +433,7 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                             { $limit: limit },
                             {
                                 $project: {
+                                    _id: 0,
                                     createdAt: 1,
                                     discountAmount: 1,
                                     initialAmount: 1,
