@@ -43,7 +43,7 @@ export class AdminReviewController {
         try {
             const reviewId = req.params.reviewId;
             const result = await this.adminUpdateReviewBlockStatusUseCase.execute(new Types.ObjectId(reviewId));
-            res.status(204).json(result);
+            res.status(200).json(result);
         } catch (error) {
             console.log("updateReviewBlockStatus error : ",error);
             HandleError.handle(error, res);

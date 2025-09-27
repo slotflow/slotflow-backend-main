@@ -41,7 +41,7 @@ class ProviderProfileController {
             const file = req.file;
             if(!providerId || !file) throw new Error("Invalid request.");
             const result = await this.providerUpdateProfileImageUseCase.execute({providerId: new Types.ObjectId(providerId), file});
-            res.status(204).json(result);
+            res.status(200).json(result);
         }catch(error){
             HandleError.handle(error,res);
         }
@@ -57,7 +57,7 @@ class ProviderProfileController {
                  username,
                  phone
                 })
-            res.status(204).json(result)
+            res.status(200).json(result)
         } catch(error){ 
             HandleError.handle(error,res);
         }

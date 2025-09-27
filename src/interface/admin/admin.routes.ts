@@ -8,6 +8,7 @@ import { adminPaymentController } from "./adminPayment.controller";
 import { adminProviderController } from "./adminProvider.controller";
 import { adminDashboardController } from "./adminDashboard.controller";
 import { adminSubscriptionController } from "./adminSubscription.controller";
+import { adminReportController } from "./adminReport.controller";
 
 const router = Router();
 
@@ -50,5 +51,7 @@ router.get('/dashboard/graph', authMiddleware, adminDashboardController.fetchApp
 
 router.get('/reviews/:userId', authMiddleware, adminReviewController.findAllReviews);
 router.patch("/reviews/:reviewId", authMiddleware, adminReviewController.updateReviewBlockStatus);
+
+router.get('/reports/revenue', authMiddleware, adminReportController.fetchRevenueReport);
 
 export default router;

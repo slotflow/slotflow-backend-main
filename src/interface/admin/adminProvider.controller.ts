@@ -71,7 +71,7 @@ class AdminProviderController {
             const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
             if(!providerId) throw new Error("Invalid request.");
             const result = await this.adminApproveProviderUseCase.execute({providerId : new Types.ObjectId(providerId as string)});
-            res.status(204).json(result);
+            res.status(200).json(result);
         }catch(error){
             HandleError.handle(error, res);
         }
@@ -83,7 +83,7 @@ class AdminProviderController {
             const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
             if(!providerId || blockStatus === null) throw new Error("Invalid request.");
             const result = await this.adminChangeProviderBlockStatusUseCase.execute({providerId : new Types.ObjectId(providerId), isBlocked: blockStatus });
-            res.status(204).json(result);
+            res.status(200).json(result);
         }catch(error){
             HandleError.handle(error, res);
         }
@@ -95,7 +95,7 @@ class AdminProviderController {
             const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
             if(!providerId || trustTag === null || undefined) throw new Error("Invalid request.");
             const result = await this.adminChangeProviderTrustTagUseCase.execute({providerId : new Types.ObjectId(providerId), trustedBySlotflow: trustTag });
-            res.status(204).json(result);
+            res.status(200).json(result);
         }catch (error) {
             HandleError.handle(error,res);
         }

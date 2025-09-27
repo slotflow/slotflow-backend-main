@@ -49,7 +49,7 @@ class AdminServiceController {
             const { blockStatus } = AdminChangeServiceBlockStatusZodSchema.parse(req.body);
             const { id: serviceId } = ValidateObjectId(req.params.serviceId, "Service ID");
             const result = await this.adminChnageServiceBlockStatusUseCase.execute({ serviceId: new Types.ObjectId(serviceId), isBlocked: blockStatus });
-            res.status(204).json(result);
+            res.status(200).json(result);
         } catch (error) {
             HandleError.handle(error, res);
         }

@@ -136,7 +136,7 @@ export class AuthController {
       const { role, verificationToken, password } = validateData;
       if (!role || !verificationToken || !password) throw new Error("Invalid request.");
       const result = await this.updatePasswordUseCase.execute({role, verificationToken, password});
-      res.status(204).json(result);
+      res.status(200).json(result);
     } catch (error) {
       HandleError.handle(error, res);
     }

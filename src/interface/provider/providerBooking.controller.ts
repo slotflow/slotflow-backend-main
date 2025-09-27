@@ -69,7 +69,7 @@ export class ProviderBookingController {
             const { id: bookingId } = ValidateObjectId(req.params.bookingId, "Booking ID");
             const validateData = ProviderChangeBookingAppointmentStatusZodSchema.parse(req.body);
             const result = await this.providerChangeBookingAppointmentStatusUseCase.execute({ _id: new Types.ObjectId(bookingId), appointmentStatus: validateData.appointmentStatus as AppointmentStatus });
-            res.status(204).json(result);
+            res.status(200).json(result);
         } catch (error) {
             HandleError.handle(error, res);
         }

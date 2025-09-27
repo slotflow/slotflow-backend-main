@@ -3,7 +3,7 @@ import { Payment } from "../entities/payment.entity";
 import { ApiResponse, FetchPaymentResponse, FetchPaymentsRequest } from "../../infrastructure/dtos/common.dto";
 import { Provider } from "../entities/provider.entity";
 import { ProviderFetchDashboardPaymentStatsDataResponse } from "../../infrastructure/dtos/provider.dto";
-import { AdminFetchDashboardRevenueStatsDataResponse, AdminFetchDashboardTodayStatsDataResponse } from "../../infrastructure/dtos/admin.dto";
+import { AdminFetchDashboardRevenueStatsDataResponse, AdminFetchDashboardTodayStatsDataResponse, AdminFetchRevenueReportRequest, AdminFetchRevenueReportResponse } from "../../infrastructure/dtos/admin.dto";
 
 export type CreatePaymentForSubscriptionProps = Pick<Payment, "transactionId" | "paymentStatus" | "paymentMethod" | "paymentGateway" | "paymentFor" | "initialAmount" | "discountAmount" | "providerId" | "totalAmount">;
 export type CreatePaymentForBookingProps = Pick<Payment, "transactionId" | "paymentStatus" | "paymentMethod" | "paymentGateway" | "paymentFor" | "initialAmount" | "discountAmount" | "userId" | "totalAmount" | "providerId">;
@@ -32,5 +32,7 @@ export interface IPaymentRepository {
 
     findTodayPaymentStatsForAdminDashboard(): Promise<AdminFetchDashboardTodayPaymentStatsDataResponse>;
 
-    fetchPaymentStatsForAdminDashboard(): Promise<AdminFetchDashboardRevenueStatsDataResponse>
+    fetchPaymentStatsForAdminDashboard(): Promise<AdminFetchDashboardRevenueStatsDataResponse>;
+
+    fetchAdminRevenueReport(payload: AdminFetchRevenueReportRequest): Promise<ApiResponse<AdminFetchRevenueReportResponse>>;
 }

@@ -85,7 +85,7 @@ export class UserBookingController {
             const { id: bookingId } = ValidateObjectId(req.params.bookingId, "Booking ID");
             if (!userId || !bookingId) throw new Error("Invalid request");
             const result = await this.userCancelBookingUseCase.execute({ userId: new Types.ObjectId(userId), bookingId: new Types.ObjectId(bookingId) });
-            res.status(204).json(result);
+            res.status(200).json(result);
         } catch (error) {
             HandleError.handle(error, res);
         }

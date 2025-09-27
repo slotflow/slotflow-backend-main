@@ -1,4 +1,4 @@
-import { CommonResponse } from "./common.dto";
+import { ApiPaginationRequest, CommonResponse, FetchPaymentsRequest } from "./common.dto";
 import { User } from "../../domain/entities/user.entity";
 import { Plan } from "../../domain/entities/plan.entity";
 import { Service } from "../../domain/entities/service.entity";
@@ -8,6 +8,7 @@ import { Subscription } from "../../domain/entities/subscription.entity";
 import { ProviderService } from "../../domain/entities/providerService.entity";
 import { FontendAvailabilityForResponse } from "../../domain/entities/serviceAvailability.entity";
 import { findSubscriptionFullDetailsResProps } from "../../domain/repositories/ISubscription.repository";
+import { Payment } from "../../domain/entities/payment.entity";
 
 // **************** used in adminProvider.use-case **************** \\
 
@@ -193,6 +194,7 @@ export interface AdminFetchDashboardProviderStatsDataResponse {
     addressAddedProviders: number;
     serviceAddedProviders: number;
     availabilityAddedProviders: number;
+    slotflowTrustedProviders: number;
 }
 
 // used as the return type of the admin fetch dashboard subscription stats data
@@ -240,11 +242,30 @@ export interface AdminFetchDashboardTodayStatsDataResponse {
   todaysCompletedAppointments: number;
 }
 
+// Admin fetch revenue report request
+export interface AdminFetchRevenueReportRequest extends ApiPaginationRequest {
+    startDate?: Date;
+    endDate: Date;
+}
 
+// Admin fetch revenue report response
+export type AdminFetchRevenueReportRow = Pick<
+  Payment,
+  | "createdAt"
+  | "discountAmount"
+  | "initialAmount"
+  | "totalAmount"
+  | "paymentGateway"
+  | "paymentMethod"
+  | "paymentStatus"
+  | "paymentFor"
+>;
 
-
-
-
-
+export interface AdminFetchRevenueReportResponse {
+  rows: AdminFetchRevenueReportRow[];
+  grandTotal: number;
+  grandDiscount: number;
+  grandInitalAmount: number;
+}
 
 

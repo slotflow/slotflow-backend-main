@@ -58,7 +58,7 @@ export class UserAddressController {
             const validateData = AddAddressZodSchema.parse(req.body);
             const { addressLine, phone, place, city, district, pincode, state,  country, googleMapLink } = validateData;
             const result = await this.userUpdateAddressUseCase.execute({_id: new Types.ObjectId(addressId), userId: new Types.ObjectId(userId), addressLine, phone, place, city, district, pincode, state,  country, googleMapLink});
-            res.status(204).json(result);
+            res.status(200).json(result);
         } catch (error) {
             HandleError.handle(error, res);
         }

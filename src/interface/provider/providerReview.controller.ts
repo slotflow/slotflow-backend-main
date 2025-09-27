@@ -47,7 +47,7 @@ export class ProviderReviewController {
             console.log("reviewId : ",reviewId);
             const result = await this.providerReportReviewUseCase.execute(new Types.ObjectId(reviewId), new Types.ObjectId(providerId));
             console.log("result : ",result);
-            res.status(204).json(result);
+            res.status(200).json(result);
         } catch(error) {
             console.log("reportReview error : ",error);
             HandleError.handle(error, res);

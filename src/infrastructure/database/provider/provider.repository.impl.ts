@@ -141,6 +141,10 @@ export class ProviderRepositoryImpl implements IProviderRepository {
                             { $match: { isAdminVerified: true } },
                             { $count: "count" }
                         ],
+                        slotflowTrustedProviders: [
+                            { $match: { trustedBySlotflow: true } },
+                            { $count: "count" }
+                        ],
                         blockedProviders: [
                             { $match: { isBlocked: true } },
                             { $count: "count" }
