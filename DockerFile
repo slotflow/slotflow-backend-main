@@ -1,0 +1,30 @@
+# Use Ubuntu as base image
+FROM ubuntu:latest
+
+# Install dependencies
+RUN apt-get update && apt-get install -y curl build-essential
+
+# Install Node.js 18
+RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs
+
+# Set working directory
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json
+COPY package.json package-lock.json ./
+
+# Install Node dependencies
+RUN npm install
+
+# Copy the rest of the project
+COPY . .
+
+# Build TypeScript files
+RUN npm run build
+
+# Expose the port
+EXPOSE 3000
+
+# Start the server
+CMD ["node", "dist/server.js"]
