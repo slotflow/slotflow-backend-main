@@ -184,6 +184,10 @@ export class UserSaveBookingAfterStripePaymentUseCase {
                 googleEventId: response.data?.id!,
                 paymentId: payment._id,
                 slotId: selectedSlot[0]._id,
+                statusTrack: [{
+                    appointmentStatus: AppointmentStatus.Booked,
+                    time: new Date(),
+                }]
             }, { session: mongoSession });
 
             if (!newBooking) throw new Error("Error in slot booking, please try again");

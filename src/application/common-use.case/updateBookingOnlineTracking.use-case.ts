@@ -1,7 +1,7 @@
 import { AppointmentStatus } from "../../domain/entities/booking.entity";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
-import { ApiResponse, Role, UpdateBookingTrackRequest, UpdateBookingTrackResponse } from "../../infrastructure/dtos/common.dto";
 import { ServiceAvailabilityRepositoryImpl } from "../../infrastructure/database/serviceAvailability/serviceAvailability.repository.impl";
+import { ApiResponse, Role, UpdateBookingOnlineTrackRequest, UpdateBookingOnlineTrackResponse } from "../../infrastructure/dtos/common.dto";
 
 export class UpdateBookingOnlineTrakingUseCase {
     constructor(
@@ -9,7 +9,7 @@ export class UpdateBookingOnlineTrakingUseCase {
         private serviceAvailabilityRepositoryImpl: ServiceAvailabilityRepositoryImpl,
     ) { }
 
-    async execute(payload: UpdateBookingTrackRequest): Promise<ApiResponse<UpdateBookingTrackResponse>> {
+    async execute(payload: UpdateBookingOnlineTrackRequest): Promise<ApiResponse<UpdateBookingOnlineTrackResponse>> {
 
         const { joined, joinedTime, leftCallTime, role, roomId } = payload;
        if (joined === null) throw new Error("Invalid request");
@@ -25,29 +25,37 @@ export class UpdateBookingOnlineTrakingUseCase {
 
         if (role === Role.provider) {
             if (joined && joinedTime) {
-                if(!booking.track.provider.joined && booking.track.provider.joinedTime) {
-                    booking.track.provider.joined = true;
-                    booking.track.provider.joinedTime = joinedTime;
+                if(!booking.onlineTrack.provider.joined && booking.onlineTrack.provider.joinedTime) {
+                    booking.onlineTrack.provider.joined = true;
+                    booking.onlineTrack.provider.joinedTime = joinedTime;
                 }
             } else if (joined && leftCallTime) {
-                booking.track.provider.leftCallTime = leftCallTime;
-                if(booking.track.user.joined) {
-                    if(booking.track.user.joinedTime && booking.track.user.leftCallTime) {
+                booking.onlineTrack.provider.leftCallTime = leftCallTime;
+                if(booking.onlineTrack.user.joined) {
+                    if(booking.onlineTrack.user.joinedTime && booking.onlineTrack.user.leftCallTime) {
                         booking.appointmentStatus = AppointmentStatus.Completed;
+                        booking.statusTrack.push({
+                            appointmentStatus: AppointmentStatus.Completed,
+                            time: new Date(),
+                        });
                     }
                 }
             }
         } else if (role === Role.user) {
             if (joined && joinedTime) {
-                if(!booking.track.user.joined && !booking.track.user.joinedTime) {
-                    booking.track.user.joined = true;
-                    booking.track.user.joinedTime = joinedTime;
+                if(!booking.onlineTrack.user.joined && !booking.onlineTrack.user.joinedTime) {
+                    booking.onlineTrack.user.joined = true;
+                    booking.onlineTrack.user.joinedTime = joinedTime;
                 }
             } else if (joined && leftCallTime) {
-                booking.track.user.leftCallTime = leftCallTime;
-                if(booking.track.provider.joined) {
-                    if(booking.track.provider.joinedTime && booking.track.provider.leftCallTime) {
+                booking.onlineTrack.user.leftCallTime = leftCallTime;
+                if(booking.onlineTrack.provider.joined) {
+                    if(booking.onlineTrack.provider.joinedTime && booking.onlineTrack.provider.leftCallTime) {
                         booking.appointmentStatus = AppointmentStatus.Completed;
+                        booking.statusTrack.push({
+                            appointmentStatus: AppointmentStatus.Completed,
+                            time: new Date(),
+                        });
                     }
                 }
             }
@@ -56,6 +64,6 @@ export class UpdateBookingOnlineTrakingUseCase {
         const updatedBooking = await this.bookingRepositoryImpl.updateBooking(booking);
         if(!updatedBooking) throw new Error("Something went wrong");
 
-        return { success: true, message: "booking tracks updated", data: { duration: serviceAvailability.duration } };
+        return { success: true, message: "booking onlineTracks updated", data: { duration: serviceAvailability.duration } };
     }
 }

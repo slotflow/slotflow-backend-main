@@ -256,8 +256,6 @@ export type AdminFetchRevenueReportRow = Pick<
   | "initialAmount"
   | "totalAmount"
   | "paymentGateway"
-  | "paymentMethod"
-  | "paymentStatus"
   | "paymentFor"
 >;
 

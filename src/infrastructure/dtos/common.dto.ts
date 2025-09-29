@@ -197,12 +197,12 @@ export interface CreateGoogleCalendarEventRequest {
   slotDuration: string,
 }
 
-export interface UpdateBookingTrackRequest extends ParticipantPresence {
+export interface UpdateBookingOnlineTrackRequest extends ParticipantPresence {
   role: Role,
   roomId: string,
 }
 
-export type UpdateBookingTrackResponse = Pick<Availability, "duration">;
+export type UpdateBookingOnlineTrackResponse = Pick<Availability, "duration">;
 
 
 
@@ -218,3 +218,10 @@ export interface FetchReviewsResponse extends Pick<Review, "_id" | "createdAt" |
   userId: Pick<User, "username" | "profileImage">;
   providerId: Pick<Provider, "username" | "profileImage">;
 };
+
+
+//// **** Used as the response interface of fetch booking details
+export interface FetchBookingDetailsResponse extends Pick<Booking, "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "onlineTrack" | "statusTrack" | "videoCallRoomId"> {
+  userId: Pick<User, "username" | "email">;
+  serviceProviderId: Pick<Provider, "username" | "email">;
+} 

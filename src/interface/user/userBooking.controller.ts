@@ -12,6 +12,7 @@ import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/pay
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { ValidateJoinRoomUsecase } from "../../application/common-use.case/validateJoinRoom.use-case";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
+import { FetchBookingDetailsUsecase } from "../../application/common-use.case/fetchBookingDetails.use-case";
 import { FetchBookingAppointmentsUseCase } from "../../application/common-use.case/fetchAllBookings.use-case";
 import { CredentialRepositoryImpl } from "../../infrastructure/database/credential/credential.repository.impl";
 import { GetCredentialUseCase, UpdateCredentialUseCase } from "../../application/common-use.case/credential.use-case";
@@ -42,6 +43,7 @@ const userCancelBookingUseCase = new UserCancelBookingUseCase(userRepositoryImpl
 const userAppointmentBookingViaStrpieUseCase = new UserAppointmentBookingViaStripeUseCase(proviserRepositoryImpl, providerServiceRepositoryImpl, serviceAvailabilityRepositoryImpl, bookingRepositoryImpl);
 const userSaveBookingAfterStripePaymentUseCase = new UserSaveBookingAfterStripePaymentUseCase(userRepositoryImpl, paymentRepositoryImpl, bookingRepositoryImpl, serviceAvailabilityRepositoryImpl, addEventToGoogleCalendarService);
 const updateBookingOnlineTrakingUseCase = new UpdateBookingOnlineTrakingUseCase(bookingRepositoryImpl, serviceAvailabilityRepositoryImpl);
+const fetchBookingDetailsUsecase = new FetchBookingDetailsUsecase(bookingRepositoryImpl);
 
 export class UserBookingController {
     constructor(
@@ -51,6 +53,7 @@ export class UserBookingController {
         private userSaveBookingAfterStripePaymentUseCase: UserSaveBookingAfterStripePaymentUseCase,
         private validateJoinRoomUsecase: ValidateJoinRoomUsecase,
         private updateBookingOnlineTrakingUseCase: UpdateBookingOnlineTrakingUseCase,
+        private fetchBookingDetailsUsecase: FetchBookingDetailsUsecase
     ) {
         this.fetchBookings = this.fetchBookings.bind(this);
         this.cancelBooking = this.cancelBooking.bind(this);
@@ -58,6 +61,7 @@ export class UserBookingController {
         this.saveBookingAfterStripePayment = this.saveBookingAfterStripePayment.bind(this);
         this.validateRoom = this.validateRoom.bind(this);
         this.userJoinRoom = this.userJoinRoom.bind(this);
+        this.fetchBookingDetails = this.fetchBookingDetails.bind(this);
     }
 
     async fetchBookings(req: Request, res: Response) {
@@ -154,6 +158,17 @@ export class UserBookingController {
         }
     }
 
+    async fetchBookingDetails (req: Request, res: Response) {
+        try {
+            const { id: bookingId } = ValidateObjectId(req.params.bookingId, "Booking ID");
+            const result = await this.fetchBookingDetailsUsecase.execute(new Types.ObjectId(bookingId));
+            res.status(200).json(result);
+        } catch (error) {
+            console.log("fetchBookingDetails error : ", error);
+            HandleError.handle(error, res);
+        }
+    }
+
 }
 
 const userBookingController = new UserBookingController(
@@ -162,7 +177,8 @@ const userBookingController = new UserBookingController(
     userAppointmentBookingViaStrpieUseCase,
     userSaveBookingAfterStripePaymentUseCase,
     validateJoinRoomUsecase,
-    updateBookingOnlineTrakingUseCase
+    updateBookingOnlineTrakingUseCase,
+    fetchBookingDetailsUsecase
 );
 
 export { userBookingController };

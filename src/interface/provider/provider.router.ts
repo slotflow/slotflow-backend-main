@@ -26,7 +26,7 @@ router.get('/bookings', authMiddleware, providerBookingController.fetchBookingAp
 router.patch('/bookings/:bookingId', authMiddleware, providerBookingController.updateBookingAppointmentStatus);
 router.get('/bookings/:bookingId/can-join', authMiddleware, providerBookingController.validateRoom);
 router.patch('/bookings/:roomId/join-left', authMiddleware, providerBookingController.providerJoinRoom);
-// router.get('/bookings/:bookingId', authMiddleware, providerBookingController); //TODO // details
+router.get('/bookings/:bookingId', authMiddleware, providerBookingController.fetchBookingDetails);
 
 router.post('/service', authMiddleware,upload.single('certificate'), providerServiceController.addServiceDetails);
 router.get('/service', authMiddleware, providerServiceController.getServiceDetails);

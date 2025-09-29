@@ -1,13 +1,13 @@
 import { Router } from "express";
 import upload from "../../infrastructure/lib/multer";
 import { authMiddleware } from "../middleware/auth.middleware";
+import { userReviewController } from "./userReview.controller";
 import { userProfileController } from "./userProfile.controller";
 import { userAddressController } from './userAddress.controller';
 import { userPaymentController } from "./userPayment.controller";
 import { userBookingController } from "./userBooking.controller";
 import { userProviderController } from "./userProvider.controller";
 import { userAppServiceController } from "./userAppService.controller";
-import { userReviewController } from "./userReview.controller";
 
 const router = Router();
 
@@ -30,6 +30,7 @@ router.get('/providers/:providerId/availability', authMiddleware, userProviderCo
 router.post('/bookings/checkout-session', authMiddleware, userBookingController.createSessionIdForbookingViaStripe);
 router.post('/bookings', authMiddleware, userBookingController.saveBookingAfterStripePayment);
 router.get('/bookings', authMiddleware, userBookingController.fetchBookings);
+router.get('/bookings/:bookingId', authMiddleware, userBookingController.fetchBookingDetails);
 router.patch('/bookings/:bookingId', authMiddleware, userBookingController.cancelBooking);
 router.get('/bookings/:bookingId/can-join', authMiddleware, userBookingController.validateRoom);
 router.patch('/bookings/:roomId/join-left', authMiddleware, userBookingController.userJoinRoom);

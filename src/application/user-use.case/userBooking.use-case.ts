@@ -49,6 +49,10 @@ export class UserCancelBookingUseCase {
         try {
 
             booking.appointmentStatus = AppointmentStatus.Cancelled;
+            booking.statusTrack.push({
+                appointmentStatus: AppointmentStatus.Cancelled,
+                time: new Date(),
+            });
             const updateBooking = await this.bookingRepositoryImpl.updateBooking(booking, { session: mongooseSession });
             if (!updateBooking) throw new Error("Booking status updating error");
 

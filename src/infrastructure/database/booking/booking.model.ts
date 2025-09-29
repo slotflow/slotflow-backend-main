@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
-import { AppointmentStatus, ParticipantPresence } from "../../../domain/entities/booking.entity";
+import { AppointmentStatus, ParticipantPresence, statusTrack } from "../../../domain/entities/booking.entity";
 
 export interface IBooking extends Document {
     _id: Types.ObjectId,
@@ -13,10 +13,11 @@ export interface IBooking extends Document {
     paymentId: Types.ObjectId | null,
     videoCallRoomId: string | null,
     googleEventId: string,
-    track: {
+    onlineTrack: {
         user: ParticipantPresence;
         provider: ParticipantPresence;
     },
+    statusTrack: statusTrack[],
     createdAt: Date,
     updatedAt: Date,
 }
@@ -26,6 +27,18 @@ const ParticipantPresenceSchema = new Schema<ParticipantPresence>({
     joinedTime: { type: Date, default: null },
     leftCallTime: { type: Date, default: null },
 }, { _id: false });
+
+const StatusTrackSchema = new Schema<statusTrack>({
+    appointmentStatus: { 
+        type: String, 
+        enum: Object.values(AppointmentStatus), 
+        required: true 
+    },
+    time: { 
+        type: Date, 
+        required: true 
+    }
+},  { _id: false })
 
 const BookingSchema = new Schema<IBooking>({
     serviceProviderId: { 
@@ -72,10 +85,14 @@ const BookingSchema = new Schema<IBooking>({
         type: String,
         default: null,
     },
-    track: {
+    onlineTrack: {
         user: { type: ParticipantPresenceSchema, default: () => ({}) },
         provider: { type: ParticipantPresenceSchema, default: () => ({}) },
     },
+    statusTrack: {
+        type: [StatusTrackSchema], 
+        default: [] ,
+    }
 }, {
     timestamps: true
 });

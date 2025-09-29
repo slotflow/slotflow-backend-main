@@ -439,8 +439,6 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                                     initialAmount: 1,
                                     totalAmount: 1,
                                     paymentGateway: 1,
-                                    paymentMethod: 1,
-                                    paymentStatus: 1,
                                     paymentFor: 1,
                                 },
                             },

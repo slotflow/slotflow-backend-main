@@ -7,7 +7,7 @@ import { endOfDay, startOfDay, startOfToday, startOfTomorrow } from "date-fns";
 import { UserFetchProvidersForChatSidebarResponse } from "../../dtos/user.dto";
 import { AppointmentStatus, Booking } from "../../../domain/entities/booking.entity";
 import { AdminFetchDashboardAppointmentStatsDataResponse } from "../../dtos/admin.dto";
-import { FetchBookingsRequest, ApiResponse, FetchBookingsResponse, userIdAndServiceProviderId, FetchOnlineBookingsForProviderResponse, FetchOnlineBookingsForUserResponse, Role } from "../../dtos/common.dto";
+import { FetchBookingsRequest, ApiResponse, FetchBookingsResponse, userIdAndServiceProviderId, FetchOnlineBookingsForProviderResponse, FetchOnlineBookingsForUserResponse, Role, FetchBookingDetailsResponse } from "../../dtos/common.dto";
 import { AdminFetchTodaysBookingStatsForDashboardResponse, CreateBookingPayloadProps, IBookingRepository } from "../../../domain/repositories/IBooking.repository";
 import { ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardGraphDataResponse, ProviderFetchUsersForChatSideBar } from "../../dtos/provider.dto";
 
@@ -25,7 +25,8 @@ export class BookingRepositoryImpl implements IBookingRepository {
             booking.paymentId,
             booking.videoCallRoomId,
             booking.googleEventId,
-            booking.track,
+            booking.onlineTrack,
+            booking.statusTrack,
             booking.createdAt,
             booking.updatedAt,
         )
@@ -66,7 +67,7 @@ export class BookingRepositoryImpl implements IBookingRepository {
 
     async findBookingByroomId(roomId: string): Promise<Booking | null> {
         try {
-            const booking = await BookingModel.findOne({videoCallRoomId: roomId});
+            const booking = await BookingModel.findOne({ videoCallRoomId: roomId });
             return booking ? this.mapToEntity(booking) : null;
         } catch (error) {
             throw new Error("Finding booking failed");
@@ -102,7 +103,13 @@ export class BookingRepositoryImpl implements IBookingRepository {
                     }
                 },
                 {
-                    $set: { appointmentStatus: "Not Attended" }
+                    $set: { appointmentStatus: "Not Attended" },
+                    $push: {
+                        statusTrack: {
+                            appointmentStatus: "Not Attended",
+                            time: new Date()
+                        }
+                    }
                 }
             );
             return bookings.modifiedCount > 0;
@@ -138,7 +145,7 @@ export class BookingRepositoryImpl implements IBookingRepository {
                 createdAt: 1,
                 username: 1,
             }
-            
+
             const project = raw ? rawProject : online ? onlineProject : rawProject;
 
             let query = BookingModel.find(filter, project)
@@ -557,6 +564,37 @@ export class BookingRepositoryImpl implements IBookingRepository {
             };
         } catch (error) {
             throw new Error("Admin dashboard booking stats fetching failed")
+        }
+    }
+
+    async findBookingDetails(bookingId: Types.ObjectId): Promise<FetchBookingDetailsResponse | null> {
+        try {
+
+            const bookingDetails = await BookingModel.findById(bookingId, {
+                _id: 0,
+                appointmentDate: 1,
+                appointmentMode: 1,
+                appointmentStatus: 1,
+                appointmentTime: 1,
+                createdAt: 1,
+                onlineTrack: 1,
+                statusTrack: 1,
+                videoCallRoomId: 1,
+            })
+                .populate({
+                    path: "userId",
+                    select: "username email",
+                })
+                .populate({
+                    path: "serviceProviderId",
+                    select: "username email",
+                })
+                .lean<FetchBookingDetailsResponse>();
+
+            return bookingDetails ?? null;
+        } catch (error) {
+            console.log("findBookingDetails error : ", error);
+            throw new Error("Booking details fetching failed");
         }
     }
 }
