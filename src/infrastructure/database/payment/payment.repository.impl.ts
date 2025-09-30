@@ -141,13 +141,21 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                         totalEarnings: [
                             {
                                 $match: {
-                                    PaymentFor: PaymentFor.AppointmentBooking
+                                    paymentFor: PaymentFor.AppointmentBooking
                                 }
                             },
                             {
                                 $group: {
                                     _id: null,
-                                    amount: { $sum: "$totalAmount" },
+                                    grossEarnings: { $sum: "$totalAmount" },
+                                }
+                            },
+                            {
+                                $project: {
+                                    _id: 0,
+                                    amount: {
+                                        $multiply: ["$grossEarnings", 0.95],
+                                    }
                                 }
                             }
                         ],
@@ -161,7 +169,15 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                             {
                                 $group: {
                                     _id: null,
-                                    amount: { $sum: "$totalAmount" },
+                                    grossEarnings: { $sum: "$totalAmount" },
+                                }
+                            },
+                             {
+                                $project: {
+                                    _id: 0,
+                                    amount: {
+                                        $multiply: ["$grossEarnings", 0.95],
+                                    }
                                 }
                             }
                         ],
@@ -180,8 +196,6 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                             {
                                 $match: {
                                     paymentFor: PaymentFor.AppointmentBooking,
-                                    paymentStatus: "Paid",
-                                    providerId: providerId,
                                     createdAt: { $gte: startOfThisMonth, $lte: endOfToday },
                                 },
                             },

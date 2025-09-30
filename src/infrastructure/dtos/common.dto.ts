@@ -225,3 +225,6 @@ export interface FetchBookingDetailsResponse extends Pick<Booking, "appointmentD
   userId: Pick<User, "username" | "email">;
   serviceProviderId: Pick<Provider, "username" | "email">;
 } 
+
+
+export type SubscriptionPlan = "Free" | "NoSubscription" | "Starter" | "Professional" | "Enterprise";

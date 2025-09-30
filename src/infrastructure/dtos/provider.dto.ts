@@ -6,6 +6,7 @@ import { Provider } from "../../domain/entities/provider.entity";
 import { ProviderService } from "../../domain/entities/providerService.entity";
 import { FontendAvailabilityForResponse, FrontendAvailabilityForRequest } from "../../domain/entities/serviceAvailability.entity";
 import { Booking } from "../../domain/entities/booking.entity";
+import { SubscriptionPlan } from "./common.dto";
 
 
 // ************ used in providerAddress.use-case ************ \\
@@ -165,6 +166,13 @@ export interface ProviderFetchDashboardPaymentStatsDataResponse {
 
 
 // ************ used in providerDashboard.use-case  ************ \\
+// Used as the request interface for the provider fetch dashboard graph data
+export interface ProviderFetchDashboardGraphDataRequest {
+    providerId: Provider["_id"],
+    subscription: SubscriptionPlan,
+    startDate?: Date,
+    endDate?: Date,
+}
 // Used as the return interface for the provider fetch dashboard graph data
 export interface ProviderFetchDashboardGraphDataResponse {
     appointmentsOvertimeChartData: Array<{
@@ -187,7 +195,7 @@ export interface ProviderFetchDashboardGraphDataResponse {
     }>;
 
     completionBreakdownChartData: Array<{
-        status: 'completed' | 'missed' | 'cancelled' | 'rejected';
+        status: 'completed' | 'missed' | 'cancelled' | 'rejected' | "confirmed" | "booked";
         value: number;
     }>;
 

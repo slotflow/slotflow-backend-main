@@ -2,16 +2,19 @@ import { Types } from "mongoose";
 import { Request, Response } from "express";
 import { DecodedUser } from "../../express";
 import { HandleError } from "../../infrastructure/error/error";
+import { SubscriptionHelper } from "../../infrastructure/helpers/subscriptionMapping";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { ProviderFetchDashboardStatsUseCase } from "../../application/provider-use.case/providerDashboardStats.use-case";
 import { ProviderFetchDashboardGraphDataUseCase } from "../../application/provider-use.case/providerDashboardGraphData.use-case";
+import { SubscriptionPlan } from "../../infrastructure/dtos/common.dto";
 
+const subscriptionHelper = new SubscriptionHelper();
 const bookingRepositoryImpl = new BookingRepositoryImpl();
 const paymentRepositoryImpl = new PaymentRepositoryImpl();
 
 const providerFetchDashboardStatsUseCase = new ProviderFetchDashboardStatsUseCase(bookingRepositoryImpl, paymentRepositoryImpl);
-const providerFetchDashboardGraphDataUseCase = new ProviderFetchDashboardGraphDataUseCase(bookingRepositoryImpl);
+const providerFetchDashboardGraphDataUseCase = new ProviderFetchDashboardGraphDataUseCase(bookingRepositoryImpl, subscriptionHelper);
 
 export class ProviderDashboardController {
     constructor(
@@ -35,8 +38,16 @@ export class ProviderDashboardController {
 
     async getDashboardGraphData(req: Request, res: Response) {
         try {
+            const subscription = req.query.subscription as SubscriptionPlan;
+            const startDate = req.query.start ? new Date(req.query.start as string) : undefined;
+            const endDate = req.query.end ? new Date(req.query.end as string) : undefined;
             const providerId = (req.user as DecodedUser).userOrProviderId;
-            const result = await this.providerFetchDashboardGraphDataUseCase.execute(new Types.ObjectId(providerId));
+            const result = await this.providerFetchDashboardGraphDataUseCase.execute({
+                providerId: new Types.ObjectId(providerId), 
+                subscription: subscription ?? "Free",
+                endDate: endDate ? new Date(endDate) : undefined,
+                startDate: startDate ? new Date(startDate) : undefined,
+            });
             res.status(200).json(result);
         } catch (error) {
             console.log("provider get dashboard graph data error : ", error);
