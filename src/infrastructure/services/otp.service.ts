@@ -15,9 +15,10 @@ export class OTPService {
   static async setOtp(verificationToken: string): Promise<string> {
     try {
       const otp = generateOTP({ length: 6 });
-      const storingOtp = await redis.set(verificationToken,otp, { px : 300000 });
+      await redis.set(verificationToken,otp, { px : 300000 });
       return otp;
     } catch (error) {
+      console.log("error : ",error);
       throw new Error("Failed to generate OTP.");
     }
   }

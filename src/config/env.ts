@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const mongoConfig = {
-    mongoURL: process.env.NODE_ENV !== "development" ? process.env.MONGO_URI_DEV : process.env.MONGO_URI
+    mongoURL: process.env.NODE_ENV === "development" ? process.env.MONGO_URI_DEV : process.env.MONGO_URI
 }
 
 export const mailConfig = {
@@ -52,4 +52,8 @@ export const aesConfig = {
     inputEncoding: process.env.AES_INPUT_ENCODING,
     outputEncoding: process.env.AES_OUTPUT_ENCODING,
     separator: ":",
+}
+
+export const stripeCOnfig = {
+    stripeSecretKey: process.env.STRIPE_SECRET_KEY,
 }

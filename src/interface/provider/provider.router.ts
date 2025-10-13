@@ -13,6 +13,7 @@ import { providerAppServiceController } from './providerAppService.controller';
 import { providerSubscriptionController } from './providerSubscription.controller';
 import { providerServiceAvailabilityController } from './providerServiceAvailability.controller';
 import { providerReviewController } from './providerReview.controller';
+import { providerStripeController } from './providerStripe.controller';
 
 const router = Router();
 
@@ -55,5 +56,7 @@ router.get('/dashboard/graph-data', authMiddleware, providerDashboardController.
 
 router.get('/reviews', authMiddleware, providerReviewController.findAllReviews);
 router.patch('/reviews/:reviewId', authMiddleware, providerReviewController.chnageReportReview);
+
+router.post("/stripe/connect", authMiddleware, providerStripeController.connectStripe);
 
 export default router;  

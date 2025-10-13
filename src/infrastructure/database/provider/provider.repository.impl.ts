@@ -26,6 +26,7 @@ export class ProviderRepositoryImpl implements IProviderRepository {
             provider.verificationToken,
             provider.googleConnected,
             provider.googleId,
+            provider.stripeAccountId,
             provider.trustedBySlotflow,
             provider.createdAt,
             provider.updatedAt,

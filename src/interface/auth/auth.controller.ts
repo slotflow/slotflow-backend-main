@@ -4,6 +4,7 @@ import { DecodedUser } from '../../express';
 import { appConfig } from '../../config/env';
 import { HandleError } from '../../infrastructure/error/error';
 import { LoginUseCase } from '../../application/auth-use.case/login.use-case';
+import { kafkaProducerService } from '../../infrastructure/lib/kafka.producer';
 import { RegisterUseCase } from '../../application/auth-use.case/register.use-case';
 import { ResendOtpUseCase } from '../../application/auth-use.case/resend-otp.use-case';
 import { VerifyOTPUseCase } from '../../application/auth-use.case/verify-otp.use-case';
@@ -20,12 +21,12 @@ const providerRepositoryImpl = new ProviderRepositoryImpl();
 const planRepositoryImpl = new PlanRepositoryImpl();
 const subscriptionRepositoryImpl = new SubscriptionRepositoryImpl();
 
-const loginUseCase = new LoginUseCase(userRepositoryImpl, providerRepositoryImpl, planRepositoryImpl, subscriptionRepositoryImpl);
-const registerUseCase = new RegisterUseCase(userRepositoryImpl, providerRepositoryImpl);
 const verifyOTPUseCase = new VerifyOTPUseCase(userRepositoryImpl, providerRepositoryImpl);
-const resendOtpUseCase = new ResendOtpUseCase(userRepositoryImpl, providerRepositoryImpl);
 const updatePasswordUseCase = new UpdatePasswordUseCase(userRepositoryImpl, providerRepositoryImpl);
 const checkUserStatusUseCase = new CheckUserStatusUseCase(userRepositoryImpl, providerRepositoryImpl);
+const registerUseCase = new RegisterUseCase(userRepositoryImpl, providerRepositoryImpl, kafkaProducerService );
+const resendOtpUseCase = new ResendOtpUseCase(userRepositoryImpl, providerRepositoryImpl, kafkaProducerService );
+const loginUseCase = new LoginUseCase(userRepositoryImpl, providerRepositoryImpl, planRepositoryImpl, subscriptionRepositoryImpl);
 
 export class AuthController {
 

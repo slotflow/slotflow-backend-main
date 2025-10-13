@@ -5,6 +5,7 @@ import {
     UserAppointmentBookingViaStripeRequest, 
 } from "../../infrastructure/dtos/user.dto";
 import { startSession, Types } from "mongoose";
+import { stripe } from "../../infrastructure/lib/stripe";
 import { ApiResponse } from "../../infrastructure/dtos/common.dto";
 import { Validator } from "../../infrastructure/validator/validator";
 import { AppointmentStatus } from "../../domain/entities/booking.entity";
@@ -17,8 +18,6 @@ import { BookingRepositoryImpl } from "../../infrastructure/database/booking/boo
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { ProviderServiceRepositoryImpl } from "../../infrastructure/database/providerService/providerService.repository.impl";
 import { ServiceAvailabilityRepositoryImpl } from "../../infrastructure/database/serviceAvailability/serviceAvailability.repository.impl";
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export class UserAppointmentBookingViaStripeUseCase {
     constructor(

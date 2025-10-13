@@ -17,6 +17,7 @@ export interface IProvider extends Document {
   verificationToken: string;
   googleConnected: boolean;
   googleId: string;
+  stripeAccountId: string;
   trustedBySlotflow: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -105,6 +106,10 @@ const ProviderSchema = new Schema<IProvider>({
     required: function () {
       return !this.password;
     }
+  },
+  stripeAccountId: {
+    type: String,
+    default: null,
   },
   trustedBySlotflow: {
     type: Boolean,

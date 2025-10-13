@@ -1,5 +1,5 @@
-import Stripe from "stripe";
 import mongoose, { Types } from "mongoose";
+import { stripe } from "../../infrastructure/lib/stripe";
 import { ApiResponse } from "../../infrastructure/dtos/common.dto";
 import { Validator } from "../../infrastructure/validator/validator";
 import { AppointmentStatus } from "../../domain/entities/booking.entity";
@@ -8,8 +8,6 @@ import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repo
 import { UpdateEventFromGoogleCalendarService } from "../../infrastructure/services/googleCalendar";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export class UserCancelBookingUseCase {
     constructor(

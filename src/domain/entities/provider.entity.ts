@@ -18,6 +18,7 @@ export class Provider {
         public verificationToken: string,
         public googleConnected: boolean,
         public googleId: string,
+        public stripeAccountId: string,
         public trustedBySlotflow: boolean,
         public createdAt: Date,
         public updatedAt: Date,

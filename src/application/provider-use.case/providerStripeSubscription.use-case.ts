@@ -1,12 +1,12 @@
 import dayjs from "dayjs";
-import Stripe from "stripe";
-import { startSession, Types } from "mongoose";
 import { 
     ProviderSaveSubscriptionRequest, 
     ProviderSaveSubscriptionResponse, 
     ProviderStripeSubscriptionCreateSessionIdRequest, 
     ProviderStripeSubscriptionCreateSessionIdResponse, 
 } from "../../infrastructure/dtos/provider.dto";
+import { startSession, Types } from "mongoose";
+import { stripe } from "../../infrastructure/lib/stripe";
 import { ApiResponse } from "../../infrastructure/dtos/common.dto";
 import { Validator } from "../../infrastructure/validator/validator";
 import { SubscriptionStatus } from "../../domain/entities/subscription.entity";
@@ -15,8 +15,6 @@ import { PlanRepositoryImpl } from "../../infrastructure/database/plan/plan.repo
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { SubscriptionRepositoryImpl } from "../../infrastructure/database/subscription/subscription.repository.impl";
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export class ProviderStripeSubscriptionCreateSessionIdUseCase {
     constructor(

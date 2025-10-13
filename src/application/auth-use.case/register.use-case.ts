@@ -1,3 +1,4 @@
+import { Producer } from 'kafkajs';
 import { v4 as uuidv4 } from 'uuid';
 import { User } from '../../domain/entities/user.entity';
 import { Role } from '../../infrastructure/dtos/common.dto';
@@ -5,6 +6,7 @@ import { JWTService } from '../../infrastructure/security/jwt';
 import { Provider } from '../../domain/entities/provider.entity';
 import { OTPService } from '../../infrastructure/services/otp.service';
 import { validateOrThrow } from '../../infrastructure/validator/validator';
+import { KafkaProducerService } from '../../infrastructure/lib/kafka.producer';
 import { PasswordHasher } from '../../infrastructure/security/password-hashing';
 import { RegisterRequest, RegisterResponse } from '../../infrastructure/dtos/auth.dto';
 import { UserRepositoryImpl } from '../../infrastructure/database/user/user.repository.impl';
@@ -13,11 +15,17 @@ import { ProviderRepositoryImpl } from '../../infrastructure/database/provider/p
 
 export class RegisterUseCase {
 
-  constructor(private userRepositoryImpl: UserRepositoryImpl, private providerRepositoryImpl: ProviderRepositoryImpl) { }
+  constructor(
+    private userRepositoryImpl: UserRepositoryImpl, 
+    private providerRepositoryImpl: ProviderRepositoryImpl,
+    private kafkaProducerService: KafkaProducerService
+  ) { }
 
   async execute(data: RegisterRequest): Promise<RegisterResponse> {
     const { username, email, password, role } = data;
     if (!username || !email || !password || !role) throw new Error("Invalid request");
+
+    const producer: Producer = this.kafkaProducerService.getProducer();
 
     validateOrThrow("username", username);
     validateOrThrow("email", email);
@@ -45,6 +53,20 @@ export class RegisterUseCase {
     if (!otp) throw new Error("Unexpected error, please try again.");
 
     await OTPService.sendOTP(email, otp);
+
+    const producerResult = await producer.send({
+      topic: "sendOtp-events",
+      messages: [
+        {
+          key: email,
+          value: JSON.stringify({ email, otp })
+        }
+      ]
+    });
+
+    if (!producerResult || producerResult.length === 0) {
+      throw new Error("OTP sending failed: no record metadata returned");
+    }
 
     if (userOrProvider) {
       userOrProvider.verificationToken = verificationToken;
