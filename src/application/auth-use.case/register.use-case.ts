@@ -51,15 +51,14 @@ export class RegisterUseCase {
 
     const otp = await OTPService.setOtp(verificationToken);
     if (!otp) throw new Error("Unexpected error, please try again.");
-
-    await OTPService.sendOTP(email, otp);
+    console.log("Before producer sending event");
 
     const producerResult = await producer.send({
       topic: "sendOtp-events",
       messages: [
         {
           key: email,
-          value: JSON.stringify({ email, otp })
+          value: JSON.stringify({ email, otp, username  })
         }
       ]
     });
@@ -67,6 +66,8 @@ export class RegisterUseCase {
     if (!producerResult || producerResult.length === 0) {
       throw new Error("OTP sending failed: no record metadata returned");
     }
+
+    console.log("producerResult : ",producerResult);
 
     if (userOrProvider) {
       userOrProvider.verificationToken = verificationToken;

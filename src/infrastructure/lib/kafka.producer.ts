@@ -1,4 +1,4 @@
-import { Kafka, Producer } from "kafkajs";
+import { Kafka, logLevel, Producer } from "kafkajs";
 
 export class KafkaProducerService {
   private producer!: Producer;
@@ -6,7 +6,11 @@ export class KafkaProducerService {
   constructor(private clientId: string, private brokers: string[]) {}
 
   async connect(): Promise<void> {
-    const kafka = new Kafka({ clientId: this.clientId, brokers: this.brokers });
+    const kafka = new Kafka({ 
+      clientId: this.clientId, 
+      brokers: this.brokers,
+      logLevel: logLevel.ERROR, 
+    });
     this.producer = kafka.producer();
     await this.producer.connect();
     console.log("✅ Kafka producer connected");

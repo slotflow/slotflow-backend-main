@@ -61,8 +61,6 @@ export class ResendOtpUseCase {
     const otp = await OTPService.setOtp(userOrProvider?.verificationToken);
     if (!otp) throw new Error("Unexpected error, please try again.");
 
-    // await OTPService.sendOTP(userOrProvider?.email, otp);
-
     const producerResult = await producer.send({
       topic: "sendOtp-events",
       messages: [
