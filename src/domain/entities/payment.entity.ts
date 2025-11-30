@@ -1,17 +1,5 @@
 import { Types } from "mongoose";
-
-export enum PaymentFor {
-    ProviderSubscription = "ProviderSubscription",
-    AppointmentBooking = "AppointmentBooking",
-    ProviderPayout = "ProviderPayout",
-    CancelBooking = "CancelBooking"
-}
-
-export enum PaymentGateway {
-    Stripe = "Stripe",
-    Razorpay = "Razorpay",
-    Paypal = "Paypal",
-}
+import { PaymentForType, PaymentGatewayType } from "../../infrastructure/dtos/common.dto";
 
 export class Payment {
     constructor(
@@ -19,8 +7,8 @@ export class Payment {
         public transactionId: string, // Stripe payment_intent || razorpay's payment_id || paypals capture_id
         public paymentStatus: string,
         public paymentMethod: string,
-        public paymentGateway: PaymentGateway,
-        public paymentFor: PaymentFor,
+        public paymentGateway: PaymentGatewayType,
+        public paymentFor: PaymentForType,
         public initialAmount: number,
         public discountAmount: number,
         public totalAmount: number,

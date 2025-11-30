@@ -1,10 +1,5 @@
 import { Types } from "mongoose";
-
-export enum SubscriptionStatus {
-    Active = "Active",
-    Expired = "Expired",
-    Cancelled = "Cancelled",
-}
+import { SubscriptionStatusType } from "../../infrastructure/dtos/common.dto";
 
 export class Subscription {
     constructor(
@@ -13,7 +8,7 @@ export class Subscription {
         public subscriptionPlanId: Types.ObjectId,
         public startDate: Date,
         public endDate: Date,
-        public subscriptionStatus: SubscriptionStatus,
+        public subscriptionStatus: SubscriptionStatusType,
         public paymentId: Types.ObjectId | null,
         public createdAt: Date,
         public updatedAt: Date,

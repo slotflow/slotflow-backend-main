@@ -5,13 +5,13 @@ import { Review } from "../../domain/entities/review.entity";
 import { Credential } from "../../domain/entities/credential";
 import { Address } from "../../domain/entities/address.entity";
 import { Service } from "../../domain/entities/service.entity";
+import { Payment } from "../../domain/entities/payment.entity";
 import { Provider } from "../../domain/entities/provider.entity";
 import { Subscription } from "../../domain/entities/subscription.entity";
-import { Payment, PaymentFor } from "../../domain/entities/payment.entity";
 import { Availability } from "../../domain/entities/serviceAvailability.entity";
 import { Booking, ParticipantPresence } from "../../domain/entities/booking.entity";
-import { daysArray, roleArray, serviceModeArray, serviceTypeArray } from "../helpers/constants";
 import { findSubscriptionFullDetailsResProps } from "../../domain/repositories/ISubscription.repository";
+import { appointmentStatusArray, daysArray, paymentForArray, paymentGatewayArray, roleArray, serviceModeArray, serviceTypeArray, subscriptionStatusArray } from "../../utils/constants";
 
 export type RoleType = typeof roleArray[number];
 
@@ -20,6 +20,14 @@ export type DayType = typeof daysArray[number];
 export type ServiceModeType = typeof serviceModeArray[number];
 
 export type ServiceTypeType = typeof serviceTypeArray[number];
+
+export type AppointmentStatusType = typeof appointmentStatusArray[number];
+
+export type PaymentForType = typeof paymentForArray[number];
+
+export type PaymentGatewayType = typeof paymentGatewayArray[number];
+
+export type SubscriptionStatusType = typeof subscriptionStatusArray[number];
 
 // **** 1. Used as the request interface for the paginated request
 export interface ApiPaginationRequest {
@@ -72,7 +80,7 @@ export type CreateAddressRequest = Pick<Address, "userId" | "addressLine" | "lan
 export interface userIdAndProviderIdFilterForFetchPayments {
   userId?: User["_id"];
   providerId?: Provider["_id"];
-  paymentFor?: PaymentFor | { $in: PaymentFor[] };
+  paymentFor?: PaymentForType | { $in: PaymentForType[] };
 }
 export interface FetchPaymentsRequest extends ApiPaginationRequest, userIdAndProviderIdFilterForFetchPayments { }
 //// **** 6.1 Used as the response type fetching payments for admin, provider and user side
@@ -196,7 +204,7 @@ export interface CreateGoogleCalendarEventRequest {
   userId: Types.ObjectId,
   appointmentDate: Booking["appointmentDate"], 
   appointmentStatus: Booking["appointmentStatus"],
-  slotDuration: string,
+  slotDuration: number,
 }
 
 export interface UpdateBookingOnlineTrackRequest extends ParticipantPresence {

@@ -1,6 +1,5 @@
 import { isSameDay, startOfDay } from "date-fns";
-import { roleArray } from "../../infrastructure/helpers/constants";
-import { AppointmentStatus } from "../../domain/entities/booking.entity";
+import { appointmentStatusArray, roleArray } from "../../utils/constants";
 import { ApiResponse, ValidateJoinRoomRequest } from "../../infrastructure/dtos/common.dto";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 
@@ -21,7 +20,7 @@ export class ValidateJoinRoomUsecase {
                 throw new Error("Booking is not scheduled for today");
             }
 
-            if (booking.appointmentStatus !== AppointmentStatus.Confirmed) {
+            if (booking.appointmentStatus !== appointmentStatusArray[5]) {
                 throw new Error("Booking is not confirmed");
             }
 

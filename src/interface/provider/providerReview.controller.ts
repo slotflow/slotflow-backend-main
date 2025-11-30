@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 import { DecodedUser } from "../../express";
 import { NextFunction, Request, Response } from "express";
-import { roleArray } from "../../infrastructure/helpers/constants";
+import { roleArray } from "../../utils/constants";
 import { RequestQueryCommonZodSchema } from "../../infrastructure/zod/common.zod";
 import { GenerateSignedUrlService } from "../../infrastructure/services/signedUrl.service";
 import { FetchAllReviewsUseCase } from "../../application/common-use.case/fetchReviews.use-case";

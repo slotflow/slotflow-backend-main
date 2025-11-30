@@ -1,8 +1,7 @@
 import { z } from "zod";
-import { enumField, objectIdField } from "./common.zod";
-import { AppointmentStatus } from "../../domain/entities/booking.entity";
+import { objectIdField } from "./common.zod";
 import { serviceDescriptionRegex, serviceExperienceRegex, serviceNameRegex } from "./regex";
-import { daysArray, serviceModeArray, serviceTypeArray, subscriptionMonthArray } from "../helpers/constants";
+import { appointmentStatusArray, daysArray, serviceModeArray, serviceTypeArray, subscriptionMonthArray } from "../../utils/constants";
 
 
 // **** Provider Service Controller **** \\
@@ -105,7 +104,7 @@ export const ProviderCreateServiceAvailabilityZodSchema = z.array(
 // Provider plan subscription duration validation
 export const ProviderPlanSubscribeZodSchema = z.object({
     planId: objectIdField("Plan ID"),
-    planDuration: enumField("Subscription plan duration", subscriptionMonthArray),
+    planDuration: z.enum(subscriptionMonthArray),
 });
 
 
@@ -113,7 +112,7 @@ export const ProviderPlanSubscribeZodSchema = z.object({
 // **** Provider Booking Controller **** \\
 // Validating the page and limit in the request query zod schema
 export const ProviderChangeBookingAppointmentStatusZodSchema = z.object({
-    appointmentStatus: enumField("Appointment status", [AppointmentStatus.Confirmed, AppointmentStatus.Rejected])
+    appointmentStatus: z.enum(appointmentStatusArray)
 });
 
 

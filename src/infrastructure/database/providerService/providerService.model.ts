@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
 import { ServiceModeType, ServiceTypeType } from "../../dtos/common.dto";
-import { serviceModeArray, serviceTypeArray } from "../../helpers/constants";
+import { serviceModeArray, serviceTypeArray } from "../../../utils/constants";
 import { serviceNameRegex, serviceExperienceRegex, serviceDescriptionRegex } from "../../zod/regex";
 
 export interface IProviderService extends Document {

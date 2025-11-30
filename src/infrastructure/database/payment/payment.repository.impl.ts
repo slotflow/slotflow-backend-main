@@ -1,12 +1,13 @@
 import { Types } from "mongoose";
 import { IPayment, PaymentModel } from "./payment.model";
+import { Payment } from "../../../domain/entities/payment.entity";
 import { Provider } from "../../../domain/entities/provider.entity";
 import { ProviderFetchDashboardPaymentStatsDataResponse } from "../../dtos/provider.dto";
 import { endOfDay, startOfDay, startOfMonth, startOfToday, startOfTomorrow } from "date-fns";
-import { Payment, PaymentFor, PaymentGateway } from "../../../domain/entities/payment.entity";
 import { ApiResponse, FetchPaymentResponse, FetchPaymentsRequest, userIdAndProviderIdFilterForFetchPayments } from "../../dtos/common.dto";
 import { AdminFetchDashboardRevenueStatsDataResponse, AdminFetchRevenueReportRequest, AdminFetchRevenueReportResponse } from "../../dtos/admin.dto";
 import { AdminFetchDashboardTodayPaymentStatsDataResponse, CreatePaymentForBookingRequest, CreatePaymentForSubscriptionRequest, IPaymentRepository, UpdateBookingRequest } from "../../../domain/repositories/IPayment.repository";
+import { paymentForArray, paymentGatewayArray } from "../../../utils/constants";
 
 export class PaymentRepositoryImpl implements IPaymentRepository {
     private mapToEntity(payment: IPayment): Payment {
@@ -61,11 +62,11 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
             const filter: userIdAndProviderIdFilterForFetchPayments = {};
             if (userId) {
                 filter.userId = userId;
-                filter.paymentFor = PaymentFor.AppointmentBooking
+                filter.paymentFor = paymentForArray[1]
             }
             if (providerId) {
                 filter.providerId = providerId;
-                filter.paymentFor = { $in: [PaymentFor.ProviderPayout, PaymentFor.ProviderSubscription] }
+                filter.paymentFor = { $in: [paymentForArray[2], paymentForArray[0]] }
             }
             const [payments, totalCount] = await Promise.all([
                 PaymentModel.find(filter, {
@@ -135,7 +136,7 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                 {
                     $facet: {
                         totalSubscriptionPaidAmount: [
-                            { $match: { paymentFor: PaymentFor.ProviderSubscription } },
+                            { $match: { paymentFor: paymentForArray[0] } },
                             {
                                 $group: {
                                     _id: null,
@@ -146,7 +147,7 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                         totalEarnings: [
                             {
                                 $match: {
-                                    paymentFor: PaymentFor.AppointmentBooking
+                                    paymentFor: paymentForArray[1]
                                 }
                             },
                             {
@@ -167,7 +168,7 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                         todaysEarnings: [
                             {
                                 $match: {
-                                    paymentFor: PaymentFor.AppointmentBooking,
+                                    paymentFor: paymentForArray[1],
                                     createdAt: { $gt: today, $lt: tomorrow },
                                 }
                             },
@@ -188,7 +189,7 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                         ],
                         totalPayoutsMade: [
                             {
-                                $match: { paymentFor: PaymentFor.ProviderPayout }
+                                $match: { paymentFor: paymentForArray[2] }
                             },
                             {
                                 $group: {
@@ -200,7 +201,7 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                         pendingPayout: [
                             {
                                 $match: {
-                                    paymentFor: PaymentFor.AppointmentBooking,
+                                    paymentFor: paymentForArray[1],
                                     createdAt: { $gte: startOfThisMonth, $lte: endOfToday },
                                 },
                             },
@@ -254,7 +255,7 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                     $facet: {
                         todaysTotalRevenue: [
                             {
-                                $match: { paymentFor: { $ne: PaymentFor.ProviderPayout } }
+                                $match: { paymentFor: { $ne: paymentForArray[2] } }
                             },
                             {
                                 $group: {
@@ -280,7 +281,7 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                         ],
                         todaysTotalPayouts: [
                             {
-                                $match: { payoutStatus: "Paid", paymentFor: PaymentFor.ProviderPayout },
+                                $match: { payoutStatus: "Paid", paymentFor: paymentForArray[2] },
                             },
                             {
                                 $group: {
@@ -322,7 +323,7 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                 {
                     $facet: {
                         totalRevenue: [
-                            { $match: { paymentFor: { $in: [PaymentFor.ProviderSubscription, PaymentFor.AppointmentBooking] } } },
+                            { $match: { paymentFor: { $in: [paymentForArray[0], paymentForArray[1]] } } },
                             {
                                 $group: {
                                     _id: null,
@@ -331,7 +332,7 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                             }
                         ],
                         totalRevenueViaSubscriptions: [
-                            { $match: { paymentFor: PaymentFor.ProviderSubscription } },
+                            { $match: { paymentFor: paymentForArray[0]} },
                             {
                                 $group: {
                                     _id: null,
@@ -340,7 +341,7 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                             }
                         ],
                         totalRevenueViaAppointments: [
-                            { $match: { paymentFor: PaymentFor.AppointmentBooking } },
+                            { $match: { paymentFor: paymentForArray[1] } },
                             {
                                 $group: {
                                     _id: null,
@@ -349,7 +350,7 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                             }
                         ],
                         revenueByStripe: [
-                            { $match: { paymentGateway: PaymentGateway.Stripe } },
+                            { $match: { paymentGateway: paymentGatewayArray[0] } },
                             {
                                 $group: {
                                     _id: null,
@@ -358,7 +359,7 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                             }
                         ],
                         revenueByRazorpay: [
-                            { $match: { paymentGateway: PaymentGateway.Razorpay } },
+                            { $match: { paymentGateway: paymentGatewayArray[1] } },
                             {
                                 $group: {
                                     _id: null,
@@ -367,7 +368,7 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                             }
                         ],
                         revenueByPaypal: [
-                            { $match: { paymentGateway: PaymentGateway.Paypal } },
+                            { $match: { paymentGateway: paymentGatewayArray[2] } },
                             {
                                 $group: {
                                     _id: null,
@@ -394,7 +395,7 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                             }
                         ],
                         totalPayoutsToProviders: [
-                            { $match: { PaymentFor: PaymentFor.ProviderPayout } },
+                            { $match: { PaymentFor: paymentForArray[2] } },
                             {
                                 $group: {
                                     _id: null,
@@ -432,7 +433,7 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
             const skip = (page - 1) * limit;
             const match: Record<string, any> = {
                 paymentStatus: "Paid",
-                paymentFor: { $in: [PaymentFor.ProviderSubscription, PaymentFor.AppointmentBooking] },
+                paymentFor: { $in: [paymentForArray[0], paymentForArray[1]] },
             };
 
             if (startDate || endDate) {

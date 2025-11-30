@@ -1,10 +1,11 @@
 import { Types } from "mongoose";
 import { Plan } from "../../../domain/entities/plan.entity";
 import { ISubscription, SubscriptionModel } from "./subscription.model";
-import { Subscription, SubscriptionStatus } from "../../../domain/entities/subscription.entity";
+import { Subscription } from "../../../domain/entities/subscription.entity";
 import { AdminFetchAllSubscriptionsResponse, AdminFetchDashboardSubscriptionStatsDataResponse } from "../../dtos/admin.dto";
 import { ApiPaginationRequest, ApiResponse, FetchProviderSubscriptionsRequest, FindSubscriptionsByProviderIdResponse, PopulatedSubscription } from "../../dtos/common.dto";
 import { CreateSubscriptionPayloadProps, findSubscriptionFullDetailsResProps, ISubscriptionRepository, PlanNameOnly } from "../../../domain/repositories/ISubscription.repository";
+import { subscriptionStatusArray } from "../../../utils/constants";
 
 export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
     private mapToEntity(subscription: ISubscription): Subscription {
@@ -141,11 +142,11 @@ export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
 
             const updated = await SubscriptionModel.updateMany(
                 {
-                    subscriptionStatus: SubscriptionStatus.Active,
+                    subscriptionStatus: subscriptionStatusArray[0],
                     endDate: { $lt: now }
                 },
                 {
-                    $set: { subscriptionStatus: SubscriptionStatus.Expired }
+                    $set: { subscriptionStatus: subscriptionStatusArray[1] }
                 }
             );
 
@@ -184,11 +185,11 @@ export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
                 {
                     $facet: {
                         activeSubscriptions: [
-                            { $match: { subscriptionStatus: SubscriptionStatus.Active } },
+                            { $match: { subscriptionStatus: subscriptionStatusArray[0] } },
                             { $count: "count" }
                         ],
                         expiredSubscriptions: [
-                            { $match: { subscriptionStatus: SubscriptionStatus.Cancelled } },
+                            { $match: { subscriptionStatus: subscriptionStatusArray[2] } },
                             { $count: "count" }
                         ],
                         subscriptionsByFreePlan: [

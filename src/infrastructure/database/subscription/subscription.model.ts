@@ -1,5 +1,6 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
-import { SubscriptionStatus } from "../../../domain/entities/subscription.entity";
+import { SubscriptionStatusType } from "../../dtos/common.dto";
+import { subscriptionStatusArray } from "../../../utils/constants";
 
 export interface ISubscription extends Document {
     _id: Types.ObjectId,
@@ -7,7 +8,7 @@ export interface ISubscription extends Document {
     subscriptionPlanId: Types.ObjectId,
     startDate: Date,
     endDate: Date,
-    subscriptionStatus: SubscriptionStatus,
+    subscriptionStatus: SubscriptionStatusType,
     paymentId: Types.ObjectId,
     createdAt: Date,
     updatedAt: Date,
@@ -34,7 +35,7 @@ const SubscriptionSchema = new Schema<ISubscription>({
     },
     subscriptionStatus: {
         type: String,
-        enum: Object.values(SubscriptionStatus),
+        enum: Object.values(subscriptionStatusArray),
         required: [true, "SubscriptionStatus is required"]
     },
     paymentId: {

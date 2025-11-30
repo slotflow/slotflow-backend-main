@@ -8,9 +8,8 @@ import {
 import { startSession, Types } from "mongoose";
 import { stripe } from "../../infrastructure/lib/stripe";
 import { ApiResponse } from "../../infrastructure/dtos/common.dto";
-import { SubscriptionStatus } from "../../domain/entities/subscription.entity";
-import { PaymentFor, PaymentGateway } from "../../domain/entities/payment.entity";
 import { PlanRepositoryImpl } from "../../infrastructure/database/plan/plan.repository.impl";
+import { paymentForArray, paymentGatewayArray, subscriptionStatusArray } from "../../utils/constants";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { SubscriptionRepositoryImpl } from "../../infrastructure/database/subscription/subscription.repository.impl";
@@ -114,8 +113,8 @@ export class ProviderSaveSubscriptionUseCase {
                     transactionId: paymentIntent.toString(),
                     paymentStatus: paymentStatus,
                     paymentMethod: paymentType,
-                    paymentGateway: PaymentGateway.Stripe,
-                    paymentFor: PaymentFor.ProviderSubscription,
+                    paymentGateway: paymentGatewayArray[0],
+                    paymentFor: paymentForArray[0],
                     initialAmount: Number(initialAmount) / 100,
                     discountAmount: 0,
                     totalAmount: Number(totalAmount) / 100,
@@ -129,7 +128,7 @@ export class ProviderSaveSubscriptionUseCase {
                     subscriptionPlanId: new Types.ObjectId(subscriptionPlanId),
                     startDate: new Date(),
                     endDate: dayjs().add(Number(planDuration * 30), "day").toDate(),
-                    subscriptionStatus: SubscriptionStatus.Active,
+                    subscriptionStatus: subscriptionStatusArray[0],
                     paymentId: payment._id,
                 }, { session: mongoSession });
 

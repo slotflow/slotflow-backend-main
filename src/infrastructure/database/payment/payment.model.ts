@@ -1,13 +1,14 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
-import { PaymentFor, PaymentGateway } from "../../../domain/entities/payment.entity";
+import { PaymentForType, PaymentGatewayType } from "../../dtos/common.dto";
+import { paymentForArray, paymentGatewayArray } from "../../../utils/constants";
 
 export interface IPayment extends Document {
     _id: Types.ObjectId;
     transactionId: string;
     paymentStatus: string;
     paymentMethod: string;
-    paymentGateway: PaymentGateway;
-    paymentFor: PaymentFor;
+    paymentGateway: PaymentGatewayType;
+    paymentFor: PaymentForType;
     initialAmount: number;
     discountAmount: number;
     totalAmount: number;
@@ -49,12 +50,12 @@ const PaymentSchema = new Schema<IPayment>({
     },
     paymentGateway: {
         type: String,
-        enum: Object.values(PaymentGateway),
+        enum: Object.values(paymentGatewayArray),
         required: [true, "Payment gateway is required"],
     },
     paymentFor: {
         type: String,
-        enum: Object.values(PaymentFor), 
+        enum: Object.values(paymentForArray), 
         required: [true, "Payment purpose is required"],
     },
     initialAmount: {

@@ -3,7 +3,7 @@ import passport from "passport";
 import { Types } from "mongoose";
 import { appConfig, appUrl } from "../../config/env";
 import { NextFunction, Request, Response } from "express";
-import { roleArray } from "../../infrastructure/helpers/constants";
+import { roleArray } from "../../utils/constants";
 import { AesEncryption } from "../../infrastructure/services/aesEncryption";
 import { CreateCredentialUseCase } from "../../application/common-use.case/credential.use-case";
 import { CredentialRepositoryImpl } from "../../infrastructure/database/credential/credential.repository.impl";

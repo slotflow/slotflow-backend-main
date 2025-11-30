@@ -1,13 +1,5 @@
 import { Types } from "mongoose";
-
-export enum AppointmentStatus {
-    Booked = "Booked",
-    Completed = "Completed",
-    Cancelled = "Cancelled",
-    Rejected = "RejectedByProvider",
-    NotAttended = "NotAttended",
-    Confirmed = "Confirmed"
-}
+import { AppointmentStatusType } from "../../infrastructure/dtos/common.dto";
 
 export interface ParticipantPresence {
     joined: boolean;
@@ -16,7 +8,7 @@ export interface ParticipantPresence {
 }
 
 export interface statusTrack {
-    appointmentStatus: AppointmentStatus;
+    appointmentStatus: AppointmentStatusType;
     time: Date;
 }
 
@@ -28,7 +20,7 @@ export class Booking {
         public appointmentDate: Date,
         public appointmentTime: string,
         public appointmentMode: string,
-        public appointmentStatus: AppointmentStatus,
+        public appointmentStatus: AppointmentStatusType,
         public slotId: Types.ObjectId,
         public paymentId: Types.ObjectId | null,
         public videoCallRoomId: string | null,

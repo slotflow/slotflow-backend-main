@@ -2,7 +2,7 @@ import { adminConfig } from "../../config/env";
 import { User } from "../../domain/entities/user.entity";
 import { JWTService } from "../../infrastructure/security/jwt";
 import { Provider } from "../../domain/entities/provider.entity";
-import { roleArray } from "../../infrastructure/helpers/constants";
+import { roleArray } from "../../utils/constants";
 import { PasswordHasher } from "../../infrastructure/security/password-hashing";
 import { LoginRequest, LoginResponse } from "../../infrastructure/dtos/auth.dto";
 import { GenerateSignedUrlService } from "../../infrastructure/services/signedUrl.service";

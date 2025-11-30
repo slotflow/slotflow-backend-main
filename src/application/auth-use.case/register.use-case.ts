@@ -4,7 +4,7 @@ import { kafkaConfig } from '../../config/env';
 import { User } from '../../domain/entities/user.entity';
 import { JWTService } from '../../infrastructure/security/jwt';
 import { Provider } from '../../domain/entities/provider.entity';
-import { roleArray } from '../../infrastructure/helpers/constants';
+import { roleArray } from '../../utils/constants';
 import { OTPService } from '../../infrastructure/services/otp.service';
 import { PasswordHasher } from '../../infrastructure/security/password-hashing';
 import { RegisterRequest, RegisterResponse } from '../../infrastructure/dtos/auth.dto';

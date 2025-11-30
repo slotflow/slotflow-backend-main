@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { roleArray } from '../helpers/constants';
+import { roleArray } from '../../utils/constants';
 import { strongPasswordRegex, usernameRegex } from './regex';
 
 export const verificationTokenField = z.string({

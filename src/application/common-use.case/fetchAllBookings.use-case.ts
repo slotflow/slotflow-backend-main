@@ -1,4 +1,4 @@
-import { roleArray } from "../../infrastructure/helpers/constants";
+import { roleArray } from "../../utils/constants";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { ApiResponse, FetchBookingsRequest, FetchBookingsResponse, FetchOnlineBookingsForProviderResponse, FetchOnlineBookingsForUserResponse } from "../../infrastructure/dtos/common.dto";
 

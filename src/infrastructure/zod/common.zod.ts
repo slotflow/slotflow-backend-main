@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { Types } from "mongoose";
-import { roleArray } from "../helpers/constants";
+import { roleArray } from "../../utils/constants";
 import { addressLineRegex, cityRegex, countryRegex, districtRegex, landMarkRegex, phoneRegex, pincodeRegex, placeRegex, stateRegex } from "./regex";
 
 // ****** Common zod validations for reuse ****** \\

@@ -1,12 +1,12 @@
 import mongoose, { Types } from "mongoose";
 import { stripe } from "../../infrastructure/lib/stripe";
 import { ApiResponse } from "../../infrastructure/dtos/common.dto";
-import { AppointmentStatus } from "../../domain/entities/booking.entity";
 import { UserCancelBookingRequest } from "../../infrastructure/dtos/user.dto";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { UpdateEventFromGoogleCalendarService } from "../../infrastructure/services/googleCalendar";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
+import { appointmentStatusArray } from "../../utils/constants";
 
 export class UserCancelBookingUseCase {
     constructor(
@@ -26,11 +26,11 @@ export class UserCancelBookingUseCase {
             const booking = await this.bookingRepositoryImpl.findBookingById(new Types.ObjectId(bookingId));
             if (!booking) throw new Error("No booking found");
 
-            if (booking.appointmentStatus === AppointmentStatus.Cancelled) {
+            if (booking.appointmentStatus === appointmentStatusArray[2]) {
                 throw new Error("Already cancelled");
-            } else if (booking.appointmentStatus === AppointmentStatus.Completed) {
+            } else if (booking.appointmentStatus === appointmentStatusArray[1]) {
                 throw new Error("Appointment completed");
-            } else if (booking.appointmentStatus === AppointmentStatus.Rejected) {
+            } else if (booking.appointmentStatus === appointmentStatusArray[3]) {
                 throw new Error("Appointment rejected by the Service provider");
             }
 
@@ -43,9 +43,9 @@ export class UserCancelBookingUseCase {
 
             try {
 
-                booking.appointmentStatus = AppointmentStatus.Cancelled;
+                booking.appointmentStatus = appointmentStatusArray[2];
                 booking.statusTrack.push({
-                    appointmentStatus: AppointmentStatus.Cancelled,
+                    appointmentStatus: appointmentStatusArray[2],
                     time: new Date(),
                 });
                 const updateBooking = await this.bookingRepositoryImpl.updateBooking(booking, { session: mongooseSession });

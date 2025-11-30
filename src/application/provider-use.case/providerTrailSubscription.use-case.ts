@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { Types } from "mongoose";
+import { subscriptionStatusArray } from "../../utils/constants";
 import { ApiResponse } from "../../infrastructure/dtos/common.dto";
-import { SubscriptionStatus } from "../../domain/entities/subscription.entity";
 import { ProviderTrialSubscriptionRequest } from "../../infrastructure/dtos/provider.dto";
 import { PlanRepositoryImpl } from "../../infrastructure/database/plan/plan.repository.impl";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
@@ -41,7 +41,7 @@ export class ProviderTrialSubscriptionUseCase {
                 subscriptionPlanId: new Types.ObjectId(trialPlanId),
                 startDate: new Date(),
                 endDate: dayjs().add(Number(7), "day").toDate(),
-                subscriptionStatus: SubscriptionStatus.Active,
+                subscriptionStatus: subscriptionStatusArray[0],
                 paymentId: null
             });
 

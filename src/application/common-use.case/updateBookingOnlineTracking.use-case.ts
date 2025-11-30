@@ -1,5 +1,4 @@
-import { roleArray } from "../../infrastructure/helpers/constants";
-import { AppointmentStatus } from "../../domain/entities/booking.entity";
+import { appointmentStatusArray, roleArray } from "../../utils/constants";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { ServiceAvailabilityRepositoryImpl } from "../../infrastructure/database/serviceAvailability/serviceAvailability.repository.impl";
 import { ApiResponse, UpdateBookingOnlineTrackRequest, UpdateBookingOnlineTrackResponse } from "../../infrastructure/dtos/common.dto";
@@ -34,9 +33,9 @@ export class UpdateBookingOnlineTrakingUseCase {
                     booking.onlineTrack.provider.leftCallTime = leftCallTime;
                     if (booking.onlineTrack.user.joined) {
                         if (booking.onlineTrack.user.joinedTime && booking.onlineTrack.user.leftCallTime) {
-                            booking.appointmentStatus = AppointmentStatus.Completed;
+                            booking.appointmentStatus = appointmentStatusArray[1];
                             booking.statusTrack.push({
-                                appointmentStatus: AppointmentStatus.Completed,
+                                appointmentStatus: appointmentStatusArray[1],
                                 time: new Date(),
                             });
                         }
@@ -52,9 +51,9 @@ export class UpdateBookingOnlineTrakingUseCase {
                     booking.onlineTrack.user.leftCallTime = leftCallTime;
                     if (booking.onlineTrack.provider.joined) {
                         if (booking.onlineTrack.provider.joinedTime && booking.onlineTrack.provider.leftCallTime) {
-                            booking.appointmentStatus = AppointmentStatus.Completed;
+                            booking.appointmentStatus = appointmentStatusArray[1];
                             booking.statusTrack.push({
-                                appointmentStatus: AppointmentStatus.Completed,
+                                appointmentStatus: appointmentStatusArray[1],
                                 time: new Date(),
                             });
                         }

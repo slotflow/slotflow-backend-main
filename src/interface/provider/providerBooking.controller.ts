@@ -1,9 +1,8 @@
 import { Types } from "mongoose";
 import { DecodedUser } from "../../express";
+import { roleArray } from "../../utils/constants";
 import { NextFunction, Request, Response } from "express";
 import { RoleType } from "../../infrastructure/dtos/common.dto";
-import { roleArray } from "../../infrastructure/helpers/constants";
-import { AppointmentStatus } from "../../domain/entities/booking.entity";
 import { AesEncryption } from "../../infrastructure/services/aesEncryption";
 import { GoogleTokenService } from "../../infrastructure/services/googleTokenService";
 import { UpdateEventFromGoogleCalendarService } from "../../infrastructure/services/googleCalendar";
@@ -73,7 +72,7 @@ export class ProviderBookingController {
         try {
             const { id: bookingId } = ValidateObjectId(req.params.bookingId, "Booking ID");
             const validateData = ProviderChangeBookingAppointmentStatusZodSchema.parse(req.body);
-            const result = await this.providerChangeBookingAppointmentStatusUseCase.execute({ _id: new Types.ObjectId(bookingId), appointmentStatus: validateData.appointmentStatus as AppointmentStatus });
+            const result = await this.providerChangeBookingAppointmentStatusUseCase.execute({ _id: new Types.ObjectId(bookingId), appointmentStatus: validateData.appointmentStatus });
             res.status(200).json(result);
         } catch (error) {
             console.log("updateBookingAppointmentStatus error : ",error);

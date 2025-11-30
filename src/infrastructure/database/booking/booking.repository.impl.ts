@@ -1,12 +1,12 @@
 import dayjs from "dayjs";
 import { Types } from "mongoose";
-import { roleArray } from "../../helpers/constants";
+import { appointmentStatusArray, roleArray } from "../../../utils/constants";
 import { BookingModel, IBooking } from "./booking.model";
 import { User } from "../../../domain/entities/user.entity";
+import { Booking } from "../../../domain/entities/booking.entity";
 import { Provider } from "../../../domain/entities/provider.entity";
 import { endOfDay, startOfDay, startOfToday, startOfTomorrow } from "date-fns";
 import { UserFetchProvidersForChatSidebarResponse } from "../../dtos/user.dto";
-import { AppointmentStatus, Booking } from "../../../domain/entities/booking.entity";
 import { AdminFetchDashboardAppointmentStatsDataResponse } from "../../dtos/admin.dto";
 import { ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardGraphDataResponse, ProviderFetchUsersForChatSideBarResponse } from "../../dtos/provider.dto";
 import { AdminFetchTodaysBookingStatsForDashboardResponse, CreateBookingPayloadProps, IBookingRepository, ProviderFetchDashboardGraphRepository } from "../../../domain/repositories/IBooking.repository";
@@ -283,16 +283,16 @@ export class BookingRepositoryImpl implements IBookingRepository {
                         _id: null,
                         totalAppointments: { $sum: 1 },
                         completedAppointments: {
-                            $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Completed] }, 1, 0] }
+                            $sum: { $cond: [{ $eq: ["$appointmentStatus", appointmentStatusArray[1]] }, 1, 0] }
                         },
                         missedAppointments: {
-                            $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.NotAttended] }, 1, 0] }
+                            $sum: { $cond: [{ $eq: ["$appointmentStatus", appointmentStatusArray[4]] }, 1, 0] }
                         },
                         cancelledAppointmentsByUser: {
-                            $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Cancelled] }, 1, 0] }
+                            $sum: { $cond: [{ $eq: ["$appointmentStatus", appointmentStatusArray[2]] }, 1, 0] }
                         },
                         rejectedAppointmentsByProvider: {
-                            $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Rejected] }, 1, 0] }
+                            $sum: { $cond: [{ $eq: ["$appointmentStatus", appointmentStatusArray[3]] }, 1, 0] }
                         },
                         todaysAppointments: {
                             $sum: {
@@ -301,7 +301,7 @@ export class BookingRepositoryImpl implements IBookingRepository {
                                         $and: [
                                             { $gte: ["$appointmentDate", today] },
                                             { $lt: ["$appointmentDate", tomorrow] },
-                                            { $eq: ["$appointmentStatus", AppointmentStatus.Booked] }
+                                            { $eq: ["$appointmentStatus", appointmentStatusArray[0]] }
                                         ]
                                     }, 1, 0
                                 ]
@@ -355,17 +355,17 @@ export class BookingRepositoryImpl implements IBookingRepository {
                             },
                             completed: {
                                 $sum: {
-                                    $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Completed] }, 1, 0],
+                                    $cond: [{ $eq: ["$appointmentStatus", appointmentStatusArray[1]] }, 1, 0],
                                 },
                             },
                             missed: {
                                 $sum: {
-                                    $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.NotAttended] }, 1, 0],
+                                    $cond: [{ $eq: ["$appointmentStatus", appointmentStatusArray[4]] }, 1, 0],
                                 },
                             },
                             cancelled: {
                                 $sum: {
-                                    $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Cancelled] }, 1, 0],
+                                    $cond: [{ $eq: ["$appointmentStatus", appointmentStatusArray[2]] }, 1, 0],
                                 },
                             },
                         },
@@ -476,12 +476,12 @@ export class BookingRepositoryImpl implements IBookingRepository {
                             status: {
                                 $switch: {
                                     branches: [
-                                        { case: { $eq: ["$_id", AppointmentStatus.Completed] }, then: "completed" },
-                                        { case: { $eq: ["$_id", AppointmentStatus.NotAttended] }, then: "missed" },
-                                        { case: { $eq: ["$_id", AppointmentStatus.Cancelled] }, then: "cancelled" },
-                                        { case: { $eq: ["$_id", AppointmentStatus.Rejected] }, then: "rejected" },
-                                        { case: { $eq: ["$_id", AppointmentStatus.Confirmed] }, then: "confirmed" },
-                                        { case: { $eq: ["$_id", AppointmentStatus.Booked] }, then: "booked" },
+                                        { case: { $eq: ["$_id", appointmentStatusArray[1]] }, then: "completed" },
+                                        { case: { $eq: ["$_id", appointmentStatusArray[4]] }, then: "missed" },
+                                        { case: { $eq: ["$_id", appointmentStatusArray[2]] }, then: "cancelled" },
+                                        { case: { $eq: ["$_id", appointmentStatusArray[3]] }, then: "rejected" },
+                                        { case: { $eq: ["$_id", appointmentStatusArray[5]] }, then: "confirmed" },
+                                        { case: { $eq: ["$_id", appointmentStatusArray[0]] }, then: "booked" },
                                     ],
                                 },
                             },
@@ -527,13 +527,13 @@ export class BookingRepositoryImpl implements IBookingRepository {
                     $group: {
                         _id: null,
                         todaysBookedAppointments: {
-                            $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Booked] }, 1, 0] }
+                            $sum: { $cond: [{ $eq: ["$appointmentStatus", appointmentStatusArray[0]] }, 1, 0] }
                         },
                         todaysCancelledAppointments: {
-                            $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Cancelled] }, 1, 0] }
+                            $sum: { $cond: [{ $eq: ["$appointmentStatus", appointmentStatusArray[2]] }, 1, 0] }
                         },
                         todaysCompletedAppointments: {
-                            $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Completed] }, 1, 0] }
+                            $sum: { $cond: [{ $eq: ["$appointmentStatus", appointmentStatusArray[1]] }, 1, 0] }
                         }
                     }
                 },
@@ -556,10 +556,10 @@ export class BookingRepositoryImpl implements IBookingRepository {
                     $group: {
                         _id: null,
                         totalAppointments: { $sum: 1 },
-                        completedAppointments: { $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Completed] }, 1, 0] } },
-                        cancelledAppointments: { $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Cancelled] }, 1, 0] } },
-                        missedAppointments: { $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.NotAttended] }, 1, 0] } },
-                        rejectedAppointments: { $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Rejected] }, 1, 0] } }
+                        completedAppointments: { $sum: { $cond: [{ $eq: ["$appointmentStatus", appointmentStatusArray[1]] }, 1, 0] } },
+                        cancelledAppointments: { $sum: { $cond: [{ $eq: ["$appointmentStatus", appointmentStatusArray[2]] }, 1, 0] } },
+                        missedAppointments: { $sum: { $cond: [{ $eq: ["$appointmentStatus", appointmentStatusArray[4]] }, 1, 0] } },
+                        rejectedAppointments: { $sum: { $cond: [{ $eq: ["$appointmentStatus", appointmentStatusArray[3]] }, 1, 0] } }
                     }
                 },
             ])

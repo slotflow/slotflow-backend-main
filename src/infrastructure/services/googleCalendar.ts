@@ -1,8 +1,7 @@
 import { Types } from "mongoose";
 import { google } from "googleapis";
+import { appointmentStatusArray, EventData } from "../../utils/constants";
 import { GoogleTokenService } from "./googleTokenService";
-import { durationMap, EventData } from "../../utils/constant";
-import { AppointmentStatus } from "../../domain/entities/booking.entity";
 import { ApiResponse, CreateGoogleCalendarEventRequest, GoogleCalendarEvent, UpdateGoogleCalendarEventRequest, UserBookingAddingToCalendar, UserBookingFetchingFromCalendar } from "../dtos/common.dto";
 
 export class FethGoogleCalendarService {
@@ -71,8 +70,7 @@ export class AddEventToGoogleCalendarService {
             const calendar = google.calendar({ version: "v3", auth: oauth2Client });
 
             const startDate = new Date(appointmentDate);
-            const durationMinutes = durationMap[slotDuration] ?? 30;
-            const endDate = new Date(startDate.getTime() + durationMinutes * 60 * 1000);
+            const endDate = new Date(startDate.getTime() + slotDuration * 60 * 1000);
 
             const event: UserBookingAddingToCalendar = {
                 summary: `Service Appointment`,
@@ -145,7 +143,7 @@ export class UpdateEventFromGoogleCalendarService {
             if (!event) throw new Error("Event not found");
 
             const startDate = new Date(appointmentDate);
-            const backgroundColor = appointmentStatus === AppointmentStatus.Rejected || AppointmentStatus.Cancelled ? EventData.eventCancelBorderColor : EventData.eventAddBorderColor;
+            const backgroundColor = appointmentStatus === appointmentStatusArray[3] || appointmentStatusArray[2] ? EventData.eventCancelBorderColor : EventData.eventAddBorderColor;
             event.description = `Appointment scheduled on ${startDate.toLocaleString("en-IN", {
                 dateStyle: "full",
                 timeStyle: "short",

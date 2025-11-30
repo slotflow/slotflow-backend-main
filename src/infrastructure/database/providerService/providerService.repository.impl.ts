@@ -1,8 +1,8 @@
 import { Types } from "mongoose";
 import { IProviderService, ProviderServiceModel } from "./providerService.model";
 import { ProviderService } from "../../../domain/entities/providerService.entity";
-import { SubscriptionStatus } from "../../../domain/entities/subscription.entity";
 import { CreateProviderServiceRequest, FindProviderServiceResponse, FindProvidersUsingServiceCategoryIdsResponse, IProviderServiceRepository } from "../../../domain/repositories/IProviderService.repository";
+import { subscriptionStatusArray } from "../../../utils/constants";
 
 export class ProviderServiceRepositoryImpl implements IProviderServiceRepository {
     private mapToEntity(providerService: IProviderService): ProviderService {
@@ -96,7 +96,7 @@ export class ProviderServiceRepositoryImpl implements IProviderServiceRepository
                                     $expr: {
                                         $and: [
                                             { $eq: ["$providerId", "$$providerId"] },
-                                            { $eq: ["$subscriptionStatus", SubscriptionStatus.Active] },
+                                            { $eq: ["$subscriptionStatus", subscriptionStatusArray[0]] },
                                             { $gt: ["$endDate", now] },
                                         ]
                                     }

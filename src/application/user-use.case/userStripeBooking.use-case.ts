@@ -6,8 +6,7 @@ import {
 import { startSession, Types } from "mongoose";
 import { stripe } from "../../infrastructure/lib/stripe";
 import { ApiResponse } from "../../infrastructure/dtos/common.dto";
-import { AppointmentStatus } from "../../domain/entities/booking.entity";
-import { PaymentFor, PaymentGateway } from "../../domain/entities/payment.entity";
+import { appointmentStatusArray, paymentForArray, paymentGatewayArray } from '../../utils/constants';
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { AddEventToGoogleCalendarService } from "../../infrastructure/services/googleCalendar";
 import { FindProviderServiceResponse } from "../../domain/repositories/IProviderService.repository";
@@ -146,8 +145,8 @@ export class UserSaveBookingAfterStripePaymentUseCase {
                     transactionId: paymentIntent.toString(),
                     paymentStatus: paymentStatus,
                     paymentMethod: paymentType,
-                    paymentGateway: PaymentGateway.Stripe,
-                    paymentFor: PaymentFor.AppointmentBooking,
+                    paymentGateway: paymentGatewayArray[0],
+                    paymentFor: paymentForArray[1],
                     initialAmount: Number(initialAmount) / 100,
                     discountAmount: 0,
                     totalAmount: Number(totalAmount) / 100,
@@ -161,9 +160,9 @@ export class UserSaveBookingAfterStripePaymentUseCase {
                 if (user.googleConnected) {
                     const response = await this.addEventToGoogleCalendarService.execute({
                         userId,
-                        slotDuration,
+                        slotDuration: Number(slotDuration),
                         appointmentDate: new Date(dateString),
-                        appointmentStatus: AppointmentStatus.Booked,
+                        appointmentStatus: appointmentStatusArray[0],
                     });
                     if (!response.success) throw new Error("Booking saving failed");
 
@@ -172,14 +171,14 @@ export class UserSaveBookingAfterStripePaymentUseCase {
                         userId: new Types.ObjectId(userId),
                         appointmentDate: new Date(dateString),
                         appointmentMode: selectedServiceMode,
-                        appointmentStatus: AppointmentStatus.Booked,
+                        appointmentStatus: appointmentStatusArray[0],
                         appointmentTime: selectedSlot[0].time,
                         videoCallRoomId: "stw-" + uuidv4(),
                         googleEventId: response.data?.id!,
                         paymentId: payment._id,
                         slotId: selectedSlot[0]._id,
                         statusTrack: [{
-                            appointmentStatus: AppointmentStatus.Booked,
+                            appointmentStatus: appointmentStatusArray[0],
                             time: new Date(),
                         }]
                     }, { session: mongoSession });

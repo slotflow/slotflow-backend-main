@@ -1,5 +1,7 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
-import { AppointmentStatus, ParticipantPresence, statusTrack } from "../../../domain/entities/booking.entity";
+import { AppointmentStatusType } from "../../dtos/common.dto";
+import { appointmentStatusArray } from "../../../utils/constants";
+import { ParticipantPresence, statusTrack } from "../../../domain/entities/booking.entity";
 
 export interface IBooking extends Document {
     _id: Types.ObjectId,
@@ -8,7 +10,7 @@ export interface IBooking extends Document {
     appointmentDate: Date,
     appointmentTime: string,
     appointmentMode: string,
-    appointmentStatus: AppointmentStatus,
+    appointmentStatus: AppointmentStatusType,
     slotId: Types.ObjectId,
     paymentId: Types.ObjectId | null,
     videoCallRoomId: string | null,
@@ -31,7 +33,7 @@ const ParticipantPresenceSchema = new Schema<ParticipantPresence>({
 const StatusTrackSchema = new Schema<statusTrack>({
     appointmentStatus: { 
         type: String, 
-        enum: Object.values(AppointmentStatus), 
+        enum: Object.values(appointmentStatusArray), 
         required: true 
     },
     time: { 
@@ -65,7 +67,7 @@ const BookingSchema = new Schema<IBooking>({
     },
     appointmentStatus: { 
         type: String, 
-        enum: Object.values(AppointmentStatus), 
+        enum: Object.values(appointmentStatusArray), 
         required: true 
     },
     slotId: { 
