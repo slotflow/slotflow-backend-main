@@ -1,4 +1,3 @@
-import { Validator } from "../../infrastructure/validator/validator";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { ApiResponse, FetchPaymentResponse, FetchPaymentsRequest } from "../../infrastructure/dtos/common.dto";
@@ -10,18 +9,21 @@ export class ProviderFetchAllPaymentsUseCase {
         private paymentRepositoryImpl: PaymentRepositoryImpl,
     ) { }
 
-    async execute({ providerId, page, limit}: FetchPaymentsRequest): Promise<ApiResponse<FetchPaymentResponse>> {
-        
-        if(!providerId) throw new Error("Invalid request.");
+    async execute(payload: FetchPaymentsRequest): Promise<ApiResponse<FetchPaymentResponse>> {
+        try {
+            const { providerId, page, limit } = payload;
+            if (!providerId) throw new Error("Invalid request.");
 
-        Validator.validateObjectId(providerId, "providerId");
+            const provider = await this.providerRepositoryImpl.findProviderById(providerId);
+            if (!provider) throw new Error("No user found.");
 
-        const provider = await this.providerRepositoryImpl.findProviderById(providerId);
-        if(!provider) throw new Error("No user found.");
+            const result = await this.paymentRepositoryImpl.findAllPayments({ page, limit, providerId: providerId });
+            if (!result) throw new Error("Payments fetching error.");
 
-        const result = await this.paymentRepositoryImpl.findAllPayments({page, limit, providerId: providerId});
-        if(!result) throw new Error("Payments fetching error.");
-
-        return { data: result.data, totalPages: result.totalPages, currentPage: result.currentPage, totalCount: result.totalCount };
+            return { data: result.data, totalPages: result.totalPages, currentPage: result.currentPage, totalCount: result.totalCount };
+        } catch (error) {
+            console.log("ProviderFetchAllPaymentsUseCase error : ", error);
+            throw new Error("Failed to fetch all payments");
+        }
     }
 }

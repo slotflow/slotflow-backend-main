@@ -1,23 +1,25 @@
 import { Types } from "mongoose";
 import { Plan } from "../../domain/entities/plan.entity";
 import { User } from "../../domain/entities/user.entity";
+import { Review } from "../../domain/entities/review.entity";
 import { Credential } from "../../domain/entities/credential";
 import { Address } from "../../domain/entities/address.entity";
 import { Service } from "../../domain/entities/service.entity";
 import { Provider } from "../../domain/entities/provider.entity";
 import { Subscription } from "../../domain/entities/subscription.entity";
 import { Payment, PaymentFor } from "../../domain/entities/payment.entity";
-import { Booking, ParticipantPresence } from "../../domain/entities/booking.entity";
-import { findSubscriptionFullDetailsResProps } from "../../domain/repositories/ISubscription.repository";
 import { Availability } from "../../domain/entities/serviceAvailability.entity";
-import { Review } from "../../domain/entities/review.entity";
+import { Booking, ParticipantPresence } from "../../domain/entities/booking.entity";
+import { daysArray, roleArray, serviceModeArray, serviceTypeArray } from "../helpers/constants";
+import { findSubscriptionFullDetailsResProps } from "../../domain/repositories/ISubscription.repository";
 
-// Common Role
-export enum Role {
-  admin = "ADMIN",
-  user = "USER",
-  provider = "PROVIDER"
-}
+export type RoleType = typeof roleArray[number];
+
+export type DayType = typeof daysArray[number];
+
+export type ServiceModeType = typeof serviceModeArray[number];
+
+export type ServiceTypeType = typeof serviceTypeArray[number];
 
 // **** 1. Used as the request interface for the paginated request
 export interface ApiPaginationRequest {
@@ -63,7 +65,7 @@ export type PopulatedSubscription = Omit<Subscription, 'subscriptionPlanId' | "p
 
 
 //// **** 5. Used as the request type for adding address for user or provider
-export type AddAddressRequest = Pick<Address, "userId" | "addressLine" | "place" | "phone" | "city" | "country" | "district" | "pincode" | "state" | "googleMapLink">;
+export type CreateAddressRequest = Pick<Address, "userId" | "addressLine" | "landMark" | "place" | "phone" | "city" | "country" | "district" | "pincode" | "state" | "location">;
 
 
 //// **** 6.1 Used as the request interface fetching payments for admin, provider and user side
@@ -86,7 +88,7 @@ export interface userIdAndServiceProviderId {
 export interface FetchBookingsRequest extends ApiPaginationRequest, userIdAndServiceProviderId {
   online: boolean;
   raw: boolean;
-  role: Role;
+  role: RoleType;
 }
 //// **** 7.2 Used as the response type for fetching bookings for admin, provider and user side
 export type FetchBookingsResponse = Array<Pick<Booking, "_id" | "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "videoCallRoomId" | "serviceProviderId">>;
@@ -97,11 +99,11 @@ export type FetchOnlineBookingsForUserResponse = Pick<Booking, "_id" | "appointm
 export type FetchAllAppServicesResponse = Array<Pick<Service, "_id" | "serviceName">>;
 
 //// **** 9. Used as the request type for updating address for provider and user side
-export type UpdateAddressRequest = Pick<Address, "_id" | "userId" | "addressLine" | "place" | "phone" | "city" | "country" | "district" | "pincode" | "state" | "googleMapLink">;
+export type UpdateAddressRequest = Pick<Address, "_id" | "userId" | "addressLine" | "landMark" | "place" | "phone" | "city" | "country" | "district" | "pincode" | "state" | "location">;
 
 //// **** 10. Used as the interface for the validate join room
 export interface ValidateJoinRoomRequest {
-  role: Role;
+  role: RoleType;
   bookingId: Types.ObjectId;
   roomId: string;
   userOrProviderId: Types.ObjectId;
@@ -198,7 +200,7 @@ export interface CreateGoogleCalendarEventRequest {
 }
 
 export interface UpdateBookingOnlineTrackRequest extends ParticipantPresence {
-  role: Role,
+  role: RoleType,
   roomId: string,
 }
 
@@ -210,7 +212,7 @@ export type UpdateBookingOnlineTrackResponse = Pick<Availability, "duration">;
 export interface userIdAndProviderIdFilterForFetchReviews {
   userId?: User["_id"];
   providerId?: Provider["_id"];
-  role?: Role;
+  role?: RoleType;
 }
 export interface FetchReviesRequest extends ApiPaginationRequest, userIdAndProviderIdFilterForFetchReviews { }
 //// **** Used as the response type fetching payments for admin, provider and user side
@@ -221,6 +223,9 @@ export interface FetchReviewsResponse extends Pick<Review, "_id" | "createdAt" |
 
 
 //// **** Used as the response interface of fetch booking details
+export interface FetchBookingDetailsRequest {
+  bookingId: Booking["_id"];
+}
 export interface FetchBookingDetailsResponse extends Pick<Booking, "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "onlineTrack" | "statusTrack" | "videoCallRoomId"> {
   userId: Pick<User, "username" | "email">;
   serviceProviderId: Pick<Provider, "username" | "email">;

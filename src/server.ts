@@ -1,17 +1,25 @@
 import app from './app';
 import dotenv from 'dotenv';
 
+import { kafkaConfig } from './config/env';
 import './infrastructure/services/passport';
 import './infrastructure/cron-jobs/updateBookingsCron';
+import { KafkaService } from './infrastructure/lib/kafka';
 import './infrastructure/cron-jobs/updateSubscriptionStatusCron';
 import connectDB from './config/database/mongodb/mongodb.config';
-import { connectKafkaProducer } from './infrastructure/lib/kafka.producer';
 
 dotenv.config();
 
-const port = process.env.PORT || 3000;
+const kafkaService = new KafkaService(kafkaConfig.clientId!, kafkaConfig.brokers);
 
-await connectKafkaProducer();
+await kafkaService.connectAdmin();
+await kafkaService.createTopics([kafkaConfig.otpSendTopic]);
+await kafkaService.disconnectAdmin();
+await kafkaService.connectProducer();
+
+export const producer = kafkaService.getProducer()
+
+const port = process.env.PORT || 3000;
 
 connectDB();
 

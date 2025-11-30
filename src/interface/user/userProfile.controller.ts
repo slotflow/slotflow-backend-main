@@ -1,17 +1,21 @@
 import { Types } from "mongoose";
-import { Request, Response } from "express";
 import { DecodedUser } from "../../express";
 import { s3Client } from "../../config/aws_s3";
-import { HandleError } from "../../infrastructure/error/error";
+import { NextFunction, Request, Response } from "express";
 import { UserOrProviderUpdateInfoZodSchema } from "../../infrastructure/zod/common.zod";
+import { GenerateSignedUrlService } from "../../infrastructure/services/signedUrl.service";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
+import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
 import { UserFetchProfileDetailsUseCase, UserUpdateProfileImageUseCase, UserUpdateProviderInfoUseCase } from "../../application/user-use.case/userProfile.use-Case";
 
 const userRepositoryImpl = new UserRepositoryImpl();
+const signedUrlCacheRepositoryImpl = new SignedUrlCacheRepositoryImpl();
 
-const userFetchProfileDetailsUseCase = new UserFetchProfileDetailsUseCase(userRepositoryImpl);
-const userUpdateProfileImageUseCase = new UserUpdateProfileImageUseCase(userRepositoryImpl, s3Client);
+const generateSignedUrlService = new GenerateSignedUrlService(signedUrlCacheRepositoryImpl);
+
 const userUpdateProviderInfoUseCase = new UserUpdateProviderInfoUseCase(userRepositoryImpl);
+const userFetchProfileDetailsUseCase = new UserFetchProfileDetailsUseCase(userRepositoryImpl);
+const userUpdateProfileImageUseCase = new UserUpdateProfileImageUseCase(userRepositoryImpl, s3Client, generateSignedUrlService);
 
 export class UserProfileController {
     constructor(
@@ -24,18 +28,19 @@ export class UserProfileController {
         this.updateUserInfo = this.updateUserInfo.bind(this);
     }
 
-    async getProfileDetails(req:Request, res: Response) {
+    async getProfileDetails(req:Request, res: Response, next: NextFunction) {
         try{
             const userId = (req.user as DecodedUser).userOrProviderId;
             if(!userId) throw new Error("Invalid request.");
             const result = await this.userFetchProfileDetailsUseCase.execute({userId: new Types.ObjectId(userId)});
             res.status(200).json(result);
         }catch(error){
-            HandleError.handle(error, res);
+            console.log("getProfileDetails error : ",error);
+            next(error)
         }
     }
 
-    async updateProfileImage(req: Request, res: Response) {
+    async updateProfileImage(req: Request, res: Response, next: NextFunction) {
         try{
             const userId = (req.user as DecodedUser).userOrProviderId;
             const file = req.file;
@@ -43,11 +48,12 @@ export class UserProfileController {
             const result = await this.userUpdateProfileImageUseCase.execute({userId: new Types.ObjectId(userId), file});
             res.status(200).json(result);
         }catch(error){
-            HandleError.handle(error, res);
+            console.log("updateProfileImage error : ",error);
+            next(error)
         }
     }
 
-    async updateUserInfo(req: Request, res: Response) {
+    async updateUserInfo(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = (req.user as DecodedUser).userOrProviderId;
             const { username, phone } = UserOrProviderUpdateInfoZodSchema.parse(req.body);
@@ -55,7 +61,8 @@ export class UserProfileController {
             const result = await this.userUpdateProviderInfoUseCase.execute({ userId: new Types.ObjectId(userId), username, phone })
             res.status(200).json(result)
         } catch(error){ 
-            HandleError.handle(error,res);
+            console.log("updateUserInfo error : ",error);
+            next(error);
         }
     }
     

@@ -1,57 +1,60 @@
 import { Types } from "mongoose";
-import { Request, Response } from "express";
 import { DecodedUser } from "../../express";
-import { s3Client } from "../../config/aws_s3";
-import { HandleError } from "../../infrastructure/error/error";
-import { ProviderAddServiceDetailsZodSchema } from "../../infrastructure/zod/provider.zod";
+import { NextFunction, Request, Response } from "express";
+import { ProviderCreateServiceDetailsZodSchema } from "../../infrastructure/zod/provider.zod";
+import { CreateProviderServiceRequest } from "../../domain/repositories/IProviderService.repository";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { ProviderServiceRepositoryImpl } from "../../infrastructure/database/providerService/providerService.repository.impl";
-import { ProviderAddServiceDetailsUseCase, ProviderFetchServiceDetailsUseCase } from "../../application/provider-use.case/providerService.use-case";
+import { ProviderCreateServiceDetailsUseCase, ProviderFetchServiceDetailsUseCase } from "../../application/provider-use.case/providerService.use-case";
 
 const providerRepositoryImpl = new ProviderRepositoryImpl();
 const providerServiceRepositoryImpl = new ProviderServiceRepositoryImpl();
 
-const providerAddServiceDetailsUseCase = new ProviderAddServiceDetailsUseCase(providerRepositoryImpl, providerServiceRepositoryImpl, s3Client);
+const providerCreateServiceDetailsUseCase = new ProviderCreateServiceDetailsUseCase(providerRepositoryImpl, providerServiceRepositoryImpl);
 const providerFetchServiceDetailsUseCase = new ProviderFetchServiceDetailsUseCase(providerServiceRepositoryImpl);
 
 class ProviderServiceController {
     constructor(
-        private providerAddServiceDetailsUseCase: ProviderAddServiceDetailsUseCase,
+        private providerCreateServiceDetailsUseCase: ProviderCreateServiceDetailsUseCase,
         private providerFetchServiceDetailsUseCase: ProviderFetchServiceDetailsUseCase,
     ) {
-        this.addServiceDetails = this.addServiceDetails.bind(this);
+        this.createServiceDetails = this.createServiceDetails.bind(this);
         this.getServiceDetails = this.getServiceDetails.bind(this);
     }
 
-    async addServiceDetails(req: Request, res: Response) {
+    async createServiceDetails(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
-            const validateData = ProviderAddServiceDetailsZodSchema.parse(req.body);
-            const { serviceCategory, serviceName, serviceDescription, servicePrice, providerAdhaar, providerExperience } = validateData;
-            const file = req.file;
-            if (!providerId || !serviceCategory || !serviceName || !serviceDescription || !servicePrice || !providerAdhaar || !providerExperience || !file) throw new Error("Invalid Request.");
-            const result = await this.providerAddServiceDetailsUseCase.execute({ providerId: new Types.ObjectId(providerId), serviceCategory: new Types.ObjectId(serviceCategory), serviceName, serviceDescription, servicePrice: Number(servicePrice), providerAdhaar: Number(providerAdhaar), providerExperience, file });
+            const validateData = ProviderCreateServiceDetailsZodSchema.parse(req.body);
+            const payload: CreateProviderServiceRequest = {
+                ...validateData,
+                providerId: new Types.ObjectId(providerId),
+                serviceCategory: new Types.ObjectId(validateData.serviceCategory),
+            };
+            const result = await this.providerCreateServiceDetailsUseCase.execute(payload);
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("createServiceDetails error : ", error);
+            next(error)
         }
     }
 
-    async getServiceDetails(req: Request, res: Response) {
+    async getServiceDetails(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
             if (!providerId) throw new Error("Invalid request.");
             const result = await this.providerFetchServiceDetailsUseCase.execute({ providerId: new Types.ObjectId(providerId) });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("getServiceDetails error : ", error);
+            next(error)
         }
     }
 
 }
 
 const providerServiceController = new ProviderServiceController(
-    providerAddServiceDetailsUseCase,
+    providerCreateServiceDetailsUseCase,
     providerFetchServiceDetailsUseCase
 );
 export { providerServiceController };

@@ -1,10 +1,9 @@
-import { 
-    AdiminFetchAllProviders, 
-    AdminApproveProviderRequest, 
-    AdminChangeProviderStatusRequest, 
+import {
+    AdiminFetchAllProviders,
+    AdminApproveProviderRequest,
+    AdminChangeProviderStatusRequest,
     AdminChangeProviderTrustTagRequest,
 } from "../../../infrastructure/dtos/admin.dto";
-import { Validator } from "../../../infrastructure/validator/validator";
 import { OTPService } from "../../../infrastructure/services/otp.service";
 import { ApiPaginationRequest, ApiResponse } from "../../../infrastructure/dtos/common.dto";
 import { ProviderRepositoryImpl } from "../../../infrastructure/database/provider/provider.repository.impl";
@@ -13,11 +12,16 @@ import { ProviderRepositoryImpl } from "../../../infrastructure/database/provide
 export class AdminProviderListUseCase {
     constructor(private providerRepositoryImpl: ProviderRepositoryImpl) { }
 
-    async execute({page, limit}: ApiPaginationRequest): Promise<ApiResponse<AdiminFetchAllProviders>> {
+    async execute(payload: ApiPaginationRequest): Promise<ApiResponse<AdiminFetchAllProviders>> {
+        try {
+            const result = await this.providerRepositoryImpl.findAllProviders(payload);
+            if (!result) throw new Error("Providers fetching failed");
 
-        const result = await this.providerRepositoryImpl.findAllProviders({page, limit});
-        if (!result) throw new Error("Providers fetching failed");
-        return { data: result.data, totalPages: result.totalPages, currentPage: result.currentPage, totalCount: result.totalCount };
+            return { data: result.data, totalPages: result.totalPages, currentPage: result.currentPage, totalCount: result.totalCount };
+        } catch (error) {
+            console.log("AdminProviderListUseCase: ", error);
+            throw new Error("Failed to fetch providers list");
+        }
     }
 }
 
@@ -25,20 +29,25 @@ export class AdminProviderListUseCase {
 export class AdminApproveProviderUseCase {
     constructor(private providerRepositoryImpl: ProviderRepositoryImpl) { }
 
-    async execute({ providerId }: AdminApproveProviderRequest): Promise<ApiResponse> {
+    async execute(payload: AdminApproveProviderRequest): Promise<ApiResponse> {
+        try {
+            const { providerId } = payload;
 
-        if (!providerId) throw new Error("Invalid request");
+            const provider = await this.providerRepositoryImpl.findProviderById(providerId);
+            if (!provider) throw new Error("User not found.");
+            if (provider.isAdminVerified) throw new Error("Provider is already verified.");
 
-        Validator.validateObjectId(providerId, "providerId");
+            provider.isAdminVerified = true;
+            const updatedProvider = await this.providerRepositoryImpl.updateProvider(provider);
+            if (!updatedProvider) throw new Error("Provider not found");
 
-        const provider = await this.providerRepositoryImpl.findProviderById(providerId);
-        if (!provider) throw new Error("User not found.");
-        if (provider.isAdminVerified) throw new Error("Provider is already verified.");
-        provider.isAdminVerified = true;
-        const updatedProvider = await this.providerRepositoryImpl.updateProvider(provider);
-        if (!updatedProvider) throw new Error("Provider not found");
-        await OTPService.sendApprovalEmail(updatedProvider.email);
-        return { success: true, message: "Provider approved successfully." };
+            await OTPService.sendApprovalEmail(updatedProvider.email);
+
+            return { success: true, message: "Provider approved successfully." };
+        } catch (error) {
+            console.log("AdminApproveProviderUseCase: ", error);
+            throw new Error("Failed to approve provider");
+        }
     }
 }
 
@@ -46,19 +55,23 @@ export class AdminApproveProviderUseCase {
 export class AdminChangeProviderBlockStatusUseCase {
     constructor(private providerRepositoryImpl: ProviderRepositoryImpl) { }
 
-    async execute({ providerId, isBlocked }: AdminChangeProviderStatusRequest): Promise<ApiResponse> {
+    async execute(payload: AdminChangeProviderStatusRequest): Promise<ApiResponse> {
+        try {
+            const { providerId, isBlocked } = payload;
 
-        if (!providerId || isBlocked === null) throw new Error("Invalid request");
+            const provider = await this.providerRepositoryImpl.findProviderById(providerId);
+            if (!provider) throw new Error("User not found.");
+            
+            provider.isBlocked = !isBlocked;
 
-        Validator.validateObjectId(providerId, "providerId");
-        Validator.validateBooleanValue(isBlocked, "isBlocked");
+            const updatedProvider = await this.providerRepositoryImpl.updateProvider(provider);
+            if (!updatedProvider) throw new Error("Provider not found");
 
-        const provider = await this.providerRepositoryImpl.findProviderById(providerId);
-        if (!provider) throw new Error("User not found.");
-        provider.isBlocked = !isBlocked;
-        const updatedProvider = await this.providerRepositoryImpl.updateProvider(provider);
-        if (!updatedProvider) throw new Error("Provider not found");
-        return { success: true, message: `Provider ${isBlocked ? "Unblocked" : "blocked"} successfully.` };
+            return { success: true, message: `Provider ${isBlocked ? "Unblocked" : "blocked"} successfully.` };
+        } catch (error) {
+            console.log("AdminChangeProviderBlockStatusUseCase: ", error);
+            throw new Error("Failed to change provider block status");
+        }
     }
 }
 
@@ -66,19 +79,23 @@ export class AdminChangeProviderBlockStatusUseCase {
 export class AdminChangeProviderTrustTagUseCase {
     constructor(private providerRepositoryImpl: ProviderRepositoryImpl) { }
 
-    async execute({ providerId, trustedBySlotflow }: AdminChangeProviderTrustTagRequest): Promise<ApiResponse> {
+    async execute(payload: AdminChangeProviderTrustTagRequest): Promise<ApiResponse> {
+        try {
+            const { providerId, trustedBySlotflow } = payload;
 
-        if (!providerId || trustedBySlotflow === null) throw new Error("Invalid request");
+            const provider = await this.providerRepositoryImpl.findProviderById(providerId);
+            if (!provider) throw new Error("User not found.");
 
-        Validator.validateObjectId(providerId, "providerId");
-        Validator.validateBooleanValue(trustedBySlotflow, "trustedBySlotflow");
+            provider.trustedBySlotflow = !trustedBySlotflow;
 
-        const provider = await this.providerRepositoryImpl.findProviderById(providerId);
-        if (!provider) throw new Error("User not found.");
-        provider.trustedBySlotflow = !trustedBySlotflow;
-        const updatedProvider = await this.providerRepositoryImpl.updateProvider(provider);
-        if (!updatedProvider) throw new Error("Provider not found");
-        return { success: true, message: `Provider trust tag ${trustedBySlotflow ? "Given" : "Removed"} successfully.` };
+            const updatedProvider = await this.providerRepositoryImpl.updateProvider(provider);
+            if (!updatedProvider) throw new Error("Provider not found");
+            
+            return { success: true, message: `Provider trust tag ${trustedBySlotflow ? "Given" : "Removed"} successfully.` };
+        } catch (error) {
+            console.log("AdminChangeProviderTrustTagUseCase: ", error);
+            throw new Error("Failed to change provider trust tag status");
+        }
     }
 }
 

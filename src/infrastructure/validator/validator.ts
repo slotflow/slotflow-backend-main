@@ -1,12 +1,9 @@
 import dayjs from "dayjs";
 import { Types } from 'mongoose';
-import validator from 'validator';
-import { Role } from "../dtos/common.dto";
-import customParseFormat from "dayjs/plugin/customParseFormat";
-import { daysArray, subscriptionMonthArray, validSlotDuration } from "../helpers/constants";
-import { validateEmail, validateOtp, validatePassword, validatePhone, validateUsername } from '@codebymk/validator';
+import customParseFormat from "dayjs/plugin/customParseFormat.js";
+import { validateEmail, validateOtp, validatePassword, validateUsername } from '@codebymk/validator';
+import { addressLineRegex, countryRegex, districtRegex, landMarkRegex, phoneRegex, pincodeRegex, placeRegex, stateRegex } from "../zod/regex";
 
-const validRoles = Object.values(Role);
 dayjs.extend(customParseFormat);
 
 export class Validator {
@@ -30,23 +27,30 @@ export class Validator {
     // Address Validation
     // Address Line
     static validateAddressLine(addressLine: string): void {
-        if (!/^[a-zA-Z0-9 .,#-]{10,150}$/.test(addressLine)) throw new Error("Address line must be 10–150 characters long and can only include letters, numbers, spaces, and the symbols . , # -");
+        if (!addressLineRegex.test(addressLine)) throw new Error("Address line must be 10–150 characters long and can only include letters, numbers, spaces, and the symbols . , # -");
         if (addressLine.length < 10) throw new Error("Address line length should be more than 10.");
         if (addressLine.length > 150) throw new Error("Address line length should be less than 150");
+    }
+
+    // Landmark
+    static validateLandmark(addressLine: string): void {
+        if (!landMarkRegex.test(addressLine)) throw new Error("Land Mark must be 5–100 characters long and can only include letters, numbers, spaces, and the symbols . , # ");
+        if (addressLine.length < 5) throw new Error("Land Mark length should be more than 5.");
+        if (addressLine.length > 150) throw new Error("Land Mark length should be less than 150");
     }
 
     // Place
     static validatePlace(place: string): void {
         if (!place || place.trim().length < 3) throw new Error("Place is required and should have at least 3 characters.");
         if (place.trim().length > 50) throw new Error("Place should have less than 50 characters.");
-        if (!/^[a-zA-Z .-]{3,50}$/.test(place)) throw new Error("Place name must be 3–50 characters long and can only include letters, spaces, dots, and hyphens");
+        if (!placeRegex.test(place)) throw new Error("Place name must be 3–50 characters long and can only include letters, spaces, dots, and hyphens");
     }
 
     // Phone
     static validatePhone(phone: string): void {
         if (!phone || phone.trim().length < 7) throw new Error("Phone is required and should have at least 7 characters.");
         if (phone.trim().length > 20) throw new Error("Phone should have less than 20 characters.");
-        if (!/^\+?[0-9\s\-().]{7,20}$/.test(phone)) throw new Error("Invalid phone number. Only digits, spaces, dashes (-), dots (.), parentheses (), and an optional + at the beginning are allowed. Length must be between 7 to 20 characters.");
+        if (!phoneRegex.test(phone)) throw new Error("Invalid phone number. Only digits, spaces, dashes (-), dots (.), parentheses (), and an optional + at the beginning are allowed. Length must be between 7 to 20 characters.");
     }
 
     // City
@@ -60,36 +64,29 @@ export class Validator {
     static validateDistrict(district: string): void {
         if (!district || district.trim().length < 3) throw new Error("District is required and should have at least 3 characters.");
         if (district.trim().length > 50) throw new Error("District should have less than 50 characters.");
-        if (!/^[a-zA-Z ]{3,50}$/.test(district)) throw new Error("District must only contain letters and spaces");
+        if (!districtRegex.test(district)) throw new Error("District must only contain letters and spaces");
     }
 
     // Pincode
     static validatePincode(pincode: string): void {
         if (!pincode || pincode.trim().length < 3) throw new Error("Pincode is required and should have at least 3 characters.");
         if (pincode.trim().length > 12) throw new Error("Pincode should have less than 12 characters.");
-        if (!/^[A-Za-z0-9\s-]{3,12}$/.test(pincode)) throw new Error("Invalid postal code");
+        if (!pincodeRegex.test(pincode)) throw new Error("Invalid postal code");
     }
 
     // State
     static validateState(state: string): void {
         if (!state || state.trim().length < 2) throw new Error("State is required and should have at least 2 characters.");
         if (state.trim().length > 50) throw new Error("State should have less than 50 characters.");
-        if (!/^[a-zA-Z ]{2,50}$/.test(state)) throw new Error("State must only contain letters and spaces");
+        if (!stateRegex.test(state)) throw new Error("State must only contain letters and spaces");
     }
 
     // Country
     static validateCountry(country: string): void {
         if (!country || country.trim().length < 2) throw new Error("Country is required and should have at least 2 characters.");
         if (country.trim().length > 50) throw new Error("Country should have less than 50 characters.");
-        if (!/^[a-zA-Z ]{2,50}$/.test(country)) throw new Error("Country should only contain alphabets and spaces");
+        if (!countryRegex.test(country)) throw new Error("Country should only contain alphabets and spaces");
     }
-
-    // Google Map Link
-    static validateGoogleMapLink(googleMapLink: string): void {
-        if (!validator.isURL(googleMapLink)) throw new Error("Invalid Google Map link.");
-    }
-
-
 
 
 
@@ -151,13 +148,11 @@ export class Validator {
 
     // Service availability
     static validateDay(day: string): void {
-        if (!day || day.trim().length === 0) throw new Error("Day is required.");
-        if (!daysArray.includes(day)) throw new Error("Invalid day. Day must be one of: Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday.");
+        
     }
 
     static validateDuration(duration: string): void {
         if (!duration || duration.trim().length === 0) throw new Error("Duration is required.");
-        if (!validSlotDuration.includes(duration.trim().toLowerCase())) throw new Error("Invalid duration. Duration must be one of: 15 minutes, 30 minutes, 1 hour.");
     }
 
     static validateTiming(endTime: string, startTime: string): void {
@@ -230,7 +225,7 @@ export class Validator {
         for (const feature of features) {
             if (typeof feature !== "string" || feature.trim().length === 0)
                 throw new Error("Each feature must be a non-empty string.");
-            if (!/^[\w\d\s!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]{5,100}$/.test(feature.trim()))
+            if (!/^[\w\d\s!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]{1,100}$/.test(feature.trim()))
                 throw new Error("Invalid feature.");
         }
     }
@@ -245,9 +240,7 @@ export class Validator {
 
     // Plan duration
     static validatePlanDuration(value: string): void {
-        if (!subscriptionMonthArray.includes(value)) {
-            throw new Error("Invalid duration.");
-        }
+        
     }
 
 
@@ -301,9 +294,7 @@ export class Validator {
     }
 
     static validateRole(value: string): void {
-        if (!validRoles.includes(value as Role)) {
-            throw new Error("Invalid role. Must be one of: Admin, User, Provider.");
-        }
+       
     }
 
     static validateFile(file: Express.Multer.File): void {
@@ -392,9 +383,6 @@ export class CustomValidator {
             }
 
             case "role": {
-                if (!validRoles.includes(value as Role)) {
-                    return { status: false, message: "Invalid role." };
-                }
                 return null;
             }
 

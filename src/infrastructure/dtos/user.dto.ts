@@ -47,15 +47,7 @@ export interface UserFetchUserAddressRequest {
     userId: User["_id"];
 }
 // user fetch user address use case response interface
-export type UserFetchAddressResponse = Pick<Address, "_id" | "addressLine" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "googleMapLink"> | {};
-
-
-// user add new address use case request payload interface
-type AddressRequest = Pick<Address, "addressLine" | "city" | "country" | "district" | "googleMapLink" | "phone" | "place" | "pincode" | "state"> 
-export interface UserAddAddressRequest extends AddressRequest{
-    userId: User["_id"]
-} 
-
+export type UserFetchAddressResponse = Pick<Address, "_id" | "addressLine" | "landMark" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location"> | {};
 
 
 
@@ -101,7 +93,7 @@ export interface UserFetchServiceProviderAddressRequest {
     providerId: Provider["_id"];
 }
 // user fetch provider address use case response interface
-export type UserFetchServiceProviderAddressResponse = Pick<Address, "userId" | "addressLine" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "googleMapLink">
+export type UserFetchServiceProviderAddressResponse = Pick<Address, "userId" | "addressLine" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location">
 
 
 // user fetch provider service use case request payload interface
@@ -128,6 +120,9 @@ export type UserFetchProviderServiceAvailabilityResponse = FontendAvailabilityFo
 
 
 // user fetch providers for chat side bar
+export interface UserFetchProvidersForChatSidebarRequest {
+    userId: User["_id"]
+}
 export type UserFetchProvidersForChatSidebarResponse = Array<Pick<Provider, "_id" | "username" | "profileImage" >>;
 
 

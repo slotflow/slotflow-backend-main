@@ -1,35 +1,37 @@
-import { Validator } from "../../infrastructure/validator/validator";
+import { roleArray } from "../../infrastructure/helpers/constants";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
-import { ApiResponse, FetchBookingsRequest, FetchBookingsResponse, FetchOnlineBookingsForProviderResponse, FetchOnlineBookingsForUserResponse, Role } from "../../infrastructure/dtos/common.dto";
+import { ApiResponse, FetchBookingsRequest, FetchBookingsResponse, FetchOnlineBookingsForProviderResponse, FetchOnlineBookingsForUserResponse } from "../../infrastructure/dtos/common.dto";
 
 export class FetchBookingAppointmentsUseCase {
     constructor(
         private bookingRepositoryImpl: BookingRepositoryImpl,
     ) { }
 
-    async execute({ serviceProviderId, userId, page, limit, online, raw, role } : FetchBookingsRequest): Promise<ApiResponse<FetchBookingsResponse | FetchOnlineBookingsForProviderResponse | FetchOnlineBookingsForUserResponse>> {
-        if(role === Role.provider) {
-            if(!serviceProviderId) throw new Error("Invalid request");
-            Validator.validateObjectId(serviceProviderId, "providerId");
-        }
-        if(role === Role.user) {
-            if(!userId) throw new Error("Invalid request");
-            Validator.validateObjectId(userId, "userId");
-        }
-        Validator.validateBooleanValue(online, "Onnline filter");
-        Validator.validateBooleanValue(raw, "Raw filter");
+    async execute(payload: FetchBookingsRequest): Promise<ApiResponse<FetchBookingsResponse | FetchOnlineBookingsForProviderResponse | FetchOnlineBookingsForUserResponse>> {
+        try {
+            const { serviceProviderId, userId, page, limit, online, raw, role } = payload;
+            if (role === roleArray[2]) {
+                if (!serviceProviderId) throw new Error("Invalid request");
+            }
+            if (role === roleArray[1]) {
+                if (!userId) throw new Error("Invalid request");
+            }
 
-        const result = await this.bookingRepositoryImpl.findAllBookings({
-            page, 
-            limit, 
-            serviceProviderId,
-            userId, 
-            online, 
-            raw, 
-            role
-        });
-        if(!result) throw new Error("Appointments fetching error");
+            const result = await this.bookingRepositoryImpl.findAllBookings({
+                page,
+                limit,
+                serviceProviderId,
+                userId,
+                online,
+                raw,
+                role
+            });
+            if (!result) throw new Error("Appointments fetching error");
 
-        return { data: result.data, totalPages: result.totalPages, currentPage: result.currentPage, totalCount: result.totalCount };
+            return { data: result.data, totalPages: result.totalPages, currentPage: result.currentPage, totalCount: result.totalCount };
+        } catch (error) {
+            console.log("FetchBookingAppointmentsUseCase error : ", error);
+            throw new Error("Failed to fetch appointment bookings");
+        }
     }
 }

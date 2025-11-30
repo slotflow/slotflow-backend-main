@@ -1,15 +1,20 @@
 import { Types } from "mongoose";
-import { Request, Response } from "express";
 import { DecodedUser } from "../../express";
-import { Role } from "../../infrastructure/dtos/common.dto";
-import { HandleError } from "../../infrastructure/error/error";
+import { NextFunction, Request, Response } from "express";
+import { roleArray } from "../../infrastructure/helpers/constants";
 import { RequestQueryCommonZodSchema } from "../../infrastructure/zod/common.zod";
+import { GenerateSignedUrlService } from "../../infrastructure/services/signedUrl.service";
 import { FetchAllReviewsUseCase } from "../../application/common-use.case/fetchReviews.use-case";
 import { ReviewRepositoryImpl } from "../../infrastructure/database/review/review.repository.impl";
 import { ProviderReportReviewUseCase } from "../../application/provider-use.case/providerReview.use-case";
+import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
 
 const reviewRepositoryImpl = new ReviewRepositoryImpl();
-const fetchAllReviewsUseCase = new FetchAllReviewsUseCase(reviewRepositoryImpl);
+const signedUrlCacheRepositoryImpl = new SignedUrlCacheRepositoryImpl();
+
+const generateSignedUrlService = new GenerateSignedUrlService(signedUrlCacheRepositoryImpl);
+
+const fetchAllReviewsUseCase = new FetchAllReviewsUseCase(reviewRepositoryImpl, generateSignedUrlService);
 const providerReportReviewUseCase = new ProviderReportReviewUseCase(reviewRepositoryImpl);
 
 export class ProviderReviewController {
@@ -21,7 +26,7 @@ export class ProviderReviewController {
         this.chnageReportReview = this.chnageReportReview.bind(this);
     }
 
-    async findAllReviews(req: Request, res: Response) {
+    async findAllReviews(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
             const { limit, page } = RequestQueryCommonZodSchema.parse(req.query);
@@ -29,28 +34,27 @@ export class ProviderReviewController {
                 page,
                 limit,
                 providerId: new Types.ObjectId(providerId),
-                role: Role.provider
+                role: roleArray[2]
             });
             res.status(200).json(result)
         } catch (error) {
             console.log("findAllReviews error : ", error);
-            HandleError.handle(error, res);
+            next(error)
         }
     }
     
-    async chnageReportReview(req: Request, res: Response) {
+    async chnageReportReview(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log("Review reporting")
             const providerId = (req.user as DecodedUser).userOrProviderId;
             const reviewId = req.params.reviewId;
-            console.log("providerId : ",providerId);
-            console.log("reviewId : ",reviewId);
-            const result = await this.providerReportReviewUseCase.execute(new Types.ObjectId(reviewId), new Types.ObjectId(providerId));
-            console.log("result : ",result);
+            const result = await this.providerReportReviewUseCase.execute({
+                reviewId: new Types.ObjectId(reviewId), 
+                providerId: new Types.ObjectId(providerId)
+            });
             res.status(200).json(result);
         } catch(error) {
             console.log("reportReview error : ",error);
-            HandleError.handle(error, res);
+            next(error)
         }
     }
 

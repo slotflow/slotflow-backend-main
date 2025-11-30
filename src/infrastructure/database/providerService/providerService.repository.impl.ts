@@ -1,8 +1,8 @@
 import { Types } from "mongoose";
 import { IProviderService, ProviderServiceModel } from "./providerService.model";
 import { ProviderService } from "../../../domain/entities/providerService.entity";
-import { CreateProviderServiceReqProps, FindProviderServiceResponse, FindProvidersUsingServiceCategoryIdsResponse, IProviderServiceRepository } from "../../../domain/repositories/IProviderService.repository";
 import { SubscriptionStatus } from "../../../domain/entities/subscription.entity";
+import { CreateProviderServiceRequest, FindProviderServiceResponse, FindProvidersUsingServiceCategoryIdsResponse, IProviderServiceRepository } from "../../../domain/repositories/IProviderService.repository";
 
 export class ProviderServiceRepositoryImpl implements IProviderServiceRepository {
     private mapToEntity(providerService: IProviderService): ProviderService {
@@ -13,20 +13,26 @@ export class ProviderServiceRepositoryImpl implements IProviderServiceRepository
             providerService.serviceName,
             providerService.serviceDescription,
             providerService.servicePrice,
-            providerService.providerAdhaar,
-            providerService.providerExperience,
-            providerService.providerCertificateUrl,
+            providerService.serviceExperience,
+            providerService.requirements,
+            providerService.serviceType,
+            providerService.serviceMode,
+            providerService.tags,
+            providerService.videoUrl,
+            providerService.maxParticipants,
+            providerService.isGroupService,
             providerService.createdAt,
-            providerService.updatedAt,
+            providerService.updatedAt
         );
     }
 
-    async createProviderService(providerService: CreateProviderServiceReqProps): Promise<ProviderService | null> {
+    async createProviderService(providerService: CreateProviderServiceRequest): Promise<ProviderService | null> {
         try {
             const newProviderService = await ProviderServiceModel.create(providerService);
             return newProviderService ? this.mapToEntity(newProviderService) : null;
         } catch (error) {
-            throw new Error("Service details adding error.");
+            console.log("createProviderService error : ",error);
+            throw new Error("Failed to create provider service");
         }
     }
 
@@ -39,7 +45,8 @@ export class ProviderServiceRepositoryImpl implements IProviderServiceRepository
                 }).lean();
             return service || {};
         } catch (error) {
-            throw new Error("Service fetching error.");
+            console.log("findProviderServiceByProviderId error : ",error);
+            throw new Error("Failed to find provider service");
         }
     }
 
@@ -133,7 +140,8 @@ export class ProviderServiceRepositoryImpl implements IProviderServiceRepository
             const providers = await ProviderServiceModel.aggregate(pipeline);
             return providers;
         } catch (error) {
-            throw new Error("Provider Ids fetching error");
+            console.log("findProvidersUsingServiceCategoryIds error : ",error);
+            throw new Error("Failed to find providers");
         }
     }
 

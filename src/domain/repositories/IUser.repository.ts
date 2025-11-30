@@ -25,7 +25,7 @@ export interface IUserRepository {
 
   createUser(user: CreateUserProps): Promise<User>;
 
-  verifyUser(verificationToken: string): Promise<User | null>;
+  findUserByVerificationToken(verificationToken: string): Promise<User | null>;
 
   updateUser(user: User): Promise<User | null>;
 

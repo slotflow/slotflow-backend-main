@@ -1,53 +1,23 @@
-# # Use Ubuntu as base image
-# FROM ubuntu:latest
-
-# # Install dependencies
-# RUN apt-get update && apt-get install -y curl build-essential
-
-# # Install Node.js 18
-# RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - && \
-#     apt-get install -y nodejs
-
-# # Set working directory
-# WORKDIR /usr/src/app
-
-# # Copy package.json and package-lock.json
-# COPY package.json package-lock.json ./
-
-# # Install Node dependencies
-# RUN npm install
-
-# # Copy the rest of the project
-# COPY . .
-
-# # Build TypeScript files
-# RUN npm run build
-
-# # Expose the port
-# EXPOSE 3000
-
-# # Start the server
-# CMD ["node", "dist/server.js"]
-
-
+# -------------------------------
 # Stage 1: Build
+# -------------------------------
 FROM node:18 AS build
-WORKDIR /usr/src/app
 
-COPY package.json package-lock.json ./
+WORKDIR /app
+COPY package*.json ./
 RUN npm install
-
 COPY . .
-RUN npm run build
+ENV NODE_OPTIONS="--max-old-space-size=4096"
+RUN npm run bundle
 
-# Stage 2: Production
-FROM node:18-slim
-WORKDIR /usr/src/app
+# -------------------------------
+# Stage 2: Run (production)
+# -------------------------------
+FROM node:18-alpine
 
-COPY --from=build /usr/src/app/package.json ./
-COPY --from=build /usr/src/app/package-lock.json ./
-COPY --from=build /usr/src/app/dist ./dist
-RUN npm ci --only=production
-
+WORKDIR /app
+COPY --from=build /app/dist-bundle ./dist-bundle
+COPY package*.json ./
+RUN npm install --omit=dev
 EXPOSE 3000
-CMD ["node", "dist/server.js"]
+CMD ["node", "dist-bundle/server.js"]

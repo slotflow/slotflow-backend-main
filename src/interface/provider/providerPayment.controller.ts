@@ -1,7 +1,6 @@
 import { Types } from "mongoose";
-import { Request, Response } from "express";
 import { DecodedUser } from "../../express";
-import { HandleError } from "../../infrastructure/error/error";
+import { NextFunction, Request, Response } from "express";
 import { RequestQueryCommonZodSchema } from "../../infrastructure/zod/common.zod";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
@@ -19,7 +18,7 @@ export class ProviderPaymentController {
         this.getPayments = this.getPayments.bind(this);
     }
 
-    async getPayments(req: Request, res: Response) {
+    async getPayments(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
             const { page, limit } = RequestQueryCommonZodSchema.parse(req.query);
@@ -27,7 +26,8 @@ export class ProviderPaymentController {
             const result = await this.providerFetchAllPaymentsUseCase.execute({ providerId: new Types.ObjectId(providerId), page, limit });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("getPayments error : ",error);
+            next(error)
         }
     }
 }

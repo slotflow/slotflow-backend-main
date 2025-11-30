@@ -1,6 +1,5 @@
 import { Types } from "mongoose";
-import { Request, Response } from "express";
-import { HandleError } from "../../infrastructure/error/error";
+import { NextFunction, Request, Response } from "express";
 import { RequestQueryCommonZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
 import { AdminFetchAllSubscriptionsUseCase } from "../../application/admin-use.case/adminSubscription.use-case";
 import { FetchSubscriptionDetailsUseCase } from "../../application/common-use.case/subscriptionCommon.use-case";
@@ -8,8 +7,8 @@ import { SubscriptionRepositoryImpl } from "../../infrastructure/database/subscr
 
 const subscriptionRepositoryImpl = new SubscriptionRepositoryImpl();
 
-const adminFetchAllSubscriptionsUseCase = new AdminFetchAllSubscriptionsUseCase(subscriptionRepositoryImpl);
 const fetchSubscriptionDetailsUseCase = new FetchSubscriptionDetailsUseCase(subscriptionRepositoryImpl);
+const adminFetchAllSubscriptionsUseCase = new AdminFetchAllSubscriptionsUseCase(subscriptionRepositoryImpl);
 
 export class AdminSubscriptionController {
     constructor(
@@ -20,24 +19,26 @@ export class AdminSubscriptionController {
         this.getSubscriptionDetails = this.getSubscriptionDetails.bind(this);
     }
 
-    async getAllSubscriptions(req: Request, res: Response) {
+    async getAllSubscriptions(req: Request, res: Response, next: NextFunction) {
         try {
             const { page, limit } = RequestQueryCommonZodSchema.parse(req.query);
             const result = await this.adminFetchAllSubscriptionsUseCase.execute({ page, limit });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("getAllSubscriptions error : ", error);
+            next(error)
         }
     }
 
-    async getSubscriptionDetails(req: Request, res: Response) {
+    async getSubscriptionDetails(req: Request, res: Response, next: NextFunction) {
         try {
             const { id: subscriptionId } = ValidateObjectId(req.params.subscriptionId, "Subscription Id");
             if (!subscriptionId) throw new Error("Invalid request.");
             const result = await this.fetchSubscriptionDetailsUseCase.execute({ subscriptionId: new Types.ObjectId(subscriptionId) });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("getSubscriptionDetails error : ", error);
+            next(error)
         }
     }
 }

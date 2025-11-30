@@ -34,8 +34,8 @@ export class GoogleTokenService {
                 });
 
                 const data = await response.json();
+                console.log("GOOGLE TOKEN ERROR RESPONSE : ",data);
                 if (!data.access_token) throw new Error("Failed to refresh access token");
-
 
                 credentials.accessToken = data.access_token;
                 if (data.refresh_token) {
@@ -43,7 +43,6 @@ export class GoogleTokenService {
                 }
                 credentials.expiryDate = new Date(Date.now() + data.expires_in * 1000);
                 if (!credentials.accessToken) throw new Error("Failed to refresh access token");
-                // await redis.set(`google:accessToken:${userId}`, accessToken, { ex: data.expires_in });
 
                 const res =await this.updateCredentialUseCase.execute(credentials);
                 if(!res.success) throw new Error("Credentials updation error");

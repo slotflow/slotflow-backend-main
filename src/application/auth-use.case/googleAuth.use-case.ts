@@ -1,6 +1,7 @@
 import { User } from "../../domain/entities/user.entity";
-import { Role } from "../../infrastructure/dtos/common.dto";
 import { Provider } from "../../domain/entities/provider.entity";
+import { roleArray } from "../../infrastructure/helpers/constants";
+import { GoogleAuthRequest } from "../../infrastructure/dtos/auth.dto";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 
@@ -10,49 +11,44 @@ export class GoogleAuthUseCase {
         private providerRepositoryImpl: ProviderRepositoryImpl,
     ) { }
 
-    async execute(profile: {
-        googleId: string;
-        email: string;
-        name: string;
-        role: Role;
-        image: string | null;
-    }): Promise<User | Provider> {
+    async execute(payload: GoogleAuthRequest): Promise<User | Provider> {
         try {
-
-            if (profile.role === Role.user) {
-                let user = await this.userRepositoryImpl.findUserByGoogleId(profile.googleId);
+            const { email, googleId, image, name, role } = payload;
+            
+            if (role === roleArray[1]) {
+                let user = await this.userRepositoryImpl.findUserByGoogleId(googleId);
 
                 if (!user) {
-                    user = await this.userRepositoryImpl.findUserByEmail(profile.email);
+                    user = await this.userRepositoryImpl.findUserByEmail(email);
                 }
 
                 if (!user) {
                     user = await this.userRepositoryImpl.createUser({
-                        username: profile.name,
-                        email: profile.email,
-                        googleId: profile.googleId,
-                        profileImage: profile.image ?? "",
+                        username: name,
+                        email: email,
+                        googleId: googleId,
+                        profileImage: image ?? "",
                         isEmailVerified: true,
                         googleConnected: true,
                     })
                 }
-                
+
                 return user as User;
             }
-            
-            if (profile.role === Role.provider) {
-                let provider = await this.providerRepositoryImpl.findProviderByGoogleId(profile.googleId);
-                
+
+            if (role === roleArray[2]) {
+                let provider = await this.providerRepositoryImpl.findProviderByGoogleId(googleId);
+
                 if (!provider) {
-                    provider = await this.providerRepositoryImpl.findProviderByEmail(profile.email);
+                    provider = await this.providerRepositoryImpl.findProviderByEmail(email);
                 }
-                
+
                 if (!provider) {
                     provider = await this.providerRepositoryImpl.createProvider({
-                        username: profile.name,
-                        email: profile.email,
-                        googleId: profile.googleId,
-                        profileImage: profile.image ?? "",
+                        username: name,
+                        email: email,
+                        googleId: googleId,
+                        profileImage: image ?? "",
                         isEmailVerified: true,
                         googleConnected: true,
                     })

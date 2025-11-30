@@ -3,7 +3,6 @@ import {
     AdminAddNewPlanRequest, 
     AdminChangePlanIsBlockedStatusRequest,
 } from "../../infrastructure/dtos/admin.dto";
-import { Validator } from "../../infrastructure/validator/validator";
 import { ApiPaginationRequest, ApiResponse } from "../../infrastructure/dtos/common.dto";
 import { PlanRepositoryImpl } from "../../infrastructure/database/plan/plan.repository.impl";
 
@@ -11,11 +10,18 @@ import { PlanRepositoryImpl } from "../../infrastructure/database/plan/plan.repo
 export class AdminPlanListUseCase {
     constructor(private planRepositoryImpl: PlanRepositoryImpl) { }
 
-    async execute({ page, limit }: ApiPaginationRequest): Promise<ApiResponse<AdminPlanListResponse>> {
+    async execute(payload: ApiPaginationRequest): Promise<ApiResponse<AdminPlanListResponse>> {
+        try {
+            const { page, limit } = payload;
 
-        const result = await this.planRepositoryImpl.findAllPlans({ page, limit });
-        if (!result) throw new Error("Plans fetching failed");
-        return { data: result.data, totalPages: result.totalPages, currentPage: result.currentPage, totalCount: result.totalCount };
+            const result = await this.planRepositoryImpl.findAllPlans({ page, limit });
+            if (!result) throw new Error("Plans fetching failed");
+
+            return { data: result.data, totalPages: result.totalPages, currentPage: result.currentPage, totalCount: result.totalCount };
+        } catch (error) {
+            console.log("AdminPlanListUseCase error :", error);
+            throw new Error("Failed to fetch all plans");
+        }
     }
 }
 
@@ -24,23 +30,21 @@ export class AdminCreatePlanUseCase {
     constructor(private planRepositoryImpl: PlanRepositoryImpl) { }
 
     async execute(payload : AdminAddNewPlanRequest): Promise<ApiResponse> {
-        
-        const {planName, description, price, features, maxBookingPerMonth, adVisibility} = payload;
-        if (!planName || !description || price < 0 || !features || maxBookingPerMonth < 0) throw new Error("Invalid plan data.");
+        try {
+            const {planName, description, price, features, maxBookingPerMonth, adVisibility} = payload;
 
-        Validator.validatePlanName(planName);
-        Validator.validatePlanDescription(description);
-        Validator.validatePlanPrice(price);
-        Validator.validatePlanFeatures(features);
-        Validator.validatePlanMaxBookingPerMonth(maxBookingPerMonth);
-        Validator.validateBooleanValue(adVisibility, "adVisibility");
+            const existingPlan = await this.planRepositoryImpl.findPlanByNameOrPrice({planName, price});
+            const responseText: string = existingPlan?.planName === planName ? "name" : "price";
+            if(existingPlan) throw new Error(`Plan with same ${responseText} already exists.`);
 
-        const existingPlan = await this.planRepositoryImpl.findPlanByNameOrPrice({planName, price});
-        const responseText: string = existingPlan?.planName === planName ? "name" : "price"
-        if(existingPlan) throw new Error(`Plan with same ${responseText} already exists.`);
-        const newPlan = await this.planRepositoryImpl.createPlan({ planName, description, price, features, maxBookingPerMonth, adVisibility, isBlocked: false,});
-        if(!newPlan) throw new Error("Plan adding failed, please try again.");
-        return { success: true, message: "Plan created successfully." };
+            const newPlan = await this.planRepositoryImpl.createPlan({ planName, description, price, features, maxBookingPerMonth, adVisibility, isBlocked: false });
+            if(!newPlan) throw new Error("Plan adding failed, please try again.");
+
+            return { success: true, message: "Plan created successfully." };
+        } catch (error) {
+            console.log("AdminCreatePlanUseCase error :", error);
+            throw new Error("Failed to create plan");
+        }
     }
 
 }
@@ -49,18 +53,21 @@ export class AdminCreatePlanUseCase {
 export class AdminChangePlanBlockStatusUseCase {
     constructor(private planRepositoryImpl: PlanRepositoryImpl) { }
 
-    async execute({planId, isBlocked}: AdminChangePlanIsBlockedStatusRequest): Promise<ApiResponse> {
+    async execute(payload: AdminChangePlanIsBlockedStatusRequest): Promise<ApiResponse> {
+        try {
+            const {planId, isBlocked} = payload;
 
-        if(!planId || isBlocked === null) throw new Error("Invalid request");
+            const existingPlan = await this.planRepositoryImpl.findPlanById(planId);
+            if(!existingPlan) throw new Error("Plan does not exists.");
 
-        Validator.validateObjectId(planId, "PlanId");
-        Validator.validateBooleanValue(isBlocked, "isBlocked");
-        
-        const existingPlan = await this.planRepositoryImpl.findPlanById(planId);
-        if(!existingPlan) throw new Error("Plan does not exists.");
-        existingPlan.isBlocked = !isBlocked;
-        const updatedPlan = await this.planRepositoryImpl.updatePlan(planId, existingPlan);
-        if(!updatedPlan) throw new Error("Plan status changing failed.");
-        return { success: true, message: `Plan ${isBlocked ? "unblocked" : "blocked"} successfully.` }
+            existingPlan.isBlocked = !isBlocked;
+            const updatedPlan = await this.planRepositoryImpl.updatePlan(planId, existingPlan);
+            if(!updatedPlan) throw new Error("Plan status changing failed.");
+            
+            return { success: true, message: `Plan ${isBlocked ? "unblocked" : "blocked"} successfully.` };
+        } catch (error) {
+            console.log("AdminChangePlanBlockStatusUseCase error :", error);
+            throw new Error("Failed to change plan block status");
+        }
     }
 }

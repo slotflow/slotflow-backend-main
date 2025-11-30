@@ -2,16 +2,15 @@ import jwt from "jsonwebtoken";
 import passport from "passport";
 import { Types } from "mongoose";
 import { appConfig, appUrl } from "../../config/env";
-// import { redis } from "../../infrastructure/lib/redis";
 import { NextFunction, Request, Response } from "express";
-import { HandleError } from "../../infrastructure/error/error";
+import { roleArray } from "../../infrastructure/helpers/constants";
 import { AesEncryption } from "../../infrastructure/services/aesEncryption";
 import { CreateCredentialUseCase } from "../../application/common-use.case/credential.use-case";
 import { CredentialRepositoryImpl } from "../../infrastructure/database/credential/credential.repository.impl";
-import { Role } from "../../infrastructure/dtos/common.dto";
 
 const aesEncryption = new AesEncryption();
 const credentialRepositoryImpl = new CredentialRepositoryImpl();
+
 const createCredentialUseCase = new CreateCredentialUseCase(credentialRepositoryImpl, aesEncryption);
 
 export class GoogleAuthController {
@@ -40,11 +39,12 @@ export class GoogleAuthController {
                 state: JSON.stringify({ role }),
             })(req, res, next);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("googleAuth error : ", error);
+            next(error)
         }
     }
 
-    async googleAuthCallback(req: Request, res: Response) {
+    async googleAuthCallback(req: Request, res: Response, next: NextFunction) {
         try {
             console.log("google auth callback");
             passport.authenticate("google", { session: false }, async (err, user, info) => {
@@ -59,7 +59,7 @@ export class GoogleAuthController {
 
                         const redirectData = encodeURIComponent(JSON.stringify(errorPayload));
                         return res.redirect(
-                            `${appUrl.frontendUrl}/${info.role === Role.provider ? "provider" : "user"}/settings?response=${redirectData}`
+                            `${appUrl.frontendUrl}/${info.role === roleArray[2] ? "provider" : "user"}/settings?response=${redirectData}`
                         );
                     } else {
                         return res.redirect(`${appUrl.frontendUrl}/login?error=google_auth_failed`);
@@ -69,14 +69,11 @@ export class GoogleAuthController {
                 const role = info?.role || user.role;
                 const connectOnly = info.connectOnly;
 
-                // await redis.set(`google:accessToken:${user._id}`, user.googleAccessToken, { ex: 3600 });
-                // await redis.set(`google:refreshToken:${user._id}`, user.googleRefreshToken);
-
                 const expiryDate = new Date(Date.now() + 60 * 60 * 1000);
 
                 console.log("google auth callback token storing")
-                console.log("User : ",user);
-                console.log("expiryDate : ",expiryDate);
+                console.log("User : ", user);
+                console.log("expiryDate : ", expiryDate);
                 await this.createCredentialUseCase.execute({
                     userId: new Types.ObjectId(user._id),
                     accessToken: user.googleAccessToken,
@@ -90,7 +87,7 @@ export class GoogleAuthController {
                         googleConnected: true,
                     };
                     const redirectData = encodeURIComponent(JSON.stringify(successPayload));
-                    return res.redirect(`${appUrl.frontendUrl}/${role === Role.provider ? "provider" : "user"}/settings?response=${redirectData}`);
+                    return res.redirect(`${appUrl.frontendUrl}/${role === roleArray[2] ? "provider" : "user"}/settings?response=${redirectData}`);
                 }
 
                 const token = jwt.sign({ userOrProviderId: user._id, role }, process.env.JWT_SECRET!, { expiresIn: "1h" });
@@ -111,8 +108,8 @@ export class GoogleAuthController {
                 return res.redirect(`${frontendUrl}?authUser=${encodeURIComponent(authUserWithoutTokenJson)}`);
             })(req, res);
         } catch (error) {
-            console.log("google callback error : ",error);
-            HandleError.handle(error, res);
+            console.log("googleAuthCallback error : ", error);
+            next(error)
         }
     }
 }

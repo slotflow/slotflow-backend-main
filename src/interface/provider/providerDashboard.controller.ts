@@ -1,13 +1,12 @@
 import { Types } from "mongoose";
-import { Request, Response } from "express";
 import { DecodedUser } from "../../express";
-import { HandleError } from "../../infrastructure/error/error";
+import { NextFunction, Request, Response } from "express";
+import { SubscriptionPlan } from "../../infrastructure/dtos/common.dto";
 import { SubscriptionHelper } from "../../infrastructure/helpers/subscriptionMapping";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { ProviderFetchDashboardStatsUseCase } from "../../application/provider-use.case/providerDashboardStats.use-case";
 import { ProviderFetchDashboardGraphDataUseCase } from "../../application/provider-use.case/providerDashboardGraphData.use-case";
-import { SubscriptionPlan } from "../../infrastructure/dtos/common.dto";
 
 const subscriptionHelper = new SubscriptionHelper();
 const bookingRepositoryImpl = new BookingRepositoryImpl();
@@ -25,18 +24,18 @@ export class ProviderDashboardController {
         this.getDashboardGraphData = this.getDashboardGraphData.bind(this);
     }
 
-    async getDashboardStats(req: Request, res: Response) {
+    async getDashboardStats(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
-            const result = await this.providerFetchDashboardStatsUseCase.execute(new Types.ObjectId(providerId));
+            const result = await this.providerFetchDashboardStatsUseCase.execute({providerId: new Types.ObjectId(providerId)});
             res.status(200).json(result);
         } catch (error) {
-            console.log("provider get dashboard stats error : ", error);
-            HandleError.handle(error, res)
+            console.log("getDashboardStats error : ", error);
+            next(error);
         }
     }
 
-    async getDashboardGraphData(req: Request, res: Response) {
+    async getDashboardGraphData(req: Request, res: Response, next: NextFunction) {
         try {
             const subscription = req.query.subscription as SubscriptionPlan;
             const startDate = req.query.start ? new Date(req.query.start as string) : undefined;
@@ -50,8 +49,8 @@ export class ProviderDashboardController {
             });
             res.status(200).json(result);
         } catch (error) {
-            console.log("provider get dashboard graph data error : ", error);
-            HandleError.handle(error, res)
+            console.log("getDashboardGraphData error : ", error);
+            next(error);
         }
     }
 }

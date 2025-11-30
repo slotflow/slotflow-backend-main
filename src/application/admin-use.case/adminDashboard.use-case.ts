@@ -40,8 +40,8 @@ export class AdminFetchDashboardTodaysDataUseCase {
 
             return { success: true, message: "Fetched successfully", data: responseData }
         } catch (error) {
-            console.log("Admin dahsboard todays data fetching error : ",error);
-            throw new Error("Admin dashboard todays data fetching error");
+            console.log("AdminFetchDashboardTodaysDataUseCase error : ", error);
+            throw new Error("Failed to fetch dashboard todays data");
         }
     }
 }
@@ -57,8 +57,8 @@ export class AdminFetchDashboardUserStatsDataUseCase {
             const userData = await this.userRepositoryImpl.findUsersStatsData();
             return { success: true, message: "Fetched successfully", data: userData };
         } catch (error) {
-            console.log("Admin dashboard user stats fetching usecase error : ", error);
-            throw new Error("Admin dashboard user stats fetching error");
+            console.log("AdminFetchDashboardUserStatsDataUseCase error : ", error);
+            throw new Error("Failed to fetch dashboard user stats");
         }
     }
 }
@@ -74,8 +74,8 @@ export class AdminFetchDashboardProviderStatsDataUseCase {
             const providerData = await this.providerRepositoryImpl.findProvidersStatsForAdminDashboard();
             return { success: true, message: "Fetched successfully", data: providerData };
         } catch (error) {
-            console.log("Admin dashboard provider stats fetching usecase error : ", error);
-            throw new Error("Admin dashboard provider stats fetching error");
+            console.log("AdminFetchDashboardProviderStatsDataUseCase error : ", error);
+            throw new Error("Failed to fetch dashboard provider stats");
         }
     }
 }
@@ -90,9 +90,9 @@ export class AdminFetchDashboardSubscriptionStatsDataUseCase {
         try {
             const subscriptionData = await this.subscriptionRepositoryImpl.findSubscriptionStatsForAdminDashboard();
             return { success: true, message: "Fetched successfully", data: subscriptionData }
-        } catch(error) {
-            console.log("Admin dashboard subscription stats fetching usecase error : ", error);
-            throw new Error("Admin dashboard subscription stats fetching error");
+        } catch (error) {
+            console.log("AdminFetchDashboardSubscriptionStatsDataUseCase error : ", error);
+            throw new Error("Failed to fetch dashboard subscription stats");
         }
     }
 }
@@ -105,11 +105,11 @@ export class AdminFetchDashboardRevenueStatsDataUseCase {
 
     async execute(): Promise<ApiResponse<AdminFetchDashboardRevenueStatsDataResponse>> {
         try {
-            const revenueData = await this.paymentRepositoryImpl.fetchPaymentStatsForAdminDashboard();
+            const revenueData = await this.paymentRepositoryImpl.findPaymentStatsForAdminDashboard();
             return { success: true, message: "FetchedSuccessfully", data: revenueData }
         } catch (error) {
-            console.log("Admin dashboard revenue stats fetching usecase error : ", error);
-            throw new Error("Admin dashboard revenue stats fetching error");
+            console.log("AdminFetchDashboardRevenueStatsDataUseCase error : ", error);
+            throw new Error("Failed to fetch dashboard revenue stats");
         }
     }
 }
@@ -121,11 +121,11 @@ export class AdminFetchDashboardAppointmentsStatsDataUseCase {
 
     async execute(): Promise<ApiResponse<AdminFetchDashboardAppointmentStatsDataResponse>> {
         try {
-             const appointmentData = await this.bookingRepositoryImpl.findBookingStatsForAdminDashboard();
+            const appointmentData = await this.bookingRepositoryImpl.findBookingStatsForAdminDashboard();
             return { success: true, message: "FetchedSuccessfully", data: appointmentData }
         } catch (error) {
-            console.log("Admin dashboard appointments stats fetching usecase error : ", error);
-            throw new Error("Admin dashboard appointments stats fetching error");
+            console.log("AdminFetchDashboardAppointmentsStatsDataUseCase error : ", error);
+            throw new Error("Failed to fetch dashboard appointments stats");
         }
     }
 }

@@ -23,17 +23,17 @@ export class CredentialRepositoryImpl implements ICredentialRepository {
             return this.mapToEntity(created);
         } catch (error) {
             console.log("createCredential error : ", error);
-            throw new Error("createCredential failed");
+            throw new Error("Failed to create credentials");
         }
     }
 
-    async getCredentialByUserId(userId: Types.ObjectId): Promise<Credential | null> {
+    async findCredentialByUserId(userId: Types.ObjectId): Promise<Credential | null> {
         try {
             const credential = await CredentialModel.findOne({ userId });
             return credential ? this.mapToEntity(credential) : null;
         } catch (error) {
-            console.log("getCredentialByUserId error : ", error);
-            throw new Error("getCredentialByUserId failed");
+            console.log("findCredentialByUserId error : ", error);
+            throw new Error("Failed to find credentials");
         }
     }
 
@@ -47,7 +47,7 @@ export class CredentialRepositoryImpl implements ICredentialRepository {
             return updated ? this.mapToEntity(updated) : null;
         } catch (error) {
             console.log("updateCredential error : ", error);
-            throw new Error("updateCredential failed");
+            throw new Error("Failed to update credentials");
         }
     }
 }

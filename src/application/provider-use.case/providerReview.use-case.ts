@@ -1,6 +1,5 @@
-import { Types } from "mongoose";
 import { ApiResponse } from "../../infrastructure/dtos/common.dto";
-import { Validator } from "../../infrastructure/validator/validator";
+import { ProviderRepostReviewRequest } from "../../infrastructure/dtos/provider.dto";
 import { ReviewRepositoryImpl } from "../../infrastructure/database/review/review.repository.impl";
 
 export class ProviderReportReviewUseCase {
@@ -8,24 +7,26 @@ export class ProviderReportReviewUseCase {
         private reviewRepositoryImpl: ReviewRepositoryImpl,
     ) { }
 
-    async execute(reviewId: Types.ObjectId, providerId: Types.ObjectId): Promise<ApiResponse> {
+    async execute(payload: ProviderRepostReviewRequest): Promise<ApiResponse> {
+        try {
+            const { providerId, reviewId } = payload;
 
-        if(!reviewId || !providerId) throw new Error("Invalid request");
-        Validator.validateObjectId(reviewId, "Review Id");
-        Validator.validateObjectId(providerId, "Provider Id");
+            const review = await this.reviewRepositoryImpl.findReviewById(reviewId);
+            if (!review) throw new Error("No review found");
 
-        const review = await this.reviewRepositoryImpl.findReviewById(reviewId);
-        if(!review) throw new Error("No review found");
+            if (review.providerId.toString() !== providerId.toString()) throw new Error("You are not permitted to report this review");
 
-        if(review.providerId.toString() !== providerId.toString()) throw new Error("You are not permitted to report this review");
+            review.reported = !review.reported;
 
-        review.reported = !review.reported;
+            const updatedReview = await this.reviewRepositoryImpl.updateReview(review);
+            if (!updatedReview) throw new Error("Review reporting failed");
 
-        const updatedReview = await this.reviewRepositoryImpl.updateReview(review);
-        if(!updatedReview) throw new Error("Review reporting failed");
+            console.log("updatedReview : ", updatedReview);
 
-        console.log("updatedReview : ",updatedReview);
-
-        return { success: true, message: `Review ${updatedReview.reported ? "reported" : "unreported"} successfully` };
+            return { success: true, message: `Review ${updatedReview.reported ? "reported" : "unreported"} successfully` };
+        } catch (error) {
+            console.log("ProviderReportReviewUseCase error : ", error);
+            throw new Error("Failed to report review");
+        }
     }
 }

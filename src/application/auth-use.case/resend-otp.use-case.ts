@@ -1,81 +1,67 @@
-import { Producer } from 'kafkajs';
+import { producer } from '../../server';
+import { kafkaConfig } from '../../config/env';
 import { User } from '../../domain/entities/user.entity';
 import { Provider } from '../../domain/entities/provider.entity';
-import { ResendOtpRequest } from '../../infrastructure/dtos/auth.dto';
+import { roleArray } from '../../infrastructure/helpers/constants';
 import { OTPService } from '../../infrastructure/services/otp.service';
-import { ApiResponse, Role } from '../../infrastructure/dtos/common.dto';
-import { validateOrThrow } from '../../infrastructure/validator/validator';
-import { KafkaProducerService } from '../../infrastructure/lib/kafka.producer';
+import { ResendOtpRequest, ResendOtpResponse } from '../../infrastructure/dtos/auth.dto';
 import { UserRepositoryImpl } from '../../infrastructure/database/user/user.repository.impl';
 import { ProviderRepositoryImpl } from '../../infrastructure/database/provider/provider.repository.impl';
-
-
-interface ResendOtpResponse extends ApiResponse {
-  authUser: {
-    verificationToken: string,
-    role: string
-  }
-}
-
 
 export class ResendOtpUseCase {
 
   constructor(
-    private userRepositoryImpl: UserRepositoryImpl, 
+    private userRepositoryImpl: UserRepositoryImpl,
     private providerRepositoryImpl: ProviderRepositoryImpl,
-    private kafkaProducerService: KafkaProducerService
   ) { }
 
-  async execute(data: ResendOtpRequest): Promise<ResendOtpResponse> {
-    const { role, verificationToken, email } = data;
-    if (!role || (!verificationToken && !email)) throw new Error("Invalid request.");
+  async execute(payload: ResendOtpRequest): Promise<ResendOtpResponse> {
+    try {
+      const { role, verificationToken, email } = payload;
+      if (!role || (!verificationToken && !email)) throw new Error("Invalid request.");
 
-    const producer: Producer = this.kafkaProducerService.getProducer();
+      let userOrProvider: Provider | User | null = null;
 
-    if (email) validateOrThrow("email", email);
-    validateOrThrow("role", role);
-
-    let userOrProvider: Provider | User | null = null;
-
-    if (email && role) {
-      if (role === Role.user) {
-        userOrProvider = await this.userRepositoryImpl.findUserByEmail(email);
-      } else if (role === Role.provider) {
-        userOrProvider = await this.providerRepositoryImpl.findProviderByEmail(email);
-      } else {
-        throw new Error("Invalid request.");
-      }
-
-    } else if (verificationToken && role) {
-      if (role === Role.user) {
-        userOrProvider = await this.userRepositoryImpl.verifyUser(verificationToken);
-      } else if (role === Role.provider) {
-        userOrProvider = await this.providerRepositoryImpl.verifyProvider(verificationToken);
-      } else {
-        throw new Error("Invalid request.");
-      }
-    }
-
-    if (!userOrProvider || !userOrProvider?.email || !userOrProvider?.verificationToken) throw new Error("Please register.")
-
-    const otp = await OTPService.setOtp(userOrProvider?.verificationToken);
-    if (!otp) throw new Error("Unexpected error, please try again.");
-
-    const producerResult = await producer.send({
-      topic: "sendOtp-events",
-      messages: [
-        {
-          key: email,
-          value: JSON.stringify({ email, otp })
+      if (email && role) {
+        if (role === roleArray[1]) {
+          userOrProvider = await this.userRepositoryImpl.findUserByEmail(email);
+        } else if (role === roleArray[2]) {
+          userOrProvider = await this.providerRepositoryImpl.findProviderByEmail(email);
+        } else {
+          throw new Error("Invalid request.");
         }
-      ]
-    });
 
-    if (!producerResult || producerResult.length === 0) {
-      throw new Error("OTP sending failed: no record metadata returned");
+      } else if (verificationToken && role) {
+        if (role === roleArray[1]) {
+          userOrProvider = await this.userRepositoryImpl.findUserByVerificationToken(verificationToken);
+        } else if (role === roleArray[2]) {
+          userOrProvider = await this.providerRepositoryImpl.findProviderByVerificationToken(verificationToken);
+        } else {
+          throw new Error("Invalid request.");
+        }
+      }
+
+      if (!userOrProvider || !userOrProvider?.email || !userOrProvider?.verificationToken) throw new Error("Please register.")
+
+      const otp = await OTPService.setOtp(userOrProvider?.verificationToken);
+      if (!otp) throw new Error("Unexpected error, please try again.");
+
+      await producer.send({
+        topic: kafkaConfig.otpSendTopic,
+        messages: [{
+          key: email,
+          value: JSON.stringify({
+            otp,
+            email,
+            contentNumber: 1
+          })
+        }],
+      });
+
+      return { success: true, message: `OTP sent to email.`, authUser: { verificationToken: userOrProvider.verificationToken, role } };
+    } catch (error) {
+      console.log("ResendOtpUseCase error : ", error);
+      throw new Error("Failed to resend OTP");
     }
-
-    return { success: true, message: `OTP sent to email.`, authUser: { verificationToken: userOrProvider.verificationToken, role } };
-
   }
 }

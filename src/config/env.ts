@@ -57,3 +57,10 @@ export const aesConfig = {
 export const stripeCOnfig = {
     stripeSecretKey: process.env.STRIPE_SECRET_KEY,
 }
+
+export const kafkaConfig = {
+  clientId: process.env.KAFKA_CLIENT_ID,
+  groupId: process.env.KAFKA_GROUP_ID,
+  brokers: (process.env.KAFKA_BROKERS || "localhost:9092").split(","),
+  otpSendTopic: process.env.KAFKA_SENDOTP_TOPIC || "sendOtp-event"
+};

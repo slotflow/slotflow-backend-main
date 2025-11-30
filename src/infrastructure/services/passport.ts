@@ -1,6 +1,7 @@
 import passport from 'passport';
 import { Types } from 'mongoose';
-import { Role } from '../dtos/common.dto';
+import { RoleType } from '../dtos/common.dto';
+import { roleArray } from '../helpers/constants';
 import { googleClientConfig } from '../../config/env';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { UserRepositoryImpl } from '../database/user/user.repository.impl';
@@ -29,7 +30,7 @@ passport.use(
                 if (req.query.state) {
                     try {
                         const parsed = JSON.parse(req.query.state as string);
-                        if (parsed.role === Role.provider || parsed.role === Role.user) {
+                        if (parsed.role === roleArray[2] || parsed.role === roleArray[1]) {
                             role = parsed.role;
                         }
                         connectOnly = parsed.connectOnly;
@@ -45,17 +46,17 @@ passport.use(
                         googleId: profile.id,
                         email: profile.emails?.[0].value || "",
                         name: profile.displayName || "",
-                        role: role as Role,
+                        role: role as RoleType,
                         image: profile.photos?.[0]?.value || null,
                     });
                 } else {
-                    if(role === Role.provider) {
+                    if(role === roleArray[2]) {
                         const provider = await providerRepositoryImpl.findProviderById(new Types.ObjectId(_id));
                         if(!provider) throw new Error("User not found");
                         provider.googleId = profile.id;
                         provider.googleConnected = true;
                         entity = await providerRepositoryImpl.updateProvider(provider);
-                    }else if(role === Role.user) {
+                    }else if(role === roleArray[1]) {
                         const user = await userRepositoryImpl.findUserById(new Types.ObjectId(_id));
                         if(!user) throw new Error("User not found");
                         user.googleId = profile.id;

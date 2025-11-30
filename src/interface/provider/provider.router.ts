@@ -3,6 +3,8 @@ import upload from '../../infrastructure/lib/multer';
 import { authMiddleware } from '../middleware/auth.middleware';
 import { providerPlanController } from './providerPlan.controller';
 import { providerUserController } from './providerUser.controller';
+import { providerReviewController } from './providerReview.controller';
+import { providerStripeController } from './providerStripe.controller';
 import { provideAddressController } from './providerAddress.controller';
 import { providerServiceController } from './providerService.controller';
 import { providerProfileController } from './providerProfile.controller';
@@ -12,12 +14,10 @@ import { providerDashboardController } from './providerDashboard.controller';
 import { providerAppServiceController } from './providerAppService.controller';
 import { providerSubscriptionController } from './providerSubscription.controller';
 import { providerServiceAvailabilityController } from './providerServiceAvailability.controller';
-import { providerReviewController } from './providerReview.controller';
-import { providerStripeController } from './providerStripe.controller';
 
 const router = Router();
 
-router.post('/addresses', authMiddleware, provideAddressController.addAddress);
+router.post('/addresses', authMiddleware, provideAddressController.createAddress);
 router.get('/address', authMiddleware, provideAddressController.getAddress);
 router.patch('/addresses/:addressId', authMiddleware, provideAddressController.updateAddress);
 
@@ -29,10 +29,10 @@ router.get('/bookings/:bookingId/can-join', authMiddleware, providerBookingContr
 router.patch('/bookings/:roomId/join-left', authMiddleware, providerBookingController.providerJoinRoom);
 router.get('/bookings/:bookingId', authMiddleware, providerBookingController.fetchBookingDetails);
 
-router.post('/service', authMiddleware,upload.single('certificate'), providerServiceController.addServiceDetails);
+router.post('/service', authMiddleware,upload.single('certificate'), providerServiceController.createServiceDetails);
 router.get('/service', authMiddleware, providerServiceController.getServiceDetails);
 
-router.post('/availabilities', authMiddleware, providerServiceAvailabilityController.addServiceAvailability);
+router.post('/availabilities', authMiddleware, providerServiceAvailabilityController.createServiceAvailability);
 router.get('/availability', authMiddleware, providerServiceAvailabilityController.getServiceAvailability);
 
 router.get('/profile', authMiddleware, providerProfileController.getProfileDetails);

@@ -2,10 +2,9 @@ import passport from "passport";
 import { Types } from "mongoose";
 import { DecodedUser } from "../../express";
 import { NextFunction, Request, Response } from "express";
-import { HandleError } from "../../infrastructure/error/error";
 import { AesEncryption } from "../../infrastructure/services/aesEncryption";
+import { GoogleTokenService } from "../../infrastructure/services/googleTokenService";
 import { FethGoogleCalendarService } from "../../infrastructure/services/googleCalendar";
-import { GoogleTokenService } from "../../infrastructure/services/googleTokenService";   
 import { CredentialRepositoryImpl } from "../../infrastructure/database/credential/credential.repository.impl";
 import { GetCredentialUseCase, UpdateCredentialUseCase } from "../../application/common-use.case/credential.use-case";
 
@@ -25,15 +24,16 @@ export class GoogleController {
         this.connectGoogle = this.connectGoogle.bind(this);
     }
 
-    async getUserEvents(req: Request, res: Response) {
+    async getUserEvents(req: Request, res: Response, next: NextFunction) {
         try {
             console.log("getUserEvents constroller start");
             const userId = (req.user as DecodedUser).userOrProviderId;
             const result = await this.fethGoogleCalendarService.execute(new Types.ObjectId(userId));
-            console.log("getUserEvents constroller result : ",result);
+            console.log("getUserEvents constroller result : ", result);
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("getUserEvents error : ",error);
+            next(error)
         }
     }
 
@@ -48,17 +48,20 @@ export class GoogleController {
                     "openid",
                     "profile",
                     "email",
-                    "https://www.googleapis.com/auth/calendar.events.owned",
-                    "https://www.googleapis.com/auth/calendar.events.owned.readonly",
+                    // "https://www.googleapis.com/auth/calendar.events.owned",
+                    // "https://www.googleapis.com/auth/calendar.events.owned.readonly",
+                    "https://www.googleapis.com/auth/calendar",
+                    "https://www.googleapis.com/auth/calendar.events",
                 ],
                 accessType: "offline",
                 prompt: "consent",
+                includeGrantedScopes: true,
                 session: false,
                 state: state,
             })(req, res, next);
         } catch (error) {
-            console.log("Connecting google error : ",error);
-            HandleError.handle(error, res);
+            console.log("connectGoogle error : ", error);
+            next(error)
         }
     }
 

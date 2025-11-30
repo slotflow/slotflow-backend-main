@@ -7,9 +7,14 @@ export class AdminFetchAllSubscriptionsUseCase {
         private subscriptionRepositoryImpl: SubscriptionRepositoryImpl,
     ) { }
 
-    async execute({ page, limit}: ApiPaginationRequest): Promise<ApiResponse<AdminFetchAllSubscriptionsResponse>> {
-        const result = await this.subscriptionRepositoryImpl.findAllSubscriptions({ page, limit });
-        if (!result) throw new Error("Subscriptions fetching failed, ");
-        return { data: result.data, totalPages: result.totalPages, currentPage: result.currentPage, totalCount: result.totalCount };
+    async execute(payload: ApiPaginationRequest): Promise<ApiResponse<AdminFetchAllSubscriptionsResponse>> {
+        try {
+            const result = await this.subscriptionRepositoryImpl.findAllSubscriptions(payload);
+            if (!result) throw new Error("Subscriptions fetching failed, ");
+            return { data: result.data, totalPages: result.totalPages, currentPage: result.currentPage, totalCount: result.totalCount };
+        } catch (error) {
+            console.log("AdminFetchAllSubscriptionsUseCase error : ", error);
+            throw new Error("Failed to fetch all subscirptions");
+        }
     }
 }

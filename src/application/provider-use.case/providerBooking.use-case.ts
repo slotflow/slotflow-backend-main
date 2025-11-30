@@ -37,7 +37,7 @@ export class ProviderChangeBookingAppointmentStatusUseCase {
             return { success: true, message: "Status updated successfully" };
         } catch (error) {
             console.log("ProviderChangeBookingAppointmentStatus error : ", error);
-            throw new Error('Status updating failed');
+            throw new Error('Failed to update booking appointment status');
         }
     }
 }

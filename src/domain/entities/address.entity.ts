@@ -5,6 +5,7 @@ export class Address {
         public _id: Types.ObjectId,
         public userId: Types.ObjectId,
         public addressLine: string,
+        public landMark: string,
         public phone: string,
         public place: string,
         public city: string,
@@ -12,8 +13,11 @@ export class Address {
         public pincode: string,
         public state: string,
         public country: string,
-        public googleMapLink: string,
+        public location: {
+            type: String,
+            coordinates: [number, number]
+        },
         public createdAt: Date,
         public updatedAt: Date,
-    ){}
+    ) { }
 }

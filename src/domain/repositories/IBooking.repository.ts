@@ -4,8 +4,8 @@ import { Booking } from "../entities/booking.entity";
 import { Provider } from "../entities/provider.entity";
 import { UserFetchProvidersForChatSidebarResponse } from "../../infrastructure/dtos/user.dto";
 import { AdminFetchDashboardAppointmentStatsDataResponse, AdminFetchDashboardTodayStatsDataResponse } from "../../infrastructure/dtos/admin.dto";
-import { ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardGraphDataRequest, ProviderFetchDashboardGraphDataResponse, ProviderFetchUsersForChatSideBar } from "../../infrastructure/dtos/provider.dto";
 import { ApiResponse, FetchBookingDetailsResponse, FetchBookingsRequest, FetchBookingsResponse, FetchOnlineBookingsForProviderResponse, FetchOnlineBookingsForUserResponse } from "../../infrastructure/dtos/common.dto";
+import { ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardGraphDataRequest, ProviderFetchDashboardGraphDataResponse, ProviderFetchUsersForChatSideBarResponse } from "../../infrastructure/dtos/provider.dto";
 
 export type CreateBookingPayloadProps = Pick<Booking, "serviceProviderId" | "userId" | "appointmentDate" | "appointmentTime" | "appointmentMode" | "appointmentStatus" | "slotId" | "paymentId" | "videoCallRoomId" | "googleEventId" | "statusTrack">;
 export type AdminFetchTodaysBookingStatsForDashboardResponse = Pick<AdminFetchDashboardTodayStatsDataResponse, "todaysAppointments" | "todaysCancelledAppointments" | "todaysCompletedAppointments">;
@@ -29,7 +29,7 @@ export interface IBookingRepository {
 
     findAllBookings({ page, limit, userId, serviceProviderId, online, raw, role }: FetchBookingsRequest) : Promise<ApiResponse<FetchBookingsResponse | FetchOnlineBookingsForProviderResponse | FetchOnlineBookingsForUserResponse>>;
 
-    findUsersforChatSideBar(providerId: Provider["_id"]): Promise<ProviderFetchUsersForChatSideBar>;
+    findUsersforChatSideBar(providerId: Provider["_id"]): Promise<ProviderFetchUsersForChatSideBarResponse>;
     
     findProvidersforChatSideBar(userId: User["_id"]): Promise<UserFetchProvidersForChatSidebarResponse>;
 

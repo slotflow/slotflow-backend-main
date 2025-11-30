@@ -26,7 +26,8 @@ export class PlanRepositoryImpl implements IPlanRepository {
             const newPlan = await PlanModel.create(plan);
             return this.mapToEntity(newPlan);
         } catch (error) {
-            throw new Error("Failed to create plan.")
+            console.log("createPlan error : ",error);
+            throw new Error("Failed to create plan")
         }
     }
 
@@ -34,7 +35,8 @@ export class PlanRepositoryImpl implements IPlanRepository {
         try {
             const updatedPlan = await PlanModel.findByIdAndUpdate(planId, plan, { new: true });
             return updatedPlan ? this.mapToEntity(updatedPlan) : null;
-        } catch {
+        } catch (error) {
+            console.log("updatePlan error : ",error);
             throw new Error("Fialed to updated plan.");
         }
     }
@@ -43,8 +45,9 @@ export class PlanRepositoryImpl implements IPlanRepository {
         try {
             const plan = await PlanModel.findById(planId);
             return plan || null;
-        } catch {
-            throw new Error("Plan not found.");
+        } catch (error) {
+            console.log("findPlanById error : ",error);
+            throw new Error("Failed to find plan");
         }
     }
 
@@ -69,8 +72,9 @@ export class PlanRepositoryImpl implements IPlanRepository {
                 currentPage: page,
                 totalCount
             }
-        } catch {
-            throw new Error("Failed to fetch all plans.");
+        } catch (error) {
+            console.log("findAllPlans error : ",error);
+            throw new Error("Failed to find all plans");
         }
     }
 
@@ -84,7 +88,8 @@ export class PlanRepositoryImpl implements IPlanRepository {
             });
             return existingPlan ? this.mapToEntity(existingPlan) : null;
         } catch (error) {
-            throw new Error("Plan searching error.");
+            console.log("findPlanByNameOrPrice error : ",error);
+            throw new Error("Failed to find plan by name or price");
         }
     }
 
@@ -93,7 +98,8 @@ export class PlanRepositoryImpl implements IPlanRepository {
             const plans = await PlanModel.find({}, { _id: 1, planName: 1, price: 1, features: 1, description: 1 });
             return plans.map((plan) => this.mapToEntity(plan));
         } catch (error) {
-            throw new Error("Plans fetching error.");
+            console.log("findAllPlansForDisplay error : ",error);
+            throw new Error("Failed to find all plans");
         }
     }
 }

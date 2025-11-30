@@ -1,6 +1,5 @@
 import { Types } from "mongoose";
-import { Request, Response } from "express";
-import { HandleError } from "../../infrastructure/error/error";
+import { NextFunction, Request, Response } from "express";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { ProviderStripeConnectUseCase } from "../../application/provider-use.case/providerStripe.use-case";
 
@@ -14,14 +13,14 @@ export class ProviderStripeController {
         this.connectStripe = this.connectStripe.bind(this);
     }
 
-    async connectStripe(req: Request, res: Response) {
+    async connectStripe(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = req.user.userOrProviderId;
-            const result = await this.providerStripeConnectUseCase.execute(new Types.ObjectId(providerId));
+            const result = await this.providerStripeConnectUseCase.execute({providerId: new Types.ObjectId(providerId)});
             res.status(200).json(result);
         } catch (error) {
             console.log("connectStripe : ", error);
-            HandleError.handle(error, res);
+            next(error)
         }
     }
 }

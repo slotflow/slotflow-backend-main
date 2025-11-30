@@ -1,4 +1,5 @@
 import { Types } from 'mongoose';
+import { ServiceModeType, ServiceTypeType } from '../../infrastructure/dtos/common.dto';
 
 export class ProviderService {
     constructor(
@@ -8,10 +9,15 @@ export class ProviderService {
         public serviceName: string,
         public serviceDescription: string,
         public servicePrice: number,
-        public providerAdhaar: number,
-        public providerExperience: string,
-        public providerCertificateUrl: string,
+        public serviceExperience: string,
+        public requirements: string,
+        public serviceType: ServiceTypeType,
+        public serviceMode: ServiceModeType,
+        public tags: string[],
+        public videoUrl: string,
+        public maxParticipants: number,
+        public isGroupService: boolean,
         public createdAt: Date,
         public updatedAt: Date,
-    ){}
+    ) { }
 }

@@ -1,4 +1,5 @@
 import { Types } from "mongoose";
+import { DayType, ServiceModeType } from "../../infrastructure/dtos/common.dto";
 
 export interface TimeSlot {
     time: string,
@@ -11,11 +12,11 @@ export interface TimeSlotForFrontendResponse {
 }
 
 export interface Availability {
-    day: string,
-    duration: string,
-    startTime: string,
-    endTime: string,
-    modes: string[],
+    day: DayType,
+    duration: number,
+    startTime: Date,
+    endTime: Date,
+    modes: ServiceModeType[],
     slots: TimeSlot[],
 }
 

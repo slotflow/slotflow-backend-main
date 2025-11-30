@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { Types } from "mongoose";
-import { limitedRoleField } from "./auth.zod";
+import { roleArray } from "../helpers/constants";
+import { addressLineRegex, cityRegex, countryRegex, districtRegex, landMarkRegex, phoneRegex, pincodeRegex, placeRegex, stateRegex } from "./regex";
 
 // ****** Common zod validations for reuse ****** \\
 
@@ -147,20 +148,78 @@ export const DateZodSchema = z.object({
 });
 
 // User and Provider addess adding controllerz zod validation
-export const AddAddressZodSchema = z.object({
-  addressLine: stringField("AddressLine", 10, 150, /^[a-zA-Z0-9 .,#-]{10,150}$/, "Address line must be 10–150 characters long and can only include letters, numbers, spaces, and the symbols . , # -"),
-  phone: stringField("Phone", 7, 20, /^\+?[0-9\s\-().]{7,20}$/, "Invalid phone number. Only digits, spaces, dashes (-), dots (.), parentheses (), and an optional + at the beginning are allowed. Length must be between 7 to 20 characters."),
-  place: stringField("Place", 3, 50, /^[a-zA-Z .-]{3,50}$/, "Place name must be 3–50 characters long and can only include letters, spaces, dots, and hyphens"),
-  city: stringField("City", 3, 50, /^[a-zA-Z ]{3,50}$/, "City must only contain letters and spaces"),
-  district: stringField("District", 2, 50, /^[a-zA-Z ]{3,50}$/, "District must only contain letters and spaces"),
-  pincode: stringField("pincode", 3, 12, /^[A-Za-z0-9\s-]{3,12}$/, "Invalid postal code"),
-  state: stringField("State", 2, 50, /^[a-zA-Z ]{2,50}$/, "State must only contain letters and spaces"),
-  country: stringField("Country", 2, 50, /^[a-zA-Z ]{2,50}$/, "Country must only contain letters and spaces"),
-  googleMapLink: z.string({
-    required_error: "Google Map link is required",
-    invalid_type_error: "Google Map link must be a string",
-  })
-    .url("Invalid Google Map link"),
+export const CreateAddressZodSchema = z.object({
+  _id: z.string(),
+
+  addressLine: z
+    .string()
+    .min(10, "Address line must be at least 10 characters")
+    .max(150, "Address line cannot exceed 150 characters")
+    .regex(
+      addressLineRegex,
+      "Address line must be 10–150 characters long and can include letters, numbers, spaces, and . , # -"
+    ),
+
+  landMark: z
+    .string()
+    .min(5, "Landmark line must be at least 5 characters")
+    .max(150, "Landmark line cannot exceed 150 characters")
+    .regex(
+      landMarkRegex,
+      "Landmark must be 5–150 characters long and can include letters, numbers, spaces, and . , # -"
+    ),
+
+  phone: z
+    .string()
+    .min(7, "Phone number must be at least 7 characters")
+    .max(20, "Phone number cannot exceed 20 characters")
+    .regex(
+      phoneRegex,
+      "Invalid phone number. Only digits, spaces, dashes (-), dots (.), parentheses (), and an optional + are allowed."
+    ),
+
+  place: z
+    .string()
+    .min(3, "Place must be at least 3 characters")
+    .max(50, "Place cannot exceed 50 characters")
+    .regex(placeRegex, "Place can only include letters, spaces, dots, and hyphens"),
+
+  city: z
+    .string()
+    .min(3, "City must be at least 3 characters")
+    .max(50, "City cannot exceed 50 characters")
+    .regex(cityRegex, "City must only contain letters and spaces"),
+
+  district: z
+    .string()
+    .min(3, "District must be at least 3 characters")
+    .max(50, "District cannot exceed 50 characters")
+    .regex(districtRegex, "District must only contain letters and spaces"),
+
+  pincode: z
+    .string()
+    .min(3, "Postal code must be at least 3 characters")
+    .max(12, "Postal code cannot exceed 12 characters")
+    .regex(pincodeRegex, "Invalid postal code"),
+
+  state: z
+    .string()
+    .min(2, "State must be at least 2 characters")
+    .max(50, "State cannot exceed 50 characters")
+    .regex(stateRegex, "State must only contain letters and spaces"),
+
+  country: z
+    .string()
+    .min(2, "Country must be at least 2 characters")
+    .max(50, "Country cannot exceed 50 characters")
+    .regex(countryRegex, "Country must only contain letters and spaces"),
+
+  location: z.object({
+    type: z.literal("Point"),
+    coordinates: z
+      .tuple([z.number(), z.number()])
+      .refine((arr) => arr.length === 2, "Coordinates must be [lon, lat]"),
+  }),
 });
 
 // user or provider username and phone updation controller
@@ -220,7 +279,7 @@ export const JoinOrLeftRoomZodSchema = z.object({
   joined: booleanField("joined"),
   joinedTime: stringField("joinedTime").optional(),
   leftCallTime: stringField("leftCallTime").optional(),
-  role: limitedRoleField,
+  role: z.enum(roleArray),
 })
 
 
@@ -237,5 +296,5 @@ export const RequestQueryFetchAllReviewsZodSchema = z.object({
     .refine((val) => !isNaN(val) && val > 0, {
       message: "Limit must be a valid positive number",
     }),
-  role: limitedRoleField,
+  role: z.enum(roleArray),
 });

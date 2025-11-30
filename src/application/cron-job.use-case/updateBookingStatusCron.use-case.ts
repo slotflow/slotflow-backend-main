@@ -6,7 +6,12 @@ export class UpdateBookingStatusCronUseCase {
     ) { }
 
     async execute(): Promise<boolean> {
-        const todaysExhaustedBookings = await this.bookingRepositoryImpl.findTodaysBookingForCronjob();
-        return todaysExhaustedBookings;
+        try {
+            const todaysExhaustedBookings = await this.bookingRepositoryImpl.findTodaysBookingForCronjob();
+            return todaysExhaustedBookings;
+        } catch (error) {
+            console.log("UpdateBookingStatusCronUseCase error : ", error);
+            throw new Error("Failed to update booking status");
+        }
     }
 }

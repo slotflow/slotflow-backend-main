@@ -1,20 +1,23 @@
 import { Types } from "mongoose";
-import { Request, Response } from "express";
-import { HandleError } from "../../infrastructure/error/error";
+import { NextFunction, Request, Response } from "express";
 import { AdminChangeUserBlockStatusZOdSchema } from "../../infrastructure/zod/admin.zod";
+import { GenerateSignedUrlService } from "../../infrastructure/services/signedUrl.service";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { RequestQueryCommonZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
 import { AddressRepositoryImpl } from "../../infrastructure/database/address/address.repository.impl";
 import { AdminFetchUserOrProviderAddressUseCase } from "../../application/admin-use.case/adminAddress.use-case";
+import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
 import { AdminChangeUserBlockStatusUseCase, AdminFetchUserDetailsUseCase, AdminUserListUseCase } from "../../application/admin-use.case/adminUser.use-case";
 
 const userRepositoryImpl = new UserRepositoryImpl();
 const addressRepositoryImpl = new AddressRepositoryImpl();
+const signedUrlCacheRepositoryImpl = new SignedUrlCacheRepositoryImpl();
+const generateSignedUrlService = new GenerateSignedUrlService(signedUrlCacheRepositoryImpl);
 
 const adminUserListUseCase = new AdminUserListUseCase(userRepositoryImpl);
-const adminFetchUserDetailsUseCase = new AdminFetchUserDetailsUseCase(userRepositoryImpl);
 const adminChangeUserBlockStatusUseCase = new AdminChangeUserBlockStatusUseCase(userRepositoryImpl);
 const adminFetchUserOrProviderAddressUseCase = new AdminFetchUserOrProviderAddressUseCase(addressRepositoryImpl);
+const adminFetchUserDetailsUseCase = new AdminFetchUserDetailsUseCase(userRepositoryImpl, generateSignedUrlService);
 
 class AdminUserController {
     constructor(
@@ -29,17 +32,18 @@ class AdminUserController {
         this.fetchUserAddress = this.fetchUserAddress.bind(this);
     }
 
-    async getAllUsers(req: Request, res: Response) {
+    async getAllUsers(req: Request, res: Response, next: NextFunction) {
         try {
             const { page, limit } = RequestQueryCommonZodSchema.parse(req.query);
             const result = await this.adminUserListUseCase.execute({ page, limit });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("getAllUsers error : ",error);
+            next(error)
         }
     }
 
-    async changeUserBlockStatus(req: Request, res: Response) {
+    async changeUserBlockStatus(req: Request, res: Response, next: NextFunction) {
         try {
             const { blockStatus } = AdminChangeUserBlockStatusZOdSchema.parse(req.body);
             const { id: userId } = ValidateObjectId(req.params.userId, "User ID");
@@ -47,29 +51,32 @@ class AdminUserController {
             const result = await this.adminChangeUserBlockStatusUseCase.execute({ userId: new Types.ObjectId(userId), isBlocked: blockStatus });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("changeUserBlockStatus error : ",error);
+            next(error)
         }
     }
 
-    async fetchUserDetails(req: Request, res: Response) {
+    async fetchUserDetails(req: Request, res: Response, next: NextFunction) {
          try{
             const { id: userId } = ValidateObjectId(req.params.userId, "User ID");
             if(!userId) throw new Error("Invalid request.");
-            const result = await this.adminFetchUserDetailsUseCase.execute(new Types.ObjectId(userId));
+            const result = await this.adminFetchUserDetailsUseCase.execute({userId: new Types.ObjectId(userId)});
             res.status(200).json(result);
         }catch(error){
-            HandleError.handle(error,res);
+            console.log("fetchUserDetails error : ",error);
+            next(error);
         }
     }
 
-    async fetchUserAddress(req:Request, res: Response) {
+    async fetchUserAddress(req:Request, res: Response, next: NextFunction) {
         try{
             const { id: userId } = ValidateObjectId(req.params.userId, "User ID");
             if(!userId) throw new Error("Invalid request.");
             const result = await this.adminFetchUserOrProviderAddressUseCase.execute(new Types.ObjectId(userId));
             res.status(200).json(result);
         }catch(error){
-            HandleError.handle(error,res);
+            console.log("fetchUserAddress error : ",error);
+            next(error);
         }
     }
 }

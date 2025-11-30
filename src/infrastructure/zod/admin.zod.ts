@@ -1,6 +1,5 @@
 import { z } from "zod";
-import { Types } from "mongoose";
-import { booleanField, numberField, objectIdField, stringField } from "./common.zod";
+import { booleanField, numberField, stringField } from "./common.zod";
 
 // **** admin provider controller **** \\
 // Admin provider block status change controller zod validation
@@ -30,7 +29,7 @@ const AdminChangeUserBlockStatusZOdSchema = z.object({
 // **** admin service controller **** \\
 // Admin adding new app service name controller zod validation
 const AdminAddServiceXZodSchema = z.object({
-    appServiceName: stringField("Service name", 4, 50, /^[A-Za-z0-9 ]{4,50}$/, "Service name can only contain letters, numbers, and spaces"),
+    serviceName: stringField("Service name", 4, 50, /^[A-Za-z0-9 ]{4,50}$/, "Service name can only contain letters, numbers, and spaces"),
 });
 
 // Admin change app service block status controller zod validation
@@ -53,7 +52,7 @@ const AdminAddNewPlanZodSchema = z.object({
     description: stringField("Plan description",10,200,/^[\w\d\s!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]{10,200}$/,"Invalid description. Contains unsupported characters."),
     price: numberField("Plan price",0,100000),
     features: z.array(
-    stringField("Feature", 1, 50)
+    stringField("Feature", 1, 100)
   )
   .min(1, "At least one feature is required")
   .max(10, "Maximum 10 features allowed"),

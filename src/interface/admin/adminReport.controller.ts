@@ -1,10 +1,10 @@
-import { Request, Response } from "express";
-import { HandleError } from "../../infrastructure/error/error";
+import { NextFunction, Request, Response } from "express";
 import { RequestQueryCommonZodSchema } from "../../infrastructure/zod/common.zod";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
 import { AdminFetchRevenueReportUseCase } from "../../application/admin-use.case/adminPayment.use-case";
 
 const paymentRepositoryImpl = new PaymentRepositoryImpl();
+
 const adminFetchRevenueReportUseCase = new AdminFetchRevenueReportUseCase(paymentRepositoryImpl);
 
 export class AdminReportController {
@@ -14,7 +14,7 @@ export class AdminReportController {
         this.fetchRevenueReport = this.fetchRevenueReport.bind(this);
     }
 
-    async fetchRevenueReport(req: Request, res: Response) {
+    async fetchRevenueReport(req: Request, res: Response, next: NextFunction) {
         try {
             const { startDate, endDate } = req.body;
             const { page, limit } = RequestQueryCommonZodSchema.parse(req.query);
@@ -27,16 +27,16 @@ export class AdminReportController {
             res.status(200).json(result);
         } catch (error) {
             console.log("fetchRevenueReport error : ", error);
-            HandleError.handle(error, res);
+            next(error)
         }
     }
 
-    async fetchRefundReport(req: Request, res: Response) {
+    async fetchRefundReport(req: Request, res: Response, next: NextFunction) {
         try {
 
         } catch (error) {
             console.log("fetchRefundReport error : ", error);
-            HandleError.handle(error, res);
+            next(error)
         }
     }
 

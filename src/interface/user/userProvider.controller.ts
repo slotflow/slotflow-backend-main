@@ -1,21 +1,22 @@
 import { Types } from "mongoose";
-import { Request, Response } from "express";
 import { DecodedUser } from "../../express";
-import { 
-    UserFetchServiceProvidersUseCase, 
-    UserFetchServiceProviderAddressUseCase, 
-    UserFetchServiceProviderServiceDetailsUseCase, 
-    UserFetchServiceProviderProfileDetailsUseCase, 
+import { NextFunction, Request, Response } from "express";
+import {
+    UserFetchServiceProvidersUseCase,
+    UserFetchProvidersForChatSidebar,
+    UserFetchServiceProviderAddressUseCase,
+    UserFetchServiceProviderServiceDetailsUseCase,
+    UserFetchServiceProviderProfileDetailsUseCase,
     UserFetchServiceProviderServiceAvailabilityUseCase,
-    UserFetchProvidersForChatSidebar, 
 } from "../../application/user-use.case/userProvider.use-case";
-import { HandleError } from "../../infrastructure/error/error";
-import { DateZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
 import { UserFetchAllProvidersZodSchema } from "../../infrastructure/zod/user.zod";
+import { DateZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
+import { GenerateSignedUrlService } from "../../infrastructure/services/signedUrl.service";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { AddressRepositoryImpl } from "../../infrastructure/database/address/address.repository.impl";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
+import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
 import { ProviderServiceRepositoryImpl } from "../../infrastructure/database/providerService/providerService.repository.impl";
 import { ServiceAvailabilityRepositoryImpl } from "../../infrastructure/database/serviceAvailability/serviceAvailability.repository.impl";
 
@@ -24,15 +25,18 @@ const addressRepositoryImpl = new AddressRepositoryImpl();
 const bookingRepositoryImpl = new BookingRepositoryImpl();
 const providerRepositoryImpl = new ProviderRepositoryImpl();
 const providerServiceRepository = new ProviderServiceRepositoryImpl();
+const signedUrlCacheRepositoryImpl = new SignedUrlCacheRepositoryImpl();
 const providerServiceRepositoryImpl = new ProviderServiceRepositoryImpl();
 const serviceAvailabilityRepositoryImpl = new ServiceAvailabilityRepositoryImpl();
 
-const userFetchProvidersForChatSidebar = new UserFetchProvidersForChatSidebar(bookingRepositoryImpl);
-const userFetchServiceProvidersUseCase = new UserFetchServiceProvidersUseCase(userRepositoryImpl, providerServiceRepositoryImpl);
+const generateSignedUrlService = new GenerateSignedUrlService(signedUrlCacheRepositoryImpl);
+
+const userFetchProvidersForChatSidebar = new UserFetchProvidersForChatSidebar(bookingRepositoryImpl, generateSignedUrlService);
 const userFetchServiceProviderAddressUseCase = new UserFetchServiceProviderAddressUseCase(userRepositoryImpl, addressRepositoryImpl);
-const userFetchServiceProviderProfileDetailsUseCase = new UserFetchServiceProviderProfileDetailsUseCase(userRepositoryImpl, providerRepositoryImpl);
 const userFetchServiceProviderServiceDetailsUseCase = new UserFetchServiceProviderServiceDetailsUseCase(userRepositoryImpl, providerServiceRepository);
+const userFetchServiceProvidersUseCase = new UserFetchServiceProvidersUseCase(userRepositoryImpl, providerServiceRepositoryImpl, generateSignedUrlService);
 const userFetchServiceProviderServiceAvailabilityUseCase = new UserFetchServiceProviderServiceAvailabilityUseCase(userRepositoryImpl, serviceAvailabilityRepositoryImpl);
+const userFetchServiceProviderProfileDetailsUseCase = new UserFetchServiceProviderProfileDetailsUseCase(userRepositoryImpl, providerRepositoryImpl, generateSignedUrlService);
 
 export class UserProviderController {
     constructor(
@@ -51,7 +55,7 @@ export class UserProviderController {
         this.fetchProvidersForChatSidebar = this.fetchProvidersForChatSidebar.bind(this);
     }
 
-    async fetchServiceProviders(req: Request, res: Response) {
+    async fetchServiceProviders(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = (req.user as DecodedUser).userOrProviderId;
             const { selectedServices } = UserFetchAllProvidersZodSchema.parse(req.query);
@@ -59,85 +63,91 @@ export class UserProviderController {
             let serviceIds: Types.ObjectId[] = [];
             if (selectedServices) {
                 const servicesArray = Array.isArray(selectedServices)
-                ? selectedServices
-                : selectedServices.split(",");
+                    ? selectedServices
+                    : selectedServices.split(",");
 
-            serviceIds = servicesArray.map(id => new Types.ObjectId(id));
+                serviceIds = servicesArray.map(id => new Types.ObjectId(id));
             }
             const result = await this.userFetchServiceProvidersUseCase.execute({ userId: new Types.ObjectId(userId), serviceIds });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("fetchServiceProviders error : ", error);
+            next(error)
         }
     }
 
-    async fetchServiceProviderAddress(req: Request, res: Response) {
+    async fetchServiceProviderAddress(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = (req.user as DecodedUser).userOrProviderId;
             const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
             if (!userId || !providerId) throw new Error("Invalid request");
-            const result = await this.userFetchServiceProviderAddressUseCase.execute({userId: new Types.ObjectId(userId), providerId: new Types.ObjectId(providerId)});
+            const result = await this.userFetchServiceProviderAddressUseCase.execute({ userId: new Types.ObjectId(userId), providerId: new Types.ObjectId(providerId) });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("fetchServiceProviderAddress error : ", error);
+            next(error)
         }
     }
 
-    async fetchServiceProviderProfileDetails(req: Request, res: Response) {
+    async fetchServiceProviderProfileDetails(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = (req.user as DecodedUser).userOrProviderId;
             const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
             if (!userId || !providerId) throw new Error("Invalid request");
-            const result = await this.userFetchServiceProviderProfileDetailsUseCase.execute({userId: new Types.ObjectId(userId), providerId: new Types.ObjectId(providerId)});
+            const result = await this.userFetchServiceProviderProfileDetailsUseCase.execute({ userId: new Types.ObjectId(userId), providerId: new Types.ObjectId(providerId) });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("fetchServiceProviderProfileDetails error : ", error);
+            next(error)
         }
     }
 
-    async fetchServiceProviderServiceDetails(req: Request, res: Response) {
+    async fetchServiceProviderServiceDetails(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = (req.user as DecodedUser).userOrProviderId;
             const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
             if (!userId || !providerId) throw new Error("Invalid request");
-            const result = await this.userFetchServiceProviderServiceDetailsUseCase.execute({userId: new Types.ObjectId(userId), providerId: new Types.ObjectId(providerId)});
+            const result = await this.userFetchServiceProviderServiceDetailsUseCase.execute({ userId: new Types.ObjectId(userId), providerId: new Types.ObjectId(providerId) });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("fetchServiceProviderServiceDetails error : ", error);
+            next(error)
         }
     }
 
-    async fetchServiceProviderServiceAvailability(req: Request, res: Response) {
+    async fetchServiceProviderServiceAvailability(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = (req.user as DecodedUser).userOrProviderId;
             const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
             const { date } = DateZodSchema.parse(req.query);
             if (!userId || !providerId || !date) throw new Error("Invalid request");
-            const result = await this.userFetchServiceProviderServiceAvailabilityUseCase.execute({userId: new Types.ObjectId(userId), providerId: new Types.ObjectId(providerId), date: new Date(date)});
+            const result = await this.userFetchServiceProviderServiceAvailabilityUseCase.execute({ userId: new Types.ObjectId(userId), providerId: new Types.ObjectId(providerId), date: new Date(date) });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("fetchServiceProviderServiceAvailability error : ", error);
+            next(error)
         }
     }
 
-    async fetchProvidersForChatSidebar(req: Request, res: Response) {
+    async fetchProvidersForChatSidebar(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = (req.user as DecodedUser).userOrProviderId;
-            const result = await this.userFetchProvidersForChatSidebar.execute(new Types.ObjectId(userId));
+            const result = await this.userFetchProvidersForChatSidebar.execute({ userId: new Types.ObjectId(userId) });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error,res);
+            console.log("fetchProvidersForChatSidebar error : ", error);
+            next(error)
         }
     }
 }
 
 const userProviderController = new UserProviderController(
-    userFetchServiceProvidersUseCase, 
-    userFetchServiceProviderAddressUseCase, 
-    userFetchServiceProviderProfileDetailsUseCase, 
-    userFetchServiceProviderServiceDetailsUseCase, 
+    userFetchServiceProvidersUseCase,
+    userFetchServiceProviderAddressUseCase,
+    userFetchServiceProviderProfileDetailsUseCase,
+    userFetchServiceProviderServiceDetailsUseCase,
     userFetchServiceProviderServiceAvailabilityUseCase,
     userFetchProvidersForChatSidebar
 );
-    
+
 export { userProviderController };

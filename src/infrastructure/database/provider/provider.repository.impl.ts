@@ -39,17 +39,19 @@ export class ProviderRepositoryImpl implements IProviderRepository {
             const createdProvider = await ProviderModel.create(provider);
             return createdProvider ? this.mapToEntity(createdProvider) : null;
         } catch (error) {
-            throw new Error("Unable to register, Please try again after a few minutes.");
+            console.log("createProvider error : ",error);
+            throw new Error("Failed to create provider");
         }
     }
 
-    async verifyProvider(verificationToken: Provider["verificationToken"]): Promise<Provider | null> {
+    async findProviderByVerificationToken(verificationToken: Provider["verificationToken"]): Promise<Provider | null> {
         try {
             if (!verificationToken) throw new Error("Invalid request.");
             const User = await ProviderModel.findOne({ verificationToken });
             return User || null;
         } catch (error) {
-            throw new Error("Unable to retrieve verification data.");
+            console.log("findProviderByVerificationToken error : ",error);
+            throw new Error("Failed to find provider");
         }
     }
 
@@ -59,7 +61,8 @@ export class ProviderRepositoryImpl implements IProviderRepository {
             const updatedProvider = await ProviderModel.findByIdAndUpdate(provider._id, provider, { new: true });
             return updatedProvider ? this.mapToEntity(updatedProvider) : null;
         } catch (error) {
-            throw new Error("Unable to update user.");
+            console.log("updateProvider error : ",error);
+            throw new Error("Failed to update provider");
         }
     }
 
@@ -69,7 +72,8 @@ export class ProviderRepositoryImpl implements IProviderRepository {
             const provider = await ProviderModel.findOne({ email });
             return provider ? this.mapToEntity(provider) : null;
         } catch (error) {
-            throw new Error("Unexpected error, please try again.");
+            console.log("findProviderByEmail error : ",error);
+            throw new Error("Failed to find provider");
         }
     }
 
@@ -96,7 +100,8 @@ export class ProviderRepositoryImpl implements IProviderRepository {
                 totalCount
             }
         } catch (error) {
-            throw new Error("Failed to fetch providers from database.");
+            console.log("findAllProviders error : ",error);
+            throw new Error("Failed to find all provider");
         }
     }
 
@@ -105,7 +110,8 @@ export class ProviderRepositoryImpl implements IProviderRepository {
             const provider = await ProviderModel.findById(providerId)
             return provider ? this.mapToEntity(provider) : null;
         } catch (error) {
-            throw new Error('Provider finding error.');
+            console.log("findProviderById error : ",error);
+            throw new Error('Failed to find provider');
         }
     }
 
@@ -122,7 +128,8 @@ export class ProviderRepositoryImpl implements IProviderRepository {
                 return await ProviderModel.estimatedDocumentCount();
             }
         } catch (error) {
-            throw new Error("Providers count fetching failed");
+            console.log("findProvidersCount error : ",error);
+            throw new Error("Failed to find providers count");
         }
     }
 
@@ -178,7 +185,8 @@ export class ProviderRepositoryImpl implements IProviderRepository {
             ]);
             return providerStatsData[0];
         } catch (error) {
-            throw new Error("Provider stats data fetching failed");
+            console.log("findProvidersStatsForAdminDashboard error : ",error);
+            throw new Error("Failed to find provider stats");
         }
     }
 
@@ -188,7 +196,7 @@ export class ProviderRepositoryImpl implements IProviderRepository {
             return provider ? this.mapToEntity(provider) : null;
         } catch (error) {
             console.log("findProviderByGoogleId error : ",error);
-            throw new Error("Provider finding using googleId failed.");
+            throw new Error("Failed to find provider");
         }
     }
     

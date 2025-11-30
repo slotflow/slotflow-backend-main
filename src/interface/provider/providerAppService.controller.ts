@@ -1,5 +1,4 @@
-import { Request, Response } from "express";
-import { HandleError } from "../../infrastructure/error/error";
+import { NextFunction, Request, Response } from "express";
 import { ServiceRepositoryImpl } from "../../infrastructure/database/appservice/service.repository.impl";
 import { ProviderFetchAllAppServicesUseCase } from "../../application/provider-use.case/providerAppServices.use-case";
 
@@ -14,12 +13,14 @@ class ProviderAppServiceController {
         this.getAllAppServices = this.getAllAppServices.bind(this);
     }
 
-    async getAllAppServices(req: Request, res: Response) {
+    async getAllAppServices(req: Request, res: Response, next: NextFunction) {
         try {
             const result = await this.providerFetchAllServicesUseCase.execute();
+            console.log("result : ",result);
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("getAllAppServices error : ",error);
+            next(error)
         }
     }
 

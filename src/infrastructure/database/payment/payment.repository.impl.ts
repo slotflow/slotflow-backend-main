@@ -1,12 +1,12 @@
 import { Types } from "mongoose";
 import { IPayment, PaymentModel } from "./payment.model";
 import { Provider } from "../../../domain/entities/provider.entity";
-import { AdminFetchDashboardRevenueStatsDataResponse, AdminFetchRevenueReportRequest, AdminFetchRevenueReportResponse } from "../../dtos/admin.dto";
 import { ProviderFetchDashboardPaymentStatsDataResponse } from "../../dtos/provider.dto";
 import { endOfDay, startOfDay, startOfMonth, startOfToday, startOfTomorrow } from "date-fns";
 import { Payment, PaymentFor, PaymentGateway } from "../../../domain/entities/payment.entity";
 import { ApiResponse, FetchPaymentResponse, FetchPaymentsRequest, userIdAndProviderIdFilterForFetchPayments } from "../../dtos/common.dto";
-import { AdminFetchDashboardTodayPaymentStatsDataResponse, CreatePaymentForBookingProps, CreatePaymentForSubscriptionProps, fetchDatashboardStatsParams, IPaymentRepository, UpdateForCancelBookingRefundReqProps } from "../../../domain/repositories/IPayment.repository";
+import { AdminFetchDashboardRevenueStatsDataResponse, AdminFetchRevenueReportRequest, AdminFetchRevenueReportResponse } from "../../dtos/admin.dto";
+import { AdminFetchDashboardTodayPaymentStatsDataResponse, CreatePaymentForBookingRequest, CreatePaymentForSubscriptionRequest, IPaymentRepository, UpdateBookingRequest } from "../../../domain/repositories/IPayment.repository";
 
 export class PaymentRepositoryImpl implements IPaymentRepository {
     private mapToEntity(payment: IPayment): Payment {
@@ -35,21 +35,23 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
         )
     }
 
-    async createPaymentForSubscription(payment: CreatePaymentForSubscriptionProps, options: { session?: any } = {}): Promise<Payment | null> {
+    async createPaymentForSubscription(payment: CreatePaymentForSubscriptionRequest, options: { session?: any } = {}): Promise<Payment | null> {
         try {
             const newPayment = await PaymentModel.create([payment], options);
             return newPayment ? this.mapToEntity(newPayment[0]) : null;
         } catch (error) {
-            throw new Error("Payment creation error.");
+            console.log("createPaymentForSubscription error : ",error);
+            throw new Error("Failed to create payment for subscription");
         }
     }
 
-    async createPaymentForBooking(payment: CreatePaymentForBookingProps, options: { session?: any } = {}): Promise<Payment | null> {
+    async createPaymentForBooking(payment: CreatePaymentForBookingRequest, options: { session?: any } = {}): Promise<Payment | null> {
         try {
             const newPayment = await PaymentModel.create([payment], options);
             return newPayment ? this.mapToEntity(newPayment[0]) : null;
         } catch (error) {
-            throw new Error("Payment creation error.");
+            console.log("createPaymentForBooking error : ",error);
+            throw new Error("Failed to create payment for booking");
         }
     }
 
@@ -86,7 +88,8 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                 totalCount
             }
         } catch (error) {
-            throw new Error("Payments fetching error.");
+            console.log("findAllPayments error : ",error);
+            throw new Error("Failed to find all payments");
         }
     }
 
@@ -95,11 +98,12 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
             const payment = await PaymentModel.findById(paymentId);
             return payment ? this.mapToEntity(payment) : null;
         } catch (error) {
-            throw new Error("Payment fetching error");
+            console.log("findPaymentById error : ",error);
+            throw new Error("Failed to find all payments");
         }
     }
 
-    async updateForCancelBookingRefund(payment: UpdateForCancelBookingRefundReqProps, options: { session?: any } = {}): Promise<Payment | null> {
+    async updateBooking(payment: UpdateBookingRequest, options: { session?: any } = {}): Promise<Payment | null> {
         try {
             const updatedPayment = await PaymentModel.findByIdAndUpdate(
                 payment._id,
@@ -108,7 +112,8 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
             );
             return updatedPayment ? this.mapToEntity(updatedPayment) : null;
         } catch (error) {
-            throw new Error("Payment updating error");
+            console.log("updateBooking error : ",error);
+            throw new Error("Failed to update payment");
         }
     }
 
@@ -228,8 +233,8 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
             ]);
             return result[0];
         } catch (error) {
-            console.log("Dashboard payment stats fetching failed : ", error);
-            throw new Error("Dashboard payment stats fetching failed")
+            console.log("findPaymentStatsDataForProviderDashboard error : ", error);
+            throw new Error("Failed to find payment stats");
         }
     }
 
@@ -301,12 +306,12 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
             ])
             return result[0];
         } catch (error) {
-            console.log("findTodayPaymentStatsForAdminDashboard from repository : ", error);
-            throw new Error("Admin dashboard today payment stats fetching failed")
+            console.log("findTodayPaymentStatsForAdminDashboard error : ", error);
+            throw new Error("Failed to find todays payment stats");
         }
     }
 
-    async fetchPaymentStatsForAdminDashboard(): Promise<AdminFetchDashboardRevenueStatsDataResponse> {
+    async findPaymentStatsForAdminDashboard(): Promise<AdminFetchDashboardRevenueStatsDataResponse> {
         try {
             const paymentData = await PaymentModel.aggregate([
                 {
@@ -415,12 +420,12 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
             ])
             return paymentData[0];
         } catch (error) {
-            console.log("fetchPaymentStatsForAdminDashboard from repository : ", error);
-            throw new Error("Admin dashboard payment stats fetching failed")
+            console.log("findPaymentStatsForAdminDashboard error : ", error);
+            throw new Error("Failed to find payment stats")
         }
     }
 
-    async fetchAdminRevenueReport(payload: AdminFetchRevenueReportRequest): Promise<ApiResponse<AdminFetchRevenueReportResponse>> {
+    async findAdminRevenueReport(payload: AdminFetchRevenueReportRequest): Promise<ApiResponse<AdminFetchRevenueReportResponse>> {
         try {
 
             const { endDate, limit, page, startDate } = payload;
@@ -500,8 +505,8 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
                 totalCount,
             };
         } catch (error) {
-            console.log("fetchAdminRevenueReport error : ", error);
-            throw new Error("Admin revenue report fetching failed");
+            console.log("findAdminRevenueReport error : ", error);
+            throw new Error("Failed to find revenue repost");
         }
     }
 }

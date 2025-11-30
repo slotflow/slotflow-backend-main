@@ -1,7 +1,6 @@
 import { Types } from "mongoose";
-import { Request, Response } from "express";
 import { DecodedUser } from "../../express";
-import { HandleError } from "../../infrastructure/error/error";
+import { NextFunction, Request, Response } from "express";
 import { RequestQueryCommonZodSchema } from "../../infrastructure/zod/common.zod";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { UserFetchAllPaymentsUseCase } from "../../application/user-use.case/usePayment.use-case";
@@ -19,7 +18,7 @@ export class UserPaymentController {
         this.fetchPayments = this.fetchPayments.bind(this);
     }
 
-    async fetchPayments(req: Request, res: Response) {
+    async fetchPayments(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = (req.user as DecodedUser).userOrProviderId;
             const validateQueryData = RequestQueryCommonZodSchema.parse(req.query);
@@ -28,7 +27,8 @@ export class UserPaymentController {
             const result = await this.userFetchAllPaymentsUseCase.execute({ userId: new Types.ObjectId(userId), page, limit });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("fetchPayments error : ",error);
+            next(error)
         }
     }
 

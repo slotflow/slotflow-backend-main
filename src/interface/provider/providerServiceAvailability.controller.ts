@@ -1,41 +1,41 @@
 import { Types } from "mongoose";
-import { Request, Response } from "express";
 import { DecodedUser } from "../../express";
-import { HandleError } from "../../infrastructure/error/error";
+import { NextFunction, Request, Response } from "express";
 import { DateZodSchema } from "../../infrastructure/zod/common.zod";
-import { ProviderAddServiceAvailabilityZodSchema } from "../../infrastructure/zod/provider.zod";
+import { ProviderCreateServiceAvailabilityZodSchema } from "../../infrastructure/zod/provider.zod";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { ServiceAvailabilityRepositoryImpl } from "../../infrastructure/database/serviceAvailability/serviceAvailability.repository.impl";
-import { ProviderAddServiceAvailabilitiesUseCase, ProviderFetchServiceAvailabilityUseCase } from "../../application/provider-use.case/providerServiceAvailability.use-case";
+import { ProviderCreateServiceAvailabilitiesUseCase, ProviderFetchServiceAvailabilityUseCase } from "../../application/provider-use.case/providerServiceAvailability.use-case";
 
 const providerRepositoryImpl = new ProviderRepositoryImpl();
 const serviceAvailabilityRepositoryImpl = new ServiceAvailabilityRepositoryImpl();
 
-const providerAddServiceAvailabilitiesUseCase = new ProviderAddServiceAvailabilitiesUseCase(providerRepositoryImpl, serviceAvailabilityRepositoryImpl);
+const providerCreateServiceAvailabilitiesUseCase = new ProviderCreateServiceAvailabilitiesUseCase(providerRepositoryImpl, serviceAvailabilityRepositoryImpl);
 const providerFetchServiceAvailabilityUseCase = new ProviderFetchServiceAvailabilityUseCase(serviceAvailabilityRepositoryImpl);
 
 class ProviderServiceAvailabilityController {
     constructor(
-        private providerAddServiceAvailabilitiesUseCase: ProviderAddServiceAvailabilitiesUseCase,
+        private providerCreateServiceAvailabilitiesUseCase: ProviderCreateServiceAvailabilitiesUseCase,
         private providerFetchServiceAvailabilityUseCase: ProviderFetchServiceAvailabilityUseCase,
     ) {
-        this.addServiceAvailability = this.addServiceAvailability.bind(this);
+        this.createServiceAvailability = this.createServiceAvailability.bind(this);
         this.getServiceAvailability = this.getServiceAvailability.bind(this);
     }
 
-    async addServiceAvailability(req: Request, res: Response) {
+    async createServiceAvailability(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
-            const availabilities = ProviderAddServiceAvailabilityZodSchema.parse(req.body);
+            const availabilities = ProviderCreateServiceAvailabilityZodSchema.parse(req.body);
             if (!providerId || !availabilities || availabilities.length === 0) throw new Error("Invalid request.");
-            const result = await this.providerAddServiceAvailabilitiesUseCase.execute({ providerId: new Types.ObjectId(providerId), availabilities });
+            const result = await this.providerCreateServiceAvailabilitiesUseCase.execute({ providerId: new Types.ObjectId(providerId), availabilities });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("createServiceAvailability error : ",error);
+            next(error)
         }
     }
 
-    async getServiceAvailability(req: Request, res: Response) {
+    async getServiceAvailability(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
             const { date } = DateZodSchema.parse(req.query);
@@ -43,14 +43,15 @@ class ProviderServiceAvailabilityController {
             const result = await this.providerFetchServiceAvailabilityUseCase.execute({ providerId: new Types.ObjectId(providerId), date: new Date(date) });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("getServiceAvailability error : ",error);
+            next(error)
         }
     }
 
 }
 
 const providerServiceAvailabilityController = new ProviderServiceAvailabilityController(
-    providerAddServiceAvailabilitiesUseCase,
+    providerCreateServiceAvailabilitiesUseCase,
     providerFetchServiceAvailabilityUseCase
 );
 export { providerServiceAvailabilityController };

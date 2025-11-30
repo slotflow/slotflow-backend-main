@@ -1,9 +1,7 @@
-import { Provider } from "../../domain/entities/provider.entity";
 import { ApiResponse } from "../../infrastructure/dtos/common.dto";
-import { Validator } from "../../infrastructure/validator/validator";
-import { ProviderFetchDashboardStatsDataResponse } from "../../infrastructure/dtos/provider.dto";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
+import { ProviderFetchDashboardStatsDataRequest, ProviderFetchDashboardStatsDataResponse } from "../../infrastructure/dtos/provider.dto";
 
 export class ProviderFetchDashboardStatsUseCase {
     constructor(
@@ -11,13 +9,10 @@ export class ProviderFetchDashboardStatsUseCase {
         private paymentRepositoryImpl: PaymentRepositoryImpl,
     ) { }
 
-    async execute(providerId: Provider["_id"]): Promise<ApiResponse<ProviderFetchDashboardStatsDataResponse>> {
-
+    async execute(payload: ProviderFetchDashboardStatsDataRequest): Promise<ApiResponse<ProviderFetchDashboardStatsDataResponse>> {
         try {
+            const { providerId } = payload;
 
-            if (!providerId) throw new Error("Invalid request");
-            Validator.validateObjectId(providerId, "providerId");
-            
             const [
                 bookingStatsArray,
                 paymentStatsArray
@@ -25,11 +20,11 @@ export class ProviderFetchDashboardStatsUseCase {
                 this.bookingRepositoryImpl.findBookingStatsDataForProviderDashboard(providerId),
                 this.paymentRepositoryImpl.findPaymentStatsDataForProviderDashboard(providerId)
             ]);
-            
-            return { success: true, message: "Dashboard stats fetched successfully", data: {...bookingStatsArray,...paymentStatsArray} }
+
+            return { success: true, message: "Dashboard stats fetched successfully", data: { ...bookingStatsArray, ...paymentStatsArray } }
         } catch (error) {
-            console.error("Error in ProviderFetchDashboardStatsUseCase:", error);
-            return { success: false, message: "Dashboardstats fetchings failed" };
+            console.error("ProviderFetchDashboardStatsUseCase error :", error);
+            throw new Error("Failed to fetch dashboard stats");
         }
     }
 }

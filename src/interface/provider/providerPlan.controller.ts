@@ -1,5 +1,4 @@
-import { Request, Response } from "express";
-import { HandleError } from "../../infrastructure/error/error";
+import { NextFunction, Request, Response } from "express";
 import { PlanRepositoryImpl } from "../../infrastructure/database/plan/plan.repository.impl";
 import { ProviderFetchAllPlansUseCase } from "../../application/provider-use.case/providerPlan.use-case";
 
@@ -14,12 +13,13 @@ export class ProviderPlanController {
         this.fetchAllPlans = this.fetchAllPlans.bind(this);
     }
 
-    async fetchAllPlans(req: Request, res: Response) {
+    async fetchAllPlans(req: Request, res: Response, next: NextFunction) {
         try {
             const result = await this.providerFetchAllPlansUseCase.execute();
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("fetchAllPlans error : ", error);
+            next(error)
         }
     }
 }

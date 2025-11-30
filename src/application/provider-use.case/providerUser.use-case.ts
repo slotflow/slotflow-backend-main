@@ -1,33 +1,36 @@
-import { Provider } from "../../domain/entities/provider.entity";
 import { ApiResponse } from "../../infrastructure/dtos/common.dto";
-import { Validator } from "../../infrastructure/validator/validator";
-import { generateSignedUrl } from "../../infrastructure/services/signedUrl.service";
-import { ProviderFetchUsersForChatSideBar } from "../../infrastructure/dtos/provider.dto";
+import { GenerateSignedUrlService } from "../../infrastructure/services/signedUrl.service";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
+import { ProviderFetchUsersForChatSideBarResponse, ProviderFetchUsersForChatSideBarRequest } from "../../infrastructure/dtos/provider.dto";
 
 export class ProviderFetchUserForChatSidebarUseCase {
     constructor(
-        private bookingRepositoryImpl: BookingRepositoryImpl
+        private bookingRepositoryImpl: BookingRepositoryImpl,
+        private generateSignedUrlService: GenerateSignedUrlService
     ) { }
 
-    async execute(providerId: Provider["_id"]): Promise<ApiResponse<ProviderFetchUsersForChatSideBar>> {
+    async execute(payload: ProviderFetchUsersForChatSideBarRequest): Promise<ApiResponse<ProviderFetchUsersForChatSideBarResponse>> {
+        try {
+            const { providerId } = payload;
+            const result = await this.bookingRepositoryImpl.findUsersforChatSideBar(providerId);
 
-        Validator.validateObjectId(providerId, "Provider Id")
-        const result = await this.bookingRepositoryImpl.findUsersforChatSideBar(providerId);
+            const updatedResult = await Promise.all(
+                (result as ProviderFetchUsersForChatSideBarResponse).map(async (user) => {
+                    let profileImageUrl = user?.profileImage;
 
-        const updatedResult: ProviderFetchUsersForChatSideBar = await Promise.all(
-            result.map(async (user) => {
-                let profileImageUrl = user?.profileImage;
+                    if (profileImageUrl) {
+                        const signedUrl = await this.generateSignedUrlService.execute(profileImageUrl);
+                        user.profileImage = signedUrl;
+                    }
 
-                if (profileImageUrl) {
-                    const signedUrl = await generateSignedUrl(profileImageUrl);
-                    user.profileImage = signedUrl;
-                }
+                    return user;
+                })
+            )
 
-                return user;
-            })
-        )
-
-        return { data: updatedResult }
+            return { data: updatedResult }
+        } catch (error) {
+            console.log("ProviderFetchUserForChatSidebarUseCase error : ", error);
+            throw new Error("Failed to fetch user for chat sidebar");
+        }
     }
 }

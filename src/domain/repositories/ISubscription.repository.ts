@@ -33,7 +33,7 @@ export interface ISubscriptionRepository {
 
     findSubscriptionFullDetails(subscriptionId: Types.ObjectId): Promise<findSubscriptionFullDetailsResProps | {}>;
 
-    findSbuscriptionsForUpdatinStatus():Promise<boolean>;
+    findSubscriptionsForUpdatinStatus():Promise<boolean>;
 
     findSubscribedPlan(subscriptionId: Types.ObjectId): Promise<Plan["planName"] | boolean>;
 

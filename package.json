@@ -8,7 +8,8 @@
     "predev": "npx kill-port 3000",
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "bundle": "tsup src/server.ts --format esm --dts --out-dir dist-bundle"
   },
   "author": "midhun_kalarikkal",
   "license": "ISC",
@@ -58,6 +59,7 @@
     "@types/validator": "^13.12.2",
     "otp-generator-module": "^1.0.2",
     "ts-node": "^10.9.2",
+    "tsup": "^8.5.0",
     "tsx": "^4.20.3",
     "typescript": "^5.8.3"
   }

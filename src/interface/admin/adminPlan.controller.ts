@@ -1,6 +1,5 @@
 import { Types } from "mongoose";
-import { Request, Response } from "express";
-import { HandleError } from "../../infrastructure/error/error";
+import { NextFunction, Request, Response } from "express";
 import { PlanRepositoryImpl } from "../../infrastructure/database/plan/plan.repository.impl";
 import { RequestQueryCommonZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
 import { AdminAddNewPlanZodSchema, AdminChangePlanIsBlockStatusZodSchema } from "../../infrastructure/zod/admin.zod";
@@ -19,39 +18,42 @@ class AdminPlanController {
         private adminChangePlanBlockStatusUseCase: AdminChangePlanBlockStatusUseCase,
     ) {
         this.getAllPlans = this.getAllPlans.bind(this);
-        this.addNewPlan = this.addNewPlan.bind(this);
+        this.createNewPlan = this.createNewPlan.bind(this);
         this.changePlanBlockStatus = this.changePlanBlockStatus.bind(this);
     }
 
-    async getAllPlans(req: Request, res: Response) {
+    async getAllPlans(req: Request, res: Response, next: NextFunction) {
         try {
             const { page, limit } = RequestQueryCommonZodSchema.parse(req.query);
             const result = await this.adminPlanListUseCase.execute({ page, limit });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("getAllPlans error : ", error);
+            next(error)
         }
     }
 
-    async addNewPlan(req: Request, res: Response) {
+    async createNewPlan(req: Request, res: Response, next: NextFunction) {
         try {
+            console.log("req.body : ", req.body);
             const validateBody = AdminAddNewPlanZodSchema.parse(req.body);
-            const { planName, description, price, features, maxBookingPerMonth, adVisibility } = validateBody;
-            const result = await this.adminCreatePlanUseCase.execute({ planName, description, price, features, maxBookingPerMonth, adVisibility });
+            const result = await this.adminCreatePlanUseCase.execute(validateBody);
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("createNewPlan error : ", error);
+            next(error)
         }
     }
 
-    async changePlanBlockStatus(req: Request, res: Response) {
+    async changePlanBlockStatus(req: Request, res: Response, next: NextFunction) {
         try {
             const { blockStatus } = AdminChangePlanIsBlockStatusZodSchema.parse(req.body);
             const { id: planId } = ValidateObjectId(req.params.planId, "Plan ID");
             const result = await this.adminChangePlanBlockStatusUseCase.execute({ planId: new Types.ObjectId(planId as string), isBlocked: blockStatus });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("changePlanBlockStatus error : ", error);
+            next(error)
         }
     }
 

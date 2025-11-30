@@ -9,6 +9,7 @@ import { ProviderService } from "../../domain/entities/providerService.entity";
 import { FontendAvailabilityForResponse } from "../../domain/entities/serviceAvailability.entity";
 import { findSubscriptionFullDetailsResProps } from "../../domain/repositories/ISubscription.repository";
 import { Payment } from "../../domain/entities/payment.entity";
+import { Review } from "../../domain/entities/review.entity";
 
 // **************** used in adminProvider.use-case **************** \\
 
@@ -55,7 +56,7 @@ export type AdminFetchProviderDetailsResponse = Pick<Provider, "_id" | "username
 
 // **** adminFetchProviderAddress
 // Used as the request type of admin fetch provider address
-export type AdminFetchUserOrProviderAddressResponse = Pick<Address, "userId" | "addressLine" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "googleMapLink"> | {};
+export type AdminFetchUserOrProviderAddressResponse = Pick<Address, "userId" | "addressLine" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location"> | {};
 
 
 
@@ -106,6 +107,10 @@ export interface AdminChangeUserIsBlockedStatusRequest {
 }
 
 // **** AdminFetchUserDetailsUseCase
+// Used as the request interface of admin fetch user profile details
+export interface AdminFetchUserProfileDetailsRequest {
+    userId: User["_id"];
+}
 // Used as the response type of admin fetch user profile details
 export type AdminFetchUserProfileDetailsResponse = Pick<User, "username" | "phone" | "profileImage" | "isEmailVerified" | "isBlocked" | "email" | "createdAt"> | {};
 
@@ -147,6 +152,11 @@ export interface AdminChnageServiceIsBlockedStatusRequest {
 export type AdminFetchAllSubscriptionsResponse = Array<Pick<Subscription, "_id" | "startDate" | "endDate" | "subscriptionStatus"> & Pick<Plan, "planName">>;
 
 
+
+// Admin Review UseCase
+export interface AdminUpdateReviewBlockStatusRequest {
+    reviewId: Review["_id"];
+}
 
 
 

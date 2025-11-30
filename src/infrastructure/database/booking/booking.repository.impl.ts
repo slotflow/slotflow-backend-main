@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import { Types } from "mongoose";
+import { roleArray } from "../../helpers/constants";
 import { BookingModel, IBooking } from "./booking.model";
 import { User } from "../../../domain/entities/user.entity";
 import { Provider } from "../../../domain/entities/provider.entity";
@@ -7,9 +8,9 @@ import { endOfDay, startOfDay, startOfToday, startOfTomorrow } from "date-fns";
 import { UserFetchProvidersForChatSidebarResponse } from "../../dtos/user.dto";
 import { AppointmentStatus, Booking } from "../../../domain/entities/booking.entity";
 import { AdminFetchDashboardAppointmentStatsDataResponse } from "../../dtos/admin.dto";
-import { FetchBookingsRequest, ApiResponse, FetchBookingsResponse, userIdAndServiceProviderId, FetchOnlineBookingsForProviderResponse, FetchOnlineBookingsForUserResponse, Role, FetchBookingDetailsResponse } from "../../dtos/common.dto";
+import { ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardGraphDataResponse, ProviderFetchUsersForChatSideBarResponse } from "../../dtos/provider.dto";
 import { AdminFetchTodaysBookingStatsForDashboardResponse, CreateBookingPayloadProps, IBookingRepository, ProviderFetchDashboardGraphRepository } from "../../../domain/repositories/IBooking.repository";
-import { ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardGraphDataResponse, ProviderFetchUsersForChatSideBar } from "../../dtos/provider.dto";
+import { FetchBookingsRequest, ApiResponse, FetchBookingsResponse, userIdAndServiceProviderId, FetchOnlineBookingsForProviderResponse, FetchOnlineBookingsForUserResponse, FetchBookingDetailsResponse } from "../../dtos/common.dto";
 
 export class BookingRepositoryImpl implements IBookingRepository {
     private mapToEntity(booking: IBooking): Booking {
@@ -37,7 +38,8 @@ export class BookingRepositoryImpl implements IBookingRepository {
             const newBooking = await BookingModel.create([booking], options);
             return this.mapToEntity(newBooking[0]);
         } catch (error) {
-            throw new Error("Appointment booking creating failed");
+            console.log("createBooking : ", error);
+            throw new Error("Failed to create appointment");
         }
     }
 
@@ -52,7 +54,8 @@ export class BookingRepositoryImpl implements IBookingRepository {
             });
             return bookings;
         } catch (error) {
-            throw new Error("Booking fetching failed");
+            console.log("findBookingByUserId error : ", error);
+            throw new Error("Failed to find booking by user id");
         }
     }
 
@@ -61,7 +64,8 @@ export class BookingRepositoryImpl implements IBookingRepository {
             const booking = await BookingModel.findById(bookingId);
             return booking ? this.mapToEntity(booking) : null;
         } catch (error) {
-            throw new Error("Finding booking failed");
+            console.log("findBookingById error : ", error);
+            throw new Error("Failed to find booking by id");
         }
     }
 
@@ -70,7 +74,8 @@ export class BookingRepositoryImpl implements IBookingRepository {
             const booking = await BookingModel.findOne({ videoCallRoomId: roomId });
             return booking ? this.mapToEntity(booking) : null;
         } catch (error) {
-            throw new Error("Finding booking failed");
+            console.log("findBookingByroomId error : ", error);
+            throw new Error("Failed to find booking by room id");
         }
     }
 
@@ -83,13 +88,13 @@ export class BookingRepositoryImpl implements IBookingRepository {
             );
             return updatedBooking ? this.mapToEntity(updatedBooking) : null;
         } catch (error) {
-            throw new Error("Booking updating failed");
+            console.log("updateBooking error : ", error);
+            throw new Error("Failed to update booking");
         }
     }
 
     async findTodaysBookingForCronjob(): Promise<boolean> {
         try {
-
             const now = new Date();
             const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
             const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
@@ -113,8 +118,9 @@ export class BookingRepositoryImpl implements IBookingRepository {
                 }
             );
             return bookings.modifiedCount > 0;
-        } catch {
-            return false;
+        } catch (error) {
+            console.log("findTodaysBookingForCronjob error : ", error);
+            throw new Error("Failed to find bookings for today");
         }
     }
 
@@ -154,9 +160,9 @@ export class BookingRepositoryImpl implements IBookingRepository {
                 .sort({ createdAt: -1 })
                 .lean();
 
-            if (online && role === Role.user) {
+            if (online && role === roleArray[1]) {
                 query = query.populate("serviceProviderId", "username -_id");
-            } else if (online && role === Role.provider) {
+            } else if (online && role === roleArray[2]) {
                 query = query.populate("userId", "username -_id");
             }
 
@@ -171,14 +177,14 @@ export class BookingRepositoryImpl implements IBookingRepository {
                 currentPage: page,
                 totalCount
             }
-        } catch {
-            throw new Error("Bookings fetching failed")
+        } catch (error) {
+            console.log("findAllBookings error : ", error);
+            throw new Error("Failed to find all bookings");
         }
     }
 
-    async findUsersforChatSideBar(providerId: Provider["_id"]): Promise<ProviderFetchUsersForChatSideBar> {
+    async findUsersforChatSideBar(providerId: Provider["_id"]): Promise<ProviderFetchUsersForChatSideBarResponse> {
         try {
-
             const users = await BookingModel.aggregate([
                 {
                     $match: {
@@ -215,14 +221,14 @@ export class BookingRepositoryImpl implements IBookingRepository {
             ]);
             return users;
 
-        } catch {
-            throw new Error("Users fetching failed");
+        } catch (error) {
+            console.log("findUsersforChatSideBar error : ", error);
+            throw new Error("Failed to find all users for chat sidebar");
         }
     }
 
     async findProvidersforChatSideBar(userId: User["_id"]): Promise<UserFetchProvidersForChatSidebarResponse> {
         try {
-
             const providers = await BookingModel.aggregate([
                 {
                     $match: {
@@ -259,8 +265,9 @@ export class BookingRepositoryImpl implements IBookingRepository {
             ]);
             return providers;
 
-        } catch {
-            throw new Error("providers fetching failed");
+        } catch (error) {
+            console.log("findProvidersforChatSideBar error : ", error);
+            throw new Error("Failed to find providrs for chat sidebar");
         }
     }
 
@@ -312,20 +319,20 @@ export class BookingRepositoryImpl implements IBookingRepository {
                 rejectedAppointmentsByProvider: 0,
                 todaysAppointments: 0
             };
-        } catch {
-            throw new Error("Dashboard stats fetching failed");
+        } catch (error) {
+            console.log("findBookingStatsDataForProviderDashboard error : ", error);
+            throw new Error("Failed to find booking stats");
         }
     }
 
     async findBookingGraphDataForProviderDashboard(payload: ProviderFetchDashboardGraphRepository): Promise<ProviderFetchDashboardGraphDataResponse | null> {
         try {
-
             const { providerId, subscriptionGuard, endDate, startDate } = payload
 
-            console.log("providerId,  : ",providerId)
-            console.log("subscriptionGuard,  : ",subscriptionGuard)
-            console.log("endDate : ",endDate)
-            console.log("startDate : ",startDate)
+            console.log("providerId,  : ", providerId)
+            console.log("subscriptionGuard,  : ", subscriptionGuard)
+            console.log("endDate : ", endDate)
+            console.log("startDate : ", startDate)
 
             const matchFilter: Record<string, any> = {
                 serviceProviderId: providerId,
@@ -335,7 +342,7 @@ export class BookingRepositoryImpl implements IBookingRepository {
                 matchFilter.createdAt = { $gte: startDate, $lte: endDate };
             }
 
-            console.log("matchFilter : ",matchFilter);
+            console.log("matchFilter : ", matchFilter);
 
             const facet: Record<string, any> = {};
 
@@ -499,14 +506,14 @@ export class BookingRepositoryImpl implements IBookingRepository {
             ]);
 
             return result[0];
-        } catch {
-            throw new Error("Dashboard graph data fetching error");
+        } catch (error) {
+            console.log("findBookingGraphDataForProviderDashboard error : ", error);
+            throw new Error("Failed to find booking graph data");
         }
     }
 
     async findTodayBookingStatsForAdminDashboard(): Promise<AdminFetchTodaysBookingStatsForDashboardResponse> {
         try {
-
             const startOfToday = startOfDay(new Date());
             const endOfToday = endOfDay(new Date());
 
@@ -536,8 +543,9 @@ export class BookingRepositoryImpl implements IBookingRepository {
                 todaysCancelledAppointments: 0,
                 todaysCompletedAppointments: 0
             };
-        } catch {
-            throw new Error("Admin dashboard today booking stats fetching failed")
+        } catch (error) {
+            console.log("findTodayBookingStatsForAdminDashboard error : ", error);
+            throw new Error("Failed to find booking stats for today");
         }
     }
 
@@ -563,13 +571,13 @@ export class BookingRepositoryImpl implements IBookingRepository {
                 rejectedAppointments: 0
             };
         } catch (error) {
-            throw new Error("Admin dashboard booking stats fetching failed")
+            console.log("findBookingStatsForAdminDashboard error : ", error);
+            throw new Error("Failed to find booking stats");
         }
     }
 
     async findBookingDetails(bookingId: Types.ObjectId): Promise<FetchBookingDetailsResponse | null> {
         try {
-
             const bookingDetails = await BookingModel.findById(bookingId, {
                 _id: 0,
                 appointmentDate: 1,
@@ -594,7 +602,7 @@ export class BookingRepositoryImpl implements IBookingRepository {
             return bookingDetails ?? null;
         } catch (error) {
             console.log("findBookingDetails error : ", error);
-            throw new Error("Booking details fetching failed");
+            throw new Error("Failed to find booking details");
         }
     }
 }

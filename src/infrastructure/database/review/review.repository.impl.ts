@@ -1,9 +1,10 @@
 import { FilterQuery, Types } from "mongoose";
+import { roleArray } from "../../helpers/constants";
 import { IReview, ReviewModel } from "./review.model";
 import { CreateReviewRequset } from "../../dtos/user.dto";
 import { Review } from "../../../domain/entities/review.entity";
 import { IReviewRepository } from "../../../domain/repositories/IReview.repository";
-import { ApiResponse, FetchReviesRequest, FetchReviewsResponse, Role } from "../../dtos/common.dto";
+import { ApiResponse, FetchReviesRequest, FetchReviewsResponse } from "../../dtos/common.dto";
 
 export class ReviewRepositoryImpl implements IReviewRepository {
     public mapToEntity(review: IReview): Review {
@@ -23,30 +24,28 @@ export class ReviewRepositoryImpl implements IReviewRepository {
 
     async createReview(data: CreateReviewRequset): Promise<Review | null> {
         try {
-
             const createdReview = await ReviewModel.create(data);
             return createdReview ? this.mapToEntity(createdReview) : null;
         } catch (error) {
-            console.log("Review creating error : ", error);
-            throw new Error("Review creating failed");
+            console.log("createReview error : ", error);
+            throw new Error("Failed to create review");
         }
     }
 
 
     async findAllReviews(data: FetchReviesRequest): Promise<ApiResponse<FetchReviewsResponse[]>> {
         try {
-
             const { limit, page, providerId, userId, role } = data;
 
             const skip = (page - 1) * limit;
 
             const filter: FilterQuery<typeof Review> = {};
 
-            if (role === Role.user && userId) {
+            if (role === roleArray[1] && userId) {
                 filter.userId = userId;
-            } else if (role === Role.provider && providerId) {
+            } else if (role === roleArray[2] && providerId) {
                 filter.providerId = providerId;
-            } else if(role === Role.user && providerId) {
+            } else if(role === roleArray[1] && providerId) {
                 filter.providerId = providerId;
                 filter.isBlocked = false;
             }
@@ -101,7 +100,7 @@ export class ReviewRepositoryImpl implements IReviewRepository {
             }
         } catch (error) {
             console.log("findAllReviews error : ", error);
-            throw new Error("Fetching reviews failed");
+            throw new Error("Failed to find all reviews");
         }
     }
 
@@ -111,7 +110,7 @@ export class ReviewRepositoryImpl implements IReviewRepository {
             return result ? true : false;
         } catch (error) {
             console.log("deleteReview error : ", error);
-            throw new Error("Deleting review failed");
+            throw new Error("Failed to delete review");
         }
     }
 
@@ -121,7 +120,7 @@ export class ReviewRepositoryImpl implements IReviewRepository {
             return review || null;
         } catch (error) {
             console.log("findReviewById error : ", error);
-            throw new Error("Finding review failed");
+            throw new Error("Failed to find review");
         }
     }
 
@@ -135,7 +134,7 @@ export class ReviewRepositoryImpl implements IReviewRepository {
             return updatedReview ? this.mapToEntity(updatedReview) : null;
         } catch (error) {
             console.log("updateReview error : ",error);
-            throw new Error("Updating review error");
+            throw new Error("Failed to update review");
         }
     }
 }

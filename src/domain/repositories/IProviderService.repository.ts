@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 import { Service } from "../entities/service.entity";
 import { ProviderService } from "../entities/providerService.entity";
 
-export type CreateProviderServiceReqProps = Pick<ProviderService, "providerId" | "serviceCategory" | "serviceName" | "serviceDescription" | "servicePrice" | "providerAdhaar" | "providerExperience" | "providerCertificateUrl">;
+export type CreateProviderServiceRequest = Pick<ProviderService, "providerId" | "serviceCategory" | "serviceName" | "serviceDescription" | "servicePrice" | "isGroupService" | "maxParticipants" | "serviceExperience" | "serviceMode" | "serviceType" | "tags"> & Partial<Pick<ProviderService, "videoUrl" | "requirements">>;
 
 type FindProviderServiceProps = Omit<ProviderService, "serviceCategory">;
 export interface FindProviderServiceResponse extends FindProviderServiceProps {
@@ -27,7 +27,7 @@ export  interface FindProvidersUsingServiceCategoryIdsResponse {
 
 export interface IProviderServiceRepository {
 
-    createProviderService(providerService: CreateProviderServiceReqProps): Promise<ProviderService | null>;
+    createProviderService(providerService: CreateProviderServiceRequest): Promise<ProviderService | null>;
 
     findProviderServiceByProviderId(providerId: Types.ObjectId): Promise<FindProviderServiceResponse | {}>;
 

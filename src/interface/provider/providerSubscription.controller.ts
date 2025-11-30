@@ -1,7 +1,6 @@
 import { Types } from "mongoose";
-import { Request, Response } from "express";
 import { DecodedUser } from "../../express";
-import { HandleError } from "../../infrastructure/error/error";
+import { NextFunction, Request, Response } from "express";
 import { ProviderPlanSubscribeZodSchema } from "../../infrastructure/zod/provider.zod";
 import { PlanRepositoryImpl } from "../../infrastructure/database/plan/plan.repository.impl";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
@@ -39,7 +38,7 @@ export class ProviderSubscriptionController {
         this.getSubscriptionDetails = this.getSubscriptionDetails.bind(this);
     }
 
-    async subscribe(req: Request, res: Response) {
+    async subscribe(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
             const { planId, planDuration } = ProviderPlanSubscribeZodSchema.parse(req.body);
@@ -47,11 +46,12 @@ export class ProviderSubscriptionController {
             const result = await this.providerStripeSubscriptionCreateSessionIdUseCase.execute({ providerId: new Types.ObjectId(providerId), planId: new Types.ObjectId(planId), duration: planDuration });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("subscribe error : ", error);
+            next(error)
         }
     }
 
-    async saveSubscription(req: Request, res: Response) {
+    async saveSubscription(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
             const { sessionId } = SaveStripePaymentZodSchema.parse(req.body);
@@ -59,11 +59,12 @@ export class ProviderSubscriptionController {
             const result = await this.providerSaveSubscriptionUseCase.execute({ providerId: new Types.ObjectId(providerId), sessionId });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("saveSubscription error : ", error);
+            next(error)
         }
     }
 
-    async fetchProviderSubscriptions(req: Request, res: Response) {
+    async fetchProviderSubscriptions(req: Request, res: Response, next: NextFunction) {
         try {
             const validateQueryData = RequestQueryCommonZodSchema.parse(req.query);
             const { page, limit } = validateQueryData;
@@ -72,29 +73,32 @@ export class ProviderSubscriptionController {
             const result = await this.providerFetchAllSubscriptionsUseCase.execute({ providerId: new Types.ObjectId(providerId), page, limit });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("fetchProviderSubscriptions error : ", error);
+            next(error)
         }
     }
 
-    async subscribeToTrialPlan(req: Request, res: Response) {
+    async subscribeToTrialPlan(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
             if (!providerId) throw new Error("Invalid request.");
             const result = await this.providerTrialSubscriptionUseCase.execute({ providerId: new Types.ObjectId(providerId) });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("subscribeToTrialPlan error : ", error);
+            next(error)
         }
     }
 
-    async getSubscriptionDetails(req: Request, res: Response) {
+    async getSubscriptionDetails(req: Request, res: Response, next: NextFunction) {
         try {
             const { id: subscriptionId } = ValidateObjectId(req.params.subscriptionId, "Subscription Id");
             if (!subscriptionId) throw new Error("Invalid request.");
             const result = await this.fetchSubscriptionDetailsUseCase.execute({ subscriptionId: new Types.ObjectId(subscriptionId) });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("getSubscriptionDetails error : ", error);
+            next(error)
         }
     }
 };

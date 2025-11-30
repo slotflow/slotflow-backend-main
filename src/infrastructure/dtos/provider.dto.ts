@@ -1,12 +1,14 @@
+import Stripe from "stripe";
+import { SubscriptionPlan } from "./common.dto";
 import { User } from "../../domain/entities/user.entity";
 import { Plan } from "../../domain/entities/plan.entity";
+import { Review } from "../../domain/entities/review.entity";
 import { Address } from "../../domain/entities/address.entity";
 import { Service } from "../../domain/entities/service.entity";
+import { Booking } from "../../domain/entities/booking.entity";
 import { Provider } from "../../domain/entities/provider.entity";
 import { ProviderService } from "../../domain/entities/providerService.entity";
 import { FontendAvailabilityForResponse, FrontendAvailabilityForRequest } from "../../domain/entities/serviceAvailability.entity";
-import { Booking } from "../../domain/entities/booking.entity";
-import { SubscriptionPlan } from "./common.dto";
 
 
 // ************ used in providerAddress.use-case ************ \\
@@ -15,26 +17,20 @@ export interface ProviderFetchAddressRequest {
     providerId: Provider["_id"];
 }
 // provider fetch address use case response interface
-export type ProviderFetchAddressResponse = Pick<Address, "_id" | "addressLine" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "googleMapLink"> | {};
+export type ProviderFetchAddressResponse = Pick<Address, "_id" | "addressLine" | "landMark" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location"> | {};
 
 
 
 
 
 // ************ used in providerService.use-case ************ \\
-// provider add service details use case request payload interface
-type AddServiceDetailsRequest = Pick<ProviderService, "providerId" | "serviceCategory" | "serviceName" | "serviceDescription" | "servicePrice" | "providerAdhaar" | "providerExperience">;
-export interface ProviderAddServiceDetailsRequest extends AddServiceDetailsRequest {
-    file: Express.Multer.File
-}
-
 
 // provider fetch service details use case request payload
 export interface ProviderFetchProviderServiceRequest {
     providerId: Provider["_id"];
 }
 // provider fetch service details use case respomse interface
-type FindProviderServiceProps = Pick<ProviderService, "_id" | "serviceName" | "serviceDescription" | "servicePrice" | "providerAdhaar" | "providerExperience" | "providerCertificateUrl" | "updatedAt" | "createdAt">;
+type FindProviderServiceProps = Pick<ProviderService, "_id" | "serviceName" | "serviceDescription" | "servicePrice" | "isGroupService" | "maxParticipants" | "requirements" | "serviceExperience" | "serviceMode" | "serviceType" | "tags" | "videoUrl" | "updatedAt" | "createdAt">;
 export interface ProviderFindProviderServiceResProps extends FindProviderServiceProps {
     serviceCategory: Pick<Service, "serviceName">;
 }
@@ -139,14 +135,20 @@ export interface ProviderTrialSubscriptionRequest {
 
 // ************ used in providerUser.use-case  ************ \\
 // provider fetch users for the chat sidebar
-export type ProviderFetchUsersForChatSideBar = Array<Pick<User, "_id" | "username" | "profileImage">>
+export interface ProviderFetchUsersForChatSideBarRequest {
+    providerId: Provider["_id"];
+}
+export type ProviderFetchUsersForChatSideBarResponse = Array<Pick<User, "_id" | "username" | "profileImage">>
 
 
 
 
 
 // ************ used in providerDashboard.use-case  ************ \\
-// Used as the return interface for the provider fetch dashboard data
+export interface ProviderFetchDashboardStatsDataRequest {
+    providerId: Provider["_id"];
+}
+// Used as the response interface for the provider fetch dashboard data
 export interface ProviderFetchDashboardStatsDataResponse extends ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardPaymentStatsDataResponse { }
 export interface ProviderFetchDashboardBookingStatsDataResponse {
     totalAppointments: number;
@@ -218,3 +220,18 @@ export interface ProviderFetchDashboardGraphDataResponse {
 // ************ used in providerBooking.use-case  ************ \\
 // Used as the request type for the provider change booking appointment status
 export type ProviderChangeBookingAppoinmentStatusRequest = Pick<Booking, "_id" | "appointmentStatus">;
+
+
+
+// Provider Stripe UseCase
+export interface ProviderStripeConnectRequest {
+    providerId: Provider["_id"];
+}
+export type ProviderStripeConnectResponse = Stripe.Response<Stripe.AccountLink>;
+
+
+// Provider Report UseCase
+export interface ProviderRepostReviewRequest {
+    reviewId: Review["_id"]; 
+    providerId: Provider["_id"];
+}

@@ -1,8 +1,8 @@
 import { Types } from "mongoose";
-import { Request, Response } from "express";
 import { DecodedUser } from "../../express";
-import { Role } from "../../infrastructure/dtos/common.dto";
-import { HandleError } from "../../infrastructure/error/error";
+import { NextFunction, Request, Response } from "express";
+import { RoleType } from "../../infrastructure/dtos/common.dto";
+import { roleArray } from "../../infrastructure/helpers/constants";
 import { AppointmentStatus } from "../../domain/entities/booking.entity";
 import { AesEncryption } from "../../infrastructure/services/aesEncryption";
 import { GoogleTokenService } from "../../infrastructure/services/googleTokenService";
@@ -49,7 +49,7 @@ export class ProviderBookingController {
         this.fetchBookingDetails = this.fetchBookingDetails.bind(this);
     }
 
-    async fetchBookingAppointments(req: Request, res: Response) {
+    async fetchBookingAppointments(req: Request, res: Response, next: NextFunction) {
         try {
             const provider = (req.user as DecodedUser);
             const { page, limit, online, raw } = RequestQueryForBookingCommonZodSchema.parse(req.query);
@@ -60,39 +60,41 @@ export class ProviderBookingController {
                 limit,
                 online: online ? true : false,
                 raw: raw ? true : false,
-                role: provider.role as Role
+                role: provider.role as RoleType
             });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("fetchBookingAppointments error : ",error);
+            next(error)
         }
     }
 
-    async updateBookingAppointmentStatus(req: Request, res: Response) {
+    async updateBookingAppointmentStatus(req: Request, res: Response, next: NextFunction) {
         try {
             const { id: bookingId } = ValidateObjectId(req.params.bookingId, "Booking ID");
             const validateData = ProviderChangeBookingAppointmentStatusZodSchema.parse(req.body);
             const result = await this.providerChangeBookingAppointmentStatusUseCase.execute({ _id: new Types.ObjectId(bookingId), appointmentStatus: validateData.appointmentStatus as AppointmentStatus });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("updateBookingAppointmentStatus error : ",error);
+            next(error)
         }
     }
 
-    async validateRoom(req: Request, res: Response) {
+    async validateRoom(req: Request, res: Response, next: NextFunction) {
         try {
             const { id: bookingId } = ValidateObjectId(req.params.bookingId, "Booking ID");
             const roomId = req.query.roomId;
             const providerId = (req.user as DecodedUser).userOrProviderId;
-            const result = await this.validateJoinRoomUsecase.execute({ bookingId: new Types.ObjectId(bookingId), roomId: roomId as string, role: Role.provider, userOrProviderId: new Types.ObjectId(providerId) });
+            const result = await this.validateJoinRoomUsecase.execute({ bookingId: new Types.ObjectId(bookingId), roomId: roomId as string, role: roleArray[2], userOrProviderId: new Types.ObjectId(providerId) });
             res.status(200).json(result);
         } catch (error) {
             console.log("validateRoom erro : ", error);
-            HandleError.handle(error, res);
+            next(error)
         }
     }
 
-    async providerJoinRoom(req: Request, res: Response) {
+    async providerJoinRoom(req: Request, res: Response, next: NextFunction) {
         try {
             const roomId = req.params.roomId;
             const validatedData = JoinOrLeftRoomZodSchema.parse(req.body);
@@ -107,18 +109,18 @@ export class ProviderBookingController {
             res.status(200).json(result);
         } catch (error) {
             console.log("userJoinRoom error : ", error);
-            HandleError.handle(error, res);
+            next(error)
         }
     }
     
-    async fetchBookingDetails (req: Request, res: Response) {
+    async fetchBookingDetails (req: Request, res: Response, next: NextFunction) {
         try {
             const { id: bookingId } = ValidateObjectId(req.params.bookingId, "Booking ID");
-            const result = await this.fetchBookingDetailsUsecase.execute(new Types.ObjectId(bookingId));
+            const result = await this.fetchBookingDetailsUsecase.execute({bookingId: new Types.ObjectId(bookingId)});
             res.status(200).json(result);
         } catch (error) {
             console.log("fetchBookingDetails error : ", error);
-            HandleError.handle(error, res);
+            next(error)
         }
     }
 

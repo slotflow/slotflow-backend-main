@@ -34,17 +34,17 @@ export class UserRepositoryImpl implements IUserRepository {
             return this.mapToEntity(createdUser);
         } catch (error) {
             console.log("createUser error : ",error);
-            throw new Error("Unable to register, please try again after a few minutes.");
+            throw new Error("Failed to create user");
         }
     }
     
-    async verifyUser(verificationToken: string): Promise<User | null> {
+    async findUserByVerificationToken(verificationToken: string): Promise<User | null> {
         try {
             const user = await UserModel.findOne({ verificationToken });
             return user ? this.mapToEntity(user) : null;
         } catch (error) {
-            console.log("verifyUser error : ",error);
-            throw new Error("Unable to retrieve verification data.");
+            console.log("findUserByVerificationToken error : ",error);
+            throw new Error("Failed to find user");
         }
     }
     
@@ -54,7 +54,7 @@ export class UserRepositoryImpl implements IUserRepository {
             return updatedUser ? this.mapToEntity(updatedUser) : null;
         } catch (error) {
             console.log("updateUser error : ",error);
-            throw new Error("Unable to update user.");
+            throw new Error("Failed to find user");
         }
     }
     
@@ -64,7 +64,7 @@ export class UserRepositoryImpl implements IUserRepository {
             return user ? this.mapToEntity(user) : null;
         } catch (error) {
             console.log("findUserByEmail error : ",error);
-            throw new Error("Unable to find user by email.");
+            throw new Error("Failed to find user");
         }
     }
     
@@ -91,7 +91,7 @@ export class UserRepositoryImpl implements IUserRepository {
             }
         } catch (error) {
             console.log("findAllUsers error : ",error);
-            throw new Error("Failed to fetch users from database.")
+            throw new Error("Failed to find all users")
         }
     }
     
@@ -101,7 +101,7 @@ export class UserRepositoryImpl implements IUserRepository {
             return user ? this.mapToEntity(user) : null;
         } catch (error) {
             console.log("findUserById error : ",error);
-            throw new Error("User not found.");
+            throw new Error("Failed to find user");
         }
     }
 
@@ -133,7 +133,8 @@ export class UserRepositoryImpl implements IUserRepository {
             ]);
             return userStatsData[0];
         } catch (error) {
-            throw new Error("User stats data fetching failed");
+            console.log("findUsersStatsData error : ",error);
+            throw new Error("Failed to find user stats");
         }
     }
 
@@ -150,7 +151,8 @@ export class UserRepositoryImpl implements IUserRepository {
                 return await UserModel.estimatedDocumentCount();
             }
         } catch (error) {
-            throw new Error("Users count fetching failed");
+            console.log("findUsersCount error : ",error);
+            throw new Error("Failed to find users count");
         }
     }
     
@@ -160,7 +162,7 @@ export class UserRepositoryImpl implements IUserRepository {
             return user ? this.mapToEntity(user) : null;
         } catch (error) {
             console.log("findUserByGoogleId error : ",error);
-            throw new Error("User finding using googleId failed");
+            throw new Error("Failed to find user");
         }
     }
 }

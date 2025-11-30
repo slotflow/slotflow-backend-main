@@ -26,7 +26,8 @@ export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
             const newSubscription = await SubscriptionModel.create([subscription], options);
             return this.mapToEntity(newSubscription[0]);
         } catch (error) {
-            throw new Error("Subscription creating error.");
+            console.log("createSubscription error : ", error);
+            throw new Error("Failed to create subscription");
         }
     }
 
@@ -35,7 +36,8 @@ export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
             const subscription = await SubscriptionModel.findById(subscriptionId);
             return subscription ? this.mapToEntity(subscription) : null;
         } catch (error) {
-            throw new Error("Subscription finding error.");
+            console.log("findSubscriptionById error : ", error);
+            throw new Error("Failed to find subscription");
         }
     }
 
@@ -73,7 +75,8 @@ export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
                 totalCount
             }
         } catch (error) {
-            throw new Error("Subscriptions fetching error.");
+            console.log("findSubscriptionsByProviderId error : ", error);
+            throw new Error("Failed to find subscription");
         }
     }
 
@@ -109,7 +112,8 @@ export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
                 totalCount
             }
         } catch (error) {
-            throw new Error("Subcriptions fetching error.");
+            console.log("findAllSubscriptions error : ", error);
+            throw new Error("Failed to find all subscriptions");
         }
     }
 
@@ -126,11 +130,12 @@ export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
                 }]).lean();
             return subscriptionDetails || {};
         } catch (error) {
-            throw new Error("Subscription details fetching error.");
+            console.log("findSubscriptionFullDetails error : ", error);
+            throw new Error("Failed to find subscription details");
         }
     }
 
-    async findSbuscriptionsForUpdatinStatus(): Promise<boolean> {
+    async findSubscriptionsForUpdatinStatus(): Promise<boolean> {
         try {
             const now = new Date();
 
@@ -145,8 +150,9 @@ export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
             );
 
             return updated.modifiedCount > 0;
-        } catch {
-            return false;
+        } catch (error) {
+            console.log("findSubscriptionsForUpdatinStatus error : ", error);
+            throw new Error("Failed to find subscription");
         }
     }
 
@@ -157,8 +163,9 @@ export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
                 .select("subscriptionPlanId -_id")
                 .lean();
             return subscription ? subscription.subscriptionPlanId.planName : false;
-        } catch {
-            return false;
+        } catch (error) {
+            console.log("findSubscribedPlan error : ", error);
+            throw new Error("Failed to find subscribed plan");
         }
     }
 
@@ -217,7 +224,7 @@ export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
             return subscriptionStatsData[0];
         } catch (error) {
             console.log("findSubscriptionStatsForAdminDashboard error : ", error);
-            throw new Error("Subscription stats fetching failed");
+            throw new Error("Failed to find subscription stats");
         }
     }
 }

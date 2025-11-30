@@ -24,8 +24,8 @@ export class ServiceAvailabilityRepositoryImpl implements IServiceAvailabilityRe
             const newServiceAvailability = await ServiceAvailabilityModel.create(serviceAvailability);
             return this.mapToEntity(newServiceAvailability);
         } catch (error) {
-            console.log("error : ", error);
-            throw new Error("Service Availability adding failed.");
+            console.log("createServiceAvailabilities error : ", error);
+            throw new Error("Failed to create service availability");
         }
     }
 
@@ -140,8 +140,8 @@ export class ServiceAvailabilityRepositoryImpl implements IServiceAvailabilityRe
             return availability[0] || null;
 
         } catch (error) {
-            console.log("findServiceAvailabiltiyByProviderId rror : ",error);
-            throw new Error("Service availability fetching error.");
+            console.log("findServiceAvailabiltiyByProviderId error : ",error);
+            throw new Error("Failed to find service availability");
         }
     }
 
@@ -165,7 +165,8 @@ export class ServiceAvailabilityRepositoryImpl implements IServiceAvailabilityRe
 
             return updatedServiceAvailability ? this.mapToEntity(updatedServiceAvailability) : null;
         } catch (error) {
-            throw new Error("Service availability updating error.");
+            console.log("updateServiceAvailability error : ",error);
+            throw new Error("Failed to update service availability");
         }
     }
 
@@ -176,10 +177,10 @@ export class ServiceAvailabilityRepositoryImpl implements IServiceAvailabilityRe
                     $match: { providerId: providerId }
                 }
             ]);
-
             return availability || null;
         } catch (error) {
-            throw new Error("Availability fetching error");
+            console.log("findServiceAvailabilityWithLiveData error : ",error);
+            throw new Error("Failed to find service availability");
         }
     }
     

@@ -29,11 +29,11 @@ router.get('/users/:userId/address', authMiddleware, adminUserController.fetchUs
 router.patch('/users/:userId',authMiddleware,adminUserController.changeUserBlockStatus);
 
 router.get('/services',authMiddleware, adminServiceController.getAllServices);
-router.post('/services',authMiddleware,adminServiceController.addService);
+router.post('/services',authMiddleware,adminServiceController.createService);
 router.patch('/services/:serviceId',authMiddleware, adminServiceController.changeServiceBlockStatus);
 
 router.get('/plans', authMiddleware,adminPlanController.getAllPlans);
-router.post('/plans', authMiddleware, adminPlanController.addNewPlan);
+router.post('/plans', authMiddleware, adminPlanController.createNewPlan);
 router.patch('/plans/:planId', authMiddleware, adminPlanController.changePlanBlockStatus);
 
 router.get('/subscriptions', authMiddleware, adminSubscriptionController.getAllSubscriptions);

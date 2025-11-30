@@ -1,32 +1,34 @@
 import { Types } from 'mongoose';
-import { Request, Response } from 'express';
 import { DecodedUser } from '../../express';
 import { appConfig } from '../../config/env';
-import { HandleError } from '../../infrastructure/error/error';
+import { NextFunction, Request, Response } from 'express';
 import { LoginUseCase } from '../../application/auth-use.case/login.use-case';
-import { kafkaProducerService } from '../../infrastructure/lib/kafka.producer';
 import { RegisterUseCase } from '../../application/auth-use.case/register.use-case';
 import { ResendOtpUseCase } from '../../application/auth-use.case/resend-otp.use-case';
 import { VerifyOTPUseCase } from '../../application/auth-use.case/verify-otp.use-case';
+import { GenerateSignedUrlService } from '../../infrastructure/services/signedUrl.service';
 import { PlanRepositoryImpl } from '../../infrastructure/database/plan/plan.repository.impl';
 import { UserRepositoryImpl } from '../../infrastructure/database/user/user.repository.impl';
 import { UpdatePasswordUseCase } from '../../application/auth-use.case/updatePassword.use-case';
 import { CheckUserStatusUseCase } from '../../application/auth-use.case/checkUserStatus.use-case';
 import { ProviderRepositoryImpl } from '../../infrastructure/database/provider/provider.repository.impl';
 import { SubscriptionRepositoryImpl } from '../../infrastructure/database/subscription/subscription.repository.impl';
+import { SignedUrlCacheRepositoryImpl } from '../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl';
 import { LoginZodSchema, OTPVerificationZodSchema, RegisterZodSchema, ResendOTPZodSchema, UpdatePasswordZodSchema } from '../../infrastructure/zod/auth.zod';
 
 const userRepositoryImpl = new UserRepositoryImpl();
-const providerRepositoryImpl = new ProviderRepositoryImpl();
 const planRepositoryImpl = new PlanRepositoryImpl();
+const providerRepositoryImpl = new ProviderRepositoryImpl();
 const subscriptionRepositoryImpl = new SubscriptionRepositoryImpl();
+const signedUrlCacheRepositoryImpl = new SignedUrlCacheRepositoryImpl();
+const generateSignedUrlService = new GenerateSignedUrlService(signedUrlCacheRepositoryImpl);
 
+const registerUseCase = new RegisterUseCase(userRepositoryImpl, providerRepositoryImpl );
 const verifyOTPUseCase = new VerifyOTPUseCase(userRepositoryImpl, providerRepositoryImpl);
+const resendOtpUseCase = new ResendOtpUseCase(userRepositoryImpl, providerRepositoryImpl );
 const updatePasswordUseCase = new UpdatePasswordUseCase(userRepositoryImpl, providerRepositoryImpl);
 const checkUserStatusUseCase = new CheckUserStatusUseCase(userRepositoryImpl, providerRepositoryImpl);
-const registerUseCase = new RegisterUseCase(userRepositoryImpl, providerRepositoryImpl, kafkaProducerService );
-const resendOtpUseCase = new ResendOtpUseCase(userRepositoryImpl, providerRepositoryImpl, kafkaProducerService );
-const loginUseCase = new LoginUseCase(userRepositoryImpl, providerRepositoryImpl, planRepositoryImpl, subscriptionRepositoryImpl);
+const loginUseCase = new LoginUseCase(userRepositoryImpl, providerRepositoryImpl, planRepositoryImpl, subscriptionRepositoryImpl, generateSignedUrlService);
 
 export class AuthController {
 
@@ -46,47 +48,40 @@ export class AuthController {
     this.checkUserStatus = this.checkUserStatus.bind(this);
   }
 
-  async register(req: Request, res: Response) {
+  async register(req: Request, res: Response, next: NextFunction) {
     try {
       const validateData = RegisterZodSchema.parse(req.body);
-      const { username, email, password, role } = validateData;
-      if (!username || !email || !password || !role) throw new Error("Invalid request");
-      
-      const result = await this.registerUseCase.execute({username, email, password, role});
-
+      const result = await this.registerUseCase.execute({...validateData});
       res.cookie("token", result.authUser.token, {
         maxAge: 2 * 24 * 60 * 60 * 1000,
         httpOnly: true,
         sameSite: appConfig.nodeEnv === 'development' ? 'lax' : 'none',
         secure: appConfig.nodeEnv !== 'development'
       });
-
       const { token: token, ...authUserWithoutToken } = result.authUser;
       const resultWithoutToken = {
         ...result,
         authUser: authUserWithoutToken,
     };
-
       res.status(200).json(resultWithoutToken);
-
     } catch (error) {
-      HandleError.handle(error, res);
+      console.log("register error : ",error);
+      next(error)
     }
   }
 
-  async verifyOTP(req: Request, res: Response) {
+  async verifyOTP(req: Request, res: Response, next: NextFunction) {
     try {
       const validateData = OTPVerificationZodSchema.parse(req.body);
-      const { otp, verificationToken, role } = validateData;
-      if (!otp || !verificationToken || !role) throw new Error("Invalid request.");
-      const result = await this.verifyOTPUseCase.execute({otp, verificationToken, role});
+      const result = await this.verifyOTPUseCase.execute({...validateData});
       res.status(200).json(result);
     } catch (error) {
-      HandleError.handle(error, res);
+      console.log("verifyOTP error : ",error);
+      next(error)
     }
   }
 
-  async resendOtp(req: Request, res: Response) {
+  async resendOtp(req: Request, res: Response, next: NextFunction) {
     try {
       const validateData = ResendOTPZodSchema.parse(req.body);
       const { role, verificationToken, email } = validateData;
@@ -94,11 +89,12 @@ export class AuthController {
       const result = await this.resendOtpUseCase.execute({role, verificationToken, email});
       res.status(200).json(result);
     } catch (error) {
-      HandleError.handle(error, res);
+      console.log("resendOtp error : ",error);
+      next(error)
     }
   }
 
-  async login(req: Request, res: Response) {
+  async login(req: Request, res: Response, next: NextFunction) {
     try {
       const validateData = LoginZodSchema.parse(req.body);
       const { email, password, role } = validateData;
@@ -117,21 +113,22 @@ export class AuthController {
       };
       res.status(200).json(resultWithoutToken);
     } catch (error) {
-      console.log("error : ",error);
-      HandleError.handle(error, res);
+      console.log("login error : ",error);
+      next(error)
     }
   }
 
-  async logout(req: Request, res: Response) {
+  async logout(req: Request, res: Response, next: NextFunction) {
     try {
       res.clearCookie("token");
       res.status(200).json({ success: true, message: "Logged out successfully." });
     } catch (error) {
-      HandleError.handle(error, res);
+      console.log("logout error : ",error);
+      next(error)
     }
   }
 
-  async updatePassword(req: Request, res: Response) {
+  async updatePassword(req: Request, res: Response, next: NextFunction) {
     try {
       const validateData = UpdatePasswordZodSchema.parse(req.body);
       const { role, verificationToken, password } = validateData;
@@ -139,18 +136,20 @@ export class AuthController {
       const result = await this.updatePasswordUseCase.execute({role, verificationToken, password});
       res.status(200).json(result);
     } catch (error) {
-      HandleError.handle(error, res);
+      console.log("updatePassword error : ",error);
+      next(error)
     }
   }
 
-  async checkUserStatus(req: Request, res: Response) {
+  async checkUserStatus(req: Request, res: Response, next: NextFunction) {
     try {
       const user = (req.user as DecodedUser);
       if(!user) throw new Error("")
       const result = await this.checkUserStatusUseCase.execute({_id: new Types.ObjectId(user.userOrProviderId), role: user.role});
       res.status(result.status).json(result);
     } catch (error) {
-      HandleError.handle(error, res);
+      console.log("checkUserStatus error : ",error);
+      next(error)
     }
   }
 }

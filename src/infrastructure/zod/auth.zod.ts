@@ -1,44 +1,6 @@
 import { z } from 'zod';
-import { Role } from '../dtos/common.dto';
-
-export const usernameField = z.string({
-  required_error: "Username is required",
-  invalid_type_error: "Username must be a string"
-})
-  .min(4, "Username must be at least 4 characters")
-  .max(30, "Username must be at most 30 characters")
-  .regex(/^[a-zA-Z ]{4,30}$/, "Invalid username");
-
-export const emailField = z.string({
-  required_error: "Email is required",
-  invalid_type_error: "Email must be a string"
-}).email("Invalid email format");
-
-export const passwordField = z.string({
-  required_error: "Password is required",
-  invalid_type_error: "Password must be a string"
-})
-  .min(8, "Password must be at least 8 characters")
-  .max(50, "Password must be at most 50 characters")
-  .regex(
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,50}$/,
-    "Invalid password"
-  );
-
-export const roleField = z.enum([Role.user, Role.provider, Role.admin] as const, {
-  required_error: "Role is required",
-  invalid_type_error: "Invalid role"
-});
-
-export const limitedRoleField = z.enum([Role.user, Role.provider], {
-  required_error: "Role is required",
-  invalid_type_error: "Invalid role"
-});
-
-export const otpField = z.string({
-  required_error: "OTP is required",
-  invalid_type_error: "OTP must be a string"
-}).length(6, "OTP must be exactly 6 characters");
+import { roleArray } from '../helpers/constants';
+import { strongPasswordRegex, usernameRegex } from './regex';
 
 export const verificationTokenField = z.string({
   required_error: "Verification token is required",
@@ -46,45 +8,66 @@ export const verificationTokenField = z.string({
 });
 
 // Regist controller zod validation
-const RegisterZodSchema = z.object({
-  username: usernameField,
-  email: emailField,
-  password: passwordField,
-  role: limitedRoleField
-});
+const RegisterZodSchema = z
+  .object({
+    username: z
+      .string()
+      .min(4, "Username must be at least 4 characters")
+      .max(30, "Username cannot exceed 30 characters")
+      .regex(usernameRegex, "Invalid Username format"),
+
+    email: z.string().email("Invalid email address"),
+
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .max(50, "Password cannot exceed 50 characters")
+      .regex(strongPasswordRegex, "Password must contain uppercase, lowercase, number & symbol"),
+    role: z.enum(roleArray),
+  });
 
 // OTP Verification controller zod validation
 const OTPVerificationZodSchema = z.object({
-  otp: otpField,
+  otp: z
+    .string()
+    .length(6, "OTP must be exactly 6 digits"),
   verificationToken: verificationTokenField,
-  role: limitedRoleField
+  role: z.enum(roleArray)
 });
 
 // Resend otp controller zod validation
 const ResendOTPZodSchema = z.object({
-  role: limitedRoleField,
+  role: z.enum(roleArray),
   verificationToken: verificationTokenField.optional(),
-  email: emailField.optional()
+  email: z.string().email("Invalid email address").optional(),
 });
 
 // Login controller zod validation
 const LoginZodSchema = z.object({
-  email: emailField,
-  password: passwordField,
-  role: roleField
+  email: z.string().email("Invalid email address"),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .max(50, "Password cannot exceed 50 characters")
+    .regex(strongPasswordRegex, "Password must contain uppercase, lowercase, number & symbol"),
+  role: z.enum(roleArray)
 });
 
 // Update password zod validation
 const UpdatePasswordZodSchema = z.object({
-  role: limitedRoleField,
+  role: z.enum(roleArray),
   verificationToken: verificationTokenField.optional(),
-  password: passwordField
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .max(50, "Password cannot exceed 50 characters")
+    .regex(strongPasswordRegex, "Password must contain uppercase, lowercase, number & symbol")
 });
 
 export {
-    RegisterZodSchema,
-    OTPVerificationZodSchema,
-    ResendOTPZodSchema,
-    LoginZodSchema,
-    UpdatePasswordZodSchema
+  RegisterZodSchema,
+  OTPVerificationZodSchema,
+  ResendOTPZodSchema,
+  LoginZodSchema,
+  UpdatePasswordZodSchema
 };

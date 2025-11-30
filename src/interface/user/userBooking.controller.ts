@@ -1,8 +1,8 @@
 import { Types } from "mongoose";
-import { Request, Response } from "express";
 import { DecodedUser } from "../../express";
-import { Role } from "../../infrastructure/dtos/common.dto";
-import { HandleError } from "../../infrastructure/error/error";
+import { NextFunction, Request, Response } from "express";
+import { RoleType } from "../../infrastructure/dtos/common.dto";
+import { roleArray } from "../../infrastructure/helpers/constants";
 import { AesEncryption } from "../../infrastructure/services/aesEncryption";
 import { GoogleTokenService } from "../../infrastructure/services/googleTokenService";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
@@ -20,8 +20,8 @@ import { UpdateBookingOnlineTrakingUseCase } from "../../application/common-use.
 import { ProviderServiceRepositoryImpl } from "../../infrastructure/database/providerService/providerService.repository.impl";
 import { AddEventToGoogleCalendarService, UpdateEventFromGoogleCalendarService } from "../../infrastructure/services/googleCalendar";
 import { ServiceAvailabilityRepositoryImpl } from "../../infrastructure/database/serviceAvailability/serviceAvailability.repository.impl";
-import { JoinOrLeftRoomZodSchema, RequestQueryForBookingCommonZodSchema, SaveStripePaymentZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
 import { UserAppointmentBookingViaStripeUseCase, UserSaveBookingAfterStripePaymentUseCase } from "../../application/user-use.case/userStripeBooking.use-case";
+import { JoinOrLeftRoomZodSchema, RequestQueryForBookingCommonZodSchema, SaveStripePaymentZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
 
 const aesEncryption = new AesEncryption();
 const userRepositoryImpl = new UserRepositoryImpl();
@@ -32,18 +32,19 @@ const credentialRepositoryImpl = new CredentialRepositoryImpl();
 const providerServiceRepositoryImpl = new ProviderServiceRepositoryImpl();
 const serviceAvailabilityRepositoryImpl = new ServiceAvailabilityRepositoryImpl();
 
+
 const validateJoinRoomUsecase = new ValidateJoinRoomUsecase(bookingRepositoryImpl)
+const fetchBookingDetailsUsecase = new FetchBookingDetailsUsecase(bookingRepositoryImpl);
 const getCredentialUseCase = new GetCredentialUseCase(credentialRepositoryImpl, aesEncryption);
 const updateCredentialUseCase = new UpdateCredentialUseCase(credentialRepositoryImpl, aesEncryption);
 const googleTokenService = new GoogleTokenService(getCredentialUseCase, updateCredentialUseCase);
-const updateEventFromGoogleCalendarService = new UpdateEventFromGoogleCalendarService(googleTokenService);
 const addEventToGoogleCalendarService = new AddEventToGoogleCalendarService(googleTokenService);
 const fetchBookingAppointmentsUseCase = new FetchBookingAppointmentsUseCase(bookingRepositoryImpl);
+const updateEventFromGoogleCalendarService = new UpdateEventFromGoogleCalendarService(googleTokenService);
 const userCancelBookingUseCase = new UserCancelBookingUseCase(userRepositoryImpl, bookingRepositoryImpl, paymentRepositoryImpl, updateEventFromGoogleCalendarService);
 const userAppointmentBookingViaStrpieUseCase = new UserAppointmentBookingViaStripeUseCase(proviserRepositoryImpl, providerServiceRepositoryImpl, serviceAvailabilityRepositoryImpl, bookingRepositoryImpl);
 const userSaveBookingAfterStripePaymentUseCase = new UserSaveBookingAfterStripePaymentUseCase(userRepositoryImpl, paymentRepositoryImpl, bookingRepositoryImpl, serviceAvailabilityRepositoryImpl, addEventToGoogleCalendarService);
 const updateBookingOnlineTrakingUseCase = new UpdateBookingOnlineTrakingUseCase(bookingRepositoryImpl, serviceAvailabilityRepositoryImpl);
-const fetchBookingDetailsUsecase = new FetchBookingDetailsUsecase(bookingRepositoryImpl);
 
 export class UserBookingController {
     constructor(
@@ -64,7 +65,7 @@ export class UserBookingController {
         this.fetchBookingDetails = this.fetchBookingDetails.bind(this);
     }
 
-    async fetchBookings(req: Request, res: Response) {
+    async fetchBookings(req: Request, res: Response, next: NextFunction) {
         try {
             const user = (req.user as DecodedUser);
             const { page, limit, online, raw } = RequestQueryForBookingCommonZodSchema.parse(req.query);
@@ -75,15 +76,16 @@ export class UserBookingController {
                 limit,
                 online: online ? true : false,
                 raw: raw ? true : false,
-                role: user.role as Role.user
+                role: user.role as RoleType,
             });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("fetchBookings error : ",error);
+            next(error)
         }
     }
 
-    async cancelBooking(req: Request, res: Response) {
+    async cancelBooking(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = (req.user as DecodedUser).userOrProviderId;
             const { id: bookingId } = ValidateObjectId(req.params.bookingId, "Booking ID");
@@ -91,11 +93,12 @@ export class UserBookingController {
             const result = await this.userCancelBookingUseCase.execute({ userId: new Types.ObjectId(userId), bookingId: new Types.ObjectId(bookingId) });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("cancelBooking error : ",error);
+            next(error)
         }
     }
 
-    async createSessionIdForbookingViaStripe(req: Request, res: Response) {
+    async createSessionIdForbookingViaStripe(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = (req.user as DecodedUser).userOrProviderId;
             const validateData = UserCreateSessionIdForbookingViaStripeZodSchema.parse(req.body);
@@ -110,11 +113,12 @@ export class UserBookingController {
             });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("createSessionIdForbookingViaStripe error : ",error);
+            next(error)
         }
     }
 
-    async saveBookingAfterStripePayment(req: Request, res: Response) {
+    async saveBookingAfterStripePayment(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = (req.user as DecodedUser).userOrProviderId;
             const { sessionId } = SaveStripePaymentZodSchema.parse(req.body);
@@ -122,24 +126,25 @@ export class UserBookingController {
             const result = await this.userSaveBookingAfterStripePaymentUseCase.execute({ userId: new Types.ObjectId(userId), sessionId });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("saveBookingAfterStripePayment error : ",error);
+            next(error)
         }
     }
 
-    async validateRoom(req: Request, res: Response) {
+    async validateRoom(req: Request, res: Response, next: NextFunction) {
         try {
             const { id: bookingId } = ValidateObjectId(req.params.bookingId, "Booking ID");
             const roomId = req.query.roomId;
             const userId = (req.user as DecodedUser).userOrProviderId;
-            const result = await this.validateJoinRoomUsecase.execute({ bookingId: new Types.ObjectId(bookingId), roomId: roomId as string, role: Role.user, userOrProviderId: new Types.ObjectId(userId) });
+            const result = await this.validateJoinRoomUsecase.execute({ bookingId: new Types.ObjectId(bookingId), roomId: roomId as string, role: roleArray[1], userOrProviderId: new Types.ObjectId(userId) });
             res.status(200).json(result);
         } catch (error) {
             console.log("validateRoom error : ", error);
-            HandleError.handle(error, res);
+            next(error)
         }
     }
 
-    async userJoinRoom(req: Request, res: Response) {
+    async userJoinRoom(req: Request, res: Response, next: NextFunction) {
         try {
             const roomId = req.params.roomId;
             const validatedData = JoinOrLeftRoomZodSchema.parse(req.body);
@@ -154,18 +159,18 @@ export class UserBookingController {
             res.status(200).json(result);
         } catch (error) {
             console.log("userJoinRoom error : ",error);
-            HandleError.handle(error, res);
+            next(error)
         }
     }
 
-    async fetchBookingDetails (req: Request, res: Response) {
+    async fetchBookingDetails (req: Request, res: Response, next: NextFunction) {
         try {
             const { id: bookingId } = ValidateObjectId(req.params.bookingId, "Booking ID");
-            const result = await this.fetchBookingDetailsUsecase.execute(new Types.ObjectId(bookingId));
+            const result = await this.fetchBookingDetailsUsecase.execute({bookingId: new Types.ObjectId(bookingId)});
             res.status(200).json(result);
         } catch (error) {
             console.log("fetchBookingDetails error : ", error);
-            HandleError.handle(error, res);
+            next(error)
         }
     }
 

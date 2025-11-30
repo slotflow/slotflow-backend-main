@@ -1,102 +1,92 @@
-import { Producer } from 'kafkajs';
 import { v4 as uuidv4 } from 'uuid';
+import { producer } from '../../server';
+import { kafkaConfig } from '../../config/env';
 import { User } from '../../domain/entities/user.entity';
-import { Role } from '../../infrastructure/dtos/common.dto';
 import { JWTService } from '../../infrastructure/security/jwt';
 import { Provider } from '../../domain/entities/provider.entity';
+import { roleArray } from '../../infrastructure/helpers/constants';
 import { OTPService } from '../../infrastructure/services/otp.service';
-import { validateOrThrow } from '../../infrastructure/validator/validator';
-import { KafkaProducerService } from '../../infrastructure/lib/kafka.producer';
 import { PasswordHasher } from '../../infrastructure/security/password-hashing';
 import { RegisterRequest, RegisterResponse } from '../../infrastructure/dtos/auth.dto';
 import { UserRepositoryImpl } from '../../infrastructure/database/user/user.repository.impl';
 import { ProviderRepositoryImpl } from '../../infrastructure/database/provider/provider.repository.impl';
 
-
 export class RegisterUseCase {
 
   constructor(
-    private userRepositoryImpl: UserRepositoryImpl, 
+    private userRepositoryImpl: UserRepositoryImpl,
     private providerRepositoryImpl: ProviderRepositoryImpl,
-    private kafkaProducerService: KafkaProducerService
   ) { }
 
-  async execute(data: RegisterRequest): Promise<RegisterResponse> {
-    const { username, email, password, role } = data;
-    if (!username || !email || !password || !role) throw new Error("Invalid request");
+  async execute(payload: RegisterRequest): Promise<RegisterResponse> {
+    try {
+      const { username, email, password, role } = payload;
+      if (!username || !email || !password || !role) throw new Error("Invalid request");
 
-    const producer: Producer = this.kafkaProducerService.getProducer();
+      let userOrProvider: Partial<Provider> | Partial<User> | null;
 
-    validateOrThrow("username", username);
-    validateOrThrow("email", email);
-    validateOrThrow("password", password);
-    validateOrThrow("role", role);
+      if (role === roleArray[1]) {
+        userOrProvider = await this.userRepositoryImpl.findUserByEmail(email);
+        if (userOrProvider?.isEmailVerified) throw new Error("Email already exist.");
+      } else if (role === roleArray[2]) {
+        userOrProvider = await this.providerRepositoryImpl.findProviderByEmail(email);
+        if (userOrProvider?.isEmailVerified) throw new Error("Email already exist.");
+      } else {
+        throw new Error("Invalid request.");
+      }
 
-    let userOrProvider: Partial<Provider> | Partial<User> | null;
+      const hashedPassword = await PasswordHasher.hashPassword(password);
 
-    if (role === Role.user) {
-      userOrProvider = await this.userRepositoryImpl.findUserByEmail(email);
-      if (userOrProvider?.isEmailVerified) throw new Error("Email already exist.");
-    } else if (role === Role.provider) {
-      userOrProvider = await this.providerRepositoryImpl.findProviderByEmail(email);
-      if (userOrProvider?.isEmailVerified) throw new Error("Email already exist.");
-    } else {
-      throw new Error("Invalid request.");
-    }
+      const verificationToken = uuidv4();
+      if (!verificationToken) throw new Error("Unexpected error, please try again.");
 
-    const hashedPassword = await PasswordHasher.hashPassword(password);
+      const otp = await OTPService.setOtp(verificationToken);
+      if (!otp) throw new Error("Unexpected error, please try again.");
 
-    const verificationToken = uuidv4();
-    if (!verificationToken) throw new Error("Unexpected error, please try again.");
-
-    const otp = await OTPService.setOtp(verificationToken);
-    if (!otp) throw new Error("Unexpected error, please try again.");
-    console.log("Before producer sending event");
-
-    const producerResult = await producer.send({
-      topic: "sendOtp-events",
-      messages: [
-        {
+      await producer.send({
+        topic: kafkaConfig.otpSendTopic,
+        messages: [{
           key: email,
-          value: JSON.stringify({ email, otp, username  })
+          value: JSON.stringify({
+            otp,
+            email,
+            contentNumber: 1
+          })
+        }],
+      });
+
+      if (userOrProvider) {
+        userOrProvider.verificationToken = verificationToken;
+        userOrProvider.password = hashedPassword;
+        if (role === roleArray[1]) {
+          await this.userRepositoryImpl.updateUser(userOrProvider as User);
+        } else if (role === roleArray[2]) {
+          await this.providerRepositoryImpl.updateProvider(userOrProvider as Provider);
         }
-      ]
-    });
-
-    if (!producerResult || producerResult.length === 0) {
-      throw new Error("OTP sending failed: no record metadata returned");
-    }
-
-    console.log("producerResult : ",producerResult);
-
-    if (userOrProvider) {
-      userOrProvider.verificationToken = verificationToken;
-      userOrProvider.password = hashedPassword;
-      if (role === Role.user) {
-        await this.userRepositoryImpl.updateUser(userOrProvider as User);
-      } else if (role === Role.provider) {
-        await this.providerRepositoryImpl.updateProvider(userOrProvider as Provider);
+      } else {
+        if (role === roleArray[1]) {
+          await this.userRepositoryImpl.createUser({
+            username: username,
+            email: email,
+            password: hashedPassword,
+            verificationToken: verificationToken,
+          });
+        } else if (role === roleArray[2]) {
+          await this.providerRepositoryImpl.createProvider({
+            username: username,
+            email: email,
+            password: hashedPassword,
+            verificationToken: verificationToken
+          });
+        }
       }
-    } else {
-      if (role === Role.user) {
-        await this.userRepositoryImpl.createUser({
-          username: username,
-          email: email,
-          password: hashedPassword,
-          verificationToken: verificationToken,
-        });
-      } else if (role === Role.provider) {
-        await this.providerRepositoryImpl.createProvider({
-          username: username,
-          email: email,
-          password: hashedPassword,
-          verificationToken: verificationToken
-        });
-      }
+
+      const token = JWTService.generateToken({ email, role });
+
+      return { success: true, message: `OTP sent to email`, authUser: { verificationToken, role, token } };
+    } catch (error) {
+      console.log("RegisterUseCase error : ", error);
+      throw new Error("Failed to register");
     }
-
-    const token = JWTService.generateToken({ email, role });
-
-    return { success: true, message: `OTP sent to email`, authUser: { verificationToken, role, token } };
   }
 }

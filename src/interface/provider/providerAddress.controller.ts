@@ -1,72 +1,75 @@
 import { Types } from "mongoose";
-import { Request, Response } from "express";
 import { DecodedUser } from "../../express";
-import { HandleError } from "../../infrastructure/error/error";
-import { AddAddressZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
+import { NextFunction, Request, Response } from "express";
+import { CreateAddressZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
 import { AddressRepositoryImpl } from "../../infrastructure/database/address/address.repository.impl";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
-import { ProviderAddAddressUseCase, ProviderFetchAddressUseCase, ProviderUpdateAddressUseCase } from "../../application/provider-use.case/providerAddress.use-case";
+import { ProviderCreateAddressUseCase, ProviderFetchAddressUseCase, ProviderUpdateAddressUseCase } from "../../application/provider-use.case/providerAddress.use-case";
 
 const addressRepositoryImpl = new AddressRepositoryImpl();
 const providerRepositoryImpl = new ProviderRepositoryImpl();
 
 const providerFetchAddressUseCase = new ProviderFetchAddressUseCase(addressRepositoryImpl);
-const providerAddAddressUseCase = new ProviderAddAddressUseCase(providerRepositoryImpl, addressRepositoryImpl);
 const providerUpdateAddressUseCase = new ProviderUpdateAddressUseCase(addressRepositoryImpl);
+const providerCreateAddressUseCase = new ProviderCreateAddressUseCase(providerRepositoryImpl, addressRepositoryImpl);
 
 class ProviderAddressController {
     constructor(
-        private providerAddAddressUseCase: ProviderAddAddressUseCase,
+        private providerCreateAddressUseCase: ProviderCreateAddressUseCase,
         private providerFetchAddressUseCase: ProviderFetchAddressUseCase,
         private providerUpdateAddressUseCase: ProviderUpdateAddressUseCase,
     ) {
-        this.addAddress = this.addAddress.bind(this);
+        this.createAddress = this.createAddress.bind(this);
         this.getAddress = this.getAddress.bind(this);
         this.updateAddress = this.updateAddress.bind(this);
     }
 
-    async addAddress(req: Request, res: Response) {
+    async createAddress(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
-            const validateData = AddAddressZodSchema.parse(req.body);
-            const { addressLine, phone, place, city, district, pincode, state,  country, googleMapLink } = validateData;
-            const result = await this.providerAddAddressUseCase.execute({userId: new Types.ObjectId(providerId), addressLine, phone, place, city, district, pincode, state,  country, googleMapLink});
-            res.status(200).json(result);
+            console.log("req.body : ", req.body);
+            const validateData = CreateAddressZodSchema.parse(req.body);
+            const { addressLine, landMark, phone, place, city, district, pincode, state, country, location } = validateData;
+            const result = await this.providerCreateAddressUseCase.execute({ userId: new Types.ObjectId(providerId), addressLine, landMark, phone, place, city, district, pincode, state, country, location });
+            res.status(201).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("createAddress error : ", error);
+            next(error)
         }
-    }
-    
-    async getAddress(req: Request, res: Response) {
-        try{
-            const providerId = (req.user as DecodedUser).userOrProviderId;
-            if(!providerId) throw new Error("Invalid request.");
-            const result = await this.providerFetchAddressUseCase.execute({providerId: new Types.ObjectId(providerId)});
-            res.status(200).json(result);
-        }catch(error){
-            HandleError.handle(error,res);
-        }
-    
     }
 
-    async updateAddress(req: Request, res: Response) {
+    async getAddress(req: Request, res: Response, next: NextFunction) {
+        try {
+            const providerId = (req.user as DecodedUser).userOrProviderId;
+            if (!providerId) throw new Error("Invalid request.");
+            const result = await this.providerFetchAddressUseCase.execute({ providerId: new Types.ObjectId(providerId) });
+            res.status(200).json(result);
+        } catch (error) {
+            console.log("getAddress error : ", error);
+            next(error);
+        }
+
+    }
+
+    async updateAddress(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
             const { id: addressId } = ValidateObjectId(req.params.addressId, "Address ID");
-            if(!addressId) throw new Error("Invalid request");
-            const validateData = AddAddressZodSchema.parse(req.body);
-            const { addressLine, phone, place, city, district, pincode, state,  country, googleMapLink } = validateData;
-            const result = await this.providerUpdateAddressUseCase.execute({_id: new Types.ObjectId(addressId), userId: new Types.ObjectId(providerId), addressLine, phone, place, city, district, pincode, state,  country, googleMapLink});
+            if (!addressId) throw new Error("Invalid request");
+            const validateData = CreateAddressZodSchema.parse(req.body);
+            const { addressLine, landMark, phone, place, city, district, pincode, state, country, location } = validateData;
+            const result = await this.providerUpdateAddressUseCase.execute({ _id: new Types.ObjectId(addressId), userId: new Types.ObjectId(providerId), addressLine, landMark, phone, place, city, district, pincode, state, country, location });
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            console.log("updateAddress error : ", error);
+            next(error)
         }
     }
-  
+
 }
 
 const provideAddressController = new ProviderAddressController(
-    providerAddAddressUseCase, 
+    providerCreateAddressUseCase,
     providerFetchAddressUseCase,
     providerUpdateAddressUseCase
 );

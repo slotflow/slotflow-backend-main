@@ -9,6 +9,7 @@ import userRouter from './interface/user/user.routes';
 import adminRoutes from './interface/admin/admin.routes';
 import googleRouter from './interface/google/google.router';
 import providerRouter from './interface/provider/provider.router';
+import { errorHandler } from './interface/middleware/error.middleware';
 
 dotenv.config();
 
@@ -40,5 +41,6 @@ app.use("/api/admin",adminRoutes);
 app.use('/api/user',userRouter);
 app.use('/api/provider',providerRouter); 
 app.use('/api/google',googleRouter); 
+app.use(errorHandler);
 
 export default app;

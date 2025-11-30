@@ -1,8 +1,8 @@
 import { Types } from "mongoose";
 import { AddressModel, IAddress } from "./address.model";
+import { CreateAddressRequest } from "../../dtos/common.dto";
 import { Address } from "../../../domain/entities/address.entity";
 import { IAddressRepository } from "../../../domain/repositories/IAddress.repository";
-import { AddAddressRequest } from "../../dtos/common.dto";
 
 export class AddressRepositoryImpl implements IAddressRepository {
     private mapToEntity(address: IAddress): Address {
@@ -10,6 +10,7 @@ export class AddressRepositoryImpl implements IAddressRepository {
                 address._id,
                 address.userId,
                 address.addressLine,
+                address.landMark,
                 address.phone,
                 address.place,
                 address.city,
@@ -17,19 +18,19 @@ export class AddressRepositoryImpl implements IAddressRepository {
                 address.pincode,
                 address.state,
                 address.country,
-                address.googleMapLink,
+                address.location,
                 address.createdAt,
                 address.updatedAt,
             )
         }
 
-    async createAddress(address: AddAddressRequest): Promise<Address> {
+    async createAddress(address: CreateAddressRequest): Promise<Address> {
         try{
             const newAddress = await AddressModel.create(address);
             return this.mapToEntity(newAddress);
         }catch(error){
             console.log("createAddress error : ",error);
-            throw new Error("Address adding failed.");
+            throw new Error("Failed to create address.");
         }
     }
     
@@ -39,7 +40,7 @@ export class AddressRepositoryImpl implements IAddressRepository {
             return address ? this.mapToEntity(address) : null;
         }catch(error){
             console.log("findAddressByUserId error : ",error);
-            throw new Error("Address fetching failed.");
+            throw new Error("Failed to fetch address");
         }
     }
 
@@ -49,7 +50,7 @@ export class AddressRepositoryImpl implements IAddressRepository {
             return address ? this.mapToEntity(address) : null;
         }catch(error){
             console.log("findAddressByUserId error : ",error);
-            throw new Error("Address fetching failed.");
+            throw new Error("Failed to find address");
         }
     }
     
@@ -63,7 +64,7 @@ export class AddressRepositoryImpl implements IAddressRepository {
             return updatedAddress ? this.mapToEntity(updatedAddress) : null;
         } catch (error) {
             console.log("updateAddress error : ",error);
-            throw new Error("Address updating failed.");
+            throw new Error("Failed to update address");
         }
     }
 }
