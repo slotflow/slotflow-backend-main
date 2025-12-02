@@ -1,5 +1,6 @@
 import { Types } from "mongoose";
 import { Provider } from "../entities/provider.entity";
+import { ProviderUpdateProfileRequest } from "../../infrastructure/dtos/provider.dto";
 import { ApiPaginationRequest, ApiResponse } from "../../infrastructure/dtos/common.dto";
 import { AdiminFetchAllProviders, AdminFetchDashboardProviderStatsDataResponse } from "../../infrastructure/dtos/admin.dto";
 
@@ -39,4 +40,6 @@ export interface IProviderRepository {
     findProvidersStatsForAdminDashboard(): Promise<AdminFetchDashboardProviderStatsDataResponse>;
 
     findProviderByGoogleId(googleId: string): Promise<Provider | null>;
+
+     updateProviderFields(data: ProviderUpdateProfileRequest): Promise<Provider | null>;
 }

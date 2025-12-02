@@ -34,15 +34,15 @@ export class ProviderCreateServiceAvailabilitiesUseCase {
             }));
 
             const serviceAvailability = await this.serviceAvailabilityRepositoryImpl.createServiceAvailabilities(convertedProviderId, newAvailabilities);
-            if (!serviceAvailability) throw new Error("Service availability adding failed.");
+            if (!serviceAvailability) throw new Error("Service availability saving failed.");
 
             if (provider && serviceAvailability && serviceAvailability._id) {
                 provider.serviceAvailabilityId = serviceAvailability._id;
                 const updatedProvider = await this.providerRepositoryImpl.updateProvider(provider);
-                if (!updatedProvider) throw new Error("Failed to update provider with service availability ID.");
+                if (!updatedProvider) throw new Error("Failed to update provider with service availability in profile.");
             }
 
-            return { success: true, message: "Service availability added successfuly." };
+            return { success: true, message: "Service availability saved successfuly." };
         } catch (error) {
             console.log("ProviderCreateServiceAvailabilitiesUseCase error :", error);
             throw new Error("Failed to create service availabilities.");

@@ -7,15 +7,16 @@ import {
     UserFetchProfileDetailsResponse,
 } from "../../infrastructure/dtos/user.dto";
 import { awsConfig } from "../../config/env";
-import { S3Client } from "@aws-sdk/client-s3";
-import { Upload } from "@aws-sdk/lib-storage";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { ApiResponse } from "../../infrastructure/dtos/common.dto";
-import { generateS3Key } from "../../infrastructure/helpers/generateS3Key";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
-import { GenerateSignedUrlService } from "../../infrastructure/services/signedUrl.service";
+import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
 
 export class UserFetchProfileDetailsUseCase {
-    constructor(private userRepositoryImpl: UserRepositoryImpl) { }
+    constructor(
+        private userRepositoryImpl: UserRepositoryImpl,
+    ) { }
 
     async execute(payload: UserFetchProfileRequest): Promise<ApiResponse<UserFetchProfileDetailsResponse>> {
         try {
@@ -36,48 +37,37 @@ export class UserFetchProfileDetailsUseCase {
 
 export class UserUpdateProfileImageUseCase {
     constructor(
+        private s3Client: S3Client,
         private userRepositoryImpl: UserRepositoryImpl,
-        private s3: S3Client,
-        private generateSignedUrlService: GenerateSignedUrlService
+        private signedUrlCacheRepositoryImpl: SignedUrlCacheRepositoryImpl
     ) { }
 
     async execute(payload: UsrUpdateProfileImageRequest): Promise<ApiResponse<UserUpdateProfileImageResponse>> {
         try {
-            const { userId, file } = payload;
+            const { userId, key } = payload
 
-            const user = await this.userRepositoryImpl.findUserById(userId);
-            if (!user) throw new Error("User not found.");
-            try {
-                const params = {
-                    Bucket: awsConfig.aws_s3Bucket_name as string,
-                    Key: generateS3Key({
-                        folder: "slotflow-user-profileImage",
-                        userId: userId,
-                        originalname: file.originalname,
-                    }),
-                    Body: file.buffer,
-                    ContentType: file.mimetype,
-                };
+            const updatedUser = await this.userRepositoryImpl.updateUserFields({
+                _id: userId,
+                profileImage: key
+            });
+            if (!updatedUser) throw new Error("Failed to save profile image.");
 
-                const upload = new Upload({
-                    client: this.s3,
-                    params: params,
-                });
+            const command = new GetObjectCommand({
+                Bucket: awsConfig.aws_s3Bucket_name,
+                Key: key,
+            });
 
-                const s3UploadResponse = await upload.done();
-                if (!s3UploadResponse) throw new Error("Image uploading error, please try again");
+            const signedUrl = await getSignedUrl(this.s3Client, command, { expiresIn: 172800 });
+            const expiresAt = new Date(Date.now() + 172800 * 1000);
 
-                user.profileImage = s3UploadResponse.Location ?? "";
-                const updatedUser = await this.userRepositoryImpl.updateUser(user);
-                if (!updatedUser) throw new Error("Profile image returning failed.");
+            await this.signedUrlCacheRepositoryImpl.updateSignedUrl({
+                expiresAt,
+                key,
+                url: signedUrl
+            });
 
-                const signedUrl = await this.generateSignedUrlService.execute(updatedUser.profileImage);
-                return { success: true, message: "Profile Image updated successfully.", data: signedUrl };
+            return { success: true, message: "Profile Image updated successfully.", data: signedUrl };
 
-            } catch (error) {
-                console.log("Error : ", error);
-                throw new Error("Unexpected error occured while updating profile image.");
-            }
         } catch (error) {
             console.log("UserUpdateProfileImageUseCase error : ", error);
             throw new Error("Failed to update profile image");

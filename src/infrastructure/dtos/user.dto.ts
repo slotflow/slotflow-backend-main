@@ -1,12 +1,12 @@
 import { Types } from "mongoose";
 import { User } from "../../domain/entities/user.entity";
+import { Review } from "../../domain/entities/review.entity";
 import { Address } from "../../domain/entities/address.entity";
 import { Booking } from "../../domain/entities/booking.entity";
 import { Service } from "../../domain/entities/service.entity";
 import { Provider } from "../../domain/entities/provider.entity";
 import { ProviderService } from "../../domain/entities/providerService.entity";
 import { FontendAvailabilityForResponse, TimeSlotForFrontendResponse } from "../../domain/entities/serviceAvailability.entity";
-import { Review } from "../../domain/entities/review.entity";
 
 
 // ************ used in userProfile.use-case ************ \\
@@ -21,7 +21,7 @@ export type UserFetchProfileDetailsResponse = Pick<User, "username" | "email" | 
 // user update profile image use case request payload interface 
 export interface UsrUpdateProfileImageRequest {
     userId: User["_id"],
-    file: Express.Multer.File
+    key: string;
 }
 // user update profile image use case response interface
 export type UserUpdateProfileImageResponse = User["profileImage"];
@@ -102,7 +102,7 @@ export interface UserFetchServiceproviderServiceRequest {
     providerId: Provider["_id"];
 }
 // user fetch provider service use case response interface
-type FindProviderServiceProps = Pick<ProviderService, "serviceName" | "serviceDescription" | "servicePrice" | "providerExperience">;
+type FindProviderServiceProps = Pick<ProviderService, "serviceName" | "serviceDescription" | "servicePrice" | "serviceExperience">;
 export interface FindProviderServiceResponse extends FindProviderServiceProps {
     serviceCategory: Pick<Service, "serviceName">
 }

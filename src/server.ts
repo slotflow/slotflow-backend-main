@@ -17,7 +17,7 @@ await kafkaService.createTopics([kafkaConfig.otpSendTopic]);
 await kafkaService.disconnectAdmin();
 await kafkaService.connectProducer();
 
-export const producer = kafkaService.getProducer()
+export const producer = kafkaService.getProducer();
 
 const port = process.env.PORT || 3000;
 

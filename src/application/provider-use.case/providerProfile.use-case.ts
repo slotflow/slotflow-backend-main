@@ -1,18 +1,22 @@
+import { Types } from "mongoose";
 import { awsConfig } from "../../config/env";
-import { S3Client } from "@aws-sdk/client-s3";
-import { Upload } from "@aws-sdk/lib-storage";
 import {
     ProviderUpdateProviderInfoRequest,
-    ProviderUpdateprofileImageResponse,
+    ProviderUpdateServiceProofRequest,
     ProviderFetchProfileDetailsRequest,
+    ProviderUpdateServiceProofResponse,
+    ProviderUpdateprofileImageResponse,
     ProviderUpdateProviderInfoResponse,
     ProviderFetchProfileDetailsResponse,
+    ProviderUpdateIdentityProofRequest,
+    ProviderUpdateIdentityProofResponse,
     ProviderUpdateprofileImageRequestPayload,
 } from "../../infrastructure/dtos/provider.dto";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { ApiResponse } from "../../infrastructure/dtos/common.dto";
-import { generateS3Key } from "../../infrastructure/helpers/generateS3Key";
-import { GenerateSignedUrlService } from "../../infrastructure/services/signedUrl.service";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
+import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
 
 export class ProviderFetchProfileDetailsUseCase {
     constructor(private providerRepositoryImpl: ProviderRepositoryImpl) { }
@@ -22,61 +26,13 @@ export class ProviderFetchProfileDetailsUseCase {
             const { providerId } = payload;
 
             const provider = await this.providerRepositoryImpl.findProviderById(providerId);
-            if (provider === null) return { success: true, message: "Provider prfile not addedd.", data: {} };
             if (!provider) throw new Error("Provider profile fetching error.");
+
             const { _id, password, addressId, serviceId, subscription, updatedAt, profileImage, ...rest } = provider;
             return { success: true, message: "Provider prfile detailed fetched.", data: rest };
         } catch (error) {
             console.log("ProviderFetchProfileDetailsUseCase error : ", error);
             throw new Error("Failed to fetch profile details");
-        }
-    }
-}
-
-
-export class ProviderUpdateProfileImageUseCase {
-    constructor(
-        private providerRepositoryImpl: ProviderRepositoryImpl,
-        private s3: S3Client,
-        private generateSignedUrlService: GenerateSignedUrlService
-    ) { }
-
-    async execute(payload: ProviderUpdateprofileImageRequestPayload): Promise<ApiResponse<ProviderUpdateprofileImageResponse>> {
-        try {
-            const { providerId, file } = payload;
-
-            const provider = await this.providerRepositoryImpl.findProviderById(providerId);
-            if (!provider) throw new Error("No user found, please try again.");
-
-            const params = {
-                Bucket: awsConfig.aws_s3Bucket_name as string,
-                Key: generateS3Key({
-                    folder: "slotflow-provider-profileImage",
-                    userId: providerId,
-                    originalname: file.originalname,
-                }),
-                Body: file.buffer,
-                ContentType: file.mimetype,
-            };
-
-            const upload = new Upload({
-                client: this.s3,
-                params: params,
-            });
-
-            const s3UploadResponse = await upload.done();
-            if (!s3UploadResponse) throw new Error("Image uploading error, please try again");
-
-            provider.profileImage = s3UploadResponse.Location ?? "";
-            const updatedProvider = await this.providerRepositoryImpl.updateProvider(provider);
-            if (!updatedProvider) throw new Error("Profile image returning failed.");
-
-            const signedUrl = await this.generateSignedUrlService.execute(updatedProvider.profileImage);
-            return { success: true, message: "Profile Image updated successfully.", data: signedUrl };
-
-        } catch (error) {
-            console.log("ProviderUpdateProfileImageUseCase error : ", error);
-            throw new Error("Failed to update profile image");
         }
     }
 }
@@ -110,4 +66,83 @@ export class ProviderUpdateProviderInfoUseCase {
             throw new Error("Failed to update provider info");
         }
     }
+}
+
+
+export abstract class ProviderFileUpdateBaseUseCase {
+  constructor(
+    protected s3Client: S3Client,
+    protected providerRepositoryImpl: ProviderRepositoryImpl,
+    protected signedUrlCacheRepo: SignedUrlCacheRepositoryImpl
+  ) {}
+
+  protected async updateFile(providerId: Types.ObjectId, field: string, key: string) {
+    const updated = await this.providerRepositoryImpl.updateProviderFields({
+      _id: providerId,
+      [field]: key
+    });
+
+    if (!updated) throw new Error(`Failed to update ${field}`);
+
+    const command = new GetObjectCommand({
+      Bucket: awsConfig.aws_s3Bucket_name,
+      Key: key,
+    });
+
+    const signedUrl = await getSignedUrl(this.s3Client, command, {
+      expiresIn: 172800,
+    });
+
+    await this.signedUrlCacheRepo.updateSignedUrl({
+      key,
+      url: signedUrl,
+      expiresAt: new Date(Date.now() + 172800 * 1000),
+    });
+
+    return signedUrl;
+  }
+}
+
+
+export class ProviderIdentityProofUpdateUseCase extends ProviderFileUpdateBaseUseCase {
+
+ async exeute(payload: ProviderUpdateIdentityProofRequest): Promise<ApiResponse<ProviderUpdateIdentityProofResponse>> {
+
+    const url = await this.updateFile(payload.providerId,"identityProof",payload.identityProof);
+
+    return {
+      success: true,
+      message: "Identity proof updated successfully.",
+      data: url
+    };
+  }
+}
+
+export class ProviderServiceProofUpdateUseCase extends ProviderFileUpdateBaseUseCase {
+
+  async exeute(payload: ProviderUpdateServiceProofRequest): Promise<ApiResponse<ProviderUpdateServiceProofResponse>> {
+
+    const url = await this.updateFile(payload.providerId,"serviceProof",payload.serviceProof);
+
+    return {
+      success: true,
+      message: "Service proof updated successfully.",
+      data: url
+    };
+  }
+}
+
+
+export class ProviderUpdateProfileImageUseCase extends ProviderFileUpdateBaseUseCase {
+
+  async execute(payload: ProviderUpdateprofileImageRequestPayload): Promise<ApiResponse<ProviderUpdateprofileImageResponse>> {
+
+    const url = await this.updateFile(payload.providerId,"profileImage",payload.profileImage);
+
+    return {
+      success: true,
+      message: "Profile image updated successfully.",
+      data: url
+    };
+  }
 }

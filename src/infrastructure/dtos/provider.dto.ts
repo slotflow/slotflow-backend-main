@@ -58,9 +58,8 @@ export type ProviderFetchProfileDetailsResponse = Pick<Provider, "username" | "e
 
 
 // provider update profile image use case request payload interface
-export interface ProviderUpdateprofileImageRequestPayload {
+export type ProviderUpdateprofileImageRequestPayload = Pick<Provider, "profileImage"> & {
     providerId: Provider["_id"];
-    file: Express.Multer.File;
 }
 // provider update profile image use case response interface 
 export type ProviderUpdateprofileImageResponse = Provider["profileImage"];
@@ -74,6 +73,23 @@ export interface ProviderUpdateProviderInfoRequest {
 }
 // provider update provider info use case response interface
 export type ProviderUpdateProviderInfoResponse = Pick<Provider, "username" | "phone">
+
+// provider update identity proof request payload interface
+export type ProviderUpdateIdentityProofRequest = Pick<Provider, "identityProof"> & {
+    providerId: Provider["_id"];
+}
+// provider update service proof use case response interface
+export type ProviderUpdateIdentityProofResponse = Provider["identityProof"];
+
+// provider update identity proof request payload interface
+export type ProviderUpdateServiceProofRequest = Pick<Provider, "serviceProof"> & {
+    providerId: Provider["_id"];
+}
+// provider update service proof use case response interface
+export type ProviderUpdateServiceProofResponse = Provider["serviceProof"];
+
+
+export type ProviderUpdateProfileRequest = Pick<Provider,"_id"> & Partial<Pick<Provider, "username" | "profileImage" | "phone" | "identityProof" | "serviceProof" | "googleConnected" | "addressId" | "googleId" | "isAdminVerified" | "isEmailVerified" | "isBlocked" | "serviceAvailabilityId" | "serviceId" | "stripeAccountId" | "verificationToken" | "trustedBySlotflow" | "subscription" | "password">>
 
 
 

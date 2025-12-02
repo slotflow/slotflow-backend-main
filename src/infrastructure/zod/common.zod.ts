@@ -298,3 +298,24 @@ export const RequestQueryFetchAllReviewsZodSchema = z.object({
     }),
   role: z.enum(roleArray),
 });
+
+
+
+export const PresignedUrlZodSchema =z.object({
+    folderName: z.string().min(1).max(50, "Folder name too long"),
+    fileName: z.string().min(1).max(150, "File name too long"),
+    fileType: z.enum([
+      "image/png",
+      "image/jpeg",
+      "image/jpg"
+    ]),
+  });
+
+
+export const s3FileKeyZodSchmema = z.object({
+  s3FileKey: z.string().min(1).max(500, "key is too long"),
+});
+
+export const deleteFileZodSchema = z.object({
+  folder: z.string().min(1).max(50, "Folername too long"),
+});

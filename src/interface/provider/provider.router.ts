@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import upload from '../../infrastructure/lib/multer';
 import { authMiddleware } from '../middleware/auth.middleware';
 import { providerPlanController } from './providerPlan.controller';
 import { providerUserController } from './providerUser.controller';
@@ -17,6 +16,12 @@ import { providerServiceAvailabilityController } from './providerServiceAvailabi
 
 const router = Router();
 
+router.get('/', authMiddleware, providerProfileController.getProfileDetails);
+router.patch('/profile/image', authMiddleware,providerProfileController.updateProfileImage);
+router.patch('/profile/info', authMiddleware, providerProfileController.updateProviderInfo);
+router.patch('/profile/identity', authMiddleware, providerProfileController.updateProviderIdentityProof);
+router.patch('/profile/service', authMiddleware, providerProfileController.updateProviderServiceProof);
+
 router.post('/addresses', authMiddleware, provideAddressController.createAddress);
 router.get('/address', authMiddleware, provideAddressController.getAddress);
 router.patch('/addresses/:addressId', authMiddleware, provideAddressController.updateAddress);
@@ -29,15 +34,11 @@ router.get('/bookings/:bookingId/can-join', authMiddleware, providerBookingContr
 router.patch('/bookings/:roomId/join-left', authMiddleware, providerBookingController.providerJoinRoom);
 router.get('/bookings/:bookingId', authMiddleware, providerBookingController.fetchBookingDetails);
 
-router.post('/service', authMiddleware,upload.single('certificate'), providerServiceController.createServiceDetails);
+router.post('/service', authMiddleware,providerServiceController.createServiceDetails);
 router.get('/service', authMiddleware, providerServiceController.getServiceDetails);
 
 router.post('/availabilities', authMiddleware, providerServiceAvailabilityController.createServiceAvailability);
 router.get('/availability', authMiddleware, providerServiceAvailabilityController.getServiceAvailability);
-
-router.get('/profile', authMiddleware, providerProfileController.getProfileDetails);
-router.patch('/profile/image', authMiddleware,upload.single('profileImage'), providerProfileController.updateProfileImage);
-router.patch('/profile', authMiddleware, providerProfileController.updateProviderInfo);
 
 router.get('/plans', authMiddleware, providerPlanController.fetchAllPlans);
 

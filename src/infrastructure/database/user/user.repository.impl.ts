@@ -5,7 +5,7 @@ import { AdminFetchAllUsers } from "../../dtos/admin.dto";
 import { User } from "../../../domain/entities/user.entity";
 import { ApiPaginationRequest, ApiResponse } from "../../dtos/common.dto";
 import { AdminFetchDashboardUserStatsDataResponse } from "../../dtos/admin.dto";
-import { CreateUserProps, IUserRepository } from "../../../domain/repositories/IUser.repository";
+import { CreateUserProps, IUserRepository, UpdateUserFileds } from "../../../domain/repositories/IUser.repository";
 
 export class UserRepositoryImpl implements IUserRepository {
     private mapToEntity(user: IUser): User {
@@ -33,41 +33,41 @@ export class UserRepositoryImpl implements IUserRepository {
             const createdUser = await UserModel.create(user);
             return this.mapToEntity(createdUser);
         } catch (error) {
-            console.log("createUser error : ",error);
+            console.log("createUser error : ", error);
             throw new Error("Failed to create user");
         }
     }
-    
+
     async findUserByVerificationToken(verificationToken: string): Promise<User | null> {
         try {
             const user = await UserModel.findOne({ verificationToken });
             return user ? this.mapToEntity(user) : null;
         } catch (error) {
-            console.log("findUserByVerificationToken error : ",error);
+            console.log("findUserByVerificationToken error : ", error);
             throw new Error("Failed to find user");
         }
     }
-    
+
     async updateUser(user: User): Promise<User | null> {
         try {
             const updatedUser = await UserModel.findByIdAndUpdate(user._id, user, { new: true });
             return updatedUser ? this.mapToEntity(updatedUser) : null;
         } catch (error) {
-            console.log("updateUser error : ",error);
+            console.log("updateUser error : ", error);
             throw new Error("Failed to find user");
         }
     }
-    
+
     async findUserByEmail(email: string): Promise<User | null> {
         try {
             const user = await UserModel.findOne({ email });
             return user ? this.mapToEntity(user) : null;
         } catch (error) {
-            console.log("findUserByEmail error : ",error);
+            console.log("findUserByEmail error : ", error);
             throw new Error("Failed to find user");
         }
     }
-    
+
     async findAllUsers({ page, limit }: ApiPaginationRequest): Promise<ApiResponse<AdminFetchAllUsers>> {
         try {
             const skip = (page - 1) * limit;
@@ -80,7 +80,7 @@ export class UserRepositoryImpl implements IUserRepository {
                     isEmailVerified: 1
                 }).skip(skip).limit(limit).lean(),
                 UserModel.countDocuments(),
-                
+
             ])
             const totalPages = Math.ceil(totalCount / limit);
             return {
@@ -90,17 +90,17 @@ export class UserRepositoryImpl implements IUserRepository {
                 totalCount
             }
         } catch (error) {
-            console.log("findAllUsers error : ",error);
+            console.log("findAllUsers error : ", error);
             throw new Error("Failed to find all users")
         }
     }
-    
+
     async findUserById(userId: Types.ObjectId): Promise<User | null> {
         try {
             const user = await UserModel.findById(userId);
             return user ? this.mapToEntity(user) : null;
         } catch (error) {
-            console.log("findUserById error : ",error);
+            console.log("findUserById error : ", error);
             throw new Error("Failed to find user");
         }
     }
@@ -133,7 +133,7 @@ export class UserRepositoryImpl implements IUserRepository {
             ]);
             return userStatsData[0];
         } catch (error) {
-            console.log("findUsersStatsData error : ",error);
+            console.log("findUsersStatsData error : ", error);
             throw new Error("Failed to find user stats");
         }
     }
@@ -151,18 +151,43 @@ export class UserRepositoryImpl implements IUserRepository {
                 return await UserModel.estimatedDocumentCount();
             }
         } catch (error) {
-            console.log("findUsersCount error : ",error);
+            console.log("findUsersCount error : ", error);
             throw new Error("Failed to find users count");
         }
     }
-    
+
     async findUserByGoogleId(googleId: string): Promise<User | null> {
         try {
-            const user = await UserModel.findOne({googleId});
+            const user = await UserModel.findOne({ googleId });
             return user ? this.mapToEntity(user) : null;
         } catch (error) {
-            console.log("findUserByGoogleId error : ",error);
+            console.log("findUserByGoogleId error : ", error);
             throw new Error("Failed to find user");
+        }
+    }
+
+    async updateUserFields(data: UpdateUserFileds): Promise<User | null> {
+        try {
+            const { _id, ...fieldsToUpdate } = data;
+
+            const updateObj: Partial<User> = {};
+            Object.keys(fieldsToUpdate).forEach(key => {
+                const value = fieldsToUpdate[key as keyof typeof fieldsToUpdate];
+                if (value !== undefined) {
+                    updateObj[key as keyof User] = value as any;
+                }
+            });
+
+            const updatedUser = await UserModel.findOneAndUpdate(
+                { _id },
+                { $set: updateObj },
+                { new: true }
+            )
+            return updatedUser || null;
+
+        } catch (error) {
+            console.log("findUserByGoogleId error : ", error);
+            throw new Error("Failed to update user");
         }
     }
 }

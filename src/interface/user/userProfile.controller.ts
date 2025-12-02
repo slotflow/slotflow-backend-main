@@ -2,20 +2,17 @@ import { Types } from "mongoose";
 import { DecodedUser } from "../../express";
 import { s3Client } from "../../config/aws_s3";
 import { NextFunction, Request, Response } from "express";
-import { UserOrProviderUpdateInfoZodSchema } from "../../infrastructure/zod/common.zod";
-import { GenerateSignedUrlService } from "../../infrastructure/services/signedUrl.service";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
+import { s3FileKeyZodSchmema, UserOrProviderUpdateInfoZodSchema } from "../../infrastructure/zod/common.zod";
 import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
 import { UserFetchProfileDetailsUseCase, UserUpdateProfileImageUseCase, UserUpdateProviderInfoUseCase } from "../../application/user-use.case/userProfile.use-Case";
 
 const userRepositoryImpl = new UserRepositoryImpl();
 const signedUrlCacheRepositoryImpl = new SignedUrlCacheRepositoryImpl();
 
-const generateSignedUrlService = new GenerateSignedUrlService(signedUrlCacheRepositoryImpl);
-
 const userUpdateProviderInfoUseCase = new UserUpdateProviderInfoUseCase(userRepositoryImpl);
 const userFetchProfileDetailsUseCase = new UserFetchProfileDetailsUseCase(userRepositoryImpl);
-const userUpdateProfileImageUseCase = new UserUpdateProfileImageUseCase(userRepositoryImpl, s3Client, generateSignedUrlService);
+const userUpdateProfileImageUseCase = new UserUpdateProfileImageUseCase(s3Client, userRepositoryImpl, signedUrlCacheRepositoryImpl);
 
 export class UserProfileController {
     constructor(
@@ -43,9 +40,9 @@ export class UserProfileController {
     async updateProfileImage(req: Request, res: Response, next: NextFunction) {
         try{
             const userId = (req.user as DecodedUser).userOrProviderId;
-            const file = req.file;
-            if(!userId || !file) throw new Error("Invalid request.");
-            const result = await this.userUpdateProfileImageUseCase.execute({userId: new Types.ObjectId(userId), file});
+            if(!userId) throw new Error("Invalid request.");
+            const validatedData = s3FileKeyZodSchmema.parse(req.body);
+            const result = await this.userUpdateProfileImageUseCase.execute({userId: new Types.ObjectId(userId), key: validatedData.s3FileKey});
             res.status(200).json(result);
         }catch(error){
             console.log("updateProfileImage error : ",error);

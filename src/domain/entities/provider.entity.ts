@@ -20,6 +20,8 @@ export class Provider {
         public googleId: string,
         public stripeAccountId: string,
         public trustedBySlotflow: boolean,
+        public identityProof: string,
+        public serviceProof: string,
         public createdAt: Date,
         public updatedAt: Date,
     ){}

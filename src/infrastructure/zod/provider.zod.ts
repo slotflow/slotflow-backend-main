@@ -89,8 +89,8 @@ export const ProviderCreateServiceAvailabilityZodSchema = z.array(
     z.object({
         day: z.enum(daysArray),
         duration: z.number().min(10).max(480),
-        startTime: z.date(),
-        endTime: z.date(),
+        startTime: z.string().regex(/^(0[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/),
+        endTime: z.string().regex(/^(0[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/),
         modes: z.array(z.enum(serviceModeArray)).min(1),
         slots: z.array(z.string().min(1).max(30).regex(/^(0[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/)),
     })

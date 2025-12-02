@@ -21,6 +21,8 @@ export type CreateGoogleUser = {
 
 export type CreateUserProps = CreateLocalUser | CreateGoogleUser;
 
+export type UpdateUserFileds = Pick<User, "_id"> & Partial<Pick<User, "profileImage">>
+
 export interface IUserRepository {
 
   createUser(user: CreateUserProps): Promise<User>;
@@ -40,4 +42,6 @@ export interface IUserRepository {
   findUsersCount(today?: { today : boolean }): Promise<number>;
 
   findUserByGoogleId(googleId: string): Promise<User | null>;
+
+  updateUserFields(data: UpdateUserFileds): Promise<User | null>;
 }

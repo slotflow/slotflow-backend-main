@@ -233,11 +233,28 @@ export interface FetchReviewsResponse extends Pick<Review, "_id" | "createdAt" |
 //// **** Used as the response interface of fetch booking details
 export interface FetchBookingDetailsRequest {
   bookingId: Booking["_id"];
-}
+};
 export interface FetchBookingDetailsResponse extends Pick<Booking, "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "onlineTrack" | "statusTrack" | "videoCallRoomId"> {
   userId: Pick<User, "username" | "email">;
   serviceProviderId: Pick<Provider, "username" | "email">;
-} 
+} ;
 
 
 export type SubscriptionPlan = "Free" | "NoSubscription" | "Starter" | "Professional" | "Enterprise";
+
+
+//// **** Used in s3 controller
+export type CreareFileUploadPresignedUrlRequest = {
+    folderName: string;
+    fileName: string;
+    fileType: string;
+};
+
+export type CreareFileUploadPresignedUrlResponse = {
+    uploadUrl: string;
+    key: string;
+};
+
+export interface CreateFileSignedUrlRequest {
+  key: string;
+};

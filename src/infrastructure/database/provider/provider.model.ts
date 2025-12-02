@@ -19,6 +19,8 @@ export interface IProvider extends Document {
   googleId: string;
   stripeAccountId: string;
   trustedBySlotflow: boolean;
+  identityProof: string;
+  serviceProof: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -115,6 +117,14 @@ const ProviderSchema = new Schema<IProvider>({
     type: Boolean,
     default: false
   },
+  identityProof: {
+    type: String,
+    default: null
+  },
+  serviceProof: {
+    type: String,
+    default: null
+  }
 }, {
   timestamps: true
 });

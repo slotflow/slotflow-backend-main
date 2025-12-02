@@ -14,8 +14,8 @@ export interface TimeSlotForFrontendResponse {
 export interface Availability {
     day: DayType,
     duration: number,
-    startTime: Date,
-    endTime: Date,
+    startTime: string,
+    endTime: string,
     modes: ServiceModeType[],
     slots: TimeSlot[],
 }

@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 // import client from 'prom-client';
 import cookieParser from 'cookie-parser';
+import s3Routes from './interface/s3/s3.routes';
 import authRoutes from './interface/auth/auth.routes';
 import userRouter from './interface/user/user.routes';
 import adminRoutes from './interface/admin/admin.routes';
@@ -36,11 +37,12 @@ app.use(cookieParser());
 //     res.send(metrics);
 // })
 
+app.use('/api/s3',s3Routes); 
 app.use('/api/auth',authRoutes);
-app.use("/api/admin",adminRoutes);
 app.use('/api/user',userRouter);
-app.use('/api/provider',providerRouter); 
+app.use("/api/admin",adminRoutes);
 app.use('/api/google',googleRouter); 
+app.use('/api/provider',providerRouter); 
 app.use(errorHandler);
 
 export default app;

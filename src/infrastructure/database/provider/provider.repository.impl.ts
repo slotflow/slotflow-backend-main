@@ -5,7 +5,8 @@ import { AdiminFetchAllProviders } from "../../dtos/admin.dto";
 import { Provider } from "../../../domain/entities/provider.entity";
 import { ApiPaginationRequest, ApiResponse } from "../../dtos/common.dto";
 import { AdminFetchDashboardProviderStatsDataResponse } from "../../dtos/admin.dto";
-import {  CreateProviderProps, IProviderRepository } from '../../../domain/repositories/IProvider.repository';
+import { CreateProviderProps, IProviderRepository } from '../../../domain/repositories/IProvider.repository';
+import { ProviderUpdateProfileRequest } from "../../dtos/provider.dto";
 
 export class ProviderRepositoryImpl implements IProviderRepository {
     private mapToEntity(provider: IProvider): Provider {
@@ -28,6 +29,8 @@ export class ProviderRepositoryImpl implements IProviderRepository {
             provider.googleId,
             provider.stripeAccountId,
             provider.trustedBySlotflow,
+            provider.identityProof,
+            provider.serviceProof,
             provider.createdAt,
             provider.updatedAt,
         )
@@ -39,7 +42,7 @@ export class ProviderRepositoryImpl implements IProviderRepository {
             const createdProvider = await ProviderModel.create(provider);
             return createdProvider ? this.mapToEntity(createdProvider) : null;
         } catch (error) {
-            console.log("createProvider error : ",error);
+            console.log("createProvider error : ", error);
             throw new Error("Failed to create provider");
         }
     }
@@ -50,7 +53,7 @@ export class ProviderRepositoryImpl implements IProviderRepository {
             const User = await ProviderModel.findOne({ verificationToken });
             return User || null;
         } catch (error) {
-            console.log("findProviderByVerificationToken error : ",error);
+            console.log("findProviderByVerificationToken error : ", error);
             throw new Error("Failed to find provider");
         }
     }
@@ -61,7 +64,7 @@ export class ProviderRepositoryImpl implements IProviderRepository {
             const updatedProvider = await ProviderModel.findByIdAndUpdate(provider._id, provider, { new: true });
             return updatedProvider ? this.mapToEntity(updatedProvider) : null;
         } catch (error) {
-            console.log("updateProvider error : ",error);
+            console.log("updateProvider error : ", error);
             throw new Error("Failed to update provider");
         }
     }
@@ -72,7 +75,7 @@ export class ProviderRepositoryImpl implements IProviderRepository {
             const provider = await ProviderModel.findOne({ email });
             return provider ? this.mapToEntity(provider) : null;
         } catch (error) {
-            console.log("findProviderByEmail error : ",error);
+            console.log("findProviderByEmail error : ", error);
             throw new Error("Failed to find provider");
         }
     }
@@ -100,7 +103,7 @@ export class ProviderRepositoryImpl implements IProviderRepository {
                 totalCount
             }
         } catch (error) {
-            console.log("findAllProviders error : ",error);
+            console.log("findAllProviders error : ", error);
             throw new Error("Failed to find all provider");
         }
     }
@@ -110,7 +113,7 @@ export class ProviderRepositoryImpl implements IProviderRepository {
             const provider = await ProviderModel.findById(providerId)
             return provider ? this.mapToEntity(provider) : null;
         } catch (error) {
-            console.log("findProviderById error : ",error);
+            console.log("findProviderById error : ", error);
             throw new Error('Failed to find provider');
         }
     }
@@ -128,7 +131,7 @@ export class ProviderRepositoryImpl implements IProviderRepository {
                 return await ProviderModel.estimatedDocumentCount();
             }
         } catch (error) {
-            console.log("findProvidersCount error : ",error);
+            console.log("findProvidersCount error : ", error);
             throw new Error("Failed to find providers count");
         }
     }
@@ -158,11 +161,11 @@ export class ProviderRepositoryImpl implements IProviderRepository {
                             { $count: "count" }
                         ],
                         addressAddedProviders: [
-                            { $match: { addressId: { $exists: true, $ne: null } } }, 
+                            { $match: { addressId: { $exists: true, $ne: null } } },
                             { $count: "count" }
                         ],
                         serviceAddedProviders: [
-                            { $match: { serviceId: { $exists: true, $ne: null } } }, 
+                            { $match: { serviceId: { $exists: true, $ne: null } } },
                             { $count: "count" }
                         ],
                         availabilityAddedProviders: [
@@ -185,19 +188,44 @@ export class ProviderRepositoryImpl implements IProviderRepository {
             ]);
             return providerStatsData[0];
         } catch (error) {
-            console.log("findProvidersStatsForAdminDashboard error : ",error);
+            console.log("findProvidersStatsForAdminDashboard error : ", error);
             throw new Error("Failed to find provider stats");
         }
     }
 
     async findProviderByGoogleId(googleId: string): Promise<Provider | null> {
         try {
-            const provider = await ProviderModel.findOne({googleId});
+            const provider = await ProviderModel.findOne({ googleId });
             return provider ? this.mapToEntity(provider) : null;
         } catch (error) {
-            console.log("findProviderByGoogleId error : ",error);
+            console.log("findProviderByGoogleId error : ", error);
             throw new Error("Failed to find provider");
         }
     }
+
+      async updateProviderFields(data: ProviderUpdateProfileRequest): Promise<Provider | null> {
+            try {
+                const { _id, ...fieldsToUpdate } = data;
     
+                const updateObj: Partial<Provider> = {};
+                Object.keys(fieldsToUpdate).forEach(key => {
+                    const value = fieldsToUpdate[key as keyof typeof fieldsToUpdate];
+                    if (value !== undefined) {
+                        updateObj[key as keyof Provider] = value as any;
+                    }
+                });
+    
+                const updatedProvider = await ProviderModel.findOneAndUpdate(
+                    { _id },
+                    { $set: updateObj },
+                    { new: true }
+                )
+                return updatedProvider || null;
+    
+            } catch (error) {
+                console.log("updateProviderFields error : ", error);
+                throw new Error("Failed to update provider");
+            }
+        }
+
 }
