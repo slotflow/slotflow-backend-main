@@ -41,7 +41,7 @@ export class AdminApproveProviderUseCase {
             const updatedProvider = await this.providerRepositoryImpl.updateProvider(provider);
             if (!updatedProvider) throw new Error("Provider not found");
 
-            await OTPService.sendApprovalEmail(updatedProvider.email);
+            // await OTPService.sendApprovalEmail(updatedProvider.email);
 
             return { success: true, message: "Provider approved successfully." };
         } catch (error) {

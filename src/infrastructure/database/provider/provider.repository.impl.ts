@@ -51,7 +51,7 @@ export class ProviderRepositoryImpl implements IProviderRepository {
         try {
             if (!verificationToken) throw new Error("Invalid request.");
             const User = await ProviderModel.findOne({ verificationToken });
-            return User || null;
+            return User ? this.mapToEntity(User) : null;
         } catch (error) {
             console.log("findProviderByVerificationToken error : ", error);
             throw new Error("Failed to find provider");
@@ -220,7 +220,7 @@ export class ProviderRepositoryImpl implements IProviderRepository {
                     { $set: updateObj },
                     { new: true }
                 )
-                return updatedProvider || null;
+                return updatedProvider ? this.mapToEntity(updatedProvider) : null;
     
             } catch (error) {
                 console.log("updateProviderFields error : ", error);

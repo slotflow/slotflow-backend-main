@@ -2,8 +2,10 @@ import { Types } from "mongoose";
 import { DecodedUser } from "../../express";
 import { s3Client } from "../../config/aws_s3";
 import { NextFunction, Request, Response } from "express";
-import { s3FileKeyZodSchmema, UserOrProviderUpdateInfoZodSchema } from "../../infrastructure/zod/common.zod";
+import { SignedUrlService } from "../../infrastructure/services/signedUrlService";
+import { FetchProviderProofsUseCase } from "../../application/common-use.case/fetchProviderProofs";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
+import { s3FileKeyZodSchmema, UserOrProviderUpdateInfoZodSchema } from "../../infrastructure/zod/common.zod";
 import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
 import { ProviderFetchProfileDetailsUseCase, ProviderIdentityProofUpdateUseCase, ProviderServiceProofUpdateUseCase, ProviderUpdateProfileImageUseCase, ProviderUpdateProviderInfoUseCase } from "../../application/provider-use.case/providerProfile.use-case";
 
@@ -16,6 +18,9 @@ const providerUpdateProfileImageUseCase = new ProviderUpdateProfileImageUseCase(
 const providerIdentityProofUpdateUseCase = new ProviderIdentityProofUpdateUseCase(s3Client, providerRepositoryImpl, signedUrlCacheRepositoryImpl);
 const providerServiceProofUpdateUseCase = new ProviderServiceProofUpdateUseCase(s3Client, providerRepositoryImpl, signedUrlCacheRepositoryImpl);
 
+const signedUrlService = new SignedUrlService(signedUrlCacheRepositoryImpl);
+const fetchProviderProofsUseCase = new FetchProviderProofsUseCase(signedUrlService, providerRepositoryImpl);
+
 class ProviderProfileController {
     constructor(
         private providerFetchProfileDetailsUseCase: ProviderFetchProfileDetailsUseCase,
@@ -23,12 +28,14 @@ class ProviderProfileController {
         private providerUpdateProviderInfoUseCase: ProviderUpdateProviderInfoUseCase,
         private providerIdentityProofUpdateUseCase: ProviderIdentityProofUpdateUseCase,
         private providerServiceProofUpdateUseCase: ProviderServiceProofUpdateUseCase,
+        private fetchProviderProofsUseCase: FetchProviderProofsUseCase
     ) {
         this.getProfileDetails = this.getProfileDetails.bind(this);
         this.updateProfileImage = this.updateProfileImage.bind(this);
-        this.updateProviderInfo = this.updateProviderInfo.bind(this);
-        this.updateProviderIdentityProof = this.updateProviderIdentityProof.bind(this);
-        this.updateProviderServiceProof = this.updateProviderServiceProof.bind(this);
+        this.updateInfo = this.updateInfo.bind(this);
+        this.updateIdentityProof = this.updateIdentityProof.bind(this);
+        this.updateServiceProof = this.updateServiceProof.bind(this);
+        this.fetchProofs = this.fetchProofs.bind(this);
     }
 
     async getProfileDetails(req: Request, res: Response, next: NextFunction) {
@@ -58,7 +65,7 @@ class ProviderProfileController {
         }
     }
 
-    async updateProviderInfo(req: Request, res: Response, next: NextFunction) {
+    async updateInfo(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
             const { username, phone } = UserOrProviderUpdateInfoZodSchema.parse(req.body);
@@ -75,7 +82,7 @@ class ProviderProfileController {
         }
     }
 
-    async updateProviderIdentityProof(req: Request, res: Response, next: NextFunction) {
+    async updateIdentityProof(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
             const validatedData = s3FileKeyZodSchmema.parse(req.body);
@@ -90,7 +97,7 @@ class ProviderProfileController {
         }
     }
 
-    async updateProviderServiceProof(req: Request, res: Response, next: NextFunction) {
+    async updateServiceProof(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
             const validatedData = s3FileKeyZodSchmema.parse(req.body);
@@ -105,6 +112,19 @@ class ProviderProfileController {
         }
     }
 
+    async fetchProofs(req: Request, res: Response, next: NextFunction) {
+        try {
+            const providerId = (req.user as DecodedUser).userOrProviderId;
+            const result = await this.fetchProviderProofsUseCase.execute({
+                providerId: new Types.ObjectId(providerId)
+            });
+            res.status(200).json(result);
+        } catch (error) {
+            console.log("fetchProviderProofs error : ", error);
+            next(error);
+        }
+    }
+
 }
 
 const providerProfileController = new ProviderProfileController(
@@ -112,7 +132,8 @@ const providerProfileController = new ProviderProfileController(
     providerUpdateProfileImageUseCase,
     providerUpdateProviderInfoUseCase,
     providerIdentityProofUpdateUseCase,
-    providerServiceProofUpdateUseCase
+    providerServiceProofUpdateUseCase,
+    fetchProviderProofsUseCase
 );
 
 export { providerProfileController };

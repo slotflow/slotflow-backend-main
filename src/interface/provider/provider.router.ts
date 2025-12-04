@@ -18,9 +18,10 @@ const router = Router();
 
 router.get('/', authMiddleware, providerProfileController.getProfileDetails);
 router.patch('/profile/image', authMiddleware,providerProfileController.updateProfileImage);
-router.patch('/profile/info', authMiddleware, providerProfileController.updateProviderInfo);
-router.patch('/profile/identity', authMiddleware, providerProfileController.updateProviderIdentityProof);
-router.patch('/profile/service', authMiddleware, providerProfileController.updateProviderServiceProof);
+router.patch('/profile/info', authMiddleware, providerProfileController.updateInfo);
+router.patch('/profile/identity', authMiddleware, providerProfileController.updateIdentityProof);
+router.patch('/profile/service', authMiddleware, providerProfileController.updateServiceProof);
+router.get('/profile/proofs', authMiddleware,providerProfileController.fetchProofs);
 
 router.post('/addresses', authMiddleware, provideAddressController.createAddress);
 router.get('/address', authMiddleware, provideAddressController.getAddress);

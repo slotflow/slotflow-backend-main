@@ -258,3 +258,11 @@ export type CreareFileUploadPresignedUrlResponse = {
 export interface CreateFileSignedUrlRequest {
   key: string;
 };
+
+
+// **** Used in fetch provider proofs usecase
+export interface FetchProviderProofsRequest {
+  providerId: Provider["_id"];
+};
+
+export type FetchProviderProofsResponse = Pick<Provider, "identityProof" | "serviceProof">;

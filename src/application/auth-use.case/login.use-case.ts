@@ -1,8 +1,8 @@
 import { adminConfig } from "../../config/env";
+import { roleArray } from "../../utils/constants";
 import { User } from "../../domain/entities/user.entity";
 import { JWTService } from "../../infrastructure/security/jwt";
 import { Provider } from "../../domain/entities/provider.entity";
-import { roleArray } from "../../utils/constants";
 import { PasswordHasher } from "../../infrastructure/security/password-hashing";
 import { LoginRequest, LoginResponse } from "../../infrastructure/dtos/auth.dto";
 import { GenerateSignedUrlService } from "../../infrastructure/services/signedUrl.service";
@@ -55,6 +55,7 @@ export class LoginUseCase {
             let isServiceDetailsAdded;
             let isServiceAvailabilityAdded;
             let isAdminApproved;
+            let isProofSubmitted;
             let updateProfileImage;
             let subscriptiondId;
             let subscription;
@@ -81,6 +82,7 @@ export class LoginUseCase {
                         providerSubscription = "NoSubscription"
                     }
                 }
+                isProofSubmitted = ((userOrProvider as Provider).identityProof && (userOrProvider as Provider).serviceProof) ? true : false;
             }
 
             if (userOrProvider.profileImage) {
@@ -106,6 +108,7 @@ export class LoginUseCase {
                     isServiceDetailsAdded,
                     isServiceAvailabilityAdded,
                     isAdminApproved,
+                    isProofSubmitted,
                     providerSubscription,
                     googleConnected: userOrProvider.googleConnected,
                     updatedAt: userOrProvider.updatedAt
@@ -113,7 +116,7 @@ export class LoginUseCase {
             };
         } catch (error) {
             console.log("LoginUseCase error : ", error);
-            throw new Error("Failed to login");
+            throw new Error(`Failed to login : ${error}`);
         }
     }
 }

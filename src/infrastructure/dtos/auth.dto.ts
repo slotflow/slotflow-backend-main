@@ -63,7 +63,8 @@ export interface LoginResponse extends CommonResponse {
         isAddressAdded?: boolean,
         isServiceDetailsAdded?: boolean,
         isServiceAvailabilityAdded?: boolean,
-        isAdminApproved?: boolean
+        isAdminApproved?: boolean;
+        isProofSubmitted?: boolean;
         providerSubscription?: string;
         googleConnected?: boolean;
         updatedAt?: Date;

@@ -12,9 +12,9 @@ export type AdminFetchDashboardTodayPaymentStatsDataResponse = Pick<AdminFetchDa
 
 export interface IPaymentRepository {
 
-    createPaymentForSubscription(payment: CreatePaymentForSubscriptionRequest, options?: { session?: any }): Promise<Payment | null>;
+    createPaymentForSubscription(payment: CreatePaymentForSubscriptionRequest, options?: { session: any }): Promise<Payment | null>;
 
-    createPaymentForBooking(payment: CreatePaymentForBookingRequest, options?: { session?: any }): Promise<Payment | null>;
+    createPaymentForBooking(payment: CreatePaymentForBookingRequest, options?: { session: any }): Promise<Payment | null>;
 
     findAllPayments({ page, limit, userId, providerId }: FetchPaymentsRequest): Promise<ApiResponse<FetchPaymentResponse>>;
 

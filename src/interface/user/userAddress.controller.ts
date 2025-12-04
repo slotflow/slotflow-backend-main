@@ -38,6 +38,7 @@ export class UserAddressController {
 
     async addAddress(req: Request, res: Response, next: NextFunction) {
         try {
+            console.log("crwating address");
             const userId = (req.user as DecodedUser).userOrProviderId;
             const validateData = CreateAddressZodSchema.parse(req.body)
             const { addressLine, landMark, phone, place, city, district, pincode, state, country, location } = validateData;

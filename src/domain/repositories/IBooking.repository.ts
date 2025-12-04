@@ -15,7 +15,7 @@ export type ProviderFetchDashboardGraphRepository = Omit<ProviderFetchDashboardG
 
 export interface IBookingRepository {
 
-    createBooking(booking : CreateBookingPayloadProps, options : { session : any }) : Promise<Booking>;
+    createBooking(booking : CreateBookingPayloadProps, options? : { session : any }) : Promise<Booking>;
 
     findBookingByUserId(userId: Types.ObjectId, day: string, date: Date, time: string): Promise<Array<Booking> | null>;
 

@@ -36,7 +36,7 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
         )
     }
 
-    async createPaymentForSubscription(payment: CreatePaymentForSubscriptionRequest, options: { session?: any } = {}): Promise<Payment | null> {
+    async createPaymentForSubscription(payment: CreatePaymentForSubscriptionRequest, options?: { session: any }): Promise<Payment | null> {
         try {
             const newPayment = await PaymentModel.create([payment], options);
             return newPayment ? this.mapToEntity(newPayment[0]) : null;
@@ -46,7 +46,7 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
         }
     }
 
-    async createPaymentForBooking(payment: CreatePaymentForBookingRequest, options: { session?: any } = {}): Promise<Payment | null> {
+    async createPaymentForBooking(payment: CreatePaymentForBookingRequest, options?: { session: any }): Promise<Payment | null> {
         try {
             const newPayment = await PaymentModel.create([payment], options);
             return newPayment ? this.mapToEntity(newPayment[0]) : null;

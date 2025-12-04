@@ -33,7 +33,7 @@ export class BookingRepositoryImpl implements IBookingRepository {
         )
     }
 
-    async createBooking(booking: CreateBookingPayloadProps, options: { session?: any }): Promise<Booking> {
+    async createBooking(booking: CreateBookingPayloadProps, options?: { session?: any }): Promise<Booking> {
         try {
             const newBooking = await BookingModel.create([booking], options);
             return this.mapToEntity(newBooking[0]);

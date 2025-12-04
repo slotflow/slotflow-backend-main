@@ -51,6 +51,7 @@ export class ProviderServiceRepositoryImpl implements IProviderServiceRepository
     }
 
     async findProvidersUsingServiceCategoryIds(serviceCategoryIds: Types.ObjectId[]): Promise<Array<FindProvidersUsingServiceCategoryIdsResponse> | []> {
+        console.log("serviceCategoryIds : ",serviceCategoryIds);
         try {
             const pipeline: any[] = [];
             const now = new Date();
@@ -138,6 +139,7 @@ export class ProviderServiceRepositoryImpl implements IProviderServiceRepository
                 }
             );
             const providers = await ProviderServiceModel.aggregate(pipeline);
+            console.log("providers : ",providers);
             return providers;
         } catch (error) {
             console.log("findProvidersUsingServiceCategoryIds error : ",error);

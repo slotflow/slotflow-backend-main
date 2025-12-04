@@ -13,6 +13,8 @@ import { AdminChangeProviderStatusZodSchema, AdminChangeProviderTrustedTagZodSch
 import { ServiceAvailabilityRepositoryImpl } from "../../infrastructure/database/serviceAvailability/serviceAvailability.repository.impl";
 import { AdminApproveProviderUseCase, AdminChangeProviderBlockStatusUseCase, AdminChangeProviderTrustTagUseCase, AdminProviderListUseCase } from "../../application/admin-use.case/adminProvider/adminProvider.use-case";
 import { AdminFetchProviderDetailsUseCase, AdminFetchProviderPaymentsUseCase, AdminfetchProviderServiceAvailabilityUseCase, AdminFetchProviderServiceUseCase, AdminFetchProviderSubscriptionsUseCase } from "../../application/admin-use.case/adminProvider/adminProviderProfile.use-case";
+import { FetchProviderProofsUseCase } from "../../application/common-use.case/fetchProviderProofs";
+import { SignedUrlService } from "../../infrastructure/services/signedUrlService";
 
 const addressRepositoryImpl = new AddressRepositoryImpl();
 const paymentRepositoryImpl = new PaymentRepositoryImpl();
@@ -35,6 +37,9 @@ const adminFetchProviderServiceUseCase = new AdminFetchProviderServiceUseCase(pr
 const adminFetchProviderSubscriptionsUseCase = new AdminFetchProviderSubscriptionsUseCase(providerRepositoryImpl, subscriptionRepositoryImpl);
 const adminFetchProviderServiceAvailabilityUseCase = new AdminfetchProviderServiceAvailabilityUseCase(providerRepositoryImpl, serviceAvailabilityImpl);
 
+const signedUrlService = new SignedUrlService(signedUrlCacheRepositoryImpl);
+const fetchProviderProofsUseCase = new FetchProviderProofsUseCase(signedUrlService, providerRepositoryImpl);
+
 class AdminProviderController {
     constructor(
         private adminProviderListUseCase: AdminProviderListUseCase,
@@ -47,6 +52,7 @@ class AdminProviderController {
         private adminFetchProviderServiceAvailabilityUseCase: AdminfetchProviderServiceAvailabilityUseCase,
         private adminFetchProviderSubscriptionsUseCase: AdminFetchProviderSubscriptionsUseCase,
         private adminFetchProviderPaymentsUseCase: AdminFetchProviderPaymentsUseCase,
+        private fetchProviderProofsUseCase: FetchProviderProofsUseCase,
     ) {
         this.getAllProviders = this.getAllProviders.bind(this);
         this.approveProvider = this.approveProvider.bind(this);
@@ -58,6 +64,7 @@ class AdminProviderController {
         this.changeProviderTrustedTag = this.changeProviderTrustedTag.bind(this);
         this.fetchProviderSubscriptions = this.fetchProviderSubscriptions.bind(this);
         this.fetchProviderPayments = this.fetchProviderPayments.bind(this);
+        this.fetchProviderProofs = this.fetchProviderProofs.bind(this);
     }
 
     async getAllProviders(req: Request, res: Response, next: NextFunction) {
@@ -182,8 +189,34 @@ class AdminProviderController {
         }
     }
 
+    async fetchProviderProofs(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
+            if (!providerId) throw new Error("Invalid request.");
+            const result = await this.fetchProviderProofsUseCase.execute({
+                providerId: new Types.ObjectId(providerId)
+            });
+            res.status(200).json(result);
+        } catch (error) {
+            console.log("fetchProviderProofs error : ", error);
+            next(error);
+        }
+    }
+
 }
 
-const adminProviderController = new AdminProviderController(adminProviderListUseCase, adminApproveProviderUseCase, adminChangeProviderBlockStatusUseCase, adminChangeProviderTrustTagUseCase, adminFetchProviderDetailsUseCase, adminFetchUserOrProviderAddressUseCase, adminFetchProviderServiceUseCase, adminFetchProviderServiceAvailabilityUseCase, adminFetchProviderSubscriptionsUseCase, adminFetchProviderPaymentsUseCase);
+const adminProviderController = new AdminProviderController(
+    adminProviderListUseCase,
+    adminApproveProviderUseCase,
+    adminChangeProviderBlockStatusUseCase,
+    adminChangeProviderTrustTagUseCase,
+    adminFetchProviderDetailsUseCase,
+    adminFetchUserOrProviderAddressUseCase,
+    adminFetchProviderServiceUseCase,
+    adminFetchProviderServiceAvailabilityUseCase,
+    adminFetchProviderSubscriptionsUseCase,
+    adminFetchProviderPaymentsUseCase,
+    fetchProviderProofsUseCase
+);
 export { adminProviderController };
 

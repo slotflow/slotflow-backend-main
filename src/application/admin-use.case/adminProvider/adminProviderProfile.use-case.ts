@@ -20,7 +20,7 @@ import { ApiResponse, FetchPaymentResponse, FetchPaymentsRequest, FetchProviderS
 export class AdminFetchProviderDetailsUseCase {
     constructor(
         private providerRepository: ProviderRepositoryImpl,
-        private generateSignedUrlService: GenerateSignedUrlService
+        private generateSignedUrlService: GenerateSignedUrlService // TODO update to SignedUrlService
     ) { }
 
     async execute(payload: AdminFetchProviderDetailsRequest): Promise<ApiResponse<AdminFetchProviderDetailsResponse>> {

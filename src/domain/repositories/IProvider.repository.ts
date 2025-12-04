@@ -25,7 +25,7 @@ export type CreateProviderProps = CreateLocalProvider | CreateGoogleProvider;
 export interface IProviderRepository {
     createProvider(provider : CreateProviderProps) : Promise<Provider | null>;
 
-    findProviderByVerificationToken(verificationToken: string): Promise<Provider | null>;
+    findProviderByVerificationToken(verificationToken: Provider["verificationToken"]): Promise<Provider | null>;
     
     updateProvider(user: Provider): Promise<Provider | null>;
     

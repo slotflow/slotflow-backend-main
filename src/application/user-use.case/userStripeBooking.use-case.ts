@@ -137,8 +137,9 @@ export class UserSaveBookingAfterStripePaymentUseCase {
 
             if (!selectedSlot[0].available) throw new Error("This slot is not available for today");
 
-            const mongoSession = await startSession();
-            mongoSession.startTransaction();
+            // TODO mongoSession not work with compass
+            // const mongoSession = await startSession();
+            // mongoSession.startTransaction();
 
             try {
                 const payment = await this.paymentRepositoryImpl.createPaymentForBooking({
@@ -152,7 +153,9 @@ export class UserSaveBookingAfterStripePaymentUseCase {
                     totalAmount: Number(totalAmount) / 100,
                     userId: new Types.ObjectId(userId),
                     providerId: new Types.ObjectId(providerId),
-                }, { session: mongoSession });
+                }, 
+                // { session: mongoSession }
+            );
 
                 if (!payment) throw new Error("Unexpected error, payment saving error.");
 
@@ -181,20 +184,24 @@ export class UserSaveBookingAfterStripePaymentUseCase {
                             appointmentStatus: appointmentStatusArray[0],
                             time: new Date(),
                         }]
-                    }, { session: mongoSession });
+                    }, 
+                    // { session: mongoSession }
+                );
 
+                console.log("newBooking one : ",newBooking);
                     if (!newBooking) throw new Error("Error in slot booking, please try again");
+                    console.log("newBooking two : ",newBooking);
 
                 }
 
-                await mongoSession.commitTransaction();
-                mongoSession.endSession();
+                // await mongoSession.commitTransaction();
+                // mongoSession.endSession();
 
                 return { success: true, message: "Your booking have been confirmed" }
             } catch (error) {
                 console.log("UserSaveBookingAfterStripePaymentUseCase error : ", error);
-                await mongoSession.abortTransaction();
-                mongoSession.endSession();
+                // await mongoSession.abortTransaction();
+                // mongoSession.endSession();
                 throw new Error("Subscribing error.");
             }
         } catch (error) {

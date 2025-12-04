@@ -3,12 +3,12 @@ import { adminPlanController } from "./adminPlan.controller";
 import { adminUserController } from "./adminUser.controller";
 import { authMiddleware } from "../middleware/auth.middleware";
 import { adminReviewController } from "./adminReview.controller";
+import { adminReportController } from "./adminReport.controller";
 import { adminServiceController } from "./adminService.controller";
 import { adminPaymentController } from "./adminPayment.controller";
 import { adminProviderController } from "./adminProvider.controller";
 import { adminDashboardController } from "./adminDashboard.controller";
 import { adminSubscriptionController } from "./adminSubscription.controller";
-import { adminReportController } from "./adminReport.controller";
 
 const router = Router();
 
@@ -22,6 +22,7 @@ router.get('/providers/:providerId/service', authMiddleware, adminProviderContro
 router.get('/providers/:providerId/availability', authMiddleware, adminProviderController.fetchProviderServiceAvailability);
 router.get('/providers/:providerId/subscriptions', authMiddleware, adminProviderController.fetchProviderSubscriptions);
 router.get('/providers/:providerId/payments', authMiddleware,adminProviderController.fetchProviderPayments);
+router.get('/providers/:providerId/proofs', authMiddleware,adminProviderController.fetchProviderProofs);
 
 router.get('/users',authMiddleware, adminUserController.getAllUsers);
 router.get('/users/:userId/profile', authMiddleware, adminUserController.fetchUserDetails);
