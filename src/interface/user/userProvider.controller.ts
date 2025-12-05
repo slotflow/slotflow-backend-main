@@ -9,8 +9,8 @@ import {
     UserFetchServiceProviderProfileDetailsUseCase,
     UserFetchServiceProviderServiceAvailabilityUseCase,
 } from "../../application/user-use.case/userProvider.use-case";
-import { UserFetchAllProvidersZodSchema } from "../../infrastructure/zod/user.zod";
-import { DateZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
+import { UserFetchAllProvidersZodSchema } from "../../shared/zod/user.zod";
+import { DateZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
 import { GenerateSignedUrlService } from "../../infrastructure/services/signedUrl.service";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { AddressRepositoryImpl } from "../../infrastructure/database/address/address.repository.impl";

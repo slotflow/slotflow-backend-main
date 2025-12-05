@@ -7,7 +7,7 @@ import { endOfDay, startOfDay, startOfMonth, startOfToday, startOfTomorrow } fro
 import { ApiResponse, FetchPaymentResponse, FetchPaymentsRequest, userIdAndProviderIdFilterForFetchPayments } from "../../dtos/common.dto";
 import { AdminFetchDashboardRevenueStatsDataResponse, AdminFetchRevenueReportRequest, AdminFetchRevenueReportResponse } from "../../dtos/admin.dto";
 import { AdminFetchDashboardTodayPaymentStatsDataResponse, CreatePaymentForBookingRequest, CreatePaymentForSubscriptionRequest, IPaymentRepository, UpdateBookingRequest } from "../../../domain/repositories/IPayment.repository";
-import { paymentForArray, paymentGatewayArray } from "../../../utils/constants";
+import { paymentForArray, paymentGatewayArray } from "../../../shared/utils/constants";
 
 export class PaymentRepositoryImpl implements IPaymentRepository {
     private mapToEntity(payment: IPayment): Payment {

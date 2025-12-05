@@ -1,8 +1,8 @@
 import { Types } from "mongoose";
 import { NextFunction, Request, Response } from "express";
-import { RequestQueryCommonZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
+import { RequestQueryCommonZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
 import { ServiceRepositoryImpl } from "../../infrastructure/database/appservice/service.repository.impl";
-import { AdminAddServiceXZodSchema, AdminChangeServiceBlockStatusZodSchema } from "../../infrastructure/zod/admin.zod";
+import { AdminAddServiceXZodSchema, AdminChangeServiceBlockStatusZodSchema } from "../../shared/zod/admin.zod";
 import { AdminAddServiceUseCase, AdminChnageServiceBlockStatusUseCase, AdminServiceListUseCase } from "../../application/admin-use.case/adminService.use-case";
 
 const serviceRepositoryImpl = new ServiceRepositoryImpl();

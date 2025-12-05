@@ -1,8 +1,8 @@
 import { Types } from "mongoose";
 import { DecodedUser } from "../../express";
 import { NextFunction, Request, Response } from "express";
-import { DateZodSchema } from "../../infrastructure/zod/common.zod";
-import { ProviderCreateServiceAvailabilityZodSchema } from "../../infrastructure/zod/provider.zod";
+import { DateZodSchema } from "../../shared/zod/common.zod";
+import { ProviderCreateServiceAvailabilityZodSchema } from "../../shared/zod/provider.zod";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { ServiceAvailabilityRepositoryImpl } from "../../infrastructure/database/serviceAvailability/serviceAvailability.repository.impl";
 import { ProviderCreateServiceAvailabilitiesUseCase, ProviderFetchServiceAvailabilityUseCase } from "../../application/provider-use.case/providerServiceAvailability.use-case";

@@ -14,7 +14,7 @@ import { CheckUserStatusUseCase } from '../../application/auth-use.case/checkUse
 import { ProviderRepositoryImpl } from '../../infrastructure/database/provider/provider.repository.impl';
 import { SubscriptionRepositoryImpl } from '../../infrastructure/database/subscription/subscription.repository.impl';
 import { SignedUrlCacheRepositoryImpl } from '../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl';
-import { LoginZodSchema, OTPVerificationZodSchema, RegisterZodSchema, ResendOTPZodSchema, UpdatePasswordZodSchema } from '../../infrastructure/zod/auth.zod';
+import { LoginZodSchema, OTPVerificationZodSchema, RegisterZodSchema, ResendOTPZodSchema, UpdatePasswordZodSchema } from '../../shared/zod/auth.zod';
 
 const userRepositoryImpl = new UserRepositoryImpl();
 const planRepositoryImpl = new PlanRepositoryImpl();

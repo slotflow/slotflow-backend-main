@@ -6,7 +6,7 @@ import {
 import { startSession, Types } from "mongoose";
 import { stripe } from "../../infrastructure/lib/stripe";
 import { ApiResponse } from "../../infrastructure/dtos/common.dto";
-import { appointmentStatusArray, paymentForArray, paymentGatewayArray } from '../../utils/constants';
+import { appointmentStatusArray, paymentForArray, paymentGatewayArray } from '../../shared/utils/constants';
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { AddEventToGoogleCalendarService } from "../../infrastructure/services/googleCalendar";
 import { FindProviderServiceResponse } from "../../domain/repositories/IProviderService.repository";

@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
 import { SubscriptionStatusType } from "../../dtos/common.dto";
-import { subscriptionStatusArray } from "../../../utils/constants";
+import { subscriptionStatusArray } from "../../../shared/utils/constants";
 
 export interface ISubscription extends Document {
     _id: Types.ObjectId,

@@ -1,5 +1,5 @@
 import { FilterQuery, Types } from "mongoose";
-import { roleArray } from "../../../utils/constants";
+import { roleArray } from "../../../shared/utils/constants";
 import { IReview, ReviewModel } from "./review.model";
 import { CreateReviewRequset } from "../../dtos/user.dto";
 import { Review } from "../../../domain/entities/review.entity";

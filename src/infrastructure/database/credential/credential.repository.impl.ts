@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 import { CreateCredential } from "../../dtos/common.dto";
-import { Credential } from "../../../domain/entities/credential";
+import { Credential } from "../../../domain/entities/credential.entity";
 import { CredentialModel, ICredential } from "./credential.model";
 import { ICredentialRepository } from "../../../domain/repositories/ICredentialRepository";
 

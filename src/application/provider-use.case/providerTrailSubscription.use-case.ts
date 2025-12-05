@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { Types } from "mongoose";
-import { subscriptionStatusArray } from "../../utils/constants";
+import { subscriptionStatusArray } from "../../shared/utils/constants";
 import { ApiResponse } from "../../infrastructure/dtos/common.dto";
 import { ProviderTrialSubscriptionRequest } from "../../infrastructure/dtos/provider.dto";
 import { PlanRepositoryImpl } from "../../infrastructure/database/plan/plan.repository.impl";

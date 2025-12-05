@@ -1,4 +1,4 @@
-import { appointmentStatusArray, roleArray } from "../../utils/constants";
+import { appointmentStatusArray, roleArray } from "../../shared/utils/constants";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { ServiceAvailabilityRepositoryImpl } from "../../infrastructure/database/serviceAvailability/serviceAvailability.repository.impl";
 import { ApiResponse, UpdateBookingOnlineTrackRequest, UpdateBookingOnlineTrackResponse } from "../../infrastructure/dtos/common.dto";

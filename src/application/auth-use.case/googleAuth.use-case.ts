@@ -1,6 +1,6 @@
 import { User } from "../../domain/entities/user.entity";
 import { Provider } from "../../domain/entities/provider.entity";
-import { roleArray } from "../../utils/constants";
+import { roleArray } from "../../shared/utils/constants";
 import { GoogleAuthRequest } from "../../infrastructure/dtos/auth.dto";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";

@@ -5,7 +5,7 @@ import { Subscription } from "../../../domain/entities/subscription.entity";
 import { AdminFetchAllSubscriptionsResponse, AdminFetchDashboardSubscriptionStatsDataResponse } from "../../dtos/admin.dto";
 import { ApiPaginationRequest, ApiResponse, FetchProviderSubscriptionsRequest, FindSubscriptionsByProviderIdResponse, PopulatedSubscription } from "../../dtos/common.dto";
 import { CreateSubscriptionPayloadProps, findSubscriptionFullDetailsResProps, ISubscriptionRepository, PlanNameOnly } from "../../../domain/repositories/ISubscription.repository";
-import { subscriptionStatusArray } from "../../../utils/constants";
+import { subscriptionStatusArray } from "../../../shared/utils/constants";
 
 export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
     private mapToEntity(subscription: ISubscription): Subscription {

@@ -1,6 +1,6 @@
 import { s3Client } from "../../config/aws_s3";
 import { NextFunction, Request, Response } from "express";
-import { PresignedUrlZodSchema, s3FileKeyZodSchmema } from "../../infrastructure/zod/common.zod";
+import { PresignedUrlZodSchema, s3FileKeyZodSchmema } from "../../shared/zod/common.zod";
 import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
 import { CreateFileSignedUrlUseCase, CreateFileUploadPresignedUrlUseCase } from "../../application/common-use.case/s3.use-case";
 

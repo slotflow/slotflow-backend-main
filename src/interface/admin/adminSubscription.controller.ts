@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 import { NextFunction, Request, Response } from "express";
-import { RequestQueryCommonZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
+import { RequestQueryCommonZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
 import { AdminFetchAllSubscriptionsUseCase } from "../../application/admin-use.case/adminSubscription.use-case";
 import { FetchSubscriptionDetailsUseCase } from "../../application/common-use.case/subscriptionCommon.use-case";
 import { SubscriptionRepositoryImpl } from "../../infrastructure/database/subscription/subscription.repository.impl";

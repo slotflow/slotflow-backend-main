@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { objectIdField } from "./common.zod";
 import { serviceDescriptionRegex, serviceExperienceRegex, serviceNameRegex } from "./regex";
-import { appointmentStatusArray, daysArray, serviceModeArray, serviceTypeArray, subscriptionMonthArray } from "../../utils/constants";
+import { appointmentStatusArray, daysArray, serviceModeArray, serviceTypeArray, subscriptionMonthArray } from "../utils/constants";
 
 
 // **** Provider Service Controller **** \\

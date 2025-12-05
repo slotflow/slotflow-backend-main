@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { RequestQueryCommonZodSchema } from "../../infrastructure/zod/common.zod";
+import { RequestQueryCommonZodSchema } from "../../shared/zod/common.zod";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
 import { AdminFetchAllPaymentsUseCase } from "../../application/admin-use.case/adminPayment.use-case";
 

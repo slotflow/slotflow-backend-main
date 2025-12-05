@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 import { IProviderService, ProviderServiceModel } from "./providerService.model";
 import { ProviderService } from "../../../domain/entities/providerService.entity";
 import { CreateProviderServiceRequest, FindProviderServiceResponse, FindProvidersUsingServiceCategoryIdsResponse, IProviderServiceRepository } from "../../../domain/repositories/IProviderService.repository";
-import { subscriptionStatusArray } from "../../../utils/constants";
+import { subscriptionStatusArray } from "../../../shared/utils/constants";
 
 export class ProviderServiceRepositoryImpl implements IProviderServiceRepository {
     private mapToEntity(providerService: IProviderService): ProviderService {

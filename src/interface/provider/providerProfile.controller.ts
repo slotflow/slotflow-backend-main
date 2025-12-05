@@ -5,7 +5,7 @@ import { NextFunction, Request, Response } from "express";
 import { SignedUrlService } from "../../infrastructure/services/signedUrlService";
 import { FetchProviderProofsUseCase } from "../../application/common-use.case/fetchProviderProofs";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
-import { s3FileKeyZodSchmema, UserOrProviderUpdateInfoZodSchema } from "../../infrastructure/zod/common.zod";
+import { s3FileKeyZodSchmema, UserOrProviderUpdateInfoZodSchema } from "../../shared/zod/common.zod";
 import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
 import { ProviderFetchProfileDetailsUseCase, ProviderIdentityProofUpdateUseCase, ProviderServiceProofUpdateUseCase, ProviderUpdateProfileImageUseCase, ProviderUpdateProviderInfoUseCase } from "../../application/provider-use.case/providerProfile.use-case";
 

@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 import { DecodedUser } from "../../express";
 import { NextFunction, Request, Response } from "express";
-import { RequestQueryCommonZodSchema } from "../../infrastructure/zod/common.zod";
+import { RequestQueryCommonZodSchema } from "../../shared/zod/common.zod";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { ProviderFetchAllPaymentsUseCase } from "../../application/provider-use.case/providerPayment.use-case";

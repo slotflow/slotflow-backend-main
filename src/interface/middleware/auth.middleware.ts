@@ -2,7 +2,7 @@ import { DecodedUser } from "../../express";
 import { NextFunction, Request, Response } from "express";
 import { JWTService } from "../../infrastructure/security/jwt";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
-import { roleArray } from "../../utils/constants";
+import { roleArray } from "../../shared/utils/constants";
 import { Types } from "mongoose";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 

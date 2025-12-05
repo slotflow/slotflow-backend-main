@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { Credential } from "../../domain/entities/credential";
+import { Credential } from "../../domain/entities/credential.entity";
 import { AesEncryption } from "../../infrastructure/services/aesEncryption";
 import { ApiResponse, CreateCredential } from "../../infrastructure/dtos/common.dto";
 import { CredentialRepositoryImpl } from "../../infrastructure/database/credential/credential.repository.impl";

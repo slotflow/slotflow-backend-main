@@ -1,8 +1,8 @@
 import { Types } from "mongoose";
 import { NextFunction, Request, Response } from "express";
 import { PlanRepositoryImpl } from "../../infrastructure/database/plan/plan.repository.impl";
-import { RequestQueryCommonZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
-import { AdminAddNewPlanZodSchema, AdminChangePlanIsBlockStatusZodSchema } from "../../infrastructure/zod/admin.zod";
+import { RequestQueryCommonZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
+import { AdminAddNewPlanZodSchema, AdminChangePlanIsBlockStatusZodSchema } from "../../shared/zod/admin.zod";
 import { AdminChangePlanBlockStatusUseCase, AdminCreatePlanUseCase, AdminPlanListUseCase } from "../../application/admin-use.case/adminPlan.use-case";
 
 const planRepositoryImpl = new PlanRepositoryImpl();

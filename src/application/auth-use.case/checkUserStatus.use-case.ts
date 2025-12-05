@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { roleArray } from "../../utils/constants";
+import { roleArray } from "../../shared/utils/constants";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { CheckUserStatusRequest, CheckUserStatusResponse } from "../../infrastructure/dtos/auth.dto";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";

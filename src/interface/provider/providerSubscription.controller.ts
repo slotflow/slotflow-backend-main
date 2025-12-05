@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 import { DecodedUser } from "../../express";
 import { NextFunction, Request, Response } from "express";
-import { ProviderPlanSubscribeZodSchema } from "../../infrastructure/zod/provider.zod";
+import { ProviderPlanSubscribeZodSchema } from "../../shared/zod/provider.zod";
 import { PlanRepositoryImpl } from "../../infrastructure/database/plan/plan.repository.impl";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
@@ -9,7 +9,7 @@ import { FetchSubscriptionDetailsUseCase } from "../../application/common-use.ca
 import { SubscriptionRepositoryImpl } from "../../infrastructure/database/subscription/subscription.repository.impl";
 import { ProviderFetchAllSubscriptionsUseCase } from "../../application/provider-use.case/providerSubscription.use-case";
 import { ProviderTrialSubscriptionUseCase } from "../../application/provider-use.case/providerTrailSubscription.use-case";
-import { RequestQueryCommonZodSchema, SaveStripePaymentZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
+import { RequestQueryCommonZodSchema, SaveStripePaymentZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
 import { ProviderSaveSubscriptionUseCase, ProviderStripeSubscriptionCreateSessionIdUseCase } from "../../application/provider-use.case/providerStripeSubscription.use-case";
 
 const planRepositoryImpl = new PlanRepositoryImpl();

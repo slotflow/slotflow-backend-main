@@ -1,9 +1,9 @@
 import { Types } from "mongoose";
 import { NextFunction, Request, Response } from "express";
-import { AdminChangeUserBlockStatusZOdSchema } from "../../infrastructure/zod/admin.zod";
+import { AdminChangeUserBlockStatusZOdSchema } from "../../shared/zod/admin.zod";
 import { GenerateSignedUrlService } from "../../infrastructure/services/signedUrl.service";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
-import { RequestQueryCommonZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
+import { RequestQueryCommonZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
 import { AddressRepositoryImpl } from "../../infrastructure/database/address/address.repository.impl";
 import { AdminFetchUserOrProviderAddressUseCase } from "../../application/admin-use.case/adminAddress.use-case";
 import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";

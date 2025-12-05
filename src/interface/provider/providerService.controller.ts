@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 import { DecodedUser } from "../../express";
 import { NextFunction, Request, Response } from "express";
-import { ProviderCreateServiceDetailsZodSchema } from "../../infrastructure/zod/provider.zod";
+import { ProviderCreateServiceDetailsZodSchema } from "../../shared/zod/provider.zod";
 import { CreateProviderServiceRequest } from "../../domain/repositories/IProviderService.repository";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { ProviderServiceRepositoryImpl } from "../../infrastructure/database/providerService/providerService.repository.impl";

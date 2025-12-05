@@ -3,7 +3,7 @@ import { DecodedUser } from "../../express";
 import { s3Client } from "../../config/aws_s3";
 import { NextFunction, Request, Response } from "express";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
-import { s3FileKeyZodSchmema, UserOrProviderUpdateInfoZodSchema } from "../../infrastructure/zod/common.zod";
+import { s3FileKeyZodSchmema, UserOrProviderUpdateInfoZodSchema } from "../../shared/zod/common.zod";
 import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
 import { UserFetchProfileDetailsUseCase, UserUpdateProfileImageUseCase, UserUpdateProviderInfoUseCase } from "../../application/user-use.case/userProfile.use-Case";
 

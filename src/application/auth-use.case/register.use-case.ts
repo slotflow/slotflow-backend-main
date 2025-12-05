@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { producer } from '../../server';
 import { kafkaConfig } from '../../config/env';
-import { roleArray } from '../../utils/constants';
+import { roleArray } from '../../shared/utils/constants';
 import { User } from '../../domain/entities/user.entity';
 import { JWTService } from '../../infrastructure/security/jwt';
 import { Provider } from '../../domain/entities/provider.entity';

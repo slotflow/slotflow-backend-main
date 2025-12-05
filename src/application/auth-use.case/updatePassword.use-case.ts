@@ -1,7 +1,7 @@
 import { User } from "../../domain/entities/user.entity";
 import { Provider } from "../../domain/entities/provider.entity";
 import { ApiResponse } from "../../infrastructure/dtos/common.dto";
-import { roleArray } from "../../utils/constants";
+import { roleArray } from "../../shared/utils/constants";
 import { UpdatePasswordRequest } from "../../infrastructure/dtos/auth.dto";
 import { PasswordHasher } from "../../infrastructure/security/password-hashing";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";

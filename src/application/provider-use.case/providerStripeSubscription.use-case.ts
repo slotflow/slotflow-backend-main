@@ -9,7 +9,7 @@ import { startSession, Types } from "mongoose";
 import { stripe } from "../../infrastructure/lib/stripe";
 import { ApiResponse } from "../../infrastructure/dtos/common.dto";
 import { PlanRepositoryImpl } from "../../infrastructure/database/plan/plan.repository.impl";
-import { paymentForArray, paymentGatewayArray, subscriptionStatusArray } from "../../utils/constants";
+import { paymentForArray, paymentGatewayArray, subscriptionStatusArray } from "../../shared/utils/constants";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { SubscriptionRepositoryImpl } from "../../infrastructure/database/subscription/subscription.repository.impl";

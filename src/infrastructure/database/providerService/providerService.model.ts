@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
 import { ServiceModeType, ServiceTypeType } from "../../dtos/common.dto";
-import { serviceModeArray, serviceTypeArray } from "../../../utils/constants";
-import { serviceNameRegex, serviceExperienceRegex, serviceDescriptionRegex } from "../../zod/regex";
+import { serviceModeArray, serviceTypeArray } from "../../../shared/utils/constants";
+import { serviceNameRegex, serviceExperienceRegex, serviceDescriptionRegex } from "../../../shared/zod/regex";
 
 export interface IProviderService extends Document {
   _id: Types.ObjectId;

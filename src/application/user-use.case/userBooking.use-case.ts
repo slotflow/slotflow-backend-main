@@ -6,7 +6,7 @@ import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repo
 import { UpdateEventFromGoogleCalendarService } from "../../infrastructure/services/googleCalendar";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
-import { appointmentStatusArray } from "../../utils/constants";
+import { appointmentStatusArray } from "../../shared/utils/constants";
 
 export class UserCancelBookingUseCase {
     constructor(

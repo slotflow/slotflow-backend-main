@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 import { DecodedUser } from "../../express";
-import { roleArray } from "../../utils/constants";
+import { roleArray } from "../../shared/utils/constants";
 import { NextFunction, Request, Response } from "express";
 import { RoleType } from "../../infrastructure/dtos/common.dto";
 import { AesEncryption } from "../../infrastructure/services/aesEncryption";
@@ -8,14 +8,14 @@ import { GoogleTokenService } from "../../infrastructure/services/googleTokenSer
 import { UpdateEventFromGoogleCalendarService } from "../../infrastructure/services/googleCalendar";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { ValidateJoinRoomUsecase } from "../../application/common-use.case/validateJoinRoom.use-case";
-import { ProviderChangeBookingAppointmentStatusZodSchema } from "../../infrastructure/zod/provider.zod";
+import { ProviderChangeBookingAppointmentStatusZodSchema } from "../../shared/zod/provider.zod";
 import { FetchBookingDetailsUsecase } from "../../application/common-use.case/fetchBookingDetails.use-case";
 import { FetchBookingAppointmentsUseCase } from "../../application/common-use.case/fetchAllBookings.use-case";
 import { CredentialRepositoryImpl } from "../../infrastructure/database/credential/credential.repository.impl";
 import { GetCredentialUseCase, UpdateCredentialUseCase } from "../../application/common-use.case/credential.use-case";
 import { UpdateBookingOnlineTrakingUseCase } from "../../application/common-use.case/updateBookingOnlineTracking.use-case";
 import { ProviderChangeBookingAppointmentStatusUseCase } from "../../application/provider-use.case/providerBooking.use-case";
-import { JoinOrLeftRoomZodSchema, RequestQueryForBookingCommonZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
+import { JoinOrLeftRoomZodSchema, RequestQueryForBookingCommonZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
 import { ServiceAvailabilityRepositoryImpl } from "../../infrastructure/database/serviceAvailability/serviceAvailability.repository.impl";
 
 const aesEncryption = new AesEncryption();

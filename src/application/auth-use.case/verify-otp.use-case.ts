@@ -1,5 +1,5 @@
 import { ApiResponse } from '../../infrastructure/dtos/common.dto';
-import { roleArray } from '../../utils/constants';
+import { roleArray } from '../../shared/utils/constants';
 import { OTPService } from '../../infrastructure/services/otp.service';
 import { OTPVerificationRequest } from '../../infrastructure/dtos/auth.dto';
 import { UserRepositoryImpl } from '../../infrastructure/database/user/user.repository.impl';

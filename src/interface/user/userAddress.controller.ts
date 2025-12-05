@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 import { DecodedUser } from "../../express";
 import { NextFunction, Request, Response } from "express";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
-import { CreateAddressZodSchema, ValidateObjectId } from "../../infrastructure/zod/common.zod";
+import { CreateAddressZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
 import { AddressRepositoryImpl } from "../../infrastructure/database/address/address.repository.impl";
 import { UserCreateAddressUseCase, UserFetchAddressUseCase, UserUpdateAddressUseCase } from "../../application/user-use.case/userAddress.use-case";
 

@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 import { Plan } from "../../domain/entities/plan.entity";
 import { User } from "../../domain/entities/user.entity";
 import { Review } from "../../domain/entities/review.entity";
-import { Credential } from "../../domain/entities/credential";
+import { Credential } from "../../domain/entities/credential.entity";
 import { Address } from "../../domain/entities/address.entity";
 import { Service } from "../../domain/entities/service.entity";
 import { Payment } from "../../domain/entities/payment.entity";
@@ -11,7 +11,7 @@ import { Subscription } from "../../domain/entities/subscription.entity";
 import { Availability } from "../../domain/entities/serviceAvailability.entity";
 import { Booking, ParticipantPresence } from "../../domain/entities/booking.entity";
 import { findSubscriptionFullDetailsResProps } from "../../domain/repositories/ISubscription.repository";
-import { appointmentStatusArray, daysArray, paymentForArray, paymentGatewayArray, roleArray, serviceModeArray, serviceTypeArray, subscriptionStatusArray } from "../../utils/constants";
+import { appointmentStatusArray, daysArray, paymentForArray, paymentGatewayArray, roleArray, serviceModeArray, serviceTypeArray, subscriptionStatusArray } from "../../shared/utils/constants";
 
 export type RoleType = typeof roleArray[number];
 

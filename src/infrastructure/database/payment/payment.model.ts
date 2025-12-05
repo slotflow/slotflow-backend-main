@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
 import { PaymentForType, PaymentGatewayType } from "../../dtos/common.dto";
-import { paymentForArray, paymentGatewayArray } from "../../../utils/constants";
+import { paymentForArray, paymentGatewayArray } from "../../../shared/utils/constants";
 
 export interface IPayment extends Document {
     _id: Types.ObjectId;

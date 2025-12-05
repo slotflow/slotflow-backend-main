@@ -1,5 +1,5 @@
 import { isSameDay, startOfDay } from "date-fns";
-import { appointmentStatusArray, roleArray } from "../../utils/constants";
+import { appointmentStatusArray, roleArray } from "../../shared/utils/constants";
 import { ApiResponse, ValidateJoinRoomRequest } from "../../infrastructure/dtos/common.dto";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 
