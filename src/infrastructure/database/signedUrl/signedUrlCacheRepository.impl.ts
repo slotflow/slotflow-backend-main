@@ -1,6 +1,6 @@
 import { ISignedUrlCache, SignedUrlCacheModel } from "./signedUrlCache.model";
 import { SignedUrlCache } from "../../../domain/entities/signedUrlCache.entity";
-import { CreateSignedUrlRequest, FindSignedUrlRequest, ISignedUrlCacheRepository } from "../../../domain/repositories/ISignedUrlCache.repository";
+import { CreateSignedUrlRequest, FindSignedUrlRequest, ISignedUrlCacheRepository } from "../../../domain/interfaces/repositories/ISignedUrlCache.repository";
 
 export class SignedUrlCacheRepositoryImpl implements ISignedUrlCacheRepository {
 

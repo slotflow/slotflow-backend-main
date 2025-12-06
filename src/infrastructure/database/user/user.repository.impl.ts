@@ -5,7 +5,7 @@ import { AdminFetchAllUsers } from "../../dtos/admin.dto";
 import { User } from "../../../domain/entities/user.entity";
 import { ApiPaginationRequest, ApiResponse } from "../../dtos/common.dto";
 import { AdminFetchDashboardUserStatsDataResponse } from "../../dtos/admin.dto";
-import { CreateUserProps, IUserRepository, UpdateUserFileds } from "../../../domain/repositories/IUser.repository";
+import { CreateUserProps, IUserRepository, UpdateUserFileds } from "../../../domain/interfaces/repositories/IUser.repository";
 
 export class UserRepositoryImpl implements IUserRepository {
     private mapToEntity(user: IUser): User {

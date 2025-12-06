@@ -3,10 +3,10 @@ import { Types } from "mongoose";
 import { IProvider, ProviderModel } from "./provider.model";
 import { AdiminFetchAllProviders } from "../../dtos/admin.dto";
 import { Provider } from "../../../domain/entities/provider.entity";
+import { ProviderUpdateProfileRequest } from "../../dtos/provider.dto";
 import { ApiPaginationRequest, ApiResponse } from "../../dtos/common.dto";
 import { AdminFetchDashboardProviderStatsDataResponse } from "../../dtos/admin.dto";
-import { CreateProviderProps, IProviderRepository } from '../../../domain/repositories/IProvider.repository';
-import { ProviderUpdateProfileRequest } from "../../dtos/provider.dto";
+import { CreateProviderProps, IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
 
 export class ProviderRepositoryImpl implements IProviderRepository {
     private mapToEntity(provider: IProvider): Provider {

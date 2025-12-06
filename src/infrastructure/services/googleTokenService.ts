@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 import { googleClientConfig } from "../../config/env";
-import { GetCredentialUseCase, UpdateCredentialUseCase } from "../../application/common-use.case/credential.use-case";
+import { GetCredentialUseCase, UpdateCredentialUseCase } from "../../application/useCases/common/credential.useCase";
 
 export class GoogleTokenService {
     constructor(
@@ -44,8 +44,8 @@ export class GoogleTokenService {
                 credentials.expiryDate = new Date(Date.now() + data.expires_in * 1000);
                 if (!credentials.accessToken) throw new Error("Failed to refresh access token");
 
-                const res =await this.updateCredentialUseCase.execute(credentials);
-                if(!res.success) throw new Error("Credentials updation error");
+                // const res = await this.updateCredentialUseCase.execute(credentials);
+                // if(!res.success) throw new Error("Credentials updation error");
             }
             console.log("GoogleTokenService service end");
             return credentials.accessToken;

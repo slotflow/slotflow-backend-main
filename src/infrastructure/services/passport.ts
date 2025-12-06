@@ -6,7 +6,7 @@ import { googleClientConfig } from '../../config/env';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { UserRepositoryImpl } from '../database/user/user.repository.impl';
 import { ProviderRepositoryImpl } from '../database/provider/provider.repository.impl';
-import { GoogleAuthUseCase } from '../../application/auth-use.case/googleAuth.use-case';
+import { GoogleAuthUseCase } from '../../application/useCases/auth/googleAuth.useCase';
 
 const userRepositoryImpl = new UserRepositoryImpl();
 const providerRepositoryImpl = new ProviderRepositoryImpl();

@@ -2,12 +2,12 @@ import { Types } from "mongoose";
 import { IPayment, PaymentModel } from "./payment.model";
 import { Payment } from "../../../domain/entities/payment.entity";
 import { Provider } from "../../../domain/entities/provider.entity";
+import { paymentForArray, paymentGatewayArray } from "../../../shared/utils/constants";
 import { ProviderFetchDashboardPaymentStatsDataResponse } from "../../dtos/provider.dto";
 import { endOfDay, startOfDay, startOfMonth, startOfToday, startOfTomorrow } from "date-fns";
 import { ApiResponse, FetchPaymentResponse, FetchPaymentsRequest, userIdAndProviderIdFilterForFetchPayments } from "../../dtos/common.dto";
 import { AdminFetchDashboardRevenueStatsDataResponse, AdminFetchRevenueReportRequest, AdminFetchRevenueReportResponse } from "../../dtos/admin.dto";
-import { AdminFetchDashboardTodayPaymentStatsDataResponse, CreatePaymentForBookingRequest, CreatePaymentForSubscriptionRequest, IPaymentRepository, UpdateBookingRequest } from "../../../domain/repositories/IPayment.repository";
-import { paymentForArray, paymentGatewayArray } from "../../../shared/utils/constants";
+import { AdminFetchDashboardTodayPaymentStatsDataResponse, CreatePaymentForBookingRequest, CreatePaymentForSubscriptionRequest, IPaymentRepository, UpdateBookingRequest } from "../../../domain/interfaces/repositories/IPayment.repository";
 
 export class PaymentRepositoryImpl implements IPaymentRepository {
     private mapToEntity(payment: IPayment): Payment {

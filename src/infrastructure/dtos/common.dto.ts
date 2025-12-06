@@ -2,15 +2,15 @@ import { Types } from "mongoose";
 import { Plan } from "../../domain/entities/plan.entity";
 import { User } from "../../domain/entities/user.entity";
 import { Review } from "../../domain/entities/review.entity";
-import { Credential } from "../../domain/entities/credential.entity";
-import { Address } from "../../domain/entities/address.entity";
 import { Service } from "../../domain/entities/service.entity";
+import { Address } from "../../domain/entities/address.entity";
 import { Payment } from "../../domain/entities/payment.entity";
 import { Provider } from "../../domain/entities/provider.entity";
+import { Credential } from "../../domain/entities/credential.entity";
 import { Subscription } from "../../domain/entities/subscription.entity";
 import { Availability } from "../../domain/entities/serviceAvailability.entity";
 import { Booking, ParticipantPresence } from "../../domain/entities/booking.entity";
-import { findSubscriptionFullDetailsResProps } from "../../domain/repositories/ISubscription.repository";
+import { findSubscriptionFullDetailsResProps } from "../../domain/interfaces/repositories/ISubscription.repository";
 import { appointmentStatusArray, daysArray, paymentForArray, paymentGatewayArray, roleArray, serviceModeArray, serviceTypeArray, subscriptionStatusArray } from "../../shared/utils/constants";
 
 export type RoleType = typeof roleArray[number];
@@ -129,7 +129,8 @@ export interface FetchSubscriptionDetailsResponse extends CommonResponse {
 
 
 //// **** 12 create credential 
-export type CreateCredential = Pick<Credential, "userId" | "accessToken" | "refreshToken" | "expiryDate">
+export type CreateCredentialRequest = Pick<Credential, "userId" | "accessToken" | "refreshToken" | "expiryDate">;
+export type UpdateCredentialRequest = Pick<Credential, "_id" | "accessToken" | "refreshToken" | "expiryDate">;
 
 
 //// **** 13 Google Event

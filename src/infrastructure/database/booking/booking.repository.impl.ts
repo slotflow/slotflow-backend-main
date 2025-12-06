@@ -1,15 +1,15 @@
 import dayjs from "dayjs";
 import { Types } from "mongoose";
-import { appointmentStatusArray, roleArray } from "../../../shared/utils/constants";
 import { BookingModel, IBooking } from "./booking.model";
 import { User } from "../../../domain/entities/user.entity";
 import { Booking } from "../../../domain/entities/booking.entity";
 import { Provider } from "../../../domain/entities/provider.entity";
 import { endOfDay, startOfDay, startOfToday, startOfTomorrow } from "date-fns";
 import { UserFetchProvidersForChatSidebarResponse } from "../../dtos/user.dto";
+import { appointmentStatusArray, roleArray } from "../../../shared/utils/constants";
 import { AdminFetchDashboardAppointmentStatsDataResponse } from "../../dtos/admin.dto";
 import { ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardGraphDataResponse, ProviderFetchUsersForChatSideBarResponse } from "../../dtos/provider.dto";
-import { AdminFetchTodaysBookingStatsForDashboardResponse, CreateBookingPayloadProps, IBookingRepository, ProviderFetchDashboardGraphRepository } from "../../../domain/repositories/IBooking.repository";
+import { AdminFetchTodaysBookingStatsForDashboardResponse, CreateBookingPayloadProps, IBookingRepository, ProviderFetchDashboardGraphRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { FetchBookingsRequest, ApiResponse, FetchBookingsResponse, userIdAndServiceProviderId, FetchOnlineBookingsForProviderResponse, FetchOnlineBookingsForUserResponse, FetchBookingDetailsResponse } from "../../dtos/common.dto";
 
 export class BookingRepositoryImpl implements IBookingRepository {

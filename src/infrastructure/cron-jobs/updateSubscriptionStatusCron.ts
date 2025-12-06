@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { SubscriptionRepositoryImpl } from "../database/subscription/subscription.repository.impl";
-import { UpdateSubscriptionStatusUseCase } from "../../application/cron-job.use-case/updateSubscriptionStatusCron.use-case";
+import { UpdateSubscriptionStatusUseCase } from "../../application/useCases/cronJob/updateSubscriptionStatus.useCase";
 
 const subscriptionRepositoryImpl = new SubscriptionRepositoryImpl();
 const updateSubscriptionStatusCronUseCase = new UpdateSubscriptionStatusUseCase(subscriptionRepositoryImpl);

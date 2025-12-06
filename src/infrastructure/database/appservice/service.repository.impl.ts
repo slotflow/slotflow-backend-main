@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 import { IService, ServiceModel } from "./service.model";
 import { AdminServiceListResponse } from "../../dtos/admin.dto";
 import { Service } from "../../../domain/entities/service.entity";
-import { IServiceRepository } from "../../../domain/repositories/IService.repository";
+import { IServiceRepository } from "../../../domain/interfaces/repositories/IService.repository";
 import { ApiPaginationRequest, ApiResponse, FetchAllAppServicesResponse } from "../../dtos/common.dto";
 
 export class ServiceRepositoryImpl implements IServiceRepository {

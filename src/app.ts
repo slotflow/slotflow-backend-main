@@ -4,13 +4,13 @@ import dotenv from 'dotenv';
 import express from 'express';
 // import client from 'prom-client';
 import cookieParser from 'cookie-parser';
-import s3Routes from './interface/s3/s3.routes';
-import authRoutes from './interface/auth/auth.routes';
-import userRouter from './interface/user/user.routes';
-import adminRoutes from './interface/admin/admin.routes';
-import googleRouter from './interface/google/google.router';
-import providerRouter from './interface/provider/provider.router';
-import { errorHandler } from './interface/middleware/error.middleware';
+import s3Routes from './presentation/s3/s3.routes';
+import authRoutes from './presentation/auth/auth.routes';
+import userRouter from './presentation/user/user.routes';
+import adminRoutes from './presentation/admin/admin.routes';
+import googleRouter from './presentation/google/google.router';
+import providerRouter from './presentation/provider/provider.router';
+import { errorHandler } from './presentation/middleware/error.middleware';
 
 dotenv.config();
 

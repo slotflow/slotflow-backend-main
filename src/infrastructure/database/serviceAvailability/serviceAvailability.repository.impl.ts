@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 import { IServiceAvailability, ServiceAvailabilityModel } from './serviceAvailability.model';
-import { IServiceAvailabilityRepository } from '../../../domain/repositories/IServiceAvailability.repository';
+import { IServiceAvailabilityRepository } from '../../../domain/interfaces/repositories/IServiceAvailability.repository';
 import { FontendAvailabilityForResponse, FrontendAvailabilityUpdatedSlots, ServiceAvailability } from '../../../domain/entities/serviceAvailability.entity';
 
 const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];

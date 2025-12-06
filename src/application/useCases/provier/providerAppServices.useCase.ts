@@ -1,0 +1,27 @@
+import { ApiResponse, FetchAllAppServicesResponse } from '../../../infrastructure/dtos/common.dto';
+import { ServiceRepositoryImpl } from '../../../infrastructure/database/appservice/service.repository.impl';
+import { IServiceRepository } from '../../../domain/interfaces/repositories/IService.repository';
+
+
+export class ProviderFetchAllAppServicesUseCase {
+
+    constructor(
+        private serviceRepository: IServiceRepository
+    ) { }
+
+    async execute(): Promise<ApiResponse<FetchAllAppServicesResponse>> {
+        try {
+            const services = await this.serviceRepository.findAllServiceNames();
+            if (services === null) return { success: true, message: "No servicec found.", data: [] };
+            if (!services) throw new Error("No services found.");
+            const filteredServices = services.map(service => ({
+                _id: service._id,
+                serviceName: service.serviceName,
+            }));
+            return { success: true, message: "Services fetched successfully.", data: filteredServices };
+        } catch (error) {
+            console.log("ProviderFetchAllAppServicesUseCase error : ", error);
+            throw new Error("Failed to fetch all application services");
+        }
+    }
+}

@@ -1,6 +1,7 @@
 import { SubscriptionPlan } from "../dtos/common.dto";
+import { ISubscriptionMapping } from "../../domain/interfaces/helper/ISubscriptionMapping.helper";
 
-export class SubscriptionHelper {
+export class SubscriptionMapping implements ISubscriptionMapping {
   getLevel(plan?: SubscriptionPlan): number {
     if (!plan || plan === "NoSubscription" || plan === "Free") return 0;
 

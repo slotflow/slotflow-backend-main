@@ -1,9 +1,9 @@
 import { Types } from "mongoose";
 import { IPlan, PlanModel } from "./plan.model";
 import { Plan } from "../../../domain/entities/plan.entity";
-import { CreatePlanProps, findAllPlansForDisplayResProps, findPlanByNameOrPriceProps, IPlanRepository } from "../../../domain/repositories/IPlan.repository";
-import { ApiPaginationRequest, ApiResponse } from "../../dtos/common.dto";
 import { AdminPlanListResponse } from "../../dtos/admin.dto";
+import { ApiPaginationRequest, ApiResponse } from "../../dtos/common.dto";
+import { CreatePlanProps, findAllPlansForDisplayResProps, findPlanByNameOrPriceProps, IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 
 export class PlanRepositoryImpl implements IPlanRepository {
     private mapToEntity(plan: IPlan): Plan {

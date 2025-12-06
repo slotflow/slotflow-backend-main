@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { BookingRepositoryImpl } from "../database/booking/booking.repository.impl";
-import { UpdateBookingStatusCronUseCase } from "../../application/cron-job.use-case/updateBookingStatusCron.use-case";
+import { UpdateBookingStatusCronUseCase } from "../../application/useCases/cronJob/updateBookingStatus.useCase";
 
 const bookingRepositoryImpl = new BookingRepositoryImpl();
 const updateBookingStatusCronUseCase = new UpdateBookingStatusCronUseCase(bookingRepositoryImpl);

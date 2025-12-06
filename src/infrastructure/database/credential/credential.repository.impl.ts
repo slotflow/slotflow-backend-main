@@ -1,8 +1,8 @@
 import { Types } from "mongoose";
-import { CreateCredential } from "../../dtos/common.dto";
-import { Credential } from "../../../domain/entities/credential.entity";
+import { CreateCredentialRequest, UpdateCredentialRequest } from "../../dtos/common.dto";
 import { CredentialModel, ICredential } from "./credential.model";
-import { ICredentialRepository } from "../../../domain/repositories/ICredentialRepository";
+import { Credential } from "../../../domain/entities/credential.entity";
+import { ICredentialRepository } from "../../../domain/interfaces/repositories/ICredentialRepository";
 
 export class CredentialRepositoryImpl implements ICredentialRepository {
     private mapToEntity(credential: ICredential): Credential {
@@ -17,7 +17,7 @@ export class CredentialRepositoryImpl implements ICredentialRepository {
         )
     }
 
-    async createCredential(data: CreateCredential): Promise<Credential> {
+    async createCredential(data: CreateCredentialRequest): Promise<Credential> {
         try {
             const created = await CredentialModel.create(data);
             return this.mapToEntity(created);
@@ -37,11 +37,11 @@ export class CredentialRepositoryImpl implements ICredentialRepository {
         }
     }
 
-    async updateCredential(credential: Credential): Promise<Credential | null> {
+    async updateCredential(data: UpdateCredentialRequest): Promise<Credential | null> {
         try {
             const updated = await CredentialModel.findOneAndUpdate(
-                { userId: credential.userId },
-                { $set: credential },
+                { _id: data._id },
+                { $set: { accessToken: data.accessToken, refreshToken: data.refreshToken, expiryDate: data.expiryDate } },
                 { new: true }
             );
             return updated ? this.mapToEntity(updated) : null;
