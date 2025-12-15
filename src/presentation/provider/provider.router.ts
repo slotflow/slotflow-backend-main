@@ -22,6 +22,7 @@ router.patch('/profile/info', authMiddleware, providerProfileController.updateIn
 router.patch('/profile/identity', authMiddleware, providerProfileController.updateIdentityProof);
 router.patch('/profile/service', authMiddleware, providerProfileController.updateServiceProof);
 router.get('/profile/proofs', authMiddleware,providerProfileController.fetchProofs);
+router.patch('/profile/approval', authMiddleware, providerProfileController.requestAdminApproval);
 
 router.post('/addresses', authMiddleware, provideAddressController.createAddress);
 router.get('/address', authMiddleware, provideAddressController.getAddress);

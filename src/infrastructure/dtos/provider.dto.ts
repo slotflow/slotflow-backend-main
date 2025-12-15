@@ -88,9 +88,12 @@ export type ProviderUpdateServiceProofRequest = Pick<Provider, "serviceProof"> &
 // provider update service proof use case response interface
 export type ProviderUpdateServiceProofResponse = Provider["serviceProof"];
 
-
 export type ProviderUpdateProfileRequest = Pick<Provider,"_id"> & Partial<Pick<Provider, "username" | "profileImage" | "phone" | "identityProof" | "serviceProof" | "googleConnected" | "addressId" | "googleId" | "isAdminVerified" | "isEmailVerified" | "isBlocked" | "serviceAvailabilityId" | "serviceId" | "stripeAccountId" | "verificationToken" | "trustedBySlotflow" | "subscription" | "password">>
 
+export interface ProviderAdminApprovalRequest {
+    providerId: Provider["_id"];
+}
+export type ProviderAdminApprovalResponse = Pick<Provider, "adminVerificationStatus">; 
 
 
 

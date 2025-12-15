@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { ApiResponse, CommonResponse, RoleType } from "./common.dto";
+import { AdminVerificationStatusType, ApiResponse, CommonResponse, RoleType } from "./common.dto";
 
 // **** Register usec case
 // user or provider register usecase request payload interface
@@ -64,8 +64,14 @@ export interface LoginResponse extends CommonResponse {
         isAddressAdded?: boolean;
         isServiceDetailsAdded?: boolean;
         isServiceAvailabilityAdded?: boolean;
-        isAdminApproved?: boolean;
+        isAdminVerified?: boolean;
         isProofSubmitted?: boolean;
+        verificationRejectionReason?: string | null,
+        adminVerificationStatus?: AdminVerificationStatusType,
+        isAddressVerified?: boolean,
+        isServiceDetailsVerified?: boolean,
+        isAvailabilityVerified?: boolean,
+        isProofsVerified?: boolean,
         providerSubscription?: string;
         googleConnected?: boolean;
         updatedAt?: Date;

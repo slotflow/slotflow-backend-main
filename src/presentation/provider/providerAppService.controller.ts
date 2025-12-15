@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
+import { findServicesByCategoryName } from "../../shared/zod/common.zod";
 import { IServiceRepository } from "../../domain/interfaces/repositories/IService.repository";
 import { ServiceRepositoryImpl } from "../../infrastructure/database/appservice/service.repository.impl";
 import { ProviderFetchAllAppServicesUseCase } from "../../application/useCases/provier/providerAppServices.useCase";
-import { findServicesByCategoryName } from "../../shared/zod/common.zod";
 
 const serviceRepository: IServiceRepository = new ServiceRepositoryImpl();
 
@@ -17,6 +17,7 @@ class ProviderAppServiceController {
 
     async getAllAppServices(req: Request, res: Response, next: NextFunction) {
         try {
+            console.log("req.query : ",req.query);
             const validatedData = findServicesByCategoryName.parse(req.query);
             const result = await this.providerFetchAllServicesUseCase.execute({
                 serviceCategory: validatedData.serviceCategory

@@ -54,7 +54,7 @@ export class LoginUseCase {
             let isAddressAdded;
             let isServiceDetailsAdded;
             let isServiceAvailabilityAdded;
-            let isAdminApproved;
+            let isAdminVerified;
             let isProofSubmitted;
             let updateProfileImage;
             let subscriptiondId;
@@ -68,7 +68,7 @@ export class LoginUseCase {
             if (role === roleArray[2]) {
                 isServiceDetailsAdded = (userOrProvider as Provider).serviceId ? true : false;
                 isServiceAvailabilityAdded = (userOrProvider as Provider).serviceAvailabilityId ? true : false;
-                isAdminApproved = (userOrProvider as Provider).isAdminVerified ? true : false;
+                isAdminVerified = (userOrProvider as Provider).isAdminVerified ? true : false;
                 subscriptiondId = (userOrProvider as Provider).subscription[(userOrProvider as Provider).subscription.length - 1];
                 subscription = await this.subscriptionRepository.findSubscriptionById(subscriptiondId);
                 if (subscription) {
@@ -108,8 +108,14 @@ export class LoginUseCase {
                     isAddressAdded,
                     isServiceDetailsAdded,
                     isServiceAvailabilityAdded,
-                    isAdminApproved,
+                    isAdminVerified,
                     isProofSubmitted,
+                    adminVerificationStatus: (userOrProvider as Provider).adminVerificationStatus,
+                    isAddressVerified: (userOrProvider as Provider).isAddressVerified,
+                    isAvailabilityVerified: (userOrProvider as Provider).isAvailabilityVerified,
+                    isProofsVerified: (userOrProvider as Provider).isProofsVerified,
+                    isServiceDetailsVerified: (userOrProvider as Provider).isServiceDetailsVerified,
+                    verificationRejectionReason: (userOrProvider as Provider).verificationRejectionReason,
                     providerSubscription,
                     googleConnected: userOrProvider.googleConnected,
                     updatedAt: userOrProvider.updatedAt

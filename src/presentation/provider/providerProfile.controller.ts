@@ -10,7 +10,7 @@ import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/p
 import { FetchProviderProofsUseCase } from "../../application/useCases/common/fetchProviderProofs.useCase";
 import { ISignedUrlCacheRepository } from "../../domain/interfaces/repositories/ISignedUrlCache.repository";
 import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
-import { ProviderFetchProfileDetailsUseCase, ProviderIdentityProofUpdateUseCase, ProviderServiceProofUpdateUseCase, ProviderUpdateProfileImageUseCase, ProviderUpdateProviderInfoUseCase } from "../../application/useCases/provier/providerProfile.useCase";
+import { ProviderFetchProfileDetailsUseCase, ProviderIdentityProofUpdateUseCase, ProviderRequestForApprovalUseCase, ProviderServiceProofUpdateUseCase, ProviderUpdateProfileImageUseCase, ProviderUpdateProviderInfoUseCase } from "../../application/useCases/provier/providerProfile.useCase";
 
 const providerRepository: IProviderRepository = new ProviderRepositoryImpl();
 const signedUrlCacheRepository: ISignedUrlCacheRepository = new SignedUrlCacheRepositoryImpl();
@@ -18,6 +18,7 @@ const signedUrlCacheRepository: ISignedUrlCacheRepository = new SignedUrlCacheRe
 const signedUrlService: ISignedUrlService = new SignedUrlService(signedUrlCacheRepository);
 
 const providerUpdateProviderInfoUseCase = new ProviderUpdateProviderInfoUseCase(providerRepository);
+const providerRequestForApprovalUseCase = new ProviderRequestForApprovalUseCase(providerRepository);
 const providerFetchProfileDetailsUseCase = new ProviderFetchProfileDetailsUseCase(providerRepository);
 const fetchProviderProofsUseCase = new FetchProviderProofsUseCase(signedUrlService, providerRepository);
 const providerUpdateProfileImageUseCase = new ProviderUpdateProfileImageUseCase(s3Client, providerRepository, signedUrlCacheRepository);
@@ -31,7 +32,8 @@ class ProviderProfileController {
         private providerUpdateProviderInfoUseCase: ProviderUpdateProviderInfoUseCase,
         private providerIdentityProofUpdateUseCase: ProviderIdentityProofUpdateUseCase,
         private providerServiceProofUpdateUseCase: ProviderServiceProofUpdateUseCase,
-        private fetchProviderProofsUseCase: FetchProviderProofsUseCase
+        private fetchProviderProofsUseCase: FetchProviderProofsUseCase,
+        private providerRequestForApprovalUseCase: ProviderRequestForApprovalUseCase
     ) {
         this.getProfileDetails = this.getProfileDetails.bind(this);
         this.updateProfileImage = this.updateProfileImage.bind(this);
@@ -39,6 +41,7 @@ class ProviderProfileController {
         this.updateIdentityProof = this.updateIdentityProof.bind(this);
         this.updateServiceProof = this.updateServiceProof.bind(this);
         this.fetchProofs = this.fetchProofs.bind(this);
+        this.requestAdminApproval = this.requestAdminApproval.bind(this);
     }
 
     async getProfileDetails(req: Request, res: Response, next: NextFunction) {
@@ -128,6 +131,19 @@ class ProviderProfileController {
         }
     }
 
+    async requestAdminApproval(req: Request, res: Response, next: NextFunction) {
+        try {
+            const providerId = (req.user as DecodedUser).userOrProviderId;
+            const result = await this.providerRequestForApprovalUseCase.execute({
+                providerId: new Types.ObjectId(providerId)
+            });
+            res.status(200).json(result);
+        } catch (error) {
+            console.log("updateAdminVerificationStatus error : ", error);
+            next(error);
+        }
+    }
+
 }
 
 const providerProfileController = new ProviderProfileController(
@@ -136,7 +152,8 @@ const providerProfileController = new ProviderProfileController(
     providerUpdateProviderInfoUseCase,
     providerIdentityProofUpdateUseCase,
     providerServiceProofUpdateUseCase,
-    fetchProviderProofsUseCase
+    fetchProviderProofsUseCase,
+    providerRequestForApprovalUseCase
 );
 
 export { providerProfileController };

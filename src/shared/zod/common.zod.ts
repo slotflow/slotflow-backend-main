@@ -321,5 +321,5 @@ export const deleteFileZodSchema = z.object({
 });
 
 export const findServicesByCategoryName = z.object({
-  serviceCategory: z.enum(serviceCategoryArray),
+  serviceCategory: z.enum(serviceCategoryArray, { message : "Invalid service category" } ),
 })
