@@ -1,6 +1,5 @@
-import { ApiResponse, FetchAllAppServicesResponse } from '../../../infrastructure/dtos/common.dto';
-import { ServiceRepositoryImpl } from '../../../infrastructure/database/appservice/service.repository.impl';
 import { IServiceRepository } from '../../../domain/interfaces/repositories/IService.repository';
+import { ApiResponse, FetchAllAppServiceRequest, FetchAllAppServicesResponse } from '../../../infrastructure/dtos/common.dto';
 
 
 export class ProviderFetchAllAppServicesUseCase {
@@ -9,9 +8,10 @@ export class ProviderFetchAllAppServicesUseCase {
         private serviceRepository: IServiceRepository
     ) { }
 
-    async execute(): Promise<ApiResponse<FetchAllAppServicesResponse>> {
+    async execute(payload: FetchAllAppServiceRequest): Promise<ApiResponse<FetchAllAppServicesResponse>> {
         try {
-            const services = await this.serviceRepository.findAllServiceNames();
+            const { serviceCategory } = payload;
+            const services = await this.serviceRepository.findAllServicesByCategory(serviceCategory);
             if (services === null) return { success: true, message: "No servicec found.", data: [] };
             if (!services) throw new Error("No services found.");
             const filteredServices = services.map(service => ({

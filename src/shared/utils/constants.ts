@@ -25,6 +25,18 @@ export const paymentGatewayArray = ["Stripe", "Razorpay", "Paypal"] as const;
 // Used as the subscipriotn status
 export const subscriptionStatusArray = ["Active", "Expired", "Cancelled"] as const;
 
+// Used as the app service group
+export const serviceCategoryArray = ["Healthcare & Wellness",
+  "Professional Services",
+  "Education & Training",
+  "Home & Maintenance",
+  "Beauty & Personal Care",
+  "Fitness & Lifestyle",
+  "Automotive Services",
+  "Events & Creative Services",
+  "Technology Services",
+  "Real Estate & Property",] as const;
+
 // used as the Event data
 export enum EventData {
     eventTitle = "Slotflow Appointment",

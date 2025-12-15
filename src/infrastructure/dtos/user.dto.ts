@@ -60,22 +60,23 @@ export interface UserFetchServiceProvidersRequest {
     serviceIds: ProviderService["_id"][]
 }
 // user fetch service providers use case response interface
-export interface FindProvidersUsingServiceCategoryIdsResponse {
-    _id: Types.ObjectId,
+export interface FindProvidersUsingServiceIdsResponse {
+    _id: Types.ObjectId;
     provider: {
-        _id: Types.ObjectId,
-        username: string,
-        profileImage: string | null,
-        trustedBySlotflow: boolean,
+        _id: Types.ObjectId;
+        username: string;
+        profileImage: string | null;
+        trustedBySlotflow: boolean;
     },
-    service: {
-        serviceCategory: Types.ObjectId,
-        serviceName: string,
-        servicePrice: number,
-        categoryName: string
+    serviceDetails: {
+        serviceId: Types.ObjectId;
+        service: Service["serviceName"];
+        serviceCategory: Service["serviceCategory"];
+        serviceName: ProviderService["serviceName"];
+        servicePrice: ProviderService["servicePrice"];
     }
 }
-export type UserFetchServiceProvidersResponse = FindProvidersUsingServiceCategoryIdsResponse
+export type UserFetchServiceProvidersResponse = FindProvidersUsingServiceIdsResponse
 
 
 // user fetch provider details use case request payload interface
@@ -104,7 +105,7 @@ export interface UserFetchServiceproviderServiceRequest {
 // user fetch provider service use case response interface
 type FindProviderServiceProps = Pick<ProviderService, "serviceName" | "serviceDescription" | "servicePrice" | "serviceExperience">;
 export interface FindProviderServiceResponse extends FindProviderServiceProps {
-    serviceCategory: Pick<Service, "serviceName">
+    service: Pick<Service, "serviceName">
 }
 export type UserFetchProviderServiceResponse = FindProviderServiceResponse | {};
 

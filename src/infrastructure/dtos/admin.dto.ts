@@ -26,6 +26,13 @@ export interface AdminApproveProviderRequest  {
     providerId: Provider["_id"];
 }
 
+// **** adminRejectProvider
+// Used as the request interface of admin reject provider
+export interface AdminRejectProviderRequest  {
+    providerId: Provider["_id"];
+    verificationRejectionReason: Provider["verificationRejectionReason"]
+}
+
 
 // **** adminChangeProvierBlockStatus
 // Used as the request interface of admin change provider block status
@@ -65,9 +72,9 @@ export type AdminFetchProviderServiceRequest = {
     providerId: Provider["_id"];
 }
 // Used as the request interface of admin fetch provider service
-type FindProviderServiceProps = Omit<ProviderService, "serviceCategory">;
+type FindProviderServiceProps = Omit<ProviderService, "service">;
 export interface FindProviderServiceResponse extends FindProviderServiceProps {
-    serviceCategory: Pick<Service, "serviceName">
+    service: Pick<Service, "serviceName">
 }
 export type AdminFetchProviderServiceResponse = FindProviderServiceResponse | {};
 
@@ -124,9 +131,7 @@ export type AdminFetchUserProfileDetailsResponse = Pick<User, "username" | "phon
 export type AdminServiceListResponse = Array<Pick<Service, "_id" | "serviceName" | "isBlocked">>;
 
 // admin add new service use case request payload interface
-export interface AdminAddServiceRequest {
-    serviceName: Service["serviceName"];
-} 
+export type AdminAddServiceRequest = Pick<Service, "serviceName" | "serviceCategory">; 
 
 
 // admin change service isBlocked status use case request payload interface

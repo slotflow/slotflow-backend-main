@@ -17,10 +17,10 @@ import { AdminFetchUserOrProviderAddressUseCase } from "../../application/useCas
 import { SubscriptionRepositoryImpl } from "../../infrastructure/database/subscription/subscription.repository.impl";
 import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
 import { IServiceAvailabilityRepository } from "../../domain/interfaces/repositories/IServiceAvailability.repository";
-import { AdminChangeProviderStatusZodSchema, AdminChangeProviderTrustedTagZodSchema } from "../../shared/zod/admin.zod";
 import { ProviderServiceRepositoryImpl } from "../../infrastructure/database/providerService/providerService.repository.impl";
 import { ServiceAvailabilityRepositoryImpl } from "../../infrastructure/database/serviceAvailability/serviceAvailability.repository.impl";
-import { AdminApproveProviderUseCase, AdminChangeProviderBlockStatusUseCase, AdminChangeProviderTrustTagUseCase, AdminProviderListUseCase } from "../../application/useCases/admin/adminProvider.useCase";
+import { AdminChangeProviderStatusZodSchema, AdminChangeProviderTrustedTagZodSchema, adminRejectProviderZodSchema } from "../../shared/zod/admin.zod";
+import { AdminApproveProviderUseCase, AdminChangeProviderBlockStatusUseCase, AdminChangeProviderTrustTagUseCase, AdminProviderListUseCase, AdminRejectProviderUseCase } from "../../application/useCases/admin/adminProvider.useCase";
 import { AdminFetchProviderDetailsUseCase, AdminFetchProviderPaymentsUseCase, AdminfetchProviderServiceAvailabilityUseCase, AdminFetchProviderServiceUseCase, AdminFetchProviderSubscriptionsUseCase } from "../../application/useCases/admin/adminProviderProfile.useCase";
 
 const paymentRepository: IPaymentRepository = new PaymentRepositoryImpl();
@@ -34,6 +34,7 @@ const serviceAvailability: IServiceAvailabilityRepository = new ServiceAvailabil
 const signedUrlService: ISignedUrlService = new SignedUrlService(signedUrlCacheRepository);
 
 const adminProviderListUseCase = new AdminProviderListUseCase(providerRepository);
+const adminRejectProviderUseCase = new AdminRejectProviderUseCase(providerRepository);
 const adminApproveProviderUseCase = new AdminApproveProviderUseCase(providerRepository);
 const adminChangeProviderTrustTagUseCase = new AdminChangeProviderTrustTagUseCase(providerRepository);
 const fetchProviderProofsUseCase = new FetchProviderProofsUseCase(signedUrlService, providerRepository);
@@ -49,6 +50,7 @@ class AdminProviderController {
     constructor(
         private adminProviderListUseCase: AdminProviderListUseCase,
         private adminApproveProviderUseCase: AdminApproveProviderUseCase,
+        private adminRejectProviderUseCase: AdminRejectProviderUseCase,
         private adminChangeProviderBlockStatusUseCase: AdminChangeProviderBlockStatusUseCase,
         private adminChangeProviderTrustTagUseCase: AdminChangeProviderTrustTagUseCase,
         private adminFetchProviderDetailsUseCase: AdminFetchProviderDetailsUseCase,
@@ -61,6 +63,7 @@ class AdminProviderController {
     ) {
         this.getAllProviders = this.getAllProviders.bind(this);
         this.approveProvider = this.approveProvider.bind(this);
+        this.rejectProvider = this.rejectProvider.bind(this);
         this.changeProviderBlockStatus = this.changeProviderBlockStatus.bind(this);
         this.fetchProviderDetails = this.fetchProviderDetails.bind(this);
         this.fetchProviderAddress = this.fetchProviderAddress.bind(this);
@@ -90,6 +93,23 @@ class AdminProviderController {
             res.status(200).json(result);
         } catch (error) {
             console.log("approveProvider error : ", error);
+            next(error)
+        }
+    }
+
+    async rejectProvider(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
+            if (!providerId) throw new Error("Invalid request.");
+            console.log("req.body : ",req.body);
+            const validatedData = adminRejectProviderZodSchema.parse(req.body);
+            const result = await this.adminRejectProviderUseCase.execute({
+                providerId: new Types.ObjectId(providerId),
+                verificationRejectionReason: validatedData.verificationRejectionReason
+            });
+            res.status(200).json(result);
+        } catch (error) {
+            console.log("rejectProvider error : ", error);
             next(error)
         }
     }
@@ -213,6 +233,7 @@ class AdminProviderController {
 const adminProviderController = new AdminProviderController(
     adminProviderListUseCase,
     adminApproveProviderUseCase,
+    adminRejectProviderUseCase,
     adminChangeProviderBlockStatusUseCase,
     adminChangeProviderTrustTagUseCase,
     adminFetchProviderDetailsUseCase,
@@ -223,5 +244,6 @@ const adminProviderController = new AdminProviderController(
     adminFetchProviderPaymentsUseCase,
     fetchProviderProofsUseCase
 );
+
 export { adminProviderController };
 

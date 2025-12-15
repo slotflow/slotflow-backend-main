@@ -14,6 +14,7 @@ const router = Router();
 
 router.get('/providers',authMiddleware, adminProviderController.getAllProviders);
 router.patch('/providers/:providerId/approve',authMiddleware,adminProviderController.approveProvider);
+router.patch('/providers/:providerId/reject',authMiddleware,adminProviderController.rejectProvider);
 router.patch('/providers/:providerId/block',authMiddleware,adminProviderController.changeProviderBlockStatus);
 router.patch('/providers/:providerId/trust-tag', authMiddleware, adminProviderController.changeProviderTrustedTag);
 router.get('/providers/:providerId/profile', authMiddleware, adminProviderController.fetchProviderDetails);

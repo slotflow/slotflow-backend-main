@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { IServiceRepository } from "../../domain/interfaces/repositories/IService.repository";
 import { ServiceRepositoryImpl } from "../../infrastructure/database/appservice/service.repository.impl";
 import { ProviderFetchAllAppServicesUseCase } from "../../application/useCases/provier/providerAppServices.useCase";
+import { findServicesByCategoryName } from "../../shared/zod/common.zod";
 
 const serviceRepository: IServiceRepository = new ServiceRepositoryImpl();
 
@@ -16,7 +17,10 @@ class ProviderAppServiceController {
 
     async getAllAppServices(req: Request, res: Response, next: NextFunction) {
         try {
-            const result = await this.providerFetchAllServicesUseCase.execute();
+            const validatedData = findServicesByCategoryName.parse(req.query);
+            const result = await this.providerFetchAllServicesUseCase.execute({
+                serviceCategory: validatedData.serviceCategory
+            });
             console.log("result : ",result);
             res.status(200).json(result);
         } catch (error) {

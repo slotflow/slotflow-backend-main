@@ -58,7 +58,7 @@ export class ResendOtpUseCase {
         }],
       });
 
-      return { success: true, message: `OTP sent to email.`, authUser: { verificationToken: userOrProvider.verificationToken, role } };
+      return { success: true, message: `OTP has been sent to your email`, authUser: { verificationToken: userOrProvider.verificationToken, role } };
     } catch (error) {
       console.log("ResendOtpUseCase error : ", error);
       throw new Error("Failed to resend OTP");

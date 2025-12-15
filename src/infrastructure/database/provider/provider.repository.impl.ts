@@ -18,6 +18,7 @@ export class ProviderRepositoryImpl implements IProviderRepository {
             provider.isBlocked,
             provider.isEmailVerified,
             provider.isAdminVerified,
+            provider.verificationRejectionReason,
             provider.phone,
             provider.profileImage,
             provider.addressId,

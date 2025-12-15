@@ -1,10 +1,10 @@
 import { Types } from "mongoose";
 import { Service } from "../../entities/service.entity";
-import { AdminServiceListResponse } from "../../../infrastructure/dtos/admin.dto";
+import { AdminAddServiceRequest, AdminServiceListResponse } from "../../../infrastructure/dtos/admin.dto";
 import { ApiPaginationRequest, ApiResponse, FetchAllAppServicesResponse } from "../../../infrastructure/dtos/common.dto";
 
 export interface IServiceRepository {
-    createService(service: String): Promise<Service | null>;
+    createService(payload: AdminAddServiceRequest): Promise<Service | null>;
 
     findAllServices({ page, limit }: ApiPaginationRequest): Promise<ApiResponse<AdminServiceListResponse>>;
     
@@ -14,5 +14,7 @@ export interface IServiceRepository {
 
     updateService(serviceId: Types.ObjectId, service: Service): Promise<Service | null>;
 
-    findAllServiceNames(): Promise<FetchAllAppServicesResponse>
+    findAllServiceNames(): Promise<FetchAllAppServicesResponse>;
+
+    findAllServicesByCategory(serviceCategory: Service["serviceCategory"]): Promise<FetchAllAppServicesResponse>;
 }

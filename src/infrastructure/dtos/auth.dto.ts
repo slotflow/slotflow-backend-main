@@ -54,15 +54,16 @@ export interface LoginRequest {
 export interface LoginResponse extends CommonResponse {
     authUser: {
         uid?: Types.ObjectId;
-        username: string,
-        profileImage: string | null,
-        role: string,
-        token: string,
+        username: string;
+        phone?: string;
+        profileImage: string | null;
+        role: string;
+        token: string;
         isBlocked?: boolean;
-        isLoggedIn: boolean,
-        isAddressAdded?: boolean,
-        isServiceDetailsAdded?: boolean,
-        isServiceAvailabilityAdded?: boolean,
+        isLoggedIn: boolean;
+        isAddressAdded?: boolean;
+        isServiceDetailsAdded?: boolean;
+        isServiceAvailabilityAdded?: boolean;
         isAdminApproved?: boolean;
         isProofSubmitted?: boolean;
         providerSubscription?: string;

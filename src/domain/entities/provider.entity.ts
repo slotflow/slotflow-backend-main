@@ -9,6 +9,7 @@ export class Provider {
         public isBlocked: boolean,
         public isEmailVerified: boolean,
         public isAdminVerified: boolean,
+        public verificationRejectionReason: string,
         public phone: string,
         public profileImage: string,
         public addressId: Types.ObjectId,

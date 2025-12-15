@@ -48,10 +48,10 @@ export const ProviderCreateServiceDetailsZodSchema = z.object({
             "Invalid experience. Only alphanumeric characters, spaces, and symbols allowed (1–500 chars)."
         ),
 
-    serviceCategory: z
+    service: z
         .string()
-        .min(1, "Service Category ID is required")
-        .max(100, "Service Category ID cannot exceed 100 characters"),
+        .min(1, "Service ID is required")
+        .max(100, "Service ID cannot exceed 100 characters"),
 
 
     serviceType: z.enum(serviceTypeArray),
@@ -114,6 +114,3 @@ export const ProviderPlanSubscribeZodSchema = z.object({
 export const ProviderChangeBookingAppointmentStatusZodSchema = z.object({
     appointmentStatus: z.enum(appointmentStatusArray)
 });
-
-
-

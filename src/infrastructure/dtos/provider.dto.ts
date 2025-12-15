@@ -32,7 +32,7 @@ export interface ProviderFetchProviderServiceRequest {
 // provider fetch service details use case respomse interface
 type FindProviderServiceProps = Pick<ProviderService, "_id" | "serviceName" | "serviceDescription" | "servicePrice" | "isGroupService" | "maxParticipants" | "requirements" | "serviceExperience" | "serviceMode" | "serviceType" | "tags" | "videoUrl" | "updatedAt" | "createdAt">;
 export interface ProviderFindProviderServiceResProps extends FindProviderServiceProps {
-    serviceCategory: Pick<Service, "serviceName">;
+    service: Pick<Service, "serviceName">;
 }
 export type ProviderFetchProviderServiceResponse = ProviderFindProviderServiceResProps | {};
 

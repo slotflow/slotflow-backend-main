@@ -99,6 +99,7 @@ export class LoginUseCase {
                 authUser: {
                     uid: userOrProvider._id,
                     username: userOrProvider.username,
+                    phone: userOrProvider.phone,
                     profileImage: updateProfileImage ? updateProfileImage : userOrProvider.profileImage,
                     role: role,
                     token,

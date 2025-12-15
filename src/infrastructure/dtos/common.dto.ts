@@ -11,7 +11,7 @@ import { Subscription } from "../../domain/entities/subscription.entity";
 import { Availability } from "../../domain/entities/serviceAvailability.entity";
 import { Booking, ParticipantPresence } from "../../domain/entities/booking.entity";
 import { findSubscriptionFullDetailsResProps } from "../../domain/interfaces/repositories/ISubscription.repository";
-import { appointmentStatusArray, daysArray, paymentForArray, paymentGatewayArray, roleArray, serviceModeArray, serviceTypeArray, subscriptionStatusArray } from "../../shared/utils/constants";
+import { appointmentStatusArray, daysArray, paymentForArray, paymentGatewayArray, roleArray, serviceCategoryArray, serviceModeArray, serviceTypeArray, subscriptionStatusArray } from "../../shared/utils/constants";
 
 export type RoleType = typeof roleArray[number];
 
@@ -28,6 +28,8 @@ export type PaymentForType = typeof paymentForArray[number];
 export type PaymentGatewayType = typeof paymentGatewayArray[number];
 
 export type SubscriptionStatusType = typeof subscriptionStatusArray[number];
+
+export type ServiceCategoryType = typeof serviceCategoryArray[number];
 
 // **** 1. Used as the request interface for the paginated request
 export interface ApiPaginationRequest {
@@ -104,6 +106,7 @@ export type FetchOnlineBookingsForProviderResponse = Array<Pick<Booking, "_id" |
 export type FetchOnlineBookingsForUserResponse = Pick<Booking, "_id" | "appointmentDate" | "appointmentStatus" | "appointmentTime" | "videoCallRoomId" | "createdAt"> & Pick<Provider, "username">;
 
 //// **** 8. Used as the response type for fetching AppServices for provider and user side
+export type FetchAllAppServiceRequest = Pick<Service,"serviceCategory">;
 export type FetchAllAppServicesResponse = Array<Pick<Service, "_id" | "serviceName">>;
 
 //// **** 9. Used as the request type for updating address for provider and user side

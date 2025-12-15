@@ -4,18 +4,18 @@ import { RequestQueryCommonZodSchema, ValidateObjectId } from "../../shared/zod/
 import { IServiceRepository } from "../../domain/interfaces/repositories/IService.repository";
 import { ServiceRepositoryImpl } from "../../infrastructure/database/appservice/service.repository.impl";
 import { AdminAddServiceXZodSchema, AdminChangeServiceBlockStatusZodSchema } from "../../shared/zod/admin.zod";
-import { AdminAddServiceUseCase, AdminChnageServiceBlockStatusUseCase, AdminServiceListUseCase } from "../../application/useCases/admin/adminService.useCase";
+import { AdminCreateServiceUseCase, AdminChnageServiceBlockStatusUseCase, AdminServiceListUseCase } from "../../application/useCases/admin/adminService.useCase";
 
 const serviceRepository: IServiceRepository = new ServiceRepositoryImpl();
 
 const adminServiceListUseCase = new AdminServiceListUseCase(serviceRepository);
-const adminAddServiceUseCase = new AdminAddServiceUseCase(serviceRepository);
+const adminCreateServiceUseCase = new AdminCreateServiceUseCase(serviceRepository);
 const adminChnageServiceBlockStatusUseCase = new AdminChnageServiceBlockStatusUseCase(serviceRepository);
 
 class AdminServiceController {
     constructor(
         private adminServiceListUseCase: AdminServiceListUseCase,
-        private adminAddServiceUseCase: AdminAddServiceUseCase,
+        private adminCreateServiceUseCase: AdminCreateServiceUseCase,
         private adminChnageServiceBlockStatusUseCase: AdminChnageServiceBlockStatusUseCase,
     ) {
         this.getAllServices = this.getAllServices.bind(this);
@@ -36,9 +36,8 @@ class AdminServiceController {
 
     async createService(req: Request, res: Response, next: NextFunction) {
         try {
-            const { serviceName } = AdminAddServiceXZodSchema.parse(req.body);
-            if (!serviceName) throw new Error("Invalid request.");
-            const result = await this.adminAddServiceUseCase.execute({serviceName});
+            const validatedData = AdminAddServiceXZodSchema.parse(req.body);
+            const result = await this.adminCreateServiceUseCase.execute({...validatedData});
             res.status(200).json(result);
         } catch (error) {
             console.log("createService error : ",error);
@@ -61,7 +60,7 @@ class AdminServiceController {
 
 const adminServiceController = new AdminServiceController(
     adminServiceListUseCase,
-    adminAddServiceUseCase,
+    adminCreateServiceUseCase,
     adminChnageServiceBlockStatusUseCase
 );
 export { adminServiceController };

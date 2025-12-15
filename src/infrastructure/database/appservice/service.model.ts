@@ -1,8 +1,11 @@
+import { ServiceCategoryType } from "../../dtos/common.dto";
 import mongoose, { Document, Schema, Types } from "mongoose";
+import { serviceCategoryArray } from "../../../shared/utils/constants";
 
 export interface IService extends Document {
     _id: Types.ObjectId;
     serviceName: string;
+    serviceCategory: ServiceCategoryType;
     isBlocked: boolean;
     createdAt: Date;
     updatedAt: Date;
@@ -16,6 +19,11 @@ const serviceSchema = new Schema<IService>({
         maxlength: [50, "Service name must be at most 50 characters long"],
         trim: true,
         match: [/^[A-Za-z0-9 ]{4,50}$/, "Service name can only contain letters, numbers, and spaces"]
+    },
+    serviceCategory: {
+        type: String,
+        enum: Object.values(serviceCategoryArray),
+        required: true,
     },
     isBlocked: {
         type: Boolean,

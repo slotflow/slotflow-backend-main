@@ -24,7 +24,7 @@ export class AdminServiceListUseCase {
     }
 }
 
-export class AdminAddServiceUseCase {
+export class AdminCreateServiceUseCase {
     constructor(
         private seriveRepository: IServiceRepository
     ) { }
@@ -36,12 +36,12 @@ export class AdminAddServiceUseCase {
             const existService = await this.seriveRepository.findServiceByName(serviceName);
             if (existService) throw new Error("Service already exist.");
 
-            const service = await this.seriveRepository.createService(serviceName);
+            const service = await this.seriveRepository.createService({ ...payload });
             if (!service) throw new Error("Service adding error, please try again.");
 
             return { success: true, message: "Service added successfully." };
         } catch (error) {
-            console.log("AdminAddServiceUseCase error :", error);
+            console.log("AdminCreateServiceUseCase error :", error);
             throw new Error("Failed to add service");
         }
     }
@@ -64,7 +64,7 @@ export class AdminChnageServiceBlockStatusUseCase {
             const updatedService = await this.seriveRepository.updateService(serviceId, existingService);
             if (!updatedService) throw new Error("Service status changing error.");
             
-            return { success: true, message: `Service ${isBlocked ? "unblocked" : "blocked"} successfully.` };
+            return { success: true, message: `Service ${isBlocked ? "unblocked" : "blocked"} successfully` };
         } catch (error) {
             console.log("AdminChnageServiceBlockStatusUseCase error :", error);
             throw new Error("Failed to change service block status");

@@ -30,7 +30,7 @@ class ProviderServiceController {
             const payload: CreateProviderServiceRequest = {
                 ...validateData,
                 providerId: new Types.ObjectId(providerId),
-                serviceCategory: new Types.ObjectId(validateData.serviceCategory),
+                service: new Types.ObjectId(validateData.service),
             };
             const result = await this.providerCreateServiceDetailsUseCase.execute(payload);
             res.status(200).json(result);

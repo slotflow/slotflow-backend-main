@@ -6,7 +6,7 @@ import { serviceNameRegex, serviceExperienceRegex, serviceDescriptionRegex } fro
 export interface IProviderService extends Document {
   _id: Types.ObjectId;
   providerId: Types.ObjectId;
-  serviceCategory: Types.ObjectId;
+  service: Types.ObjectId;
   serviceName: string;
   serviceDescription: string;
   servicePrice: number;
@@ -30,10 +30,10 @@ const ProviderServiceSchema = new Schema<IProviderService>(
       required: [true, "Provider ID is required"],
     },
 
-    serviceCategory: {
+    service: {
       type: Schema.Types.ObjectId,
       ref: "Service",
-      required: [true, "Service category is required"],
+      required: [true, "Service is required"],
     },
 
     serviceName: {

@@ -8,6 +8,7 @@ export interface IProvider extends Document {
   isBlocked: boolean;
   isEmailVerified: boolean;
   isAdminVerified: boolean;
+  verificationRejectionReason: string;
   phone: string;
   profileImage: string;
   addressId: Types.ObjectId;
@@ -62,6 +63,17 @@ const ProviderSchema = new Schema<IProvider>({
   isAdminVerified: {
     type: Boolean,
     default: false
+  },
+  verificationRejectionReason: {
+    type: String,
+    default: null,
+    minlength: [5, "Rejection reason must be at least 5 characters"],
+    maxlength: [500, "Rejection reason must be at most 500 characters"],
+    trim: true,
+    match: [
+      /^[A-Za-z0-9\s.,\-_'()@#!?&/:]+$/,
+      "Rejection reason contains invalid characters",
+    ],
   },
   phone: {
     type: String,

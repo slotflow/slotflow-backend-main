@@ -1,15 +1,15 @@
 import { Types } from "mongoose";
-import { Service } from "../entities/service.entity";
-import { ProviderService } from "../entities/providerService.entity";
+import { Service } from "../../entities/service.entity";
+import { ProviderService } from "../../entities/providerService.entity";
 
-export type CreateProviderServiceRequest = Pick<ProviderService, "providerId" | "serviceCategory" | "serviceName" | "serviceDescription" | "servicePrice" | "isGroupService" | "maxParticipants" | "serviceExperience" | "serviceMode" | "serviceType" | "tags"> & Partial<Pick<ProviderService, "videoUrl" | "requirements">>;
+export type CreateProviderServiceRequest = Pick<ProviderService, "providerId" | "service" | "serviceName" | "serviceDescription" | "servicePrice" | "isGroupService" | "maxParticipants" | "serviceExperience" | "serviceMode" | "serviceType" | "tags"> & Partial<Pick<ProviderService, "videoUrl" | "requirements">>;
 
-type FindProviderServiceProps = Omit<ProviderService, "serviceCategory">;
+type FindProviderServiceProps = Omit<ProviderService, "service">;
 export interface FindProviderServiceResponse extends FindProviderServiceProps {
-    serviceCategory: Pick<Service, "serviceName">
+    service: Pick<Service, "serviceName">
 }
 
-export  interface FindProvidersUsingServiceCategoryIdsResponse {
+export interface FindProvidersUsingServiceIdsResponse {
     _id: Types.ObjectId,
     provider : {
         _id: Types.ObjectId,
@@ -17,11 +17,12 @@ export  interface FindProvidersUsingServiceCategoryIdsResponse {
         profileImage: string | null,
         trustedBySlotflow: boolean,
     },
-    service: {
-        serviceCategory: Types.ObjectId,
-        serviceName: string,
-        servicePrice: number,
-        categoryName: string
+     serviceDetails: {
+        serviceId: Types.ObjectId;
+        service: Service["serviceName"];
+        serviceCategory: Service["serviceCategory"];
+        serviceName: ProviderService["serviceName"];
+        servicePrice: ProviderService["servicePrice"];
     }
   }
 
@@ -31,6 +32,6 @@ export interface IProviderServiceRepository {
 
     findProviderServiceByProviderId(providerId: Types.ObjectId): Promise<FindProviderServiceResponse | {}>;
 
-    findProvidersUsingServiceCategoryIds(serviceCategoryIds: Types.ObjectId[]): Promise<Array<FindProvidersUsingServiceCategoryIdsResponse> | []>;
+    findProvidersUsingServiceIds(serviceIds: Types.ObjectId[]): Promise<Array<FindProvidersUsingServiceIdsResponse> | []>;
 
 }

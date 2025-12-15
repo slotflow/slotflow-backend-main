@@ -25,3 +25,5 @@ export const serviceDescriptionRegex = /^[\w\d !"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|
 export const adhaarRegex = /^\d{6}$/;
 export const providerExperienceRegex = /^[\w\d !"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]{1,500}$/;
 export const serviceExperienceRegex = /^[\w\d !"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]{1,500}$/;
+
+export const verificationRejectionReasonRegex = /^[A-Za-z0-9\s.,\-_'()@#!?&/:]+$/;

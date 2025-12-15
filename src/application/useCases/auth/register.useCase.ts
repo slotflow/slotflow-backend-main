@@ -83,7 +83,7 @@ export class RegisterUseCase {
 
       const token = JWTService.generateToken({ email, role });
 
-      return { success: true, message: `OTP sent to email`, authUser: { verificationToken, role, token } };
+      return { success: true, message: `OTP has been sent to your email`, authUser: { verificationToken, role, token } };
     } catch (error) {
       console.log("RegisterUseCase error : ", error);
       throw new Error("Failed to register");

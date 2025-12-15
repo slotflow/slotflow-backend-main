@@ -1,8 +1,8 @@
 import { Types } from "mongoose";
-import { Provider } from "../entities/provider.entity";
-import { ProviderUpdateProfileRequest } from "../../infrastructure/dtos/provider.dto";
-import { ApiPaginationRequest, ApiResponse } from "../../infrastructure/dtos/common.dto";
-import { AdiminFetchAllProviders, AdminFetchDashboardProviderStatsDataResponse } from "../../infrastructure/dtos/admin.dto";
+import { Provider } from "../../entities/provider.entity";
+import { ProviderUpdateProfileRequest } from "../../../infrastructure/dtos/provider.dto";
+import { ApiPaginationRequest, ApiResponse } from "../../../infrastructure/dtos/common.dto";
+import { AdiminFetchAllProviders, AdminFetchDashboardProviderStatsDataResponse } from "../../../infrastructure/dtos/admin.dto";
 
 export type CreateLocalProvider = {
   username: Provider["username"];
@@ -23,23 +23,23 @@ export type CreateGoogleProvider = {
 export type CreateProviderProps = CreateLocalProvider | CreateGoogleProvider;
 
 export interface IProviderRepository {
-    createProvider(provider : CreateProviderProps) : Promise<Provider | null>;
+  createProvider(provider: CreateProviderProps): Promise<Provider | null>;
 
-    findProviderByVerificationToken(verificationToken: Provider["verificationToken"]): Promise<Provider | null>;
-    
-    updateProvider(user: Provider): Promise<Provider | null>;
-    
-    findProviderByEmail(email : string) : Promise<Provider | null>;
-    
-    findAllProviders({page,limit}: ApiPaginationRequest): Promise<ApiResponse<AdiminFetchAllProviders>>;
-    
-    findProviderById(providerId: Types.ObjectId): Promise<Provider | null>;
+  findProviderByVerificationToken(verificationToken: Provider["verificationToken"]): Promise<Provider | null>;
 
-    findProvidersCount(today?: { today : boolean }): Promise<number>;
+  updateProvider(user: Provider): Promise<Provider | null>;
 
-    findProvidersStatsForAdminDashboard(): Promise<AdminFetchDashboardProviderStatsDataResponse>;
+  findProviderByEmail(email: string): Promise<Provider | null>;
 
-    findProviderByGoogleId(googleId: string): Promise<Provider | null>;
+  findAllProviders({ page, limit }: ApiPaginationRequest): Promise<ApiResponse<AdiminFetchAllProviders>>;
 
-     updateProviderFields(data: ProviderUpdateProfileRequest): Promise<Provider | null>;
+  findProviderById(providerId: Types.ObjectId): Promise<Provider | null>;
+
+  findProvidersCount(today?: { today: boolean }): Promise<number>;
+
+  findProvidersStatsForAdminDashboard(): Promise<AdminFetchDashboardProviderStatsDataResponse>;
+
+  findProviderByGoogleId(googleId: string): Promise<Provider | null>;
+
+  updateProviderFields(data: ProviderUpdateProfileRequest): Promise<Provider | null>;
 }

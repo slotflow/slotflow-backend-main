@@ -2,14 +2,14 @@ import { Types } from "mongoose";
 import { subscriptionStatusArray } from "../../../shared/utils/constants";
 import { IProviderService, ProviderServiceModel } from "./providerService.model";
 import { ProviderService } from "../../../domain/entities/providerService.entity";
-import { CreateProviderServiceRequest, FindProviderServiceResponse, FindProvidersUsingServiceCategoryIdsResponse, IProviderServiceRepository } from "../../../domain/interfaces/repositories/IProviderService.repository";
+import { CreateProviderServiceRequest, FindProviderServiceResponse, FindProvidersUsingServiceIdsResponse, IProviderServiceRepository } from "../../../domain/interfaces/repositories/IProviderService.repository";
 
 export class ProviderServiceRepositoryImpl implements IProviderServiceRepository {
     private mapToEntity(providerService: IProviderService): ProviderService {
         return new ProviderService(
             providerService._id,
             providerService.providerId,
-            providerService.serviceCategory,
+            providerService.service,
             providerService.serviceName,
             providerService.serviceDescription,
             providerService.servicePrice,
@@ -40,7 +40,7 @@ export class ProviderServiceRepositoryImpl implements IProviderServiceRepository
         try {
             const service = await ProviderServiceModel.findOne({ providerId })
                 .populate({
-                    path: "serviceCategory",
+                    path: "service",
                     select: "-_id serviceName"
                 }).lean();
             return service || {};
@@ -50,16 +50,16 @@ export class ProviderServiceRepositoryImpl implements IProviderServiceRepository
         }
     }
 
-    async findProvidersUsingServiceCategoryIds(serviceCategoryIds: Types.ObjectId[]): Promise<Array<FindProvidersUsingServiceCategoryIdsResponse> | []> {
-        console.log("serviceCategoryIds : ",serviceCategoryIds);
+    async findProvidersUsingServiceIds(serviceIds: Types.ObjectId[]): Promise<Array<FindProvidersUsingServiceIdsResponse> | []> {
+        console.log("serviceIds : ",serviceIds);
         try {
             const pipeline: any[] = [];
             const now = new Date();
 
-            if (serviceCategoryIds.length > 0) {
+            if (serviceIds.length > 0) {
                 pipeline.push({
                     $match: {
-                        serviceCategory: { $in: serviceCategoryIds }
+                        service: { $in: serviceIds }
                     }
                 });
             }
@@ -115,7 +115,7 @@ export class ProviderServiceRepositoryImpl implements IProviderServiceRepository
                 {
                     $lookup: {
                         from: "services",
-                        localField: "serviceCategory",
+                        localField: "service",
                         foreignField: "_id",
                         as: "category"
                     }
@@ -123,26 +123,28 @@ export class ProviderServiceRepositoryImpl implements IProviderServiceRepository
                 { $unwind: "$category" },
                 {
                     $project: {
-                        service: {
-                            serviceCategory: "$serviceCategory",
-                            serviceName: "$serviceName",
-                            servicePrice: "$servicePrice",
-                            categoryName: "$category.serviceName"
-                        },
                         provider: {
                             _id: '$provider._id',
                             username: '$provider.username',
                             profileImage: '$provider.profileImage',
                             trustedBySlotflow: '$provider.trustedBySlotflow'
-                        }
+                        },
+                        serviceDerails: {
+                            serviceId: "$service",
+                            service: "$category.serviceName",
+                            serviceCategory: "$category.serviceCategory",
+                            serviceName: "$serviceName",
+                            servicePrice: "$servicePrice",
+                        },
                     }
                 }
             );
+
             const providers = await ProviderServiceModel.aggregate(pipeline);
             console.log("providers : ",providers);
             return providers;
         } catch (error) {
-            console.log("findProvidersUsingServiceCategoryIds error : ",error);
+            console.log("findProvidersUsingServiceIds error : ",error);
             throw new Error("Failed to find providers");
         }
     }

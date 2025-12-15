@@ -128,7 +128,7 @@ export class AuthController {
   async logout(req: Request, res: Response, next: NextFunction) {
     try {
       res.clearCookie("token");
-      res.status(200).json({ success: true, message: "Logged out successfully." });
+      res.status(200).json({ success: true, message: "Logged out successfully" });
     } catch (error) {
       console.log("logout error : ",error);
       next(error)

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { Types } from "mongoose";
-import { roleArray } from "../utils/constants";
+import { roleArray, serviceCategoryArray } from "../utils/constants";
 import { addressLineRegex, cityRegex, countryRegex, districtRegex, landMarkRegex, phoneRegex, pincodeRegex, placeRegex, stateRegex } from "./regex";
 
 // ****** Common zod validations for reuse ****** \\
@@ -301,15 +301,15 @@ export const RequestQueryFetchAllReviewsZodSchema = z.object({
 
 
 
-export const PresignedUrlZodSchema =z.object({
-    folderName: z.string().min(1).max(50, "Folder name too long"),
-    fileName: z.string().min(1).max(150, "File name too long"),
-    fileType: z.enum([
-      "image/png",
-      "image/jpeg",
-      "image/jpg"
-    ]),
-  });
+export const PresignedUrlZodSchema = z.object({
+  folderName: z.string().min(1).max(50, "Folder name too long"),
+  fileName: z.string().min(1).max(150, "File name too long"),
+  fileType: z.enum([
+    "image/png",
+    "image/jpeg",
+    "image/jpg"
+  ]),
+});
 
 
 export const s3FileKeyZodSchmema = z.object({
@@ -319,3 +319,7 @@ export const s3FileKeyZodSchmema = z.object({
 export const deleteFileZodSchema = z.object({
   folder: z.string().min(1).max(50, "Folername too long"),
 });
+
+export const findServicesByCategoryName = z.object({
+  serviceCategory: z.enum(serviceCategoryArray),
+})

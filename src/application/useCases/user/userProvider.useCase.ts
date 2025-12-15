@@ -9,7 +9,7 @@ import { IAddressRepository } from "../../../domain/interfaces/repositories/IAdd
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { IProviderServiceRepository } from "../../../domain/interfaces/repositories/IProviderService.repository";
 import { IServiceAvailabilityRepository } from "../../../domain/interfaces/repositories/IServiceAvailability.repository";
-import { FindProvidersUsingServiceCategoryIdsResponse, UserFetchProviderServiceAvailabilityRequest, UserFetchProviderServiceAvailabilityResponse, UserFetchProviderServiceResponse, UserFetchProvidersForChatSidebarRequest, UserFetchProvidersForChatSidebarResponse, UserFetchServiceProviderAddressRequest, UserFetchServiceProviderAddressResponse, UserFetchServiceProviderDetailsRequest, UserFetchServiceProviderDetailsResponse, UserFetchServiceproviderServiceRequest, UserFetchServiceProvidersRequest, UserFetchServiceProvidersResponse } from "../../../infrastructure/dtos/user.dto";
+import { FindProvidersUsingServiceIdsResponse, UserFetchProviderServiceAvailabilityRequest, UserFetchProviderServiceAvailabilityResponse, UserFetchProviderServiceResponse, UserFetchProvidersForChatSidebarRequest, UserFetchProvidersForChatSidebarResponse, UserFetchServiceProviderAddressRequest, UserFetchServiceProviderAddressResponse, UserFetchServiceProviderDetailsRequest, UserFetchServiceProviderDetailsResponse, UserFetchServiceproviderServiceRequest, UserFetchServiceProvidersRequest, UserFetchServiceProvidersResponse } from "../../../infrastructure/dtos/user.dto";
 
 export class UserFetchServiceProvidersUseCase {
   constructor(
@@ -26,10 +26,10 @@ export class UserFetchServiceProvidersUseCase {
       const user = await this.userRepository.findUserById(new Types.ObjectId(userId));
       if (!user) throw new Error("No user found");
 
-      const providers = await this.providerServiceRepository.findProvidersUsingServiceCategoryIds(serviceIds);
+      const providers = await this.providerServiceRepository.findProvidersUsingServiceIds(serviceIds);
       if (!providers) throw new Error("Providers fetching error.");
 
-      const updatedproviders: FindProvidersUsingServiceCategoryIdsResponse[] = await Promise.all(
+      const updatedproviders: FindProvidersUsingServiceIdsResponse[] = await Promise.all(
         providers.map(async (provider) => {
           let profileImageUrl = provider?.provider?.profileImage;
 
@@ -136,9 +136,9 @@ export class UserFetchServiceProviderServiceDetailsUseCase {
         return { success: true, message: "Service fetched successfully.", data: {} };
       }
 
-      const { serviceName, serviceDescription, servicePrice, serviceExperience, serviceCategory } = serviceData;
+      const { serviceName, serviceDescription, servicePrice, serviceExperience, service } = serviceData;
 
-      return { success: true, message: "Service provider address fetched", data: { serviceName, serviceDescription, servicePrice, serviceExperience, serviceCategory } }
+      return { success: true, message: "Service provider details fetched", data: { serviceName, serviceDescription, servicePrice, serviceExperience, service } }
     } catch (error) {
       console.log("UserFetchServiceProviderServiceDetailsUseCase error : ", error);
       throw new Error("Failed to fetch service provider service details");

@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 import { IService, ServiceModel } from "./service.model";
-import { AdminServiceListResponse } from "../../dtos/admin.dto";
+import { AdminAddServiceRequest, AdminServiceListResponse } from "../../dtos/admin.dto";
 import { Service } from "../../../domain/entities/service.entity";
 import { IServiceRepository } from "../../../domain/interfaces/repositories/IService.repository";
 import { ApiPaginationRequest, ApiResponse, FetchAllAppServicesResponse } from "../../dtos/common.dto";
@@ -10,18 +10,19 @@ export class ServiceRepositoryImpl implements IServiceRepository {
         return new Service(
             service._id,
             service.serviceName,
+            service.serviceCategory,
             service.isBlocked,
             service.createdAt,
             service.updatedAt,
         )
     }
 
-    async createService(service: String): Promise<Service | null> {
+    async createService(payload: AdminAddServiceRequest): Promise<Service | null> {
         try {
-            const createdService = await ServiceModel.create({ serviceName: service });
+            const createdService = await ServiceModel.create({ ...payload });
             return createdService ? this.mapToEntity(createdService) : null;
         } catch (error) {
-            console.log("createService error : ",error);
+            console.log("createService error : ", error);
             throw new Error("Failed to create application service");
         }
     }
@@ -31,7 +32,7 @@ export class ServiceRepositoryImpl implements IServiceRepository {
             const existingService = await ServiceModel.findOne({ serviceName: serviceName });
             return existingService ? this.mapToEntity(existingService) : null;
         } catch (error) {
-            console.log("findServiceByName error : ",error);
+            console.log("findServiceByName error : ", error);
             throw new Error("Failed to find application service by name");
         }
     }
@@ -43,6 +44,7 @@ export class ServiceRepositoryImpl implements IServiceRepository {
                 ServiceModel.find({}, {
                     _id: 1,
                     serviceName: 1,
+                    serviceCategory: 1,
                     isBlocked: 1,
                 }).skip(skip).limit(limit).lean(),
                 ServiceModel.countDocuments(),
@@ -55,7 +57,7 @@ export class ServiceRepositoryImpl implements IServiceRepository {
                 totalCount
             }
         } catch (error) {
-            console.log("findAllServices error : ",error);
+            console.log("findAllServices error : ", error);
             throw new Error("Failed to find all application services");
         }
     }
@@ -65,7 +67,7 @@ export class ServiceRepositoryImpl implements IServiceRepository {
             const service = await ServiceModel.findById(serviceId);
             return service ? this.mapToEntity(service) : null;
         } catch (error) {
-            console.log("findServiceById error : ",error);
+            console.log("findServiceById error : ", error);
             throw new Error("Failed to fnind application service by id");
         }
     }
@@ -75,7 +77,7 @@ export class ServiceRepositoryImpl implements IServiceRepository {
             const updatedService = await ServiceModel.findOneAndUpdate(serviceId, service, { new: true });
             return updatedService ? this.mapToEntity(updatedService) : null;
         } catch (error) {
-            console.log("updateService error : ",error);
+            console.log("updateService error : ", error);
             throw new Error("Failed to update application service");
         }
     }
@@ -83,13 +85,28 @@ export class ServiceRepositoryImpl implements IServiceRepository {
     async findAllServiceNames(): Promise<FetchAllAppServicesResponse> {
         try {
             const services = await ServiceModel.find({}, {
-                    _id: 1,
-                    serviceName: 1,
-                });
+                _id: 1,
+                serviceName: 1,
+            });
             return services.map(this.mapToEntity);
-        }catch (error) {
-            console.log("findAllServiceNames error : ",error);
+        } catch (error) {
+            console.log("findAllServiceNames error : ", error);
             throw new Error("Failed to find all application services by name");
+        }
+    }
+
+    async findAllServicesByCategory(serviceCategory: Service["serviceCategory"]): Promise<FetchAllAppServicesResponse> {
+        try {
+            const services = await ServiceModel.find({
+                serviceCategory
+            }, {
+                _id: 1,
+                serviceName: 1,
+            });
+            return services.map(this.mapToEntity);
+        } catch (error) {
+            console.log("findAllServicesByCategory error : ", error);
+            throw new Error("Failed to find all application services by category");
         }
     }
 }
