@@ -105,7 +105,7 @@ class AdminProviderController {
             const validatedData = adminRejectProviderZodSchema.parse(req.body);
             const result = await this.adminRejectProviderUseCase.execute({
                 providerId: new Types.ObjectId(providerId),
-                verificationRejectionReason: validatedData.verificationRejectionReason
+                ...validatedData
             });
             res.status(200).json(result);
         } catch (error) {

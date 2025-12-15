@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { producer } from '../../../server';
+// import { producer } from '../../../server';
 import { kafkaConfig } from '../../../config/env';
 import { roleArray } from '../../../shared/utils/constants';
 import { User } from '../../../domain/entities/user.entity';
@@ -43,17 +43,17 @@ export class RegisterUseCase {
       const otp = await OTPService.setOtp(verificationToken);
       if (!otp) throw new Error("Unexpected error, please try again.");
 
-      await producer.send({
-        topic: kafkaConfig.otpSendTopic,
-        messages: [{
-          key: email,
-          value: JSON.stringify({
-            otp,
-            email,
-            contentNumber: 1
-          })
-        }],
-      });
+      // await producer.send({
+      //   topic: kafkaConfig.otpSendTopic,
+      //   messages: [{
+      //     key: email,
+      //     value: JSON.stringify({
+      //       otp,
+      //       email,
+      //       contentNumber: 1
+      //     })
+      //   }],
+      // });
 
       if (userOrProvider) {
         userOrProvider.verificationToken = verificationToken;

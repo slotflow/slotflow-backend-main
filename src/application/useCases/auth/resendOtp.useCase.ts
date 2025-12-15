@@ -1,4 +1,4 @@
-import { producer } from '../../../server';
+// import { producer } from '../../../server';
 import { kafkaConfig } from '../../../config/env';
 import { User } from '../../../domain/entities/user.entity';
 import { roleArray } from '../../../shared/utils/constants';
@@ -46,17 +46,17 @@ export class ResendOtpUseCase {
       const otp = await OTPService.setOtp(userOrProvider?.verificationToken);
       if (!otp) throw new Error("Unexpected error, please try again.");
 
-      await producer.send({
-        topic: kafkaConfig.otpSendTopic,
-        messages: [{
-          key: email,
-          value: JSON.stringify({
-            otp,
-            email,
-            contentNumber: 1
-          })
-        }],
-      });
+      // await producer.send({
+      //   topic: kafkaConfig.otpSendTopic,
+      //   messages: [{
+      //     key: email,
+      //     value: JSON.stringify({
+      //       otp,
+      //       email,
+      //       contentNumber: 1
+      //     })
+      //   }],
+      // });
 
       return { success: true, message: `OTP has been sent to your email`, authUser: { verificationToken: userOrProvider.verificationToken, role } };
     } catch (error) {

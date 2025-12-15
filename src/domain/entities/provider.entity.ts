@@ -1,4 +1,5 @@
 import { Types } from "mongoose";
+import { AdminVerificationStatusType } from "../../infrastructure/dtos/common.dto";
 
 export class Provider {
     constructor(
@@ -7,9 +8,18 @@ export class Provider {
         public email: string,
         public password: string,
         public isBlocked: boolean,
+
         public isEmailVerified: boolean,
+
         public isAdminVerified: boolean,
-        public verificationRejectionReason: string,
+        public verificationRejectionReason: string | null,
+        
+        public adminVerificationStatus: AdminVerificationStatusType,
+        public isAddressVerified: boolean,
+        public isServiceDetailsVerified: boolean,
+        public isAvailabilityVerified: boolean,
+        public isProofsVerified: boolean,
+
         public phone: string,
         public profileImage: string,
         public addressId: Types.ObjectId,

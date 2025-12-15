@@ -37,6 +37,9 @@ export const serviceCategoryArray = ["Healthcare & Wellness",
   "Technology Services",
   "Real Estate & Property",] as const;
 
+// Used as the status of Admin verification of provider
+export const adminVerificationStatsArray = ["REQUESTED", "UNDER_REVIEW", "APPROVED", "REJECTED", "RESUBMITTED", "NOT_REQUESTED"] as const;
+
 // used as the Event data
 export enum EventData {
     eventTitle = "Slotflow Appointment",

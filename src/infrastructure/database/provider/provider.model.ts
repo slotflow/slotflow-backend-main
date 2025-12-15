@@ -1,4 +1,6 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
+import { AdminVerificationStatusType } from '../../dtos/common.dto';
+import { adminVerificationStatsArray } from '../../../shared/utils/constants';
 
 export interface IProvider extends Document {
   _id: Types.ObjectId;
@@ -7,8 +9,16 @@ export interface IProvider extends Document {
   password: string;
   isBlocked: boolean;
   isEmailVerified: boolean;
+
   isAdminVerified: boolean;
   verificationRejectionReason: string;
+
+  adminVerificationStatus: AdminVerificationStatusType,
+  isAddressVerified: boolean,
+  isServiceDetailsVerified: boolean,
+  isAvailabilityVerified: boolean,
+  isProofsVerified: boolean,
+
   phone: string;
   profileImage: string;
   addressId: Types.ObjectId;
@@ -75,6 +85,27 @@ const ProviderSchema = new Schema<IProvider>({
       "Rejection reason contains invalid characters",
     ],
   },
+  adminVerificationStatus: {
+    type: String,
+    enum: Object.values(adminVerificationStatsArray),
+    default: adminVerificationStatsArray[5]
+  },
+  isAddressVerified: {
+    type: Boolean,
+    default: false
+  },
+  isServiceDetailsVerified: {
+    type: Boolean,
+    default: false
+  },
+  isAvailabilityVerified: {
+    type: Boolean,
+    default: false
+  },
+  isProofsVerified: {
+    type: Boolean,
+    default: false
+  },
   phone: {
     type: String,
     default: null,
@@ -139,6 +170,13 @@ const ProviderSchema = new Schema<IProvider>({
   }
 }, {
   timestamps: true
+});
+
+ProviderSchema.pre("save", function (next) {
+  if (!this.password && !this.googleId) {
+    return next(new Error("Either password or googleId is required"));
+  }
+  next();
 });
 
 export const ProviderModel = mongoose.model<IProvider>('Provider', ProviderSchema);

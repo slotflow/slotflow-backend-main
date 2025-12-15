@@ -17,6 +17,10 @@ export const AdminChangeProviderTrustedTagZodSchema = z.object({
 // Admin reject provider with reason 
 export const adminRejectProviderZodSchema = z.object({
     verificationRejectionReason: z.string().min(5).max(500).regex(verificationRejectionReasonRegex),
+    isAddressVerified: z.boolean(),
+    isServiceDetailsVerified: z.boolean(),
+    isAvailabilityVerified: z.boolean(),
+    isProofsVerified: z.boolean(),
 });
 
 
@@ -56,15 +60,15 @@ export const AdminChangeServiceBlockStatusZodSchema = z.object({
 // **** admin plan controller **** \\
 //Admin add new plan controller zod validation
 export const AdminAddNewPlanZodSchema = z.object({
-    planName: stringField("PlanName",4,20,/^[a-zA-Z ]{4,20}$/,"Invalid plan name. Only alphabets and spaces are allowed, length between 4 and 20."),
-    description: stringField("Plan description",10,200,/^[\w\d\s!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]{10,200}$/,"Invalid description. Contains unsupported characters."),
-    price: numberField("Plan price",0,100000),
+    planName: stringField("PlanName", 4, 20, /^[a-zA-Z ]{4,20}$/, "Invalid plan name. Only alphabets and spaces are allowed, length between 4 and 20."),
+    description: stringField("Plan description", 10, 200, /^[\w\d\s!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]{10,200}$/, "Invalid description. Contains unsupported characters."),
+    price: numberField("Plan price", 0, 100000),
     features: z.array(
-    stringField("Feature", 1, 100)
-  )
-  .min(1, "At least one feature is required")
-  .max(10, "Maximum 10 features allowed"),
-    maxBookingPerMonth: numberField("Plan maximum booking",0,10000),
+        stringField("Feature", 1, 100)
+    )
+        .min(1, "At least one feature is required")
+        .max(10, "Maximum 10 features allowed"),
+    maxBookingPerMonth: numberField("Plan maximum booking", 0, 10000),
     adVisibility: booleanField("Plan adVisibility"),
 });
 

@@ -17,8 +17,16 @@ export class ProviderRepositoryImpl implements IProviderRepository {
             provider.password,
             provider.isBlocked,
             provider.isEmailVerified,
+
             provider.isAdminVerified,
             provider.verificationRejectionReason,
+
+            provider.adminVerificationStatus,
+            provider.isAddressVerified,
+            provider.isServiceDetailsVerified,
+            provider.isAvailabilityVerified,
+            provider.isProofsVerified,
+
             provider.phone,
             provider.profileImage,
             provider.addressId,
@@ -91,6 +99,7 @@ export class ProviderRepositoryImpl implements IProviderRepository {
                     email: 1,
                     isBlocked: 1,
                     isAdminVerified: 1,
+                    adminVerificationStatus: 1,
                     isEmailVerified: 1,
                     trustedBySlotflow: 1
                 }).skip(skip).limit(limit).lean(),

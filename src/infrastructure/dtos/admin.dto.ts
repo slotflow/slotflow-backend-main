@@ -16,7 +16,7 @@ import { FontendAvailabilityForResponse } from "../../domain/entities/serviceAva
 // Used as the return type of fetch all providers
 // Used in AdminProviderListUseCase, the findAllProviders method in ProviderRepositoryImpl, 
 // and the findAllProviders method in IProviderRepository as the response type with ApiResponse
-export type AdiminFetchAllProviders = Array<Pick<Provider, "_id" | "username" | "email" | "isBlocked" | "isAdminVerified" | "isEmailVerified" | "trustedBySlotflow">>;
+export type AdiminFetchAllProviders = Array<Pick<Provider, "_id" | "username" | "email" | "isBlocked" | "isAdminVerified" | "isEmailVerified" | "trustedBySlotflow" | "adminVerificationStatus">>;
 
 
 
@@ -28,9 +28,8 @@ export interface AdminApproveProviderRequest  {
 
 // **** adminRejectProvider
 // Used as the request interface of admin reject provider
-export interface AdminRejectProviderRequest  {
+export type AdminRejectProviderRequest = Pick<Provider, "verificationRejectionReason" | "isAddressVerified" | "isServiceDetailsVerified" | "isAvailabilityVerified" | "isProofsVerified"> & {
     providerId: Provider["_id"];
-    verificationRejectionReason: Provider["verificationRejectionReason"]
 }
 
 

@@ -5,6 +5,7 @@ import {
     AdminChangeProviderTrustTagRequest,
     AdminRejectProviderRequest,
 } from "../../../infrastructure/dtos/admin.dto";
+import { adminVerificationStatsArray } from "../../../shared/utils/constants";
 import { ApiPaginationRequest, ApiResponse } from "../../../infrastructure/dtos/common.dto";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 
@@ -42,6 +43,9 @@ export class AdminApproveProviderUseCase {
             if (provider.isAdminVerified) throw new Error("Provider is already verified.");
 
             provider.isAdminVerified = true;
+            provider.verificationRejectionReason = null;
+            provider.adminVerificationStatus = adminVerificationStatsArray[2];
+
             const updatedProvider = await this.providerRepository.updateProvider(provider);
             if (!updatedProvider) throw new Error("Provider not found");
 
@@ -63,14 +67,19 @@ export class AdminRejectProviderUseCase {
 
     async execute(payload: AdminRejectProviderRequest): Promise<ApiResponse> {
         try {
-            const { providerId, verificationRejectionReason } = payload;
+            const { providerId, verificationRejectionReason, isAddressVerified, isAvailabilityVerified, isProofsVerified, isServiceDetailsVerified } = payload;
 
             const provider = await this.providerRepository.findProviderById(providerId);
             if (!provider) throw new Error("User not found.");
 
             provider.isAdminVerified = false;
+            provider.adminVerificationStatus = adminVerificationStatsArray[3];
             provider.verificationRejectionReason = verificationRejectionReason;
-            console.log("provider : ",provider);
+            provider.isAddressVerified = isAddressVerified;
+            provider.isServiceDetailsVerified = isServiceDetailsVerified;
+            provider.isAvailabilityVerified = isAvailabilityVerified;
+            provider.isProofsVerified = isProofsVerified;
+
             const updatedProvider = await this.providerRepository.updateProvider(provider);
             if (!updatedProvider) throw new Error("Provider not found");
 
