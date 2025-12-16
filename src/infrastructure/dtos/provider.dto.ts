@@ -37,6 +37,13 @@ export interface ProviderFindProviderServiceResProps extends FindProviderService
 export type ProviderFetchProviderServiceResponse = ProviderFindProviderServiceResProps | {};
 
 
+// provider update service details use case request type
+export type ProviderUpdateProviderServiceRequest = Pick<ProviderService, "providerId" | "service" | "serviceName" | "serviceDescription" | "servicePrice" | "isGroupService" | "maxParticipants" | "serviceExperience" | "serviceMode" | "serviceType" | "tags"> & Partial<Pick<ProviderService, "videoUrl" | "requirements">> & {
+    serviceId: ProviderService["_id"];
+}
+export type ProviderUpdateProviderServiceResponse = ProviderFindProviderServiceResProps | {};
+
+
 
 
 
@@ -90,10 +97,16 @@ export type ProviderUpdateServiceProofResponse = Provider["serviceProof"];
 
 export type ProviderUpdateProfileRequest = Pick<Provider,"_id"> & Partial<Pick<Provider, "username" | "profileImage" | "phone" | "identityProof" | "serviceProof" | "googleConnected" | "addressId" | "googleId" | "isAdminVerified" | "isEmailVerified" | "isBlocked" | "serviceAvailabilityId" | "serviceId" | "stripeAccountId" | "verificationToken" | "trustedBySlotflow" | "subscription" | "password">>
 
+// provider admin approval
 export interface ProviderAdminApprovalRequest {
     providerId: Provider["_id"];
 }
 export type ProviderAdminApprovalResponse = Pick<Provider, "adminVerificationStatus">; 
+
+// provider delete proof request
+export interface ProviderDeleteProofRequest {
+    providerId: Provider["_id"];
+}
 
 
 

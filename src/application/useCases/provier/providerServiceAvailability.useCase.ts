@@ -22,8 +22,8 @@ export class ProviderCreateServiceAvailabilitiesUseCase {
             const { providerId, availabilities } = payload;
             if (!providerId || !availabilities || availabilities.length === 0) throw new Error("Invalid request.");
 
-            const convertedProviderId = new Types.ObjectId(providerId);
-            const provider = await this.providerRepository.findProviderById(new Types.ObjectId(providerId));
+
+            const provider = await this.providerRepository.findProviderById(providerId);
             if (!provider) throw new Error("Please logout and try again.");
 
             const newAvailabilities: FrontendAvailabilityUpdatedSlots[] = availabilities.map((availability: FrontendAvailabilityForRequest) => ({
@@ -33,7 +33,7 @@ export class ProviderCreateServiceAvailabilitiesUseCase {
                 }))
             }));
 
-            const serviceAvailability = await this.serviceAvailabilityRepository.createServiceAvailabilities(convertedProviderId, newAvailabilities);
+            const serviceAvailability = await this.serviceAvailabilityRepository.createServiceAvailabilities(providerId, newAvailabilities);
             if (!serviceAvailability) throw new Error("Service availability saving failed.");
 
             if (provider && serviceAvailability && serviceAvailability._id) {
@@ -65,8 +65,8 @@ export class ProviderFetchServiceAvailabilityUseCase {
             const selectedDate = dayjs(date).format('YYYY-MM-DD');
 
             const availability = await this.serviceAvailabilityRepository.findServiceAvailabilityByProviderId(
-                new Types.ObjectId(providerId),
-                new Date(date)
+                providerId,
+                date
             );
 
             if (availability === null) return { success: true, message: "Provider service availability not yet added.", data: {} };

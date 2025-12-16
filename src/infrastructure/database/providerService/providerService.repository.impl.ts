@@ -2,6 +2,7 @@ import { Types } from "mongoose";
 import { subscriptionStatusArray } from "../../../shared/utils/constants";
 import { IProviderService, ProviderServiceModel } from "./providerService.model";
 import { ProviderService } from "../../../domain/entities/providerService.entity";
+import { ProviderUpdateProviderServiceRequest, ProviderUpdateProviderServiceResponse } from "../../dtos/provider.dto";
 import { CreateProviderServiceRequest, FindProviderServiceResponse, FindProvidersUsingServiceIdsResponse, IProviderServiceRepository } from "../../../domain/interfaces/repositories/IProviderService.repository";
 
 export class ProviderServiceRepositoryImpl implements IProviderServiceRepository {
@@ -26,12 +27,12 @@ export class ProviderServiceRepositoryImpl implements IProviderServiceRepository
         );
     }
 
-    async createProviderService(providerService: CreateProviderServiceRequest): Promise<ProviderService | null> {
+    async createProviderService(payload: CreateProviderServiceRequest): Promise<ProviderService | null> {
         try {
-            const newProviderService = await ProviderServiceModel.create(providerService);
+            const newProviderService = await ProviderServiceModel.create(payload);
             return newProviderService ? this.mapToEntity(newProviderService) : null;
         } catch (error) {
-            console.log("createProviderService error : ",error);
+            console.log("createProviderService error : ", error);
             throw new Error("Failed to create provider service");
         }
     }
@@ -45,13 +46,13 @@ export class ProviderServiceRepositoryImpl implements IProviderServiceRepository
                 }).lean();
             return service || {};
         } catch (error) {
-            console.log("findProviderServiceByProviderId error : ",error);
+            console.log("findProviderServiceByProviderId error : ", error);
             throw new Error("Failed to find provider service");
         }
     }
 
     async findProvidersUsingServiceIds(serviceIds: Types.ObjectId[]): Promise<Array<FindProvidersUsingServiceIdsResponse> | []> {
-        console.log("serviceIds : ",serviceIds);
+        console.log("serviceIds : ", serviceIds);
         try {
             const pipeline: any[] = [];
             const now = new Date();
@@ -141,11 +142,31 @@ export class ProviderServiceRepositoryImpl implements IProviderServiceRepository
             );
 
             const providers = await ProviderServiceModel.aggregate(pipeline);
-            console.log("providers : ",providers);
+            console.log("providers : ", providers);
             return providers;
         } catch (error) {
-            console.log("findProvidersUsingServiceIds error : ",error);
+            console.log("findProvidersUsingServiceIds error : ", error);
             throw new Error("Failed to find providers");
+        }
+    }
+
+    async updateProviderServiceDetails(payload: ProviderUpdateProviderServiceRequest): Promise<ProviderUpdateProviderServiceResponse | null> {
+        try {
+            const { serviceId, ...data } = payload;
+            const service = await ProviderServiceModel.findOneAndUpdate(
+                    { _id: serviceId },
+                    { $set: { ...data } },
+                    { new: true }
+                )
+                .populate({
+                    path: "service",
+                    select: "-_id serviceName",
+                })
+                .lean<ProviderUpdateProviderServiceResponse>();
+            return service || null;
+        } catch (error) {
+            console.log("updateProviderServiceDetails error : ", error);
+            throw new Error("Failed to update provider service details");
         }
     }
 

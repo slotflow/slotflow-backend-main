@@ -23,6 +23,8 @@ router.patch('/profile/identity', authMiddleware, providerProfileController.upda
 router.patch('/profile/service', authMiddleware, providerProfileController.updateServiceProof);
 router.get('/profile/proofs', authMiddleware,providerProfileController.fetchProofs);
 router.patch('/profile/approval', authMiddleware, providerProfileController.requestAdminApproval);
+router.delete('/profile/identity', authMiddleware, providerProfileController.deleteIdentityProof);
+router.delete('/profile/service', authMiddleware, providerProfileController.deleteServiceProof);
 
 router.post('/addresses', authMiddleware, provideAddressController.createAddress);
 router.get('/address', authMiddleware, provideAddressController.getAddress);
@@ -38,6 +40,7 @@ router.get('/bookings/:bookingId', authMiddleware, providerBookingController.fet
 
 router.post('/service', authMiddleware,providerServiceController.createServiceDetails);
 router.get('/service', authMiddleware, providerServiceController.getServiceDetails);
+router.patch('/service/:serviceId', authMiddleware, providerServiceController.updateServiceDetails);
 
 router.post('/availabilities', authMiddleware, providerServiceAvailabilityController.createServiceAvailability);
 router.get('/availability', authMiddleware, providerServiceAvailabilityController.getServiceAvailability);

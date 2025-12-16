@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
 import { AdminVerificationStatusType } from '../../dtos/common.dto';
-import { adminVerificationStatsArray } from '../../../shared/utils/constants';
+import { adminVerificationStatusArray } from '../../../shared/utils/constants';
 
 export interface IProvider extends Document {
   _id: Types.ObjectId;
@@ -87,8 +87,8 @@ const ProviderSchema = new Schema<IProvider>({
   },
   adminVerificationStatus: {
     type: String,
-    enum: Object.values(adminVerificationStatsArray),
-    default: adminVerificationStatsArray[5]
+    enum: Object.values(adminVerificationStatusArray),
+    default: adminVerificationStatusArray[5]
   },
   isAddressVerified: {
     type: Boolean,

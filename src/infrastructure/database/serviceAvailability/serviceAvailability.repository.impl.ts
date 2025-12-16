@@ -29,7 +29,7 @@ export class ServiceAvailabilityRepositoryImpl implements IServiceAvailabilityRe
         }
     }
 
-    async findServiceAvailabilityByProviderId(providerId: Types.ObjectId, date: Date): Promise<FontendAvailabilityForResponse | null> {
+    async findServiceAvailabilityByProviderId(providerId: Types.ObjectId, date: Date, availabilityId?: Types.ObjectId): Promise<FontendAvailabilityForResponse | null> {
 
         const startOfDay = new Date(date);
         console.log("startOfDay : ",startOfDay);
@@ -42,12 +42,21 @@ export class ServiceAvailabilityRepositoryImpl implements IServiceAvailabilityRe
         const targetDay = daysOfWeek[date.getDay()];
         console.log("targetDay : ",targetDay);
 
+        let match: {
+            providerId: Types.ObjectId
+            _id?: Types.ObjectId,
+        } = {
+            providerId: providerId,
+        };
+
+        if(availabilityId) {
+            match._id = availabilityId
+        }
+
         try {
             const availability = await ServiceAvailabilityModel.aggregate([
                 {
-                    $match: {
-                        providerId: providerId,
-                    }
+                    $match: match
                 },
                 {
                     $addFields: {
@@ -136,7 +145,6 @@ export class ServiceAvailabilityRepositoryImpl implements IServiceAvailabilityRe
                     $replaceWith: "$availabilityForDay"
                 },
             ]);
-
             return availability[0] || null;
 
         } catch (error) {
@@ -180,6 +188,16 @@ export class ServiceAvailabilityRepositoryImpl implements IServiceAvailabilityRe
             return availability || null;
         } catch (error) {
             console.log("findServiceAvailabilityWithLiveData error : ",error);
+            throw new Error("Failed to find service availability");
+        }
+    }
+
+    async deleteServiceAvailability(availabilityId: Types.ObjectId): Promise<boolean> {
+        try {
+            const result = await ServiceAvailabilityModel.findByIdAndDelete(availabilityId);
+            return result ? true : false;
+        } catch (error) {
+            console.log("deleteServiceAvailability error : ",error);
             throw new Error("Failed to find service availability");
         }
     }

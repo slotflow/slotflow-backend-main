@@ -93,7 +93,7 @@ export class AdminfetchProviderServiceAvailabilityUseCase {
             const provider = await this.providerRepository.findProviderById(providerId);
             if (!provider) throw new Error("No user found.");
 
-            const availability = await this.serviceAvailabilityRepository.findServiceAvailabilityByProviderId(providerId, date);
+            const availability = await this.serviceAvailabilityRepository.findServiceAvailabilityByProviderId(providerId, date, provider.serviceAvailabilityId);
             if (availability == null) return { success: true, message: "Service availability fetched successfully.", data: {} };
             const updatedSlots = availability.slots.map((slot) => {
                 const slotDateTime = dayjs(`${selectedDate} ${slot.time}`, 'YYYY-MM-DD hh:mm A');

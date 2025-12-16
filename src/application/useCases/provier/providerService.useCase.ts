@@ -2,7 +2,7 @@ import { Types } from 'mongoose';
 import { ApiResponse } from '../../../infrastructure/dtos/common.dto';
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
 import { CreateProviderServiceRequest, IProviderServiceRepository } from '../../../domain/interfaces/repositories/IProviderService.repository';
-import { ProviderFetchProviderServiceRequest, ProviderFetchProviderServiceResponse, ProviderFindProviderServiceResProps } from '../../../infrastructure/dtos/provider.dto';
+import { ProviderFetchProviderServiceRequest, ProviderFetchProviderServiceResponse, ProviderFindProviderServiceResProps, ProviderUpdateProviderServiceRequest, ProviderUpdateProviderServiceResponse } from '../../../infrastructure/dtos/provider.dto';
 
 export class ProviderCreateServiceDetailsUseCase {
 
@@ -45,8 +45,8 @@ export class ProviderFetchServiceDetailsUseCase {
         try {
             const { providerId } = payload;
 
-            const service = await this.provderServiceRepository.findProviderServiceByProviderId(new Types.ObjectId(providerId));
-            if (service === null) return { success: true, message: "Provider service details not yet addedd", data: {} };
+            const service = await this.provderServiceRepository.findProviderServiceByProviderId(providerId);
+            if (service === null) return { success: true, message: "Provider service details not yet created", data: {} };
             function isServiceData(obj: any): obj is ProviderFindProviderServiceResProps {
                 return obj && typeof obj === 'object' && '_id' in obj;
             }
@@ -61,6 +61,35 @@ export class ProviderFetchServiceDetailsUseCase {
         } catch (error) {
             console.log("ProviderFetchServiceDetailsUseCase error : ", error);
             throw new Error("Failed to fetch service details");
+        }
+    }
+}
+
+
+export class ProviderUpdateServiceDetailsUseCase {
+    constructor(
+        private provderServiceRepository: IProviderServiceRepository
+    ) { }
+
+    async execute(payload: ProviderUpdateProviderServiceRequest): Promise<ApiResponse<ProviderUpdateProviderServiceResponse>> {
+        try {
+            const service = await this.provderServiceRepository.updateProviderServiceDetails(payload);
+            if (service === null) return { success: true, message: "Provider service details not yet created", data: {} };
+            function isServiceData(obj: any): obj is ProviderFindProviderServiceResProps {
+                return obj && typeof obj === 'object' && '_id' in obj;
+            }
+
+            if (!isServiceData(service)) {
+                return { success: true, message: "Provider service details updated successfully.", data: {} };
+            }
+
+            const { createdAt, updatedAt, ...rest } = service;
+
+            return { success: true, message: "Provider service details updated successfully", data: rest };
+
+        } catch(error) {
+            console.log("ProviderUpdateServiceDetailsUseCase error : ", error);
+            throw new Error("Failed to update service details");
         }
     }
 }

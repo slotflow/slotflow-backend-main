@@ -5,7 +5,7 @@ import {
     AdminChangeProviderTrustTagRequest,
     AdminRejectProviderRequest,
 } from "../../../infrastructure/dtos/admin.dto";
-import { adminVerificationStatsArray } from "../../../shared/utils/constants";
+import { adminVerificationStatusArray } from "../../../shared/utils/constants";
 import { ApiPaginationRequest, ApiResponse } from "../../../infrastructure/dtos/common.dto";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 
@@ -44,7 +44,7 @@ export class AdminApproveProviderUseCase {
 
             provider.isAdminVerified = true;
             provider.verificationRejectionReason = null;
-            provider.adminVerificationStatus = adminVerificationStatsArray[2];
+            provider.adminVerificationStatus = adminVerificationStatusArray[2];
 
             const updatedProvider = await this.providerRepository.updateProvider(provider);
             if (!updatedProvider) throw new Error("Provider not found");
@@ -73,7 +73,7 @@ export class AdminRejectProviderUseCase {
             if (!provider) throw new Error("User not found.");
 
             provider.isAdminVerified = false;
-            provider.adminVerificationStatus = adminVerificationStatsArray[3];
+            provider.adminVerificationStatus = adminVerificationStatusArray[3];
             provider.verificationRejectionReason = verificationRejectionReason;
             provider.isAddressVerified = isAddressVerified;
             provider.isServiceDetailsVerified = isServiceDetailsVerified;

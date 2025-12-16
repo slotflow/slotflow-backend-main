@@ -1,6 +1,6 @@
 import { ISignedUrlCache, SignedUrlCacheModel } from "./signedUrlCache.model";
 import { SignedUrlCache } from "../../../domain/entities/signedUrlCache.entity";
-import { CreateSignedUrlRequest, FindSignedUrlRequest, ISignedUrlCacheRepository } from "../../../domain/interfaces/repositories/ISignedUrlCache.repository";
+import { CreateSignedUrlRequest, deleteSignedUrlRequest, FindSignedUrlRequest, ISignedUrlCacheRepository } from "../../../domain/interfaces/repositories/ISignedUrlCache.repository";
 
 export class SignedUrlCacheRepositoryImpl implements ISignedUrlCacheRepository {
 
@@ -15,9 +15,9 @@ export class SignedUrlCacheRepositoryImpl implements ISignedUrlCacheRepository {
         )
     }
 
-    async createSignedUrl(data: CreateSignedUrlRequest): Promise<SignedUrlCache> {
+    async createSignedUrl(payload: CreateSignedUrlRequest): Promise<SignedUrlCache> {
         try {
-            const created = await SignedUrlCacheModel.create(data);
+            const created = await SignedUrlCacheModel.create(payload);
             return this.mapToEntity(created);
         } catch (error) {
             console.log("createSignedUrl error : ", error);
@@ -25,9 +25,9 @@ export class SignedUrlCacheRepositoryImpl implements ISignedUrlCacheRepository {
         }
     }
 
-    async findSignedUrl(data: FindSignedUrlRequest): Promise<SignedUrlCache> {
+    async findSignedUrl(payload: FindSignedUrlRequest): Promise<SignedUrlCache> {
         try {
-            const existing = await SignedUrlCacheModel.findOne({ key: data.key });
+            const existing = await SignedUrlCacheModel.findOne({ key: payload.key });
 
             if (!existing) return null as any;
 
@@ -38,11 +38,11 @@ export class SignedUrlCacheRepositoryImpl implements ISignedUrlCacheRepository {
         }
     }
 
-    async updateSignedUrl(data: CreateSignedUrlRequest): Promise<SignedUrlCache> {
+    async updateSignedUrl(payload: CreateSignedUrlRequest): Promise<SignedUrlCache> {
         try {
             const updated = await SignedUrlCacheModel.findOneAndUpdate(
-                { key: data.key },
-                data,
+                { key: payload.key },
+                payload,
                 { upsert: true, new: true }
             );
 
@@ -50,6 +50,16 @@ export class SignedUrlCacheRepositoryImpl implements ISignedUrlCacheRepository {
         } catch (error) {
             console.log("updateSignedUrl error : ", error);
             throw new Error("Failed to update signed url");
+        }
+    }
+
+    async deleteSignedUrl(payload: deleteSignedUrlRequest): Promise<boolean> {
+        try {
+             const result = await SignedUrlCacheModel.findByIdAndDelete(payload._id);
+             return result ? true : false;
+        } catch (error) {
+            console.log("deleteSignedUrl error : ",error);
+            throw new Error("Failed to delte")
         }
     }
 }

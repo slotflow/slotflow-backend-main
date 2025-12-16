@@ -13,13 +13,14 @@ import {
   ProviderUpdateprofileImageRequestPayload,
   ProviderAdminApprovalResponse,
   ProviderAdminApprovalRequest,
+  ProviderDeleteProofRequest,
 } from "../../../infrastructure/dtos/provider.dto";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { ApiResponse } from "../../../infrastructure/dtos/common.dto";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { ISignedUrlCacheRepository } from "../../../domain/interfaces/repositories/ISignedUrlCache.repository";
-import { adminVerificationStatsArray } from "../../../shared/utils/constants";
+import { adminVerificationStatusArray } from "../../../shared/utils/constants";
 
 export class ProviderFetchProfileDetailsUseCase {
   constructor(
@@ -82,6 +83,7 @@ export abstract class ProviderFileUpdateBaseUseCase {
   ) { }
 
   protected async updateFile(providerId: Types.ObjectId, field: string, key: string) {
+
     const updated = await this.providerRepository.updateProviderFields({
       _id: providerId,
       [field]: key
@@ -167,31 +169,123 @@ export class ProviderRequestForApprovalUseCase {
       if(!provider) throw new Error("Invalid request");
       if (provider?.isAdminVerified) throw new Error("You are already verified");
 
-      if (provider?.adminVerificationStatus === adminVerificationStatsArray[0] ||
-        provider?.adminVerificationStatus === adminVerificationStatsArray[1] ||
-        provider?.adminVerificationStatus === adminVerificationStatsArray[2] ||
-        provider?.adminVerificationStatus === adminVerificationStatsArray[4]
+      if (provider?.adminVerificationStatus === adminVerificationStatusArray[0] ||
+        provider?.adminVerificationStatus === adminVerificationStatusArray[1] ||
+        provider?.adminVerificationStatus === adminVerificationStatusArray[2] ||
+        provider?.adminVerificationStatus === adminVerificationStatusArray[4]
       ) {
         throw new Error("Invalid request");
       }
 
-      if (provider?.adminVerificationStatus === adminVerificationStatsArray[5]) {
-        provider.adminVerificationStatus = adminVerificationStatsArray[0]
-      } else if (provider?.adminVerificationStatus === adminVerificationStatsArray[3]) {
-        provider.adminVerificationStatus = adminVerificationStatsArray[4]
+      if (provider?.adminVerificationStatus === adminVerificationStatusArray[5]) {
+        provider.adminVerificationStatus = adminVerificationStatusArray[0]
+      } else if (provider?.adminVerificationStatus === adminVerificationStatusArray[3]) {
+        provider.adminVerificationStatus = adminVerificationStatusArray[4]
       }
+
+      provider.verificationRejectionReason = null;
 
       const updatedProvider = await this.providerRepository.updateProvider(provider);
       if(!updatedProvider) throw new Error("Failed to update approval request status");
 
       return { 
         success: true, 
-        message: `${updatedProvider.adminVerificationStatus === adminVerificationStatsArray[0] ? "Submitted" : "Resubmitted"} successfully`, 
+        message: `${updatedProvider.adminVerificationStatus === adminVerificationStatusArray[0] ? "Submitted" : "Resubmitted"} successfully`, 
         data: { adminVerificationStatus: updatedProvider?.adminVerificationStatus } }
 
     } catch (error) {
       console.log("ProviderRequestForApprovalUseCase error : ", error);
       throw new Error("Failed to update approval request status");
+    }
+  }
+}
+
+
+export class ProvideDeleteIdentityProofUseCase {
+  constructor(
+    private s3Client: S3Client,
+    private providerRepository: IProviderRepository,
+    private signedUrlCacheRepository: ISignedUrlCacheRepository
+  ) { }
+
+  async execute(payload: ProviderDeleteProofRequest): Promise<ApiResponse> {
+    try {
+      const { providerId } = payload;
+
+      const provider = await this.providerRepository.findProviderById(providerId);
+      if(!provider) throw new Error("User not found");
+      
+      if(!provider.identityProof) throw new Error("No file found");
+
+      await this.s3Client.send(
+        new DeleteObjectCommand({
+          Bucket: awsConfig.aws_s3Bucket_name,
+          Key: provider.identityProof,
+        })
+      );
+
+      const signedUrl = await this.signedUrlCacheRepository.findSignedUrl({ key: provider.identityProof});
+      if(signedUrl) {
+        const result = await this.signedUrlCacheRepository.deleteSignedUrl(signedUrl._id);
+        if(!result) throw new Error("Faile to remove existing file");
+      }
+
+      provider.identityProof = "";
+      await this.providerRepository.updateProvider(provider);
+
+      return {
+        success: true,
+        message: "File deleted successfully",
+      };
+      
+    } catch(error) {
+      console.log("ProvideDeleteIdentityProofUseCase error : ",error);
+      throw new Error("Failed to delete identity proof");
+    }
+  }
+}
+
+
+export class ProvideDeleteServiceProofUseCase {
+  constructor(
+    private s3Client: S3Client,
+    private providerRepository: IProviderRepository,
+    private signedUrlCacheRepository: ISignedUrlCacheRepository
+  ) { }
+
+  async execute(payload: ProviderDeleteProofRequest): Promise<ApiResponse> {
+    try {
+      const { providerId } = payload;
+
+      const provider = await this.providerRepository.findProviderById(providerId);
+      if(!provider) throw new Error("User not found");
+      
+      if(!provider.serviceProof) throw new Error("No file found");
+
+      await this.s3Client.send(
+        new DeleteObjectCommand({
+          Bucket: awsConfig.aws_s3Bucket_name,
+          Key: provider.serviceProof,
+        })
+      );
+
+      const signedUrl = await this.signedUrlCacheRepository.findSignedUrl({ key: provider.serviceProof});
+      if(signedUrl) {
+        const result = await this.signedUrlCacheRepository.deleteSignedUrl(signedUrl._id);
+        if(!result) throw new Error("Faile to remove existing file");
+      }
+
+      provider.serviceProof = "";
+      await this.providerRepository.updateProvider(provider);
+
+      return {
+        success: true,
+        message: "File deleted successfully",
+      };
+      
+    } catch(error) {
+      console.log("ProvideDeleteServiceProofUseCase error : ",error);
+      throw new Error("Failed to delete identity proof");
     }
   }
 }

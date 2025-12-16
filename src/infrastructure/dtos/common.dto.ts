@@ -11,7 +11,7 @@ import { Subscription } from "../../domain/entities/subscription.entity";
 import { Availability } from "../../domain/entities/serviceAvailability.entity";
 import { Booking, ParticipantPresence } from "../../domain/entities/booking.entity";
 import { findSubscriptionFullDetailsResProps } from "../../domain/interfaces/repositories/ISubscription.repository";
-import { adminVerificationStatsArray, appointmentStatusArray, daysArray, paymentForArray, paymentGatewayArray, roleArray, serviceCategoryArray, serviceModeArray, serviceTypeArray, subscriptionStatusArray } from "../../shared/utils/constants";
+import { adminVerificationStatusArray, appointmentStatusArray, daysArray, paymentForArray, paymentGatewayArray, roleArray, serviceCategoryArray, serviceModeArray, serviceTypeArray, subscriptionStatusArray } from "../../shared/utils/constants";
 
 export type RoleType = typeof roleArray[number];
 
@@ -31,7 +31,7 @@ export type SubscriptionStatusType = typeof subscriptionStatusArray[number];
 
 export type ServiceCategoryType = typeof serviceCategoryArray[number];
 
-export type AdminVerificationStatusType = typeof adminVerificationStatsArray[number];
+export type AdminVerificationStatusType = typeof adminVerificationStatusArray[number];
 
 // **** 1. Used as the request interface for the paginated request
 export interface ApiPaginationRequest {

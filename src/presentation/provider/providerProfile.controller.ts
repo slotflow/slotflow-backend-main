@@ -10,7 +10,7 @@ import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/p
 import { FetchProviderProofsUseCase } from "../../application/useCases/common/fetchProviderProofs.useCase";
 import { ISignedUrlCacheRepository } from "../../domain/interfaces/repositories/ISignedUrlCache.repository";
 import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
-import { ProviderFetchProfileDetailsUseCase, ProviderIdentityProofUpdateUseCase, ProviderRequestForApprovalUseCase, ProviderServiceProofUpdateUseCase, ProviderUpdateProfileImageUseCase, ProviderUpdateProviderInfoUseCase } from "../../application/useCases/provier/providerProfile.useCase";
+import { ProvideDeleteIdentityProofUseCase, ProvideDeleteServiceProofUseCase, ProviderFetchProfileDetailsUseCase, ProviderIdentityProofUpdateUseCase, ProviderRequestForApprovalUseCase, ProviderServiceProofUpdateUseCase, ProviderUpdateProfileImageUseCase, ProviderUpdateProviderInfoUseCase } from "../../application/useCases/provier/providerProfile.useCase";
 
 const providerRepository: IProviderRepository = new ProviderRepositoryImpl();
 const signedUrlCacheRepository: ISignedUrlCacheRepository = new SignedUrlCacheRepositoryImpl();
@@ -24,6 +24,8 @@ const fetchProviderProofsUseCase = new FetchProviderProofsUseCase(signedUrlServi
 const providerUpdateProfileImageUseCase = new ProviderUpdateProfileImageUseCase(s3Client, providerRepository, signedUrlCacheRepository);
 const providerServiceProofUpdateUseCase = new ProviderServiceProofUpdateUseCase(s3Client, providerRepository, signedUrlCacheRepository);
 const providerIdentityProofUpdateUseCase = new ProviderIdentityProofUpdateUseCase(s3Client, providerRepository, signedUrlCacheRepository);
+const provideDeleteIdentityProofUseCase = new ProvideDeleteIdentityProofUseCase(s3Client, providerRepository, signedUrlCacheRepository);
+const provideDeleteServiceProofUseCase = new ProvideDeleteServiceProofUseCase(s3Client, providerRepository, signedUrlCacheRepository);
 
 class ProviderProfileController {
     constructor(
@@ -33,7 +35,9 @@ class ProviderProfileController {
         private providerIdentityProofUpdateUseCase: ProviderIdentityProofUpdateUseCase,
         private providerServiceProofUpdateUseCase: ProviderServiceProofUpdateUseCase,
         private fetchProviderProofsUseCase: FetchProviderProofsUseCase,
-        private providerRequestForApprovalUseCase: ProviderRequestForApprovalUseCase
+        private providerRequestForApprovalUseCase: ProviderRequestForApprovalUseCase,
+        private provideDeleteIdentityProofUseCase: ProvideDeleteIdentityProofUseCase,
+        private provideDeleteServiceProofUseCase: ProvideDeleteServiceProofUseCase,
     ) {
         this.getProfileDetails = this.getProfileDetails.bind(this);
         this.updateProfileImage = this.updateProfileImage.bind(this);
@@ -42,6 +46,8 @@ class ProviderProfileController {
         this.updateServiceProof = this.updateServiceProof.bind(this);
         this.fetchProofs = this.fetchProofs.bind(this);
         this.requestAdminApproval = this.requestAdminApproval.bind(this);
+        this.deleteIdentityProof = this.deleteIdentityProof.bind(this);
+        this.deleteServiceProof = this.deleteServiceProof.bind(this);
     }
 
     async getProfileDetails(req: Request, res: Response, next: NextFunction) {
@@ -144,6 +150,32 @@ class ProviderProfileController {
         }
     }
 
+    async deleteIdentityProof(req: Request, res: Response, next: NextFunction) {
+        try {
+            const providerId = (req.user as DecodedUser).userOrProviderId;
+            const result = await this.provideDeleteIdentityProofUseCase.execute({
+                providerId: new Types.ObjectId(providerId)
+            })
+            res.status(200).json(result);
+        } catch (error) {
+            console.log("deleteIdentityProof error : ", error);
+            next(error);
+        }
+    }
+
+    async deleteServiceProof(req: Request, res: Response, next: NextFunction) {
+        try {
+            const providerId = (req.user as DecodedUser).userOrProviderId;
+            const result = await this.provideDeleteServiceProofUseCase.execute({
+                providerId: new Types.ObjectId(providerId)
+            })
+            res.status(200).json(result);
+        } catch (error) {
+            console.log("deleteServiceProof error : ", error);
+            next(error);
+        }
+    }
+
 }
 
 const providerProfileController = new ProviderProfileController(
@@ -153,7 +185,9 @@ const providerProfileController = new ProviderProfileController(
     providerIdentityProofUpdateUseCase,
     providerServiceProofUpdateUseCase,
     fetchProviderProofsUseCase,
-    providerRequestForApprovalUseCase
+    providerRequestForApprovalUseCase,
+    provideDeleteIdentityProofUseCase,
+    provideDeleteServiceProofUseCase
 );
 
 export { providerProfileController };

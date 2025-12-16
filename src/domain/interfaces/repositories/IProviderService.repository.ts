@@ -1,6 +1,7 @@
 import { Types } from "mongoose";
 import { Service } from "../../entities/service.entity";
 import { ProviderService } from "../../entities/providerService.entity";
+import { ProviderUpdateProviderServiceRequest, ProviderUpdateProviderServiceResponse } from "../../../infrastructure/dtos/provider.dto";
 
 export type CreateProviderServiceRequest = Pick<ProviderService, "providerId" | "service" | "serviceName" | "serviceDescription" | "servicePrice" | "isGroupService" | "maxParticipants" | "serviceExperience" | "serviceMode" | "serviceType" | "tags"> & Partial<Pick<ProviderService, "videoUrl" | "requirements">>;
 
@@ -28,10 +29,12 @@ export interface FindProvidersUsingServiceIdsResponse {
 
 export interface IProviderServiceRepository {
 
-    createProviderService(providerService: CreateProviderServiceRequest): Promise<ProviderService | null>;
+    createProviderService(payload: CreateProviderServiceRequest): Promise<ProviderService | null>;
 
     findProviderServiceByProviderId(providerId: Types.ObjectId): Promise<FindProviderServiceResponse | {}>;
 
     findProvidersUsingServiceIds(serviceIds: Types.ObjectId[]): Promise<Array<FindProvidersUsingServiceIdsResponse> | []>;
+
+    updateProviderServiceDetails(payload: ProviderUpdateProviderServiceRequest): Promise<ProviderUpdateProviderServiceResponse | null>;
 
 }
