@@ -1,9 +1,8 @@
 import Stripe from "stripe";
-import { SubscriptionPlan } from "./common.dto";
+import { Address, SubscriptionPlan } from "./common.dto";
 import { User } from "../../domain/entities/user.entity";
 import { Plan } from "../../domain/entities/plan.entity";
 import { Review } from "../../domain/entities/review.entity";
-import { Address } from "../../domain/entities/address.entity";
 import { Service } from "../../domain/entities/service.entity";
 import { Booking } from "../../domain/entities/booking.entity";
 import { Provider } from "../../domain/entities/provider.entity";
@@ -17,7 +16,7 @@ export interface ProviderFetchAddressRequest {
     providerId: Provider["_id"];
 }
 // provider fetch address use case response interface
-export type ProviderFetchAddressResponse = Pick<Address, "_id" | "addressLine" | "landMark" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location"> | {};
+export type ProviderFetchAddressResponse = Pick<Address, "_id" | "addressLine" | "landMark" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location"> | null;
 
 
 

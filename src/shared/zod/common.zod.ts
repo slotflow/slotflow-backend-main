@@ -149,7 +149,7 @@ export const DateZodSchema = z.object({
 
 // User and Provider addess adding controllerz zod validation
 export const CreateAddressZodSchema = z.object({
-  _id: z.string(),
+  _id: z.string().optional(),
 
   addressLine: z
     .string()

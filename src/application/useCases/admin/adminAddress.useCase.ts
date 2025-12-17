@@ -1,4 +1,3 @@
-import { ApiResponse } from "../../dtos/common.dto";
 import { AdminFetchUserOrProviderAddressResponse } from "../../dtos/admin.dto";
 import { IAddressRepository } from "../../../domain/interfaces/repositories/IAddress.repository";
 
@@ -7,14 +6,14 @@ export class AdminFetchUserOrProviderAddressUseCase {
         private addressRepository: IAddressRepository
     ) { }
 
-    async execute(userOrProviderId: string): Promise<ApiResponse<AdminFetchUserOrProviderAddressResponse>> {
+    async execute(userOrProviderId: string): Promise<AdminFetchUserOrProviderAddressResponse> {
         try {
 
-            const addressData = await this.addressRepository.findByUserId(userOrProviderId);
-            if (addressData == null) return { success: true, message: "Address not yet added.", data: {} };
+            const address = await this.addressRepository.findByUserId(userOrProviderId);
+            if(!address) return null;
 
-            const { id, ...address } = addressData;
-            return { success: true, message: "Address fetched successfully.", data: address };
+            const { _id, ...rest } = address;
+            return rest;
 
         } catch (error) {
             console.log("AdminFetchUserOrProviderAddressUseCase : ", error);

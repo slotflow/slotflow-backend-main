@@ -5,7 +5,7 @@ export type GeoLocation = {
 
 export class Address {
     constructor(
-        public readonly id: string,
+        public readonly _id: string,
         public readonly userId: string,
         public addressLine: string,
         public landMark: string,
@@ -17,7 +17,7 @@ export class Address {
         public state: string,
         public country: string,
         public location: GeoLocation,
-        public readonly createdAt: Date,
-        public readonly updatedAt: Date,
+        public readonly createdAt = new Date(),
+        public updatedAt: Date = new Date(),
     ) { }
 }

@@ -26,8 +26,12 @@ export class AddressRepositoryImpl implements IAddressRepository {
     }
 
     async update(address: Address): Promise<Address> {
+        if (!address._id) {
+            throw new Error("Cannot update address without id");
+        }
+
         const doc = await AddressModel.findByIdAndUpdate(
-            address.id,
+            address._id,
             AddressMapper.toPersistence(address),
             { new: true }
         );

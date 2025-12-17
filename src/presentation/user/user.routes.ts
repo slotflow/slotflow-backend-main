@@ -15,7 +15,7 @@ router.get('/profile', authMiddleware, userProfileController.getProfileDetails);
 router.post('/profile/image', authMiddleware, upload.single("profileImage"), userProfileController.updateProfileImage);
 router.patch('/profile', authMiddleware, userProfileController.updateUserInfo);
 
-router.post('/addresses', authMiddleware, userAddressController.addAddress);
+router.post('/addresses', authMiddleware, userAddressController.createAddress);
 router.get('/address', authMiddleware, userAddressController.getAddress);
 router.patch('/addresses/:addressId', authMiddleware, userAddressController.updateAddress);
 

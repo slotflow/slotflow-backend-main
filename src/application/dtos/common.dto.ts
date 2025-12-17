@@ -3,7 +3,7 @@ import { Plan } from "../../domain/entities/plan.entity";
 import { User } from "../../domain/entities/user.entity";
 import { Review } from "../../domain/entities/review.entity";
 import { Service } from "../../domain/entities/service.entity";
-import { Address } from "../../domain/entities/address.entity";
+import { GeoLocation } from "../../domain/entities/address.entity";
 import { Payment } from "../../domain/entities/payment.entity";
 import { Provider } from "../../domain/entities/provider.entity";
 import { Credential } from "../../domain/entities/credential.entity";
@@ -32,6 +32,24 @@ export type SubscriptionStatusType = typeof subscriptionStatusArray[number];
 export type ServiceCategoryType = typeof serviceCategoryArray[number];
 
 export type AdminVerificationStatusType = typeof adminVerificationStatusArray[number];
+
+// **** ADDRESS INTERFACE
+export interface Address {
+  _id: string,
+  userId: string,
+  addressLine: string,
+  landMark: string,
+  phone: string,
+  place: string,
+  city: string,
+  district: string,
+  pincode: string,
+  state: string,
+  country: string,
+  location: GeoLocation,
+  createdAt: Date,
+  updatedAt: Date,
+}
 
 // **** 1. Used as the request interface for the paginated request
 export interface ApiPaginationRequest {
@@ -112,7 +130,7 @@ export type FetchAllAppServiceRequest = Pick<Service,"serviceCategory">;
 export type FetchAllAppServicesResponse = Array<Pick<Service, "_id" | "serviceName">>;
 
 //// **** 9. Used as the request type for updating address for provider and user side
-export type UpdateAddressRequest = Pick<Address, "id" | "userId" | "addressLine" | "landMark" | "place" | "phone" | "city" | "country" | "district" | "pincode" | "state" | "location">;
+export type UpdateAddressRequest = Pick<Address, "_id" | "userId" | "addressLine" | "landMark" | "place" | "phone" | "city" | "country" | "district" | "pincode" | "state" | "location">;
 
 //// **** 10. Used as the interface for the validate join room
 export interface ValidateJoinRoomRequest {

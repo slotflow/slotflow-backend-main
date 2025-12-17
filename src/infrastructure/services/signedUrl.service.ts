@@ -18,14 +18,11 @@ export class SignedUrlService implements ISignedUrlService {
                 return existing.url;
             }
 
-            const urlParts = key.split('/');
-            const s3Key = urlParts.slice(3).join('/');
-
-            if (!s3Key) throw new Error('Invalid S3 key');
+            if (!key) throw new Error('Invalid S3 key');
 
             const command = new GetObjectCommand({
                 Bucket: awsConfig.aws_s3Bucket_name!,
-                Key: s3Key,
+                Key: key,
             });
 
             const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: expires });

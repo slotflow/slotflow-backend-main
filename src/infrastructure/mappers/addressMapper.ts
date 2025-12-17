@@ -6,7 +6,7 @@ export class AddressMapper {
 
     static toDomain(doc: IAddress): Address {
         return new Address(
-            doc.id.toString(),
+            doc._id.toString(),
             doc.userId.toString(),
             doc.addressLine,
             doc.landMark,

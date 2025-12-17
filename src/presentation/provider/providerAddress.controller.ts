@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import { DecodedUser } from "../../express";
 import { NextFunction, Request, Response } from "express";
 import { CreateAddressZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
@@ -7,6 +6,7 @@ import { IProviderRepository } from "../../domain/interfaces/repositories/IProvi
 import { AddressRepositoryImpl } from "../../infrastructure/database/address/address.repository.impl";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { ProviderCreateAddressUseCase, ProviderFetchAddressUseCase, ProviderUpdateAddressUseCase } from "../../application/useCases/provier/providerAddress.useCase";
+import { Types } from "mongoose";
 
 const addressRepository: IAddressRepository = new AddressRepositoryImpl();
 const providerRepository: IProviderRepository = new ProviderRepositoryImpl();
@@ -29,11 +29,12 @@ class ProviderAddressController {
     async createAddress(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
-            console.log("req.body : ", req.body);
             const validateData = CreateAddressZodSchema.parse(req.body);
-            const { addressLine, landMark, phone, place, city, district, pincode, state, country, location } = validateData;
-            const result = await this.providerCreateAddressUseCase.execute({ userId: new Types.ObjectId(providerId), addressLine, landMark, phone, place, city, district, pincode, state, country, location });
-            res.status(201).json(result);
+            await this.providerCreateAddressUseCase.execute({ userId: providerId, ...validateData });
+            res.status(201).json({
+                success: true,
+                message: "Address saved successfully"
+            });
         } catch (error) {
             console.log("createAddress error : ", error);
             next(error)
@@ -45,7 +46,13 @@ class ProviderAddressController {
             const providerId = (req.user as DecodedUser).userOrProviderId;
             if (!providerId) throw new Error("Invalid request.");
             const result = await this.providerFetchAddressUseCase.execute({ providerId: new Types.ObjectId(providerId) });
-            res.status(200).json(result);
+            res.status(200).json({
+                success: true,
+                message: result
+                    ? "Address fetched successfully"
+                    : "Address not added yet",
+                data: result,
+            });
         } catch (error) {
             console.log("getAddress error : ", error);
             next(error);
@@ -56,12 +63,16 @@ class ProviderAddressController {
     async updateAddress(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
+            if (!providerId) throw new Error("Invalid request");
             const { id: addressId } = ValidateObjectId(req.params.addressId, "Address ID");
             if (!addressId) throw new Error("Invalid request");
             const validateData = CreateAddressZodSchema.parse(req.body);
-            const { addressLine, landMark, phone, place, city, district, pincode, state, country, location } = validateData;
-            const result = await this.providerUpdateAddressUseCase.execute({ _id: new Types.ObjectId(addressId), userId: new Types.ObjectId(providerId), addressLine, landMark, phone, place, city, district, pincode, state, country, location });
-            res.status(200).json(result);
+            const result = await this.providerUpdateAddressUseCase.execute({ _id: addressId, userId: providerId, ...validateData });
+            res.status(200).json({
+                success: true,
+                message: "Address updated successfully",
+                data: result
+            });
         } catch (error) {
             console.log("updateAddress error : ", error);
             next(error)
@@ -70,10 +81,8 @@ class ProviderAddressController {
 
 }
 
-const provideAddressController = new ProviderAddressController(
+export const provideAddressController = new ProviderAddressController(
     providerCreateAddressUseCase,
     providerFetchAddressUseCase,
     providerUpdateAddressUseCase
 );
-
-export { provideAddressController };

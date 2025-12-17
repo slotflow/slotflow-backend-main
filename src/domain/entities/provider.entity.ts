@@ -1,9 +1,17 @@
 import { Types } from "mongoose";
-import { AdminVerificationStatusType } from "../../application/dtos/common.dto";
+
+export enum AdminVerificationStatus {
+  REQUESTED = "REQUESTED",
+  UNDER_REVIEW = "UNDER_REVIEW",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+  RESUBMITTED = "RESUBMITTED",
+  NOT_REQUESTED = "NOT_REQUESTED",
+}
 
 export class Provider {
     constructor(
-        public _id: Types.ObjectId,
+        public readonly _id: Types.ObjectId,
         public username: string,
         public email: string,
         public password: string,
@@ -14,7 +22,7 @@ export class Provider {
         public isAdminVerified: boolean,
         public verificationRejectionReason: string | null,
         
-        public adminVerificationStatus: AdminVerificationStatusType,
+        public adminVerificationStatus: AdminVerificationStatus,
         public isAddressVerified: boolean,
         public isServiceDetailsVerified: boolean,
         public isAvailabilityVerified: boolean,
@@ -33,7 +41,7 @@ export class Provider {
         public trustedBySlotflow: boolean,
         public identityProof: string,
         public serviceProof: string,
-        public createdAt: Date,
-        public updatedAt: Date,
+        public readonly createdAt: Date,
+        public readonly updatedAt: Date,
     ){}
 }

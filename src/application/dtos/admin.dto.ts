@@ -61,7 +61,7 @@ export type AdminFetchProviderDetailsResponse = Pick<Provider, "_id" | "username
 
 // **** adminFetchProviderAddress
 // Used as the request type of admin fetch provider address
-export type AdminFetchUserOrProviderAddressResponse = Pick<Address, "userId" | "addressLine" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location"> | {};
+export type AdminFetchUserOrProviderAddressResponse = Pick<Address, "userId" | "addressLine" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location"> | null;
 
 
 

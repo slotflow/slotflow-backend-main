@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
+import { GeoLocation } from "../../../domain/entities/address.entity";
 import { addressLineRegex, cityRegex, countryRegex, districtRegex, landMarkRegex, phoneRegex, pincodeRegex, placeRegex, stateRegex } from '../../../shared/zod/regex';
 
 export interface IAddress extends Document {
@@ -13,10 +14,7 @@ export interface IAddress extends Document {
     pincode: string,
     state: string,
     country: string,
-    location: {
-        type: "Point";
-        coordinates: [number, number];
-    },
+    location: GeoLocation,
     createdAt: Date,
     updatedAt: Date,
 }
@@ -107,8 +105,6 @@ const addressSchema = new Schema<IAddress>({
             },
         },
     },
-}, {
-    timestamps: true
 });
 
 export const AddressModel = mongoose.model<IAddress>('Address', addressSchema);

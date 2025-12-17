@@ -76,8 +76,14 @@ class AdminUserController {
         try{
             const { id: userId } = ValidateObjectId(req.params.userId, "User ID");
             if(!userId) throw new Error("Invalid request.");
-            const result = await this.adminFetchUserOrProviderAddressUseCase.execute(new Types.ObjectId(userId));
-            res.status(200).json(result);
+            const result = await this.adminFetchUserOrProviderAddressUseCase.execute(userId);
+           res.status(200).json({ 
+                success: true, 
+                message: result
+                    ? "Address fetched successfully"
+                    : "Address not added yet",
+                data: result 
+            });
         }catch(error){
             console.log("fetchUserAddress error : ",error);
             next(error);

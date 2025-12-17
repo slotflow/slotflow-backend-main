@@ -1,12 +1,12 @@
 import { Types } from "mongoose";
 import { User } from "../../domain/entities/user.entity";
 import { Review } from "../../domain/entities/review.entity";
-import { Address } from "../../domain/entities/address.entity";
 import { Booking } from "../../domain/entities/booking.entity";
 import { Service } from "../../domain/entities/service.entity";
 import { Provider } from "../../domain/entities/provider.entity";
 import { ProviderService } from "../../domain/entities/providerService.entity";
 import { FontendAvailabilityForResponse, TimeSlotForFrontendResponse } from "../../domain/entities/serviceAvailability.entity";
+import { Address } from "./common.dto";
 
 
 // ************ used in userProfile.use-case ************ \\
@@ -47,7 +47,7 @@ export interface UserFetchUserAddressRequest {
     userId: User["_id"];
 }
 // user fetch user address use case response interface
-export type UserFetchAddressResponse = Pick<Address, "_id" | "addressLine" | "landMark" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location"> | {};
+export type UserFetchAddressResponse = Pick<Address, "_id" | "addressLine" | "landMark" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location"> | null;
 
 
 
