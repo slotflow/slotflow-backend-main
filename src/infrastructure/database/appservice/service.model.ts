@@ -1,4 +1,4 @@
-import { ServiceCategoryType } from "../../dtos/common.dto";
+import { ServiceCategoryType } from "../../../application/dtos/common.dto";
 import mongoose, { Document, Schema, Types } from "mongoose";
 import { serviceCategoryArray } from "../../../shared/utils/constants";
 

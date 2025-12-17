@@ -7,14 +7,14 @@ import {
     AdminFetchProviderDetailsResponse,
     AdminFetchProviderServiceAvailabilityRequest,
     AdminFetchProviderServiceAvailabilityResponse,
-} from "../../../infrastructure/dtos/admin.dto";
+} from "../../dtos/admin.dto";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { IPaymentRepository } from "../../../domain/interfaces/repositories/IPayment.repository";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
 import { IProviderServiceRepository } from "../../../domain/interfaces/repositories/IProviderService.repository";
 import { IServiceAvailabilityRepository } from "../../../domain/interfaces/repositories/IServiceAvailability.repository";
-import { ApiResponse, FetchPaymentResponse, FetchPaymentsRequest, FetchProviderSubscriptionsRequest, FindSubscriptionsByProviderIdResponse } from "../../../infrastructure/dtos/common.dto";
+import { ApiResponse, FetchPaymentResponse, FetchPaymentsRequest, FetchProviderSubscriptionsRequest, FindSubscriptionsByProviderIdResponse } from "../../dtos/common.dto";
 
 
 export class AdminFetchProviderDetailsUseCase {

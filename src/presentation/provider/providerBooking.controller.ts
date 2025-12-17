@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 import { DecodedUser } from "../../express";
 import { roleArray } from "../../shared/utils/constants";
 import { NextFunction, Request, Response } from "express";
-import { RoleType } from "../../infrastructure/dtos/common.dto";
+import { RoleType } from "../../application/dtos/common.dto";
 import { AesEncryption } from "../../infrastructure/services/aesEncryption.service";
 import { GoogleTokenService } from "../../infrastructure/services/googleTokenService";
 import { IAesEncryption } from "../../domain/interfaces/services/IAesEncryption.service";

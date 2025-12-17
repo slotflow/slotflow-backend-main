@@ -14,10 +14,10 @@ import {
   ProviderAdminApprovalResponse,
   ProviderAdminApprovalRequest,
   ProviderDeleteProofRequest,
-} from "../../../infrastructure/dtos/provider.dto";
+} from "../../dtos/provider.dto";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { DeleteObjectCommand, GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { ApiResponse } from "../../../infrastructure/dtos/common.dto";
+import { ApiResponse } from "../../dtos/common.dto";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { ISignedUrlCacheRepository } from "../../../domain/interfaces/repositories/ISignedUrlCache.repository";
 import { adminVerificationStatusArray } from "../../../shared/utils/constants";

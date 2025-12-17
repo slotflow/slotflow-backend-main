@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 import { subscriptionStatusArray } from "../../../shared/utils/constants";
 import { IProviderService, ProviderServiceModel } from "./providerService.model";
 import { ProviderService } from "../../../domain/entities/providerService.entity";
-import { ProviderUpdateProviderServiceRequest, ProviderUpdateProviderServiceResponse } from "../../dtos/provider.dto";
+import { ProviderUpdateProviderServiceRequest, ProviderUpdateProviderServiceResponse } from "../../../application/dtos/provider.dto";
 import { CreateProviderServiceRequest, FindProviderServiceResponse, FindProvidersUsingServiceIdsResponse, IProviderServiceRepository } from "../../../domain/interfaces/repositories/IProviderService.repository";
 
 export class ProviderServiceRepositoryImpl implements IProviderServiceRepository {

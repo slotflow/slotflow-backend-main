@@ -14,7 +14,7 @@ export interface IAddress extends Document {
     state: string,
     country: string,
     location: {
-        type: String,
+        type: "Point";
         coordinates: [number, number];
     },
     createdAt: Date,
@@ -93,7 +93,7 @@ const addressSchema = new Schema<IAddress>({
     location: {
         type: {
             type: String,
-            default: "Point",
+            enum: ["Point"],
             required: true,
         },
         coordinates: {

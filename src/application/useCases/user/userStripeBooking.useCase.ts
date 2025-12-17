@@ -1,8 +1,8 @@
 import { Types } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import { stripe } from '../../../infrastructure/lib/stripe';
-import { ApiResponse } from '../../../infrastructure/dtos/common.dto';
-import { FindProviderServiceResponse } from '../../../infrastructure/dtos/admin.dto';
+import { ApiResponse } from '../../dtos/common.dto';
+import { FindProviderServiceResponse } from '../../dtos/admin.dto';
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { IPaymentRepository } from '../../../domain/interfaces/repositories/IPayment.repository';
 import { IBookingRepository } from '../../../domain/interfaces/repositories/IBooking.repository';
@@ -11,7 +11,7 @@ import { IProviderRepository } from '../../../domain/interfaces/repositories/IPr
 import { appointmentStatusArray, paymentForArray, paymentGatewayArray } from '../../../shared/utils/constants';
 import { IProviderServiceRepository } from '../../../domain/interfaces/repositories/IProviderService.repository';
 import { IServiceAvailabilityRepository } from '../../../domain/interfaces/repositories/IServiceAvailability.repository';
-import { UserAppointmentBookingViaStripeRequest, UserSaveAppoinmentBookingRequest } from '../../../infrastructure/dtos/user.dto';
+import { UserAppointmentBookingViaStripeRequest, UserSaveAppoinmentBookingRequest } from '../../dtos/user.dto';
 
 export class UserAppointmentBookingViaStripeUseCase {
     constructor(

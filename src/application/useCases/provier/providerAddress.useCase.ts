@@ -1,10 +1,11 @@
 import {
     ProviderFetchAddressRequest,
     ProviderFetchAddressResponse,
-} from "../../../infrastructure/dtos/provider.dto";
+} from "../../dtos/provider.dto";
+import { Address } from "../../../domain/entities/address.entity";
+import { ApiResponse, CreateAddressRequest, UpdateAddressRequest } from "../../dtos/common.dto";
 import { IAddressRepository } from "../../../domain/interfaces/repositories/IAddress.repository";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-import { CreateAddressRequest, ApiResponse, UpdateAddressRequest } from "../../../infrastructure/dtos/common.dto";
 
 export class ProviderCreateAddressUseCase {
     constructor(
@@ -19,14 +20,32 @@ export class ProviderCreateAddressUseCase {
             const provider = await this.providerRepository.findProviderById(userId);
             if (!provider) throw new Error("Please logout and try again.");
 
-            const address = await this.addressRepository.createAddress({ userId: userId, addressLine, landMark, phone, place, city, district, pincode, state, country, location });
-            if (!address) throw new Error("Address adding error.");
+            const now = new Date();
 
-            if (provider && address && address._id) {
-                provider.addressId = address._id;
-                const updatedProvider = await this.providerRepository.updateProvider(provider);
-                if (!updatedProvider) throw new Error("Failed to update provider with address.");
-            }
+            const address = new Address(
+                "",
+                userId,
+                addressLine,
+                landMark,
+                phone,
+                place,
+                city,
+                district,
+                pincode,
+                state,
+                country,
+                location,
+                now,
+                now
+            );
+
+            const savedAddress = await this.addressRepository.create(address);
+            if (!savedAddress) throw new Error("Failed to save address.");
+
+            provider.addressId = savedAddress.id;
+
+            const updatedProvider = await this.providerRepository.updateProvider(provider);
+            if (!updatedProvider) throw new Error("Failed to update provider with address.");
 
             return { success: true, message: "Address added successfully" };
         } catch (error) {
@@ -47,7 +66,7 @@ export class ProviderFetchAddressUseCase {
             const { providerId } = payload;
 
             if (!providerId) throw new Error("Invalid request.");
-            const address = await this.addressRepository.findAddressByUserId(providerId);
+            const address = await this.addressRepository.findByUserId(providerId);
             if (address === null) return { success: true, message: "Provider address not yet addedd.", data: {} };
             if (!address) throw new Error("Provider address fetching error.");
             const { userId, createdAt, ...rest } = address;
@@ -67,9 +86,9 @@ export class ProviderUpdateAddressUseCase {
 
     async execute(payload: UpdateAddressRequest): Promise<ApiResponse<ProviderFetchAddressResponse>> {
         try {
-            const { _id: addressId, userId, addressLine, landMark, phone, place, city, district, pincode, state, country, location } = payload;
+            const { id: addressId, addressLine, landMark, phone, place, city, district, pincode, state, country, location } = payload;
 
-            const existingAddress = await this.addressRepository.findAddressById(addressId);
+            const existingAddress = await this.addressRepository.findById(addressId);
             if (!existingAddress) throw new Error("Address not found");
 
             existingAddress.addressLine = addressLine || existingAddress.addressLine;
@@ -83,7 +102,7 @@ export class ProviderUpdateAddressUseCase {
             existingAddress.country = country || existingAddress.country;
             existingAddress.location = location || existingAddress.location;
 
-            const updatedAddress = await this.addressRepository.updateAddress(existingAddress);
+            const updatedAddress = await this.addressRepository.update(existingAddress);
             if (!updatedAddress) throw new Error("Address updating failed.");
 
             const { userId: providerId, createdAt, ...rest } = updatedAddress;

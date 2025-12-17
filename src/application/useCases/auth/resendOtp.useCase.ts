@@ -5,7 +5,7 @@ import { roleArray } from '../../../shared/utils/constants';
 import { Provider } from '../../../domain/entities/provider.entity';
 import { OTPService } from '../../../infrastructure/services/otp.service';
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
-import { ResendOtpRequest, ResendOtpResponse } from '../../../infrastructure/dtos/auth.dto';
+import { ResendOtpRequest, ResendOtpResponse } from '../../dtos/auth.dto';
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
 
 export class ResendOtpUseCase {

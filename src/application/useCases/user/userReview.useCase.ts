@@ -1,6 +1,6 @@
-import { ApiResponse } from "../../../infrastructure/dtos/common.dto";
+import { ApiResponse } from "../../dtos/common.dto";
 import { IReviewRepository } from "../../../domain/interfaces/repositories/IReview.repository";
-import { CreateReviewRequset, UserDeleteReviewRequest } from "../../../infrastructure/dtos/user.dto";
+import { CreateReviewRequset, UserDeleteReviewRequest } from "../../dtos/user.dto";
 
 export class CreateReviewUseCase {
     constructor(

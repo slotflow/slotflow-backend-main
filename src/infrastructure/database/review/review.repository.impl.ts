@@ -1,9 +1,9 @@
 import { FilterQuery, Types } from "mongoose";
 import { IReview, ReviewModel } from "./review.model";
-import { CreateReviewRequset } from "../../dtos/user.dto";
+import { CreateReviewRequset } from "../../../application/dtos/user.dto";
 import { roleArray } from "../../../shared/utils/constants";
 import { Review } from "../../../domain/entities/review.entity";
-import { ApiResponse, FetchReviesRequest, FetchReviewsResponse } from "../../dtos/common.dto";
+import { ApiResponse, FetchReviesRequest, FetchReviewsResponse } from "../../../application/dtos/common.dto";
 import { IReviewRepository } from "../../../domain/interfaces/repositories/IReview.repository";
 
 export class ReviewRepositoryImpl implements IReviewRepository {

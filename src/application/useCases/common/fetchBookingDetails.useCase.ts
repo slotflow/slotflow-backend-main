@@ -1,5 +1,5 @@
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
-import { ApiResponse, FetchBookingDetailsRequest, FetchBookingDetailsResponse } from "../../../infrastructure/dtos/common.dto";
+import { ApiResponse, FetchBookingDetailsRequest, FetchBookingDetailsResponse } from "../../dtos/common.dto";
 
 export class FetchBookingDetailsUsecase {
     constructor(

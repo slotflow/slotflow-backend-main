@@ -1,10 +1,10 @@
 import dayjs from "dayjs";
 import { Types } from "mongoose";
 import { IUser, UserModel } from "./user.model";
-import { AdminFetchAllUsers } from "../../dtos/admin.dto";
+import { AdminFetchAllUsers } from "../../../application/dtos/admin.dto";
 import { User } from "../../../domain/entities/user.entity";
-import { ApiPaginationRequest, ApiResponse } from "../../dtos/common.dto";
-import { AdminFetchDashboardUserStatsDataResponse } from "../../dtos/admin.dto";
+import { ApiPaginationRequest, ApiResponse } from "../../../application/dtos/common.dto";
+import { AdminFetchDashboardUserStatsDataResponse } from "../../../application/dtos/admin.dto";
 import { CreateUserProps, IUserRepository, UpdateUserFileds } from "../../../domain/interfaces/repositories/IUser.repository";
 
 export class UserRepositoryImpl implements IUserRepository {

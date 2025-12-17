@@ -1,4 +1,4 @@
-import { SubscriptionPlan } from "../dtos/common.dto";
+import { SubscriptionPlan } from "../../application/dtos/common.dto";
 import { ISubscriptionMapping } from "../../domain/interfaces/helper/ISubscriptionMapping.helper";
 
 export class SubscriptionMapping implements ISubscriptionMapping {

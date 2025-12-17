@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
-import { SubscriptionStatusType } from "../../dtos/common.dto";
+import { SubscriptionStatusType } from "../../../application/dtos/common.dto";
 import { subscriptionStatusArray } from "../../../shared/utils/constants";
 
 export interface ISubscription extends Document {

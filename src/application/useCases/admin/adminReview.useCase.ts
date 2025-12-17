@@ -1,5 +1,5 @@
-import { ApiResponse } from "../../../infrastructure/dtos/common.dto";
-import { AdminUpdateReviewBlockStatusRequest } from "../../../infrastructure/dtos/admin.dto";
+import { ApiResponse } from "../../dtos/common.dto";
+import { AdminUpdateReviewBlockStatusRequest } from "../../dtos/admin.dto";
 import { IReviewRepository } from "../../../domain/interfaces/repositories/IReview.repository";
 
 export class AdminUpdateReviewBlockStatusUseCase {

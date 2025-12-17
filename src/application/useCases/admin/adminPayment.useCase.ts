@@ -1,6 +1,6 @@
 import { IPaymentRepository } from "../../../domain/interfaces/repositories/IPayment.repository";
-import { ApiResponse, FetchPaymentResponse, FetchPaymentsRequest } from "../../../infrastructure/dtos/common.dto";
-import { AdminFetchRevenueReportRequest, AdminFetchRevenueReportResponse } from "../../../infrastructure/dtos/admin.dto";
+import { ApiResponse, FetchPaymentResponse, FetchPaymentsRequest } from "../../dtos/common.dto";
+import { AdminFetchRevenueReportRequest, AdminFetchRevenueReportResponse } from "../../dtos/admin.dto";
 
 export class AdminFetchAllPaymentsUseCase {
     constructor(

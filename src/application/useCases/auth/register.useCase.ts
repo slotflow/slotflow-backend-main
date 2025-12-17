@@ -7,7 +7,7 @@ import { JWTService } from '../../../infrastructure/security/jwt';
 import { Provider } from '../../../domain/entities/provider.entity';
 import { OTPService } from '../../../infrastructure/services/otp.service';
 import { PasswordHasher } from '../../../infrastructure/security/password-hashing';
-import { RegisterRequest, RegisterResponse } from '../../../infrastructure/dtos/auth.dto';
+import { RegisterRequest, RegisterResponse } from '../../dtos/auth.dto';
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
 

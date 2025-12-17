@@ -1,5 +1,5 @@
-import { ApiResponse } from "../../../infrastructure/dtos/common.dto";
-import { ProviderRepostReviewRequest } from "../../../infrastructure/dtos/provider.dto";
+import { ApiResponse } from "../../dtos/common.dto";
+import { ProviderRepostReviewRequest } from "../../dtos/provider.dto";
 import { IReviewRepository } from "../../../domain/interfaces/repositories/IReview.repository";
 
 export class ProviderReportReviewUseCase {

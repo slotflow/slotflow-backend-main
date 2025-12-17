@@ -5,9 +5,9 @@ import {
     ProviderSaveSubscriptionResponse,
     ProviderStripeSubscriptionCreateSessionIdRequest,
     ProviderStripeSubscriptionCreateSessionIdResponse,
-} from "../../../infrastructure/dtos/provider.dto";
+} from "../../dtos/provider.dto";
 import { stripe } from "../../../infrastructure/lib/stripe";
-import { ApiResponse } from "../../../infrastructure/dtos/common.dto";
+import { ApiResponse } from "../../dtos/common.dto";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { IPaymentRepository } from "../../../domain/interfaces/repositories/IPayment.repository";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";

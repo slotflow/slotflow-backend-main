@@ -1,7 +1,7 @@
-import { ApiResponse } from "../../../infrastructure/dtos/common.dto";
+import { ApiResponse } from "../../dtos/common.dto";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
-import { ProviderFetchUsersForChatSideBarResponse, ProviderFetchUsersForChatSideBarRequest } from "../../../infrastructure/dtos/provider.dto";
+import { ProviderFetchUsersForChatSideBarResponse, ProviderFetchUsersForChatSideBarRequest } from "../../dtos/provider.dto";
 
 export class ProviderFetchUserForChatSidebarUseCase {
     constructor(

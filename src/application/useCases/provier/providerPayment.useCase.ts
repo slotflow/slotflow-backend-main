@@ -1,6 +1,6 @@
 import { IPaymentRepository } from "../../../domain/interfaces/repositories/IPayment.repository";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-import { ApiResponse, FetchPaymentResponse, FetchPaymentsRequest } from "../../../infrastructure/dtos/common.dto";
+import { ApiResponse, FetchPaymentResponse, FetchPaymentsRequest } from "../../dtos/common.dto";
 
 
 export class ProviderFetchAllPaymentsUseCase {

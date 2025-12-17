@@ -1,10 +1,10 @@
 import { Types } from "mongoose";
-import { PaymentForType, PaymentGatewayType } from "../../infrastructure/dtos/common.dto";
+import { PaymentForType, PaymentGatewayType } from "../../application/dtos/common.dto";
 
 export class Payment {
     constructor(
         public _id: Types.ObjectId,
-        public transactionId: string, // Stripe payment_intent || razorpay's payment_id || paypals capture_id
+        public transactionId: string,
         public paymentStatus: string,
         public paymentMethod: string,
         public paymentGateway: PaymentGatewayType,

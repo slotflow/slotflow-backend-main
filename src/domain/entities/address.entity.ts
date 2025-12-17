@@ -1,9 +1,12 @@
-import { Types } from "mongoose";
+export type GeoLocation = {
+    type: "Point";
+    coordinates: [number, number];
+};
 
 export class Address {
     constructor(
-        public _id: Types.ObjectId,
-        public userId: Types.ObjectId,
+        public readonly id: string,
+        public readonly userId: string,
         public addressLine: string,
         public landMark: string,
         public phone: string,
@@ -13,11 +16,8 @@ export class Address {
         public pincode: string,
         public state: string,
         public country: string,
-        public location: {
-            type: String,
-            coordinates: [number, number]
-        },
-        public createdAt: Date,
-        public updatedAt: Date,
+        public location: GeoLocation,
+        public readonly createdAt: Date,
+        public readonly updatedAt: Date,
     ) { }
 }

@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 import { google } from "googleapis";
 import { GoogleTokenService } from "./googleTokenService";
 import { appointmentStatusArray, EventData } from "../../shared/utils/constants";
-import { ApiResponse, CreateGoogleCalendarEventRequest, GoogleCalendarEvent, UpdateGoogleCalendarEventRequest, UserBookingAddingToCalendar, UserBookingFetchingFromCalendar } from "../dtos/common.dto";
+import { ApiResponse, CreateGoogleCalendarEventRequest, GoogleCalendarEvent, UpdateGoogleCalendarEventRequest, UserBookingAddingToCalendar, UserBookingFetchingFromCalendar } from "../../application/dtos/common.dto";
 
 export class FethGoogleCalendarService {
     constructor(

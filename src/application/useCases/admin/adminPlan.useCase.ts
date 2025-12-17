@@ -2,9 +2,9 @@ import {
     AdminPlanListResponse, 
     AdminAddNewPlanRequest, 
     AdminChangePlanIsBlockedStatusRequest,
-} from "../../../infrastructure/dtos/admin.dto";
+} from "../../dtos/admin.dto";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
-import { ApiPaginationRequest, ApiResponse } from "../../../infrastructure/dtos/common.dto";
+import { ApiPaginationRequest, ApiResponse } from "../../dtos/common.dto";
 
 
 export class AdminPlanListUseCase {

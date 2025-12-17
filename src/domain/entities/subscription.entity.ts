@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { SubscriptionStatusType } from "../../infrastructure/dtos/common.dto";
+import { SubscriptionStatusType } from "../../application/dtos/common.dto";
 
 export class Subscription {
     constructor(

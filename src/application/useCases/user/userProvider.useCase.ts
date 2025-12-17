@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { Types } from "mongoose";
-import { ApiResponse } from "../../../infrastructure/dtos/common.dto";
-import { FindProviderServiceResponse } from "../../../infrastructure/dtos/admin.dto";
+import { ApiResponse } from "../../dtos/common.dto";
+import { FindProviderServiceResponse } from "../../dtos/admin.dto";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
@@ -9,7 +9,7 @@ import { IAddressRepository } from "../../../domain/interfaces/repositories/IAdd
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { IProviderServiceRepository } from "../../../domain/interfaces/repositories/IProviderService.repository";
 import { IServiceAvailabilityRepository } from "../../../domain/interfaces/repositories/IServiceAvailability.repository";
-import { FindProvidersUsingServiceIdsResponse, UserFetchProviderServiceAvailabilityRequest, UserFetchProviderServiceAvailabilityResponse, UserFetchProviderServiceResponse, UserFetchProvidersForChatSidebarRequest, UserFetchProvidersForChatSidebarResponse, UserFetchServiceProviderAddressRequest, UserFetchServiceProviderAddressResponse, UserFetchServiceProviderDetailsRequest, UserFetchServiceProviderDetailsResponse, UserFetchServiceproviderServiceRequest, UserFetchServiceProvidersRequest, UserFetchServiceProvidersResponse } from "../../../infrastructure/dtos/user.dto";
+import { FindProvidersUsingServiceIdsResponse, UserFetchProviderServiceAvailabilityRequest, UserFetchProviderServiceAvailabilityResponse, UserFetchProviderServiceResponse, UserFetchProvidersForChatSidebarRequest, UserFetchProvidersForChatSidebarResponse, UserFetchServiceProviderAddressRequest, UserFetchServiceProviderAddressResponse, UserFetchServiceProviderDetailsRequest, UserFetchServiceProviderDetailsResponse, UserFetchServiceproviderServiceRequest, UserFetchServiceProvidersRequest, UserFetchServiceProvidersResponse } from "../../dtos/user.dto";
 
 export class UserFetchServiceProvidersUseCase {
   constructor(
@@ -96,13 +96,13 @@ export class UserFetchServiceProviderAddressUseCase {
       const { userId, providerId } = payload;
       if (!userId || !providerId) throw new Error("Invalid request");
 
-      const user = await this.userRepository.findUserById(new Types.ObjectId(userId));
+      const user = await this.userRepository.findUserById(userId);
       if (!user) throw new Error("No user found");
 
-      const address = await this.addressRepository.findAddressByUserId(new Types.ObjectId(providerId));
+      const address = await this.addressRepository.findByUserId(providerId);
       if (!address) throw new Error("No address found");
 
-      let { createdAt, updatedAt, _id, ...rest } = address;
+      let { createdAt, updatedAt, id, ...rest } = address;
 
       return { success: true, message: "Service provider address fetched", data: rest }
     } catch (error) {

@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { AdminVerificationStatusType } from "../../infrastructure/dtos/common.dto";
+import { AdminVerificationStatusType } from "../../application/dtos/common.dto";
 
 export class Provider {
     constructor(

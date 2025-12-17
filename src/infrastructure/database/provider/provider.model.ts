@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
-import { AdminVerificationStatusType } from '../../dtos/common.dto';
+import { AdminVerificationStatusType } from '../../../application/dtos/common.dto';
 import { adminVerificationStatusArray } from '../../../shared/utils/constants';
 
 export interface IProvider extends Document {

@@ -3,7 +3,7 @@ import { awsConfig } from "../../../config/env";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { ISignedUrlCacheRepository } from "../../../domain/interfaces/repositories/ISignedUrlCache.repository";
-import { ApiResponse, CreareFileUploadPresignedUrlRequest, CreareFileUploadPresignedUrlResponse, CreateFileSignedUrlRequest } from "../../../infrastructure/dtos/common.dto";
+import { ApiResponse, CreareFileUploadPresignedUrlRequest, CreareFileUploadPresignedUrlResponse, CreateFileSignedUrlRequest } from "../../dtos/common.dto";
 
 export class CreateFileUploadPresignedUrlUseCase {
     constructor(

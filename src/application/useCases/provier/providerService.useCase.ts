@@ -1,8 +1,8 @@
 import { Types } from 'mongoose';
-import { ApiResponse } from '../../../infrastructure/dtos/common.dto';
+import { ApiResponse } from '../../dtos/common.dto';
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
 import { CreateProviderServiceRequest, IProviderServiceRepository } from '../../../domain/interfaces/repositories/IProviderService.repository';
-import { ProviderFetchProviderServiceRequest, ProviderFetchProviderServiceResponse, ProviderFindProviderServiceResProps, ProviderUpdateProviderServiceRequest, ProviderUpdateProviderServiceResponse } from '../../../infrastructure/dtos/provider.dto';
+import { ProviderFetchProviderServiceRequest, ProviderFetchProviderServiceResponse, ProviderFindProviderServiceResProps, ProviderUpdateProviderServiceRequest, ProviderUpdateProviderServiceResponse } from '../../dtos/provider.dto';
 
 export class ProviderCreateServiceDetailsUseCase {
 

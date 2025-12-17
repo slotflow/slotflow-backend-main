@@ -1,70 +1,38 @@
 import { Types } from "mongoose";
-import { AddressModel, IAddress } from "./address.model";
-import { CreateAddressRequest } from "../../dtos/common.dto";
+import { AddressModel } from "./address.model";
+import { AddressMapper } from "../../mappers/addressMapper";
 import { Address } from "../../../domain/entities/address.entity";
 import { IAddressRepository } from "../../../domain/interfaces/repositories/IAddress.repository";
 
 export class AddressRepositoryImpl implements IAddressRepository {
-    private mapToEntity(address: IAddress): Address {
-            return new Address(
-                address._id,
-                address.userId,
-                address.addressLine,
-                address.landMark,
-                address.phone,
-                address.place,
-                address.city,
-                address.district,
-                address.pincode,
-                address.state,
-                address.country,
-                address.location,
-                address.createdAt,
-                address.updatedAt,
-            )
-        }
 
-    async createAddress(address: CreateAddressRequest): Promise<Address> {
-        try{
-            const newAddress = await AddressModel.create(address);
-            return this.mapToEntity(newAddress);
-        }catch(error){
-            console.log("createAddress error : ",error);
-            throw new Error("Failed to create address.");
-        }
-    }
-    
-    async findAddressByUserId(userId: Types.ObjectId): Promise<Address | null> {
-        try{
-            const address = await AddressModel.findOne({ userId: userId });
-            return address ? this.mapToEntity(address) : null;
-        }catch(error){
-            console.log("findAddressByUserId error : ",error);
-            throw new Error("Failed to fetch address");
-        }
+    async create(address: Address): Promise<Address> {
+        const created = await AddressModel.create(
+            AddressMapper.toPersistence(address)
+        );
+        return AddressMapper.toDomain(created);
     }
 
-    async findAddressById(addressId: Types.ObjectId): Promise<Address | null> {
-        try{
-            const address = await AddressModel.findOne(addressId);
-            return address ? this.mapToEntity(address) : null;
-        }catch(error){
-            console.log("findAddressByUserId error : ",error);
-            throw new Error("Failed to find address");
-        }
+    async findByUserId(userId: string): Promise<Address | null> {
+        const doc = await AddressModel.findOne({
+            userId: new Types.ObjectId(userId)
+        });
+        return doc ? AddressMapper.toDomain(doc) : null;
     }
-    
-    async updateAddress(address: Address): Promise<Address | null> {
-        try {
-            const updatedAddress = await AddressModel.findOneAndUpdate(
-                address._id,
-                { ...address },
-                { new : true }
-            );
-            return updatedAddress ? this.mapToEntity(updatedAddress) : null;
-        } catch (error) {
-            console.log("updateAddress error : ",error);
-            throw new Error("Failed to update address");
-        }
+
+    async findById(addressId: string): Promise<Address | null> {
+        const doc = await AddressModel.findById(addressId);
+        return doc ? AddressMapper.toDomain(doc) : null;
+    }
+
+    async update(address: Address): Promise<Address> {
+        const doc = await AddressModel.findByIdAndUpdate(
+            address.id,
+            AddressMapper.toPersistence(address),
+            { new: true }
+        );
+
+        if (!doc) throw new Error("Address not found");
+        return AddressMapper.toDomain(doc);
     }
 }

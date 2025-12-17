@@ -2,8 +2,8 @@ import {
     AdminAddServiceRequest, 
     AdminServiceListResponse, 
     AdminChnageServiceIsBlockedStatusRequest,
-} from "../../../infrastructure/dtos/admin.dto";
-import { ApiPaginationRequest, ApiResponse } from "../../../infrastructure/dtos/common.dto";
+} from "../../dtos/admin.dto";
+import { ApiPaginationRequest, ApiResponse } from "../../dtos/common.dto";
 import { IServiceRepository } from "../../../domain/interfaces/repositories/IService.repository";
 
 export class AdminServiceListUseCase {

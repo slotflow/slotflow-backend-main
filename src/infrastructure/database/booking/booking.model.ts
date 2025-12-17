@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
-import { AppointmentStatusType } from "../../dtos/common.dto";
+import { AppointmentStatusType } from "../../../application/dtos/common.dto";
 import { appointmentStatusArray } from "../../../shared/utils/constants";
 import { ParticipantPresence, statusTrack } from "../../../domain/entities/booking.entity";
 

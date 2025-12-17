@@ -1,8 +1,8 @@
 import { Types } from "mongoose";
 import { Provider } from "../../entities/provider.entity";
-import { ProviderUpdateProfileRequest } from "../../../infrastructure/dtos/provider.dto";
-import { ApiPaginationRequest, ApiResponse } from "../../../infrastructure/dtos/common.dto";
-import { AdiminFetchAllProviders, AdminFetchDashboardProviderStatsDataResponse } from "../../../infrastructure/dtos/admin.dto";
+import { ProviderUpdateProfileRequest } from "../../../application/dtos/provider.dto";
+import { ApiPaginationRequest, ApiResponse } from "../../../application/dtos/common.dto";
+import { AdiminFetchAllProviders, AdminFetchDashboardProviderStatsDataResponse } from "../../../application/dtos/admin.dto";
 
 export type CreateLocalProvider = {
   username: Provider["username"];

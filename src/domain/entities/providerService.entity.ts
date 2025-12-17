@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { ServiceModeType, ServiceTypeType } from '../../infrastructure/dtos/common.dto';
+import { ServiceModeType, ServiceTypeType } from '../../application/dtos/common.dto';
 
 export class ProviderService {
     constructor(

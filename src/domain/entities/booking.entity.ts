@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { AppointmentStatusType } from "../../infrastructure/dtos/common.dto";
+import { AppointmentStatusType } from "../../application/dtos/common.dto";
 
 export interface ParticipantPresence {
     joined: boolean;

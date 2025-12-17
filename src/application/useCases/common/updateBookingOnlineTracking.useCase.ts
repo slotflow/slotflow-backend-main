@@ -1,7 +1,7 @@
 import { appointmentStatusArray, roleArray } from "../../../shared/utils/constants";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { IServiceAvailabilityRepository } from "../../../domain/interfaces/repositories/IServiceAvailability.repository";
-import { ApiResponse, UpdateBookingOnlineTrackRequest, UpdateBookingOnlineTrackResponse } from "../../../infrastructure/dtos/common.dto";
+import { ApiResponse, UpdateBookingOnlineTrackRequest, UpdateBookingOnlineTrackResponse } from "../../dtos/common.dto";
 
 export class UpdateBookingOnlineTrakingUseCase {
     constructor(

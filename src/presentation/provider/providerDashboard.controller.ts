@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 import { DecodedUser } from "../../express";
 import { NextFunction, Request, Response } from "express";
-import { SubscriptionPlan } from "../../infrastructure/dtos/common.dto";
+import { SubscriptionPlan } from "../../application/dtos/common.dto";
 import { SubscriptionMapping } from "../../infrastructure/helpers/subscriptionMapping";
 import { IBookingRepository } from "../../domain/interfaces/repositories/IBooking.repository";
 import { IPaymentRepository } from "../../domain/interfaces/repositories/IPayment.repository";

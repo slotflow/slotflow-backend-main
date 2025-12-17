@@ -2,10 +2,10 @@ import { Types } from "mongoose";
 import { User } from "../../entities/user.entity";
 import { Booking } from "../../entities/booking.entity";
 import { Provider } from "../../entities/provider.entity";
-import { UserFetchProvidersForChatSidebarResponse } from "../../../infrastructure/dtos/user.dto";
-import { AdminFetchDashboardAppointmentStatsDataResponse, AdminFetchDashboardTodayStatsDataResponse } from "../../../infrastructure/dtos/admin.dto";
-import { ApiResponse, FetchBookingDetailsResponse, FetchBookingsRequest, FetchBookingsResponse, FetchOnlineBookingsForProviderResponse, FetchOnlineBookingsForUserResponse } from "../../../infrastructure/dtos/common.dto";
-import { ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardGraphDataRequest, ProviderFetchDashboardGraphDataResponse, ProviderFetchUsersForChatSideBarResponse } from "../../../infrastructure/dtos/provider.dto";
+import { UserFetchProvidersForChatSidebarResponse } from "../../../application/dtos/user.dto";
+import { AdminFetchDashboardAppointmentStatsDataResponse, AdminFetchDashboardTodayStatsDataResponse } from "../../../application/dtos/admin.dto";
+import { ApiResponse, FetchBookingDetailsResponse, FetchBookingsRequest, FetchBookingsResponse, FetchOnlineBookingsForProviderResponse, FetchOnlineBookingsForUserResponse } from "../../../application/dtos/common.dto";
+import { ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardGraphDataRequest, ProviderFetchDashboardGraphDataResponse, ProviderFetchUsersForChatSideBarResponse } from "../../../application/dtos/provider.dto";
 
 
 export type CreateBookingPayloadProps = Pick<Booking, "serviceProviderId" | "userId" | "appointmentDate" | "appointmentTime" | "appointmentMode" | "appointmentStatus" | "slotId" | "paymentId" | "videoCallRoomId" | "googleEventId" | "statusTrack">;

@@ -4,8 +4,8 @@ import {
     ProviderAddServiceAvailabilityRewuest,
     ProviderFetchServiceAvailabilityRequest,
     ProviderFetchServiceAvailabilityResponse,
-} from "../../../infrastructure/dtos/provider.dto";
-import { ApiResponse } from "../../../infrastructure/dtos/common.dto";
+} from "../../dtos/provider.dto";
+import { ApiResponse } from "../../dtos/common.dto";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { IServiceAvailabilityRepository } from "../../../domain/interfaces/repositories/IServiceAvailability.repository";
 import { FrontendAvailabilityForRequest, FrontendAvailabilityUpdatedSlots } from "../../../domain/entities/serviceAvailability.entity";

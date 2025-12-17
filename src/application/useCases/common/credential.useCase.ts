@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 import { Credential } from "../../../domain/entities/credential.entity";
 import { IAesEncryption } from "../../../domain/interfaces/services/IAesEncryption.service";
-import { ApiResponse, CreateCredentialRequest } from "../../../infrastructure/dtos/common.dto";
+import { ApiResponse, CreateCredentialRequest } from "../../dtos/common.dto";
 import { ICredentialRepository } from "../../../domain/interfaces/repositories/ICredentialRepository";
 import { IGoogleAuthTokenService } from "../../../domain/interfaces/services/IGoogleAuthToken.service";
 

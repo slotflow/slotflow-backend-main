@@ -1,7 +1,7 @@
-import { ApiResponse } from "../../../infrastructure/dtos/common.dto";
+import { ApiResponse } from "../../dtos/common.dto";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { IPaymentRepository } from "../../../domain/interfaces/repositories/IPayment.repository";
-import { ProviderFetchDashboardStatsDataRequest, ProviderFetchDashboardStatsDataResponse } from "../../../infrastructure/dtos/provider.dto";
+import { ProviderFetchDashboardStatsDataRequest, ProviderFetchDashboardStatsDataResponse } from "../../dtos/provider.dto";
 
 export class ProviderFetchDashboardStatsUseCase {
     constructor(

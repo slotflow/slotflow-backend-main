@@ -4,9 +4,9 @@ import {
     AdminChangeProviderStatusRequest,
     AdminChangeProviderTrustTagRequest,
     AdminRejectProviderRequest,
-} from "../../../infrastructure/dtos/admin.dto";
+} from "../../dtos/admin.dto";
+import { ApiPaginationRequest, ApiResponse } from "../../dtos/common.dto";
 import { adminVerificationStatusArray } from "../../../shared/utils/constants";
-import { ApiPaginationRequest, ApiResponse } from "../../../infrastructure/dtos/common.dto";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 
 

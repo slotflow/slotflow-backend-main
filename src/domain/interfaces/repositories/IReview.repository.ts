@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 import { Review } from "../../entities/review.entity";
-import { CreateReviewRequset } from "../../../infrastructure/dtos/user.dto";
-import { ApiResponse, FetchReviesRequest, FetchReviewsResponse } from "../../../infrastructure/dtos/common.dto";
+import { CreateReviewRequset } from "../../../application/dtos/user.dto";
+import { ApiResponse, FetchReviesRequest, FetchReviewsResponse } from "../../../application/dtos/common.dto";
 
 export interface IReviewRepository {
 

@@ -1,4 +1,4 @@
-import { SubscriptionPlan } from "../../../infrastructure/dtos/common.dto";
+import { SubscriptionPlan } from "../../../application/dtos/common.dto";
 
 export interface ISubscriptionMapping {
 

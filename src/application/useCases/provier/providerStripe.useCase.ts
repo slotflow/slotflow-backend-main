@@ -1,7 +1,7 @@
 import { stripe } from "../../../infrastructure/lib/stripe";
-import { ApiResponse } from "../../../infrastructure/dtos/common.dto";
+import { ApiResponse } from "../../dtos/common.dto";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-import { ProviderStripeConnectRequest, ProviderStripeConnectResponse } from "../../../infrastructure/dtos/provider.dto";
+import { ProviderStripeConnectRequest, ProviderStripeConnectResponse } from "../../dtos/provider.dto";
 
 export class ProviderStripeConnectUseCase {
     constructor(

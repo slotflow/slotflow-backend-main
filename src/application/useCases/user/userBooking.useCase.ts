@@ -1,8 +1,8 @@
 import mongoose, { Types } from "mongoose";
 import { stripe } from "../../../infrastructure/lib/stripe";
-import { ApiResponse } from "../../../infrastructure/dtos/common.dto";
+import { ApiResponse } from "../../dtos/common.dto";
 import { appointmentStatusArray } from "../../../shared/utils/constants";
-import { UserCancelBookingRequest } from "../../../infrastructure/dtos/user.dto";
+import { UserCancelBookingRequest } from "../../dtos/user.dto";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { IPaymentRepository } from "../../../domain/interfaces/repositories/IPayment.repository";

@@ -1,5 +1,5 @@
-import { ApiResponse } from "../../../infrastructure/dtos/common.dto";
-import { ProviderFetchAllPlansResponse } from "../../../infrastructure/dtos/provider.dto";
+import { ApiResponse } from "../../dtos/common.dto";
+import { ProviderFetchAllPlansResponse } from "../../dtos/provider.dto";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 
 export class ProviderFetchAllPlansUseCase {

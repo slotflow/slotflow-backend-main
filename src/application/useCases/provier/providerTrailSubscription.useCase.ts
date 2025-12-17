@@ -1,9 +1,9 @@
 import dayjs from "dayjs";
 import { Types } from "mongoose";
-import { ApiResponse } from "../../../infrastructure/dtos/common.dto";
+import { ApiResponse } from "../../dtos/common.dto";
 import { subscriptionStatusArray } from "../../../shared/utils/constants";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
-import { ProviderTrialSubscriptionRequest } from "../../../infrastructure/dtos/provider.dto";
+import { ProviderTrialSubscriptionRequest } from "../../dtos/provider.dto";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
 

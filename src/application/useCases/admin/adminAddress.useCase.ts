@@ -1,6 +1,5 @@
-import { Types } from "mongoose";
-import { ApiResponse } from "../../../infrastructure/dtos/common.dto";
-import { AdminFetchUserOrProviderAddressResponse } from "../../../infrastructure/dtos/admin.dto";
+import { ApiResponse } from "../../dtos/common.dto";
+import { AdminFetchUserOrProviderAddressResponse } from "../../dtos/admin.dto";
 import { IAddressRepository } from "../../../domain/interfaces/repositories/IAddress.repository";
 
 export class AdminFetchUserOrProviderAddressUseCase {
@@ -8,13 +7,15 @@ export class AdminFetchUserOrProviderAddressUseCase {
         private addressRepository: IAddressRepository
     ) { }
 
-    async execute(userOrProviderId: Types.ObjectId): Promise<ApiResponse<AdminFetchUserOrProviderAddressResponse>> {
+    async execute(userOrProviderId: string): Promise<ApiResponse<AdminFetchUserOrProviderAddressResponse>> {
         try {
-            const addressData = await this.addressRepository.findAddressByUserId(userOrProviderId);
+
+            const addressData = await this.addressRepository.findByUserId(userOrProviderId);
             if (addressData == null) return { success: true, message: "Address not yet added.", data: {} };
 
-            const { _id, ...address } = addressData;
+            const { id, ...address } = addressData;
             return { success: true, message: "Address fetched successfully.", data: address };
+
         } catch (error) {
             console.log("AdminFetchUserOrProviderAddressUseCase : ", error);
             throw new Error("Failed to fetch users / provider address");

@@ -1,14 +1,13 @@
-import { Types } from "mongoose";
 import { Address } from "../../entities/address.entity";
-import { CreateAddressRequest } from "../../../infrastructure/dtos/common.dto";
 
 export interface IAddressRepository {
+
+    create(address: Address): Promise<Address>;
+
+    findByUserId(userId: string): Promise<Address | null>;
+
+    findById(addressId: string): Promise<Address | null>;
+
+    update(address: Address): Promise<Address>;
     
-    createAddress(address: CreateAddressRequest): Promise<Address>;
-
-    findAddressByUserId(userId: Types.ObjectId): Promise<Address | null>;
-
-    findAddressById(addressId: Types.ObjectId): Promise<Address | null>;
-
-    updateAddress(address: Address): Promise<Address | null>;
 }

@@ -1,8 +1,8 @@
 import { Types } from "mongoose";
 import { roleArray } from "../../../shared/utils/constants";
+import { CheckUserStatusRequest, CheckUserStatusResponse } from "../../dtos/auth.dto";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-import { CheckUserStatusRequest, CheckUserStatusResponse } from "../../../infrastructure/dtos/auth.dto";
 
 
 export class CheckUserStatusUseCase {

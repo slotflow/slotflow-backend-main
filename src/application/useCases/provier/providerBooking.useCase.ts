@@ -1,7 +1,7 @@
-import { ApiResponse } from "../../../infrastructure/dtos/common.dto";
+import { ApiResponse } from "../../dtos/common.dto";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { UpdateEventFromGoogleCalendarService } from "../../../infrastructure/services/googleCalendar";
-import { ProviderChangeBookingAppoinmentStatusRequest } from "../../../infrastructure/dtos/provider.dto";
+import { ProviderChangeBookingAppoinmentStatusRequest } from "../../dtos/provider.dto";
 
 export class ProviderChangeBookingAppointmentStatusUseCase {
     constructor(

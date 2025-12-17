@@ -3,8 +3,8 @@ import { Plan } from "../../../domain/entities/plan.entity";
 import { ISubscription, SubscriptionModel } from "./subscription.model";
 import { subscriptionStatusArray } from "../../../shared/utils/constants";
 import { Subscription } from "../../../domain/entities/subscription.entity";
-import { AdminFetchAllSubscriptionsResponse, AdminFetchDashboardSubscriptionStatsDataResponse } from "../../dtos/admin.dto";
-import { ApiPaginationRequest, ApiResponse, FetchProviderSubscriptionsRequest, FindSubscriptionsByProviderIdResponse, PopulatedSubscription } from "../../dtos/common.dto";
+import { AdminFetchAllSubscriptionsResponse, AdminFetchDashboardSubscriptionStatsDataResponse } from "../../../application/dtos/admin.dto";
+import { ApiPaginationRequest, ApiResponse, FetchProviderSubscriptionsRequest, FindSubscriptionsByProviderIdResponse, PopulatedSubscription } from "../../../application/dtos/common.dto";
 import { CreateSubscriptionPayloadProps, findSubscriptionFullDetailsResProps, ISubscriptionRepository, PlanNameOnly } from "../../../domain/interfaces/repositories/ISubscription.repository";
 
 export class SubscriptionRepositoryImpl implements ISubscriptionRepository {

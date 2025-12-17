@@ -3,10 +3,10 @@ import {
     AdminFetchUserProfileDetailsRequest,
     AdminFetchUserProfileDetailsResponse,
     AdminChangeUserIsBlockedStatusRequest,
-} from "../../../infrastructure/dtos/admin.dto";
+} from "../../dtos/admin.dto";
 import { SignedUrlService } from "../../../infrastructure/services/signedUrl.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { ApiPaginationRequest, ApiResponse } from "../../../infrastructure/dtos/common.dto";
+import { ApiPaginationRequest, ApiResponse } from "../../dtos/common.dto";
 
 export class AdminUserListUseCase {
     constructor(

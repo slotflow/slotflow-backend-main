@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 import { Service } from "../../entities/service.entity";
 import { ProviderService } from "../../entities/providerService.entity";
-import { ProviderUpdateProviderServiceRequest, ProviderUpdateProviderServiceResponse } from "../../../infrastructure/dtos/provider.dto";
+import { ProviderUpdateProviderServiceRequest, ProviderUpdateProviderServiceResponse } from "../../../application/dtos/provider.dto";
 
 export type CreateProviderServiceRequest = Pick<ProviderService, "providerId" | "service" | "serviceName" | "serviceDescription" | "servicePrice" | "isGroupService" | "maxParticipants" | "serviceExperience" | "serviceMode" | "serviceType" | "tags"> & Partial<Pick<ProviderService, "videoUrl" | "requirements">>;
 

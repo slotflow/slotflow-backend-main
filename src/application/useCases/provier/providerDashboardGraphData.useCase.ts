@@ -1,7 +1,7 @@
-import { ApiResponse } from "../../../infrastructure/dtos/common.dto";
+import { ApiResponse } from "../../dtos/common.dto";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { ISubscriptionMapping } from "../../../domain/interfaces/helper/ISubscriptionMapping.helper";
-import { ProviderFetchDashboardGraphDataRequest, ProviderFetchDashboardGraphDataResponse } from "../../../infrastructure/dtos/provider.dto";
+import { ProviderFetchDashboardGraphDataRequest, ProviderFetchDashboardGraphDataResponse } from "../../dtos/provider.dto";
 
 export class ProviderFetchDashboardGraphDataUseCase {
     constructor(

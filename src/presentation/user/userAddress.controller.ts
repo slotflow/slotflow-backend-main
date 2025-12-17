@@ -44,7 +44,7 @@ export class UserAddressController {
             const userId = (req.user as DecodedUser).userOrProviderId;
             const validateData = CreateAddressZodSchema.parse(req.body)
             const { addressLine, landMark, phone, place, city, district, pincode, state, country, location } = validateData;
-            const result = await this.userCreateAddressUseCase.execute({ userId: new Types.ObjectId(userId), addressLine, landMark, phone, place, city, district, pincode, state, country, location });
+            const result = await this.userCreateAddressUseCase.execute({ userId, addressLine, landMark, phone, place, city, district, pincode, state, country, location });
             res.status(200).json(result);
             if (!userId) throw new Error("Invalid request.");
         } catch (error) {
@@ -60,7 +60,7 @@ export class UserAddressController {
             if (!addressId) throw new Error("Invalid request");
             const validateData = CreateAddressZodSchema.parse(req.body);
             const { addressLine, landMark, phone, place, city, district, pincode, state, country, location } = validateData;
-            const result = await this.userUpdateAddressUseCase.execute({ _id: new Types.ObjectId(addressId), userId: new Types.ObjectId(userId), addressLine, landMark, phone, place, city, district, pincode, state, country, location });
+            const result = await this.userUpdateAddressUseCase.execute({ id: addressId, userId, addressLine, landMark, phone, place, city, district, pincode, state, country, location });
             res.status(200).json(result);
         } catch (error) {
             console.log("updateAddress error : ", error);

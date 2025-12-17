@@ -1,6 +1,6 @@
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { IReviewRepository } from "../../../domain/interfaces/repositories/IReview.repository";
-import { ApiResponse, FetchReviesRequest, FetchReviewsResponse } from "../../../infrastructure/dtos/common.dto";
+import { ApiResponse, FetchReviesRequest, FetchReviewsResponse } from "../../dtos/common.dto";
 
 
 export class FetchAllReviewsUseCase {

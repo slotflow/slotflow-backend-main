@@ -1,7 +1,7 @@
 import { User } from "../../../domain/entities/user.entity";
 import { roleArray } from "../../../shared/utils/constants";
 import { Provider } from "../../../domain/entities/provider.entity";
-import { GoogleAuthRequest } from "../../../infrastructure/dtos/auth.dto";
+import { GoogleAuthRequest } from "../../dtos/auth.dto";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 

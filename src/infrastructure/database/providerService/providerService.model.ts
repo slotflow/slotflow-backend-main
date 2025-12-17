@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
-import { ServiceModeType, ServiceTypeType } from "../../dtos/common.dto";
+import { ServiceModeType, ServiceTypeType } from "../../../application/dtos/common.dto";
 import { serviceModeArray, serviceTypeArray } from "../../../shared/utils/constants";
 import { serviceNameRegex, serviceExperienceRegex, serviceDescriptionRegex } from "../../../shared/zod/regex";
 

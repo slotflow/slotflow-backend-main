@@ -1,6 +1,6 @@
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-import { ApiResponse, FetchProviderProofsRequest, FetchProviderProofsResponse } from "../../../infrastructure/dtos/common.dto";
+import { ApiResponse, FetchProviderProofsRequest, FetchProviderProofsResponse } from "../../dtos/common.dto";
 
 export class FetchProviderProofsUseCase {
     constructor(

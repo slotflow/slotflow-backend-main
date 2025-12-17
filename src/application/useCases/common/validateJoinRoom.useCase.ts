@@ -1,6 +1,6 @@
 import { isSameDay, startOfDay } from "date-fns";
 import { appointmentStatusArray, roleArray } from "../../../shared/utils/constants";
-import { ApiResponse, ValidateJoinRoomRequest } from "../../../infrastructure/dtos/common.dto";
+import { ApiResponse, ValidateJoinRoomRequest } from "../../dtos/common.dto";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 
 export class ValidateJoinRoomUsecase {

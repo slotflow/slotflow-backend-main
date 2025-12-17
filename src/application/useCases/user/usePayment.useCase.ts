@@ -1,6 +1,6 @@
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IPaymentRepository } from "../../../domain/interfaces/repositories/IPayment.repository";
-import { ApiResponse, FetchPaymentResponse, FetchPaymentsRequest } from "../../../infrastructure/dtos/common.dto";
+import { ApiResponse, FetchPaymentResponse, FetchPaymentsRequest } from "../../dtos/common.dto";
 
 export class UserFetchAllPaymentsUseCase {
     constructor(

@@ -1,10 +1,10 @@
 import { awsConfig } from "../../../config/env";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { ApiResponse } from "../../../infrastructure/dtos/common.dto";
+import { ApiResponse } from "../../dtos/common.dto";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { ISignedUrlCacheRepository } from "../../../domain/interfaces/repositories/ISignedUrlCache.repository";
-import { UserFetchProfileDetailsResponse, UserFetchProfileRequest, UserUpdateProfileImageResponse, UserUpdateUserInfoRequest, UserUpdateUserInfoResponse, UsrUpdateProfileImageRequest } from "../../../infrastructure/dtos/user.dto";
+import { UserFetchProfileDetailsResponse, UserFetchProfileRequest, UserUpdateProfileImageResponse, UserUpdateUserInfoRequest, UserUpdateUserInfoResponse, UsrUpdateProfileImageRequest } from "../../dtos/user.dto";
 
 export class UserFetchProfileDetailsUseCase {
     constructor(

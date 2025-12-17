@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { RoleType } from "./infrastructure/dtos/common.dto";
+import { RoleType } from "./application/dtos/common.dto";
 
 export interface DecodedUser {
     userOrProviderId: string;

@@ -1,5 +1,5 @@
-import { ApiPaginationRequest, ApiResponse } from "../../../infrastructure/dtos/common.dto";
-import { AdminFetchAllSubscriptionsResponse } from "../../../infrastructure/dtos/admin.dto";
+import { ApiPaginationRequest, ApiResponse } from "../../dtos/common.dto";
+import { AdminFetchAllSubscriptionsResponse } from "../../dtos/admin.dto";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
 
 export class AdminFetchAllSubscriptionsUseCase {

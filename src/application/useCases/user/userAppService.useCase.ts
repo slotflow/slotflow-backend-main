@@ -1,5 +1,5 @@
 import { IServiceRepository } from "../../../domain/interfaces/repositories/IService.repository";
-import { ApiResponse, FetchAllAppServicesResponse } from "../../../infrastructure/dtos/common.dto";
+import { ApiResponse, FetchAllAppServicesResponse } from "../../dtos/common.dto";
 
 export class UserFetchAllAppServiceUseCase {
 

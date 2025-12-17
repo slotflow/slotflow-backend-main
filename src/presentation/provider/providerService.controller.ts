@@ -7,7 +7,7 @@ import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/p
 import { ProviderServiceRepositoryImpl } from "../../infrastructure/database/providerService/providerService.repository.impl";
 import { CreateProviderServiceRequest, IProviderServiceRepository } from "../../domain/interfaces/repositories/IProviderService.repository";
 import { ProviderCreateServiceDetailsUseCase, ProviderFetchServiceDetailsUseCase, ProviderUpdateServiceDetailsUseCase } from "../../application/useCases/provier/providerService.useCase";
-import { ProviderUpdateProviderServiceRequest } from "../../infrastructure/dtos/provider.dto";
+import { ProviderUpdateProviderServiceRequest } from "../../application/dtos/provider.dto";
 import { ValidateObjectId } from "../../shared/zod/common.zod";
 
 const providerRepository: IProviderRepository = new ProviderRepositoryImpl();

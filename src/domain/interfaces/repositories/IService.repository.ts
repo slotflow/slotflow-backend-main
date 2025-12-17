@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 import { Service } from "../../entities/service.entity";
-import { AdminAddServiceRequest, AdminServiceListResponse } from "../../../infrastructure/dtos/admin.dto";
-import { ApiPaginationRequest, ApiResponse, FetchAllAppServicesResponse } from "../../../infrastructure/dtos/common.dto";
+import { AdminAddServiceRequest, AdminServiceListResponse } from "../../../application/dtos/admin.dto";
+import { ApiPaginationRequest, ApiResponse, FetchAllAppServicesResponse } from "../../../application/dtos/common.dto";
 
 export interface IServiceRepository {
     createService(payload: AdminAddServiceRequest): Promise<Service | null>;

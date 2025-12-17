@@ -1,7 +1,7 @@
 import { roleArray } from '../../../shared/utils/constants';
-import { ApiResponse } from '../../../infrastructure/dtos/common.dto';
+import { ApiResponse } from '../../dtos/common.dto';
 import { OTPService } from '../../../infrastructure/services/otp.service';
-import { OTPVerificationRequest } from '../../../infrastructure/dtos/auth.dto';
+import { OTPVerificationRequest } from '../../dtos/auth.dto';
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
 

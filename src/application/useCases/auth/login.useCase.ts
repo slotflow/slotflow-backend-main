@@ -4,7 +4,7 @@ import { User } from "../../../domain/entities/user.entity";
 import { JWTService } from "../../../infrastructure/security/jwt";
 import { Provider } from "../../../domain/entities/provider.entity";
 import { PasswordHasher } from "../../../infrastructure/security/password-hashing";
-import { LoginRequest, LoginResponse } from "../../../infrastructure/dtos/auth.dto";
+import { LoginRequest, LoginResponse } from "../../dtos/auth.dto";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";

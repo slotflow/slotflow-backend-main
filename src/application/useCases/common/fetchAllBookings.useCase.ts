@@ -1,6 +1,6 @@
 import { roleArray } from "../../../shared/utils/constants";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
-import { ApiResponse, FetchBookingsRequest, FetchBookingsResponse, FetchOnlineBookingsForProviderResponse, FetchOnlineBookingsForUserResponse } from "../../../infrastructure/dtos/common.dto";
+import { ApiResponse, FetchBookingsRequest, FetchBookingsResponse, FetchOnlineBookingsForProviderResponse, FetchOnlineBookingsForUserResponse } from "../../dtos/common.dto";
 
 export class FetchBookingAppointmentsUseCase {
     constructor(

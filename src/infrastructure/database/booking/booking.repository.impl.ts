@@ -5,12 +5,12 @@ import { User } from "../../../domain/entities/user.entity";
 import { Booking } from "../../../domain/entities/booking.entity";
 import { Provider } from "../../../domain/entities/provider.entity";
 import { endOfDay, startOfDay, startOfToday, startOfTomorrow } from "date-fns";
-import { UserFetchProvidersForChatSidebarResponse } from "../../dtos/user.dto";
+import { UserFetchProvidersForChatSidebarResponse } from "../../../application/dtos/user.dto";
 import { appointmentStatusArray, roleArray } from "../../../shared/utils/constants";
-import { AdminFetchDashboardAppointmentStatsDataResponse } from "../../dtos/admin.dto";
-import { ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardGraphDataResponse, ProviderFetchUsersForChatSideBarResponse } from "../../dtos/provider.dto";
+import { AdminFetchDashboardAppointmentStatsDataResponse } from "../../../application/dtos/admin.dto";
+import { ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardGraphDataResponse, ProviderFetchUsersForChatSideBarResponse } from "../../../application/dtos/provider.dto";
 import { AdminFetchTodaysBookingStatsForDashboardResponse, CreateBookingPayloadProps, IBookingRepository, ProviderFetchDashboardGraphRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
-import { FetchBookingsRequest, ApiResponse, FetchBookingsResponse, userIdAndServiceProviderId, FetchOnlineBookingsForProviderResponse, FetchOnlineBookingsForUserResponse, FetchBookingDetailsResponse } from "../../dtos/common.dto";
+import { FetchBookingsRequest, ApiResponse, FetchBookingsResponse, userIdAndServiceProviderId, FetchOnlineBookingsForProviderResponse, FetchOnlineBookingsForUserResponse, FetchBookingDetailsResponse } from "../../../application/dtos/common.dto";
 
 export class BookingRepositoryImpl implements IBookingRepository {
     private mapToEntity(booking: IBooking): Booking {

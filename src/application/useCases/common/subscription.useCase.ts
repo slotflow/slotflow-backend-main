@@ -1,5 +1,5 @@
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
-import { FetchSubscriptionDetailsRequest, FetchSubscriptionDetailsResponse } from "../../../infrastructure/dtos/common.dto";
+import { FetchSubscriptionDetailsRequest, FetchSubscriptionDetailsResponse } from "../../dtos/common.dto";
 
 export class FetchSubscriptionDetailsUseCase {
     constructor(

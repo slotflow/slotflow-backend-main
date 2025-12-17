@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { DayType, ServiceModeType } from "../../infrastructure/dtos/common.dto";
+import { DayType, ServiceModeType } from "../../application/dtos/common.dto";
 
 export interface TimeSlot {
     time: string,

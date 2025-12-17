@@ -1,9 +1,9 @@
 import { Types } from "mongoose";
 import { IService, ServiceModel } from "./service.model";
-import { AdminAddServiceRequest, AdminServiceListResponse } from "../../dtos/admin.dto";
+import { AdminAddServiceRequest, AdminServiceListResponse } from "../../../application/dtos/admin.dto";
 import { Service } from "../../../domain/entities/service.entity";
 import { IServiceRepository } from "../../../domain/interfaces/repositories/IService.repository";
-import { ApiPaginationRequest, ApiResponse, FetchAllAppServicesResponse } from "../../dtos/common.dto";
+import { ApiPaginationRequest, ApiResponse, FetchAllAppServicesResponse } from "../../../application/dtos/common.dto";
 
 export class ServiceRepositoryImpl implements IServiceRepository {
     private mapToEntity(service: IService): Service {

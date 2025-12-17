@@ -2,8 +2,8 @@ import { Types } from "mongoose";
 import { Plan } from "../../entities/plan.entity";
 import { Payment } from "../../entities/payment.entity";
 import { Subscription } from "../../entities/subscription.entity";
-import { AdminFetchAllSubscriptionsResponse, AdminFetchDashboardSubscriptionStatsDataResponse } from "../../../infrastructure/dtos/admin.dto";
-import { ApiPaginationRequest, ApiResponse, FetchProviderSubscriptionsRequest, FindSubscriptionsByProviderIdResponse } from "../../../infrastructure/dtos/common.dto";
+import { AdminFetchAllSubscriptionsResponse, AdminFetchDashboardSubscriptionStatsDataResponse } from "../../../application/dtos/admin.dto";
+import { ApiPaginationRequest, ApiResponse, FetchProviderSubscriptionsRequest, FindSubscriptionsByProviderIdResponse } from "../../../application/dtos/common.dto";
 
 export type CreateSubscriptionPayloadProps = Pick<Subscription, "providerId" | "subscriptionPlanId" | "startDate" | "endDate" | "subscriptionStatus" | "paymentId" >;
 

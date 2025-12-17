@@ -1,6 +1,6 @@
 import passport from 'passport';
 import { Types } from 'mongoose';
-import { RoleType } from '../dtos/common.dto';
+import { RoleType } from '../../application/dtos/common.dto';
 import { roleArray } from '../../shared/utils/constants';
 import { googleClientConfig } from '../../config/env';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
