@@ -19,7 +19,7 @@ export class ProviderCreateServiceDetailsUseCase {
             if (!providerService) throw new Error("Service details adding error.");
 
             if (provider && providerService && providerService._id) {
-                provider.updateServiceId(providerService._id);
+                provider.attachService(providerService._id);
                 const updatedProvider = await this.providerRepository.update(provider);
                 if (!updatedProvider) throw new Error("Failed to update provider with service ID.");
             }

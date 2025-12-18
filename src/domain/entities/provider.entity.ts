@@ -1,63 +1,5 @@
-export enum AdminVerificationStatus {
-  REQUESTED = "REQUESTED",
-  UNDER_REVIEW = "UNDER_REVIEW",
-  APPROVED = "APPROVED",
-  REJECTED = "REJECTED",
-  RESUBMITTED = "RESUBMITTED",
-  NOT_REQUESTED = "NOT_REQUESTED",
-}
-
-export type CreateLocalProviderProps = {
-  id: string;
-  username: string;
-  email: string;
-  password: string;
-  verificationToken: string;
-};
-
-export type UpdatePasswordProps = {
-  verificationToken?: string;
-  password: string;
-};
-
-export type UpdateInfoProps = {
-  username?: string;
-  phone?: string;
-}
-
-export type UpdateIdentityProofs = {
-  identityProof: string | null;
-}
-
-export type UpdateServiceProofs = {
-  serviceProof: string | null;
-}
-
-export type UpdateGoogleData = {
-  googleId: string;
-  googleConnected: boolean;
-}
-
-export type UpdateProfileImage = {
-  profileImage: string | null;
-}
-
-export type CreateGoogleProviderProps = {
-  id: string;
-  username: string;
-  email: string;
-  googleId: string;
-  profileImage: string;
-  isEmailVerified: boolean;
-};
-
-export type RejectProvider = {
-  verificationRejectionReason: string;
-  isAddressVerified: boolean;
-  isServiceDetailsVerified: boolean;
-  isAvailabilityVerified: boolean;
-  isProofsVerified: boolean;
-}
+import { AdminVerificationStatus } from "../enums/adminVerificationStatus.enum";
+import { ChangePassword, ChangeProfileImage, ChangeProfileInfo, CreateGoogleProviderProps, CreateLocalProviderProps, LinkGoogleAccount, RejectVerification, SubmitIdentityProof, SubmitServiceProof } from "../commands/provider.commands";
 
 export class Provider {
   constructor(
@@ -94,6 +36,12 @@ export class Provider {
     public readonly createdAt = new Date(),
     public updatedAt = new Date(),
   ) { }
+
+  private ensureNotBlocked(action: string) {
+    if (this.isBlocked) {
+      throw new Error(`Blocked providers cannot ${action}`);
+    }
+  }
 
   static createLocal(props: CreateLocalProviderProps): Provider {
     return new Provider(
@@ -176,23 +124,19 @@ export class Provider {
     this.updatedAt = new Date();
   }
 
-  requestAdminVerification() {
+  submitForAdminVerification() { 
     this.adminVerificationStatus = AdminVerificationStatus.REQUESTED;
     this.verificationRejectionReason = null;
     this.updatedAt = new Date();
   }
 
-  rerequestAdminVerification() {
+  resubmitForAdminVerification() { 
     this.adminVerificationStatus = AdminVerificationStatus.RESUBMITTED;
     this.verificationRejectionReason = null;
     this.updatedAt = new Date();
   }
 
-  approveAdminVerification() {
-    if (this.isBlocked) {
-      throw new Error("Blocked providers cannot be approved");
-    }
-
+  approveVerification() { 
     if (
       this.adminVerificationStatus !== AdminVerificationStatus.REQUESTED &&
       this.adminVerificationStatus !== AdminVerificationStatus.RESUBMITTED
@@ -210,7 +154,7 @@ export class Provider {
     this.updatedAt = new Date();
   }
 
-  rejectAdminVerification(props: RejectProvider) {
+  rejectVerification(props: RejectVerification) { 
     this.isAdminVerified = false;
     this.adminVerificationStatus = AdminVerificationStatus.REJECTED;
     this.verificationRejectionReason = props.verificationRejectionReason;
@@ -221,17 +165,19 @@ export class Provider {
     this.updatedAt = new Date();
   }
 
-  giveTrustTag() { // TODO RENAME grantTrustTag
+  grantTrustBadge() { 
     this.trustedBySlotflow = true;
     this.updatedAt = new Date();
   }
 
-  removeTrustTag() { // TODO revokeTrustTag
+  revokeTrustBadge() { 
     this.trustedBySlotflow = false;
     this.updatedAt = new Date();
   }
 
-  updatePassword(props: UpdatePasswordProps) {
+  changePassword(props: ChangePassword) { 
+    this.ensureNotBlocked("update password");
+
     if (props.verificationToken) {
       this.verificationToken = props.verificationToken;
     }
@@ -239,31 +185,44 @@ export class Provider {
     this.updatedAt = new Date();
   }
 
-  updateAddressId(addressId: string) {
+  attachAddress(addressId: string) { 
+    this.ensureNotBlocked("update address");
+  
     this.addressId = addressId;
     this.updatedAt = new Date();
   }
 
-  updateServiceId(serviceId: string) {
+  attachService(serviceId: string) { 
+    this.ensureNotBlocked("update service");
+    
     this.serviceId = serviceId;
     this.updatedAt = new Date();
   }
 
-  updateServiceAvailabilityId(serviceAvailabilityId: string) {
+  attachServiceAvailability(serviceAvailabilityId: string) { 
+    this.ensureNotBlocked("update service availability");
+   
     this.serviceAvailabilityId = serviceAvailabilityId;
     this.updatedAt = new Date();
   }
 
-  updateStripeId(stripeId: string) {
+  linkStripeAccount(stripeId: string) { 
+    this.ensureNotBlocked("update stripe");
+    
     this.stripeAccountId = stripeId;
+    this.updatedAt = new Date();
   }
 
-  addSubscription(subscriptionId: string) {
+  activateSubscription(subscriptionId: string) { 
+    this.ensureNotBlocked("subscribe");
+    
     this.subscription.push(subscriptionId);
     this.updatedAt = new Date();
   }
 
-  updateInfo(props: UpdateInfoProps) {
+  updateProfileInfo(props: ChangeProfileInfo) { 
+    this.ensureNotBlocked("update info");
+   
     if (props.phone !== undefined) {
       this.phone = props.phone;
     }
@@ -274,23 +233,31 @@ export class Provider {
     this.updatedAt = new Date();
   }
 
-  updateIdentityProof(props: UpdateIdentityProofs) {
+  submitIdentityProof(props: SubmitIdentityProof) { 
+    this.ensureNotBlocked("update identity proof");
+   
     this.identityProof = props.identityProof;
     this.updatedAt = new Date();
   }
 
-  updateServiceProof(props: UpdateServiceProofs) {
+  submitServiceProof(props: SubmitServiceProof) { 
+    this.ensureNotBlocked("update service proof");
+    
     this.serviceProof = props.serviceProof;
     this.updatedAt = new Date();
   }
 
-  updateGoogleData(props: UpdateGoogleData) {
+  linkGoogleAccount(props: LinkGoogleAccount) { 
+    this.ensureNotBlocked("update google data");
+    
     this.googleId = props.googleId;
     this.googleConnected = props.googleConnected;
     this.updatedAt = new Date();
   }
 
-  updateProfileImage(props: UpdateProfileImage) {
+  updateProfileImage(props: ChangeProfileImage) {
+    this.ensureNotBlocked("update profile image");
+    
     this.profileImage = props.profileImage;
     this.updatedAt = new Date();
   }

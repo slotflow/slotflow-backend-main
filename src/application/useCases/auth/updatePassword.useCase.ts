@@ -31,7 +31,7 @@ export class UpdatePasswordUseCase {
                 const provider = await this.providerRepository.findByVerificationToken(verificationToken);
                 if (!provider) throw new Error("User not found.");
 
-                provider.updatePassword({ password: hashedPassword });
+                provider.changePassword({ password: hashedPassword });
                 await this.providerRepository.update(provider);
             }
 

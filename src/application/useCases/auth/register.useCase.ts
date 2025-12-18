@@ -62,7 +62,7 @@ export class RegisterUseCase {
           userOrProvider.password = hashedPassword;
           await this.userRepository.updateUser(userOrProvider as User);
         } else if (role === roleArray[2]) {
-          (userOrProvider as Provider).updatePassword({verificationToken, password: hashedPassword})
+          (userOrProvider as Provider).changePassword({verificationToken, password: hashedPassword})
           await this.providerRepository.update(userOrProvider as Provider);
         }
       } else {

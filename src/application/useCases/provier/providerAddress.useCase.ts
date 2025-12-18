@@ -39,7 +39,7 @@ export class ProviderCreateAddressUseCase {
             const savedAddress = await this.addressRepository.create(address);
             if (!savedAddress) throw new Error("Failed to save address.");
 
-            provider.updateAddressId(savedAddress._id);
+            provider.attachAddress(savedAddress._id);
 
             const updatedProvider = await this.providerRepository.update(provider);
             if (!updatedProvider) throw new Error("Failed to update provider with address.");

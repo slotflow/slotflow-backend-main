@@ -56,7 +56,7 @@ export class ProviderUpdateProviderInfoUseCase {
       const provider = await this.providerRepository.findById(providerId);
       if (!provider) throw new Error("No user found");
 
-      provider.updateInfo({ 
+      provider.updateProfileInfo({ 
         phone: phone ?? undefined, 
         username: username ?? undefined
       });
@@ -91,7 +91,7 @@ export class ProviderUpdateIdentityProofUseCase {
     const provider = await this.providerRepository.findById(providerId);
     if(!provider) throw new Error("User not found");
 
-    provider.updateIdentityProof({identityProof});
+    provider.submitIdentityProof({identityProof});
     const updatedProvider = await this.providerRepository.update(provider);
     if(!updatedProvider) throw new Error("Failed to update proof");
 
@@ -134,7 +134,7 @@ export class ProviderUpdateServiceProofUseCase {
     const provider = await this.providerRepository.findById(providerId);
     if(!provider) throw new Error("User not found");
 
-    provider.updateServiceProof({serviceProof});
+    provider.submitServiceProof({serviceProof});
     const updatedProvider = await this.providerRepository.update(provider);
     if(!updatedProvider) throw new Error("Failed to update proof");
 
@@ -225,9 +225,9 @@ export class ProviderRequestForApprovalUseCase {
       }
 
       if (provider?.adminVerificationStatus === AdminVerificationStatus.NOT_REQUESTED) {
-        provider.requestAdminVerification();
+        provider.submitForAdminVerification();
       } else if (provider?.adminVerificationStatus === AdminVerificationStatus.REJECTED) {
-        provider.rerequestAdminVerification();
+        provider.resubmitForAdminVerification();
       }
 
       const updatedProvider = await this.providerRepository.update(provider);
@@ -275,7 +275,7 @@ export class ProvideDeleteIdentityProofUseCase {
         if(!result) throw new Error("Faile to remove existing file");
       }
 
-      provider.updateIdentityProof({ identityProof: null });
+      provider.submitIdentityProof({ identityProof: null });
       await this.providerRepository.update(provider);
 
       return {
@@ -320,7 +320,7 @@ export class ProvideDeleteServiceProofUseCase {
         if(!result) throw new Error("Faile to remove existing file");
       }
 
-      provider.updateServiceProof({ serviceProof: null });
+      provider.submitServiceProof({ serviceProof: null });
       await this.providerRepository.update(provider);
 
       return {

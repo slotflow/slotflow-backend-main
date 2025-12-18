@@ -42,7 +42,7 @@ export class AdminApproveProviderUseCase {
             if (!provider) throw new Error("User not found.");
             if (provider.isAdminVerified) throw new Error("Provider is already verified.");
 
-            provider.approveAdminVerification();
+            provider.approveVerification();
 
             const updatedProvider = await this.providerRepository.update(provider);
             if (!updatedProvider) throw new Error("Provider not found");
@@ -70,7 +70,7 @@ export class AdminRejectProviderUseCase {
             const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");
 
-           provider.rejectAdminVerification({
+           provider.rejectVerification({
             verificationRejectionReason: verificationRejectionReason ?? "",
             isAddressVerified,
             isServiceDetailsVerified,
@@ -137,9 +137,9 @@ export class AdminChangeProviderTrustTagUseCase {
             if (!provider) throw new Error("User not found.");
 
             if(provider.trustedBySlotflow) {
-                provider.removeTrustTag();
+                provider.revokeTrustBadge();
             } else {
-                provider.giveTrustTag();
+                provider.grantTrustBadge();
             }
 
             const updatedProvider = await this.providerRepository.update(provider);

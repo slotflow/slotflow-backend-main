@@ -134,7 +134,7 @@ export class ProviderSaveSubscriptionUseCase {
 
                 if (!subscription) throw new Error("Subscription saving error.");
 
-                provider.addSubscription(subscription._id);
+                provider.activateSubscription(subscription._id);
 
                 const updatedProvider = await this.providerRepository.update(provider);
                 if (!updatedProvider) throw new Error("Unexpected error, subscription adding error.");

@@ -24,7 +24,7 @@ export class ProviderStripeConnectUseCase {
                     email: provider.email,
                 });
                 if (!account) throw new Error("Stripe connecting failed");
-                provider.updateStripeId(account.id);
+                provider.linkStripeAccount(account.id);
                 const updatedProvider = await this.providerRepository.update(provider);
                 if (!updatedProvider) throw new Error("Stripe connecting failed");
             }

@@ -36,7 +36,7 @@ export class ProviderCreateServiceAvailabilitiesUseCase {
             if (!serviceAvailability) throw new Error("Service availability saving failed.");
 
             if (provider && serviceAvailability && serviceAvailability._id) {
-                provider.updateServiceAvailabilityId(serviceAvailability._id);
+                provider.attachServiceAvailability(serviceAvailability._id);
                 const updatedProvider = await this.providerRepository.update(provider);
                 if (!updatedProvider) throw new Error("Failed to update provider with service availability in profile.");
             }

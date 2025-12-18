@@ -47,7 +47,7 @@ export class ProviderTrialSubscriptionUseCase {
 
             if (!subscription) throw new Error("Trial plan activating error.");
 
-            provider.addSubscription(subscription._id);
+            provider.activateSubscription(subscription._id);
             const updatedProvider = await this.providerRepository.update(provider);
 
             if (!updatedProvider) throw new Error("Trail plan activating error.");

@@ -53,7 +53,7 @@ passport.use(
                     if(role === roleArray[2]) {
                         const provider = await providerRepositoryImpl.findById(_id);
                         if(!provider) throw new Error("User not found");
-                        provider.updateGoogleData({
+                        provider.linkGoogleAccount({
                             googleId: profile.id,
                             googleConnected: true
                         });
