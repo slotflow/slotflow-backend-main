@@ -18,7 +18,7 @@ export class ProviderTrialSubscriptionUseCase {
         try {
             const { providerId } = payload;
 
-            const provider = await this.providerRepository.findProviderById(providerId);
+            const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");
 
             const providerSubscriptions = provider.subscription;
@@ -47,8 +47,8 @@ export class ProviderTrialSubscriptionUseCase {
 
             if (!subscription) throw new Error("Trial plan activating error.");
 
-            provider.subscription.push(subscription._id);
-            const updatedProvider = await this.providerRepository.updateProvider(provider);
+            provider.addSubscription(subscription._id);
+            const updatedProvider = await this.providerRepository.update(provider);
 
             if (!updatedProvider) throw new Error("Trail plan activating error.");
 

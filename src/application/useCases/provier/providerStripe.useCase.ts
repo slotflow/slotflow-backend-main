@@ -1,5 +1,5 @@
-import { stripe } from "../../../infrastructure/lib/stripe";
 import { ApiResponse } from "../../dtos/common.dto";
+import { stripe } from "../../../infrastructure/lib/stripe";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { ProviderStripeConnectRequest, ProviderStripeConnectResponse } from "../../dtos/provider.dto";
 
@@ -12,10 +12,10 @@ export class ProviderStripeConnectUseCase {
         try {
 
             const { providerId } = payload
-            const provider = await this.providerRepository.findProviderById(providerId);
+            const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("Provider not found");
 
-            let stripeAccountId = provider.stripeAccountId;
+            let stripeAccountId = provider.stripeAccountId as string;
 
             // If provider has no stripe account, create one
             if (!stripeAccountId) {
@@ -24,9 +24,8 @@ export class ProviderStripeConnectUseCase {
                     email: provider.email,
                 });
                 if (!account) throw new Error("Stripe connecting failed");
-                console.log("account : ", account);
-                provider.stripeAccountId = account.id;
-                const updatedProvider = await this.providerRepository.updateProvider(provider);
+                provider.updateStripeId(account.id);
+                const updatedProvider = await this.providerRepository.update(provider);
                 if (!updatedProvider) throw new Error("Stripe connecting failed");
             }
 

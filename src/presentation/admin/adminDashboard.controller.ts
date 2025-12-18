@@ -3,7 +3,9 @@ import { IUserRepository } from "../../domain/interfaces/repositories/IUser.repo
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { IPaymentRepository } from "../../domain/interfaces/repositories/IPayment.repository";
 import { IBookingRepository } from "../../domain/interfaces/repositories/IBooking.repository";
+import { IAdminProviderQuery } from "../../application/queries/admin/IAdminProviderStatsQuery";
 import { IProviderRepository } from "../../domain/interfaces/repositories/IProvider.repository";
+import { AdminProviderQueryImpl } from "../../infrastructure/queries/admin/AdminProviderQuery.impl";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { ISubscriptionRepository } from "../../domain/interfaces/repositories/ISubscription.repository";
@@ -16,10 +18,11 @@ const paymentRepository: IPaymentRepository = new PaymentRepositoryImpl();
 const bookingRepository: IBookingRepository = new BookingRepositoryImpl();
 const providerRepository: IProviderRepository = new ProviderRepositoryImpl();
 const subscriptionRepository: ISubscriptionRepository = new SubscriptionRepositoryImpl();
+const adminProviderQuer: IAdminProviderQuery = new AdminProviderQueryImpl();
 
 const adminFetchDashboardUserStatsDataUseCase = new AdminFetchDashboardUserStatsDataUseCase(userRepository);
 const adminFetchDashboardRevenueStatsDataUseCase = new AdminFetchDashboardRevenueStatsDataUseCase(paymentRepository);
-const adminFetchDashboardProviderStatsDataUseCase = new AdminFetchDashboardProviderStatsDataUseCase(providerRepository);
+const adminFetchDashboardProviderStatsDataUseCase = new AdminFetchDashboardProviderStatsDataUseCase(adminProviderQuer);
 const adminFetchDashboardAppointmentsStatsDataUseCase = new AdminFetchDashboardAppointmentsStatsDataUseCase(bookingRepository)
 const adminFetchDashboardSubscriptionStatsDataUseCase = new AdminFetchDashboardSubscriptionStatsDataUseCase(subscriptionRepository);
 const adminFetchDashboardTodaysDataUseCase = new AdminFetchDashboardTodaysDataUseCase(userRepository, providerRepository, paymentRepository, bookingRepository);

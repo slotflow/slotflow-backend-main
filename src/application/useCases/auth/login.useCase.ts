@@ -31,7 +31,7 @@ export class LoginUseCase {
             if (role === roleArray[1]) {
                 userOrProvider = await this.userRepository.findUserByEmail(email);
             } else if (role === roleArray[2]) {
-                userOrProvider = await this.providerRepository.findProviderByEmail(email);
+                userOrProvider = await this.providerRepository.findByEmail(email);
             } else if (role === roleArray[0]) {
                 if (email !== adminConfig.adminEmail || password !== adminConfig.adminPassword) {
                     throw new Error("Invalid credentials.");

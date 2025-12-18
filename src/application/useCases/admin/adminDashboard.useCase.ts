@@ -5,6 +5,7 @@ import { IBookingRepository } from "../../../domain/interfaces/repositories/IBoo
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
 import { AdminFetchDashboardAppointmentStatsDataResponse, AdminFetchDashboardProviderStatsDataResponse, AdminFetchDashboardRevenueStatsDataResponse, AdminFetchDashboardSubscriptionStatsDataResponse, AdminFetchDashboardTodayStatsDataResponse, AdminFetchDashboardUserStatsDataResponse } from "../../dtos/admin.dto";
+import { IAdminProviderQuery } from "../../queries/admin/IAdminProviderStatsQuery";
 
 export class AdminFetchDashboardTodaysDataUseCase {
     constructor(
@@ -23,7 +24,7 @@ export class AdminFetchDashboardTodaysDataUseCase {
                 appointmentData
             ] = await Promise.all([
                 this.userRepository.findUsersCount({ today: true }),
-                this.providerRepository.findProvidersCount({ today: true }),
+                this.providerRepository.count(true),
                 this.paymentRepository.findTodayPaymentStatsForAdminDashboard(),
                 this.bookingRepository.findTodayBookingStatsForAdminDashboard()
             ]);
@@ -66,12 +67,12 @@ export class AdminFetchDashboardUserStatsDataUseCase {
 
 export class AdminFetchDashboardProviderStatsDataUseCase {
     constructor(
-        private providerRepository: IProviderRepository
+        private adminProviderQuery: IAdminProviderQuery
     ) { }
 
     async execute(): Promise<ApiResponse<AdminFetchDashboardProviderStatsDataResponse>> {
         try {
-            const providerData = await this.providerRepository.findProvidersStatsForAdminDashboard();
+            const providerData = await this.adminProviderQuery.fetchStats();
             return { success: true, message: "Fetched successfully", data: providerData };
         } catch (error) {
             console.log("AdminFetchDashboardProviderStatsDataUseCase error : ", error);

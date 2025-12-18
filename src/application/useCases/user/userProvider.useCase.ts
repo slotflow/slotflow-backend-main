@@ -66,7 +66,7 @@ export class UserFetchServiceProviderProfileDetailsUseCase {
       const user = await this.userRepository.findUserById(new Types.ObjectId(userId));
       if (!user) throw new Error("No user found");
 
-      const provider = await this.providerRepository.findProviderById(new Types.ObjectId(providerId));
+      const provider = await this.providerRepository.findById(providerId);
       if (!provider) throw new Error("No provider found");
 
       if (provider.profileImage) {

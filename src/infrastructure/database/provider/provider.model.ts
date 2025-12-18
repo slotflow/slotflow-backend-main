@@ -1,6 +1,5 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
-import { AdminVerificationStatusType } from '../../../application/dtos/common.dto';
-import { adminVerificationStatusArray } from '../../../shared/utils/constants';
+import { AdminVerificationStatus } from '../../../domain/entities/provider.entity';
 
 export interface IProvider extends Document {
   _id: Types.ObjectId;
@@ -13,7 +12,7 @@ export interface IProvider extends Document {
   isAdminVerified: boolean;
   verificationRejectionReason: string;
 
-  adminVerificationStatus: AdminVerificationStatusType,
+  adminVerificationStatus: AdminVerificationStatus,
   isAddressVerified: boolean,
   isServiceDetailsVerified: boolean,
   isAvailabilityVerified: boolean,
@@ -87,8 +86,8 @@ const ProviderSchema = new Schema<IProvider>({
   },
   adminVerificationStatus: {
     type: String,
-    enum: Object.values(adminVerificationStatusArray),
-    default: adminVerificationStatusArray[5]
+    enum: Object.values(AdminVerificationStatus),
+    default: AdminVerificationStatus.NOT_REQUESTED
   },
   isAddressVerified: {
     type: Boolean,

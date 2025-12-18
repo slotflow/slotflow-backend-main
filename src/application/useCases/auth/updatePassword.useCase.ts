@@ -1,7 +1,6 @@
+import { ApiResponse } from "../../dtos/common.dto";
 import { User } from "../../../domain/entities/user.entity";
 import { roleArray } from "../../../shared/utils/constants";
-import { Provider } from "../../../domain/entities/provider.entity";
-import { ApiResponse } from "../../dtos/common.dto";
 import { UpdatePasswordRequest } from "../../dtos/auth.dto";
 import { PasswordHasher } from "../../../infrastructure/security/password-hashing";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
@@ -29,11 +28,11 @@ export class UpdatePasswordUseCase {
                 await this.userRepository.updateUser(user as User);
 
             } else if (role === roleArray[2]) {
-                const provider = await this.providerRepository.findProviderByVerificationToken(verificationToken);
+                const provider = await this.providerRepository.findByVerificationToken(verificationToken);
                 if (!provider) throw new Error("User not found.");
 
-                provider.password = hashedPassword;
-                await this.providerRepository.updateProvider(provider as Provider);
+                provider.updatePassword({ password: hashedPassword });
+                await this.providerRepository.update(provider);
             }
 
             return { success: true, message: "Password updated successfully." };

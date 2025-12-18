@@ -29,7 +29,7 @@ export class ServiceAvailabilityRepositoryImpl implements IServiceAvailabilityRe
         }
     }
 
-    async findServiceAvailabilityByProviderId(providerId: Types.ObjectId, date: Date, availabilityId?: Types.ObjectId): Promise<FontendAvailabilityForResponse | null> {
+    async findServiceAvailabilityByProviderId(date: Date, availabilityId: Types.ObjectId): Promise<FontendAvailabilityForResponse | null> {
 
         const startOfDay = new Date(date);
         console.log("startOfDay : ",startOfDay);
@@ -42,21 +42,12 @@ export class ServiceAvailabilityRepositoryImpl implements IServiceAvailabilityRe
         const targetDay = daysOfWeek[date.getDay()];
         console.log("targetDay : ",targetDay);
 
-        let match: {
-            providerId: Types.ObjectId
-            _id?: Types.ObjectId,
-        } = {
-            providerId: providerId,
-        };
-
-        if(availabilityId) {
-            match._id = availabilityId
-        }
-
         try {
             const availability = await ServiceAvailabilityModel.aggregate([
                 {
-                    $match: match
+                    $match: {
+                        _id: new Types.ObjectId(availabilityId)
+                    }
                 },
                 {
                     $addFields: {
@@ -145,6 +136,7 @@ export class ServiceAvailabilityRepositoryImpl implements IServiceAvailabilityRe
                     $replaceWith: "$availabilityForDay"
                 },
             ]);
+            console.log("availability : ",availability[0]);
             return availability[0] || null;
 
         } catch (error) {

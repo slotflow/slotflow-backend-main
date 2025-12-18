@@ -12,7 +12,7 @@ export class FetchProviderProofsUseCase {
         try {
             const { providerId } = payload;
 
-            const provider = await this.providerRepository.findProviderById(providerId);
+            const provider = await this.providerRepository.findById(providerId);
             if(!provider) throw new Error("Failed to find provider");
 
             if(provider.identityProof) {

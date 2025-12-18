@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import { DecodedUser } from "../../express";
 import { s3Client } from "../../config/aws_s3";
 import { NextFunction, Request, Response } from "express";
@@ -10,7 +9,7 @@ import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/p
 import { FetchProviderProofsUseCase } from "../../application/useCases/common/fetchProviderProofs.useCase";
 import { ISignedUrlCacheRepository } from "../../domain/interfaces/repositories/ISignedUrlCache.repository";
 import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
-import { ProvideDeleteIdentityProofUseCase, ProvideDeleteServiceProofUseCase, ProviderFetchProfileDetailsUseCase, ProviderIdentityProofUpdateUseCase, ProviderRequestForApprovalUseCase, ProviderServiceProofUpdateUseCase, ProviderUpdateProfileImageUseCase, ProviderUpdateProviderInfoUseCase } from "../../application/useCases/provier/providerProfile.useCase";
+import { ProvideDeleteIdentityProofUseCase, ProvideDeleteServiceProofUseCase, ProviderFetchProfileDetailsUseCase, ProviderUpdateIdentityProofUseCase, ProviderRequestForApprovalUseCase, ProviderUpdateServiceProofUseCase, ProviderUpdateProfileImageUseCase, ProviderUpdateProviderInfoUseCase } from "../../application/useCases/provier/providerProfile.useCase";
 
 const providerRepository: IProviderRepository = new ProviderRepositoryImpl();
 const signedUrlCacheRepository: ISignedUrlCacheRepository = new SignedUrlCacheRepositoryImpl();
@@ -22,8 +21,8 @@ const providerRequestForApprovalUseCase = new ProviderRequestForApprovalUseCase(
 const providerFetchProfileDetailsUseCase = new ProviderFetchProfileDetailsUseCase(providerRepository);
 const fetchProviderProofsUseCase = new FetchProviderProofsUseCase(signedUrlService, providerRepository);
 const providerUpdateProfileImageUseCase = new ProviderUpdateProfileImageUseCase(s3Client, providerRepository, signedUrlCacheRepository);
-const providerServiceProofUpdateUseCase = new ProviderServiceProofUpdateUseCase(s3Client, providerRepository, signedUrlCacheRepository);
-const providerIdentityProofUpdateUseCase = new ProviderIdentityProofUpdateUseCase(s3Client, providerRepository, signedUrlCacheRepository);
+const providerUpdateServiceProofUseCase = new ProviderUpdateServiceProofUseCase(s3Client, providerRepository, signedUrlCacheRepository);
+const providerUpdateIdentityProofUseCase = new ProviderUpdateIdentityProofUseCase(s3Client, providerRepository, signedUrlCacheRepository);
 const provideDeleteIdentityProofUseCase = new ProvideDeleteIdentityProofUseCase(s3Client, providerRepository, signedUrlCacheRepository);
 const provideDeleteServiceProofUseCase = new ProvideDeleteServiceProofUseCase(s3Client, providerRepository, signedUrlCacheRepository);
 
@@ -32,8 +31,8 @@ class ProviderProfileController {
         private providerFetchProfileDetailsUseCase: ProviderFetchProfileDetailsUseCase,
         private providerUpdateProfileImageUseCase: ProviderUpdateProfileImageUseCase,
         private providerUpdateProviderInfoUseCase: ProviderUpdateProviderInfoUseCase,
-        private providerIdentityProofUpdateUseCase: ProviderIdentityProofUpdateUseCase,
-        private providerServiceProofUpdateUseCase: ProviderServiceProofUpdateUseCase,
+        private providerUpdateIdentityProofUseCase: ProviderUpdateIdentityProofUseCase,
+        private providerUpdateServiceProofUseCase: ProviderUpdateServiceProofUseCase,
         private fetchProviderProofsUseCase: FetchProviderProofsUseCase,
         private providerRequestForApprovalUseCase: ProviderRequestForApprovalUseCase,
         private provideDeleteIdentityProofUseCase: ProvideDeleteIdentityProofUseCase,
@@ -54,7 +53,7 @@ class ProviderProfileController {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
             if (!providerId) throw new Error("Invalid request.");
-            const result = await this.providerFetchProfileDetailsUseCase.execute({ providerId: new Types.ObjectId(providerId) });
+            const result = await this.providerFetchProfileDetailsUseCase.execute({providerId});
             res.status(200).json(result);
         } catch (error) {
             console.log("getProfileDetails error : ", error);
@@ -67,7 +66,7 @@ class ProviderProfileController {
             const providerId = (req.user as DecodedUser).userOrProviderId;
             const validatedData = s3FileKeyZodSchmema.parse(req.body);
             const result = await this.providerUpdateProfileImageUseCase.execute({
-                providerId: new Types.ObjectId(providerId),
+                providerId,
                 profileImage: validatedData.s3FileKey
             });
             res.status(200).json(result);
@@ -83,7 +82,7 @@ class ProviderProfileController {
             const { username, phone } = UserOrProviderUpdateInfoZodSchema.parse(req.body);
             if (!providerId || !username || !phone) throw new Error("Invalid request");
             const result = await this.providerUpdateProviderInfoUseCase.execute({
-                providerId: new Types.ObjectId(providerId),
+                providerId,
                 username,
                 phone
             })
@@ -98,8 +97,8 @@ class ProviderProfileController {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
             const validatedData = s3FileKeyZodSchmema.parse(req.body);
-            const result = await this.providerIdentityProofUpdateUseCase.exeute({
-                providerId: new Types.ObjectId(providerId),
+            const result = await this.providerUpdateIdentityProofUseCase.exeute({
+                providerId,
                 identityProof: validatedData.s3FileKey
             });
             res.status(200).json(result)
@@ -113,8 +112,8 @@ class ProviderProfileController {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
             const validatedData = s3FileKeyZodSchmema.parse(req.body);
-            const result = await this.providerServiceProofUpdateUseCase.exeute({
-                providerId: new Types.ObjectId(providerId),
+            const result = await this.providerUpdateServiceProofUseCase.exeute({
+                providerId,
                 serviceProof: validatedData.s3FileKey
             });
             res.status(200).json(result)
@@ -127,9 +126,7 @@ class ProviderProfileController {
     async fetchProofs(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
-            const result = await this.fetchProviderProofsUseCase.execute({
-                providerId: new Types.ObjectId(providerId)
-            });
+            const result = await this.fetchProviderProofsUseCase.execute({providerId});
             res.status(200).json(result);
         } catch (error) {
             console.log("fetchProviderProofs error : ", error);
@@ -140,9 +137,7 @@ class ProviderProfileController {
     async requestAdminApproval(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
-            const result = await this.providerRequestForApprovalUseCase.execute({
-                providerId: new Types.ObjectId(providerId)
-            });
+            const result = await this.providerRequestForApprovalUseCase.execute({providerId});
             res.status(200).json(result);
         } catch (error) {
             console.log("updateAdminVerificationStatus error : ", error);
@@ -153,9 +148,7 @@ class ProviderProfileController {
     async deleteIdentityProof(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
-            const result = await this.provideDeleteIdentityProofUseCase.execute({
-                providerId: new Types.ObjectId(providerId)
-            })
+            const result = await this.provideDeleteIdentityProofUseCase.execute({providerId});
             res.status(200).json(result);
         } catch (error) {
             console.log("deleteIdentityProof error : ", error);
@@ -166,9 +159,7 @@ class ProviderProfileController {
     async deleteServiceProof(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
-            const result = await this.provideDeleteServiceProofUseCase.execute({
-                providerId: new Types.ObjectId(providerId)
-            })
+            const result = await this.provideDeleteServiceProofUseCase.execute({providerId});
             res.status(200).json(result);
         } catch (error) {
             console.log("deleteServiceProof error : ", error);
@@ -182,8 +173,8 @@ const providerProfileController = new ProviderProfileController(
     providerFetchProfileDetailsUseCase,
     providerUpdateProfileImageUseCase,
     providerUpdateProviderInfoUseCase,
-    providerIdentityProofUpdateUseCase,
-    providerServiceProofUpdateUseCase,
+    providerUpdateIdentityProofUseCase,
+    providerUpdateServiceProofUseCase,
     fetchProviderProofsUseCase,
     providerRequestForApprovalUseCase,
     provideDeleteIdentityProofUseCase,

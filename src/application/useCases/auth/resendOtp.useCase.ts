@@ -26,7 +26,7 @@ export class ResendOtpUseCase {
         if (role === roleArray[1]) {
           userOrProvider = await this.userRepository.findUserByEmail(email);
         } else if (role === roleArray[2]) {
-          userOrProvider = await this.providerRepository.findProviderByEmail(email);
+          userOrProvider = await this.providerRepository.findByEmail(email);
         } else {
           throw new Error("Invalid request.");
         }
@@ -35,7 +35,7 @@ export class ResendOtpUseCase {
         if (role === roleArray[1]) {
           userOrProvider = await this.userRepository.findUserByVerificationToken(verificationToken);
         } else if (role === roleArray[2]) {
-          userOrProvider = await this.providerRepository.findProviderByVerificationToken(verificationToken);
+          userOrProvider = await this.providerRepository.findByVerificationToken(verificationToken);
         } else {
           throw new Error("Invalid request.");
         }

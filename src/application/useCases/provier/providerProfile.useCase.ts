@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import { awsConfig } from "../../../config/env";
 import {
   ProviderUpdateProviderInfoRequest,
@@ -20,7 +19,7 @@ import { DeleteObjectCommand, GetObjectCommand, S3Client } from "@aws-sdk/client
 import { ApiResponse } from "../../dtos/common.dto";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { ISignedUrlCacheRepository } from "../../../domain/interfaces/repositories/ISignedUrlCache.repository";
-import { adminVerificationStatusArray } from "../../../shared/utils/constants";
+import { AdminVerificationStatus } from "../../../domain/entities/provider.entity";
 
 export class ProviderFetchProfileDetailsUseCase {
   constructor(
@@ -31,7 +30,7 @@ export class ProviderFetchProfileDetailsUseCase {
     try {
       const { providerId } = payload;
 
-      const provider = await this.providerRepository.findProviderById(providerId);
+      const provider = await this.providerRepository.findById(providerId);
       if (!provider) throw new Error("Provider profile fetching error.");
 
       const { _id, password, addressId, serviceId, subscription, updatedAt, profileImage, ...rest } = provider;
@@ -52,17 +51,18 @@ export class ProviderUpdateProviderInfoUseCase {
     try {
       const { providerId, username, phone } = payload;
 
-      const provider = await this.providerRepository.findProviderById(providerId);
+      if(!phone && !username) throw new Error("Invalid request");
+
+      const provider = await this.providerRepository.findById(providerId);
       if (!provider) throw new Error("No user found");
 
-      const providerData = {
-        ...provider,
-        username: username,
-        phone: phone
-      }
+      provider.updateInfo({ 
+        phone: phone ?? undefined, 
+        username: username ?? undefined
+      });
 
-      const updatedProvider = await this.providerRepository.updateProvider(providerData);
-      if (!updatedProvider) throw new Error("Info adding failed, please try again");
+      const updatedProvider = await this.providerRepository.update(provider);
+      if (!updatedProvider) throw new Error("Failed to update info, please try again");
 
       const updatedData = { username: updatedProvider.username, phone: updatedProvider.phone };
 
@@ -75,25 +75,29 @@ export class ProviderUpdateProviderInfoUseCase {
 }
 
 
-export abstract class ProviderFileUpdateBaseUseCase {
+export class ProviderUpdateIdentityProofUseCase {
+
   constructor(
     protected s3Client: S3Client,
     protected providerRepository: IProviderRepository,
     protected signedUrlCacheRepository: ISignedUrlCacheRepository
   ) { }
 
-  protected async updateFile(providerId: Types.ObjectId, field: string, key: string) {
+  async exeute(payload: ProviderUpdateIdentityProofRequest): Promise<ApiResponse<ProviderUpdateIdentityProofResponse>> {
 
-    const updated = await this.providerRepository.updateProviderFields({
-      _id: providerId,
-      [field]: key
-    });
+    const { providerId, identityProof } = payload;
+    if(!providerId || !identityProof) throw new Error("Invalid request");
 
-    if (!updated) throw new Error(`Failed to update ${field}`);
+    const provider = await this.providerRepository.findById(providerId);
+    if(!provider) throw new Error("User not found");
+
+    provider.updateIdentityProof({identityProof});
+    const updatedProvider = await this.providerRepository.update(provider);
+    if(!updatedProvider) throw new Error("Failed to update proof");
 
     const command = new GetObjectCommand({
       Bucket: awsConfig.aws_s3Bucket_name,
-      Key: key,
+      Key: identityProof,
     });
 
     const signedUrl = await getSignedUrl(this.s3Client, command, {
@@ -101,55 +105,98 @@ export abstract class ProviderFileUpdateBaseUseCase {
     });
 
     await this.signedUrlCacheRepository.updateSignedUrl({
-      key,
+      key: identityProof,
       url: signedUrl,
       expiresAt: new Date(Date.now() + 172800 * 1000),
     });
 
-    return signedUrl;
-  }
-}
-
-
-export class ProviderIdentityProofUpdateUseCase extends ProviderFileUpdateBaseUseCase {
-
-  async exeute(payload: ProviderUpdateIdentityProofRequest): Promise<ApiResponse<ProviderUpdateIdentityProofResponse>> {
-
-    const url = await this.updateFile(payload.providerId, "identityProof", payload.identityProof);
-
     return {
       success: true,
       message: "Identity proof updated successfully.",
-      data: url
+      data: signedUrl
     };
   }
 }
 
-export class ProviderServiceProofUpdateUseCase extends ProviderFileUpdateBaseUseCase {
+export class ProviderUpdateServiceProofUseCase {
+
+  constructor(
+    protected s3Client: S3Client,
+    protected providerRepository: IProviderRepository,
+    protected signedUrlCacheRepository: ISignedUrlCacheRepository
+  ) { }
 
   async exeute(payload: ProviderUpdateServiceProofRequest): Promise<ApiResponse<ProviderUpdateServiceProofResponse>> {
 
-    const url = await this.updateFile(payload.providerId, "serviceProof", payload.serviceProof);
+    const { providerId, serviceProof} = payload;
+    if(!providerId || !serviceProof) throw new Error("Invali drequest");
+
+    const provider = await this.providerRepository.findById(providerId);
+    if(!provider) throw new Error("User not found");
+
+    provider.updateServiceProof({serviceProof});
+    const updatedProvider = await this.providerRepository.update(provider);
+    if(!updatedProvider) throw new Error("Failed to update proof");
+
+    const command = new GetObjectCommand({
+      Bucket: awsConfig.aws_s3Bucket_name,
+      Key: serviceProof,
+    });
+
+    const signedUrl = await getSignedUrl(this.s3Client, command, {
+      expiresIn: 172800,
+    });
+
+    await this.signedUrlCacheRepository.updateSignedUrl({
+      key: serviceProof,
+      url: signedUrl,
+      expiresAt: new Date(Date.now() + 172800 * 1000),
+    });
 
     return {
       success: true,
       message: "Service proof updated successfully.",
-      data: url
+      data: signedUrl
     };
   }
 }
 
 
-export class ProviderUpdateProfileImageUseCase extends ProviderFileUpdateBaseUseCase {
+export class ProviderUpdateProfileImageUseCase {
+
+  constructor(
+    protected s3Client: S3Client,
+    protected providerRepository: IProviderRepository,
+    protected signedUrlCacheRepository: ISignedUrlCacheRepository
+  ) { }
 
   async execute(payload: ProviderUpdateprofileImageRequestPayload): Promise<ApiResponse<ProviderUpdateprofileImageResponse>> {
 
-    const url = await this.updateFile(payload.providerId, "profileImage", payload.profileImage);
+    const { providerId, profileImage } = payload;
+    if(!providerId || !profileImage) throw new Error("Invalid request");
+    
+    const provider = await this.providerRepository.findById(providerId);
+    if(!provider) throw new Error("User not found");
+
+    const command = new GetObjectCommand({
+      Bucket: awsConfig.aws_s3Bucket_name,
+      Key: profileImage,
+    });
+
+    const signedUrl = await getSignedUrl(this.s3Client, command, {
+      expiresIn: 172800,
+    });
+
+    await this.signedUrlCacheRepository.updateSignedUrl({
+      key: profileImage,
+      url: signedUrl,
+      expiresAt: new Date(Date.now() + 172800 * 1000),
+    });
 
     return {
       success: true,
       message: "Profile image updated successfully.",
-      data: url
+      data: signedUrl
     };
   }
 }
@@ -165,32 +212,30 @@ export class ProviderRequestForApprovalUseCase {
 
       const { providerId } = payload;
 
-      const provider = await this.providerRepository.findProviderById(providerId);
+      const provider = await this.providerRepository.findById(providerId);
       if(!provider) throw new Error("Invalid request");
       if (provider?.isAdminVerified) throw new Error("You are already verified");
 
-      if (provider?.adminVerificationStatus === adminVerificationStatusArray[0] ||
-        provider?.adminVerificationStatus === adminVerificationStatusArray[1] ||
-        provider?.adminVerificationStatus === adminVerificationStatusArray[2] ||
-        provider?.adminVerificationStatus === adminVerificationStatusArray[4]
+      if (provider?.adminVerificationStatus === AdminVerificationStatus.REQUESTED ||
+        provider?.adminVerificationStatus === AdminVerificationStatus.UNDER_REVIEW ||
+        provider?.adminVerificationStatus === AdminVerificationStatus.APPROVED ||
+        provider?.adminVerificationStatus === AdminVerificationStatus.RESUBMITTED
       ) {
         throw new Error("Invalid request");
       }
 
-      if (provider?.adminVerificationStatus === adminVerificationStatusArray[5]) {
-        provider.adminVerificationStatus = adminVerificationStatusArray[0]
-      } else if (provider?.adminVerificationStatus === adminVerificationStatusArray[3]) {
-        provider.adminVerificationStatus = adminVerificationStatusArray[4]
+      if (provider?.adminVerificationStatus === AdminVerificationStatus.NOT_REQUESTED) {
+        provider.requestAdminVerification();
+      } else if (provider?.adminVerificationStatus === AdminVerificationStatus.REJECTED) {
+        provider.rerequestAdminVerification();
       }
 
-      provider.verificationRejectionReason = null;
-
-      const updatedProvider = await this.providerRepository.updateProvider(provider);
+      const updatedProvider = await this.providerRepository.update(provider);
       if(!updatedProvider) throw new Error("Failed to update approval request status");
 
       return { 
         success: true, 
-        message: `${updatedProvider.adminVerificationStatus === adminVerificationStatusArray[0] ? "Submitted" : "Resubmitted"} successfully`, 
+        message: `${updatedProvider.adminVerificationStatus === AdminVerificationStatus.REQUESTED ? "Submitted" : "Resubmitted"} successfully`, 
         data: { adminVerificationStatus: updatedProvider?.adminVerificationStatus } }
 
     } catch (error) {
@@ -212,7 +257,7 @@ export class ProvideDeleteIdentityProofUseCase {
     try {
       const { providerId } = payload;
 
-      const provider = await this.providerRepository.findProviderById(providerId);
+      const provider = await this.providerRepository.findById(providerId);
       if(!provider) throw new Error("User not found");
       
       if(!provider.identityProof) throw new Error("No file found");
@@ -230,8 +275,8 @@ export class ProvideDeleteIdentityProofUseCase {
         if(!result) throw new Error("Faile to remove existing file");
       }
 
-      provider.identityProof = "";
-      await this.providerRepository.updateProvider(provider);
+      provider.updateIdentityProof({ identityProof: null });
+      await this.providerRepository.update(provider);
 
       return {
         success: true,
@@ -257,7 +302,7 @@ export class ProvideDeleteServiceProofUseCase {
     try {
       const { providerId } = payload;
 
-      const provider = await this.providerRepository.findProviderById(providerId);
+      const provider = await this.providerRepository.findById(providerId);
       if(!provider) throw new Error("User not found");
       
       if(!provider.serviceProof) throw new Error("No file found");
@@ -275,8 +320,8 @@ export class ProvideDeleteServiceProofUseCase {
         if(!result) throw new Error("Faile to remove existing file");
       }
 
-      provider.serviceProof = "";
-      await this.providerRepository.updateProvider(provider);
+      provider.updateServiceProof({ serviceProof: null });
+      await this.providerRepository.update(provider);
 
       return {
         success: true,

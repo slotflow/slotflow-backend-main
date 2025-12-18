@@ -14,7 +14,7 @@ export class ProviderFetchAllPaymentsUseCase {
             const { providerId, page, limit } = payload;
             if (!providerId) throw new Error("Invalid request.");
 
-            const provider = await this.providerRepository.findProviderById(providerId);
+            const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("No user found.");
 
             const result = await this.paymentRepository.findAllPayments({ page, limit, providerId: providerId });

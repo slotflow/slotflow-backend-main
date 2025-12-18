@@ -12,7 +12,7 @@ export class ProviderFetchAllSubscriptionsUseCase {
         try {
             const { providerId, page, limit } = payload;
 
-            const provider = await this.providerRepository.findProviderById(providerId);
+            const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("Invalid request.");
 
             const result = await this.subscriptionRepository.findSubscriptionsByProviderId({ providerId, page, limit });

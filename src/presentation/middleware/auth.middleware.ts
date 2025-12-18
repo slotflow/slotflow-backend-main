@@ -38,7 +38,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
     }
 
     if(req.user.role === roleArray[2]) {
-      const provider = await providerRepository.findProviderById(new Types.ObjectId(req.user.userOrProviderId));
+      const provider = await providerRepository.findById(req.user.userOrProviderId);
       if(provider?.isBlocked) {
         console.log("Provider blocked");
         res.status(403).json({ success: false, message: "Your account is blocked" } );

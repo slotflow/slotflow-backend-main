@@ -1,11 +1,9 @@
-import { ApiPaginationRequest } from "./common.dto";
+import { Address, ApiPaginationRequest, Provider } from "./common.dto";
 import { User } from "../../domain/entities/user.entity";
 import { Plan } from "../../domain/entities/plan.entity";
 import { Review } from "../../domain/entities/review.entity";
 import { Service } from "../../domain/entities/service.entity";
-import { Address } from "../../domain/entities/address.entity";
 import { Payment } from "../../domain/entities/payment.entity";
-import { Provider } from "../../domain/entities/provider.entity";
 import { Subscription } from "../../domain/entities/subscription.entity";
 import { ProviderService } from "../../domain/entities/providerService.entity";
 import { FontendAvailabilityForResponse } from "../../domain/entities/serviceAvailability.entity";
@@ -86,7 +84,7 @@ export interface AdminFetchProviderServiceAvailabilityRequest {
     date: Date
 }
 // Used as the return interface of admin fetch provider service availability
-export type AdminFetchProviderServiceAvailabilityResponse = FontendAvailabilityForResponse | {};
+export type AdminFetchProviderServiceAvailabilityResponse = FontendAvailabilityForResponse | null;
 
 
 

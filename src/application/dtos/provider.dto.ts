@@ -1,11 +1,10 @@
 import Stripe from "stripe";
-import { Address, SubscriptionPlan } from "./common.dto";
+import { Address, Provider, SubscriptionPlan } from "./common.dto";
 import { User } from "../../domain/entities/user.entity";
 import { Plan } from "../../domain/entities/plan.entity";
 import { Review } from "../../domain/entities/review.entity";
 import { Service } from "../../domain/entities/service.entity";
 import { Booking } from "../../domain/entities/booking.entity";
-import { Provider } from "../../domain/entities/provider.entity";
 import { ProviderService } from "../../domain/entities/providerService.entity";
 import { FontendAvailabilityForResponse, FrontendAvailabilityForRequest } from "../../domain/entities/serviceAvailability.entity";
 
@@ -74,11 +73,11 @@ export type ProviderUpdateprofileImageResponse = Provider["profileImage"];
 // provider update providerInfo request payload interface
 export interface ProviderUpdateProviderInfoRequest {
     providerId: Provider["_id"];
-    username: Provider["username"];
-    phone: Provider["phone"];
+    username?: Provider["username"];
+    phone?: Provider["phone"];
 }
 // provider update provider info use case response interface
-export type ProviderUpdateProviderInfoResponse = Pick<Provider, "username" | "phone">
+export type ProviderUpdateProviderInfoResponse = Pick<Provider, "username" | "phone">;
 
 // provider update identity proof request payload interface
 export type ProviderUpdateIdentityProofRequest = Pick<Provider, "identityProof"> & {

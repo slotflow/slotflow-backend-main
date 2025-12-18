@@ -6,18 +6,18 @@ import {
     AdminRejectProviderRequest,
 } from "../../dtos/admin.dto";
 import { ApiPaginationRequest, ApiResponse } from "../../dtos/common.dto";
-import { adminVerificationStatusArray } from "../../../shared/utils/constants";
+import { IAdminProviderQuery } from "../../queries/admin/IAdminProviderStatsQuery";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 
 
 export class AdminProviderListUseCase {
     constructor(
-        private providerRepository: IProviderRepository
+        private adminProviderQuery: IAdminProviderQuery
     ) { }
 
     async execute(payload: ApiPaginationRequest): Promise<ApiResponse<AdiminFetchAllProviders>> {
         try {
-            const result = await this.providerRepository.findAllProviders(payload);
+            const result = await this.adminProviderQuery.findAll(payload);
             if (!result) throw new Error("Providers fetching failed");
 
             return { data: result.data, totalPages: result.totalPages, currentPage: result.currentPage, totalCount: result.totalCount };
@@ -38,15 +38,13 @@ export class AdminApproveProviderUseCase {
         try {
             const { providerId } = payload;
 
-            const provider = await this.providerRepository.findProviderById(providerId);
+            const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");
             if (provider.isAdminVerified) throw new Error("Provider is already verified.");
 
-            provider.isAdminVerified = true;
-            provider.verificationRejectionReason = null;
-            provider.adminVerificationStatus = adminVerificationStatusArray[2];
+            provider.approveAdminVerification();
 
-            const updatedProvider = await this.providerRepository.updateProvider(provider);
+            const updatedProvider = await this.providerRepository.update(provider);
             if (!updatedProvider) throw new Error("Provider not found");
 
             //TODO SEND EMAIL
@@ -69,18 +67,18 @@ export class AdminRejectProviderUseCase {
         try {
             const { providerId, verificationRejectionReason, isAddressVerified, isAvailabilityVerified, isProofsVerified, isServiceDetailsVerified } = payload;
 
-            const provider = await this.providerRepository.findProviderById(providerId);
+            const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");
 
-            provider.isAdminVerified = false;
-            provider.adminVerificationStatus = adminVerificationStatusArray[3];
-            provider.verificationRejectionReason = verificationRejectionReason;
-            provider.isAddressVerified = isAddressVerified;
-            provider.isServiceDetailsVerified = isServiceDetailsVerified;
-            provider.isAvailabilityVerified = isAvailabilityVerified;
-            provider.isProofsVerified = isProofsVerified;
+           provider.rejectAdminVerification({
+            verificationRejectionReason: verificationRejectionReason ?? "",
+            isAddressVerified,
+            isServiceDetailsVerified,
+            isAvailabilityVerified,
+            isProofsVerified,
+            });
 
-            const updatedProvider = await this.providerRepository.updateProvider(provider);
+            const updatedProvider = await this.providerRepository.update(provider);
             if (!updatedProvider) throw new Error("Provider not found");
 
             //TODO SEND EMAIL
@@ -101,19 +99,23 @@ export class AdminChangeProviderBlockStatusUseCase {
 
     async execute(payload: AdminChangeProviderStatusRequest): Promise<ApiResponse> {
         try {
-            const { providerId, isBlocked } = payload;
+            const { providerId, isBlocked } = payload; // TODO need to update input DTO
 
-            const provider = await this.providerRepository.findProviderById(providerId);
+            const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");
             
-            provider.isBlocked = !isBlocked;
+            if(provider.isBlocked) {
+                provider.unblock();
+            } else {
+                provider.block();
+            }
 
-            const updatedProvider = await this.providerRepository.updateProvider(provider);
+            const updatedProvider = await this.providerRepository.update(provider);
             if (!updatedProvider) throw new Error("Provider not found");
 
             //TODO SEND EMAIL
 
-            return { success: true, message: `Provider ${isBlocked ? "Unblocked" : "blocked"} successfully.` };
+            return { success: true, message: `Provider ${updatedProvider.isBlocked ? "blocked" : "Unblocked"} successfully.` };
         } catch (error) {
             console.log("AdminChangeProviderBlockStatusUseCase: ", error);
             throw new Error("Failed to change provider block status");
@@ -129,19 +131,23 @@ export class AdminChangeProviderTrustTagUseCase {
 
     async execute(payload: AdminChangeProviderTrustTagRequest): Promise<ApiResponse> {
         try {
-            const { providerId, trustedBySlotflow } = payload;
+            const { providerId, trustedBySlotflow } = payload; // TODO need to update input DTO
 
-            const provider = await this.providerRepository.findProviderById(providerId);
+            const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");
 
-            provider.trustedBySlotflow = !trustedBySlotflow;
+            if(provider.trustedBySlotflow) {
+                provider.removeTrustTag();
+            } else {
+                provider.giveTrustTag();
+            }
 
-            const updatedProvider = await this.providerRepository.updateProvider(provider);
+            const updatedProvider = await this.providerRepository.update(provider);
             if (!updatedProvider) throw new Error("Provider not found");
 
             //TODO SEND EMAIL
             
-            return { success: true, message: `Provider trust tag ${trustedBySlotflow ? "Given" : "Removed"} successfully.` };
+            return { success: true, message: `Provider trust tag ${updatedProvider.trustedBySlotflow ? "Given" : "Removed"} successfully.` };
         } catch (error) {
             console.log("AdminChangeProviderTrustTagUseCase: ", error);
             throw new Error("Failed to change provider trust tag status");

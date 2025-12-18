@@ -18,10 +18,8 @@ export class ProviderCreateAddressUseCase {
 
             const { userId, addressLine, landMark, phone, place, city, district, pincode, state, country, location } = payload;
 
-            const provider = await this.providerRepository.findProviderById(userId);
+            const provider = await this.providerRepository.findById(userId);
             if (!provider) throw new Error("Please logout and try again.");
-
-            const now = new Date();
 
             const address = new Address(
                 "",
@@ -41,9 +39,9 @@ export class ProviderCreateAddressUseCase {
             const savedAddress = await this.addressRepository.create(address);
             if (!savedAddress) throw new Error("Failed to save address.");
 
-            provider.addressId = savedAddress._id;
+            provider.updateAddressId(savedAddress._id);
 
-            const updatedProvider = await this.providerRepository.updateProvider(provider);
+            const updatedProvider = await this.providerRepository.update(provider);
             if (!updatedProvider) throw new Error("Failed to update provider with address.");
 
         } catch (error) {

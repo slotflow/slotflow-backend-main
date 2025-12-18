@@ -27,7 +27,7 @@ export class AdminFetchProviderDetailsUseCase {
         try {
             const { providerId } = payload;
 
-            const providerData = await this.providerRepository.findProviderById(providerId);
+            const providerData = await this.providerRepository.findById(providerId);
             if (providerData == null) return { success: true, message: "Provider details fetched", data: {} };
 
             if (providerData.profileImage) {
@@ -54,7 +54,7 @@ export class AdminFetchProviderServiceUseCase {
         try {
             const { providerId } = payload;
 
-            const provider = await this.providerRepository.findProviderById(providerId);
+            const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("No user found.");
 
             const serviceData = await this.providerServiceRepository.findProviderServiceByProviderId(providerId);
@@ -90,11 +90,14 @@ export class AdminfetchProviderServiceAvailabilityUseCase {
             const currentDateTime = dayjs();
             const selectedDate = dayjs(date).format('YYYY-MM-DD');
 
-            const provider = await this.providerRepository.findProviderById(providerId);
+            const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("No user found.");
 
-            const availability = await this.serviceAvailabilityRepository.findServiceAvailabilityByProviderId(providerId, date, provider.serviceAvailabilityId);
-            if (availability == null) return { success: true, message: "Service availability fetched successfully.", data: {} };
+            if(!provider.serviceAvailabilityId)  return { success: true, message: "Servie availability not yet provided.", data: null };
+
+            const availability = await this.serviceAvailabilityRepository.findServiceAvailabilityByProviderId(date, provider.serviceAvailabilityId);
+            if(!availability) throw new Error("Failed to fetch availability");
+            
             const updatedSlots = availability.slots.map((slot) => {
                 const slotDateTime = dayjs(`${selectedDate} ${slot.time}`, 'YYYY-MM-DD hh:mm A');
                 const isWithin2Hours = slotDateTime.diff(currentDateTime, 'minute') < 120;
@@ -103,6 +106,9 @@ export class AdminfetchProviderServiceAvailabilityUseCase {
                     available: !isWithin2Hours
                 }
             });
+
+            console.log("availability : ",availability);
+            console.log("updatedSlots : ",updatedSlots);
 
             return { success: true, message: "Service availability fetched successfully.", data: { ...availability, slots: updatedSlots } };
         } catch (error) {
@@ -123,7 +129,7 @@ export class AdminFetchProviderSubscriptionsUseCase {
         try {
             const { providerId, page, limit } = payload;
 
-            const provider = await this.providerRepository.findProviderById(providerId);
+            const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("No user found.");
 
             const result = await this.subscriptionRepository.findSubscriptionsByProviderId({ providerId, page, limit });
@@ -149,7 +155,7 @@ export class AdminFetchProviderPaymentsUseCase {
         try {
             if (!providerId) throw new Error("Invalid request.");
 
-            const provider = await this.providerRepository.findProviderById(providerId);
+            const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("No user found.");
 
             const result = await this.paymentRepository.findAllPayments({ page, limit, providerId: providerId });

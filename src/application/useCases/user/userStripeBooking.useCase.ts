@@ -27,7 +27,7 @@ export class UserAppointmentBookingViaStripeUseCase {
             const { userId, providerId, slotId, selectedServiceMode, date } = payload;
             if (!userId || !providerId || !slotId || !selectedServiceMode || !date) throw new Error("Invalid request");
 
-            const provider = await this.providerRepository.findProviderById(providerId);
+            const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("No provider found");
 
             const providerService = await this.providerServiceRepository.findProviderServiceByProviderId(providerId);

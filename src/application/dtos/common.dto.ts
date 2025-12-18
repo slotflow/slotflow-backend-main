@@ -5,9 +5,9 @@ import { Review } from "../../domain/entities/review.entity";
 import { Service } from "../../domain/entities/service.entity";
 import { GeoLocation } from "../../domain/entities/address.entity";
 import { Payment } from "../../domain/entities/payment.entity";
-import { Provider } from "../../domain/entities/provider.entity";
 import { Credential } from "../../domain/entities/credential.entity";
 import { Subscription } from "../../domain/entities/subscription.entity";
+import { AdminVerificationStatus } from "../../domain/entities/provider.entity";
 import { Availability } from "../../domain/entities/serviceAvailability.entity";
 import { Booking, ParticipantPresence } from "../../domain/entities/booking.entity";
 import { findSubscriptionFullDetailsResProps } from "../../domain/interfaces/repositories/ISubscription.repository";
@@ -51,6 +51,37 @@ export interface Address {
   updatedAt: Date,
 }
 
+export interface Provider {
+  _id: string;
+  username: string;
+  email: string;
+  password: string;
+  isBlocked: boolean;
+  isEmailVerified: boolean;
+  isAdminVerified: boolean;
+  verificationRejectionReason: string | null;
+  adminVerificationStatus: AdminVerificationStatus;
+  isAddressVerified: boolean;
+  isServiceDetailsVerified: boolean;
+  isAvailabilityVerified: boolean;
+  isProofsVerified: boolean;
+  phone: string | null;
+  profileImage: string | null;
+  addressId: string | null;
+  serviceId: string | null;
+  serviceAvailabilityId: string | null;
+  subscription: string[];
+  verificationToken: string | null;
+  googleConnected: boolean;
+  googleId: string | null;
+  stripeAccountId: string | null;
+  trustedBySlotflow: boolean;
+  identityProof: string | null;
+  serviceProof: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 // **** 1. Used as the request interface for the paginated request
 export interface ApiPaginationRequest {
   page: number;
@@ -71,6 +102,14 @@ export interface ApiResponse<T = unknown> extends CommonResponse {
   currentPage?: number;
   totalCount?: number;
   data?: T;
+}
+
+// **** Used as the type of table data
+export interface TableData<T> {
+  totalPages?: number;
+  currentPage?: number;
+  totalCount?: number;
+  data?: T
 }
 
 

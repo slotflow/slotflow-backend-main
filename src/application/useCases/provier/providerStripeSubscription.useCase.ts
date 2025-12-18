@@ -27,7 +27,7 @@ export class ProviderStripeSubscriptionCreateSessionIdUseCase {
 
             let planDuration: number = parseInt(duration.trim().split(" ")[0]);
 
-            const provider = await this.providerRepository.findProviderById(providerId);
+            const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("No user found, please logout and try again.");
 
             const plan = await this.planRepository.findPlanById(planId);
@@ -88,7 +88,7 @@ export class ProviderSaveSubscriptionUseCase {
         try {
             const { providerId, sessionId } = payload;
 
-            const provider = await this.providerRepository.findProviderById(providerId);
+            const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");
 
             const session = await stripe.checkout.sessions.retrieve(sessionId);
@@ -134,9 +134,9 @@ export class ProviderSaveSubscriptionUseCase {
 
                 if (!subscription) throw new Error("Subscription saving error.");
 
-                provider.subscription.push(subscription._id);
+                provider.addSubscription(subscription._id);
 
-                const updatedProvider = await this.providerRepository.updateProvider(provider);
+                const updatedProvider = await this.providerRepository.update(provider);
                 if (!updatedProvider) throw new Error("Unexpected error, subscription adding error.");
 
                 await mongoSession.commitTransaction();

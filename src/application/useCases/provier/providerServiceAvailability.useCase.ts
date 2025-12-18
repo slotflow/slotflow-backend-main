@@ -1,5 +1,4 @@
 import dayjs from "dayjs";
-import { Types } from "mongoose";
 import {
     ProviderAddServiceAvailabilityRewuest,
     ProviderFetchServiceAvailabilityRequest,
@@ -23,7 +22,7 @@ export class ProviderCreateServiceAvailabilitiesUseCase {
             if (!providerId || !availabilities || availabilities.length === 0) throw new Error("Invalid request.");
 
 
-            const provider = await this.providerRepository.findProviderById(providerId);
+            const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("Please logout and try again.");
 
             const newAvailabilities: FrontendAvailabilityUpdatedSlots[] = availabilities.map((availability: FrontendAvailabilityForRequest) => ({
@@ -37,8 +36,8 @@ export class ProviderCreateServiceAvailabilitiesUseCase {
             if (!serviceAvailability) throw new Error("Service availability saving failed.");
 
             if (provider && serviceAvailability && serviceAvailability._id) {
-                provider.serviceAvailabilityId = serviceAvailability._id;
-                const updatedProvider = await this.providerRepository.updateProvider(provider);
+                provider.updateServiceAvailabilityId(serviceAvailability._id);
+                const updatedProvider = await this.providerRepository.update(provider);
                 if (!updatedProvider) throw new Error("Failed to update provider with service availability in profile.");
             }
 

@@ -27,12 +27,12 @@ export class VerifyOTPUseCase {
         await this.userRepository.updateUser(user);
 
       } else if (role === roleArray[2]) {
-        const provider = await this.providerRepository.findProviderByVerificationToken(verificationToken);
+        const provider = await this.providerRepository.findByVerificationToken(verificationToken);
         if (!provider) throw new Error("Verification failed");
 
-        provider.isEmailVerified = true;
-        const updateProvider = await this.providerRepository.updateProvider(provider);
-        if (!updateProvider) throw new Error("Unexpected error, please try again.");
+        provider.markEmailVerified();
+        const updatedProvider = await this.providerRepository.update(provider);
+        if (!updatedProvider) throw new Error("Unexpected error, please try again.");
 
       } else {
         throw new Error("Unexpected error, please try again.");

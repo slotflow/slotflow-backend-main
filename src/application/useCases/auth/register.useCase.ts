@@ -1,16 +1,17 @@
 import { v4 as uuidv4 } from 'uuid';
 // import { producer } from '../../../server';
-import { kafkaConfig } from '../../../config/env';
+// import { kafkaConfig } from '../../../config/env';
 import { roleArray } from '../../../shared/utils/constants';
 import { User } from '../../../domain/entities/user.entity';
 import { JWTService } from '../../../infrastructure/security/jwt';
 import { Provider } from '../../../domain/entities/provider.entity';
+import { RegisterRequest, RegisterResponse } from '../../dtos/auth.dto';
 import { OTPService } from '../../../infrastructure/services/otp.service';
 import { PasswordHasher } from '../../../infrastructure/security/password-hashing';
-import { RegisterRequest, RegisterResponse } from '../../dtos/auth.dto';
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
 
+// TODO try to avoid userOrProvider with onlu user or provider
 export class RegisterUseCase {
 
   constructor(
@@ -29,7 +30,7 @@ export class RegisterUseCase {
         userOrProvider = await this.userRepository.findUserByEmail(email);
         if (userOrProvider?.isEmailVerified) throw new Error("Email already exist.");
       } else if (role === roleArray[2]) {
-        userOrProvider = await this.providerRepository.findProviderByEmail(email);
+        userOrProvider = await this.providerRepository.findByEmail(email);
         if (userOrProvider?.isEmailVerified) throw new Error("Email already exist.");
       } else {
         throw new Error("Invalid request.");
@@ -56,12 +57,13 @@ export class RegisterUseCase {
       // });
 
       if (userOrProvider) {
-        userOrProvider.verificationToken = verificationToken;
-        userOrProvider.password = hashedPassword;
         if (role === roleArray[1]) {
+          userOrProvider.verificationToken = verificationToken;
+          userOrProvider.password = hashedPassword;
           await this.userRepository.updateUser(userOrProvider as User);
         } else if (role === roleArray[2]) {
-          await this.providerRepository.updateProvider(userOrProvider as Provider);
+          (userOrProvider as Provider).updatePassword({verificationToken, password: hashedPassword})
+          await this.providerRepository.update(userOrProvider as Provider);
         }
       } else {
         if (role === roleArray[1]) {
@@ -72,12 +74,14 @@ export class RegisterUseCase {
             verificationToken: verificationToken,
           });
         } else if (role === roleArray[2]) {
-          await this.providerRepository.createProvider({
-            username: username,
-            email: email,
+          const provider = Provider.createLocal({
+            id: "",
+            username,
+            email,
             password: hashedPassword,
-            verificationToken: verificationToken
+            verificationToken,
           });
+          await this.providerRepository.create(provider);
         }
       }
 
