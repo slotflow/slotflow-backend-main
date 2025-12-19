@@ -1,5 +1,4 @@
 export type CreateLocalProviderProps = {
-  _id: string;
   username: string;
   email: string;
   password: string;
@@ -7,7 +6,6 @@ export type CreateLocalProviderProps = {
 };
 
 export type CreateGoogleProviderProps = {
-  _id: string;
   username: string;
   email: string;
   googleId: string;

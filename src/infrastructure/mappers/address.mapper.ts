@@ -5,38 +5,40 @@ import { Address } from "../../domain/entities/address.entity";
 export class AddressMapper {
 
     static toDomain(doc: IAddress): Address {
-        return new Address(
-            doc._id.toString(),
-            doc.userId.toString(),
-            doc.addressLine,
-            doc.landMark,
-            doc.phone,
-            doc.place,
-            doc.city,
-            doc.district,
-            doc.pincode,
-            doc.state,
-            doc.country,
-            doc.location,
-            doc.createdAt,
-            doc.updatedAt
-        );
+        return new Address({
+            _id: doc._id.toString(),
+            userId: doc.userId.toString(),
+            addressLine: doc.addressLine,
+            landMark: doc.landMark,
+            phone: doc.phone,
+            place: doc.place,
+            city: doc.city,
+            district: doc.district,
+            pincode: doc.pincode,
+            state: doc.state,
+            country: doc.country,
+            location: doc.location,
+            createdAt: doc.createdAt,
+            updatedAt: doc.updatedAt
+        });
     }
 
     static toPersistence(entity: Address) {
+        const props = entity.getProps();
+
         return {
-            userId: new Types.ObjectId(entity.userId),
-            addressLine: entity.addressLine,
-            landMark: entity.landMark,
-            phone: entity.phone,
-            place: entity.place,
-            city: entity.city,
-            district: entity.district,
-            pincode: entity.pincode,
-            state: entity.state,
-            country: entity.country,
-            location: entity.location,
-            updatedAt: entity.updatedAt
+            userId: new Types.ObjectId(props.userId),
+            addressLine: props.addressLine,
+            landMark: props.landMark,
+            phone: props.phone,
+            place: props.place,
+            city: props.city,
+            district: props.district,
+            pincode: props.pincode,
+            state: props.state,
+            country: props.country,
+            location: props.location,
+            updatedAt: props.updatedAt
         };
     }
 }

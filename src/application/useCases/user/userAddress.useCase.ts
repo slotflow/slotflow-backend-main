@@ -19,8 +19,7 @@ export class UserCreateAddressUseCase {
 
             const now = new Date();
 
-            const address = new Address(
-                "",
+            const address = Address.create({
                 userId,
                 addressLine,
                 landMark,
@@ -32,7 +31,7 @@ export class UserCreateAddressUseCase {
                 state,
                 country,
                 location,
-            );
+            });
 
             const savedAddress = await this.addressRepository.create(address);
             if (!savedAddress) throw new Error("Failed to save address");

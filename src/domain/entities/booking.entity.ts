@@ -1,36 +1,56 @@
-import { Types } from "mongoose";
-import { AppointmentStatusType } from "../../application/dtos/common.dto";
-
-export interface ParticipantPresence {
-    joined: boolean;
-    joinedTime: Date | null;
-    leftCallTime: Date | null;
-}
-
-export interface statusTrack {
-    appointmentStatus: AppointmentStatusType;
-    time: Date;
-}
+import { BookingProps } from "../contracts/booking.contract";
+import { CreateBookingProps, UpdateBookingProps } from "../commands/booking.commands";
 
 export class Booking {
-    constructor(
-        public _id: Types.ObjectId,
-        public serviceProviderId: Types.ObjectId,
-        public userId: Types.ObjectId,
-        public appointmentDate: Date,
-        public appointmentTime: string,
-        public appointmentMode: string,
-        public appointmentStatus: AppointmentStatusType,
-        public slotId: Types.ObjectId,
-        public paymentId: Types.ObjectId | null,
-        public videoCallRoomId: string | null,
-        public googleEventId: string,
-        public onlineTrack: {
-            user: ParticipantPresence;
-            provider: ParticipantPresence;
-        },
-        public statusTrack: statusTrack[],
-        public createdAt: Date,
-        public updatedAt: Date,
-    ) { }
+
+    private props: BookingProps;
+
+    constructor(props: BookingProps) {
+        this.props = props;
+    }
+
+    private touch() {
+        this.props.updatedAt = new Date();
+    }
+
+    static create(props: CreateBookingProps) {
+        return new Booking({
+            _id: "",
+            appointmentDate: props.appointmentDate,
+            appointmentMode: props.appointmentMode,
+            appointmentStatus: props.appointmentStatus,
+            appointmentTime: props.appointmentTime,
+            googleEventId: props.googleEventId,
+            onlineTrack: props.onlineTrack,
+            paymentId: props.paymentId,
+            serviceProviderId: props.serviceProviderId,
+            slotId: props.slotId,
+            statusTrack: props.statusTrack,
+            userId: props.userId,
+            videoCallRoomId: props.videoCallRoomId,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        })
+    }
+
+    // Getters
+
+    get _id(): string {
+        return this.props._id;
+    }
+
+    // Business methods
+
+    getProps(): Readonly<BookingProps> {
+        return { ...this.props }
+    }
+
+    updateBooking(props: UpdateBookingProps) {
+        this.props = {
+            ...this.props,
+            ...props,
+        };
+
+        this.touch();
+    }
 }

@@ -1,13 +1,11 @@
-import { Types } from "mongoose";
 import { Credential } from "../../entities/credential.entity";
-import { CreateCredentialRequest, UpdateCredentialRequest } from "../../../application/dtos/common.dto";
 
 export interface ICredentialRepository {
 
-    createCredential(data: CreateCredentialRequest): Promise<Credential>;
+    create(credential: Credential): Promise<Credential>;
 
-    findCredentialByUserId(userId: Types.ObjectId): Promise<Credential | null>;
+    findByUserId(userId: string): Promise<Credential | null>;
 
-    updateCredential(credential: UpdateCredentialRequest): Promise<Credential | null>;
+    update(credential: Credential): Promise<Credential>;
 
 }

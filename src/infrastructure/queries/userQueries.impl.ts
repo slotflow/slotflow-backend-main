@@ -1,9 +1,9 @@
-import { UserModel } from "../../database/user/user.model";
-import { IAdminUserQuery } from "../../../application/queries/admin/IAdminUserQuery";
-import { ApiPaginationRequest, TableData } from "../../../application/dtos/common.dto";
-import { AdminFetchAllUsers, AdminFetchDashboardUserStatsDataResponse } from "../../../application/dtos/admin.dto";
+import { UserModel } from "../database/user/user.model";
+import { IUserQueries } from "../../application/queries/IUser.queries";
+import { ApiPaginationRequest, TableData } from "../../application/dtos/common.dto";
+import { AdminFetchAllUsers, AdminFetchDashboardUserStatsDataResponse } from "../../application/dtos/admin.dto";
 
-export class AdminUserQueryImpl implements IAdminUserQuery {
+export class UserQueryImpl implements IUserQueries {
 
     async fetchStats(): Promise<AdminFetchDashboardUserStatsDataResponse> {
         const [

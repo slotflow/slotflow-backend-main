@@ -3,9 +3,9 @@ import { IUserRepository } from "../../domain/interfaces/repositories/IUser.repo
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { IPaymentRepository } from "../../domain/interfaces/repositories/IPayment.repository";
 import { IBookingRepository } from "../../domain/interfaces/repositories/IBooking.repository";
-import { IAdminProviderQuery } from "../../application/queries/admin/IAdminProviderQuery";
+import { IAdminProviderQuery } from "../../application/queries/IProvider.queries";
 import { IProviderRepository } from "../../domain/interfaces/repositories/IProvider.repository";
-import { AdminProviderQueryImpl } from "../../infrastructure/queries/admin/adminProviderQuery.impl";
+import { AdminProviderQueryImpl } from "../../infrastructure/queries/providerQueries.impl";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { ISubscriptionRepository } from "../../domain/interfaces/repositories/ISubscription.repository";

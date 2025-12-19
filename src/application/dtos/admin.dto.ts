@@ -1,10 +1,10 @@
-import { Address, ApiPaginationRequest, Provider, User } from "./common.dto";
 import { Plan } from "../../domain/entities/plan.entity";
 import { Review } from "../../domain/entities/review.entity";
 import { Service } from "../../domain/entities/service.entity";
-import { Payment } from "../../domain/entities/payment.entity";
 import { Subscription } from "../../domain/entities/subscription.entity";
 import { ProviderService } from "../../domain/entities/providerService.entity";
+
+import { AddressDTO, ApiPaginationRequest, PaymentDTO, ProviderDTO, UserDTO } from "./common.dto";
 import { FontendAvailabilityForResponse } from "../../domain/entities/serviceAvailability.entity";
 
 // **************** used in adminProvider.use-case **************** \\
@@ -13,59 +13,59 @@ import { FontendAvailabilityForResponse } from "../../domain/entities/serviceAva
 // Used as the return type of fetch all providers
 // Used in AdminProviderListUseCase, the findAllProviders method in ProviderRepositoryImpl, 
 // and the findAllProviders method in IProviderRepository as the response type with ApiResponse
-export type AdiminFetchAllProviders = Array<Pick<Provider, "_id" | "username" | "email" | "isBlocked" | "isAdminVerified" | "isEmailVerified" | "trustedBySlotflow" | "adminVerificationStatus">>;
+export type AdiminFetchAllProviders = Array<Pick<ProviderDTO, "_id" | "username" | "email" | "isBlocked" | "isAdminVerified" | "isEmailVerified" | "trustedBySlotflow" | "adminVerificationStatus">>;
 
 
 
 // **** adminApproveProvider
 // Used as the request interface of admin approve provider
 export interface AdminApproveProviderRequest  {
-    providerId: Provider["_id"];
+    providerId: ProviderDTO["_id"];
 }
 
 // **** adminRejectProvider
 // Used as the request interface of admin reject provider
-export type AdminRejectProviderRequest = Pick<Provider, "verificationRejectionReason" | "isAddressVerified" | "isServiceDetailsVerified" | "isAvailabilityVerified" | "isProofsVerified"> & {
-    providerId: Provider["_id"];
+export type AdminRejectProviderRequest = Pick<ProviderDTO, "verificationRejectionReason" | "isAddressVerified" | "isServiceDetailsVerified" | "isAvailabilityVerified" | "isProofsVerified"> & {
+    providerId: ProviderDTO["_id"];
 }
 
 
 // **** adminChangeProvierBlockStatus
 // Used as the request interface of admin change provider block status
 export interface AdminChangeProviderStatusRequest {
-    providerId: Provider["_id"];
-    isBlocked: Provider["isBlocked"];
+    providerId: ProviderDTO["_id"];
+    isBlocked: ProviderDTO["isBlocked"];
 }
 
 
 // **** adminChangeProviderTrustTag
 // Used as the request interface of admin change provider trust tag 
 export interface AdminChangeProviderTrustTagRequest  {
-    providerId: Provider["_id"];
-    trustedBySlotflow: Provider["trustedBySlotflow"];
+    providerId: ProviderDTO["_id"];
+    trustedBySlotflow: ProviderDTO["trustedBySlotflow"];
 };
 
 
 // **** adminFetchProviderProfileDetails
 // Used as the request interface of admin fetch provider profile details
 export interface AdminFetchProviderDetailsRequest {
-    providerId: Provider["_id"];
+    providerId: ProviderDTO["_id"];
 }
 // Used as the return type of admin fetch provider profile details
-export type AdminFetchProviderDetailsResponse = Pick<Provider, "_id" | "username" | "email" | "isBlocked" | "isEmailVerified" | "isAdminVerified" | "phone" | "profileImage" | "trustedBySlotflow" | "createdAt"> | {};
+export type AdminFetchProviderDetailsResponse = Pick<ProviderDTO, "_id" | "username" | "email" | "isBlocked" | "isEmailVerified" | "isAdminVerified" | "phone" | "profileImage" | "trustedBySlotflow" | "createdAt"> | {};
 
 
 
 // **** adminFetchProviderAddress
 // Used as the request type of admin fetch provider address
-export type AdminFetchUserOrProviderAddressResponse = Pick<Address, "userId" | "addressLine" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location"> | null;
+export type AdminFetchUserOrProviderAddressResponse = Pick<AddressDTO, "userId" | "addressLine" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location"> | null;
 
 
 
 // **** adminFetchProviderAddress
 // Used as the request interface of admin fetch provider service
 export type AdminFetchProviderServiceRequest = {
-    providerId: Provider["_id"];
+    providerId: ProviderDTO["_id"];
 }
 // Used as the request interface of admin fetch provider service
 type FindProviderServiceProps = Omit<ProviderService, "service">;
@@ -79,7 +79,7 @@ export type AdminFetchProviderServiceResponse = FindProviderServiceResponse | {}
 // **** adminFetchProviderServiceAvailability
 // Used as the request interface of admin fetch provider service availability
 export interface AdminFetchProviderServiceAvailabilityRequest {
-    providerId: Provider["_id"];
+    providerId: ProviderDTO["_id"];
     date: Date
 }
 // Used as the return interface of admin fetch provider service availability
@@ -91,7 +91,7 @@ export type AdminFetchProviderServiceAvailabilityResponse = FontendAvailabilityF
 
 // **************** used in adminUser.use-case **************** \\
 
-type AdminUserBaseInfo = Pick<User, "_id" | "username" | "email" | "isBlocked" | "isEmailVerified">;
+type AdminUserBaseInfo = Pick<UserDTO, "_id" | "username" | "email" | "isBlocked" | "isEmailVerified">;
 
 // **** adminFetchAllUsers
 // Used as the return type of fetch all users
@@ -104,17 +104,17 @@ export type AdminFetchAllUsers = Array<AdminUserBaseInfo>;
 // **** adminChangeUserBlockStatus
 // Used as the request interface of admin change block status of user  
 export interface AdminChangeUserIsBlockedStatusRequest {
-    userId: User["_id"];
-    isBlocked: User["isBlocked"];
+    userId: UserDTO["_id"];
+    isBlocked: UserDTO["isBlocked"];
 }
 
 // **** AdminFetchUserDetailsUseCase
 // Used as the request interface of admin fetch user profile details
 export interface AdminFetchUserProfileDetailsRequest {
-    userId: User["_id"];
+    userId: UserDTO["_id"];
 }
 // Used as the response type of admin fetch user profile details
-export type AdminFetchUserProfileDetailsResponse = Pick<User, "username" | "phone" | "profileImage" | "isEmailVerified" | "isBlocked" | "email" | "createdAt"> | {};
+export type AdminFetchUserProfileDetailsResponse = Pick<UserDTO, "username" | "phone" | "profileImage" | "isEmailVerified" | "isBlocked" | "email" | "createdAt"> | {};
 
 
 
@@ -260,7 +260,7 @@ export interface AdminFetchRevenueReportRequest extends ApiPaginationRequest {
 
 // Admin fetch revenue report response
 export type AdminFetchRevenueReportRow = Pick<
-  Payment,
+  PaymentDTO,
   | "createdAt"
   | "discountAmount"
   | "initialAmount"
@@ -277,3 +277,8 @@ export interface AdminFetchRevenueReportResponse {
 }
 
 
+
+
+export type AdminFetchTodaysBookingStatsForDashboardResponse = Pick<AdminFetchDashboardTodayStatsDataResponse, "todaysAppointments" | "todaysCancelledAppointments" | "todaysCompletedAppointments">;
+
+export type AdminFetchDashboardTodayPaymentStatsDataResponse = Pick<AdminFetchDashboardTodayStatsDataResponse, "todaysTotalPayouts" | "todaysTotalRevenue">;

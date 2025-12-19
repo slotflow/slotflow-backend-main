@@ -1,47 +1,15 @@
-import { Types } from "mongoose";
-import { User } from "../../entities/user.entity";
 import { Booking } from "../../entities/booking.entity";
-import { Provider } from "../../entities/provider.entity";
-import { UserFetchProvidersForChatSidebarResponse } from "../../../application/dtos/user.dto";
-import { AdminFetchDashboardAppointmentStatsDataResponse, AdminFetchDashboardTodayStatsDataResponse } from "../../../application/dtos/admin.dto";
-import { ApiResponse, FetchBookingDetailsResponse, FetchBookingsRequest, FetchBookingsResponse, FetchOnlineBookingsForProviderResponse, FetchOnlineBookingsForUserResponse } from "../../../application/dtos/common.dto";
-import { ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardGraphDataRequest, ProviderFetchDashboardGraphDataResponse, ProviderFetchUsersForChatSideBarResponse } from "../../../application/dtos/provider.dto";
-
-
-export type CreateBookingPayloadProps = Pick<Booking, "serviceProviderId" | "userId" | "appointmentDate" | "appointmentTime" | "appointmentMode" | "appointmentStatus" | "slotId" | "paymentId" | "videoCallRoomId" | "googleEventId" | "statusTrack">;
-export type AdminFetchTodaysBookingStatsForDashboardResponse = Pick<AdminFetchDashboardTodayStatsDataResponse, "todaysAppointments" | "todaysCancelledAppointments" | "todaysCompletedAppointments">;
-export type ProviderFetchDashboardGraphRepository = Omit<ProviderFetchDashboardGraphDataRequest, "subscription"> & {
-    subscriptionGuard: number;
-}
 
 export interface IBookingRepository {
-
-    createBooking(booking : CreateBookingPayloadProps, options? : { session : any }) : Promise<Booking>;
-
-    findBookingByUserId(userId: Types.ObjectId, day: string, date: Date, time: string): Promise<Array<Booking> | null>;
-
-    findBookingById(bookingId: Types.ObjectId): Promise<Booking | null>;
-
-    findBookingByroomId(roomId: string): Promise<Booking | null>;
-
-    updateBooking(booking: Booking, options? : { session : any }) : Promise<Booking | null>;
-
-    findTodaysBookingForCronjob() : Promise<boolean> ;
-
-    findAllBookings({ page, limit, userId, serviceProviderId, online, raw, role }: FetchBookingsRequest) : Promise<ApiResponse<FetchBookingsResponse | FetchOnlineBookingsForProviderResponse | FetchOnlineBookingsForUserResponse>>;
-
-    findUsersforChatSideBar(providerId: Provider["_id"]): Promise<ProviderFetchUsersForChatSideBarResponse>;
     
-    findProvidersforChatSideBar(userId: User["_id"]): Promise<UserFetchProvidersForChatSidebarResponse>;
+    create(booking: Booking, options? : { session : any }) : Promise<Booking>;
 
-    findBookingStatsDataForProviderDashboard(providerId: Provider["_id"]): Promise<ProviderFetchDashboardBookingStatsDataResponse>;
+    findByUserId(userId: string, day: string, date: Date, time: string): Promise<Array<Booking> | null>;
 
-    findBookingGraphDataForProviderDashboard(payload: ProviderFetchDashboardGraphRepository): Promise<ProviderFetchDashboardGraphDataResponse | null>;
+    findById(bookingId: string): Promise<Booking | null>;
 
-    findTodayBookingStatsForAdminDashboard(): Promise<AdminFetchTodaysBookingStatsForDashboardResponse>;
+    findByroomId(roomId: string): Promise<Booking | null>;
 
-    findBookingStatsForAdminDashboard(): Promise<AdminFetchDashboardAppointmentStatsDataResponse>;
-
-    findBookingDetails(bookingId: Types.ObjectId): Promise<FetchBookingDetailsResponse | null>;
+    update(booking: Booking, options? : { session : any }) : Promise<Booking>;
     
 }

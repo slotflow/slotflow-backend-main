@@ -21,8 +21,7 @@ export class ProviderCreateAddressUseCase {
             const provider = await this.providerRepository.findById(userId);
             if (!provider) throw new Error("Please logout and try again.");
 
-            const address = new Address(
-                "",
+            const address = Address.create({
                 userId,
                 addressLine,
                 landMark,
@@ -34,7 +33,7 @@ export class ProviderCreateAddressUseCase {
                 state,
                 country,
                 location,
-            );
+            });
 
             const savedAddress = await this.addressRepository.create(address);
             if (!savedAddress) throw new Error("Failed to save address.");
@@ -68,7 +67,7 @@ export class ProviderFetchAddressUseCase {
 
             const { userId, createdAt, ...rest } = address;
             return rest;
-            
+
         } catch (error) {
             console.log("ProviderFetchAddressUseCase error : ", error);
             throw new Error("Failed to fetch address");
@@ -106,7 +105,7 @@ export class ProviderUpdateAddressUseCase {
 
             const { userId: providerId, createdAt, ...rest } = updatedAddress;
             return rest;
-            
+
         } catch (error) {
             console.log("ProviderUpdateAddressUseCase error : ", error);
             throw new Error("Address updating failed");

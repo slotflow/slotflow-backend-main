@@ -5,7 +5,7 @@ import { IBookingRepository } from "../../../domain/interfaces/repositories/IBoo
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
 import { AdminFetchDashboardAppointmentStatsDataResponse, AdminFetchDashboardProviderStatsDataResponse, AdminFetchDashboardRevenueStatsDataResponse, AdminFetchDashboardSubscriptionStatsDataResponse, AdminFetchDashboardTodayStatsDataResponse, AdminFetchDashboardUserStatsDataResponse } from "../../dtos/admin.dto";
-import { IAdminProviderQuery } from "../../queries/admin/IAdminProviderQuery";
+import { IAdminProviderQuery } from "../../queries/IProvider.queries";
 import { IAdminUserQuery } from "../../queries/admin/IAdminUserQuery";
 
 export class AdminFetchDashboardTodaysDataUseCase {

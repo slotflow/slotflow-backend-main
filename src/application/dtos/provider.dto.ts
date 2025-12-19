@@ -1,21 +1,20 @@
 import Stripe from "stripe";
-import { Address, Provider, SubscriptionPlan } from "./common.dto";
 import { User } from "../../domain/entities/user.entity";
 import { Plan } from "../../domain/entities/plan.entity";
 import { Review } from "../../domain/entities/review.entity";
 import { Service } from "../../domain/entities/service.entity";
-import { Booking } from "../../domain/entities/booking.entity";
 import { ProviderService } from "../../domain/entities/providerService.entity";
+import { AddressDTO, BookingDTO, ProviderDTO, SubscriptionPlan } from "./common.dto";
 import { FontendAvailabilityForResponse, FrontendAvailabilityForRequest } from "../../domain/entities/serviceAvailability.entity";
 
 
 // ************ used in providerAddress.use-case ************ \\
 // provider fetch address use case request payload interface
 export interface ProviderFetchAddressRequest {
-    providerId: Provider["_id"];
+    providerId: ProviderDTO["_id"];
 }
 // provider fetch address use case response interface
-export type ProviderFetchAddressResponse = Pick<Address, "_id" | "addressLine" | "landMark" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location"> | null;
+export type ProviderFetchAddressResponse = Pick<AddressDTO, "_id" | "addressLine" | "landMark" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location"> | null;
 
 
 
@@ -25,7 +24,7 @@ export type ProviderFetchAddressResponse = Pick<Address, "_id" | "addressLine" |
 
 // provider fetch service details use case request payload
 export interface ProviderFetchProviderServiceRequest {
-    providerId: Provider["_id"];
+    providerId: ProviderDTO["_id"];
 }
 // provider fetch service details use case respomse interface
 type FindProviderServiceProps = Pick<ProviderService, "_id" | "serviceName" | "serviceDescription" | "servicePrice" | "isGroupService" | "maxParticipants" | "requirements" | "serviceExperience" | "serviceMode" | "serviceType" | "tags" | "videoUrl" | "updatedAt" | "createdAt">;
@@ -56,54 +55,54 @@ export type ProviderFetchAllPlansResponse = Array<Pick<Plan, "_id" | "planName" 
 // ************ used in providerProfile.use-case ************ \\
 // provider fetch profile detals use case request payload interface
 export interface ProviderFetchProfileDetailsRequest {
-    providerId: Provider["_id"];
+    providerId: ProviderDTO["_id"];
 }
 // provider fetch profile detals use case response interface
-export type ProviderFetchProfileDetailsResponse = Pick<Provider, "username" | "email" | "isAdminVerified" | "isBlocked" | "isEmailVerified" | "phone" | "createdAt"> | {};
+export type ProviderFetchProfileDetailsResponse = Pick<ProviderDTO, "username" | "email" | "isAdminVerified" | "isBlocked" | "isEmailVerified" | "phone" | "createdAt"> | {};
 
 
 // provider update profile image use case request payload interface
-export type ProviderUpdateprofileImageRequestPayload = Pick<Provider, "profileImage"> & {
-    providerId: Provider["_id"];
+export type ProviderUpdateprofileImageRequestPayload = Pick<ProviderDTO, "profileImage"> & {
+    providerId: ProviderDTO["_id"];
 }
 // provider update profile image use case response interface 
-export type ProviderUpdateprofileImageResponse = Provider["profileImage"];
+export type ProviderUpdateprofileImageResponse = ProviderDTO["profileImage"];
 
 
 // provider update providerInfo request payload interface
 export interface ProviderUpdateProviderInfoRequest {
-    providerId: Provider["_id"];
-    username?: Provider["username"];
-    phone?: Provider["phone"];
+    providerId: ProviderDTO["_id"];
+    username?: ProviderDTO["username"];
+    phone?: ProviderDTO["phone"];
 }
 // provider update provider info use case response interface
-export type ProviderUpdateProviderInfoResponse = Pick<Provider, "username" | "phone">;
+export type ProviderUpdateProviderInfoResponse = Pick<ProviderDTO, "username" | "phone">;
 
 // provider update identity proof request payload interface
-export type ProviderUpdateIdentityProofRequest = Pick<Provider, "identityProof"> & {
-    providerId: Provider["_id"];
+export type ProviderUpdateIdentityProofRequest = Pick<ProviderDTO, "identityProof"> & {
+    providerId: ProviderDTO["_id"];
 }
 // provider update service proof use case response interface
-export type ProviderUpdateIdentityProofResponse = Provider["identityProof"];
+export type ProviderUpdateIdentityProofResponse = ProviderDTO["identityProof"];
 
 // provider update identity proof request payload interface
-export type ProviderUpdateServiceProofRequest = Pick<Provider, "serviceProof"> & {
-    providerId: Provider["_id"];
+export type ProviderUpdateServiceProofRequest = Pick<ProviderDTO, "serviceProof"> & {
+    providerId: ProviderDTO["_id"];
 }
 // provider update service proof use case response interface
-export type ProviderUpdateServiceProofResponse = Provider["serviceProof"];
+export type ProviderUpdateServiceProofResponse = ProviderDTO["serviceProof"];
 
-export type ProviderUpdateProfileRequest = Pick<Provider,"_id"> & Partial<Pick<Provider, "username" | "profileImage" | "phone" | "identityProof" | "serviceProof" | "googleConnected" | "addressId" | "googleId" | "isAdminVerified" | "isEmailVerified" | "isBlocked" | "serviceAvailabilityId" | "serviceId" | "stripeAccountId" | "verificationToken" | "trustedBySlotflow" | "subscription" | "password">>
+export type ProviderUpdateProfileRequest = Pick<ProviderDTO,"_id"> & Partial<Pick<ProviderDTO, "username" | "profileImage" | "phone" | "identityProof" | "serviceProof" | "googleConnected" | "addressId" | "googleId" | "isAdminVerified" | "isEmailVerified" | "isBlocked" | "serviceAvailabilityId" | "serviceId" | "stripeAccountId" | "verificationToken" | "trustedBySlotflow" | "subscription" | "password">>
 
 // provider admin approval
 export interface ProviderAdminApprovalRequest {
-    providerId: Provider["_id"];
+    providerId: ProviderDTO["_id"];
 }
-export type ProviderAdminApprovalResponse = Pick<Provider, "adminVerificationStatus">; 
+export type ProviderAdminApprovalResponse = Pick<ProviderDTO, "adminVerificationStatus">; 
 
 // provider delete proof request
 export interface ProviderDeleteProofRequest {
-    providerId: Provider["_id"];
+    providerId: ProviderDTO["_id"];
 }
 
 
@@ -112,14 +111,14 @@ export interface ProviderDeleteProofRequest {
 // ************ used in providerServiceAvailability ************ \\
 // provider add service availability use case reques tpayload
 export interface ProviderAddServiceAvailabilityRewuest {
-    providerId: Provider["_id"];
+    providerId: ProviderDTO["_id"];
     availabilities: FrontendAvailabilityForRequest[]
 }
 
 
 //  provider fetch service availability use case response interface 
 export interface ProviderFetchServiceAvailabilityRequest {
-    providerId: Provider["_id"];
+    providerId: ProviderDTO["_id"];
     date: Date
 }
 //  provider fetch service availability use case response interface 
@@ -132,7 +131,7 @@ export type ProviderFetchServiceAvailabilityResponse = FontendAvailabilityForRes
 // ************ used in providerStripeSubscription.use-case ************ \\
 // provider stripe subscription create sessionId use case  request payload interface
 export interface ProviderStripeSubscriptionCreateSessionIdRequest {
-    providerId: Provider["_id"];
+    providerId: ProviderDTO["_id"];
     planId: Plan["_id"];
     duration: string;
 }
@@ -142,7 +141,7 @@ export type ProviderStripeSubscriptionCreateSessionIdResponse = string;
 
 // provider save subscription after stripe payment use case request payload interface
 export interface ProviderSaveSubscriptionRequest {
-    providerId: Provider["_id"];
+    providerId: ProviderDTO["_id"];
     sessionId: string
 }
 export interface ProviderSaveSubscriptionResponse {
@@ -156,7 +155,7 @@ export interface ProviderSaveSubscriptionResponse {
 // ************ used in providerSubscription.use-case  ************ \\
 // provider trial subscription use case reuest payload
 export interface ProviderTrialSubscriptionRequest {
-    providerId: Provider["_id"];
+    providerId: ProviderDTO["_id"];
 }
 
 
@@ -166,7 +165,7 @@ export interface ProviderTrialSubscriptionRequest {
 // ************ used in providerUser.use-case  ************ \\
 // provider fetch users for the chat sidebar
 export interface ProviderFetchUsersForChatSideBarRequest {
-    providerId: Provider["_id"];
+    providerId: ProviderDTO["_id"];
 }
 export type ProviderFetchUsersForChatSideBarResponse = Array<Pick<User, "_id" | "username" | "profileImage">>
 
@@ -176,7 +175,7 @@ export type ProviderFetchUsersForChatSideBarResponse = Array<Pick<User, "_id" | 
 
 // ************ used in providerDashboard.use-case  ************ \\
 export interface ProviderFetchDashboardStatsDataRequest {
-    providerId: Provider["_id"];
+    providerId: ProviderDTO["_id"];
 }
 // Used as the response interface for the provider fetch dashboard data
 export interface ProviderFetchDashboardStatsDataResponse extends ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardPaymentStatsDataResponse { }
@@ -200,7 +199,7 @@ export interface ProviderFetchDashboardPaymentStatsDataResponse {
 // ************ used in providerDashboard.use-case  ************ \\
 // Used as the request interface for the provider fetch dashboard graph data
 export interface ProviderFetchDashboardGraphDataRequest {
-    providerId: Provider["_id"],
+    providerId: ProviderDTO["_id"],
     subscription: SubscriptionPlan,
     startDate?: Date,
     endDate?: Date,
@@ -249,13 +248,13 @@ export interface ProviderFetchDashboardGraphDataResponse {
 
 // ************ used in providerBooking.use-case  ************ \\
 // Used as the request type for the provider change booking appointment status
-export type ProviderChangeBookingAppoinmentStatusRequest = Pick<Booking, "_id" | "appointmentStatus">;
+export type ProviderChangeBookingAppoinmentStatusRequest = Pick<BookingDTO, "_id" | "appointmentStatus">;
 
 
 
 // Provider Stripe UseCase
 export interface ProviderStripeConnectRequest {
-    providerId: Provider["_id"];
+    providerId: ProviderDTO["_id"];
 }
 export type ProviderStripeConnectResponse = Stripe.Response<Stripe.AccountLink>;
 
@@ -263,5 +262,10 @@ export type ProviderStripeConnectResponse = Stripe.Response<Stripe.AccountLink>;
 // Provider Report UseCase
 export interface ProviderRepostReviewRequest {
     reviewId: Review["_id"]; 
-    providerId: Provider["_id"];
+    providerId: ProviderDTO["_id"];
+}
+
+
+export type ProviderFetchDashboardGraphRepository = Omit<ProviderFetchDashboardGraphDataRequest, "subscription"> & {
+    subscriptionGuard: number;
 }

@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
-import { AppointmentStatusType } from "../../../application/dtos/common.dto";
 import { appointmentStatusArray } from "../../../shared/utils/constants";
-import { ParticipantPresence, statusTrack } from "../../../domain/entities/booking.entity";
+import { AppointmentStatusType } from "../../../application/dtos/common.dto";
+import { ParticipantPresence, statusTrack } from "../../../domain/commands/booking.commands";
 
 export interface IBooking extends Document {
     _id: Types.ObjectId,

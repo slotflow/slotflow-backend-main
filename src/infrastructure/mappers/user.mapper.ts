@@ -25,7 +25,6 @@ export class UserMapper {
     }
 
     static toPersistence(entity: User) {
-
         const props = entity.getProps();
 
         return {

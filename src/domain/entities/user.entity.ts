@@ -9,6 +9,10 @@ export class User {
         this.props = props
     }
 
+    private touch() {
+        this.props.updatedAt = new Date();
+    }
+
     private ensureNotBlocked(action: string) {
         if (this.props.isBlocked) {
             throw new Error(`Blocked users cannot ${action}`);
@@ -55,7 +59,9 @@ export class User {
         })
     }
 
-    get id(): string {
+    // Getters
+
+    get _id(): string {
         return this.props._id;
     }
 
@@ -115,23 +121,25 @@ export class User {
         return this.props.updatedAt;
     }
 
+    // Business Methods
+
     getProps(): Readonly<UserProps> {
         return { ...this.props };
     }
 
     block() {
         this.props.isBlocked = true;
-        this.props.updatedAt = new Date();
+        this.touch();
     }
 
     unblock() {
         this.props.isBlocked = false;
-        this.props.updatedAt = new Date();
+        this.touch();
     }
 
     markEmailVerified() {
         this.props.isEmailVerified = true;
-        this.props.updatedAt = new Date();
+        this.touch();
     }
 
     updateProfileInfo(props: ChangeProfileInfo) {
@@ -144,7 +152,7 @@ export class User {
         if (props.username !== undefined) {
             this.props.username = props.username;
         }
-        this.props.updatedAt = new Date();
+        this.touch();
     }
 
     changePassword(props: ChangePassword) {
@@ -154,7 +162,7 @@ export class User {
             this.props.verificationToken = props.verificationToken;
         }
         this.props.password = props.password;
-        this.props.updatedAt = new Date();
+        this.touch();
     }
 
     linkGoogleAccount(props: LinkGoogleAccount) {
@@ -162,22 +170,24 @@ export class User {
 
         this.props.googleId = props.googleId;
         this.props.googleConnected = props.googleConnected;
-        this.props.updatedAt = new Date();
+        this.touch();
     }
 
     updateProfileImage(props: ChangeProfileImage) {
         this.ensureNotBlocked("update profile image");
 
         this.props.profileImage = props.profileImage;
-        this.props.updatedAt = new Date();
+        this.touch();
     }
 
     updateAddressId(addressId: string | null) {
         this.props.addressId = addressId;
+        this.touch();
     }
 
     updateBookingsId(bookingsId: string | null) {
         this.props.bookingsId = bookingsId;
+        this.touch();
     }
 
 }

@@ -46,7 +46,6 @@ export class GoogleAuthUseCase {
 
                 if (!provider) {
                     provider = Provider.createGoogle({
-                        _id: "",
                         username: name,
                         email,
                         googleId,

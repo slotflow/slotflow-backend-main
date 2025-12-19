@@ -1,10 +1,9 @@
-import { ProviderMapper } from "../../mappers/provider.mapper";
-import { ProviderModel } from "../../database/provider/provider.model";
-import { AdiminFetchAllProviders } from "../../../application/dtos/admin.dto";
-import { ApiPaginationRequest, TableData } from "../../../application/dtos/common.dto";
-import { IAdminProviderQuery } from "../../../application/queries/admin/IAdminProviderQuery";
+import { ProviderModel } from "../database/provider/provider.model";
+import { AdiminFetchAllProviders } from "../../application/dtos/admin.dto";
+import { IProviderQueries } from "../../application/queries/IProvider.queries";
+import { ApiPaginationRequest, TableData } from "../../application/dtos/common.dto";
 
-export class AdminProviderQueryImpl implements IAdminProviderQuery {
+export class ProviderQueryImpl implements IProviderQueries {
 
   async fetchStats() {
     const [
@@ -51,12 +50,13 @@ export class AdminProviderQueryImpl implements IAdminProviderQuery {
         adminVerificationStatus: 1,
         isEmailVerified: 1,
         trustedBySlotflow: 1
-      }).skip(skip).limit(limit).lean(),
+      }).skip(skip).limit(limit).lean<AdiminFetchAllProviders>(),
       ProviderModel.countDocuments(),
     ]);
     const totalPages = Math.ceil(totalCount / limit);
+
     return {
-      data: providers.map((provider) => ProviderMapper.toDomain(provider)),
+      data: providers,
       totalPages,
       currentPage: page,
       totalCount

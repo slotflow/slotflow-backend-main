@@ -8,7 +8,8 @@ import { OTPService } from '../../../infrastructure/services/otp.service';
 import { PasswordHasher } from '../../../infrastructure/security/password-hashing';
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
-import { Provider, User } from '../../dtos/common.dto';
+import { User } from '../../../domain/entities/user.entity';
+import { Provider } from '../../../domain/entities/provider.entity';
 
 // TODO try to avoid userOrProvider with onlu user or provider
 export class RegisterUseCase {
@@ -75,7 +76,6 @@ export class RegisterUseCase {
           await this.userRepository.create(user);
         } else if (role === roleArray[2]) {
           const provider = Provider.createLocal({
-            _id: "",
             username,
             email,
             password: hashedPassword,
