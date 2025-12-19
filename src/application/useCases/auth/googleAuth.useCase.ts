@@ -14,26 +14,27 @@ export class GoogleAuthUseCase {
     async execute(payload: GoogleAuthRequest): Promise<User | Provider> {
         try {
             const { email, googleId, image, name, role } = payload;
-            
+
             if (role === roleArray[1]) {
-                let user = await this.userRepository.findUserByGoogleId(googleId);
+                let user = await this.userRepository.findByGoogleId(googleId);
 
                 if (!user) {
-                    user = await this.userRepository.findUserByEmail(email);
+                    user = await this.userRepository.findByEmail(email);
                 }
 
                 if (!user) {
-                    user = await this.userRepository.createUser({
+                    user = User.createGoogle({
+                        _id: "",
                         username: name,
-                        email: email,
-                        googleId: googleId,
-                        profileImage: image ?? "",
+                        email,
+                        googleId,
                         isEmailVerified: true,
-                        googleConnected: true,
-                    })
+                        profileImage: image ?? "",
+                    });
+                    await this.userRepository.create(user);
                 }
 
-                return user as User;
+                return user;
             }
 
             if (role === roleArray[2]) {
@@ -45,7 +46,7 @@ export class GoogleAuthUseCase {
 
                 if (!provider) {
                     provider = Provider.createGoogle({
-                        id: "",
+                        _id: "",
                         username: name,
                         email,
                         googleId,
@@ -54,7 +55,7 @@ export class GoogleAuthUseCase {
                     });
                     await this.providerRepository.create(provider);
                 }
-                return provider as Provider;
+                return provider;
             }
 
             throw new Error("Invalid role");

@@ -107,7 +107,7 @@ export class UserSaveBookingAfterStripePaymentUseCase {
             console.log("saving booking");
             if (!userId || !sessionId) throw new Error("Invalid request");
 
-            const user = await this.userRepository.findUserById(new Types.ObjectId(userId));
+            const user = await this.userRepository.findById(userId);
             if (!user) throw new Error("No user found");
 
             const session = await stripe.checkout.sessions.retrieve(sessionId);

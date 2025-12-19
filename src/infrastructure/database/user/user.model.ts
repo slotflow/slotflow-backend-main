@@ -87,8 +87,6 @@ const UserSchema = new Schema<IUser>({
       return !this.password;
     }
   },
-}, {
-  timestamps: true
 });
 
 export const UserModel = mongoose.model<IUser>('User', UserSchema);

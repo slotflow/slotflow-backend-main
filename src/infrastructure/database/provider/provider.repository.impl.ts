@@ -7,7 +7,7 @@ import { ProviderUpdateProfileRequest } from "../../../application/dtos/provider
 import { ApiPaginationRequest, ApiResponse } from "../../../application/dtos/common.dto";
 import { AdminFetchDashboardProviderStatsDataResponse } from "../../../application/dtos/admin.dto";
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
-import { ProviderMapper } from "../../mappers/providerMapper";
+import { ProviderMapper } from "../../mappers/provider.mapper";
 
 export class ProviderRepositoryImpl implements IProviderRepository {
 

@@ -5,7 +5,8 @@ import { IBookingRepository } from "../../../domain/interfaces/repositories/IBoo
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
 import { AdminFetchDashboardAppointmentStatsDataResponse, AdminFetchDashboardProviderStatsDataResponse, AdminFetchDashboardRevenueStatsDataResponse, AdminFetchDashboardSubscriptionStatsDataResponse, AdminFetchDashboardTodayStatsDataResponse, AdminFetchDashboardUserStatsDataResponse } from "../../dtos/admin.dto";
-import { IAdminProviderQuery } from "../../queries/admin/IAdminProviderStatsQuery";
+import { IAdminProviderQuery } from "../../queries/admin/IAdminProviderQuery";
+import { IAdminUserQuery } from "../../queries/admin/IAdminUserQuery";
 
 export class AdminFetchDashboardTodaysDataUseCase {
     constructor(
@@ -23,7 +24,7 @@ export class AdminFetchDashboardTodaysDataUseCase {
                 paymentData,
                 appointmentData
             ] = await Promise.all([
-                this.userRepository.findUsersCount({ today: true }),
+                this.userRepository.count(true),
                 this.providerRepository.count(true),
                 this.paymentRepository.findTodayPaymentStatsForAdminDashboard(),
                 this.bookingRepository.findTodayBookingStatsForAdminDashboard()
@@ -50,12 +51,12 @@ export class AdminFetchDashboardTodaysDataUseCase {
 
 export class AdminFetchDashboardUserStatsDataUseCase {
     constructor(
-        private userRepository: IUserRepository,
+        private adminUserQuery: IAdminUserQuery
     ) { }
 
     async execute(): Promise<ApiResponse<AdminFetchDashboardUserStatsDataResponse>> {
         try {
-            const userData = await this.userRepository.findUsersStatsData();
+            const userData = await this.adminUserQuery.fetchStats();
             return { success: true, message: "Fetched successfully", data: userData };
         } catch (error) {
             console.log("AdminFetchDashboardUserStatsDataUseCase error : ", error);

@@ -35,7 +35,8 @@ export class AddressMapper {
             pincode: entity.pincode,
             state: entity.state,
             country: entity.country,
-            location: entity.location
+            location: entity.location,
+            updatedAt: entity.updatedAt
         };
     }
 }

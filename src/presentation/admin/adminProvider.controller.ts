@@ -21,8 +21,8 @@ import { ServiceAvailabilityRepositoryImpl } from "../../infrastructure/database
 import { AdminChangeProviderStatusZodSchema, AdminChangeProviderTrustedTagZodSchema, adminRejectProviderZodSchema } from "../../shared/zod/admin.zod";
 import { AdminApproveProviderUseCase, AdminChangeProviderBlockStatusUseCase, AdminChangeProviderTrustTagUseCase, AdminProviderListUseCase, AdminRejectProviderUseCase } from "../../application/useCases/admin/adminProvider.useCase";
 import { AdminFetchProviderDetailsUseCase, AdminFetchProviderPaymentsUseCase, AdminfetchProviderServiceAvailabilityUseCase, AdminFetchProviderServiceUseCase, AdminFetchProviderSubscriptionsUseCase } from "../../application/useCases/admin/adminProviderProfile.useCase";
-import { IAdminProviderQuery } from "../../application/queries/admin/IAdminProviderStatsQuery";
-import { AdminProviderQueryImpl } from "../../infrastructure/queries/admin/AdminProviderQuery.impl";
+import { IAdminProviderQuery } from "../../application/queries/admin/IAdminProviderQuery";
+import { AdminProviderQueryImpl } from "../../infrastructure/queries/admin/adminProviderQuery.impl";
 
 const paymentRepository: IPaymentRepository = new PaymentRepositoryImpl();
 const addressRepository: IAddressRepository = new AddressRepositoryImpl();

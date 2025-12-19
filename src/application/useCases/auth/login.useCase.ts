@@ -1,8 +1,6 @@
 import { adminConfig } from "../../../config/env";
 import { roleArray } from "../../../shared/utils/constants";
-import { User } from "../../../domain/entities/user.entity";
 import { JWTService } from "../../../infrastructure/security/jwt";
-import { Provider } from "../../../domain/entities/provider.entity";
 import { PasswordHasher } from "../../../infrastructure/security/password-hashing";
 import { LoginRequest, LoginResponse } from "../../dtos/auth.dto";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
@@ -10,6 +8,7 @@ import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.r
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
+import { Provider, User } from "../../dtos/common.dto";
 
 export class LoginUseCase {
     constructor(
@@ -29,7 +28,7 @@ export class LoginUseCase {
             let userOrProvider: User | Provider | null = null;
 
             if (role === roleArray[1]) {
-                userOrProvider = await this.userRepository.findUserByEmail(email);
+                userOrProvider = await this.userRepository.findByEmail(email);
             } else if (role === roleArray[2]) {
                 userOrProvider = await this.providerRepository.findByEmail(email);
             } else if (role === roleArray[0]) {

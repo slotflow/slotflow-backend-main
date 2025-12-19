@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import { DecodedUser } from "../../express"; 
 import { roleArray } from "../../shared/utils/constants";
 import { NextFunction, Request, Response } from "express";
@@ -30,7 +29,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
 
     req.user = decoded as DecodedUser;
     if(req.user.role === roleArray[1]) {
-      const user = await userRepository.findUserById(new Types.ObjectId(req.user.userOrProviderId));
+      const user = await userRepository.findById(req.user.userOrProviderId);
       if(user?.isBlocked) {
         res.status(403).json({ success: false, message: "Your account is blocked"} );
         return;

@@ -1,8 +1,7 @@
 import passport from 'passport';
-import { Types } from 'mongoose';
 import { googleClientConfig } from '../../config/env';
-import { RoleType } from '../../application/dtos/common.dto';
 import { roleArray } from '../../shared/utils/constants';
+import { RoleType } from '../../application/dtos/common.dto';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { UserRepositoryImpl } from '../database/user/user.repository.impl';
 import { ProviderRepositoryImpl } from '../database/provider/provider.repository.impl';
@@ -59,11 +58,13 @@ passport.use(
                         });
                         entity = await providerRepositoryImpl.update(provider);
                     }else if(role === roleArray[1]) {
-                        const user = await userRepositoryImpl.findUserById(new Types.ObjectId(_id));
+                        const user = await userRepositoryImpl.findById(_id);
                         if(!user) throw new Error("User not found");
-                        user.googleId = profile.id;
-                        user.googleConnected = true;
-                        entity = await userRepositoryImpl.updateUser(user);
+                        user.linkGoogleAccount({
+                            googleConnected: true,
+                            googleId: profile.id
+                        })
+                        entity = await userRepositoryImpl.update(user);
                     }
                 }
 

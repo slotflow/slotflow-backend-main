@@ -1,15 +1,14 @@
 import { Types } from "mongoose";
 import { Plan } from "../../domain/entities/plan.entity";
-import { User } from "../../domain/entities/user.entity";
 import { Review } from "../../domain/entities/review.entity";
 import { Service } from "../../domain/entities/service.entity";
-import { GeoLocation } from "../../domain/entities/address.entity";
 import { Payment } from "../../domain/entities/payment.entity";
+import { GeoLocation } from "../../domain/entities/address.entity";
 import { Credential } from "../../domain/entities/credential.entity";
 import { Subscription } from "../../domain/entities/subscription.entity";
-import { AdminVerificationStatus } from "../../domain/entities/provider.entity";
 import { Availability } from "../../domain/entities/serviceAvailability.entity";
 import { Booking, ParticipantPresence } from "../../domain/entities/booking.entity";
+import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
 import { findSubscriptionFullDetailsResProps } from "../../domain/interfaces/repositories/ISubscription.repository";
 import { adminVerificationStatusArray, appointmentStatusArray, daysArray, paymentForArray, paymentGatewayArray, roleArray, serviceCategoryArray, serviceModeArray, serviceTypeArray, subscriptionStatusArray } from "../../shared/utils/constants";
 
@@ -51,6 +50,7 @@ export interface Address {
   updatedAt: Date,
 }
 
+// **** PROVIDER INTERFACE
 export interface Provider {
   _id: string;
   username: string;
@@ -80,6 +80,25 @@ export interface Provider {
   serviceProof: string | null;
   createdAt: Date;
   updatedAt: Date;
+}
+
+// **** USER INTERFACE
+export interface User {
+    _id: string;
+    username: string;
+    email: string;
+    password: string | null;
+    isBlocked: boolean;
+    isEmailVerified: boolean;
+    phone: string | null;
+    profileImage: string | null;
+    addressId: string | null;
+    bookingsId: string | null;
+    verificationToken: string | null;
+    googleConnected: boolean;
+    googleId: string | null;
+    createdAt: Date,
+    updatedAt: Date
 }
 
 // **** 1. Used as the request interface for the paginated request

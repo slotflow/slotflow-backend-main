@@ -1,12 +1,11 @@
 // import { producer } from '../../../server';
 import { kafkaConfig } from '../../../config/env';
-import { User } from '../../../domain/entities/user.entity';
 import { roleArray } from '../../../shared/utils/constants';
-import { Provider } from '../../../domain/entities/provider.entity';
 import { OTPService } from '../../../infrastructure/services/otp.service';
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { ResendOtpRequest, ResendOtpResponse } from '../../dtos/auth.dto';
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
+import { Provider, User } from '../../dtos/common.dto';
 
 export class ResendOtpUseCase {
 
@@ -24,7 +23,7 @@ export class ResendOtpUseCase {
 
       if (email && role) {
         if (role === roleArray[1]) {
-          userOrProvider = await this.userRepository.findUserByEmail(email);
+          userOrProvider = await this.userRepository.findByEmail(email);
         } else if (role === roleArray[2]) {
           userOrProvider = await this.providerRepository.findByEmail(email);
         } else {
@@ -33,7 +32,7 @@ export class ResendOtpUseCase {
 
       } else if (verificationToken && role) {
         if (role === roleArray[1]) {
-          userOrProvider = await this.userRepository.findUserByVerificationToken(verificationToken);
+          userOrProvider = await this.userRepository.findByVerificationToken(verificationToken);
         } else if (role === roleArray[2]) {
           userOrProvider = await this.providerRepository.findByVerificationToken(verificationToken);
         } else {

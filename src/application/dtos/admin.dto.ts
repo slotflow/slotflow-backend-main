@@ -1,5 +1,4 @@
-import { Address, ApiPaginationRequest, Provider } from "./common.dto";
-import { User } from "../../domain/entities/user.entity";
+import { Address, ApiPaginationRequest, Provider, User } from "./common.dto";
 import { Plan } from "../../domain/entities/plan.entity";
 import { Review } from "../../domain/entities/review.entity";
 import { Service } from "../../domain/entities/service.entity";

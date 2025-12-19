@@ -7,15 +7,16 @@ import {
 import { SignedUrlService } from "../../../infrastructure/services/signedUrl.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { ApiPaginationRequest, ApiResponse } from "../../dtos/common.dto";
+import { IAdminUserQuery } from "../../queries/admin/IAdminUserQuery";
 
 export class AdminUserListUseCase {
     constructor(
-        private userRepository: IUserRepository,
+        private adminUserQuery: IAdminUserQuery,
     ) { }
 
     async execute(payload: ApiPaginationRequest): Promise<ApiResponse<AdminFetchAllUsers>> {
         try {
-            const result = await this.userRepository.findAllUsers(payload);
+            const result = await this.adminUserQuery.findAll(payload);
             if (!result) throw new Error("Users fetching failed");
 
             return { data: result.data, totalPages: result.totalPages, currentPage: result.currentPage, totalCount: result.totalCount };
@@ -35,15 +36,19 @@ export class AdminChangeUserBlockStatusUseCase {
         try {
             const { userId, isBlocked } = payload;
 
-            const user = await this.userRepository.findUserById(userId);
+            const user = await this.userRepository.findById(userId);
             if (!user) throw new Error("No user found.");
 
-            user.isBlocked = !isBlocked;
+            if(user.isBlocked) {
+                user.unblock();
+            } else {
+                user.block();
+            }
 
-            const updatedUser = await this.userRepository.updateUser(user);
+            const updatedUser = await this.userRepository.update(user);
             if (!updatedUser) throw new Error("User not found");
 
-            return { success: true, message: `User ${isBlocked ? "unblocked" : "blocked"} successfully.` };
+            return { success: true, message: `User ${updatedUser.isBlocked ? "blocked" : "unBlocked"} successfully.` };
         } catch (error) {
             console.log("AdminChangeUserBlockStatusUseCase error :", error);
             throw new Error("Failed to change user block status");
@@ -61,15 +66,16 @@ export class AdminFetchUserDetailsUseCase {
         try {
             const { userId } = payload;
             
-            const userData = await this.userRepository.findUserById(userId);
-            if (userData == null) return { success: true, message: "User details fetched", data: {} };
+            const user = await this.userRepository.findById(userId);
+            if(!user) throw new Error("User not found")
 
-            if (userData.profileImage) {
-                userData.profileImage = await this.signedUrlService.generate(userData.profileImage);
+            let signedProfileImage: string;
+            if (user.profileImage) {
+                 signedProfileImage = await this.signedUrlService.generate(user.profileImage);
             }
 
-            const { addressId, verificationToken, password, updatedAt, ...user } = userData;
-            return { success: true, message: "User details fetched", data: user };
+            const { addressId, verificationToken, password, updatedAt, ...rest } = user;
+            return { success: true, message: "User details fetched", data: rest };
         } catch (error) {
             console.log("AdminFetchUserDetailsUseCase error :", error);
             throw new Error("Failed to fetch user details");

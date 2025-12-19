@@ -19,7 +19,7 @@ import { DeleteObjectCommand, GetObjectCommand, S3Client } from "@aws-sdk/client
 import { ApiResponse } from "../../dtos/common.dto";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { ISignedUrlCacheRepository } from "../../../domain/interfaces/repositories/ISignedUrlCache.repository";
-import { AdminVerificationStatus } from "../../../domain/entities/provider.entity";
+import { AdminVerificationStatus } from "../../../domain/enums/adminVerificationStatus.enum";
 
 export class ProviderFetchProfileDetailsUseCase {
   constructor(
@@ -177,6 +177,10 @@ export class ProviderUpdateProfileImageUseCase {
     
     const provider = await this.providerRepository.findById(providerId);
     if(!provider) throw new Error("User not found");
+
+    provider.updateProfileImage({ profileImage });
+    const updatedProvider = await this.providerRepository.update(provider);
+    if(!updatedProvider) throw new Error("Failed to update profile image");
 
     const command = new GetObjectCommand({
       Bucket: awsConfig.aws_s3Bucket_name,

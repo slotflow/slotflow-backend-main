@@ -1,8 +1,8 @@
-import { ProviderMapper } from "../../mappers/providerMapper";
+import { ProviderMapper } from "../../mappers/provider.mapper";
 import { ProviderModel } from "../../database/provider/provider.model";
 import { AdiminFetchAllProviders } from "../../../application/dtos/admin.dto";
 import { ApiPaginationRequest, TableData } from "../../../application/dtos/common.dto";
-import { IAdminProviderQuery } from "../../../application/queries/admin/IAdminProviderStatsQuery";
+import { IAdminProviderQuery } from "../../../application/queries/admin/IAdminProviderQuery";
 
 export class AdminProviderQueryImpl implements IAdminProviderQuery {
 

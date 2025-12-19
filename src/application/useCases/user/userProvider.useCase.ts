@@ -23,7 +23,7 @@ export class UserFetchServiceProvidersUseCase {
       const { userId, serviceIds } = payload;
       if (!userId || !serviceIds) throw new Error("Invalid request.");
 
-      const user = await this.userRepository.findUserById(new Types.ObjectId(userId));
+      const user = await this.userRepository.findById(userId);
       if (!user) throw new Error("No user found");
 
       const providers = await this.providerServiceRepository.findProvidersUsingServiceIds(serviceIds);
@@ -63,7 +63,7 @@ export class UserFetchServiceProviderProfileDetailsUseCase {
       const { userId, providerId } = payload;
       if (!userId || !providerId) throw new Error("Invalid request");
 
-      const user = await this.userRepository.findUserById(new Types.ObjectId(userId));
+      const user = await this.userRepository.findById(userId);
       if (!user) throw new Error("No user found");
 
       const provider = await this.providerRepository.findById(providerId);
@@ -96,13 +96,13 @@ export class UserFetchServiceProviderAddressUseCase {
       const { userId, providerId } = payload;
       if (!userId || !providerId) throw new Error("Invalid request");
 
-      const user = await this.userRepository.findUserById(userId);
+      const user = await this.userRepository.findById(userId);
       if (!user) throw new Error("No user found");
 
       const address = await this.addressRepository.findByUserId(providerId);
       if (!address) throw new Error("No address found");
 
-      let { createdAt, updatedAt, id, ...rest } = address;
+      let { createdAt, updatedAt, _id, ...rest } = address;
 
       return { success: true, message: "Service provider address fetched", data: rest }
     } catch (error) {
@@ -123,7 +123,7 @@ export class UserFetchServiceProviderServiceDetailsUseCase {
     try {
       const { userId, providerId } = payload;
 
-      const user = await this.userRepository.findUserById(new Types.ObjectId(userId));
+      const user = await this.userRepository.findById(userId);
       if (!user) throw new Error("No user found");
 
       const serviceData = await this.providerServiceRepository.findProviderServiceByProviderId(new Types.ObjectId(providerId));
@@ -149,6 +149,7 @@ export class UserFetchServiceProviderServiceDetailsUseCase {
 
 export class UserFetchServiceProviderServiceAvailabilityUseCase {
   constructor(
+    private providerRepository: IProviderRepository,
     private userRepository: IUserRepository,
     private serviceAvailabilityRepository: IServiceAvailabilityRepository,
   ) { }
@@ -159,10 +160,14 @@ export class UserFetchServiceProviderServiceAvailabilityUseCase {
       const currentDateTime = dayjs();
       const selectedDate = dayjs(date).format('YYYY-MM-DD');
 
-      const user = await this.userRepository.findUserById(new Types.ObjectId(userId));
+      const user = await this.userRepository.findById(userId);
       if (!user) throw new Error("No user found");
 
-      const availability = await this.serviceAvailabilityRepository.findServiceAvailabilityByProviderId(new Types.ObjectId(providerId), date);
+      const provider = await this.providerRepository.findById(providerId);
+      if(!provider) throw new Error("nNo provider found");
+      if(!provider.serviceAvailabilityId) return null;
+
+      const availability = await this.serviceAvailabilityRepository.findServiceAvailabilityByProviderId(date, provider.serviceAvailabilityId);
       if (availability == null) return { success: true, message: "Service availability fetched successfully.", data: {} };
 
       const updatedSlots = availability.slots.map((slot) => {

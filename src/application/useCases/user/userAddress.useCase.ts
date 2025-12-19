@@ -14,8 +14,8 @@ export class UserCreateAddressUseCase {
         try {
             const { userId, addressLine, landMark, phone, place, city, district, pincode, state, country, location } = payload;
 
-            const user = await this.userRepository.findUserById(userId);
-            if (!user) throw new Error("Please logout and try again.");
+            const user = await this.userRepository.findById(userId);
+            if (!user) throw new Error("Please logout and try again");
 
             const now = new Date();
 
@@ -37,10 +37,9 @@ export class UserCreateAddressUseCase {
             const savedAddress = await this.addressRepository.create(address);
             if (!savedAddress) throw new Error("Failed to save address");
 
-            user.addressId = savedAddress._id;
-
-            const updatedUser = await this.userRepository.updateUser(user);
-            if (!updatedUser) throw new Error("Failed to update user with address.");
+            user.updateAddressId(savedAddress._id)
+            const updatedUser = await this.userRepository.update(user);
+            if (!updatedUser) throw new Error("Failed to update user with address");
 
         } catch (error) {
             console.log("UserCreateAddressUseCase error : ", error);
@@ -59,7 +58,7 @@ export class UserFetchAddressUseCase {
         try {
 
             const { userId } = payload;
-            const user = await this.userRepository.findUserById(userId);
+            const user = await this.userRepository.findById(userId);
             if (!user) throw new Error("No user found.");
 
             const address = await this.addressRepository.findByUserId(userId);

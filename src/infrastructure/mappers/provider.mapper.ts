@@ -74,6 +74,7 @@ export class ProviderMapper {
       trustedBySlotflow: entity.trustedBySlotflow,
       identityProof: entity.identityProof,
       serviceProof: entity.serviceProof,
+      updatedAt: entity.updatedAt
     };
   }
 }

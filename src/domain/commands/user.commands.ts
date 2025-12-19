@@ -1,4 +1,4 @@
-export type CreateLocalProviderProps = {
+export type CreateLocalUserProps = {
   _id: string;
   username: string;
   email: string;
@@ -6,7 +6,7 @@ export type CreateLocalProviderProps = {
   verificationToken: string;
 };
 
-export type CreateGoogleProviderProps = {
+export type CreateGoogleUserProps = {
   _id: string;
   username: string;
   email: string;

@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
-import { AdminVerificationStatus } from '../../../domain/entities/provider.entity';
+import { AdminVerificationStatus } from '../../../domain/enums/adminVerificationStatus.enum';
 
 export interface IProvider extends Document {
   _id: Types.ObjectId;
@@ -167,8 +167,6 @@ const ProviderSchema = new Schema<IProvider>({
     type: String,
     default: null
   }
-}, {
-  timestamps: true
 });
 
 ProviderSchema.pre("save", function (next) {

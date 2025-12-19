@@ -91,7 +91,7 @@ export interface UpdatePasswordRequest {
 // **** Check status
 // check user status use case request payload interface
 export interface CheckUserStatusRequest {
-    _id: Types.ObjectId;
+    _id: string;
     role: string;
 }
 // check user status use case response interface

@@ -1,12 +1,11 @@
 import { Types } from "mongoose";
-import { User } from "../../domain/entities/user.entity";
+import { Address, User } from "./common.dto";
 import { Review } from "../../domain/entities/review.entity";
 import { Booking } from "../../domain/entities/booking.entity";
 import { Service } from "../../domain/entities/service.entity";
 import { Provider } from "../../domain/entities/provider.entity";
 import { ProviderService } from "../../domain/entities/providerService.entity";
 import { FontendAvailabilityForResponse, TimeSlotForFrontendResponse } from "../../domain/entities/serviceAvailability.entity";
-import { Address } from "./common.dto";
 
 
 // ************ used in userProfile.use-case ************ \\
@@ -19,9 +18,8 @@ export type UserFetchProfileDetailsResponse = Pick<User, "username" | "email" | 
 
 
 // user update profile image use case request payload interface 
-export interface UsrUpdateProfileImageRequest {
+export type UsrUpdateProfileImageRequest = Pick<User, "profileImage"> & {
     userId: User["_id"],
-    key: string;
 }
 // user update profile image use case response interface
 export type UserUpdateProfileImageResponse = User["profileImage"];
@@ -117,7 +115,7 @@ export interface UserFetchProviderServiceAvailabilityRequest {
     date: Date
 }
 // user fetch provider servide availability use case response interface
-export type UserFetchProviderServiceAvailabilityResponse = FontendAvailabilityForResponse | {};
+export type UserFetchProviderServiceAvailabilityResponse = FontendAvailabilityForResponse | null;
 
 
 // user fetch providers for chat side bar

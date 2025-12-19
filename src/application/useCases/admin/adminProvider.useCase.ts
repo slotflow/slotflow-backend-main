@@ -6,7 +6,7 @@ import {
     AdminRejectProviderRequest,
 } from "../../dtos/admin.dto";
 import { ApiPaginationRequest, ApiResponse } from "../../dtos/common.dto";
-import { IAdminProviderQuery } from "../../queries/admin/IAdminProviderStatsQuery";
+import { IAdminProviderQuery } from "../../queries/admin/IAdminProviderQuery";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 
 

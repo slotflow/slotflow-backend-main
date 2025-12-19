@@ -21,11 +21,11 @@ export class UpdatePasswordUseCase {
             const hashedPassword = await PasswordHasher.hashPassword(password);
 
             if (role === roleArray[1]) {
-                const user = await this.userRepository.findUserByVerificationToken(verificationToken);
+                const user = await this.userRepository.findByVerificationToken(verificationToken);
                 if (!user) throw new Error("User not found.");
 
-                user.password = hashedPassword;
-                await this.userRepository.updateUser(user as User);
+                user.changePassword({ password: hashedPassword });
+                await this.userRepository.update(user as User);
 
             } else if (role === roleArray[2]) {
                 const provider = await this.providerRepository.findByVerificationToken(verificationToken);

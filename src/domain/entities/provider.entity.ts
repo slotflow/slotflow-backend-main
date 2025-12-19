@@ -45,7 +45,7 @@ export class Provider {
 
   static createLocal(props: CreateLocalProviderProps): Provider {
     return new Provider(
-      props.id,
+      props._id,
       props.username,
       props.email,
       props.password,
@@ -78,7 +78,7 @@ export class Provider {
 
   static createGoogle(props: CreateGoogleProviderProps): Provider {
     return new Provider(
-      props.id,
+      props._id,
       props.username,
       props.email,
       null,

@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import { roleArray } from "../../../shared/utils/constants";
 import { CheckUserStatusRequest, CheckUserStatusResponse } from "../../dtos/auth.dto";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
@@ -17,7 +16,7 @@ export class CheckUserStatusUseCase {
             const { _id, role } = payload;
             
             if (role === roleArray[1]) {
-                const user = await this.userRepository.findUserById(new Types.ObjectId(_id));
+                const user = await this.userRepository.findById(_id);
                 if (user?.isBlocked) {
                     return { status: 403, success: false, message: "Your account has been blocked." };
                 } else {

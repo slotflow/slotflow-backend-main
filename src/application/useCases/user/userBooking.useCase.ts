@@ -20,7 +20,7 @@ export class UserCancelBookingUseCase {
         try {
             const { userId, bookingId } = payload;
 
-            const user = await this.userRepository.findUserById(new Types.ObjectId(userId));
+            const user = await this.userRepository.findById(userId);
             if (!user) throw new Error("No user found");
 
             const booking = await this.bookingRepository.findBookingById(new Types.ObjectId(bookingId));

@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 import { AddressModel } from "./address.model";
-import { AddressMapper } from "../../mappers/addressMapper";
+import { AddressMapper } from "../../mappers/address.mapper";
 import { Address } from "../../../domain/entities/address.entity";
 import { IAddressRepository } from "../../../domain/interfaces/repositories/IAddress.repository";
 
