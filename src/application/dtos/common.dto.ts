@@ -1,6 +1,5 @@
 import { Types } from "mongoose";
 
-import { Plan } from "../../domain/entities/plan.entity";
 import { Review } from "../../domain/entities/review.entity";
 import { Service } from "../../domain/entities/service.entity";
 import { Subscription } from "../../domain/entities/subscription.entity";
@@ -171,6 +170,20 @@ export interface CredentialDTO {
     updatedAt: Date,
 }
 
+// **** PLAN INTERFACE
+export interface PlanDTO {
+    _id: string,
+    planName: string,
+    description: string,
+    price: number,
+    features: string[],
+    maxBookingPerMonth: number,
+    adVisibility: boolean,
+    isBlocked: boolean,
+    createdAt: Date,
+    updatedAt: Date,
+}
+
 // **** 1. Used as the request interface for the paginated request
 export interface ApiPaginationRequest {
   page: number;
@@ -209,7 +222,7 @@ export interface FetchProviderSubscriptionsRequest extends ApiPaginationRequest 
 //// **** 4.2 Used as the response type for fetching subscriptions with planName and plan price of a specific provider for the provider side and admin side
 export type FindSubscriptionsByProviderIdResponse = Array<
   Pick<Subscription, "_id" | "startDate" | "endDate" | "subscriptionStatus"> &
-  Partial<Pick<Plan, "planName">>> &
+  Partial<Pick<PlanDTO, "planName">>> &
   Partial<Pick<PaymentDTO, "totalAmount">>;
 export type PopulatedSubscription = Omit<Subscription, 'subscriptionPlanId' | "paymentId"> & {
   subscriptionPlanId: {
@@ -418,3 +431,5 @@ export interface FetchProviderProofsRequest {
 };
 
 export type FetchProviderProofsResponse = Pick<ProviderDTO, "identityProof" | "serviceProof">;
+
+export type findAllPlansForDisplayResProps = Pick<PlanDTO, "_id" | "planName" | "price" | "features" | "description">

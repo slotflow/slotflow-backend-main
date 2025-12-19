@@ -1,38 +1,36 @@
 import { Types } from "mongoose";
-import { Address, User } from "./common.dto";
 import { Review } from "../../domain/entities/review.entity";
-import { Booking } from "../../domain/entities/booking.entity";
 import { Service } from "../../domain/entities/service.entity";
-import { Provider } from "../../domain/entities/provider.entity";
 import { ProviderService } from "../../domain/entities/providerService.entity";
+import { AddressDTO, UserDTO, ProviderDTO, BookingDTO } from "./common.dto";
 import { FontendAvailabilityForResponse, TimeSlotForFrontendResponse } from "../../domain/entities/serviceAvailability.entity";
 
 
 // ************ used in userProfile.use-case ************ \\
 // user fetch profile use case request payload interface
 export interface UserFetchProfileRequest {
-    userId: User["_id"];
+    userId: UserDTO["_id"];
 }
 // user fetch profile details use case response interface
-export type UserFetchProfileDetailsResponse = Pick<User, "username" | "email" | "isBlocked" | "isEmailVerified" | "phone" | "createdAt"> | {};
+export type UserFetchProfileDetailsResponse = Pick<UserDTO, "username" | "email" | "isBlocked" | "isEmailVerified" | "phone" | "createdAt"> | {};
 
 
 // user update profile image use case request payload interface 
-export type UsrUpdateProfileImageRequest = Pick<User, "profileImage"> & {
-    userId: User["_id"],
+export type UsrUpdateProfileImageRequest = Pick<UserDTO, "profileImage"> & {
+    userId: UserDTO["_id"],
 }
 // user update profile image use case response interface
-export type UserUpdateProfileImageResponse = User["profileImage"];
+export type UserUpdateProfileImageResponse = UserDTO["profileImage"];
 
 
 // user update user info request payload interface
 export interface UserUpdateUserInfoRequest {
-    userId: User["_id"];
-    username: User["username"];
-    phone: User["phone"];
+    userId: UserDTO["_id"];
+    username: UserDTO["username"];
+    phone: UserDTO["phone"];
 }
 // user update user info use case response interface
-export type UserUpdateUserInfoResponse = Pick<User, "username" | "phone">
+export type UserUpdateUserInfoResponse = Pick<UserDTO, "username" | "phone">
 
 
 
@@ -42,10 +40,10 @@ export type UserUpdateUserInfoResponse = Pick<User, "username" | "phone">
 
 // user fetch user address use case request payload interface
 export interface UserFetchUserAddressRequest {
-    userId: User["_id"];
+    userId: UserDTO["_id"];
 }
 // user fetch user address use case response interface
-export type UserFetchAddressResponse = Pick<Address, "_id" | "addressLine" | "landMark" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location"> | null;
+export type UserFetchAddressResponse = Pick<AddressDTO, "_id" | "addressLine" | "landMark" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location"> | null;
 
 
 
@@ -54,7 +52,7 @@ export type UserFetchAddressResponse = Pick<Address, "_id" | "addressLine" | "la
 
 // user fetch service providers use case request payload interface
 export interface UserFetchServiceProvidersRequest {
-    userId: User["_id"];
+    userId: UserDTO["_id"];
     serviceIds: ProviderService["_id"][]
 }
 // user fetch service providers use case response interface
@@ -79,26 +77,26 @@ export type UserFetchServiceProvidersResponse = FindProvidersUsingServiceIdsResp
 
 // user fetch provider details use case request payload interface
 export interface UserFetchServiceProviderDetailsRequest {
-    userId: User["_id"];
-    providerId: Provider["_id"];
+    userId: UserDTO["_id"];
+    providerId: ProviderDTO["_id"];
 }
 // user fetch provider details use case response interface
-export type UserFetchServiceProviderDetailsResponse = Pick<Provider, "_id" | "username" | "email" | "profileImage" | "trustedBySlotflow" | "phone">;
+export type UserFetchServiceProviderDetailsResponse = Pick<ProviderDTO, "_id" | "username" | "email" | "profileImage" | "trustedBySlotflow" | "phone">;
 
 
 // user fetch provider address use case request payload interface
 export interface UserFetchServiceProviderAddressRequest {
-    userId: User["_id"];
-    providerId: Provider["_id"];
+    userId: UserDTO["_id"];
+    providerId: ProviderDTO["_id"];
 }
 // user fetch provider address use case response interface
-export type UserFetchServiceProviderAddressResponse = Pick<Address, "userId" | "addressLine" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location">
+export type UserFetchServiceProviderAddressResponse = Pick<AddressDTO, "userId" | "addressLine" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location">
 
 
 // user fetch provider service use case request payload interface
 export interface UserFetchServiceproviderServiceRequest {
-    userId: User["_id"];
-    providerId: Provider["_id"];
+    userId: UserDTO["_id"];
+    providerId: ProviderDTO["_id"];
 }
 // user fetch provider service use case response interface
 type FindProviderServiceProps = Pick<ProviderService, "serviceName" | "serviceDescription" | "servicePrice" | "serviceExperience">;
@@ -110,8 +108,8 @@ export type UserFetchProviderServiceResponse = FindProviderServiceResponse | {};
 
 // user fetch provider service availability use case request payload interface
 export interface UserFetchProviderServiceAvailabilityRequest {
-    userId: User["_id"];
-    providerId: Provider["_id"];
+    userId: UserDTO["_id"];
+    providerId: ProviderDTO["_id"];
     date: Date
 }
 // user fetch provider servide availability use case response interface
@@ -120,9 +118,9 @@ export type UserFetchProviderServiceAvailabilityResponse = FontendAvailabilityFo
 
 // user fetch providers for chat side bar
 export interface UserFetchProvidersForChatSidebarRequest {
-    userId: User["_id"]
+    userId: UserDTO["_id"]
 }
-export type UserFetchProvidersForChatSidebarResponse = Array<Pick<Provider, "_id" | "username" | "profileImage" >>;
+export type UserFetchProvidersForChatSidebarResponse = Array<Pick<ProviderDTO, "_id" | "username" | "profileImage" >>;
 
 
 
@@ -132,8 +130,8 @@ export type UserFetchProvidersForChatSidebarResponse = Array<Pick<Provider, "_id
 
 // user appointment booking via stripe creating session id use case request payload
 export interface UserAppointmentBookingViaStripeRequest {
-    userId: User["_id"];
-    providerId: Provider["_id"]; 
+    userId: UserDTO["_id"];
+    providerId: ProviderDTO["_id"]; 
     slotId: TimeSlotForFrontendResponse["_id"]; 
     selectedServiceMode: string; 
     date: Date
@@ -142,15 +140,15 @@ export interface UserAppointmentBookingViaStripeRequest {
 
 // use save appointment booking after stripe payment use case request payload
 export interface UserSaveAppoinmentBookingRequest {
-    userId: User["_id"];
+    userId: UserDTO["_id"];
     sessionId: string;
 }
 
 
 // user can cel booking use case request payload interface
 export interface UserCancelBookingRequest {
-    userId: User["_id"];
-    bookingId: Booking["_id"];
+    userId: UserDTO["_id"];
+    bookingId: BookingDTO["_id"];
 }
 
 
@@ -161,5 +159,5 @@ export type CreateReviewRequset = Pick<Review, "reviewText" | "rating" | "userId
 // User delete review
 export interface UserDeleteReviewRequest {
     reviewId: Review["_id"];
-    userId: User["_id"];
+    userId: UserDTO["_id"];
 }

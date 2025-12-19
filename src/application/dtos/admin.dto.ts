@@ -1,11 +1,10 @@
-import { Plan } from "../../domain/entities/plan.entity";
 import { Review } from "../../domain/entities/review.entity";
 import { Service } from "../../domain/entities/service.entity";
 import { Subscription } from "../../domain/entities/subscription.entity";
 import { ProviderService } from "../../domain/entities/providerService.entity";
 
-import { AddressDTO, ApiPaginationRequest, PaymentDTO, ProviderDTO, UserDTO } from "./common.dto";
 import { FontendAvailabilityForResponse } from "../../domain/entities/serviceAvailability.entity";
+import { AddressDTO, ApiPaginationRequest, PaymentDTO, PlanDTO, ProviderDTO, UserDTO } from "./common.dto";
 
 // **************** used in adminProvider.use-case **************** \\
 
@@ -149,7 +148,7 @@ export interface AdminChnageServiceIsBlockedStatusRequest {
 
 // Admin fetch all subscriptions use case response interface 
 // export type AdminFetchAllSubscriptionsResponse = Array<Pick<Subscription, "_id" | "createdAt" | "providerId" | "startDate" | "endDate" | "subscriptionStatus">>;
-export type AdminFetchAllSubscriptionsResponse = Array<Pick<Subscription, "_id" | "startDate" | "endDate" | "subscriptionStatus"> & Pick<Plan, "planName">>;
+export type AdminFetchAllSubscriptionsResponse = Array<Pick<Subscription, "_id" | "startDate" | "endDate" | "subscriptionStatus"> & Pick<PlanDTO, "planName">>;
 
 
 
@@ -170,17 +169,17 @@ export interface AdminUpdateReviewBlockStatusRequest {
 // Data type returned for the Admin Plans table
 // Used in AdminPlanListUseCase, the findAllPlans method in PlanRepositoryImpl, 
 // and the findAllPlans method in IPlanRepository as the response type with the ApiResponse interface
-export type AdminPlanListResponse = Array<Pick<Plan, "_id" | "planName" | "isBlocked" | "price" | "maxBookingPerMonth" | "adVisibility">>;
+export type AdminPlanListResponse = Array<Pick<PlanDTO, "_id" | "planName" | "isBlocked" | "price" | "maxBookingPerMonth" | "adVisibility">>;
 
 
 // admin create new plan request payload type 
-export type AdminAddNewPlanRequest = Pick<Plan, "planName" | "description" | "price" | "features" | "maxBookingPerMonth" | "adVisibility">;
+export type AdminAddNewPlanRequest = Pick<PlanDTO, "planName" | "description" | "price" | "features" | "maxBookingPerMonth" | "adVisibility">;
 
 
 // admin change plan block status request payload type
 export type AdminChangePlanIsBlockedStatusRequest = {
-    planId: Plan["_id"];
-    isBlocked: Plan["isBlocked"]
+    planId: PlanDTO["_id"];
+    isBlocked: PlanDTO["isBlocked"]
 }
 
 

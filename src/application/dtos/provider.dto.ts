@@ -1,10 +1,8 @@
 import Stripe from "stripe";
-import { User } from "../../domain/entities/user.entity";
-import { Plan } from "../../domain/entities/plan.entity";
 import { Review } from "../../domain/entities/review.entity";
 import { Service } from "../../domain/entities/service.entity";
 import { ProviderService } from "../../domain/entities/providerService.entity";
-import { AddressDTO, BookingDTO, ProviderDTO, SubscriptionPlan } from "./common.dto";
+import { AddressDTO, BookingDTO, ProviderDTO, UserDTO, PlanDTO, SubscriptionPlan } from "./common.dto";
 import { FontendAvailabilityForResponse, FrontendAvailabilityForRequest } from "../../domain/entities/serviceAvailability.entity";
 
 
@@ -46,7 +44,7 @@ export type ProviderUpdateProviderServiceResponse = ProviderFindProviderServiceR
 
 // ************ used in providerPlan.use-case ************ \\
 // provider fetch all plans use case response interface 
-export type ProviderFetchAllPlansResponse = Array<Pick<Plan, "_id" | "planName" | "price" | "features" | "description">> | [];
+export type ProviderFetchAllPlansResponse = Array<Pick<PlanDTO, "_id" | "planName" | "price" | "features" | "description">> | [];
 
 
 
@@ -132,7 +130,7 @@ export type ProviderFetchServiceAvailabilityResponse = FontendAvailabilityForRes
 // provider stripe subscription create sessionId use case  request payload interface
 export interface ProviderStripeSubscriptionCreateSessionIdRequest {
     providerId: ProviderDTO["_id"];
-    planId: Plan["_id"];
+    planId: PlanDTO["_id"];
     duration: string;
 }
 // provider stripe subscription create sessionId use case response interface
@@ -167,7 +165,7 @@ export interface ProviderTrialSubscriptionRequest {
 export interface ProviderFetchUsersForChatSideBarRequest {
     providerId: ProviderDTO["_id"];
 }
-export type ProviderFetchUsersForChatSideBarResponse = Array<Pick<User, "_id" | "username" | "profileImage">>
+export type ProviderFetchUsersForChatSideBarResponse = Array<Pick<UserDTO, "_id" | "username" | "profileImage">>
 
 
 

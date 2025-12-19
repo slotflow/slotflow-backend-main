@@ -1,24 +1,15 @@
-import { Types } from "mongoose";
-import { Plan } from "../entities/plan.entity";
-import { ApiPaginationRequest, ApiResponse } from "../../infrastructure/dtos/common.dto";
-import { AdminPlanListResponse } from "../../infrastructure/dtos/admin.dto";
-
-export type CreatePlanProps = Pick<Plan,'planName' | 'description' | 'price' | 'features' | "maxBookingPerMonth" | "adVisibility" | "isBlocked">;
-export type findPlanByNameOrPriceProps = Pick<Plan, "planName" | "price" >;
-export type findAllPlansForDisplayResProps = Pick<Plan, "_id" | "planName" | "price" | "features" | "description">
-
+import { Plan } from "../../entities/plan.entity";
 
 export interface IPlanRepository {
-    createPlan(plan: CreatePlanProps): Promise<Plan>;
 
-    updatePlan(planId: Types.ObjectId, plna: Plan): Promise<Plan | null>;
-    
-    findPlanById(planId: Types.ObjectId): Promise<Plan | null>;
+    create(plan: Plan): Promise<Plan>;
 
-    findAllPlans({ page, limit }: ApiPaginationRequest): Promise<ApiResponse<AdminPlanListResponse>>;
+    findById(planId: string): Promise<Plan | null>;
 
-    findPlanByNameOrPrice(plan: findPlanByNameOrPriceProps): Promise<Plan | null>;
+    update(plan: Plan): Promise<Plan>;
 
-    findAllPlansForDisplay(): Promise<Array<findAllPlansForDisplayResProps>>;
+    findByName(name: string): Promise<Plan | null>;
+
+    findByPrice(price: number): Promise<Plan | null>;
 
 }

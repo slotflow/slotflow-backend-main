@@ -14,7 +14,6 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
 
     async findById(payemtnId: string): Promise<Payment | null> {
         const doc = await PaymentModel.findById(payemtnId);
-
         return doc ? PaymentMapper.toDomain(doc) : null;
     }
 

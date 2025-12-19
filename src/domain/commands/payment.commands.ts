@@ -4,4 +4,4 @@ export type CreateForSubscriptionProps = Pick<PaymentProps, "transactionId" | "p
 
 export type CreateForBookingProps = Pick<PaymentProps, "transactionId" | "paymentStatus" | "paymentMethod" | "paymentGateway" | "paymentFor" | "initialAmount" | "discountAmount" | "userId" | "totalAmount" | "providerId">;
 
-export type UpdatePaymentProps = Partial<Omit<PaymentProps, "_id" | "userId" | "transactionId" | "providerId" |  "createdAt" | "updatedAt">>;
+export type UpdatePaymentProps = Omit<PaymentProps, "_id" | "userId" | "transactionId" | "providerId" |  "createdAt" | "updatedAt">;
