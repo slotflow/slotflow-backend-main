@@ -21,12 +21,8 @@ export class PlanQueriesImpl implements IPlanQueries {
         const totalPages = Math.ceil(totalCount / limit);
         return {
             data: plans.map(plan => ({
+                ...plan,
                 _id: plan._id.toString(),
-                planName: plan.planName,
-                price: plan.price,
-                maxBookingPerMonth: plan.maxBookingPerMonth,
-                isBlocked: plan.isBlocked,
-                adVisibility: plan.adVisibility,
             })),
             totalPages,
             currentPage: page,
@@ -43,11 +39,8 @@ export class PlanQueriesImpl implements IPlanQueries {
             description: 1
         });
         return plans.map(plan => ({
+            ...plan,
             _id: plan._id.toString(),
-            planName: plan.planName,
-            price: plan.price,
-            features: plan.features,
-            description: plan.description,
         }));
     };
 

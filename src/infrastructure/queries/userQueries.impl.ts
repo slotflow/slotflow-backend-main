@@ -38,7 +38,10 @@ export class UserQueryImpl implements IUserQueries {
         ])
         const totalPages = Math.ceil(totalCount / limit);
         return {
-            data: users,
+            data: users.map(user => ({
+                ...user,
+                _id: user._id.toString(),
+            })),
             totalPages,
             currentPage: page,
             totalCount

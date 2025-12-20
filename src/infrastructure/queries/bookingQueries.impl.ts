@@ -12,7 +12,12 @@ import { ProviderFetchDashboardGraphRepository, ProviderFetchDashboardGraphDataR
 
 export class BookingQueriesImpl implements IBookingQueries {
 
-    async findAll({ page, limit, userId, serviceProviderId, online, raw, role }: FetchBookingsRequest): Promise<TableData<FetchBookingsResponse | FetchOnlineBookingsForProviderResponse | FetchOnlineBookingsForUserResponse>> {
+    async findAll({ page, limit, userId, serviceProviderId, online, raw, role }: FetchBookingsRequest): Promise<
+        TableData<FetchBookingsResponse> |
+        TableData<FetchOnlineBookingsForProviderResponse> |
+        TableData<FetchOnlineBookingsForUserResponse>
+    > {
+
         const skip = (page - 1) * limit;
 
         const filter: {
@@ -63,16 +68,49 @@ export class BookingQueriesImpl implements IBookingQueries {
         ]);
 
         const totalPages = Math.ceil(totalCount / limit);
-        return {
-            data: bookings,
-            totalPages,
-            currentPage: page,
-            totalCount
+
+        if (online && roleArray[1]) {
+            return {
+                data: (bookings as FetchOnlineBookingsForUserResponse).map(booking => ({
+                    ...booking,
+                    _id: booking._id.toString(),
+                    serviceProviderId: {
+                        username: booking.serviceProviderId.username,
+                    },
+                })),
+                totalPages,
+                currentPage: page,
+                totalCount
+            }
+        } else if (online && roleArray[2]) {
+            return {
+                data: (bookings as FetchOnlineBookingsForProviderResponse).map(booking => ({
+                    ...booking,
+                    _id: booking._id.toString(),
+                    userId: {
+                        username: booking.userId.username,
+                    },
+                })),
+                totalPages,
+                currentPage: page,
+                totalCount
+            }
+        } else {
+            return {
+                data: (bookings as FetchBookingsResponse).map(booking => ({
+                    ...booking,
+                    _id: booking._id.toString(),
+                    serviceProviderId: booking.serviceProviderId?.toString(),
+                })),
+                totalPages,
+                currentPage: page,
+                totalCount
+            }
         }
     }
 
     async findDetails(bookingId: string): Promise<FetchBookingDetailsResponse | null> {
-        const bookingDetails = await BookingModel.findById(new Types.ObjectId(bookingId), {
+        const booking = await BookingModel.findById(new Types.ObjectId(bookingId), {
             _id: 0,
             appointmentDate: 1,
             appointmentMode: 1,
@@ -93,7 +131,26 @@ export class BookingQueriesImpl implements IBookingQueries {
             })
             .lean<FetchBookingDetailsResponse>();
 
-        return bookingDetails ?? null;
+        if (!booking) return null;
+
+        return {
+            appointmentDate: booking.appointmentDate,
+            appointmentMode: booking.appointmentMode,
+            appointmentStatus: booking.appointmentStatus,
+            appointmentTime: booking.appointmentTime,
+            createdAt: booking.createdAt,
+            onlineTrack: booking.onlineTrack,
+            statusTrack: booking.statusTrack,
+            videoCallRoomId: booking.videoCallRoomId,
+            userId: {
+                username: booking.userId.username,
+                email: booking.userId.email,
+            },
+            serviceProviderId: {
+                username: booking.serviceProviderId.username,
+                email: booking.serviceProviderId.email,
+            },
+        };
     }
 
     async findGraphDataForProviderDashboard(payload: ProviderFetchDashboardGraphRepository): Promise<ProviderFetchDashboardGraphDataResponse | null> {
@@ -275,7 +332,16 @@ export class BookingQueriesImpl implements IBookingQueries {
             },
         ]);
 
-        return result[0];
+        const data = result[0];
+
+        return {
+            appointmentsOvertimeChartData: data.appointmentsOvertimeChartData ?? [],
+            appointmentModeChartData: data.appointmentModeChartData ?? [],
+            completionBreakdownChartData: data.completionBreakdownChartData ?? [],
+            newVsReturningUsersChartData: data.newVsReturningUsersChartData ?? [],
+            peakBookingHoursChartData: data.peakBookingHoursChartData ?? [],
+            topBookingDaysChartData: data.topBookingDaysChartData ?? [],
+        }
     }
 
     async findStatsDataForProviderDashboard(providerId: string): Promise<ProviderFetchDashboardBookingStatsDataResponse> {
@@ -314,8 +380,18 @@ export class BookingQueriesImpl implements IBookingQueries {
                         }
                     }
                 }
-            }
-
+            },
+            {
+                $project: {
+                    _id: 0,
+                    totalAppointments: 1,
+                    completedAppointments: 1,
+                    missedAppointments: 1,
+                    cancelledAppointmentsByUser: 1,
+                    rejectedAppointmentsByProvider: 1,
+                    todaysAppointments: 1,
+                },
+            },
         ]);
 
 
@@ -386,7 +462,10 @@ export class BookingQueriesImpl implements IBookingQueries {
                 }
             }
         ]);
-        return providers;
+        return providers.map(provider => ({
+            ...provider,
+            _id: provider._id.toString(),
+        }));
     }
 
     async findTodayStatsForAdminDashboard(): Promise<AdminFetchTodaysBookingStatsForDashboardResponse> {
@@ -482,6 +561,9 @@ export class BookingQueriesImpl implements IBookingQueries {
                 }
             }
         ]);
-        return users;
+        return users.map(user => ({
+            ...user,
+            _id: user._id.toString(),
+        }));
     }
 }

@@ -263,8 +263,32 @@ export interface FetchBookingsRequest extends ApiPaginationRequest, userIdAndSer
 }
 //// **** 7.2 Used as the response type for fetching bookings for admin, provider and user side
 export type FetchBookingsResponse = Array<Pick<BookingDTO, "_id" | "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "videoCallRoomId" | "serviceProviderId">>;
-export type FetchOnlineBookingsForProviderResponse = Array<Pick<BookingDTO, "_id" | "appointmentDate" | "appointmentStatus" | "appointmentTime" | "videoCallRoomId" | "createdAt"> & Pick<UserDTO, "username">>;
-export type FetchOnlineBookingsForUserResponse = Pick<BookingDTO, "_id" | "appointmentDate" | "appointmentStatus" | "appointmentTime" | "videoCallRoomId" | "createdAt"> & Pick<ProviderDTO, "username">;
+export type FetchOnlineBookingsForProviderResponse = Array<
+    Pick<
+        BookingDTO,
+        | "_id"
+        | "appointmentDate"
+        | "appointmentStatus"
+        | "appointmentTime"
+        | "videoCallRoomId"
+        | "createdAt"
+    > & {
+        userId: Pick<UserDTO, "username">;
+    }
+>;
+export type FetchOnlineBookingsForUserResponse = Array<
+    Pick<
+        BookingDTO,
+        | "_id"
+        | "appointmentDate"
+        | "appointmentStatus"
+        | "appointmentTime"
+        | "videoCallRoomId"
+        | "createdAt"
+    > & {
+        serviceProviderId: Pick<ProviderDTO, "username">;
+    }
+>;
 
 //// **** 8. Used as the response type for fetching AppServices for provider and user side
 export type FetchAllAppServiceRequest = Pick<Service, "serviceCategory">;

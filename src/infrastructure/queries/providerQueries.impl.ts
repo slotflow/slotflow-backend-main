@@ -1,11 +1,11 @@
 import { ProviderModel } from "../database/provider/provider.model";
-import { AdiminFetchAllProviders } from "../../application/dtos/admin.dto";
 import { IProviderQueries } from "../../application/queries/IProvider.queries";
 import { ApiPaginationRequest, TableData } from "../../application/dtos/common.dto";
+import { AdiminFetchAllProviders, AdminFetchDashboardProviderStatsDataResponse } from "../../application/dtos/admin.dto";
 
 export class ProviderQueryImpl implements IProviderQueries {
 
-  async fetchStats() {
+  async fetchStats(): Promise<AdminFetchDashboardProviderStatsDataResponse> {
     const [
       totalProviders,
       emailVerifiedProviders,
@@ -56,7 +56,10 @@ export class ProviderQueryImpl implements IProviderQueries {
     const totalPages = Math.ceil(totalCount / limit);
 
     return {
-      data: providers,
+      data: providers.map(provider => ({
+        ...provider,
+        _id: provider._id.toString(),
+      })),
       totalPages,
       currentPage: page,
       totalCount

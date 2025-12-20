@@ -124,7 +124,10 @@ export class PaymentQueriesImpl implements IPaymentQueries {
         ]);
         const totalPages = Math.ceil(totalCount / limit);
         return {
-            data: payments,
+            data: payments.map(payment => ({
+                ...payment,
+                _id: payment._id.toString(),
+            })),
             totalPages,
             currentPage: page,
             totalCount
