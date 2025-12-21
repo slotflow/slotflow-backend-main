@@ -1,11 +1,9 @@
 import { Types } from "mongoose";
 
 import { Review } from "../../domain/entities/review.entity";
-import { Subscription } from "../../domain/entities/subscription.entity";
 import { Availability } from "../../domain/entities/serviceAvailability.entity";
 
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
-import { findSubscriptionFullDetailsResProps } from "../../domain/interfaces/repositories/ISubscription.repository";
 import { GeoLocation } from "../../domain/contracts/address.contract";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { adminVerificationStatusArray, appointmentStatusArray, daysArray, paymentForArray, paymentGatewayArray, roleArray, serviceCategoryArray, serviceModeArray, serviceTypeArray, subscriptionStatusArray } from "../../shared/utils/constants";
@@ -14,6 +12,7 @@ import { PaymentFor } from "../../domain/enums/paymentFor.enum";
 import { ServiceType } from "../../domain/enums/serviceType.enum";
 import { ServiceMode } from "../../domain/enums/serviceMode.enum";
 import { ServiceCategory } from "../../domain/enums/serviceCategories.enum";
+import { SubscriptionStatus } from "../../domain/enums/subscriptionStatus.enum";
 
 export type RoleType = typeof roleArray[number];
 
@@ -208,12 +207,25 @@ export interface ProviderServiceDTO {
 
 // **** SERVICE INTERFACE
 export interface ServiceDTO {
-    _id: string,
-    serviceName: string,
-    serviceCategory: ServiceCategory,
-    isBlocked: boolean,
-    createdAt: Date,
-    updatedAt: Date,
+  _id: string,
+  serviceName: string,
+  serviceCategory: ServiceCategory,
+  isBlocked: boolean,
+  createdAt: Date,
+  updatedAt: Date,
+};
+
+// **** SUBSCRIPTION INTERFACE
+export interface SubscriptionDTO {
+  _id: string,
+  providerId: string,
+  subscriptionPlanId: string,
+  startDate: Date,
+  endDate: Date,
+  subscriptionStatus: SubscriptionStatus,
+  paymentId: string,
+  createdAt: Date,
+  updatedAt: Date,
 }
 
 // **** 1. Used as the request interface for the paginated request
@@ -253,10 +265,10 @@ export interface FetchProviderSubscriptionsRequest extends ApiPaginationRequest 
 }
 //// **** 4.2 Used as the response type for fetching subscriptions with planName and plan price of a specific provider for the provider side and admin side
 export type FindSubscriptionsByProviderIdResponse = Array<
-  Pick<Subscription, "_id" | "startDate" | "endDate" | "subscriptionStatus"> &
+  Pick<SubscriptionDTO, "_id" | "startDate" | "endDate" | "subscriptionStatus"> &
   Partial<Pick<PlanDTO, "planName">>> &
   Partial<Pick<PaymentDTO, "totalAmount">>;
-export type PopulatedSubscription = Omit<Subscription, 'subscriptionPlanId' | "paymentId"> & {
+export type PopulatedSubscription = Omit<SubscriptionDTO, 'subscriptionPlanId' | "paymentId"> & {
   subscriptionPlanId: {
     planName: string;
   },
@@ -340,7 +352,7 @@ export interface ValidateJoinRoomRequest {
 
 //// **** 11. fetch subscription details use case request payload interface 
 export interface FetchSubscriptionDetailsRequest {
-  subscriptionId: Subscription["_id"];
+  subscriptionId: SubscriptionDTO["_id"];
 }
 // admin fetch subscription details use case response interface 
 export interface FetchSubscriptionDetailsResponse extends CommonResponse {
@@ -511,4 +523,13 @@ export interface FindProvidersUsingServiceIdsResponse {
     serviceName: string;
     servicePrice: string;
   }
+}
+
+
+type SubscriptionProps = Pick<SubscriptionDTO, "startDate" | "endDate" | "subscriptionStatus" | "createdAt">;
+type PaymentsProps = Pick<PaymentDTO, "transactionId" | "discountAmount" | "initialAmount" | "paymentFor" | "paymentGateway" | "paymentMethod" | "paymentStatus" | "totalAmount">;
+type PlanProps = Pick<PlanDTO, "planName" | "price" | "adVisibility" | "maxBookingPerMonth">;
+export interface findSubscriptionFullDetailsResProps extends SubscriptionProps {
+  subscriptionPlanId: PlanProps,
+  paymentId: PaymentsProps,
 }

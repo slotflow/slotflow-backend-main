@@ -6,8 +6,12 @@ import { Subscription } from "../../../domain/entities/subscription.entity";
 import { AdminFetchAllSubscriptionsResponse, AdminFetchDashboardSubscriptionStatsDataResponse } from "../../../application/dtos/admin.dto";
 import { ApiPaginationRequest, ApiResponse, FetchProviderSubscriptionsRequest, FindSubscriptionsByProviderIdResponse, PopulatedSubscription } from "../../../application/dtos/common.dto";
 import { CreateSubscriptionPayloadProps, findSubscriptionFullDetailsResProps, ISubscriptionRepository, PlanNameOnly } from "../../../domain/interfaces/repositories/ISubscription.repository";
+import { SubscriptionMapper } from "../../mappers/subscription.mapper";
 
 export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
+
+    // old methods
+
     private mapToEntity(subscription: ISubscription): Subscription {
         return new Subscription(
             subscription._id,
@@ -228,4 +232,34 @@ export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
             throw new Error("Failed to find subscription stats");
         }
     }
+
+    // new methods
+
+    async create(subscription: Subscription): Promise<Subscription> {
+        const persistence = SubscriptionMapper.toPersistence(subscription);
+        const created = await SubscriptionModel.create(persistence);
+        return SubscriptionMapper.toDomain(created);
+    }
+
+    async update(subscription: Subscription): Promise<Subscription> {
+        const persistence = SubscriptionMapper.toPersistence(subscription);
+
+        const updated = await SubscriptionModel.findByIdAndUpdate(
+            new Types.ObjectId(subscription._id),
+            persistence,
+            { new: true }
+        );
+
+        if (!updated) {
+            throw new Error("Service not found");
+        };
+
+        return SubscriptionMapper.toDomain(updated);
+    }
+
+    async findById(subscriptionId: string): Promise<Subscription | null> {
+        const service = await SubscriptionModel.findById(subscriptionId);
+        return service ? SubscriptionMapper.toDomain(service) : null;
+    }
+
 }

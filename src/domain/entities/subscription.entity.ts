@@ -1,16 +1,42 @@
-import { Types } from "mongoose";
-import { SubscriptionStatusType } from "../../application/dtos/common.dto";
+import { SubscriptionProps } from "../contracts/subscription.contract";
+import { CreateSubscriptionProps, UpdateSubscriptionProps } from "../commands/subscription.commands";
 
 export class Subscription {
-    constructor(
-        public _id: Types.ObjectId,
-        public providerId: Types.ObjectId,
-        public subscriptionPlanId: Types.ObjectId,
-        public startDate: Date,
-        public endDate: Date,
-        public subscriptionStatus: SubscriptionStatusType,
-        public paymentId: Types.ObjectId | null,
-        public createdAt: Date,
-        public updatedAt: Date,
-    ) { }
+    private props: SubscriptionProps;
+
+    constructor(props: SubscriptionProps) {
+        this.props = props;
+    };
+
+    private touch() {
+        this.props.updatedAt = new Date();
+    };
+
+    static create(props: CreateSubscriptionProps) {
+        return new Subscription({
+            _id: "",
+            ...props,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        })
+    };
+
+    // Getters
+    get _id(): string {
+        return this.props._id;
+    };
+
+    // Business Methods
+
+    getProps(): Readonly<SubscriptionProps> {
+        return { ...this.props };
+    };
+
+    updateSubscription(props: UpdateSubscriptionProps) {
+        this.props = {
+            ...this.props,
+            ...props,
+        };
+        this.touch();
+    }
 }

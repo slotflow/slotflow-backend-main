@@ -23,6 +23,8 @@ export interface PlanNameOnly {
 
 export interface ISubscriptionRepository {
 
+    // old methods
+
     createSubscription(subscription: CreateSubscriptionPayloadProps, options?: { session: any }): Promise<Subscription>;
 
     findSubscriptionById(subscriptionId: Types.ObjectId): Promise<Subscription | null>;
@@ -38,5 +40,13 @@ export interface ISubscriptionRepository {
     findSubscribedPlan(subscriptionId: Types.ObjectId): Promise<Plan["planName"] | boolean>;
 
     findSubscriptionStatsForAdminDashboard(): Promise<AdminFetchDashboardSubscriptionStatsDataResponse>;
+
+    // new methods
+
+    create(subscription: Subscription): Promise<Subscription>;
+
+    update(subscription: Subscription): Promise<Subscription>;
+
+    findById(subscriptionId: string): Promise<Subscription | null>;
 
 }
