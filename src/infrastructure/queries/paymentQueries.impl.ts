@@ -239,8 +239,10 @@ export class PaymentQueriesImpl implements IPaymentQueries {
                     totalPayoutsToProviders: { $ifNull: [{ $arrayElemAt: ["$totalPayoutsToProviders.amount", 0] }, 0] },
                 }
             }
-        ])
-        return paymentData[0];
+        ]);
+
+        const data = paymentData[0];
+        return { ...data};
     }
 
     async findStatsForProviderDashboard(providerId: string): Promise<ProviderFetchDashboardPaymentStatsDataResponse> {
@@ -356,7 +358,9 @@ export class PaymentQueriesImpl implements IPaymentQueries {
                 }
             }
         ]);
-        return result[0];
+
+        const data = result[0];
+        return {...data};
     }
 
     async findTodayStatsForAdminDashboard(): Promise<AdminFetchDashboardTodayPaymentStatsDataResponse> {
@@ -422,7 +426,9 @@ export class PaymentQueriesImpl implements IPaymentQueries {
                     todaysTotalPayouts: { $ifNull: [{ $arrayElemAt: ["$todaysTotalPayouts.amount", 0] }, 0] },
                 }
             }
-        ])
-        return result[0];
+        ]);
+
+        const data = result[0];
+        return {...data};
     }
 }

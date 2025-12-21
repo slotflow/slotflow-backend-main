@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { IServiceRepository } from "../../domain/interfaces/repositories/IService.repository";
 import { UserFetchAllAppServiceUseCase } from "../../application/useCases/user/userAppService.useCase";
-import { ServiceRepositoryImpl } from "../../infrastructure/database/appservice/service.repository.impl";
+import { ServiceRepositoryImpl } from "../../infrastructure/database/service/service.repository.impl";
 
 const serviceRepository: IServiceRepository = new ServiceRepositoryImpl();
 

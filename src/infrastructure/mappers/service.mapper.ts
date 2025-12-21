@@ -1,0 +1,27 @@
+import { Service } from "../../domain/entities/service.entity";
+import { IService } from "../database/service/service.model";
+
+export class ServiceMapper {
+
+    static toDomain(doc: IService): Service {
+        return new Service({
+            _id: doc._id.toString(),
+            isBlocked: doc.isBlocked,
+            serviceCategory: doc.serviceCategory,
+            serviceName: doc.serviceCategory,
+            createdAt: doc.createdAt,
+            updatedAt: doc.updatedAt,
+        });
+    }
+
+    static toPersistence(entity: Service) {
+        const props = entity.getProps();
+
+        return {
+            isBlocked: props.isBlocked,
+            serviceCategory: props.serviceCategory,
+            serviceName: props.serviceCategory,
+            updatedAt: props.updatedAt,
+        };
+    }
+}

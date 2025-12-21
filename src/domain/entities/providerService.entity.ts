@@ -1,23 +1,49 @@
-import { Types } from 'mongoose';
-import { ServiceModeType, ServiceTypeType } from '../../application/dtos/common.dto';
+import { ProviderServiceProps } from '../contracts/providerService.contract';
+import { CreateProviderServiceProps, UpdateProviderServiceProps } from '../commands/providerService.commands';
 
 export class ProviderService {
-    constructor(
-        public _id: Types.ObjectId,
-        public providerId: Types.ObjectId,
-        public service: Types.ObjectId,
-        public serviceName: string,
-        public serviceDescription: string,
-        public servicePrice: number,
-        public serviceExperience: string,
-        public requirements: string,
-        public serviceType: ServiceTypeType,
-        public serviceMode: ServiceModeType,
-        public tags: string[],
-        public videoUrl: string,
-        public maxParticipants: number,
-        public isGroupService: boolean,
-        public createdAt: Date,
-        public updatedAt: Date,
-    ) { }
+    private props: ProviderServiceProps;
+
+    constructor(props: ProviderServiceProps) {
+        this.props = props;
+    };
+
+    private touch() {
+        this.props.updatedAt = new Date();
+    };
+
+    static create(props: CreateProviderServiceProps) {
+        return new ProviderService({
+            _id: "",
+            ...props,
+            requirements: props.requirements ?? null,
+            videoUrl: props.videoUrl ?? null,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        })
+    };
+
+    // Getters
+
+    get _id(): string {
+        return this.props._id
+    }
+
+    // Business Methods
+
+    getProps(): Readonly<ProviderServiceProps> {
+        return { ...this.props };
+    };
+
+    updateProviderService(props: UpdateProviderServiceProps) {
+        if (props.servicePrice <= 0) {
+            throw new Error("Service price must be greater than zero");
+        }
+
+        this.props = {
+            ...this.props,
+            ...props
+        };
+        this.touch();
+    };
 }

@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
-import { ServiceModeType, ServiceTypeType } from "../../../application/dtos/common.dto";
-import { serviceModeArray, serviceTypeArray } from "../../../shared/utils/constants";
+import { ServiceType } from "../../../domain/enums/serviceType.enum";
+import { ServiceMode } from "../../../domain/enums/serviceMode.enum";
 import { serviceNameRegex, serviceExperienceRegex, serviceDescriptionRegex } from "../../../shared/zod/regex";
 
 export interface IProviderService extends Document {
@@ -11,13 +11,13 @@ export interface IProviderService extends Document {
   serviceDescription: string;
   servicePrice: number;
   serviceExperience: string;
-  requirements: string;
-  serviceType: ServiceTypeType;
-  serviceMode: ServiceModeType;
-  tags: string[];
-  videoUrl: string;
+  serviceType: ServiceType;
+  serviceMode: ServiceMode;
+  tags: string[] | [];
   maxParticipants: number;
   isGroupService: boolean;
+  requirements: string | null;
+  videoUrl: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -73,31 +73,21 @@ const ProviderServiceSchema = new Schema<IProviderService>(
       match: [serviceExperienceRegex, "Invalid experience format"],
     },
 
-    requirements: {
-      type: String,
-      maxlength: [500, "Requirements cannot exceed 500 characters"],
-    },
-
     serviceType: {
       type: String,
-      enum: [serviceTypeArray[0], serviceTypeArray[1]],
+      enum: Object.values(ServiceType),
       required: [true, "Service type is required"],
     },
 
     serviceMode: {
       type: String,
-      enum: [serviceModeArray[0], serviceModeArray[1], serviceModeArray[2]],
+      enum: Object.values(ServiceMode),
       required: [true, "Service mode is required"],
     },
 
     tags: {
       type: [String],
       default: [],
-    },
-
-    videoUrl: {
-      type: String,
-      match: [/^https?:\/\/.+/, "Invalid video URL format"],
     },
 
     maxParticipants: {
@@ -109,6 +99,18 @@ const ProviderServiceSchema = new Schema<IProviderService>(
     isGroupService: {
       type: Boolean,
       default: false,
+    },
+
+    requirements: {
+      type: String,
+      maxlength: [500, "Requirements cannot exceed 500 characters"],
+      default: null
+    },
+
+    videoUrl: {
+      type: String,
+      match: [/^https?:\/\/.+/, "Invalid video URL format"],
+      default: null,
     },
   },
   {

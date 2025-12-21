@@ -1,11 +1,10 @@
-import { ServiceCategoryType } from "../../../application/dtos/common.dto";
 import mongoose, { Document, Schema, Types } from "mongoose";
-import { serviceCategoryArray } from "../../../shared/utils/constants";
+import { ServiceCategory } from "../../../domain/enums/serviceCategories.enum";
 
 export interface IService extends Document {
     _id: Types.ObjectId;
     serviceName: string;
-    serviceCategory: ServiceCategoryType;
+    serviceCategory: ServiceCategory;
     isBlocked: boolean;
     createdAt: Date;
     updatedAt: Date;
@@ -22,7 +21,7 @@ const serviceSchema = new Schema<IService>({
     },
     serviceCategory: {
         type: String,
-        enum: Object.values(serviceCategoryArray),
+        enum: Object.values(ServiceCategory),
         required: true,
     },
     isBlocked: {

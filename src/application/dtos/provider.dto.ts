@@ -1,9 +1,7 @@
 import Stripe from "stripe";
 import { Review } from "../../domain/entities/review.entity";
-import { Service } from "../../domain/entities/service.entity";
-import { ProviderService } from "../../domain/entities/providerService.entity";
-import { AddressDTO, BookingDTO, ProviderDTO, UserDTO, PlanDTO, SubscriptionPlan } from "./common.dto";
 import { FontendAvailabilityForResponse, FrontendAvailabilityForRequest } from "../../domain/entities/serviceAvailability.entity";
+import { AddressDTO, BookingDTO, ProviderDTO, UserDTO, PlanDTO, SubscriptionPlan, ProviderServiceDTO, ServiceDTO } from "./common.dto";
 
 
 // ************ used in providerAddress.use-case ************ \\
@@ -25,18 +23,18 @@ export interface ProviderFetchProviderServiceRequest {
     providerId: ProviderDTO["_id"];
 }
 // provider fetch service details use case respomse interface
-type FindProviderServiceProps = Pick<ProviderService, "_id" | "serviceName" | "serviceDescription" | "servicePrice" | "isGroupService" | "maxParticipants" | "requirements" | "serviceExperience" | "serviceMode" | "serviceType" | "tags" | "videoUrl" | "updatedAt" | "createdAt">;
+type FindProviderServiceProps = Pick<ProviderServiceDTO, "_id" | "serviceName" | "serviceDescription" | "servicePrice" | "isGroupService" | "maxParticipants" | "requirements" | "serviceExperience" | "serviceMode" | "serviceType" | "tags" | "videoUrl" | "updatedAt" | "createdAt">;
 export interface ProviderFindProviderServiceResProps extends FindProviderServiceProps {
-    service: Pick<Service, "serviceName">;
+    serviceId: Pick<ServiceDTO, "serviceName">;
 }
 export type ProviderFetchProviderServiceResponse = ProviderFindProviderServiceResProps | {};
 
 
 // provider update service details use case request type
-export type ProviderUpdateProviderServiceRequest = Pick<ProviderService, "providerId" | "service" | "serviceName" | "serviceDescription" | "servicePrice" | "isGroupService" | "maxParticipants" | "serviceExperience" | "serviceMode" | "serviceType" | "tags"> & Partial<Pick<ProviderService, "videoUrl" | "requirements">> & {
-    serviceId: ProviderService["_id"];
+export type ProviderUpdateProviderServiceRequest = Pick<ProviderServiceDTO, "providerId" | "service" | "serviceName" | "serviceDescription" | "servicePrice" | "isGroupService" | "maxParticipants" | "serviceExperience" | "serviceMode" | "serviceType" | "tags"> & Partial<Pick<ProviderServiceDTO, "videoUrl" | "requirements">> & {
+    providerServiceId: ProviderServiceDTO["_id"];
 }
-export type ProviderUpdateProviderServiceResponse = ProviderFindProviderServiceResProps | {};
+export type ProviderUpdateProviderServiceResponse = ProviderFindProviderServiceResProps;
 
 
 

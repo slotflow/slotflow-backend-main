@@ -1,13 +1,53 @@
-import { Types } from "mongoose";
-import { ServiceCategoryType } from "../../application/dtos/common.dto";
+import { ServiceProps } from "../contracts/service.contract";
+import { CreateServiceProps, UpdateServiceProps } from "../commands/service.commands";
 
 export class Service {
-    constructor(
-        public _id: Types.ObjectId,
-        public serviceName: string,
-        public serviceCategory: ServiceCategoryType,
-        public isBlocked: boolean,
-        public createdAt: Date,
-        public updatedAt: Date,
-    ){}
+    private props: ServiceProps;
+
+    constructor(props: ServiceProps) {
+        this.props = props;
+    };
+
+    private touch() {
+        this.props.updatedAt = new Date();
+    }
+
+    static create(props: CreateServiceProps) {
+        return new Service({
+            _id: "",
+            ...props,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        })
+    }
+
+    // Getters
+
+    get _id(): string {
+        return this.props._id;
+    }
+
+    // Business Methods
+
+    getProps(): Readonly<ServiceProps> {
+        return { ...this.props };
+    };
+
+    block() {
+        this.props.isBlocked = true;
+        this.touch();
+    };
+
+    unblock() {
+        this.props.isBlocked = false;
+        this.touch();
+    }
+
+    updateService(props: UpdateServiceProps) {
+        this.props = {
+            ...this.props,
+            ...props,
+        }
+        this.touch();
+    };
 }
