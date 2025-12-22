@@ -4,7 +4,7 @@ export interface IServiceAvailabilityRepository {
 
     create(serviceAvailability: ServiceAvailability): Promise<ServiceAvailability>;
 
-    update(serviceAvailability: ServiceAvailability, options?: { session?: any }): Promise<ServiceAvailability>;
+    update(serviceAvailability: ServiceAvailability): Promise<ServiceAvailability>;
 
     findById(serviceAvailabilityId: string): Promise<ServiceAvailability | null>;
 

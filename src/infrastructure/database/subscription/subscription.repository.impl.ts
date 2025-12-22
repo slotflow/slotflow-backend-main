@@ -5,35 +5,31 @@ import { ISubscriptionRepository } from "../../../domain/interfaces/repositories
 
 export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
 
-    async create(subscription: Subscription, options?: { session: any }): Promise<Subscription> {
+    async create(subscription: Subscription): Promise<Subscription> {
         const persistence = SubscriptionMapper.toPersistence(subscription);
-        const created = await SubscriptionModel.create(
-            [persistence],
-            options?.session ? { session: options.session } : undefined
-        );
-
-        return SubscriptionMapper.toDomain(created[0]);
+        const doc = await SubscriptionModel.create(persistence);
+        return SubscriptionMapper.toDomain(doc);
     };
 
     async update(subscription: Subscription): Promise<Subscription> {
         const persistence = SubscriptionMapper.toPersistence(subscription);
 
-        const updated = await SubscriptionModel.findByIdAndUpdate(
+        const doc = await SubscriptionModel.findByIdAndUpdate(
             subscription._id,
             persistence,
             { new: true }
         );
 
-        if (!updated) {
+        if (!doc) {
             throw new Error("Service not found");
         };
 
-        return SubscriptionMapper.toDomain(updated);
+        return SubscriptionMapper.toDomain(doc);
     };
 
     async findById(subscriptionId: string): Promise<Subscription | null> {
-        const service = await SubscriptionModel.findById(subscriptionId);
-        return service ? SubscriptionMapper.toDomain(service) : null;
+        const doc = await SubscriptionModel.findById(subscriptionId);
+        return doc ? SubscriptionMapper.toDomain(doc) : null;
     };
 
 };

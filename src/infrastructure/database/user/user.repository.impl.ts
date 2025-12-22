@@ -7,20 +7,20 @@ export class UserRepositoryImpl implements IUserRepository {
 
     async create(user: User): Promise<User> {
         const persistence = UserMapper.toPersistence(user);
-        const created = await UserModel.create(persistence);
-        return UserMapper.toDomain(created);
+        const doc = await UserModel.create(persistence);
+        return UserMapper.toDomain(doc);
     };
 
     async update(user: User): Promise<User | null> {
         const persistence = UserMapper.toPersistence(user);
 
-        const updated = await UserModel.findByIdAndUpdate(
+        const doc = await UserModel.findByIdAndUpdate(
             user._id,
             persistence,
             { new: true }
         );
 
-        return updated ? UserMapper.toDomain(updated) : null;
+        return doc ? UserMapper.toDomain(doc) : null;
     };
 
     async findById(userId: string): Promise<User | null> {

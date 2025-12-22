@@ -6,13 +6,10 @@ import { IBookingRepository } from "../../../domain/interfaces/repositories/IBoo
 
 export class BookingRepositoryImpl implements IBookingRepository {
 
-    async create(booking: Booking, options?: { session: any; }): Promise<Booking> {
+    async create(booking: Booking): Promise<Booking> {
         const persistence = BookingMapper.toPersistence(booking);
-        const created = await BookingModel.create(
-            [persistence],
-            options?.session ? { session: options.session } : undefined
-        );
-        return BookingMapper.toDomain(created[0]);
+        const doc = await BookingModel.create(persistence);
+        return BookingMapper.toDomain(doc);
     };
 
     async findById(bookingId: string): Promise<Booking | null> {
@@ -39,23 +36,20 @@ export class BookingRepositoryImpl implements IBookingRepository {
         return doc ? BookingMapper.toDomain(doc) : null;
     };
 
-    async update(booking: Booking, options?: { session: any; }): Promise<Booking> {
+    async update(booking: Booking): Promise<Booking> {
         const persistence = BookingMapper.toPersistence(booking);
 
-        const updated = await BookingModel.findByIdAndUpdate(
+        const doc = await BookingModel.findByIdAndUpdate(
             booking._id,
             { $set: persistence },
-            {
-                new: true,
-                session: options?.session,
-            }
+            { new: true }
         );
 
-        if (!updated) {
+        if (!doc) {
             throw new Error("Booking not found");
         }
 
-        return BookingMapper.toDomain(updated);
+        return BookingMapper.toDomain(doc);
     };
 
 };

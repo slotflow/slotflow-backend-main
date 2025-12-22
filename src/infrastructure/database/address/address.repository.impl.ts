@@ -6,10 +6,10 @@ import { IAddressRepository } from "../../../domain/interfaces/repositories/IAdd
 export class AddressRepositoryImpl implements IAddressRepository {
 
     async create(address: Address): Promise<Address> {
-        const created = await AddressModel.create(
+        const doc = await AddressModel.create(
             AddressMapper.toPersistence(address)
         );
-        return AddressMapper.toDomain(created);
+        return AddressMapper.toDomain(doc);
     };
 
     async findByUserId(userId: string): Promise<Address | null> {
@@ -23,13 +23,11 @@ export class AddressRepositoryImpl implements IAddressRepository {
     };
 
     async update(address: Address): Promise<Address> {
-        if (!address._id) {
-            throw new Error("Cannot update address without id");
-        }
+        const persistence = AddressMapper.toPersistence(address);
 
         const doc = await AddressModel.findByIdAndUpdate(
             address._id,
-            AddressMapper.toPersistence(address),
+            { $set: persistence },
             { new: true }
         );
 

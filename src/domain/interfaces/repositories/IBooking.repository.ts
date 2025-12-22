@@ -2,7 +2,7 @@ import { Booking } from "../../entities/booking.entity";
 
 export interface IBookingRepository {
     
-    create(booking: Booking, options? : { session : any }) : Promise<Booking>;
+    create(booking: Booking) : Promise<Booking>;
 
     findByUserId(userId: string, day: string, date: Date, time: string): Promise<Array<Booking> | null>;
 
@@ -10,6 +10,6 @@ export interface IBookingRepository {
 
     findByroomId(roomId: string): Promise<Booking | null>;
 
-    update(booking: Booking, options? : { session : any }) : Promise<Booking>;
+    update(booking: Booking) : Promise<Booking>;
     
 }

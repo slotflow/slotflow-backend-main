@@ -7,24 +7,24 @@ export class ProviderServiceRepositoryImpl implements IProviderServiceRepository
 
     async create(providerService: ProviderService): Promise<ProviderService> {
         const persistence = ProviderServiceMapper.toPersistence(providerService);
-        const created = await ProviderServiceModel.create(persistence);
-        return ProviderServiceMapper.toDomain(created);
+        const doc = await ProviderServiceModel.create(persistence);
+        return ProviderServiceMapper.toDomain(doc);
     };
 
     async update(providerService: ProviderService): Promise<ProviderService> {
         const persistence = ProviderServiceMapper.toPersistence(providerService);
 
-        const updated = await ProviderServiceModel.findByIdAndUpdate(
+        const doc = await ProviderServiceModel.findByIdAndUpdate(
             providerService._id,
-            persistence,
+            { $set: persistence},
             { new: true }
         );
 
-        if (!updated) {
+        if (!doc) {
             throw new Error("Provider Service not found");
         };
 
-        return ProviderServiceMapper.toDomain(updated);
+        return ProviderServiceMapper.toDomain(doc);
     };
 
     async findById(providerServiceId: string): Promise<ProviderService | null> {

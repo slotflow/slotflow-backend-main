@@ -7,8 +7,8 @@ export class ServiceRepositoryImpl implements IServiceRepository {
 
     async create(service: Service): Promise<Service> {
         const persistence = ServiceMapper.toPersistence(service);
-        const created = await ServiceModel.create(persistence);
-        return ServiceMapper.toDomain(created);
+        const doc = await ServiceModel.create(persistence);
+        return ServiceMapper.toDomain(doc);
     };
 
     async findAll(page: number, limit: number): Promise<{ data: Array<Service>; totalPages: number; currentPage: number; totalCount: number; }> {
@@ -32,50 +32,50 @@ export class ServiceRepositoryImpl implements IServiceRepository {
     }
 
     async findAllByCategory(categoryName: string): Promise<Array<Service> | null> {
-        const services = await ServiceModel.find({
+        const docs = await ServiceModel.find({
             serviceCategory: categoryName
         },
             {
                 _id: 1,
                 serviceName: 1,
             });
-        return services ? services.map(service => ServiceMapper.toDomain(service)) : null;
+        return docs ? docs.map(doc => ServiceMapper.toDomain(doc)) : null;
     };
 
     async findById(serviceId: string): Promise<Service | null> {
-        const service = await ServiceModel.findById(serviceId);
-        return service ? ServiceMapper.toDomain(service) : null;
+        const doc = await ServiceModel.findById(serviceId);
+        return doc ? ServiceMapper.toDomain(doc) : null;
     };
 
     async findByName(serviceName: string): Promise<Service | null> {
-        const service = await ServiceModel.findOne({
+        const doc = await ServiceModel.findOne({
             serviceName
         });
-        return service ? ServiceMapper.toDomain(service) : null;
+        return doc ? ServiceMapper.toDomain(doc) : null;
     };
 
     async update(service: Service): Promise<Service> {
         const persistence = ServiceMapper.toPersistence(service);
 
-        const updated = await ServiceModel.findByIdAndUpdate(
+        const doc = await ServiceModel.findByIdAndUpdate(
             service._id,
-            persistence,
+            { $set: persistence },
             { new: true }
         );
 
-        if (!updated) {
+        if (!doc) {
             throw new Error("Service not found");
         };
 
-        return ServiceMapper.toDomain(updated);
+        return ServiceMapper.toDomain(doc);
     };
 
     async findAllServiceNames(): Promise<Array<Service>> {
-        const services = await ServiceModel.find({}, {
+        const docs = await ServiceModel.find({}, {
             _id: 1,
             serviceName: 1,
         });
-        return services.map(service => ServiceMapper.toDomain(service));
+        return docs.map(doc => ServiceMapper.toDomain(doc));
     };
 
 };

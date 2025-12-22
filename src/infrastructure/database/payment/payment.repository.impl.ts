@@ -5,14 +5,10 @@ import { IPaymentRepository } from "../../../domain/interfaces/repositories/IPay
 
 export class PaymentRepositoryImpl implements IPaymentRepository {
 
-    async create(payment: Payment, options?: { session: any; }): Promise<Payment> {
+    async create(payment: Payment): Promise<Payment> {
         const persistence = PaymentMapper.toPersistence(payment);
-        const created = await PaymentModel.create(
-            [persistence],
-            options?.session ? { session: options.session } : undefined
-        );
-
-        return PaymentMapper.toDomain(created[0]);
+        const doc = await PaymentModel.create(persistence);
+        return PaymentMapper.toDomain(doc);
     };
 
     async findById(payemtnId: string): Promise<Payment | null> {
@@ -20,23 +16,20 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
         return doc ? PaymentMapper.toDomain(doc) : null;
     };
 
-    async update(payment: Payment, options?: { session: any; }): Promise<Payment> {
+    async update(payment: Payment): Promise<Payment> {
         const persistence = PaymentMapper.toPersistence(payment);
 
-        const updated = await PaymentModel.findByIdAndUpdate(
+        const doc = await PaymentModel.findByIdAndUpdate(
             payment._id,
             { $set: persistence },
-            {
-                new: true,
-                session: options?.session,
-            }
+            {new: true}
         );
 
-        if (!updated) {
+        if (!doc) {
             throw new Error("Payment not found");
         }
 
-        return PaymentMapper.toDomain(updated);
+        return PaymentMapper.toDomain(doc);
     };
 
 };

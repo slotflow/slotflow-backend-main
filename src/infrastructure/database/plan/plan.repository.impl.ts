@@ -7,8 +7,8 @@ export class PlanRepositoryImpl implements IPlanRepository {
 
     async create(plan: Plan): Promise<Plan> {
         const persistence = PlanMapper.toPersistence(plan);
-        const created = await PlanModel.create(persistence);
-        return PlanMapper.toDomain(created);
+        const doc = await PlanModel.create(persistence);
+        return PlanMapper.toDomain(doc);
     };
 
     async findById(planId: string): Promise<Plan | null> {
@@ -29,17 +29,17 @@ export class PlanRepositoryImpl implements IPlanRepository {
     async update(plan: Plan): Promise<Plan> {
         const persistence = PlanMapper.toPersistence(plan);
 
-        const updated = await PlanModel.findByIdAndUpdate(
+        const doc = await PlanModel.findByIdAndUpdate(
             plan._id,
-            persistence,
+            { $set: persistence },
             { new: true }
         );
 
-        if (!updated) {
+        if (!doc) {
             throw new Error("Plan not found");
         }
 
-        return PlanMapper.toDomain(updated);
+        return PlanMapper.toDomain(doc);
     };
 
 };

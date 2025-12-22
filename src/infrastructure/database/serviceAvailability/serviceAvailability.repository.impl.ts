@@ -21,23 +21,20 @@ export class ServiceAvailabilityRepositoryImpl implements IServiceAvailabilityRe
         return doc ? ServiceAvailabilityMapper.toDomain(doc) : null;
     };
 
-    async update(serviceAvailability: ServiceAvailability, options?: { session?: any }): Promise<ServiceAvailability> {
+    async update(serviceAvailability: ServiceAvailability): Promise<ServiceAvailability> {
         const persistence = ServiceAvailabilityMapper.toPersistence(serviceAvailability);
 
-        const updated = await ServiceAvailabilityModel.findByIdAndUpdate(
+        const doc = await ServiceAvailabilityModel.findByIdAndUpdate(
             serviceAvailability._id,
             { $set: persistence },
-            {
-                new: true,
-                session: options?.session,
-            }
+            {new: true}
         );
 
-        if (!updated) {
+        if (!doc) {
             throw new Error("Service availabiltiy not found");
         };
 
-        return ServiceAvailabilityMapper.toDomain(updated);
+        return ServiceAvailabilityMapper.toDomain(doc);
     };
 
 };

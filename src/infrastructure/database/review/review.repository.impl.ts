@@ -7,8 +7,8 @@ export class ReviewRepositoryImpl implements IReviewRepository {
 
     async create(review: Review): Promise<Review> {
         const persistence = ReviewMapper.toPersistence(review);
-        const created = await ReviewModel.create(persistence);
-        return ReviewMapper.toDomain(created);
+        const doc = await ReviewModel.create(persistence);
+        return ReviewMapper.toDomain(doc);
     };
 
     async deleteById(reviewId: string): Promise<boolean> {
@@ -24,17 +24,17 @@ export class ReviewRepositoryImpl implements IReviewRepository {
     async update(review: Review): Promise<Review> {
         const persistence = ReviewMapper.toPersistence(review);
 
-        const updated = await ReviewModel.findByIdAndUpdate(
+        const doc = await ReviewModel.findByIdAndUpdate(
             review._id,
-            persistence,
+            { $set: persistence },
             { new: true }
         );
 
-        if (!updated) {
+        if (!doc) {
             throw new Error("Review not found");
         };
 
-        return ReviewMapper.toDomain(updated);
+        return ReviewMapper.toDomain(doc);
     };
 
 };
