@@ -12,7 +12,7 @@ export interface ISubscription extends Document {
     paymentId: Types.ObjectId,
     createdAt: Date,
     updatedAt: Date,
-}
+};
 
 const SubscriptionSchema = new Schema<ISubscription>({
     providerId: {
@@ -42,8 +42,6 @@ const SubscriptionSchema = new Schema<ISubscription>({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Payment"
     },
-}, {
-    timestamps: true
 });
 
 export const SubscriptionModel = mongoose.model<ISubscription>('Subscription', SubscriptionSchema);

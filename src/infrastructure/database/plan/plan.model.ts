@@ -11,7 +11,7 @@ export interface IPlan extends Document {
     isBlocked: boolean;
     createdAt: Date;
     updatedAt: Date;
-}
+};
 
 const PlanSchema = new Schema<IPlan>({
     planName: {
@@ -59,8 +59,6 @@ const PlanSchema = new Schema<IPlan>({
         type: Boolean, 
         default: false 
     },      
-},{
-    timestamps: true
 });
 
 export const PlanModel = mongoose.model<IPlan>('Plan',PlanSchema)

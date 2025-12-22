@@ -11,7 +11,7 @@ export interface IReview extends Document {
     isBlocked: boolean;
     createdAt: Date;
     updatedAt: Date;
-}
+};
 
 const ReviewSchema: Schema<IReview> = new Schema<IReview>(
     {
@@ -63,10 +63,6 @@ const ReviewSchema: Schema<IReview> = new Schema<IReview>(
             type: Boolean,
             default: false,
         },
-    },
-    {
-        timestamps: true,
-    }
-);
+    });
 
 export const ReviewModel: Model<IReview> = mongoose.model<IReview>("Review", ReviewSchema);

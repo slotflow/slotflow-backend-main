@@ -1,17 +1,15 @@
 import { Types } from "mongoose";
-
-import { Availability } from "../../domain/entities/serviceAvailability.entity";
-
-import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
-import { GeoLocation } from "../../domain/contracts/address.contract";
-import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
-import { adminVerificationStatusArray, appointmentStatusArray, daysArray, paymentForArray, paymentGatewayArray, roleArray, serviceCategoryArray, serviceModeArray, serviceTypeArray, subscriptionStatusArray } from "../../shared/utils/constants";
-import { PaymentGateway } from "../../domain/enums/paymentGateway.enum";
+import { Day } from "../../domain/enums/day.enum";
 import { PaymentFor } from "../../domain/enums/paymentFor.enum";
 import { ServiceType } from "../../domain/enums/serviceType.enum";
 import { ServiceMode } from "../../domain/enums/serviceMode.enum";
+import { GeoLocation } from "../../domain/contracts/address.contract";
+import { PaymentGateway } from "../../domain/enums/paymentGateway.enum";
 import { ServiceCategory } from "../../domain/enums/serviceCategories.enum";
+import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { SubscriptionStatus } from "../../domain/enums/subscriptionStatus.enum";
+import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
+import { adminVerificationStatusArray, appointmentStatusArray, daysArray, paymentForArray, paymentGatewayArray, roleArray, serviceCategoryArray, serviceModeArray, serviceTypeArray, subscriptionStatusArray } from "../../shared/utils/constants";
 
 export type RoleType = typeof roleArray[number];
 
@@ -32,6 +30,8 @@ export type SubscriptionStatusType = typeof subscriptionStatusArray[number];
 export type ServiceCategoryType = typeof serviceCategoryArray[number];
 
 export type AdminVerificationStatusType = typeof adminVerificationStatusArray[number];
+
+// **** ENTITY INTERFACES FOR APPLICATION LAYER **** \\
 
 // **** ADDRESS INTERFACE
 export interface AddressDTO {
@@ -240,6 +240,37 @@ export interface ReviewDTO {
   createdAt: Date,
   updatedAt: Date,
 }
+
+// **** SERVICEAVAILABILITY INTERFACE AND ITS SUPPORTS
+export interface TimeSlot {
+    time: string,
+};
+
+export interface TimeSlotForFrontendResponse {
+    _id: string,
+    time: string,
+    available: boolean,
+};
+
+export interface Availability {
+    day: Day,
+    duration: number,
+    startTime: string,
+    endTime: string,
+    modes: ServiceMode[],
+    slots: TimeSlot[],
+};
+
+export interface ServiceAvailabilityDTO {
+    _id: string,
+    providerId: string,
+    availabilities: Availability[],
+    createdAt: Date,
+    updatedAt: Date,
+};
+
+
+
 
 // **** 1. Used as the request interface for the paginated request
 export interface ApiPaginationRequest {
@@ -551,4 +582,17 @@ export interface PlanNameOnly {
   subscriptionPlanId: {
     planName: string
   }
+}
+
+
+export interface FontendAvailabilityForResponse extends Omit<Availability, "slots"> {
+    slots: TimeSlotForFrontendResponse[]
+}
+
+export interface FrontendAvailabilityForRequest extends Omit<Availability, "slots"> {
+    slots: string[];
+}
+
+export interface FrontendAvailabilityUpdatedSlots extends Omit<Availability, "slots"> {
+    slots: TimeSlot[];
 }

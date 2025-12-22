@@ -8,7 +8,7 @@ export interface IService extends Document {
     isBlocked: boolean;
     createdAt: Date;
     updatedAt: Date;
-}
+};
 
 const serviceSchema = new Schema<IService>({
     serviceName: {
@@ -28,8 +28,6 @@ const serviceSchema = new Schema<IService>({
         type: Boolean,
         default: false
     }
-}, {
-    timestamps: true
 });
 
 export const ServiceModel = mongoose.model<IService>('Service', serviceSchema);

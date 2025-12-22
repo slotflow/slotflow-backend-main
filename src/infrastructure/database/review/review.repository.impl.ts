@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import { ReviewModel } from "./review.model";
 import { ReviewMapper } from "../../mappers/review.mapper";
 import { Review } from "../../../domain/entities/review.entity";
@@ -13,12 +12,12 @@ export class ReviewRepositoryImpl implements IReviewRepository {
     };
 
     async deleteById(reviewId: string): Promise<boolean> {
-        const doc = await ReviewModel.findByIdAndDelete(new Types.ObjectId(reviewId));
+        const doc = await ReviewModel.findByIdAndDelete(reviewId);
         return !!doc;
     };
 
     async findById(reviewId: string): Promise<Review | null> {
-        const doc = await ReviewModel.findById(new Types.ObjectId(reviewId));
+        const doc = await ReviewModel.findById(reviewId);
         return doc ? ReviewMapper.toDomain(doc) : null;
     };
 
@@ -26,7 +25,7 @@ export class ReviewRepositoryImpl implements IReviewRepository {
         const persistence = ReviewMapper.toPersistence(review);
 
         const updated = await ReviewModel.findByIdAndUpdate(
-            new Types.ObjectId(review._id),
+            review._id,
             persistence,
             { new: true }
         );
@@ -37,4 +36,5 @@ export class ReviewRepositoryImpl implements IReviewRepository {
 
         return ReviewMapper.toDomain(updated);
     };
-}
+
+};

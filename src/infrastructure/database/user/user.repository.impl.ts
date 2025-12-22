@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import { UserModel } from "./user.model";
 import { UserMapper } from "../../mappers/user.mapper";
 import { User } from "../../../domain/entities/user.entity";
@@ -10,39 +9,39 @@ export class UserRepositoryImpl implements IUserRepository {
         const persistence = UserMapper.toPersistence(user);
         const created = await UserModel.create(persistence);
         return UserMapper.toDomain(created);
-    }
+    };
 
     async update(user: User): Promise<User | null> {
         const persistence = UserMapper.toPersistence(user);
 
         const updated = await UserModel.findByIdAndUpdate(
-            new Types.ObjectId(user._id),
+            user._id,
             persistence,
             { new: true }
         );
 
         return updated ? UserMapper.toDomain(updated) : null;
-    }
+    };
 
     async findById(userId: string): Promise<User | null> {
-        const doc = await UserModel.findById(new Types.ObjectId(userId));
+        const doc = await UserModel.findById(userId);
         return doc ? UserMapper.toDomain(doc) : null;
-    }
+    };
 
     async findByEmail(email: string): Promise<User | null> {
         const doc = await UserModel.findOne({ email });
         return doc ? UserMapper.toDomain(doc) : null;
-    }
+    };
 
     async findByGoogleId(googleId: string): Promise<User | null> {
         const doc = await UserModel.findOne({ googleId });
         return doc ? UserMapper.toDomain(doc) : null;
-    }
+    };
 
     async findByVerificationToken(token: string): Promise<User | null> {
         const doc = await UserModel.findOne({ verificationToken: token });
         return doc ? UserMapper.toDomain(doc) : null;
-    }
+    };
 
     async count(today?: boolean): Promise<number> {
         if (!today) {
@@ -58,5 +57,6 @@ export class UserRepositoryImpl implements IUserRepository {
         return UserModel.countDocuments({
             createdAt: { $gte: start, $lte: end },
         });
-    }
-}
+    };
+
+};

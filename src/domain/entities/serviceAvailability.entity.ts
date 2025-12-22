@@ -1,45 +1,44 @@
-import { Types } from "mongoose";
-import { DayType, ServiceModeType } from "../../application/dtos/common.dto";
-
-export interface TimeSlot {
-    time: string,
-}
-
-export interface TimeSlotForFrontendResponse {
-    time: string,
-    available: boolean,
-    _id: Types.ObjectId,
-}
-
-export interface Availability {
-    day: DayType,
-    duration: number,
-    startTime: string,
-    endTime: string,
-    modes: ServiceModeType[],
-    slots: TimeSlot[],
-}
-
-// Frontend availability interface for sending response
-export interface FontendAvailabilityForResponse extends Omit<Availability, "slots"> {
-    slots : TimeSlotForFrontendResponse[]
-}
-
-// Frontend availability interface for adding to db
-export interface FrontendAvailabilityForRequest extends Omit<Availability, "slots"> {
-    slots : string[]
-}
-
-export interface FrontendAvailabilityUpdatedSlots extends Omit<Availability, "slots"> {
-    slots : TimeSlot[]
-}
+import { ServiceAvailabilityProps } from "../contracts/serviceAvailability.contract";
+import { CreateServiceAvailabilityProps, UpdateServiceAvailabilityProps } from "../commands/serviceAvailability.commands";
 
 export class ServiceAvailability {
-    constructor(
-        public _id: Types.ObjectId,
-        public providerId: Types.ObjectId,
-        public availabilities: Availability[],
-        public createdAt: Date,
-        public updatedAt: Date,
-    ){}
+    private props: ServiceAvailabilityProps;
+
+    constructor(props: ServiceAvailabilityProps) {
+        this.props = props;
+    };
+
+    private touch() {
+        this.props.updatedAt = new Date();
+    };
+
+    static create(props: CreateServiceAvailabilityProps) {
+        return new ServiceAvailability({
+            _id: "",
+            ...props,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        })
+    };
+
+    // Getters
+
+    get _id(): string {
+        return this.props._id;
+    };
+
+    // Business Methods
+
+    getProps(): Readonly<ServiceAvailabilityProps> {
+        return { ...this.props };
+    };
+
+    update(props: UpdateServiceAvailabilityProps) {
+        this.props = {
+            ...this.props,
+            ...props,
+        };
+        this.touch();
+    };
+
 }

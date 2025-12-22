@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import { PaymentModel } from "./payment.model";
 import { PaymentMapper } from "../../mappers/payment.mapper";
 import { Payment } from "../../../domain/entities/payment.entity";
@@ -6,24 +5,31 @@ import { IPaymentRepository } from "../../../domain/interfaces/repositories/IPay
 
 export class PaymentRepositoryImpl implements IPaymentRepository {
 
-    async create(payment: Payment, ptions?: { session: any; }): Promise<Payment> {
+    async create(payment: Payment, options?: { session: any; }): Promise<Payment> {
         const persistence = PaymentMapper.toPersistence(payment);
-        const created = await PaymentModel.create(persistence);
-        return PaymentMapper.toDomain(created);
-    }
+        const created = await PaymentModel.create(
+            [persistence],
+            options?.session ? { session: options.session } : undefined
+        );
+
+        return PaymentMapper.toDomain(created[0]);
+    };
 
     async findById(payemtnId: string): Promise<Payment | null> {
         const doc = await PaymentModel.findById(payemtnId);
         return doc ? PaymentMapper.toDomain(doc) : null;
-    }
+    };
 
-    async update(payment: Payment, ptions?: { session: any; }): Promise<Payment> {
+    async update(payment: Payment, options?: { session: any; }): Promise<Payment> {
         const persistence = PaymentMapper.toPersistence(payment);
 
         const updated = await PaymentModel.findByIdAndUpdate(
-            new Types.ObjectId(payment._id),
-            persistence,
-            { new: true }
+            payment._id,
+            { $set: persistence },
+            {
+                new: true,
+                session: options?.session,
+            }
         );
 
         if (!updated) {
@@ -31,5 +37,6 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
         }
 
         return PaymentMapper.toDomain(updated);
-    }
-}
+    };
+
+};

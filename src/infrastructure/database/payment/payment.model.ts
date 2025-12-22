@@ -26,7 +26,7 @@ export interface IPayment extends Document {
     refundAt?: Date;
     refundReason?: string;
     chargeId?: string;
-}
+};
 
 const PaymentSchema = new Schema<IPayment>({
     transactionId: {
@@ -101,7 +101,6 @@ const PaymentSchema = new Schema<IPayment>({
     chargeId: {
         type: String
     },
-},
-    { timestamps: true });
+});
 
 export const PaymentModel = mongoose.model<IPayment>("Payment", PaymentSchema);

@@ -1,197 +1,43 @@
-import { Types } from 'mongoose';
-import { IServiceAvailability, ServiceAvailabilityModel } from './serviceAvailability.model';
+import { ServiceAvailabilityModel } from './serviceAvailability.model';
+import { ServiceAvailabilityMapper } from '../../mappers/serviceAvailability.mapper';
+import { ServiceAvailability } from '../../../domain/entities/serviceAvailability.entity';
 import { IServiceAvailabilityRepository } from '../../../domain/interfaces/repositories/IServiceAvailability.repository';
-import { FontendAvailabilityForResponse, FrontendAvailabilityUpdatedSlots, ServiceAvailability } from '../../../domain/entities/serviceAvailability.entity';
-
-const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 export class ServiceAvailabilityRepositoryImpl implements IServiceAvailabilityRepository {
-    private mapToEntity(serviceAvailability: IServiceAvailability): ServiceAvailability {
-        return new ServiceAvailability(
+
+    async create(serviceAvailability: ServiceAvailability): Promise<ServiceAvailability> {
+        const persistence = ServiceAvailabilityMapper.toPersistence(serviceAvailability);
+        const created = await ServiceAvailabilityModel.create(persistence);
+        return ServiceAvailabilityMapper.toDomain(created);
+    };
+
+    async deleteById(serviceAvailabilityId: string): Promise<boolean> {
+        const doc = await ServiceAvailabilityModel.findByIdAndDelete(serviceAvailabilityId);
+        return !!doc;
+    };
+
+    async findById(serviceAvailabilityId: string): Promise<ServiceAvailability | null> {
+        const doc = await ServiceAvailabilityModel.findById(serviceAvailabilityId);
+        return doc ? ServiceAvailabilityMapper.toDomain(doc) : null;
+    };
+
+    async update(serviceAvailability: ServiceAvailability, options?: { session?: any }): Promise<ServiceAvailability> {
+        const persistence = ServiceAvailabilityMapper.toPersistence(serviceAvailability);
+
+        const updated = await ServiceAvailabilityModel.findByIdAndUpdate(
             serviceAvailability._id,
-            serviceAvailability.providerId,
-            serviceAvailability.availabilities,
-            serviceAvailability.createdAt,
-            serviceAvailability.updatedAt,
-        )
-    }
-
-    async createServiceAvailabilities(providerId: Types.ObjectId, availabilities: Array<FrontendAvailabilityUpdatedSlots>): Promise<ServiceAvailability> {
-        try {
-            const serviceAvailability = {
-                providerId, availabilities
+            { $set: persistence },
+            {
+                new: true,
+                session: options?.session,
             }
-            const newServiceAvailability = await ServiceAvailabilityModel.create(serviceAvailability);
-            return this.mapToEntity(newServiceAvailability);
-        } catch (error) {
-            console.log("createServiceAvailabilities error : ", error);
-            throw new Error("Failed to create service availability");
-        }
-    }
+        );
 
-    async findServiceAvailabilityByProviderId(date: Date, availabilityId: Types.ObjectId): Promise<FontendAvailabilityForResponse | null> {
+        if (!updated) {
+            throw new Error("Service availabiltiy not found");
+        };
 
-        const startOfDay = new Date(date);
-        console.log("startOfDay : ",startOfDay);
-        startOfDay.setHours(0, 0, 0, 0);
+        return ServiceAvailabilityMapper.toDomain(updated);
+    };
 
-        const endOfDay = new Date(date);
-        console.log("endOfDay : ",endOfDay);
-        endOfDay.setHours(23, 59, 59, 999);
-
-        const targetDay = daysOfWeek[date.getDay()];
-        console.log("targetDay : ",targetDay);
-
-        try {
-            const availability = await ServiceAvailabilityModel.aggregate([
-                {
-                    $match: {
-                        _id: new Types.ObjectId(availabilityId)
-                    }
-                },
-                {
-                    $addFields: {
-                        availabilityForDay: {
-                            $arrayElemAt: [
-                                {
-                                    $filter: {
-                                        input: "$availabilities",
-                                        as: "availability",
-                                        cond: { $eq: ["$$availability.day", targetDay] }
-                                    }
-                                },
-                                0
-                            ]
-                        }
-                    }
-                },
-                {
-                    $addFields: {
-                        availabilityForDay: {
-                            $ifNull: [
-                                "$availabilityForDay",
-                                { day: targetDay, slots: [] }
-                            ]
-                        }
-                    }
-                },
-                {
-                    $lookup: {
-                        from: "bookings",
-                        let: { providerId: "$providerId", startOfDay: startOfDay, endOfDay: endOfDay },
-                        pipeline: [
-                            {
-                                $match: {
-                                    $expr: {
-                                        $and: [
-                                            { $eq: ["$serviceProviderId", "$$providerId"] },
-                                            { $gte: ["$appointmentDate", "$$startOfDay"] },
-                                            { $lte: ["$appointmentDate", "$$endOfDay"] },
-                                        ]
-                                    }
-                                }
-                            },
-                            {
-                                $project: {
-                                    appointmentDate: 1,
-                                    slotId: 1
-                                }
-                            }
-                        ],
-                        as: "providerBookings"
-                    }
-                },
-                {
-                    $addFields: {
-                        bookedSlots: {
-                            $map: {
-                                input: "$providerBookings",
-                                as: "booking",
-                                in: "$$booking.slotId"
-                            }
-                        }
-                    }
-                },
-                {
-                    $addFields: {
-                        "availabilityForDay.slots": {
-                            $map: {
-                                input: "$availabilityForDay.slots",
-                                as: "slot",
-                                in: {
-                                    $mergeObjects: [
-                                        "$$slot",
-                                        {
-                                            available: {
-                                                $not: { $in: ["$$slot._id", "$bookedSlots"] },
-                                            }
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    }
-                },
-                {
-                    $replaceWith: "$availabilityForDay"
-                },
-            ]);
-            console.log("availability : ",availability[0]);
-            return availability[0] || null;
-
-        } catch (error) {
-            console.log("findServiceAvailabiltiyByProviderId error : ",error);
-            throw new Error("Failed to find service availability");
-        }
-    }
-
-    async updateServiceAvailability(providerId: Types.ObjectId, day: string, slotId: Types.ObjectId, options: { session?: any }): Promise<ServiceAvailability | null> {
-        try {
-            const updatedServiceAvailability = await ServiceAvailabilityModel.findOneAndUpdate(
-                { providerId, "availability.day": day, "availability.slots._id": new Types.ObjectId(slotId) },
-                {
-                    $set: {
-                        "availability.$[dayElem].slots.$[slotElem].available": false
-                    }
-                },
-                {
-                    new: true,
-                    arrayFilters: [
-                        { "dayElem.day": day },
-                        { "slotElem._id": new Types.ObjectId(slotId) }
-                    ]
-                }
-            );
-
-            return updatedServiceAvailability ? this.mapToEntity(updatedServiceAvailability) : null;
-        } catch (error) {
-            console.log("updateServiceAvailability error : ",error);
-            throw new Error("Failed to update service availability");
-        }
-    }
-
-    async findServiceAvailabilityWithLiveData(providerId: Types.ObjectId, date: Date, day: string): Promise<{} | null> {
-        try {
-            const availability = await ServiceAvailabilityModel.aggregate([
-                {
-                    $match: { providerId: providerId }
-                }
-            ]);
-            return availability || null;
-        } catch (error) {
-            console.log("findServiceAvailabilityWithLiveData error : ",error);
-            throw new Error("Failed to find service availability");
-        }
-    }
-
-    async deleteServiceAvailability(availabilityId: Types.ObjectId): Promise<boolean> {
-        try {
-            const result = await ServiceAvailabilityModel.findByIdAndDelete(availabilityId);
-            return result ? true : false;
-        } catch (error) {
-            console.log("deleteServiceAvailability error : ",error);
-            throw new Error("Failed to find service availability");
-        }
-    }
-    
-}
+};

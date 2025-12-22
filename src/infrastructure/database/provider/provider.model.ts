@@ -33,7 +33,7 @@ export interface IProvider extends Document {
   serviceProof: string;
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
 const ProviderSchema = new Schema<IProvider>({
   username: {

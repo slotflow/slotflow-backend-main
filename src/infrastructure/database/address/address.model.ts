@@ -17,7 +17,7 @@ export interface IAddress extends Document {
     location: GeoLocation,
     createdAt: Date,
     updatedAt: Date,
-}
+};
 
 const addressSchema = new Schema<IAddress>({
     userId: {

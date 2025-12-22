@@ -1,9 +1,6 @@
-import { Types } from "mongoose";
 import { Review } from "../../domain/entities/review.entity";
-import { Service } from "../../domain/entities/service.entity";
 import { ProviderService } from "../../domain/entities/providerService.entity";
-import { AddressDTO, UserDTO, ProviderDTO, BookingDTO } from "./common.dto";
-import { FontendAvailabilityForResponse, TimeSlotForFrontendResponse } from "../../domain/entities/serviceAvailability.entity";
+import { AddressDTO, UserDTO, ProviderDTO, BookingDTO, ServiceDTO, ProviderServiceDTO, FontendAvailabilityForResponse, TimeSlotForFrontendResponse, ReviewDTO } from "./common.dto";
 
 
 // ************ used in userProfile.use-case ************ \\
@@ -57,19 +54,19 @@ export interface UserFetchServiceProvidersRequest {
 }
 // user fetch service providers use case response interface
 export interface FindProvidersUsingServiceIdsResponse {
-    _id: Types.ObjectId;
+    _id: string;
     provider: {
-        _id: Types.ObjectId;
+        _id: string;
         username: string;
         profileImage: string | null;
         trustedBySlotflow: boolean;
     },
     serviceDetails: {
-        serviceId: Types.ObjectId;
-        service: Service["serviceName"];
-        serviceCategory: Service["serviceCategory"];
-        serviceName: ProviderService["serviceName"];
-        servicePrice: ProviderService["servicePrice"];
+        serviceId: string;
+        service: ServiceDTO["serviceName"];
+        serviceCategory: ServiceDTO["serviceCategory"];
+        serviceName: ProviderServiceDTO["serviceName"];
+        servicePrice: ProviderServiceDTO["servicePrice"];
     }
 }
 export type UserFetchServiceProvidersResponse = FindProvidersUsingServiceIdsResponse
@@ -99,9 +96,9 @@ export interface UserFetchServiceproviderServiceRequest {
     providerId: ProviderDTO["_id"];
 }
 // user fetch provider service use case response interface
-type FindProviderServiceProps = Pick<ProviderService, "serviceName" | "serviceDescription" | "servicePrice" | "serviceExperience">;
+type FindProviderServiceProps = Pick<ProviderServiceDTO, "serviceName" | "serviceDescription" | "servicePrice" | "serviceExperience">;
 export interface FindProviderServiceResponse extends FindProviderServiceProps {
-    service: Pick<Service, "serviceName">
+    service: Pick<ServiceDTO, "serviceName">
 }
 export type UserFetchProviderServiceResponse = FindProviderServiceResponse | {};
 
@@ -154,7 +151,7 @@ export interface UserCancelBookingRequest {
 
 
 // user create review request
-export type CreateReviewRequset = Pick<Review, "reviewText" | "rating" | "userId" | "providerId" | "bookingId">;
+export type CreateReviewRequset = Pick<ReviewDTO, "reviewText" | "rating" | "userId" | "providerId" | "bookingId">;
 
 // User delete review
 export interface UserDeleteReviewRequest {

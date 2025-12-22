@@ -1,7 +1,6 @@
 import Stripe from "stripe";
 import { Review } from "../../domain/entities/review.entity";
-import { FontendAvailabilityForResponse, FrontendAvailabilityForRequest } from "../../domain/entities/serviceAvailability.entity";
-import { AddressDTO, BookingDTO, ProviderDTO, UserDTO, PlanDTO, SubscriptionPlan, ProviderServiceDTO, ServiceDTO } from "./common.dto";
+import { AddressDTO, BookingDTO, ProviderDTO, UserDTO, PlanDTO, SubscriptionPlan, ProviderServiceDTO, ServiceDTO, FrontendAvailabilityForRequest, FontendAvailabilityForResponse } from "./common.dto";
 
 
 // ************ used in providerAddress.use-case ************ \\

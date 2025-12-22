@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import { ServiceModel } from "./service.model";
 import { ServiceMapper } from "../../mappers/service.mapper";
 import { Service } from "../../../domain/entities/service.entity";
@@ -59,7 +58,7 @@ export class ServiceRepositoryImpl implements IServiceRepository {
         const persistence = ServiceMapper.toPersistence(service);
 
         const updated = await ServiceModel.findByIdAndUpdate(
-            new Types.ObjectId(service._id),
+            service._id,
             persistence,
             { new: true }
         );
@@ -77,5 +76,6 @@ export class ServiceRepositoryImpl implements IServiceRepository {
             serviceName: 1,
         });
         return services.map(service => ServiceMapper.toDomain(service));
-    }
-}
+    };
+
+};

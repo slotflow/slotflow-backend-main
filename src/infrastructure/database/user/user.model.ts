@@ -16,7 +16,7 @@ export interface IUser extends Document {
   googleId: string;
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
 const UserSchema = new Schema<IUser>({
   username: {

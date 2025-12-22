@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import { ProviderServiceModel } from "./providerService.model";
 import { ProviderServiceMapper } from "../../mappers/providerService.mapper";
 import { ProviderService } from "../../../domain/entities/providerService.entity";
@@ -10,13 +9,13 @@ export class ProviderServiceRepositoryImpl implements IProviderServiceRepository
         const persistence = ProviderServiceMapper.toPersistence(providerService);
         const created = await ProviderServiceModel.create(persistence);
         return ProviderServiceMapper.toDomain(created);
-    }
+    };
 
     async update(providerService: ProviderService): Promise<ProviderService> {
         const persistence = ProviderServiceMapper.toPersistence(providerService);
 
         const updated = await ProviderServiceModel.findByIdAndUpdate(
-            new Types.ObjectId(providerService._id),
+            providerService._id,
             persistence,
             { new: true }
         );
@@ -26,18 +25,11 @@ export class ProviderServiceRepositoryImpl implements IProviderServiceRepository
         };
 
         return ProviderServiceMapper.toDomain(updated);
-    }
+    };
 
     async findById(providerServiceId: string): Promise<ProviderService | null> {
-        const doc = await ProviderServiceModel.findById(new Types.ObjectId(providerServiceId));
+        const doc = await ProviderServiceModel.findById(providerServiceId);
         return doc ? ProviderServiceMapper.toDomain(doc) : null;
-    }
+    };
 
-    async findByProviderId(providerId: string): Promise<ProviderService | null> {
-        const doc = await ProviderServiceModel.findOne({
-            providerId: new Types.ObjectId(providerId)
-        });
-        return doc ? ProviderServiceMapper.toDomain(doc) : null;
-    }
-
-}
+};

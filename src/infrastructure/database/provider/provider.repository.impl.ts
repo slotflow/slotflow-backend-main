@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import { ProviderModel } from "./provider.model";
 import { ProviderMapper } from "../../mappers/provider.mapper";
 import { Provider } from "../../../domain/entities/provider.entity";
@@ -10,13 +9,13 @@ export class ProviderRepositoryImpl implements IProviderRepository {
         const persistence = ProviderMapper.toPersistence(provider);
         const created = await ProviderModel.create(persistence);
         return ProviderMapper.toDomain(created);
-    }
+    };
 
     async update(provider: Provider): Promise<Provider> {
         const persistence = ProviderMapper.toPersistence(provider);
 
         const updated = await ProviderModel.findByIdAndUpdate(
-            new Types.ObjectId(provider._id),
+            provider._id,
             persistence,
             { new: true }
         );
@@ -26,30 +25,27 @@ export class ProviderRepositoryImpl implements IProviderRepository {
         }
 
         return ProviderMapper.toDomain(updated);
-    }
+    };
 
     async findById(providerId: string): Promise<Provider | null> {
-        const doc = await ProviderModel.findById(
-            new Types.ObjectId(providerId)
-        );
-
+        const doc = await ProviderModel.findById(providerId);
         return doc ? ProviderMapper.toDomain(doc) : null;
-    }
+    };
 
     async findByEmail(email: string): Promise<Provider | null> {
         const doc = await ProviderModel.findOne({ email });
         return doc ? ProviderMapper.toDomain(doc) : null;
-    }
+    };
 
     async findByGoogleId(googleId: string): Promise<Provider | null> {
         const doc = await ProviderModel.findOne({ googleId });
         return doc ? ProviderMapper.toDomain(doc) : null;
-    }
+    };
 
     async findByVerificationToken(token: string): Promise<Provider | null> {
         const doc = await ProviderModel.findOne({ verificationToken: token });
         return doc ? ProviderMapper.toDomain(doc) : null;
-    }
+    };
 
     async count(today?: boolean): Promise<number> {
         if (!today) {
@@ -65,6 +61,6 @@ export class ProviderRepositoryImpl implements IProviderRepository {
         return ProviderModel.countDocuments({
             createdAt: { $gte: start, $lte: end }
         });
-    }
+    };
 
-}
+};

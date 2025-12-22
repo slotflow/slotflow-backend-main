@@ -20,7 +20,7 @@ export interface IProviderService extends Document {
   videoUrl: string | null;
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
 const ProviderServiceSchema = new Schema<IProviderService>(
   {
@@ -112,10 +112,6 @@ const ProviderServiceSchema = new Schema<IProviderService>(
       match: [/^https?:\/\/.+/, "Invalid video URL format"],
       default: null,
     },
-  },
-  {
-    timestamps: true,
-  }
-);
+  });
 
 export const ProviderServiceModel = mongoose.model<IProviderService>("ProviderService", ProviderServiceSchema);

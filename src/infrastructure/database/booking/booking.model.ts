@@ -22,7 +22,7 @@ export interface IBooking extends Document {
     statusTrack: statusTrack[],
     createdAt: Date,
     updatedAt: Date,
-}
+};
 
 const ParticipantPresenceSchema = new Schema<ParticipantPresence>({
     joined: { type: Boolean, default: false },
@@ -95,10 +95,8 @@ const BookingSchema = new Schema<IBooking>({
         type: [StatusTrackSchema], 
         default: [] ,
     }
-}, {
-    timestamps: true
 });
 
-BookingSchema.index({ appointmentDate: 1, slotId: 1, serviceProviderId: 1 })
+BookingSchema.index({ appointmentDate: 1, slotId: 1, serviceProviderId: 1 });
 
 export const BookingModel = mongoose.model<IBooking>('Booking', BookingSchema);

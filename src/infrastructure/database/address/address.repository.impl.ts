@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import { AddressModel } from "./address.model";
 import { AddressMapper } from "../../mappers/address.mapper";
 import { Address } from "../../../domain/entities/address.entity";
@@ -11,19 +10,17 @@ export class AddressRepositoryImpl implements IAddressRepository {
             AddressMapper.toPersistence(address)
         );
         return AddressMapper.toDomain(created);
-    }
+    };
 
     async findByUserId(userId: string): Promise<Address | null> {
-        const doc = await AddressModel.findOne({
-            userId: new Types.ObjectId(userId)
-        });
+        const doc = await AddressModel.findOne({ userId });
         return doc ? AddressMapper.toDomain(doc) : null;
-    }
+    };
 
     async findById(addressId: string): Promise<Address | null> {
         const doc = await AddressModel.findById(addressId);
         return doc ? AddressMapper.toDomain(doc) : null;
-    }
+    };
 
     async update(address: Address): Promise<Address> {
         if (!address._id) {
@@ -38,5 +35,6 @@ export class AddressRepositoryImpl implements IAddressRepository {
 
         if (!doc) throw new Error("Address not found");
         return AddressMapper.toDomain(doc);
-    }
-}
+    };
+
+};

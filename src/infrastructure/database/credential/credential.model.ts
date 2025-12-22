@@ -8,7 +8,7 @@ export interface ICredential extends Document {
     expiryDate: Date;
     createdAt: Date;
     updatedAt: Date;
-}
+};
 
 const CredentialSchema = new Schema<ICredential>({
     userId: {
@@ -28,6 +28,6 @@ const CredentialSchema = new Schema<ICredential>({
         type: Date,
         required: true
     },
-}, { timestamps: true });
+});
 
 export const CredentialModel = model<ICredential>("Credential", CredentialSchema);

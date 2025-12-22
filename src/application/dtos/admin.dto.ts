@@ -1,10 +1,4 @@
-import { Review } from "../../domain/entities/review.entity";
-import { Service } from "../../domain/entities/service.entity";
-import { Subscription } from "../../domain/entities/subscription.entity";
-import { ProviderService } from "../../domain/entities/providerService.entity";
-
-import { FontendAvailabilityForResponse } from "../../domain/entities/serviceAvailability.entity";
-import { AddressDTO, ApiPaginationRequest, PaymentDTO, PlanDTO, ProviderDTO, UserDTO } from "./common.dto";
+import { AddressDTO, ApiPaginationRequest, FontendAvailabilityForResponse, PaymentDTO, PlanDTO, ProviderDTO, ProviderServiceDTO, ReviewDTO, ServiceDTO, SubscriptionDTO, UserDTO } from "./common.dto";
 
 // **************** used in adminProvider.use-case **************** \\
 
@@ -67,9 +61,9 @@ export type AdminFetchProviderServiceRequest = {
     providerId: ProviderDTO["_id"];
 }
 // Used as the request interface of admin fetch provider service
-type FindProviderServiceProps = Omit<ProviderService, "service">;
+type FindProviderServiceProps = Omit<ProviderServiceDTO, "service">;
 export interface FindProviderServiceResponse extends FindProviderServiceProps {
-    service: Pick<Service, "serviceName">
+    service: Pick<ServiceDTO, "serviceName">
 }
 export type AdminFetchProviderServiceResponse = FindProviderServiceResponse | {};
 
@@ -123,16 +117,16 @@ export type AdminFetchUserProfileDetailsResponse = Pick<UserDTO, "username" | "p
 
 // **** adminFetchAllServices
 // Used as the request interface of admin fetch all app services
-export type AdminServiceListResponse = Array<Pick<Service, "_id" | "serviceName" | "isBlocked">>;
+export type AdminServiceListResponse = Array<Pick<ServiceDTO, "_id" | "serviceName" | "isBlocked">>;
 
 // admin add new service use case request payload interface
-export type AdminAddServiceRequest = Pick<Service, "serviceName" | "serviceCategory">; 
+export type AdminAddServiceRequest = Pick<ServiceDTO, "serviceName" | "serviceCategory">; 
 
 
 // admin change service isBlocked status use case request payload interface
 export interface AdminChnageServiceIsBlockedStatusRequest {
-    serviceId: Service["_id"];
-    isBlocked: Service["isBlocked"];
+    serviceId: ServiceDTO["_id"];
+    isBlocked: ServiceDTO["isBlocked"];
 }
 
 
@@ -148,13 +142,13 @@ export interface AdminChnageServiceIsBlockedStatusRequest {
 
 // Admin fetch all subscriptions use case response interface 
 // export type AdminFetchAllSubscriptionsResponse = Array<Pick<Subscription, "_id" | "createdAt" | "providerId" | "startDate" | "endDate" | "subscriptionStatus">>;
-export type AdminFetchAllSubscriptionsResponse = Array<Pick<Subscription, "_id" | "startDate" | "endDate" | "subscriptionStatus"> & Pick<PlanDTO, "planName">>;
+export type AdminFetchAllSubscriptionsResponse = Array<Pick<SubscriptionDTO, "_id" | "startDate" | "endDate" | "subscriptionStatus"> & Pick<PlanDTO, "planName">>;
 
 
 
 // Admin Review UseCase
 export interface AdminUpdateReviewBlockStatusRequest {
-    reviewId: Review["_id"];
+    reviewId: ReviewDTO["_id"];
 }
 
 
