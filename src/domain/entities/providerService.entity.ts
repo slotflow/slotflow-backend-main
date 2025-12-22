@@ -35,7 +35,7 @@ export class ProviderService {
         return { ...this.props };
     };
 
-    updateProviderService(props: UpdateProviderServiceProps) {
+    update(props: UpdateProviderServiceProps) {
         if (props.servicePrice <= 0) {
             throw new Error("Service price must be greater than zero");
         }

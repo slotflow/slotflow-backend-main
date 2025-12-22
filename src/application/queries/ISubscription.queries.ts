@@ -3,16 +3,16 @@ import { ApiPaginationRequest, FetchProviderSubscriptionsRequest, findSubscripti
 
 export interface ISubscriptionQueries {
 
-    findSubscriptionsByProviderId(payload: FetchProviderSubscriptionsRequest): Promise<TableData<FindSubscriptionsByProviderIdResponse>>;
-
-    findAllSubscriptions(pagination: ApiPaginationRequest): Promise<TableData<AdminFetchAllSubscriptionsResponse>>
-
-    findSubscriptionFullDetails(subscriptionId: string): Promise<findSubscriptionFullDetailsResProps | null>;
-
-    findSubscriptionsForUpdatinStatus(): Promise<boolean>;
-
+    findAll(pagination: ApiPaginationRequest): Promise<TableData<AdminFetchAllSubscriptionsResponse>>
+    
     findSubscribedPlan(subscriptionId: string): Promise<string | boolean>;
-
-    findSubscriptionStatsForAdminDashboard(): Promise<AdminFetchDashboardSubscriptionStatsDataResponse>;
+    
+    findDetails(subscriptionId: string): Promise<findSubscriptionFullDetailsResProps | null>;
+    
+    findStatsForAdminDashboard(): Promise<AdminFetchDashboardSubscriptionStatsDataResponse>;
+    
+    findSubscriptionsByProviderId(payload: FetchProviderSubscriptionsRequest): Promise<TableData<FindSubscriptionsByProviderIdResponse>>;
+    
+    findSubscriptionsForUpdatinStatus(): Promise<boolean>;
 
 };

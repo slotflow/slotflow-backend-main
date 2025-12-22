@@ -48,7 +48,7 @@ export class Plan {
         this.touch();
     }
 
-    updatePlan(props: UpdatePlanProps) {
+    update(props: UpdatePlanProps) {
         this.props = {
             ...this.props,
             ...props

@@ -1,13 +1,12 @@
 import { SubscriptionModel } from "../database/subscription/subscription.model";
 import { SubscriptionStatus } from "../../domain/enums/subscriptionStatus.enum";
 import { ISubscriptionQueries } from "../../application/queries/ISubscription.queries";
-import { PlanNameOnly } from "../../domain/interfaces/repositories/ISubscription.repository";
 import { AdminFetchAllSubscriptionsResponse, AdminFetchDashboardSubscriptionStatsDataResponse } from "../../application/dtos/admin.dto";
-import { ApiPaginationRequest, FetchProviderSubscriptionsRequest, findSubscriptionFullDetailsResProps, FindSubscriptionsByProviderIdResponse, PopulatedSubscription, TableData } from "../../application/dtos/common.dto";
+import { ApiPaginationRequest, FetchProviderSubscriptionsRequest, findSubscriptionFullDetailsResProps, FindSubscriptionsByProviderIdResponse, PlanNameOnly, PopulatedSubscription, TableData } from "../../application/dtos/common.dto";
 
 export class SubscriptionQueriesImpl implements ISubscriptionQueries {
 
-    async findAllSubscriptions(pagination: ApiPaginationRequest): Promise<TableData<AdminFetchAllSubscriptionsResponse>> {
+    async findAll(pagination: ApiPaginationRequest): Promise<TableData<AdminFetchAllSubscriptionsResponse>> {
         const { page, limit } = pagination;
         const skip = (page - 1) * limit;
         const [subscriptions, totalCount] = await Promise.all([
@@ -48,7 +47,7 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
         return subscription ? subscription.subscriptionPlanId.planName : false;
     }
 
-    async findSubscriptionFullDetails(subscriptionId: string): Promise<findSubscriptionFullDetailsResProps | null> {
+    async findDetails(subscriptionId: string): Promise<findSubscriptionFullDetailsResProps | null> {
         const data = await SubscriptionModel.findById(subscriptionId)
             .select("startDate endDate subscriptionStatus createdAt -_id")
             .populate([{
@@ -84,7 +83,7 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
         };
     }
 
-    async findSubscriptionStatsForAdminDashboard(): Promise<AdminFetchDashboardSubscriptionStatsDataResponse> {
+    async findStatsForAdminDashboard(): Promise<AdminFetchDashboardSubscriptionStatsDataResponse> {
         const subscriptionStatsData = await SubscriptionModel.aggregate([
             {
                 $lookup: {

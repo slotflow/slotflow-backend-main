@@ -1,5 +1,7 @@
 import { Types } from "mongoose";
 
+// TODO need to use redis instead of mongodb
+
 export class SignedUrlCache {
     constructor(
         public _id: Types.ObjectId,

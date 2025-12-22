@@ -7,11 +7,11 @@ export class Payment {
 
     constructor(props: PaymentProps) {
         this.props = props;
-    }
+    };
 
     private touch() {
         this.props.updatedAt = new Date();
-    }
+    };
 
     static createforSubscription(props: CreateForSubscriptionProps) {
         return new Payment({
@@ -35,7 +35,7 @@ export class Payment {
             createdAt: new Date(),
             updatedAt: new Date(),
         })
-    }
+    };
 
     static createForBooking(props: CreateForBookingProps) {
         return new Payment({
@@ -59,26 +59,26 @@ export class Payment {
             createdAt: new Date(),
             updatedAt: new Date(),
         })
-    }
+    };
 
     // Getters
 
     get _id(): string {
         return this.props._id
-    }
+    };
 
     // Business Methods
 
     getProps(): Readonly<PaymentProps> {
         return {...this.props}
-    }
+    };
 
-    updatePayment(props: UpdatePaymentProps) {
+    update(props: UpdatePaymentProps) {
         this.props = {
             ...this.props,
             ...props,
         };
 
         this.touch();
-    }
+    };
 }

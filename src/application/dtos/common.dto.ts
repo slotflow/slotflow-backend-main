@@ -1,6 +1,5 @@
 import { Types } from "mongoose";
 
-import { Review } from "../../domain/entities/review.entity";
 import { Availability } from "../../domain/entities/serviceAvailability.entity";
 
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
@@ -224,6 +223,20 @@ export interface SubscriptionDTO {
   endDate: Date,
   subscriptionStatus: SubscriptionStatus,
   paymentId: string,
+  createdAt: Date,
+  updatedAt: Date,
+}
+
+// **** REVIEW INTERFACE
+export interface ReviewDTO {
+  _id: string,
+  userId: string,
+  providerId: string,
+  bookingId: string,
+  reviewText: string,
+  rating: number,
+  reported: boolean,
+  isBlocked: boolean,
   createdAt: Date,
   updatedAt: Date,
 }
@@ -457,7 +470,7 @@ export interface userIdAndProviderIdFilterForFetchReviews {
 }
 export interface FetchReviesRequest extends ApiPaginationRequest, userIdAndProviderIdFilterForFetchReviews { }
 //// **** Used as the response type fetching payments for admin, provider and user side
-export interface FetchReviewsResponse extends Pick<Review, "_id" | "createdAt" | "reviewText" | "rating" | "reported" | "isBlocked"> {
+export interface FetchReviewsResponse extends Pick<ReviewDTO, "_id" | "createdAt" | "reviewText" | "rating" | "reported" | "isBlocked"> {
   userId: Pick<UserDTO, "username" | "profileImage">;
   providerId: Pick<ProviderDTO, "username" | "profileImage">;
 };
@@ -532,4 +545,10 @@ type PlanProps = Pick<PlanDTO, "planName" | "price" | "adVisibility" | "maxBooki
 export interface findSubscriptionFullDetailsResProps extends SubscriptionProps {
   subscriptionPlanId: PlanProps,
   paymentId: PaymentsProps,
+}
+
+export interface PlanNameOnly {
+  subscriptionPlanId: {
+    planName: string
+  }
 }
