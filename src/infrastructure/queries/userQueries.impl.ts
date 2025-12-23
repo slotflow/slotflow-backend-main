@@ -3,7 +3,7 @@ import { IUserQueries } from "../../application/queries/IUser.queries";
 import { ApiPaginationRequest, TableData } from "../../application/dtos/common.dto";
 import { AdminFetchAllUsers, AdminFetchDashboardUserStatsDataResponse } from "../../application/dtos/admin.dto";
 
-export class UserQueryImpl implements IUserQueries {
+export class UserQueriesImpl implements IUserQueries {
 
     async fetchStats(): Promise<AdminFetchDashboardUserStatsDataResponse> {
         const [

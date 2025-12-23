@@ -1,5 +1,79 @@
 import { AddressDTO, ApiPaginationRequest, FontendAvailabilityForResponse, PaymentDTO, PlanDTO, ProviderDTO, ProviderServiceDTO, ReviewDTO, ServiceDTO, SubscriptionDTO, UserDTO } from "./common.dto";
 
+// **** adminAddress.usecase
+
+// Used as the request type of admin fetch provider address
+export type AdminFetchUserOrProviderAddressResponse = Pick<AddressDTO, "userId" | "addressLine" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location"> | null;
+
+
+// **** adminDashboard.usecase
+
+// used as the return type of the admin fetch dashboard todays stats data
+export interface AdminFetchDashboardTodayStatsDataResponse {
+  newUsers: number;
+  newProviders: number;
+
+  todaysTotalRevenue: number;
+  todaysTotalPayouts: number;
+
+  todaysAppointments: number;
+  todaysCancelledAppointments: number;
+  todaysCompletedAppointments: number;
+};
+
+// used as the return type of the admin fetch dashboard user stats data
+export interface AdminFetchDashboardUserStatsDataResponse {
+    totalUsers: number;
+    emailVerifiedUsers: number;
+    blockedUsers: number;
+};
+
+// used as the return type of the admin fetch dashboard provider stats data
+export interface AdminFetchDashboardProviderStatsDataResponse {
+    totalProviders: number;
+    emailVerifiedProviders: number;
+    adminVerifiedProviders: number;
+    blockedProviders: number;
+    addressAddedProviders: number;
+    serviceAddedProviders: number;
+    availabilityAddedProviders: number;
+    slotflowTrustedProviders: number;
+};
+
+// used as the return type of the admin fetch dashboard subscription stats data
+export interface AdminFetchDashboardSubscriptionStatsDataResponse {
+    activeSubscriptions: number;
+    expiredSubscriptions: number;
+    subscriptionsByFreePlan: number;
+    subscriptionsByStarterPlan: number;
+    subscriptionsByProfessionalPlan: number;
+    subscriptionsByEnterprisePlan: number;
+};
+
+// used as the return type of the admin fetch dashboard revenue stats data
+export interface AdminFetchDashboardRevenueStatsDataResponse {
+    totalRevenue: number;
+    totalRevenueViaSubscriptions: number;
+    revenueByStripe: number;
+    revenueByRazorpay: number;
+    revenueByPaypal: number;
+    totalRevenueViaAppointments: number;
+    totalRefundsIssued: number;
+    totalFailedPayments: number;
+    totalPayoutsToProviders: number;
+};
+
+// used as the return type of the admin fetch dashboard appointments stats data
+export interface AdminFetchDashboardAppointmentStatsDataResponse {
+    totalAppointments: number;
+    completedAppointments: number;
+    cancelledAppointments: number;
+    missedAppointments: number;
+    rejectedAppointments: number;
+};
+
+
+
 // **************** used in adminProvider.use-case **************** \\
 
 // **** adminFetchAllProviders
@@ -46,12 +120,6 @@ export interface AdminFetchProviderDetailsRequest {
 }
 // Used as the return type of admin fetch provider profile details
 export type AdminFetchProviderDetailsResponse = Pick<ProviderDTO, "_id" | "username" | "email" | "isBlocked" | "isEmailVerified" | "isAdminVerified" | "phone" | "profileImage" | "trustedBySlotflow" | "createdAt"> | {};
-
-
-
-// **** adminFetchProviderAddress
-// Used as the request type of admin fetch provider address
-export type AdminFetchUserOrProviderAddressResponse = Pick<AddressDTO, "userId" | "addressLine" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location"> | null;
 
 
 
@@ -181,69 +249,17 @@ export type AdminChangePlanIsBlockedStatusRequest = {
 
 
 // **** used in adminDashboard.use-case **** \\
-// used as the return type of the admin fetch dashboard user stats data
-export interface AdminFetchDashboardUserStatsDataResponse {
-    totalUsers: number;
-    emailVerifiedUsers: number;
-    blockedUsers: number;
-}
 
-// used as the return type of the admin fetch dashboard provider stats data
-export interface AdminFetchDashboardProviderStatsDataResponse {
-    totalProviders: number;
-    emailVerifiedProviders: number;
-    adminVerifiedProviders: number;
-    blockedProviders: number;
-    addressAddedProviders: number;
-    serviceAddedProviders: number;
-    availabilityAddedProviders: number;
-    slotflowTrustedProviders: number;
-}
 
-// used as the return type of the admin fetch dashboard subscription stats data
-export interface AdminFetchDashboardSubscriptionStatsDataResponse {
-    activeSubscriptions: number;
-    expiredSubscriptions: number;
-    subscriptionsByFreePlan: number;
-    subscriptionsByStarterPlan: number;
-    subscriptionsByProfessionalPlan: number;
-    subscriptionsByEnterprisePlan: number;
-}
 
-// used as the return type of the admin fetch dashboard revenue stats data
-export interface AdminFetchDashboardRevenueStatsDataResponse {
-    totalRevenue: number;
-    totalRevenueViaSubscriptions: number;
-    revenueByStripe: number;
-    revenueByRazorpay: number;
-    revenueByPaypal: number;
-    totalRevenueViaAppointments: number;
-    totalRefundsIssued: number;
-    totalFailedPayments: number;
-    totalPayoutsToProviders: number;
-}
 
-// used as the return type of the admin fetch dashboard appointments stats data
-export interface AdminFetchDashboardAppointmentStatsDataResponse {
-    totalAppointments: number;
-    completedAppointments: number;
-    cancelledAppointments: number;
-    missedAppointments: number;
-    rejectedAppointments: number;
-}
 
-// used as the return type of the admin fetch dashboard todays stats data
-export interface AdminFetchDashboardTodayStatsDataResponse {
-  newUsers: number;
-  newProviders: number;
 
-  todaysTotalRevenue: number;
-  todaysTotalPayouts: number;
 
-  todaysAppointments: number;
-  todaysCancelledAppointments: number;
-  todaysCompletedAppointments: number;
-}
+
+
+
+
 
 // Admin fetch revenue report request
 export interface AdminFetchRevenueReportRequest extends ApiPaginationRequest {
