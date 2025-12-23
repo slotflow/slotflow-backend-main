@@ -18,10 +18,10 @@ export class Plan {
             adVisibility: props.adVisibility,
             description: props.description,
             features: props.features,
-            isBlocked: props.isBlocked,
             maxBookingPerMonth: props.maxBookingPerMonth,
             planName: props.planName,
             price: props.price,
+            isBlocked: false,
             createdAt: new Date(),
             updatedAt: new Date(),
         })
@@ -35,6 +35,22 @@ export class Plan {
 
     get planName(): string {
         return this.props.planName;
+    };
+
+    get adVisibility(): boolean {
+        return this.props.adVisibility;
+    };
+
+    get isBlocked(): boolean {
+        return this.props.isBlocked;
+    };
+
+    get maxBookingPerMonth(): number {
+        return this.props.maxBookingPerMonth;
+    };
+
+    get price(): number {
+        return this.props.price;
     };
 
     // Business Method

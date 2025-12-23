@@ -1,5 +1,6 @@
-import { Types } from "mongoose";
+import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
+import { sendResponse } from "../../shared/utils/response";
 import { IPlanRepository } from "../../domain/interfaces/repositories/IPlan.repository";
 import { RequestQueryCommonZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
 import { PlanRepositoryImpl } from "../../infrastructure/database/plan/plan.repository.impl";
@@ -27,22 +28,21 @@ class AdminPlanController {
         try {
             const { page, limit } = RequestQueryCommonZodSchema.parse(req.query);
             const result = await this.adminPlanListUseCase.execute({ page, limit });
-            res.status(200).json(result);
+            sendResponse(res,result);
         } catch (error) {
-            console.log("getAllPlans error : ", error);
-            next(error)
+            log.error("getAllPlans failed", error as Error);
+            next(error);
         }
     }
 
     async createNewPlan(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log("req.body : ", req.body);
             const validateBody = AdminAddNewPlanZodSchema.parse(req.body);
-            const result = await this.adminCreatePlanUseCase.execute(validateBody);
-            res.status(200).json(result);
+            await this.adminCreatePlanUseCase.execute(validateBody);
+            sendResponse(res,null,"New plan created", true, 201);
         } catch (error) {
-            console.log("createNewPlan error : ", error);
-            next(error)
+            log.error("createNewPlan failed", error as Error);
+            next(error);
         }
     }
 
@@ -50,8 +50,8 @@ class AdminPlanController {
         try {
             const { blockStatus } = AdminChangePlanIsBlockStatusZodSchema.parse(req.body);
             const { id: planId } = ValidateObjectId(req.params.planId, "Plan ID");
-            const result = await this.adminChangePlanBlockStatusUseCase.execute({ planId: new Types.ObjectId(planId as string), isBlocked: blockStatus });
-            res.status(200).json(result);
+            const result = await this.adminChangePlanBlockStatusUseCase.execute({ planId, isBlocked: blockStatus });
+            sendResponse(res,result,`plan ${result.isBlocked ? "blocked" : "unblocked"} successfully`);
         } catch (error) {
             console.log("changePlanBlockStatus error : ", error);
             next(error)
@@ -61,9 +61,8 @@ class AdminPlanController {
     // TODO UPDATE PLAN
 }
 
-const adminPlanController = new AdminPlanController(
+export const adminPlanController = new AdminPlanController(
     adminPlanListUseCase,
     adminCreatePlanUseCase,
     adminChangePlanBlockStatusUseCase
 );
-export { adminPlanController };

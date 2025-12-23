@@ -79,7 +79,7 @@ export interface AdminFetchDashboardAppointmentStatsDataResponse {
 export interface AdminFetchRevenueReportRequest extends ApiPaginationRequest {
     startDate?: Date;
     endDate: Date;
-}
+};
 
 // Admin fetch revenue report response
 export type AdminFetchRevenueReportRow = Pick<
@@ -96,8 +96,25 @@ export interface AdminFetchRevenueReportResponse {
   grandTotal: number;
   grandDiscount: number;
   grandInitalAmount: number;
-}
+};
 
+
+// **** adminPlan.usecase
+
+// Used as the return type of fetch all plans
+export type AdminPlanListResponse = Array<Pick<PlanDTO, "_id" | "planName" | "isBlocked" | "price" | "maxBookingPerMonth" | "adVisibility">>;
+
+// admin create new plan request payload type 
+export type AdminCreatePlanRequest = Pick<PlanDTO, "planName" | "description" | "price" | "features" | "maxBookingPerMonth" | "adVisibility">;
+
+// Used as the return type of admin change plan block status
+export type AdminChangeBlockStatusResponse = {
+    planId: PlanDTO["_id"];
+    isBlocked: PlanDTO["isBlocked"];
+};
+
+// admin change plan block status request payload type
+export type AdminChangePlanIsBlockedStatusRequest = AdminChangeBlockStatusResponse;
 
 
 
@@ -259,21 +276,6 @@ export interface AdminUpdateReviewBlockStatusRequest {
 
 // **** used in adminPlan.use-case **** \\
 
-// Data type returned for the Admin Plans table
-// Used in AdminPlanListUseCase, the findAllPlans method in PlanRepositoryImpl, 
-// and the findAllPlans method in IPlanRepository as the response type with the ApiResponse interface
-export type AdminPlanListResponse = Array<Pick<PlanDTO, "_id" | "planName" | "isBlocked" | "price" | "maxBookingPerMonth" | "adVisibility">>;
-
-
-// admin create new plan request payload type 
-export type AdminAddNewPlanRequest = Pick<PlanDTO, "planName" | "description" | "price" | "features" | "maxBookingPerMonth" | "adVisibility">;
-
-
-// admin change plan block status request payload type
-export type AdminChangePlanIsBlockedStatusRequest = {
-    planId: PlanDTO["_id"];
-    isBlocked: PlanDTO["isBlocked"]
-}
 
 
 

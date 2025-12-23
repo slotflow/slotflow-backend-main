@@ -16,13 +16,13 @@ export class PlanRepositoryImpl implements IPlanRepository {
         return doc ? PlanMapper.toDomain(doc) : null;
     };
 
-    async findByName(name: string): Promise<Plan | null> {
-        const doc = await PlanModel.findOne({ planName: name });
-        return doc ? PlanMapper.toDomain(doc) : null;
-    };
-
-    async findByPrice(price: number): Promise<Plan | null> {
-        const doc = await PlanModel.findOne({ price });
+    async findByNameOrPrice(name: string, price: number): Promise<Plan | null> {
+        const doc = await PlanModel.findOne({ 
+             $or: [
+                    { planName: name },
+                    { price }
+                ]
+         });
         return doc ? PlanMapper.toDomain(doc) : null;
     };
 
@@ -40,6 +40,39 @@ export class PlanRepositoryImpl implements IPlanRepository {
         }
 
         return PlanMapper.toDomain(doc);
+    };
+
+    async findAll(page: number, limit: number): Promise<{ data: Array<Plan>, totalPages: number; currentPage: number; totalCount: number; }> {
+        const skip = (page - 1) * limit;
+        const [plans, totalCount] = await Promise.all([
+            PlanModel.find({}, {
+                _id: 1,
+                planName: 1,
+                price: 1,
+                maxBookingPerMonth: 1,
+                isBlocked: 1,
+                adVisibility: 1,
+            }).skip(skip).limit(limit).lean(),
+            PlanModel.countDocuments(),
+        ]);
+        const totalPages = Math.ceil(totalCount / limit);
+        return {
+            data: plans.map(plan => PlanMapper.toDomain(plan)),
+            totalPages,
+            currentPage: page,
+            totalCount
+        }
+    };
+
+    async findAllForDisplay(): Promise<Array<Plan>> {
+        const plans = await PlanModel.find({}, {
+            _id: 1,
+            planName: 1,
+            price: 1,
+            features: 1,
+            description: 1
+        });
+        return plans.map(plan => PlanMapper.toDomain(plan));
     };
 
 };
