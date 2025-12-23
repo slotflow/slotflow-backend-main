@@ -2,6 +2,8 @@ import { PaymentModel } from "./payment.model";
 import { PaymentMapper } from "../../mappers/payment.mapper";
 import { Payment } from "../../../domain/entities/payment.entity";
 import { IPaymentRepository } from "../../../domain/interfaces/repositories/IPayment.repository";
+import { PaymentFor } from "../../../domain/enums/paymentFor.enum";
+import { Types } from "mongoose";
 
 export class PaymentRepositoryImpl implements IPaymentRepository {
 
@@ -22,7 +24,7 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
         const doc = await PaymentModel.findByIdAndUpdate(
             payment._id,
             { $set: persistence },
-            {new: true}
+            { new: true }
         );
 
         if (!doc) {
@@ -30,6 +32,49 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
         }
 
         return PaymentMapper.toDomain(doc);
+    };
+
+    async findAll(page: number, limit: number, userId?: string, providerId?: string): Promise<{ data: Array<Payment>, totalPages: number; currentPage: number; totalCount: number; }> {
+        const skip = (page - 1) * limit;
+
+        const filter: {
+            userId?: Types.ObjectId;
+            providerId?: Types.ObjectId;
+            paymentFor?: PaymentFor | { $in: PaymentFor[] };
+        } = {};
+
+        if (userId) {
+            filter.userId = new Types.ObjectId(userId);
+            filter.paymentFor = PaymentFor.AppointmentBooking
+        }
+
+        if (providerId) {
+            filter.providerId = new Types.ObjectId(providerId);
+            filter.paymentFor = { $in: [PaymentFor.ProviderPayout, PaymentFor.ProviderSubscription] }
+        }
+
+        const [payments, totalCount] = await Promise.all([
+            PaymentModel.find(filter, {
+                _id: 1,
+                createdAt: 1,
+                totalAmount: 1,
+                paymentFor: 1,
+                paymentMethod: 1,
+                paymentGateway: 1,
+                paymentStatus: 1,
+                discountAmount: 1,
+            }).skip(skip).limit(limit).sort({ createdAt: 1 }).lean(),
+            PaymentModel.countDocuments(filter),
+        ]);
+        const totalPages = Math.ceil(totalCount / limit);
+
+        return {
+            data: payments.map(payment => PaymentMapper.toDomain(payment)),
+            totalPages,
+            currentPage: page,
+            totalCount
+        }
+
     };
 
 };

@@ -73,6 +73,37 @@ export interface AdminFetchDashboardAppointmentStatsDataResponse {
 };
 
 
+// **** adminPayment.usecase
+
+// Admin fetch revenue report request
+export interface AdminFetchRevenueReportRequest extends ApiPaginationRequest {
+    startDate?: Date;
+    endDate: Date;
+}
+
+// Admin fetch revenue report response
+export type AdminFetchRevenueReportRow = Pick<
+  PaymentDTO,
+  | "createdAt"
+  | "discountAmount"
+  | "initialAmount"
+  | "totalAmount"
+  | "paymentGateway"
+  | "paymentFor"
+>;
+export interface AdminFetchRevenueReportResponse {
+  rows: AdminFetchRevenueReportRow[];
+  grandTotal: number;
+  grandDiscount: number;
+  grandInitalAmount: number;
+}
+
+
+
+
+
+
+
 
 // **************** used in adminProvider.use-case **************** \\
 
@@ -258,32 +289,6 @@ export type AdminChangePlanIsBlockedStatusRequest = {
 
 
 
-
-
-
-// Admin fetch revenue report request
-export interface AdminFetchRevenueReportRequest extends ApiPaginationRequest {
-    startDate?: Date;
-    endDate: Date;
-}
-
-// Admin fetch revenue report response
-export type AdminFetchRevenueReportRow = Pick<
-  PaymentDTO,
-  | "createdAt"
-  | "discountAmount"
-  | "initialAmount"
-  | "totalAmount"
-  | "paymentGateway"
-  | "paymentFor"
->;
-
-export interface AdminFetchRevenueReportResponse {
-  rows: AdminFetchRevenueReportRow[];
-  grandTotal: number;
-  grandDiscount: number;
-  grandInitalAmount: number;
-}
 
 
 

@@ -1,4 +1,5 @@
 import { Types } from "mongoose";
+import { TableData } from "../../application/dtos/common.dto";
 import { PaymentFor } from "../../domain/enums/paymentFor.enum";
 import { PaymentModel } from "../database/payment/payment.model";
 import { PaymentStatus } from "../../domain/enums/paymentStatus.enum";
@@ -6,7 +7,6 @@ import { PaymentGateway } from "../../domain/enums/paymentGateway.enum";
 import { IPaymentQueries } from "../../application/queries/IPayment.queries";
 import { endOfDay, startOfDay, startOfMonth, startOfToday, startOfTomorrow } from "date-fns";
 import { ProviderFetchDashboardPaymentStatsDataResponse } from "../../application/dtos/provider.dto";
-import { FetchPaymentResponse, FetchPaymentsRequest, TableData } from "../../application/dtos/common.dto";
 import { AdminFetchDashboardRevenueStatsDataResponse, AdminFetchDashboardTodayPaymentStatsDataResponse, AdminFetchRevenueReportRequest, AdminFetchRevenueReportResponse } from "../../application/dtos/admin.dto";
 
 export class PaymentQueriesImpl implements IPaymentQueries {
@@ -88,51 +88,7 @@ export class PaymentQueriesImpl implements IPaymentQueries {
             currentPage: page,
             totalCount,
         };
-    }
-
-    async findAll({ page, limit, userId, providerId }: FetchPaymentsRequest): Promise<TableData<FetchPaymentResponse>> {
-        const skip = (page - 1) * limit;
-
-        const filter: {
-            userId?: Types.ObjectId;
-            providerId?: Types.ObjectId;
-            paymentFor?: PaymentFor | { $in: PaymentFor[] };
-        } = {};
-
-        if (userId) {
-            filter.userId = new Types.ObjectId(userId);
-            filter.paymentFor = PaymentFor.AppointmentBooking
-        }
-
-        if (providerId) {
-            filter.providerId = new Types.ObjectId(providerId);
-            filter.paymentFor = { $in: [PaymentFor.ProviderPayout, PaymentFor.ProviderSubscription] }
-        }
-
-        const [payments, totalCount] = await Promise.all([
-            PaymentModel.find(filter, {
-                _id: 1,
-                createdAt: 1,
-                totalAmount: 1,
-                paymentFor: 1,
-                paymentMethod: 1,
-                paymentGateway: 1,
-                paymentStatus: 1,
-                discountAmount: 1,
-            }).skip(skip).limit(limit).sort({ createdAt: 1 }).lean<FetchPaymentResponse>(),
-            PaymentModel.countDocuments(filter),
-        ]);
-        const totalPages = Math.ceil(totalCount / limit);
-        return {
-            data: payments.map(payment => ({
-                ...payment,
-                _id: payment._id.toString(),
-            })),
-            totalPages,
-            currentPage: page,
-            totalCount
-        }
-    }
+    };
 
     async findStatsForAdminDashboard(): Promise<AdminFetchDashboardRevenueStatsDataResponse> {
         const paymentData = await PaymentModel.aggregate([
@@ -243,7 +199,7 @@ export class PaymentQueriesImpl implements IPaymentQueries {
 
         const data = paymentData[0];
         return { ...data};
-    }
+    };
 
     async findStatsForProviderDashboard(providerId: string): Promise<ProviderFetchDashboardPaymentStatsDataResponse> {
         const today = startOfToday();
@@ -361,7 +317,7 @@ export class PaymentQueriesImpl implements IPaymentQueries {
 
         const data = result[0];
         return {...data};
-    }
+    };
 
     async findTodayStatsForAdminDashboard(): Promise<AdminFetchDashboardTodayPaymentStatsDataResponse> {
         const startOfToday = startOfDay(new Date());
@@ -430,5 +386,6 @@ export class PaymentQueriesImpl implements IPaymentQueries {
 
         const data = result[0];
         return {...data};
-    }
+    };
+
 }

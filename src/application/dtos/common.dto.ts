@@ -10,6 +10,8 @@ import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { SubscriptionStatus } from "../../domain/enums/subscriptionStatus.enum";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
 import { adminVerificationStatusArray, appointmentStatusArray, daysArray, paymentForArray, paymentGatewayArray, roleArray, serviceCategoryArray, serviceModeArray, serviceTypeArray, subscriptionStatusArray } from "../../shared/utils/constants";
+import { PaymentMethod } from "../../domain/enums/paymentMethod.enum";
+import { PaymentStatus } from "../../domain/enums/paymentStatus.enum";
 
 export type RoleType = typeof roleArray[number];
 
@@ -140,8 +142,8 @@ export interface statusTrack {
 export interface PaymentDTO {
   _id: string,
   transactionId: string,
-  paymentStatus: string,
-  paymentMethod: string,
+  paymentStatus: PaymentStatus,
+  paymentMethod: PaymentMethod,
   paymentGateway: PaymentGateway,
   paymentFor: PaymentFor,
   initialAmount: number,
@@ -272,21 +274,21 @@ export interface ServiceAvailabilityDTO {
 
 
 
-// **** 1. Used as the request interface for the paginated request
+// **** Used as the request interface for the paginated request
 export interface ApiPaginationRequest {
   page: number;
   limit: number;
 }
 
 
-// **** 2. Used as the response interface for the all request
+// **** Used as the response interface for the all request
 export interface CommonResponse {
   success?: boolean;
   message?: string;
 };
 
 
-// **** 3. Used as the response interface for the paginated response
+// **** Used as the response interface for the paginated response
 export interface ApiResponse<T = unknown> extends CommonResponse {
   totalPages?: number;
   currentPage?: number;
@@ -300,7 +302,23 @@ export interface TableData<T> {
   currentPage?: number;
   totalCount?: number;
   data?: T
+};
+
+
+// **** Common DTOS used in usecases **** \\
+
+// Used as the payments fetching request and response dto
+export interface userIdAndProviderIdFilterForFetchPayments {
+  userId?: UserDTO["_id"];
+  providerId?: ProviderDTO["_id"];
 }
+export interface FetchPaymentsRequest extends ApiPaginationRequest, userIdAndProviderIdFilterForFetchPayments { };
+export type FetchPaymentResponse = Array<Pick<PaymentDTO, "_id" | "createdAt" | "totalAmount" | "paymentFor" | "paymentGateway" | "paymentStatus" | "paymentMethod" | "discountAmount">>;
+
+
+
+
+
 
 
 //// **** 4.1 Used as the request interface for fetching subscriptions with planName and plan price of a specific provider for the provider side and admin side
@@ -325,19 +343,6 @@ export type PopulatedSubscription = Omit<SubscriptionDTO, 'subscriptionPlanId' |
 
 //// **** 5. Used as the request type for adding address for user or provider
 export type CreateAddressRequest = Pick<AddressDTO, "userId" | "addressLine" | "landMark" | "place" | "phone" | "city" | "country" | "district" | "pincode" | "state" | "location">;
-
-
-//// **** 6.1 Used as the request interface fetching payments for admin, provider and user side
-export interface userIdAndProviderIdFilterForFetchPayments {
-  userId?: UserDTO["_id"];
-  providerId?: ProviderDTO["_id"];
-  paymentFor?: PaymentForType | { $in: PaymentForType[] };
-}
-export interface FetchPaymentsRequest extends ApiPaginationRequest, userIdAndProviderIdFilterForFetchPayments { }
-//// **** 6.1 Used as the response type fetching payments for admin, provider and user side
-export type FetchPaymentResponse = Array<Pick<PaymentDTO, "_id" | "createdAt" | "totalAmount" | "paymentFor" | "paymentGateway" | "paymentStatus" | "paymentMethod" | "discountAmount">>;
-
-
 
 //// **** 7.1 Used as the request interface for fetching bookings for admin, provider and user side
 export interface userIdAndServiceProviderId {

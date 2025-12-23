@@ -1,4 +1,8 @@
+import { PaymentFor } from "../enums/paymentFor.enum";
 import { PaymentProps } from "../contracts/payment.contract";
+import { PaymentMethod } from "../enums/paymentMethod.enum";
+import { PaymentStatus } from "../enums/paymentStatus.enum";
+import { PaymentGateway } from "../enums/paymentGateway.enum";
 import { CreateForBookingProps, CreateForSubscriptionProps, UpdatePaymentProps } from "../commands/payment.commands";
 
 export class Payment {
@@ -67,10 +71,38 @@ export class Payment {
         return this.props._id
     };
 
+    get createdAt(): Date {
+        return this.props.createdAt;
+    };
+
+    get discountAmount(): number {
+        return this.props.discountAmount;
+    };
+
+    get paymentFor(): PaymentFor {
+        return this.props.paymentFor;
+    };
+
+    get paymentGateway(): PaymentGateway {
+        return this.props.paymentGateway;
+    };
+
+    get paymentMethod(): PaymentMethod {
+        return this.props.paymentMethod;
+    };
+
+    get paymentStatus(): PaymentStatus {
+        return this.props.paymentStatus;
+    };
+
+    get totalAmount(): number {
+        return this.props.totalAmount;
+    };
+
     // Business Methods
 
     getProps(): Readonly<PaymentProps> {
-        return {...this.props}
+        return { ...this.props }
     };
 
     update(props: UpdatePaymentProps) {
