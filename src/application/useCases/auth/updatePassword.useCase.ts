@@ -1,6 +1,5 @@
-import { ApiResponse } from "../../dtos/common.dto";
-import { User } from "../../../domain/entities/user.entity";
-import { roleArray } from "../../../shared/utils/constants";
+import { log } from "../../../shared/logger/logger";
+import { Role } from "../../../domain/enums/role.enum";
 import { UpdatePasswordRequest } from "../../dtos/auth.dto";
 import { PasswordHasher } from "../../../infrastructure/security/password-hashing";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
@@ -12,7 +11,7 @@ export class UpdatePasswordUseCase {
         private providerRepository: IProviderRepository
     ) { }
 
-    async execute(payload: UpdatePasswordRequest): Promise<ApiResponse> {
+    async execute(payload: UpdatePasswordRequest): Promise<void> {
         try {
             const { role, verificationToken, password } = payload;
 
@@ -20,14 +19,14 @@ export class UpdatePasswordUseCase {
 
             const hashedPassword = await PasswordHasher.hashPassword(password);
 
-            if (role === roleArray[1]) {
+            if (role === Role.User) {
                 const user = await this.userRepository.findByVerificationToken(verificationToken);
                 if (!user) throw new Error("User not found.");
 
                 user.changePassword({ password: hashedPassword });
-                await this.userRepository.update(user as User);
+                await this.userRepository.update(user);
 
-            } else if (role === roleArray[2]) {
+            } else if (role === Role.Provider) {
                 const provider = await this.providerRepository.findByVerificationToken(verificationToken);
                 if (!provider) throw new Error("User not found.");
 
@@ -35,10 +34,9 @@ export class UpdatePasswordUseCase {
                 await this.providerRepository.update(provider);
             }
 
-            return { success: true, message: "Password updated successfully." };
         } catch (error) {
-            console.log("UpdatePasswordUseCase error : ", error);
-            throw new Error("Failed to update password");
+            log.error("UpdatePasswordUseCase failed : ", error as Error);
+            throw error;
         }
     }
 }

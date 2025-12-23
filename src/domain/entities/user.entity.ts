@@ -21,7 +21,7 @@ export class User {
 
     static createLocal(props: CreateLocalUserProps): User {
         return new User({
-            _id: props._id,
+            _id: "",
             username: props.username,
             email: props.email,
             password: props.password,
@@ -41,7 +41,7 @@ export class User {
 
     static createGoogle(props: CreateGoogleUserProps): User {
         return new User({
-            _id: props._id,
+            _id: "",
             username: props.username,
             email: props.email,
             password: null,

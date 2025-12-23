@@ -1,5 +1,5 @@
-import { Types } from "mongoose";
-import { AdminVerificationStatusType, ApiResponse, CommonResponse, RoleType } from "./common.dto";
+import { CommonResponse, RoleType } from "./common.dto";
+import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
 
 // **** Register usec case
 // user or provider register usecase request payload interface
@@ -10,7 +10,7 @@ export interface RegisterRequest {
     role: string;
 }
 // user or provider register usecase response interface
-export interface RegisterResponse extends CommonResponse {
+export interface RegisterResponse {
     authUser: {
         verificationToken: string,
         role: string,
@@ -35,7 +35,7 @@ export interface ResendOtpRequest {
     verificationToken?: string;
     email?: string;
 }
-export interface ResendOtpResponse extends ApiResponse {
+export interface ResendOtpResponse {
   authUser: {
     verificationToken: string,
     role: string
@@ -51,12 +51,12 @@ export interface LoginRequest {
     role: string;
 }
 // user or provider login use case response interface
-export interface LoginResponse extends CommonResponse {
+export interface LoginResponse {
     authUser: {
-        uid?: Types.ObjectId;
+        uid?: string;
         username: string;
         phone?: string;
-        profileImage: string | null;
+        profileImage?: string | null;
         role: string;
         token: string;
         isBlocked?: boolean;
@@ -67,7 +67,7 @@ export interface LoginResponse extends CommonResponse {
         isAdminVerified?: boolean;
         isProofSubmitted?: boolean;
         verificationRejectionReason?: string | null,
-        adminVerificationStatus?: AdminVerificationStatusType,
+        adminVerificationStatus?: AdminVerificationStatus,
         isAddressVerified?: boolean,
         isServiceDetailsVerified?: boolean,
         isAvailabilityVerified?: boolean,

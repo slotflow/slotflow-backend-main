@@ -1,5 +1,4 @@
 export type CreateLocalUserProps = {
-  _id: string;
   username: string;
   email: string;
   password: string;
@@ -7,7 +6,6 @@ export type CreateLocalUserProps = {
 };
 
 export type CreateGoogleUserProps = {
-  _id: string;
   username: string;
   email: string;
   googleId: string;

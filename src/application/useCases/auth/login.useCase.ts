@@ -1,14 +1,15 @@
 import { adminConfig } from "../../../config/env";
-import { roleArray } from "../../../shared/utils/constants";
+import { log } from "../../../shared/logger/logger";
+import { Role } from "../../../domain/enums/role.enum";
 import { JWTService } from "../../../infrastructure/security/jwt";
-import { PasswordHasher } from "../../../infrastructure/security/password-hashing";
 import { LoginRequest, LoginResponse } from "../../dtos/auth.dto";
+import { SubscriptionStatus } from "../../../domain/enums/subscriptionStatus.enum";
+import { PasswordHasher } from "../../../infrastructure/security/password-hashing";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
-import { Provider, User } from "../../dtos/common.dto";
 
 export class LoginUseCase {
     constructor(
@@ -25,104 +26,119 @@ export class LoginUseCase {
 
             if (!email || !password || !role) throw new Error("Invalid request.");
 
-            let userOrProvider: User | Provider | null = null;
+            if (role === Role.User) {
+                const user = await this.userRepository.findByEmail(email);
+                if (!user) throw new Error("Invalid credentials");
+                if (user.isBlocked) throw new Error("Your account is blocked, please contact us");
+                if (user.isEmailVerified) throw new Error("Your registration is incomplete, please register again.");
+                if (!user.password) throw new Error("Invalid request");
 
-            if (role === roleArray[1]) {
-                userOrProvider = await this.userRepository.findByEmail(email);
-            } else if (role === roleArray[2]) {
-                userOrProvider = await this.providerRepository.findByEmail(email);
-            } else if (role === roleArray[0]) {
-                if (email !== adminConfig.adminEmail || password !== adminConfig.adminPassword) {
-                    throw new Error("Invalid credentials.");
-                }
-                const token = JWTService.generateToken({ email: email, role: role });
-                return { success: true, message: "Logged In Successfully.", authUser: { username: "Admin", profileImage: "", role: role, token, isLoggedIn: true } };
-            } else {
-                throw new Error("Invalid request.");
-            }
+                const valid = await PasswordHasher.comparePassword(password, user.password);
+                if (!valid) throw new Error("Invalid credentials.");
 
-            if (!userOrProvider) throw new Error("Invalid credentials")
-            if (userOrProvider.isBlocked) throw new Error("Your account is blocked, please contact us.");
-            if (!userOrProvider.isEmailVerified) throw new Error("Your registration was incomplete, please register again.");
+                const token = JWTService.generateToken({ userOrProviderId: user._id, role: role });
 
-            const valid = await PasswordHasher.comparePassword(password, userOrProvider.password);
-            if (!valid) throw new Error("Invalid credentials.");
+                let signedProfileImageUrl: string = "";
+                if (user.profileImage) {
+                    signedProfileImageUrl = await this.signedUrlService.generate(user.profileImage);
+                };
 
-            const token = JWTService.generateToken({ userOrProviderId: userOrProvider._id, role: role });
+                return {
+                    authUser: {
+                        uid: user._id,
+                        username: user.username,
+                        phone: user.phone ?? undefined,
+                        profileImage: signedProfileImageUrl,
+                        role: role,
+                        token,
+                        isBlocked: user.isBlocked,
+                        isLoggedIn: true,
+                        googleConnected: user.googleConnected,
+                        updatedAt: user.updatedAt
+                    },
+                };
 
-            let isAddressAdded;
-            let isServiceDetailsAdded;
-            let isServiceAvailabilityAdded;
-            let isAdminVerified;
-            let isProofSubmitted;
-            let updateProfileImage;
-            let subscriptiondId;
-            let subscription;
-            let subscribedPlanId;
-            let subscribedPlan;
-            let providerSubscription;
+            } else if (role === Role.Provider) {
+                const provider = await this.providerRepository.findByEmail(email);
+                if (!provider) throw new Error("Invalid credentials");
+                if (provider.isBlocked) throw new Error("Your account is blocked, please contact us");
+                if (provider.isEmailVerified) throw new Error("Your registration is incomplete, please register again.");
+                if (!provider.password) throw new Error("Invalid request");
 
-            isAddressAdded = userOrProvider.addressId ? true : false;
+                const valid = await PasswordHasher.comparePassword(password, provider.password);
+                if (!valid) throw new Error("Invalid credentials.");
 
-            if (role === roleArray[2]) {
-                isServiceDetailsAdded = (userOrProvider as Provider).serviceId ? true : false;
-                isServiceAvailabilityAdded = (userOrProvider as Provider).serviceAvailabilityId ? true : false;
-                isAdminVerified = (userOrProvider as Provider).isAdminVerified ? true : false;
-                subscriptiondId = (userOrProvider as Provider).subscription[(userOrProvider as Provider).subscription.length - 1];
-                subscription = await this.subscriptionRepository.findSubscriptionById(subscriptiondId);
+                const token = JWTService.generateToken({ userOrProviderId: provider._id, role: role });
+
+                let signedProfileImageUrl: string = "";
+                if (provider.profileImage) {
+                    signedProfileImageUrl = await this.signedUrlService.generate(provider.profileImage);
+                };
+
+                let providerSubscription: string | undefined = undefined;
+                const subscriptionId = provider.subscription[provider.subscription.length - 1];
+                let subscription = await this.subscriptionRepository.findById(subscriptionId);
                 if (subscription) {
                     const now = new Date();
-                    const isActive = subscription.subscriptionStatus === "Active" && new Date(subscription.endDate) > now;
+                    const isActive = subscription.subscriptionStatus === SubscriptionStatus.Active && new Date(subscription.endDate) > now;
                     if (isActive) {
-                        subscribedPlanId = subscription.subscriptionPlanId;
-                        subscribedPlan = await this.planRepository.findPlanById(subscribedPlanId);
+                        const subscribedPlanId = subscription.subscriptionPlanId;
+                        const subscribedPlan = await this.planRepository.findById(subscribedPlanId);
                         providerSubscription = subscribedPlan?.planName;
                     } else {
                         providerSubscription = "NoSubscription"
                     }
                 }
-                isProofSubmitted = ((userOrProvider as Provider).identityProof && (userOrProvider as Provider).serviceProof) ? true : false;
-            }
 
-            if (userOrProvider.profileImage) {
-                const userOrProviderProfileUrl = userOrProvider.profileImage;
-                if (!userOrProviderProfileUrl) throw new Error("Profile image fetching error.");
-                const signedUrl = await this.signedUrlService.generate(userOrProviderProfileUrl);
-                if (!signedUrl) throw new Error("Image fetching error.");
-                updateProfileImage = signedUrl
-            }
 
-            return {
-                success: true,
-                message: 'Logged In Successfully.',
-                authUser: {
-                    uid: userOrProvider._id,
-                    username: userOrProvider.username,
-                    phone: userOrProvider.phone,
-                    profileImage: updateProfileImage ? updateProfileImage : userOrProvider.profileImage,
-                    role: role,
-                    token,
-                    isBlocked: userOrProvider.isBlocked,
-                    isLoggedIn: true,
-                    isAddressAdded,
-                    isServiceDetailsAdded,
-                    isServiceAvailabilityAdded,
-                    isAdminVerified,
-                    isProofSubmitted,
-                    adminVerificationStatus: (userOrProvider as Provider).adminVerificationStatus,
-                    isAddressVerified: (userOrProvider as Provider).isAddressVerified,
-                    isAvailabilityVerified: (userOrProvider as Provider).isAvailabilityVerified,
-                    isProofsVerified: (userOrProvider as Provider).isProofsVerified,
-                    isServiceDetailsVerified: (userOrProvider as Provider).isServiceDetailsVerified,
-                    verificationRejectionReason: (userOrProvider as Provider).verificationRejectionReason,
-                    providerSubscription,
-                    googleConnected: userOrProvider.googleConnected,
-                    updatedAt: userOrProvider.updatedAt
+                return {
+                    authUser: {
+                        uid: provider._id,
+                        username: provider.username,
+                        phone: provider.phone ?? undefined,
+                        profileImage: signedProfileImageUrl,
+                        role: role,
+                        token,
+                        isBlocked: provider.isBlocked,
+                        isLoggedIn: true,
+                        isAddressAdded: !!provider.addressId,
+                        isServiceDetailsAdded: !!provider.serviceId,
+                        isServiceAvailabilityAdded: !!provider.serviceAvailabilityId,
+                        isAdminVerified: provider.isAdminVerified,
+                        isProofSubmitted: !!provider.identityProof && !!provider.serviceProof,
+                        adminVerificationStatus: provider.adminVerificationStatus,
+                        isAddressVerified: provider.isAddressVerified,
+                        isAvailabilityVerified: provider.isAvailabilityVerified,
+                        isProofsVerified: provider.isProofsVerified,
+                        isServiceDetailsVerified: provider.isServiceDetailsVerified,
+                        verificationRejectionReason: provider.verificationRejectionReason,
+                        providerSubscription,
+                        googleConnected: provider.googleConnected,
+                        updatedAt: provider.updatedAt
+                    }
+                };
+
+            } else if (role === Role.Admin) {
+                if (email !== adminConfig.adminEmail || password !== adminConfig.adminPassword) {
+                    throw new Error("Invalid credentials.");
                 }
-            };
+                const token = JWTService.generateToken({ email: email, role: role });
+                return {
+                    authUser: {
+                        username: "Admin",
+                        profileImage: "",
+                        role: role,
+                        token,
+                        isLoggedIn: true
+                    }
+                };
+            } else {
+                throw new Error("Invalid request.");
+            }
+
         } catch (error) {
-            console.log("LoginUseCase error : ", error);
-            throw new Error(`Failed to login : ${error}`);
+            log.error("LoginUseCase failed", error as Error);
+            throw error;
         }
     }
 }

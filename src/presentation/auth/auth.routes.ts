@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { authController } from './auth.controller';
-import { authMiddleware } from '../middleware/auth.middleware';
 import { googleAuthController } from './googleAuth.controller';
 
 const router = Router();
@@ -11,7 +10,6 @@ router.post('/resendOtp', authController.resendOtp);
 router.post("/signin", authController.login);
 router.post('/signout', authController.logout);
 router.patch('/password',authController.updatePassword);
-router.post('/status',authMiddleware,authController.checkUserStatus);
 
 router.get('/google', googleAuthController.googleAuth);
 router.get('/google/callback', googleAuthController.googleAuthCallback);

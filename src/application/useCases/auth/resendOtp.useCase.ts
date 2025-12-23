@@ -1,11 +1,13 @@
 // import { producer } from '../../../server';
-import { kafkaConfig } from '../../../config/env';
-import { roleArray } from '../../../shared/utils/constants';
+// import { kafkaConfig } from '../../../config/env';
+import { log } from '../../../shared/logger/logger';
+import { Role } from '../../../domain/enums/role.enum';
+import { User } from '../../../domain/entities/user.entity';
+import { Provider } from '../../../domain/entities/provider.entity';
 import { OTPService } from '../../../infrastructure/services/otp.service';
-import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { ResendOtpRequest, ResendOtpResponse } from '../../dtos/auth.dto';
+import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
-import { Provider, User } from '../../dtos/common.dto';
 
 export class ResendOtpUseCase {
 
@@ -22,18 +24,18 @@ export class ResendOtpUseCase {
       let userOrProvider: Provider | User | null = null;
 
       if (email && role) {
-        if (role === roleArray[1]) {
+        if (role === Role.User) {
           userOrProvider = await this.userRepository.findByEmail(email);
-        } else if (role === roleArray[2]) {
+        } else if (role === Role.Provider) {
           userOrProvider = await this.providerRepository.findByEmail(email);
         } else {
           throw new Error("Invalid request.");
         }
 
       } else if (verificationToken && role) {
-        if (role === roleArray[1]) {
+        if (role === Role.User) {
           userOrProvider = await this.userRepository.findByVerificationToken(verificationToken);
-        } else if (role === roleArray[2]) {
+        } else if (role === Role.Provider) {
           userOrProvider = await this.providerRepository.findByVerificationToken(verificationToken);
         } else {
           throw new Error("Invalid request.");
@@ -57,10 +59,10 @@ export class ResendOtpUseCase {
       //   }],
       // });
 
-      return { success: true, message: `OTP has been sent to your email`, authUser: { verificationToken: userOrProvider.verificationToken, role } };
+      return { authUser: { verificationToken: userOrProvider.verificationToken, role } };
     } catch (error) {
-      console.log("ResendOtpUseCase error : ", error);
-      throw new Error("Failed to resend OTP");
+      log.error("ResendOtpUseCase failed", error as Error);
+      throw error;
     }
   }
 }

@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import passport from "passport";
-import { Types } from "mongoose";
+import { log } from "../../shared/logger/logger";
 import { appConfig, appUrl } from "../../config/env";
 import { roleArray } from "../../shared/utils/constants";
 import { NextFunction, Request, Response } from "express";
@@ -42,8 +42,8 @@ export class GoogleAuthController {
                 state: JSON.stringify({ role }),
             })(req, res, next);
         } catch (error) {
-            console.log("googleAuth error : ", error);
-            next(error)
+            log.error("googleAuth failed", error as Error);
+            next(error);
         }
     }
 
@@ -78,7 +78,7 @@ export class GoogleAuthController {
                 console.log("User : ", user);
                 console.log("expiryDate : ", expiryDate);
                 await this.createCredentialUseCase.execute({
-                    userId: new Types.ObjectId(user._id),
+                    userId: user._id,
                     accessToken: user.googleAccessToken,
                     refreshToken: user.googleRefreshToken,
                     expiryDate,
@@ -111,17 +111,16 @@ export class GoogleAuthController {
                 return res.redirect(`${frontendUrl}?authUser=${encodeURIComponent(authUserWithoutTokenJson)}`);
             })(req, res);
         } catch (error) {
-            console.log("googleAuthCallback error : ", error);
-            next(error)
+            log.error("googleAuthCallback failed", error as Error);
+            next(error);
         }
     }
 }
 
-const googleAuthController = new GoogleAuthController(
+export const googleAuthController = new GoogleAuthController(
     createCredentialUseCase
 );
 
-export { googleAuthController };
 
 
 

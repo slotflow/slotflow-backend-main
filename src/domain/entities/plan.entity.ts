@@ -31,22 +31,26 @@ export class Plan {
 
     get _id(): string {
         return this.props._id;
-    }
+    };
+
+    get planName(): string {
+        return this.props.planName;
+    };
 
     // Business Method
     getProps(): Readonly<PlanProps> {
         return { ...this.props };
-    }
+    };
 
     block() {
         this.props.isBlocked = true;
         this.touch();
-    }
+    };
 
     unblock() {
         this.props.isBlocked = false;
         this.touch();
-    }
+    };
 
     update(props: UpdatePlanProps) {
         this.props = {
@@ -54,7 +58,6 @@ export class Plan {
             ...props
         };
         this.touch();
-    }
-
+    };
 
 }

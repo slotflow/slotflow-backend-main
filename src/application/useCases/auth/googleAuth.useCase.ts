@@ -1,6 +1,7 @@
+import { log } from "../../../shared/logger/logger";
+import { Role } from "../../../domain/enums/role.enum";
 import { GoogleAuthRequest } from "../../dtos/auth.dto";
 import { User } from "../../../domain/entities/user.entity";
-import { roleArray } from "../../../shared/utils/constants";
 import { Provider } from "../../../domain/entities/provider.entity";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
@@ -15,7 +16,7 @@ export class GoogleAuthUseCase {
         try {
             const { email, googleId, image, name, role } = payload;
 
-            if (role === roleArray[1]) {
+            if (role === Role.User) {
                 let user = await this.userRepository.findByGoogleId(googleId);
 
                 if (!user) {
@@ -24,7 +25,6 @@ export class GoogleAuthUseCase {
 
                 if (!user) {
                     user = User.createGoogle({
-                        _id: "",
                         username: name,
                         email,
                         googleId,
@@ -37,7 +37,7 @@ export class GoogleAuthUseCase {
                 return user;
             }
 
-            if (role === roleArray[2]) {
+            if (role === Role.Provider) {
                 let provider = await this.providerRepository.findByGoogleId(googleId);
 
                 if (!provider) {
@@ -59,8 +59,8 @@ export class GoogleAuthUseCase {
 
             throw new Error("Invalid role");
         } catch (error) {
-            console.log("GoogleAuthUseCase error : ", error);
-            throw new Error("Google Auth failed");
+            log.error("GoogleAuthUseCase failed", error as Error);
+            throw error;
         }
     }
 }

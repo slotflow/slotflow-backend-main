@@ -1,12 +1,12 @@
 import { Request } from "express";
-import { RoleType } from "./application/dtos/common.dto";
+import { Role } from "./domain/enums/role.enum";
 
 export interface DecodedUser {
     userOrProviderId: string;
-    role: RoleType;
-    exp: number;
-    iat: number;
-}
+    role: Role;
+    exp?: number;
+    iat?: number;
+};
 
 // Extend the Request interface
 declare global {
