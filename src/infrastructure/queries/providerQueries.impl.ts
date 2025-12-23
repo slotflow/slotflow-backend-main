@@ -1,7 +1,6 @@
 import { ProviderModel } from "../database/provider/provider.model";
 import { IProviderQueries } from "../../application/queries/IProvider.queries";
-import { ApiPaginationRequest, TableData } from "../../application/dtos/common.dto";
-import { AdiminFetchAllProviders, AdminFetchDashboardProviderStatsDataResponse } from "../../application/dtos/admin.dto";
+import { AdminFetchDashboardProviderStatsDataResponse } from "../../application/dtos/admin.dto";
 
 export class ProviderQueryImpl implements IProviderQueries {
 
@@ -36,33 +35,6 @@ export class ProviderQueryImpl implements IProviderQueries {
       availabilityAddedProviders,
       slotflowTrustedProviders,
     };
-  }
+  };
 
-  async findAll({ page, limit }: ApiPaginationRequest): Promise<TableData<AdiminFetchAllProviders>> {
-    const skip = (page - 1) * limit;
-    const [providers, totalCount] = await Promise.all([
-      ProviderModel.find({}, {
-        _id: 1,
-        username: 1,
-        email: 1,
-        isBlocked: 1,
-        isAdminVerified: 1,
-        adminVerificationStatus: 1,
-        isEmailVerified: 1,
-        trustedBySlotflow: 1
-      }).skip(skip).limit(limit).lean<AdiminFetchAllProviders>(),
-      ProviderModel.countDocuments(),
-    ]);
-    const totalPages = Math.ceil(totalCount / limit);
-
-    return {
-      data: providers.map(provider => ({
-        ...provider,
-        _id: provider._id.toString(),
-      })),
-      totalPages,
-      currentPage: page,
-      totalCount
-    }
-  }
 }

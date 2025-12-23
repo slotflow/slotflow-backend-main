@@ -117,6 +117,54 @@ export type AdminChangeBlockStatusResponse = {
 export type AdminChangePlanIsBlockedStatusRequest = AdminChangeBlockStatusResponse;
 
 
+// **** adminProvider.usecase
+
+// Used as the response type of admin fetch all providers
+export type AdiminFetchAllProviders = Array<Pick<ProviderDTO, "_id" | "username" | "email" | "isBlocked" | "isAdminVerified" | "isEmailVerified" | "trustedBySlotflow" | "adminVerificationStatus">>;
+
+// Used as the request interface of admin approve provider
+export interface AdminApproveProviderRequest  {
+    providerId: ProviderDTO["_id"];
+};
+
+// Used as the request interface of admin reject provider
+export type AdminRejectProviderRequest = Pick<ProviderDTO, "verificationRejectionReason" | "isAddressVerified" | "isServiceDetailsVerified" | "isAvailabilityVerified" | "isProofsVerified"> & {
+    providerId: ProviderDTO["_id"];
+};
+
+// Used as the request interface of admin change provider block status
+export interface AdminChangeProviderStatusRequest {
+    providerId: ProviderDTO["_id"];
+    isBlocked: ProviderDTO["isBlocked"];
+};
+
+// Used as the response type of admin change provider block status
+export type AdminChangeProviderStatusResponse = AdminChangeProviderStatusRequest;
+
+// Used as the request interface of admin change provider trust tag 
+export interface AdminChangeProviderTrustTagRequest  {
+    providerId: ProviderDTO["_id"];
+    trustedBySlotflow: ProviderDTO["trustedBySlotflow"];
+};
+
+// Used as the response type of admin change provider trust tag 
+export type AdminChangeProviderTrustTagResponse = AdminChangeProviderTrustTagRequest;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -125,41 +173,14 @@ export type AdminChangePlanIsBlockedStatusRequest = AdminChangeBlockStatusRespon
 // **************** used in adminProvider.use-case **************** \\
 
 // **** adminFetchAllProviders
-// Used as the return type of fetch all providers
-// Used in AdminProviderListUseCase, the findAllProviders method in ProviderRepositoryImpl, 
-// and the findAllProviders method in IProviderRepository as the response type with ApiResponse
-export type AdiminFetchAllProviders = Array<Pick<ProviderDTO, "_id" | "username" | "email" | "isBlocked" | "isAdminVerified" | "isEmailVerified" | "trustedBySlotflow" | "adminVerificationStatus">>;
-
-
 
 // **** adminApproveProvider
-// Used as the request interface of admin approve provider
-export interface AdminApproveProviderRequest  {
-    providerId: ProviderDTO["_id"];
-}
 
 // **** adminRejectProvider
-// Used as the request interface of admin reject provider
-export type AdminRejectProviderRequest = Pick<ProviderDTO, "verificationRejectionReason" | "isAddressVerified" | "isServiceDetailsVerified" | "isAvailabilityVerified" | "isProofsVerified"> & {
-    providerId: ProviderDTO["_id"];
-}
-
 
 // **** adminChangeProvierBlockStatus
-// Used as the request interface of admin change provider block status
-export interface AdminChangeProviderStatusRequest {
-    providerId: ProviderDTO["_id"];
-    isBlocked: ProviderDTO["isBlocked"];
-}
-
 
 // **** adminChangeProviderTrustTag
-// Used as the request interface of admin change provider trust tag 
-export interface AdminChangeProviderTrustTagRequest  {
-    providerId: ProviderDTO["_id"];
-    trustedBySlotflow: ProviderDTO["trustedBySlotflow"];
-};
-
 
 // **** adminFetchProviderProfileDetails
 // Used as the request interface of admin fetch provider profile details

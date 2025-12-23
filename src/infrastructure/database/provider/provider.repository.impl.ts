@@ -63,4 +63,29 @@ export class ProviderRepositoryImpl implements IProviderRepository {
         });
     };
 
+    async findAll(page: number, limit: number): Promise<{ data: Array<Provider>, totalPages: number; currentPage: number; totalCount: number; }> {
+        const skip = (page - 1) * limit;
+        const [providers, totalCount] = await Promise.all([
+            ProviderModel.find({}, {
+                _id: 1,
+                username: 1,
+                email: 1,
+                isBlocked: 1,
+                isAdminVerified: 1,
+                adminVerificationStatus: 1,
+                isEmailVerified: 1,
+                trustedBySlotflow: 1
+            }).skip(skip).limit(limit).lean(),
+            ProviderModel.countDocuments(),
+        ]);
+        const totalPages = Math.ceil(totalCount / limit);
+
+        return {
+            data: providers.map(provider => ProviderMapper.toDomain(provider)),
+            totalPages,
+            currentPage: page,
+            totalCount
+        };
+    };
+
 };

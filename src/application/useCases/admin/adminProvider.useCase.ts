@@ -1,29 +1,45 @@
 import {
     AdiminFetchAllProviders,
+    AdminRejectProviderRequest,
     AdminApproveProviderRequest,
     AdminChangeProviderStatusRequest,
+    AdminChangeProviderStatusResponse,
     AdminChangeProviderTrustTagRequest,
-    AdminRejectProviderRequest,
+    AdminChangeProviderTrustTagResponse,
 } from "../../dtos/admin.dto";
-import { ApiPaginationRequest, ApiResponse } from "../../dtos/common.dto";
-import { IAdminProviderQuery } from "../../queries/IProvider.queries";
+import { log } from "../../../shared/logger/logger";
+import { ApiPaginationRequest, TableData } from "../../dtos/common.dto";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 
 
 export class AdminProviderListUseCase {
     constructor(
-        private adminProviderQuery: IAdminProviderQuery
+        private providerRepository: IProviderRepository
     ) { }
 
-    async execute(payload: ApiPaginationRequest): Promise<ApiResponse<AdiminFetchAllProviders>> {
+    async execute(payload: ApiPaginationRequest): Promise<TableData<AdiminFetchAllProviders>> {
         try {
-            const result = await this.adminProviderQuery.findAll(payload);
-            if (!result) throw new Error("Providers fetching failed");
-
-            return { data: result.data, totalPages: result.totalPages, currentPage: result.currentPage, totalCount: result.totalCount };
+            const { page, limit } = payload;
+            const result = await this.providerRepository.findAll(page, limit);
+            const { data: providers, currentPage, totalCount, totalPages } = result;
+            return { 
+                data: providers.map(provider => ({
+                    _id: provider._id,
+                    adminVerificationStatus: provider.adminVerificationStatus,
+                    email: provider.email,
+                    isAdminVerified: provider.isAdminVerified,
+                    isBlocked: provider.isBlocked,
+                    isEmailVerified: provider.isEmailVerified,
+                    trustedBySlotflow: provider.trustedBySlotflow,
+                    username: provider.username
+                })), 
+                totalPages, 
+                currentPage, 
+                totalCount,
+            };
         } catch (error) {
-            console.log("AdminProviderListUseCase: ", error);
-            throw new Error("Failed to fetch providers list");
+            log.error("AdminProviderListUseCase failed", error as Error);
+            throw error;
         }
     }
 }
@@ -34,7 +50,7 @@ export class AdminApproveProviderUseCase {
         private providerRepository: IProviderRepository
     ) { }
 
-    async execute(payload: AdminApproveProviderRequest): Promise<ApiResponse> {
+    async execute(payload: AdminApproveProviderRequest): Promise<void> {
         try {
             const { providerId } = payload;
 
@@ -44,15 +60,12 @@ export class AdminApproveProviderUseCase {
 
             provider.approveVerification();
 
-            const updatedProvider = await this.providerRepository.update(provider);
-            if (!updatedProvider) throw new Error("Provider not found");
-
+            await this.providerRepository.update(provider);
             //TODO SEND EMAIL
 
-            return { success: true, message: "Provider approved successfully." };
         } catch (error) {
-            console.log("AdminApproveProviderUseCase: ", error);
-            throw new Error("Failed to approve provider");
+            log.error("AdminApproveProviderUseCase failed", error as Error);
+            throw error;
         }
     }
 }
@@ -63,7 +76,7 @@ export class AdminRejectProviderUseCase {
         private providerRepository: IProviderRepository
     ) { }
 
-    async execute(payload: AdminRejectProviderRequest): Promise<ApiResponse> {
+    async execute(payload: AdminRejectProviderRequest): Promise<void> {
         try {
             const { providerId, verificationRejectionReason, isAddressVerified, isAvailabilityVerified, isProofsVerified, isServiceDetailsVerified } = payload;
 
@@ -78,15 +91,13 @@ export class AdminRejectProviderUseCase {
             isProofsVerified,
             });
 
-            const updatedProvider = await this.providerRepository.update(provider);
-            if (!updatedProvider) throw new Error("Provider not found");
+            await this.providerRepository.update(provider);
 
             //TODO SEND EMAIL
 
-            return { success: true, message: "Provider rejected successfully." };
         } catch (error) {
-            console.log("AdminRejectProviderUseCase: ", error);
-            throw new Error("Failed to reject provider");
+            log.error("AdminRejectProviderUseCase failed", error as Error);
+            throw error;
         }
     }
 }
@@ -97,14 +108,14 @@ export class AdminChangeProviderBlockStatusUseCase {
         private providerRepository: IProviderRepository
     ) { }
 
-    async execute(payload: AdminChangeProviderStatusRequest): Promise<ApiResponse> {
+    async execute(payload: AdminChangeProviderStatusRequest): Promise<AdminChangeProviderStatusResponse> {
         try {
             const { providerId, isBlocked } = payload; // TODO need to update input DTO
 
             const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");
             
-            if(provider.isBlocked) {
+            if(isBlocked) {
                 provider.unblock();
             } else {
                 provider.block();
@@ -115,10 +126,10 @@ export class AdminChangeProviderBlockStatusUseCase {
 
             //TODO SEND EMAIL
 
-            return { success: true, message: `Provider ${updatedProvider.isBlocked ? "blocked" : "Unblocked"} successfully.` };
+            return { providerId, isBlocked: updatedProvider.isBlocked };
         } catch (error) {
-            console.log("AdminChangeProviderBlockStatusUseCase: ", error);
-            throw new Error("Failed to change provider block status");
+            log.error("AdminChangeProviderBlockStatusUseCase failed", error as Error);
+            throw error;
         }
     }
 }
@@ -129,14 +140,14 @@ export class AdminChangeProviderTrustTagUseCase {
         private providerRepository: IProviderRepository
     ) { }
 
-    async execute(payload: AdminChangeProviderTrustTagRequest): Promise<ApiResponse> {
+    async execute(payload: AdminChangeProviderTrustTagRequest): Promise<AdminChangeProviderTrustTagResponse> {
         try {
             const { providerId, trustedBySlotflow } = payload; // TODO need to update input DTO
 
             const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");
 
-            if(provider.trustedBySlotflow) {
+            if(trustedBySlotflow) {
                 provider.revokeTrustBadge();
             } else {
                 provider.grantTrustBadge();
@@ -147,10 +158,10 @@ export class AdminChangeProviderTrustTagUseCase {
 
             //TODO SEND EMAIL
             
-            return { success: true, message: `Provider trust tag ${updatedProvider.trustedBySlotflow ? "Given" : "Removed"} successfully.` };
+            return { providerId, trustedBySlotflow: updatedProvider.trustedBySlotflow };
         } catch (error) {
-            console.log("AdminChangeProviderTrustTagUseCase: ", error);
-            throw new Error("Failed to change provider trust tag status");
+            log.error("AdminChangeProviderTrustTagUseCase failed", error as Error);
+            throw error;
         }
     }
 }
