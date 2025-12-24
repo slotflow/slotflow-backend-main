@@ -6,6 +6,9 @@ import { AddressDTO, ApiPaginationRequest, FontendAvailabilityForResponse, Payme
 export type AdminFetchUserOrProviderAddressResponse = Pick<AddressDTO, "userId" | "addressLine" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location"> | null;
 
 
+
+
+
 // **** adminDashboard.usecase
 
 // used as the return type of the admin fetch dashboard todays stats data
@@ -73,6 +76,9 @@ export interface AdminFetchDashboardAppointmentStatsDataResponse {
 };
 
 
+
+
+
 // **** adminPayment.usecase
 
 // Admin fetch revenue report request
@@ -99,6 +105,9 @@ export interface AdminFetchRevenueReportResponse {
 };
 
 
+
+
+
 // **** adminPlan.usecase
 
 // Used as the return type of fetch all plans
@@ -117,6 +126,9 @@ export type AdminChangeBlockStatusResponse = {
 export type AdminChangePlanIsBlockedStatusRequest = AdminChangeBlockStatusResponse;
 
 
+
+
+
 // **** adminProvider.usecase
 
 // Used as the response type of admin fetch all providers
@@ -126,7 +138,6 @@ export type AdiminFetchAllProviders = Array<Pick<ProviderDTO, "_id" | "username"
 export interface AdminApproveProviderRequest  {
     providerId: ProviderDTO["_id"];
 };
-
 // Used as the request interface of admin reject provider
 export type AdminRejectProviderRequest = Pick<ProviderDTO, "verificationRejectionReason" | "isAddressVerified" | "isServiceDetailsVerified" | "isAvailabilityVerified" | "isProofsVerified"> & {
     providerId: ProviderDTO["_id"];
@@ -137,7 +148,6 @@ export interface AdminChangeProviderStatusRequest {
     providerId: ProviderDTO["_id"];
     isBlocked: ProviderDTO["isBlocked"];
 };
-
 // Used as the response type of admin change provider block status
 export type AdminChangeProviderStatusResponse = AdminChangeProviderStatusRequest;
 
@@ -146,7 +156,6 @@ export interface AdminChangeProviderTrustTagRequest  {
     providerId: ProviderDTO["_id"];
     trustedBySlotflow: ProviderDTO["trustedBySlotflow"];
 };
-
 // Used as the response type of admin change provider trust tag 
 export type AdminChangeProviderTrustTagResponse = AdminChangeProviderTrustTagRequest;
 
@@ -154,8 +163,33 @@ export type AdminChangeProviderTrustTagResponse = AdminChangeProviderTrustTagReq
 
 
 
+// **** adminProviderProfile.usecase
 
+// Used as the request interface of admin fetch provider profile details
+export interface AdminFetchProviderDetailsRequest {
+    providerId: ProviderDTO["_id"];
+}
+// Used as the return type of admin fetch provider profile details
+export type AdminFetchProviderDetailsResponse = Pick<ProviderDTO, "_id" | "username" | "email" | "isBlocked" | "isEmailVerified" | "isAdminVerified" | "phone" | "profileImage" | "trustedBySlotflow" | "createdAt"> | null;
 
+// Used as the request interface of admin fetch provider service
+export type AdminFetchProviderServiceRequest = {
+    providerId: ProviderDTO["_id"];
+};
+// Used as the request interface of admin fetch provider service
+type FindProviderServiceProps = Omit<ProviderServiceDTO, "service">;
+export interface FindProviderServiceResponse extends FindProviderServiceProps {
+    service: Pick<ServiceDTO, "serviceName">
+};
+export type AdminFetchProviderServiceResponse = FindProviderServiceResponse | null;
+
+// Used as the request interface of admin fetch provider service availability
+export interface AdminFetchProviderServiceAvailabilityRequest {
+    providerId: ProviderDTO["_id"];
+    date: Date
+}
+// Used as the return interface of admin fetch provider service availability
+export type AdminFetchProviderServiceAvailabilityResponse = FontendAvailabilityForResponse | null;
 
 
 
@@ -183,38 +217,17 @@ export type AdminChangeProviderTrustTagResponse = AdminChangeProviderTrustTagReq
 // **** adminChangeProviderTrustTag
 
 // **** adminFetchProviderProfileDetails
-// Used as the request interface of admin fetch provider profile details
-export interface AdminFetchProviderDetailsRequest {
-    providerId: ProviderDTO["_id"];
-}
-// Used as the return type of admin fetch provider profile details
-export type AdminFetchProviderDetailsResponse = Pick<ProviderDTO, "_id" | "username" | "email" | "isBlocked" | "isEmailVerified" | "isAdminVerified" | "phone" | "profileImage" | "trustedBySlotflow" | "createdAt"> | {};
+
 
 
 
 // **** adminFetchProviderAddress
-// Used as the request interface of admin fetch provider service
-export type AdminFetchProviderServiceRequest = {
-    providerId: ProviderDTO["_id"];
-}
-// Used as the request interface of admin fetch provider service
-type FindProviderServiceProps = Omit<ProviderServiceDTO, "service">;
-export interface FindProviderServiceResponse extends FindProviderServiceProps {
-    service: Pick<ServiceDTO, "serviceName">
-}
-export type AdminFetchProviderServiceResponse = FindProviderServiceResponse | {};
+
+
 
 
 
 // **** adminFetchProviderServiceAvailability
-// Used as the request interface of admin fetch provider service availability
-export interface AdminFetchProviderServiceAvailabilityRequest {
-    providerId: ProviderDTO["_id"];
-    date: Date
-}
-// Used as the return interface of admin fetch provider service availability
-export type AdminFetchProviderServiceAvailabilityResponse = FontendAvailabilityForResponse | null;
-
 
 
 

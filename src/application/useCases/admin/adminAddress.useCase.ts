@@ -7,10 +7,10 @@ export class AdminFetchUserOrProviderAddressUseCase {
         private addressRepository: IAddressRepository
     ) { }
 
-    async execute(userOrProviderId: string): Promise<AdminFetchUserOrProviderAddressResponse> {
+    async execute({userId}: {userId: string}): Promise<AdminFetchUserOrProviderAddressResponse> {
         try {
 
-            const address = await this.addressRepository.findByUserId(userOrProviderId);
+            const address = await this.addressRepository.findByUserId(userId);
             if(!address) return null;
 
             const { _id, ...rest } = address.getProps();

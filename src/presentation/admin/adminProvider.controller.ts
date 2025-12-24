@@ -2,24 +2,24 @@ import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { SignedUrlService } from "../../infrastructure/services/signedUrl.service";
+import { ISubscriptionQueries } from "../../application/queries/ISubscription.queries";
 import { ISignedUrlService } from "../../domain/interfaces/services/ISignedUrl.service";
+import { IProviderServiceQueries } from "../../application/queries/IProviderService.queries";
 import { IAddressRepository } from "../../domain/interfaces/repositories/IAddress.repository";
 import { IPaymentRepository } from "../../domain/interfaces/repositories/IPayment.repository";
+import { SubscriptionQueriesImpl } from "../../infrastructure/queries/subscriptionQueries.impl";
 import { IProviderRepository } from "../../domain/interfaces/repositories/IProvider.repository";
+import { IServiceAvailabilityQueries } from "../../application/queries/IServiceAvailability.queries";
 import { AddressRepositoryImpl } from "../../infrastructure/database/address/address.repository.impl";
+import { ProviderServiceQueriesImpl } from "../../infrastructure/queries/providerServiceQueries.impl";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
-import { ISubscriptionRepository } from "../../domain/interfaces/repositories/ISubscription.repository";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { DateZodSchema, RequestQueryCommonZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
 import { FetchProviderProofsUseCase } from "../../application/useCases/common/fetchProviderProofs.useCase";
 import { ISignedUrlCacheRepository } from "../../domain/interfaces/repositories/ISignedUrlCache.repository";
-import { IProviderServiceRepository } from "../../domain/interfaces/repositories/IProviderService.repository";
+import { ServiceAvailabilityQueriesImpl } from "../../infrastructure/queries/serviceAvailabilityQueries.impl";
 import { AdminFetchUserOrProviderAddressUseCase } from "../../application/useCases/admin/adminAddress.useCase";
-import { SubscriptionRepositoryImpl } from "../../infrastructure/database/subscription/subscription.repository.impl";
 import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
-import { IServiceAvailabilityRepository } from "../../domain/interfaces/repositories/IServiceAvailability.repository";
-import { ProviderServiceRepositoryImpl } from "../../infrastructure/database/providerService/providerService.repository.impl";
-import { ServiceAvailabilityRepositoryImpl } from "../../infrastructure/database/serviceAvailability/serviceAvailability.repository.impl";
 import { AdminChangeProviderStatusZodSchema, AdminChangeProviderTrustedTagZodSchema, adminRejectProviderZodSchema } from "../../shared/zod/admin.zod";
 import { AdminApproveProviderUseCase, AdminChangeProviderBlockStatusUseCase, AdminChangeProviderTrustTagUseCase, AdminProviderListUseCase, AdminRejectProviderUseCase } from "../../application/useCases/admin/adminProvider.useCase";
 import { AdminFetchProviderDetailsUseCase, AdminFetchProviderPaymentsUseCase, AdminfetchProviderServiceAvailabilityUseCase, AdminFetchProviderServiceUseCase, AdminFetchProviderSubscriptionsUseCase } from "../../application/useCases/admin/adminProviderProfile.useCase";
@@ -28,26 +28,26 @@ import { AdminFetchProviderDetailsUseCase, AdminFetchProviderPaymentsUseCase, Ad
 const paymentRepository: IPaymentRepository = new PaymentRepositoryImpl();
 const addressRepository: IAddressRepository = new AddressRepositoryImpl();
 const providerRepository: IProviderRepository = new ProviderRepositoryImpl();
-const subscriptionRepository: ISubscriptionRepository = new SubscriptionRepositoryImpl();
 const signedUrlCacheRepository: ISignedUrlCacheRepository = new SignedUrlCacheRepositoryImpl();
-const providerServiceRepository: IProviderServiceRepository = new ProviderServiceRepositoryImpl();
-const serviceAvailability: IServiceAvailabilityRepository = new ServiceAvailabilityRepositoryImpl();
 
 const signedUrlService: ISignedUrlService = new SignedUrlService(signedUrlCacheRepository);
 
-const adminProviderListUseCase = new AdminProviderListUseCase(providerRepository);
-const adminApproveProviderUseCase = new AdminApproveProviderUseCase(providerRepository);
-const adminRejectProviderUseCase = new AdminRejectProviderUseCase(providerRepository);
-const adminChangeProviderBlockStatusUseCase = new AdminChangeProviderBlockStatusUseCase(providerRepository);
-const adminChangeProviderTrustTagUseCase = new AdminChangeProviderTrustTagUseCase(providerRepository);
+const subscriptionQueries: ISubscriptionQueries = new SubscriptionQueriesImpl();
+const providerServiceQueries: IProviderServiceQueries = new ProviderServiceQueriesImpl();
+const serviceAvailabilityQueries: IServiceAvailabilityQueries = new ServiceAvailabilityQueriesImpl();
 
+const adminProviderListUseCase = new AdminProviderListUseCase(providerRepository);
+const adminRejectProviderUseCase = new AdminRejectProviderUseCase(providerRepository);
+const adminApproveProviderUseCase = new AdminApproveProviderUseCase(providerRepository);
+const adminFetchProviderPaymentsUseCase = new AdminFetchProviderPaymentsUseCase(paymentRepository);
+const adminFetchProviderServiceUseCase = new AdminFetchProviderServiceUseCase(providerServiceQueries);
+const adminChangeProviderTrustTagUseCase = new AdminChangeProviderTrustTagUseCase(providerRepository);
 const fetchProviderProofsUseCase = new FetchProviderProofsUseCase(signedUrlService, providerRepository);
+const adminChangeProviderBlockStatusUseCase = new AdminChangeProviderBlockStatusUseCase(providerRepository);
 const adminFetchUserOrProviderAddressUseCase = new AdminFetchUserOrProviderAddressUseCase(addressRepository);
+const adminFetchProviderSubscriptionsUseCase = new AdminFetchProviderSubscriptionsUseCase(subscriptionQueries);
 const adminFetchProviderDetailsUseCase = new AdminFetchProviderDetailsUseCase(providerRepository, signedUrlService);
-const adminFetchProviderPaymentsUseCase = new AdminFetchProviderPaymentsUseCase(providerRepository, paymentRepository)
-const adminFetchProviderServiceUseCase = new AdminFetchProviderServiceUseCase(providerRepository, providerServiceRepository);
-const adminFetchProviderSubscriptionsUseCase = new AdminFetchProviderSubscriptionsUseCase(providerRepository, subscriptionRepository);
-const adminFetchProviderServiceAvailabilityUseCase = new AdminfetchProviderServiceAvailabilityUseCase(providerRepository, serviceAvailability);
+const adminFetchProviderServiceAvailabilityUseCase = new AdminfetchProviderServiceAvailabilityUseCase(providerRepository, serviceAvailabilityQueries);
 
 class AdminProviderController {
     constructor(
@@ -148,7 +148,7 @@ class AdminProviderController {
             const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
             if (!providerId) throw new Error("Invalid request.");
             const result = await this.adminFetchProviderDetailsUseCase.execute({ providerId });
-            res.status(200).json(result);
+            sendResponse(res,result)
         } catch (error) {
             log.error("fetchProviderDetails failed", error as Error);
             next(error);
@@ -159,7 +159,7 @@ class AdminProviderController {
         try {
             const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
             if (!providerId) throw new Error("Invalid request.");
-            const result = await this.adminFetchUserOrProviderAddressUseCase.execute(providerId);
+            const result = await this.adminFetchUserOrProviderAddressUseCase.execute({ userId: providerId });
             res.status(200).json({ 
                 success: true, 
                 message: result
@@ -178,7 +178,7 @@ class AdminProviderController {
             const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
             if (!providerId) throw new Error("Invalid request.");
             const result = await this.adminFetchProviderServiceUseCase.execute({ providerId });
-            res.status(200).json(result);
+            sendResponse(res,result);
         } catch (error) {
             log.error("fetchProviderService failed", error as Error);
             next(error);
@@ -203,7 +203,7 @@ class AdminProviderController {
             const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
             const { page, limit } = RequestQueryCommonZodSchema.parse(req.query);
             const result = await this.adminFetchProviderSubscriptionsUseCase.execute({ providerId, page, limit });
-            res.status(200).json(result);
+            sendResponse(res,result);
         } catch (error) {
             log.error("fetchProviderSubscriptions failed", error as Error);
             next(error);
@@ -216,7 +216,7 @@ class AdminProviderController {
             const { page, limit } = RequestQueryCommonZodSchema.parse(req.query);
             if (!providerId) throw new Error("Invalid request.");
             const result = await this.adminFetchProviderPaymentsUseCase.execute({ providerId, page, limit });
-            res.status(200).json(result);
+            sendResponse(res,result);
         } catch (error) {
             log.error("fetchProviderPayments failed", error as Error);
             next(error);

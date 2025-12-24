@@ -316,16 +316,11 @@ export interface FetchPaymentsRequest extends ApiPaginationRequest, userIdAndPro
 export type FetchPaymentResponse = Array<Pick<PaymentDTO, "_id" | "createdAt" | "totalAmount" | "paymentFor" | "paymentGateway" | "paymentStatus" | "paymentMethod" | "discountAmount">>;
 
 
-
-
-
-
-
-//// **** 4.1 Used as the request interface for fetching subscriptions with planName and plan price of a specific provider for the provider side and admin side
+// Used as the request interface for fetching subscriptions with planName and plan price of a specific provider for the provider side and admin side
 export interface FetchProviderSubscriptionsRequest extends ApiPaginationRequest {
   providerId: ProviderDTO["_id"];
 }
-//// **** 4.2 Used as the response type for fetching subscriptions with planName and plan price of a specific provider for the provider side and admin side
+// Used as the response type for fetching subscriptions with planName and plan price of a specific provider for the provider side and admin side
 export type FindSubscriptionsByProviderIdResponse = Array<
   Pick<SubscriptionDTO, "_id" | "startDate" | "endDate" | "subscriptionStatus"> &
   Partial<Pick<PlanDTO, "planName">>> &

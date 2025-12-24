@@ -11,7 +11,7 @@ export interface ISubscriptionQueries {
     
     findStatsForAdminDashboard(): Promise<AdminFetchDashboardSubscriptionStatsDataResponse>;
     
-    findSubscriptionsByProviderId(payload: FetchProviderSubscriptionsRequest): Promise<TableData<FindSubscriptionsByProviderIdResponse>>;
+    findByProviderId(payload: FetchProviderSubscriptionsRequest): Promise<TableData<FindSubscriptionsByProviderIdResponse>>;
     
     findSubscriptionsForUpdatinStatus(): Promise<boolean>;
 

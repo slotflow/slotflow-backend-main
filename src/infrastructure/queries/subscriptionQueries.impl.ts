@@ -145,7 +145,7 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
         };
     }
 
-    async findSubscriptionsByProviderId(payload: FetchProviderSubscriptionsRequest): Promise<TableData<FindSubscriptionsByProviderIdResponse>> {
+    async findByProviderId(payload: FetchProviderSubscriptionsRequest): Promise<TableData<FindSubscriptionsByProviderIdResponse>> {
         const { providerId, page, limit } = payload;
         const skip = (page - 1) * limit;
         const [subscriptions, totalCount] = await Promise.all([
