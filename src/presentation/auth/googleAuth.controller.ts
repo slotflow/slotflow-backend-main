@@ -11,7 +11,6 @@ import { ICredentialRepository } from "../../domain/interfaces/repositories/ICre
 import { CredentialRepositoryImpl } from "../../infrastructure/database/credential/credential.repository.impl";
 
 const aesEncryption: IAesEncryption = new AesEncryption();
-
 const credentialRepository: ICredentialRepository = new CredentialRepositoryImpl();
 
 const createCredentialUseCase = new CreateCredentialUseCase(credentialRepository, aesEncryption);

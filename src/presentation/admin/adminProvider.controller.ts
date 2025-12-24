@@ -76,19 +76,18 @@ class AdminProviderController {
         this.fetchProviderSubscriptions = this.fetchProviderSubscriptions.bind(this);
         this.fetchProviderPayments = this.fetchProviderPayments.bind(this);
         this.fetchProviderProofs = this.fetchProviderProofs.bind(this);
-    }
+    };
 
     async getAllProviders(req: Request, res: Response, next: NextFunction) {
         try {
             const { page, limit } = RequestQueryCommonZodSchema.parse(req.query);
             const result = await this.adminProviderListUseCase.execute({ page, limit });
-            // sendResponse(res,result);
-            res.status(200).json(result);
+            sendResponse(res,result);
         } catch (error) {
-            // log.error("getAllProviders failed",error as Error);
+            log.error("getAllProviders failed",error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
     async approveProvider(req: Request, res: Response, next: NextFunction) {
         try {
@@ -99,8 +98,8 @@ class AdminProviderController {
         } catch (error) {
             log.error("approveProvider failed", error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
     async rejectProvider(req: Request, res: Response, next: NextFunction) {
         try {
@@ -115,8 +114,8 @@ class AdminProviderController {
         } catch (error) {
             log.error("rejectProvider failed", error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
     async changeProviderBlockStatus(req: Request, res: Response, next: NextFunction) {
         try {
@@ -128,8 +127,8 @@ class AdminProviderController {
         } catch (error) {
             log.error("changeProviderBlockStatus failed", error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
     async changeProviderTrustedTag(req: Request, res: Response, next: NextFunction) {
         try {
@@ -141,8 +140,8 @@ class AdminProviderController {
         } catch (error) {
             log.error("changeProviderTrustedTag failed", error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
     async fetchProviderDetails(req: Request, res: Response, next: NextFunction) {
         try {
@@ -153,8 +152,8 @@ class AdminProviderController {
         } catch (error) {
             log.error("fetchProviderDetails failed", error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
     async fetchProviderAddress(req: Request, res: Response, next: NextFunction) {
         try {
@@ -171,8 +170,8 @@ class AdminProviderController {
         } catch (error) {
             log.error("fetchProviderAddress failed", error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
     async fetchProviderService(req: Request, res: Response, next: NextFunction) {
         try {
@@ -183,8 +182,8 @@ class AdminProviderController {
         } catch (error) {
             log.error("fetchProviderService failed", error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
     async fetchProviderServiceAvailability(req: Request, res: Response, next: NextFunction) {
         try {
@@ -196,8 +195,8 @@ class AdminProviderController {
         } catch (error) {
             log.error("fetchProviderServiceAvailability failed", error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
     async fetchProviderSubscriptions(req: Request, res: Response, next: NextFunction) {
         try {
@@ -208,8 +207,8 @@ class AdminProviderController {
         } catch (error) {
             log.error("fetchProviderSubscriptions failed", error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
     async fetchProviderPayments(req: Request, res: Response, next: NextFunction) {
         try {
@@ -221,8 +220,8 @@ class AdminProviderController {
         } catch (error) {
             log.error("fetchProviderPayments failed", error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
     async fetchProviderProofs(req: Request, res: Response, next: NextFunction) {
         try {
@@ -233,10 +232,10 @@ class AdminProviderController {
         } catch (error) {
             log.error("fetchProviderProofs failed", error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
-}
+};
 
 export const adminProviderController = new AdminProviderController(
     adminProviderListUseCase,

@@ -1,9 +1,9 @@
-import { Types } from "mongoose";
+import { log } from "../../../shared/logger/logger";
 import { Credential } from "../../../domain/entities/credential.entity";
 import { IAesEncryption } from "../../../domain/interfaces/services/IAesEncryption.service";
-import { ApiResponse, CreateCredentialRequest } from "../../dtos/common.dto";
 import { ICredentialRepository } from "../../../domain/interfaces/repositories/ICredentialRepository";
 import { IGoogleAuthTokenService } from "../../../domain/interfaces/services/IGoogleAuthToken.service";
+import { CreateCredentialRequest, FetchCredentialsResponse, UpdateCredentialRequest } from "../../dtos/common.dto";
 
 export class CreateCredentialUseCase {
     constructor(
@@ -11,25 +11,24 @@ export class CreateCredentialUseCase {
         private aesEncryption: IAesEncryption,
     ) { }
 
-    async execute(payload: CreateCredentialRequest): Promise<ApiResponse> {
+    async execute(payload: CreateCredentialRequest): Promise<void> {
         try {
             const { accessToken, expiryDate, refreshToken, userId } = payload;
 
             const encryptedAccessToken = await this.aesEncryption.encrypt(accessToken);
             const encryptedRefreshToken = await this.aesEncryption.encrypt(refreshToken);
 
-            const result = await this.credentialRepository.createCredential({
-                userId,
-                expiryDate,
+            const credentials = Credential.create({
                 accessToken: encryptedAccessToken,
-                refreshToken: encryptedRefreshToken
+                refreshToken: encryptedRefreshToken,
+                expiryDate,
+                userId,
             });
-            if (!result) throw new Error("Unexpected error in token saving");
 
-            return { success: true, message: "Credentials saved" };
+            await this.credentialRepository.create(credentials);
         } catch (error) {
-            console.log("CreateCredentialUseCase error : ", error);
-            throw new Error("Failed to create credentials");
+            log.error("CreateCredentialUseCase failed", error as Error);
+            throw error;
         }
     }
 }
@@ -42,11 +41,11 @@ export class GetCredentialUseCase {
         private googleAuthTokenService: IGoogleAuthTokenService
     ) { }
 
-    async execute(userId: Types.ObjectId): Promise<Credential> {
+    async execute({userId}: {userId: string}): Promise<FetchCredentialsResponse> {
         try {
             console.log("GetCredentialUseCase usecase start");
 
-            const credential = await this.credentialRepository.findCredentialByUserId(userId);
+            const credential = await this.credentialRepository.findByUserId(userId);
             if (!credential) throw new Error("Credential fetching failed");
 
             const now = new Date();
@@ -60,74 +59,77 @@ export class GetCredentialUseCase {
 
             if (now < credential.expiryDate) {
                 return {
-                    ...credential,
                     accessToken: decryptedAccessToken,
-                    refreshToken: decryptedRefreshToken
-                }
+                    refreshToken: decryptedRefreshToken,
+                    expiryDate: credential.expiryDate,
+                    userId: credential.userId,
+                };
             } else {
                 const newToken = await this.googleAuthTokenService.refreshAccessToken(decryptedRefreshToken);
 
                 const encryptedAccessToken = await this.aesEncryption.encrypt(newToken.accessToken);
                 const encryptedRefreshToken = await this.aesEncryption.encrypt(newToken.refreshToken);
 
-                const expiryDate =  new Date(Date.now() + 60 * 60 * 1000)
-
-                const updatedCredential = await this.credentialRepository.updateCredential({
-                    _id: credential._id,
+                credential.updateCredential({
                     accessToken: encryptedAccessToken,
                     refreshToken: encryptedRefreshToken,
-                    expiryDate,
                 });
+
+                const updatedCredential = await this.credentialRepository.update(credential);
                 if (!updatedCredential) throw new Error("Failed to update credential");
 
                 console.log("GetCredentialUseCase usecase end");
                 return {
-                    ...updatedCredential,
                     accessToken: newToken.accessToken,
                     refreshToken: newToken.refreshToken,
-                    expiryDate,
-                }
-            }
+                    expiryDate: updatedCredential.expiryDate,
+                    userId,
+                };
+            };
 
         } catch (error) {
-            console.log("GetCredentialUseCase error : ", error);
-            throw new Error("Failed to get credentials");
-        }
-    }
-}
+            log.error("GetCredentialUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
 
+// TODO REMOVE
+// export class UpdateCredentialUseCase {
+//     constructor(
+//         private credentialRepository: ICredentialRepository,
+//         private aesEncryption: IAesEncryption
+//     ) { }
 
-export class UpdateCredentialUseCase {
-    constructor(
-        private credentialRepository: ICredentialRepository,
-        private aesEncryption: IAesEncryption
-    ) { }
+//     async execute(payload: UpdateCredentialRequest): Promise<void> {
+//         try {
+//             console.log("UpdateCredentialUseCase usecase start");
+//             const { _id, accessToken, expiryDate, refreshToken } = payload;
+//             if (!_id || !accessToken || !refreshToken || !expiryDate) throw new Error("Creatial updation failed");
 
-    async execute(payload: Credential): Promise<ApiResponse> {
-        try {
-            console.log("UpdateCredentialUseCase usecase start");
-            const { _id, accessToken, createdAt, updatedAt, expiryDate, refreshToken, userId } = payload;
-            if (!_id || !accessToken || !refreshToken || !createdAt || !updatedAt || !expiryDate || !userId) throw new Error("Creatial updation failed");
+//             console.log("accessToken decryption start");
+//             const decryptedAccessToken = await this.aesEncryption.encrypt(accessToken);
+//             console.log("accessToken decryption end");
+//             console.log("refreshToken decryption start");
+//             const decryptedRefreshToken = await this.aesEncryption.encrypt(refreshToken);
+//             console.log("refreshToken decryption end");
 
-            console.log("accessToken decryption start");
-            const decryptedAccessToken = await this.aesEncryption.encrypt(accessToken);
-            console.log("accessToken decryption end");
-            console.log("refreshToken decryption start");
-            const decryptedRefreshToken = await this.aesEncryption.encrypt(refreshToken);
-            console.log("refreshToken decryption end");
+//             const credential = await this.credentialRepository.findById(_id);
+//             if (!credential) throw new Error("Credential updation failed");
 
-            const updatedCredentials = await this.credentialRepository.updateCredential({
-                ...payload,
-                accessToken: decryptedAccessToken,
-                refreshToken: decryptedRefreshToken,
-            });
-            if (!updatedCredentials) throw new Error('Credentials updation failed');
+//             credential.updateCredential({
+//                 accessToken: decryptedAccessToken,
+//                 refreshToken: decryptedRefreshToken,
+//             });
+                
+//             const updatedCredentials = await this.credentialRepository.update(credential);
+//             if (!updatedCredentials) throw new Error('Credentials updation failed');
 
-            console.log("UpdateCredentialUseCase usecase end");
-            return { success: true, message: "Credentials updated" };
-        } catch (error) {
-            console.log("UpdateCredentialUseCase error : ", error);
-            throw new Error("Failed to update credentials");
-        }
-    }
-}
+//             console.log("UpdateCredentialUseCase usecase end");
+
+//         } catch (error) {
+//             console.log("UpdateCredentialUseCase error : ", error);
+//             throw new Error("Failed to update credentials");
+//         }
+//     }
+// }

@@ -8,4 +8,6 @@ export interface ICredentialRepository {
 
     update(credential: Credential): Promise<Credential>;
 
+    findById(credentialId: string): Promise<Credential | null>;
+
 }

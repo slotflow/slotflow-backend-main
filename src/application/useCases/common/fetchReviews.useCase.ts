@@ -1,32 +1,32 @@
+import { log } from "../../../shared/logger/logger";
+import { IReviewQueries } from "../../queries/IReview.queries";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
-import { IReviewRepository } from "../../../domain/interfaces/repositories/IReview.repository";
-import { ApiResponse, FetchReviesRequest, FetchReviewsResponse } from "../../dtos/common.dto";
-
+import { FetchReviesRequest, FetchReviewsResponse, TableData } from "../../dtos/common.dto";
 
 export class FetchAllReviewsUseCase {
     constructor(
-        private reviewRepository: IReviewRepository,
+        private reviewQueries: IReviewQueries,
         private signedUrlService: ISignedUrlService
-    ) { }
+    ) { };
 
-    async execute(payload: FetchReviesRequest): Promise<ApiResponse<FetchReviewsResponse[]>> {
+    async execute(payload: FetchReviesRequest): Promise<TableData<Array<FetchReviewsResponse>>> {
         try {
             const { limit, page, providerId, role, userId } = payload;
 
-            const result = await this.reviewRepository.findAllReviews({ limit, page, providerId, userId, role });
+            const result = await this.reviewQueries.findAll({ limit, page, providerId, userId, role });
             if (!result || !result.data) throw new Error("No reviews found");
 
+            const { data: reviews, currentPage, totalCount, totalPages } = result;
+
             const updatedData = await Promise.all(
-                result.data.map(async (review) => {
+                reviews.map(async (review) => {
                     if (review.userId?.profileImage) {
                         const signedUrl = await this.signedUrlService.generate(review.userId.profileImage);
-                        if (!signedUrl) throw new Error("Image fetching error.");
                         review.userId.profileImage = signedUrl;
                     }
 
                     if (review.providerId?.profileImage) {
                         const signedUrl = await this.signedUrlService.generate(review.providerId.profileImage);
-                        if (!signedUrl) throw new Error("Image fetching error.");
                         review.providerId.profileImage = signedUrl;
                     }
 
@@ -34,10 +34,15 @@ export class FetchAllReviewsUseCase {
                 })
             );
 
-            return { data: updatedData, totalPages: result.totalPages, currentPage: result.currentPage, totalCount: result.totalCount };
+            return { 
+                data: updatedData, 
+                totalPages, 
+                currentPage, 
+                totalCount
+            };
         } catch (error) {
-            console.log("FetchAllReviewsUseCase error : ", error);
-            throw new Error("Failed to Fetch all reviews");
-        }
-    }
-}
+            log.error("FetchAllReviewsUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};

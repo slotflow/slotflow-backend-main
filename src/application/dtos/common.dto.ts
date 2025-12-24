@@ -336,10 +336,10 @@ export type PopulatedSubscription = Omit<SubscriptionDTO, 'subscriptionPlanId' |
 
 
 
-//// **** 5. Used as the request type for adding address for user or provider
+//// **** Used as the request type for adding address for user or provider
 export type CreateAddressRequest = Pick<AddressDTO, "userId" | "addressLine" | "landMark" | "place" | "phone" | "city" | "country" | "district" | "pincode" | "state" | "location">;
 
-//// **** 7.1 Used as the request interface for fetching bookings for admin, provider and user side
+//// **** Used as the request interface for fetching bookings for admin, provider and user side
 export interface userIdAndServiceProviderId {
   userId?: UserDTO["_id"];
   serviceProviderId?: ProviderDTO["_id"];
@@ -349,7 +349,7 @@ export interface FetchBookingsRequest extends ApiPaginationRequest, userIdAndSer
   raw: boolean;
   role: RoleType;
 }
-//// **** 7.2 Used as the response type for fetching bookings for admin, provider and user side
+//// **** Used as the response type for fetching bookings for admin, provider and user side
 export type FetchBookingsResponse = Array<Pick<BookingDTO, "_id" | "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "videoCallRoomId" | "serviceProviderId">>;
 export type FetchOnlineBookingsForProviderResponse = Array<
   Pick<
@@ -378,23 +378,23 @@ export type FetchOnlineBookingsForUserResponse = Array<
   }
 >;
 
-//// **** 8. Used as the response type for fetching AppServices for provider and user side
+//// **** Used as the response type for fetching AppServices for provider and user side
 export type FetchAllAppServiceRequest = Pick<ServiceDTO, "serviceCategory">;
 export type FetchAllAppServicesResponse = Array<Pick<ServiceDTO, "_id" | "serviceName">>;
 
-//// **** 9. Used as the request type for updating address for provider and user side
+//// **** Used as the request type for updating address for provider and user side
 export type UpdateAddressRequest = Pick<AddressDTO, "_id" | "userId" | "addressLine" | "landMark" | "place" | "phone" | "city" | "country" | "district" | "pincode" | "state" | "location">;
 
-//// **** 10. Used as the interface for the validate join room
+//// **** Used as the interface for the validate join room
 export interface ValidateJoinRoomRequest {
   role: RoleType;
-  bookingId: Types.ObjectId;
+  bookingId: string;
   roomId: string;
-  userOrProviderId: Types.ObjectId;
+  userOrProviderId: string;
 }
 
 
-//// **** 11. fetch subscription details use case request payload interface 
+//// **** fetch subscription details use case request payload interface 
 export interface FetchSubscriptionDetailsRequest {
   subscriptionId: SubscriptionDTO["_id"];
 }
@@ -402,12 +402,15 @@ export interface FetchSubscriptionDetailsRequest {
 export type FetchSubscriptionDetailsResponse = findSubscriptionFullDetailsResProps | null;
 
 
-//// **** 12 create credential 
+// create credential 
 export type CreateCredentialRequest = Pick<CredentialDTO, "userId" | "accessToken" | "refreshToken" | "expiryDate">;
+// update credential 
 export type UpdateCredentialRequest = Pick<CredentialDTO, "_id" | "accessToken" | "refreshToken" | "expiryDate">;
+// fetch credentials credential 
+export type FetchCredentialsResponse = Pick<CredentialDTO, "accessToken" | "refreshToken" | "expiryDate" | "userId">;
 
 
-//// **** 13 Google Event
+// Google Event
 export interface GoogleCalendarEvent extends Partial<BookingDTO> {
   id: string;
   iCalUID?: string;

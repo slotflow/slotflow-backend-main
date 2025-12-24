@@ -1,5 +1,6 @@
-import { BookingProps } from "../contracts/booking.contract";
-import { CreateBookingProps, UpdateBookingProps } from "../commands/booking.commands";
+import { AppointmentStatus } from "../enums/appointmentStatus.enum";
+import { BookingProps, OnlineTrack } from "../contracts/booking.contract";
+import { CreateBookingProps, statusTrack, UpdateBookingProps } from "../commands/booking.commands";
 
 export class Booking {
 
@@ -11,7 +12,7 @@ export class Booking {
 
     private touch() {
         this.props.updatedAt = new Date();
-    }
+    };
 
     static create(props: CreateBookingProps) {
         return new Booking({
@@ -31,25 +32,74 @@ export class Booking {
             createdAt: new Date(),
             updatedAt: new Date(),
         })
-    }
+    };
 
     // Getters
 
     get _id(): string {
         return this.props._id;
-    }
+    };
+
+    get serviceProviderId(): string {
+        return this.props.serviceProviderId;
+    };
+
+    get onlineTrack(): OnlineTrack {
+        return this.props.onlineTrack;
+    };
+
+    get appointmentStatus(): AppointmentStatus {
+        return this.props.appointmentStatus;
+    };
+
+    get statusTrack(): statusTrack[] {
+        return this.props.statusTrack;
+    };
+
+    get appointmentDate(): Date {
+        return this.props.appointmentDate;
+    };
+
+    get userId(): string {
+        return this.props.userId;
+    };
+
+    get providerId(): string {
+        return this.props.serviceProviderId;
+    };
+
+    get videoCallRoomId(): string {
+        if(!this.props.videoCallRoomId) {
+            throw new Error("Room id not found");
+        }
+        return this.props.videoCallRoomId;
+    };
 
     // Business methods
 
     getProps(): Readonly<BookingProps> {
         return { ...this.props }
-    }
+    };
 
     updateBooking(props: UpdateBookingProps) {
         this.props = {
             ...this.props,
             ...props,
         };
+
+        this.touch();
+    };
+
+    completeAppointment() {
+        if (this.props.appointmentStatus === AppointmentStatus.Completed) {
+            return;
+        }
+
+        this.props.appointmentStatus = AppointmentStatus.Completed;
+        this.props.statusTrack.push({
+            appointmentStatus: AppointmentStatus.Completed,
+            time: new Date(),
+        });
 
         this.touch();
     }

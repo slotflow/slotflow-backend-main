@@ -327,3 +327,7 @@ export const findServicesByCategoryName = z.object({
 export const changeBlockStatusZodSchema = z.object({
   blockStatus: booleanField("block status"),
 });
+
+export const validateRoomId = z.object({
+  roomId: z.string(),
+});

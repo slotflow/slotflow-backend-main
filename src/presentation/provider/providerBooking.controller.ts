@@ -1,10 +1,6 @@
-import { Types } from "mongoose";
 import { DecodedUser } from "../../express";
-import { roleArray } from "../../shared/utils/constants";
 import { NextFunction, Request, Response } from "express";
-import { RoleType } from "../../application/dtos/common.dto";
 import { AesEncryption } from "../../infrastructure/services/aesEncryption.service";
-import { GoogleTokenService } from "../../infrastructure/services/googleTokenService";
 import { IAesEncryption } from "../../domain/interfaces/services/IAesEncryption.service";
 import { IBookingRepository } from "../../domain/interfaces/repositories/IBooking.repository";
 import { GoogleAuthTokenService } from "../../infrastructure/services/googleAuthToken.service";
@@ -17,12 +13,19 @@ import { BookingRepositoryImpl } from "../../infrastructure/database/booking/boo
 import { FetchBookingDetailsUsecase } from "../../application/useCases/common/fetchBookingDetails.useCase";
 import { FetchBookingAppointmentsUseCase } from "../../application/useCases/common/fetchAllBookings.useCase";
 import { CredentialRepositoryImpl } from "../../infrastructure/database/credential/credential.repository.impl";
-import { GetCredentialUseCase, UpdateCredentialUseCase } from "../../application/useCases/common/credential.useCase";
+import { GetCredentialUseCase } from "../../application/useCases/common/credential.useCase";
 import { IServiceAvailabilityRepository } from "../../domain/interfaces/repositories/IServiceAvailability.repository";
 import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/common/updateBookingOnlineTracking.useCase";
 import { ProviderChangeBookingAppointmentStatusUseCase } from "../../application/useCases/provier/providerBooking.useCase";
-import { JoinOrLeftRoomZodSchema, RequestQueryForBookingCommonZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
+import { JoinOrLeftRoomZodSchema, RequestQueryForBookingCommonZodSchema, ValidateObjectId, validateRoomId } from "../../shared/zod/common.zod";
 import { ServiceAvailabilityRepositoryImpl } from "../../infrastructure/database/serviceAvailability/serviceAvailability.repository.impl";
+import { IBookingQueries } from "../../application/queries/IBooking.queries";
+import { BookingQueriesImpl } from "../../infrastructure/queries/bookingQueries.impl";
+import { sendResponse } from "../../shared/utils/response";
+import { log } from "../../shared/logger/logger";
+import { IServiceAvailabilityQueries } from "../../application/queries/IServiceAvailability.queries";
+import { ServiceAvailabilityQueriesImpl } from "../../infrastructure/queries/serviceAvailabilityQueries.impl";
+import { Role } from "../../domain/enums/role.enum";
 
 const aesEncryption: IAesEncryption = new AesEncryption();
 const bookingRepository: IBookingRepository = new BookingRepositoryImpl();
@@ -30,18 +33,21 @@ const credentialRepository: ICredentialRepository = new CredentialRepositoryImpl
 const serviceAvailabilityRepository: IServiceAvailabilityRepository = new ServiceAvailabilityRepositoryImpl();
 
 const googleAuthTokenService: IGoogleAuthTokenService = new GoogleAuthTokenService();
+const bookingQueries: IBookingQueries = new BookingQueriesImpl();
+const serviceAvailabilityQueries: IServiceAvailabilityQueries = new ServiceAvailabilityQueriesImpl();
+
+const fetchBookingAppointmentsUseCase = new FetchBookingAppointmentsUseCase(bookingQueries);
 
 const validateJoinRoomUsecase = new ValidateJoinRoomUsecase(bookingRepository);
-const fetchBookingDetailsUsecase = new FetchBookingDetailsUsecase(bookingRepository);
-const fetchBookingAppointmentsUseCase = new FetchBookingAppointmentsUseCase(bookingRepository);
-const updateCredentialUseCase = new UpdateCredentialUseCase(credentialRepository, aesEncryption);
+const fetchBookingDetailsUsecase = new FetchBookingDetailsUsecase(bookingQueries);
+// const updateCredentialUseCase = new UpdateCredentialUseCase(credentialRepository, aesEncryption);
 const getCredentialUseCase = new GetCredentialUseCase(credentialRepository, aesEncryption, googleAuthTokenService);
 
 // TODO need to update with new google auth token service
-const googleTokenService = new GoogleTokenService(getCredentialUseCase, updateCredentialUseCase);
+// const googleTokenService = new GoogleTokenService(getCredentialUseCase, updateCredentialUseCase);
 const updateEventFromGoogleCalendarService = new UpdateEventFromGoogleCalendarService(googleTokenService);
 
-const updateBookingOnlineTrakingUseCase = new UpdateBookingOnlineTrakingUseCase(bookingRepository, serviceAvailabilityRepository);
+const updateBookingOnlineTrakingUseCase = new UpdateBookingOnlineTrakingUseCase(bookingRepository, serviceAvailabilityQueries);
 const providerChangeBookingAppointmentStatusUseCase = new ProviderChangeBookingAppointmentStatusUseCase(bookingRepository, updateEventFromGoogleCalendarService);
 
 export class ProviderBookingController {
@@ -57,7 +63,7 @@ export class ProviderBookingController {
         this.validateRoom = this.validateRoom.bind(this);
         this.providerJoinRoom = this.providerJoinRoom.bind(this);
         this.fetchBookingDetails = this.fetchBookingDetails.bind(this);
-    }
+    };
 
     async fetchBookingAppointments(req: Request, res: Response, next: NextFunction) {
         try {
@@ -65,44 +71,49 @@ export class ProviderBookingController {
             const { page, limit, online, raw } = RequestQueryForBookingCommonZodSchema.parse(req.query);
             if (!provider) throw new Error("Invalid request");
             const result = await this.fetchBookingAppointmentsUseCase.execute({
-                serviceProviderId: new Types.ObjectId(provider.userOrProviderId),
+                serviceProviderId: provider.userOrProviderId,
                 page,
                 limit,
                 online: online ? true : false,
                 raw: raw ? true : false,
-                role: provider.role as RoleType
+                role: provider.role
             });
-            res.status(200).json(result);
+            sendResponse(res, result);
         } catch (error) {
-            console.log("fetchBookingAppointments error : ",error);
-            next(error)
-        }
-    }
+            log.error("fetchBookingAppointments failed",error as Error);
+            next(error);
+        };
+    };
 
     async updateBookingAppointmentStatus(req: Request, res: Response, next: NextFunction) {
         try {
             const { id: bookingId } = ValidateObjectId(req.params.bookingId, "Booking ID");
             const validateData = ProviderChangeBookingAppointmentStatusZodSchema.parse(req.body);
-            const result = await this.providerChangeBookingAppointmentStatusUseCase.execute({ _id: new Types.ObjectId(bookingId), appointmentStatus: validateData.appointmentStatus });
+            const result = await this.providerChangeBookingAppointmentStatusUseCase.execute({ _id: bookingId, appointmentStatus: validateData.appointmentStatus });
             res.status(200).json(result);
         } catch (error) {
-            console.log("updateBookingAppointmentStatus error : ",error);
-            next(error)
-        }
-    }
+            log.error("updateBookingAppointmentStatus failed",error as Error);
+            next(error);
+        };
+    };
 
     async validateRoom(req: Request, res: Response, next: NextFunction) {
         try {
             const { id: bookingId } = ValidateObjectId(req.params.bookingId, "Booking ID");
-            const roomId = req.query.roomId;
+            const { roomId } = validateRoomId.parse(req.query.roomId);
             const providerId = (req.user as DecodedUser).userOrProviderId;
-            const result = await this.validateJoinRoomUsecase.execute({ bookingId: new Types.ObjectId(bookingId), roomId: roomId as string, role: roleArray[2], userOrProviderId: new Types.ObjectId(providerId) });
+            const result = await this.validateJoinRoomUsecase.execute({ 
+                bookingId, 
+                roomId, 
+                role: Role.Provider, 
+                userOrProviderId: providerId
+            });
             res.status(200).json(result);
         } catch (error) {
-            console.log("validateRoom erro : ", error);
-            next(error)
-        }
-    }
+            log.error("validateRoom failed", error as Error);
+            next(error);
+        };
+    };
 
     async providerJoinRoom(req: Request, res: Response, next: NextFunction) {
         try {
@@ -116,23 +127,23 @@ export class ProviderBookingController {
                 leftCallTime: leftCallTime ? new Date(leftCallTime) : null,
                 role
             });
-            res.status(200).json(result);
+            sendResponse(res, result);
         } catch (error) {
-            console.log("userJoinRoom error : ", error);
-            next(error)
-        }
-    }
+            log.error("userJoinRoom failed", error as Error);
+            next(error);
+        };
+    };
     
     async fetchBookingDetails (req: Request, res: Response, next: NextFunction) {
         try {
             const { id: bookingId } = ValidateObjectId(req.params.bookingId, "Booking ID");
-            const result = await this.fetchBookingDetailsUsecase.execute({bookingId: new Types.ObjectId(bookingId)});
-            res.status(200).json(result);
+            const result = await this.fetchBookingDetailsUsecase.execute({ bookingId });
+            sendResponse(res, result);
         } catch (error) {
-            console.log("fetchBookingDetails error : ", error);
-            next(error)
-        }
-    }
+            log.error("fetchBookingDetails failed", error as Error);
+            next(error);
+        };
+    };
 
 }
 

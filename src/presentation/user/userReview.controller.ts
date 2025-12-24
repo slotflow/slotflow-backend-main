@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import { DecodedUser } from "../../express";
 import { roleArray } from "../../shared/utils/constants";
 import { NextFunction, Request, Response } from "express";
@@ -10,15 +9,22 @@ import { FetchAllReviewsUseCase } from "../../application/useCases/common/fetchR
 import { ReviewRepositoryImpl } from "../../infrastructure/database/review/review.repository.impl";
 import { CreateReviewUseCase, DeleteReviewUseCase } from "../../application/useCases/user/userReview.useCase";
 import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
+import { IReviewQueries } from "../../application/queries/IReview.queries";
+import { ReviewQueriesImpl } from "../../infrastructure/queries/reviewQueries.impl";
+import { sendResponse } from "../../shared/utils/response";
+import { log } from "../../shared/logger/logger";
+import { Role } from "../../domain/enums/role.enum";
 
 const reviewRepositoryImpl = new ReviewRepositoryImpl();
 const signedUrlCacheRepositoryImpl = new SignedUrlCacheRepositoryImpl();
 
 const signedUrlService: ISignedUrlService = new SignedUrlService(signedUrlCacheRepositoryImpl);
+const reviewQueries: IReviewQueries = new ReviewQueriesImpl();
+
 
 const createReviewUseCase = new CreateReviewUseCase(reviewRepositoryImpl);
 const deleteReviewUseCase = new DeleteReviewUseCase(reviewRepositoryImpl);
-const fetchAllReviewsUseCase = new FetchAllReviewsUseCase(reviewRepositoryImpl, signedUrlService);
+const fetchAllReviewsUseCase = new FetchAllReviewsUseCase(reviewQueries, signedUrlService);
 
 export class UserReviewController {
     constructor(
@@ -29,7 +35,7 @@ export class UserReviewController {
         this.createReview = this.createReview.bind(this);
         this.findAllReviews = this.findAllReviews.bind(this);
         this.deleteReview = this.deleteReview.bind(this);
-    }
+    };
 
     async createReview(req: Request, res: Response, next: NextFunction) {
         try {
@@ -37,26 +43,26 @@ export class UserReviewController {
             const validateData = UserCreateReviewZodSchema.parse(req.body);
             const { providerId, bookingId, reviewText, rating } = validateData;
             const result = await this.createReviewUseCase.execute({
-                providerId: new Types.ObjectId(providerId),
-                userId: new Types.ObjectId(userId),
+                providerId,
+                userId,
                 reviewText,
                 rating,
-                bookingId: new Types.ObjectId(bookingId)
-            }); res.status(201).json(result);
+                bookingId
+            });
+            sendResponse(res, result,"Review saved successfully",true, 201);
         } catch (error) {
-            console.log("createReview error : ", error);
-            next(error)
-        }
-    }
-
+            log.error("createReview failed", error as Error);
+            next(error);
+        };
+    };
 
     async deleteReview(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = (req.user as DecodedUser).userOrProviderId;
             const reviewId = req.params.reviewId;
             const result = await this.deleteReviewUseCase.execute({
-                reviewId: new Types.ObjectId(reviewId),
-                userId: new Types.ObjectId(userId)
+                reviewId,
+                userId
             });
             res.status(200).json(result);
         } catch (error) {
@@ -73,8 +79,8 @@ export class UserReviewController {
             const result = await this.fetchAllReviewsUseCase.execute({
                 page,
                 limit,
-                userId: role === roleArray[1] ? new Types.ObjectId(userId) : undefined,
-                providerId: role === roleArray[2] ? new Types.ObjectId(providerId) : undefined,
+                userId: role === Role.User ? userId : undefined,
+                providerId: role === Role.Provider ? providerId : undefined,
                 role: roleArray[1]
             });
             res.status(200).json(result);

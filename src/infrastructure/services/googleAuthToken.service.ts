@@ -1,5 +1,5 @@
 import { googleClientConfig } from "../../config/env";
-import { IGoogleAuthTokenService } from "../../domain/interfaces/services/IgoogleAuthTOken.service";
+import { IGoogleAuthTokenService } from "../../domain/interfaces/services/IGoogleAuthToken.service";
 
 export class GoogleAuthTokenService implements IGoogleAuthTokenService {
     async refreshAccessToken(refreshToken: string): Promise<{ accessToken: string; refreshToken: string; expiresIn: Date; }> {

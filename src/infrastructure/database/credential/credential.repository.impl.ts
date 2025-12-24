@@ -32,4 +32,9 @@ export class CredentialRepositoryImpl implements ICredentialRepository {
         return CredentialMapper.toDomain(doc);
     };
 
+    async findById(credentialId: string): Promise<Credential | null> {
+        const doc = await CredentialModel.findById(credentialId);
+        return doc ? CredentialMapper.toDomain(doc) : null;
+    }
+
 };

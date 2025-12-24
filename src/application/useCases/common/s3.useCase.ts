@@ -1,16 +1,17 @@
 import { randomUUID } from "crypto";
 import { awsConfig } from "../../../config/env";
+import { log } from "../../../shared/logger/logger";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { ISignedUrlCacheRepository } from "../../../domain/interfaces/repositories/ISignedUrlCache.repository";
-import { ApiResponse, CreareFileUploadPresignedUrlRequest, CreareFileUploadPresignedUrlResponse, CreateFileSignedUrlRequest } from "../../dtos/common.dto";
+import { CreareFileUploadPresignedUrlRequest, CreareFileUploadPresignedUrlResponse, CreateFileSignedUrlRequest } from "../../dtos/common.dto";
 
 export class CreateFileUploadPresignedUrlUseCase {
     constructor(
         private s3Client: S3Client
-    ) { }
+    ) { };
 
-    async execute(data: CreareFileUploadPresignedUrlRequest): Promise<ApiResponse<CreareFileUploadPresignedUrlResponse>> {
+    async execute(data: CreareFileUploadPresignedUrlRequest): Promise<CreareFileUploadPresignedUrlResponse> {
         try {
             const { fileName, fileType, folderName } = data;
 
@@ -31,35 +32,30 @@ export class CreateFileUploadPresignedUrlUseCase {
 
 
             return {
-                success: true,
-                message: "Presigned url generated",
-                data: {
                     key,
                     uploadUrl
-                },
-            };
-
+                };
         } catch (error) {
-            console.log("CreateFileUploadPresignedUrlUseCase error : ", error);
-            throw new Error("Failed to create presigned url");
-        }
-    }
-}
+            log.error("CreateFileUploadPresignedUrlUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
 
 export class CreateFileSignedUrlUseCase {
     constructor(
         private s3Client: S3Client,
         private signedUrlCacheRepository: ISignedUrlCacheRepository
-    ) { }
+    ) { };
 
-    async execute(payload: CreateFileSignedUrlRequest): Promise<ApiResponse<string>> {
+    async execute(payload: CreateFileSignedUrlRequest): Promise<string> {
         try {
             const { key } = payload;
             if (!key) throw new Error("Noe key found");
 
             const existing = await this.signedUrlCacheRepository.findSignedUrl({ key });
             if (existing && existing.expiresAt > new Date()) {
-                return { success: true, message: "Signed Url", data: existing.key };
+                return existing.key;
             }
 
             const command = new GetObjectCommand({
@@ -76,19 +72,19 @@ export class CreateFileSignedUrlUseCase {
                 url: signedUrl
             });
 
-            return { success: true, message: "Signed Url", data: signedUrl };
+            return signedUrl;
 
         } catch (error) {
-            console.log("CreateFileSignedUrlUseCase error : ", error);
-            throw new Error("Failed to create signed url");
-        }
-    }
-}
+            log.error("CreateFileSignedUrlUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
 
 export class DeleteFileFromS3UseCase {
     constructor(
         private s3Client: S3Client
-    ) { }
+    ) { };
 
     async execute(key: string): Promise<boolean> {
         try {
@@ -103,8 +99,8 @@ export class DeleteFileFromS3UseCase {
                 return false;
             }
         } catch (error) {
-            console.log("DeleteFileFromS3UseCase error : ", error);
-            throw new Error("Failed to delete file");
-        }
-    }
+            log.error("DeleteFileFromS3UseCase failed", error as Error);
+            throw error;
+        };
+    };
 };

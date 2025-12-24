@@ -1,9 +1,10 @@
-import { Types } from "mongoose";
 import { log } from "../../shared/logger/logger";
-import { roleArray } from "../../shared/utils/constants";
+import { Role } from "../../domain/enums/role.enum";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
+import { IReviewQueries } from "../../application/queries/IReview.queries";
 import { SignedUrlService } from "../../infrastructure/services/signedUrl.service";
+import { ReviewQueriesImpl } from "../../infrastructure/queries/reviewQueries.impl";
 import { ISignedUrlService } from "../../domain/interfaces/services/ISignedUrl.service";
 import { IReviewRepository } from "../../domain/interfaces/repositories/IReview.repository";
 import { FetchAllReviewsUseCase } from "../../application/useCases/common/fetchReviews.useCase";
@@ -18,7 +19,9 @@ const signedUrlCacheRepository: ISignedUrlCacheRepository = new SignedUrlCacheRe
 
 const signedUrlService: ISignedUrlService = new SignedUrlService(signedUrlCacheRepository);
 
-const fetchAllReviewsUseCase = new FetchAllReviewsUseCase(reviewRepository, signedUrlService);
+const reviewQueries: IReviewQueries = new ReviewQueriesImpl();
+
+const fetchAllReviewsUseCase = new FetchAllReviewsUseCase(reviewQueries, signedUrlService);
 const adminUpdateReviewBlockStatusUseCase = new AdminUpdateReviewBlockStatusUseCase(reviewRepository);
 
 export class AdminReviewController {
@@ -28,8 +31,8 @@ export class AdminReviewController {
     ) {
         this.findAllReviews = this.findAllReviews.bind(this);
         this.updateReviewBlockStatus = this.updateReviewBlockStatus.bind(this);
-    }
-    
+    };
+
     async findAllReviews(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = req.params.userId;
@@ -37,31 +40,33 @@ export class AdminReviewController {
             const result = await this.fetchAllReviewsUseCase.execute({
                 page,
                 limit,
-                userId: role === roleArray[1] ? new Types.ObjectId(userId) : undefined,
-                providerId: role === roleArray[2] ? new Types.ObjectId(userId) : undefined,
+                userId: role === Role.User ? userId : undefined,
+                providerId: role === Role.Provider ? userId : undefined,
                 role,
             });
-            res.status(200).json(result)
+            sendResponse(res, result);
         } catch (error) {
-            console.log("findAllReviewsOfUser error : ", error);
-            next(error)
-        }
-    }
+            log.error("findAllReviewsOfUser failed", error as Error);
+            next(error);
+        };
+    };
 
 
     async updateReviewBlockStatus(req: Request, res: Response, next: NextFunction) {
         try {
             const { blockStatus } = changeBlockStatusZodSchema.parse(req.body);
             const reviewId = req.params.reviewId;
-            const result = await this.adminUpdateReviewBlockStatusUseCase.execute({reviewId, isBlocked: blockStatus});
-            sendResponse(res,result);
+            const result = await this.adminUpdateReviewBlockStatusUseCase.execute({ reviewId, isBlocked: blockStatus });
+            sendResponse(res, result);
         } catch (error) {
-            log.error("updateReviewBlockStatus failed",error as Error);
+            log.error("updateReviewBlockStatus failed", error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
-}
+};
 
-const adminReviewController = new AdminReviewController(fetchAllReviewsUseCase, adminUpdateReviewBlockStatusUseCase);
-export { adminReviewController };
+export const adminReviewController = new AdminReviewController(
+    fetchAllReviewsUseCase,
+    adminUpdateReviewBlockStatusUseCase
+);
