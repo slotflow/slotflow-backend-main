@@ -1,9 +1,10 @@
-import { Types } from "mongoose";
+import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
-import { RequestQueryCommonZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
+import { sendResponse } from "../../shared/utils/response";
+import { AdminAddServiceXZodSchema } from "../../shared/zod/admin.zod";
 import { IServiceRepository } from "../../domain/interfaces/repositories/IService.repository";
 import { ServiceRepositoryImpl } from "../../infrastructure/database/service/service.repository.impl";
-import { AdminAddServiceXZodSchema, AdminChangeServiceBlockStatusZodSchema } from "../../shared/zod/admin.zod";
+import { changeBlockStatusZodSchema, RequestQueryCommonZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
 import { AdminCreateServiceUseCase, AdminChnageServiceBlockStatusUseCase, AdminServiceListUseCase } from "../../application/useCases/admin/adminService.useCase";
 
 const serviceRepository: IServiceRepository = new ServiceRepositoryImpl();
@@ -27,34 +28,38 @@ class AdminServiceController {
         try {
             const { page, limit } = RequestQueryCommonZodSchema.parse(req.query);
             const result = await this.adminServiceListUseCase.execute({ page, limit });
-            res.status(200).json(result);
+            sendResponse(res, result);
         } catch (error) {
-            console.log("getAllServices error : ",error);
-            next(error)
-        }
-    }
+            log.error("getAllServices failed",error as Error);
+            next(error);
+        };
+    };
 
     async createService(req: Request, res: Response, next: NextFunction) {
         try {
             const validatedData = AdminAddServiceXZodSchema.parse(req.body);
-            const result = await this.adminCreateServiceUseCase.execute({...validatedData});
-            res.status(200).json(result);
+            const result = await this.adminCreateServiceUseCase.execute({
+                serviceCategory: validatedData.serviceCategory,
+                serviceName: validatedData.serviceName
+            });
+            sendResponse(res,result,"Service saved successfully",true, 201);
         } catch (error) {
-            console.log("createService error : ",error);
-            next(error)
-        }
-    }
+            log.error("createService failed",error as Error);
+            next(error);
+        };
+    };
 
     async changeServiceBlockStatus(req: Request, res: Response, next: NextFunction) {
         try {
-            const { blockStatus } = AdminChangeServiceBlockStatusZodSchema.parse(req.body);
+            const { blockStatus } = changeBlockStatusZodSchema.parse(req.body);
             const { id: serviceId } = ValidateObjectId(req.params.serviceId, "Service ID");
-            const result = await this.adminChnageServiceBlockStatusUseCase.execute({ serviceId: new Types.ObjectId(serviceId), isBlocked: blockStatus });
-            res.status(200).json(result);
+            const result = await this.adminChnageServiceBlockStatusUseCase.execute({ serviceId, isBlocked: blockStatus });
+            sendResponse(res, result, `Successfully ${result.isBlocked ? "blocked" : "unblocked"} service`);
         } catch (error) {
-            next(error)
-        }
-    }
+            log.error("changeServiceBlockStatus failed", error as Error);
+            next(error);
+        };
+    };
 
 }
 

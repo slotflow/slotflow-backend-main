@@ -27,6 +27,10 @@ export class Review {
         return this.props._id;
     };
 
+    get isBlocked(): boolean {
+        return this.props.isBlocked;
+    };
+
     // Business Methods
 
     getProps(): Readonly<ReviewProps> {

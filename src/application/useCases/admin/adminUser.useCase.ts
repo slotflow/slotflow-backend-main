@@ -3,58 +3,63 @@ import {
     AdminFetchUserProfileDetailsRequest,
     AdminFetchUserProfileDetailsResponse,
     AdminChangeUserIsBlockedStatusRequest,
+    AdminChangeUserIsBlockedStatusResponse,
 } from "../../dtos/admin.dto";
+import { log } from "../../../shared/logger/logger";
+import { IUserQueries } from "../../queries/IUser.queries";
+import { ApiPaginationRequest, TableData } from "../../dtos/common.dto";
 import { SignedUrlService } from "../../../infrastructure/services/signedUrl.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { ApiPaginationRequest, ApiResponse } from "../../dtos/common.dto";
-import { IAdminUserQuery } from "../../queries/admin/IAdminUserQuery";
 
 export class AdminUserListUseCase {
     constructor(
-        private adminUserQuery: IAdminUserQuery,
+        private userQueries: IUserQueries,
     ) { }
 
-    async execute(payload: ApiPaginationRequest): Promise<ApiResponse<AdminFetchAllUsers>> {
+    async execute(payload: ApiPaginationRequest): Promise<TableData<AdminFetchAllUsers>> {
         try {
-            const result = await this.adminUserQuery.findAll(payload);
-            if (!result) throw new Error("Users fetching failed");
+            const result = await this.userQueries.findAll(payload);
+            const { data: users, currentPage, totalCount, totalPages } = result;
 
-            return { data: result.data, totalPages: result.totalPages, currentPage: result.currentPage, totalCount: result.totalCount };
+            return {
+                data: users,
+                totalPages,
+                currentPage,
+                totalCount,
+            };
         } catch (error) {
-            console.log("AdminUserListUseCase error :", error);
-            throw new Error("Failed to fetch users");
-        }
-    }
-}
+            log.error("AdminUserListUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
 
 export class AdminChangeUserBlockStatusUseCase {
     constructor(
         private userRepository: IUserRepository,
     ) { }
 
-    async execute(payload: AdminChangeUserIsBlockedStatusRequest): Promise<ApiResponse> {
+    async execute(payload: AdminChangeUserIsBlockedStatusRequest): Promise<AdminChangeUserIsBlockedStatusResponse> {
         try {
             const { userId, isBlocked } = payload;
 
             const user = await this.userRepository.findById(userId);
             if (!user) throw new Error("No user found.");
 
-            if(user.isBlocked) {
-                user.unblock();
-            } else {
-                user.block();
-            }
+            if (user.isBlocked !== isBlocked) {
+                isBlocked ? user.unblock() : user.block();
+            };
 
             const updatedUser = await this.userRepository.update(user);
             if (!updatedUser) throw new Error("User not found");
 
-            return { success: true, message: `User ${updatedUser.isBlocked ? "blocked" : "unBlocked"} successfully.` };
+            return { userId, isBlocked: updatedUser.isBlocked };
         } catch (error) {
-            console.log("AdminChangeUserBlockStatusUseCase error :", error);
-            throw new Error("Failed to change user block status");
-        }
-    }
-}
+            log.error("AdminChangeUserBlockStatusUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
 
 export class AdminFetchUserDetailsUseCase {
     constructor(
@@ -62,23 +67,30 @@ export class AdminFetchUserDetailsUseCase {
         private signedUrlService: SignedUrlService
     ) { }
 
-    async execute(payload: AdminFetchUserProfileDetailsRequest): Promise<ApiResponse<AdminFetchUserProfileDetailsResponse>> {
+    async execute(payload: AdminFetchUserProfileDetailsRequest): Promise<AdminFetchUserProfileDetailsResponse> {
         try {
             const { userId } = payload;
-            
-            const user = await this.userRepository.findById(userId);
-            if(!user) throw new Error("User not found")
 
-            let signedProfileImage: string;
+            const user = await this.userRepository.findById(userId);
+            if (!user) return null;
+
+            let signedProfileImage: string | null = null;
             if (user.profileImage) {
-                 signedProfileImage = await this.signedUrlService.generate(user.profileImage);
+                signedProfileImage = await this.signedUrlService.generate(user.profileImage);
             }
 
-            const { addressId, verificationToken, password, updatedAt, ...rest } = user;
-            return { success: true, message: "User details fetched", data: rest };
+            return {
+                createdAt: user.createdAt,
+                email: user.email,
+                isBlocked: user.isBlocked,
+                isEmailVerified: user.isEmailVerified,
+                phone: user.phone,
+                username: user.username,
+                profileImage: signedProfileImage,
+            };
         } catch (error) {
-            console.log("AdminFetchUserDetailsUseCase error :", error);
-            throw new Error("Failed to fetch user details");
-        }
-    }
-}
+            log.error("AdminFetchUserDetailsUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};

@@ -11,7 +11,6 @@ import { log } from "../../../shared/logger/logger";
 import { ApiPaginationRequest, TableData } from "../../dtos/common.dto";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 
-
 export class AdminProviderListUseCase {
     constructor(
         private providerRepository: IProviderRepository
@@ -114,12 +113,10 @@ export class AdminChangeProviderBlockStatusUseCase {
 
             const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");
-            
-            if(isBlocked) {
-                provider.unblock();
-            } else {
-                provider.block();
-            }
+
+            if(provider.isBlocked !== isBlocked) {
+                isBlocked ? provider.unblock() : provider.block();
+            };
 
             const updatedProvider = await this.providerRepository.update(provider);
             if (!updatedProvider) throw new Error("Provider not found");
@@ -147,11 +144,9 @@ export class AdminChangeProviderTrustTagUseCase {
             const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");
 
-            if(trustedBySlotflow) {
-                provider.revokeTrustBadge();
-            } else {
-                provider.grantTrustBadge();
-            }
+            if(provider.trustedBySlotflow !== trustedBySlotflow) {
+                trustedBySlotflow ? provider.revokeTrustBadge() : provider.grantTrustBadge();
+            };
 
             const updatedProvider = await this.providerRepository.update(provider);
             if (!updatedProvider) throw new Error("Provider not found");

@@ -1,14 +1,16 @@
 import { Types } from "mongoose";
-import { NextFunction, Request, Response } from "express";
+import { log } from "../../shared/logger/logger";
 import { roleArray } from "../../shared/utils/constants";
+import { NextFunction, Request, Response } from "express";
+import { sendResponse } from "../../shared/utils/response";
 import { SignedUrlService } from "../../infrastructure/services/signedUrl.service";
-import { RequestQueryFetchAllReviewsZodSchema } from "../../shared/zod/common.zod";
 import { ISignedUrlService } from "../../domain/interfaces/services/ISignedUrl.service";
 import { IReviewRepository } from "../../domain/interfaces/repositories/IReview.repository";
 import { FetchAllReviewsUseCase } from "../../application/useCases/common/fetchReviews.useCase";
 import { ReviewRepositoryImpl } from "../../infrastructure/database/review/review.repository.impl";
 import { AdminUpdateReviewBlockStatusUseCase } from "../../application/useCases/admin/adminReview.useCase";
 import { ISignedUrlCacheRepository } from "../../domain/interfaces/repositories/ISignedUrlCache.repository";
+import { changeBlockStatusZodSchema, RequestQueryFetchAllReviewsZodSchema } from "../../shared/zod/common.zod";
 import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
 
 const reviewRepository: IReviewRepository = new ReviewRepositoryImpl();
@@ -49,12 +51,13 @@ export class AdminReviewController {
 
     async updateReviewBlockStatus(req: Request, res: Response, next: NextFunction) {
         try {
+            const { blockStatus } = changeBlockStatusZodSchema.parse(req.body);
             const reviewId = req.params.reviewId;
-            const result = await this.adminUpdateReviewBlockStatusUseCase.execute({reviewId: new Types.ObjectId(reviewId)});
-            res.status(200).json(result);
+            const result = await this.adminUpdateReviewBlockStatusUseCase.execute({reviewId, isBlocked: blockStatus});
+            sendResponse(res,result);
         } catch (error) {
-            console.log("updateReviewBlockStatus error : ",error);
-            next(error)
+            log.error("updateReviewBlockStatus failed",error as Error);
+            next(error);
         }
     }
 

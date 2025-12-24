@@ -3,7 +3,6 @@ import { adminPlanController } from "./adminPlan.controller";
 import { adminUserController } from "./adminUser.controller";
 import { authMiddleware } from "../middleware/auth.middleware";
 import { adminReviewController } from "./adminReview.controller";
-import { adminReportController } from "./adminReport.controller";
 import { adminServiceController } from "./adminService.controller";
 import { adminPaymentController } from "./adminPayment.controller";
 import { adminProviderController } from "./adminProvider.controller";
@@ -42,6 +41,7 @@ router.get('/subscriptions', authMiddleware, adminSubscriptionController.getAllS
 router.get('/subscriptions/:subscriptionId', authMiddleware, adminSubscriptionController.getSubscriptionDetails);
 
 router.get('/payments', authMiddleware, adminPaymentController.getAllPayments);
+router.get('/reports/revenue', authMiddleware, adminPaymentController.fetchRevenueReport);
 
 router.get('/dashboard/today', authMiddleware, adminDashboardController.fetchTodaysData);
 router.get('/dashboard/users', authMiddleware, adminDashboardController.fetchUserStats);
@@ -53,7 +53,5 @@ router.get('/dashboard/graph', authMiddleware, adminDashboardController.fetchApp
 
 router.get('/reviews/:userId', authMiddleware, adminReviewController.findAllReviews);
 router.patch("/reviews/:reviewId", authMiddleware, adminReviewController.updateReviewBlockStatus);
-
-router.get('/reports/revenue', authMiddleware, adminReportController.fetchRevenueReport);
 
 export default router;

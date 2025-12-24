@@ -2,13 +2,9 @@ import { z } from "zod";
 import { serviceCategoryArray } from "../utils/constants";
 import { verificationRejectionReasonRegex } from "./regex";
 import { booleanField, numberField, stringField } from "./common.zod";
+import { ServiceCategory } from "../../domain/enums/serviceCategories.enum";
 
 // **** admin provider controller **** \\
-// Admin provider block status change controller zod validation
-export const AdminChangeProviderStatusZodSchema = z.object({
-    blockStatus: booleanField("Provider isBlocked"),
-});
-
 // Admin provider trust tag change controller zod validation
 export const AdminChangeProviderTrustedTagZodSchema = z.object({
     trustTag: booleanField("Provider trusted by slotflow"),
@@ -27,29 +23,13 @@ export const adminRejectProviderZodSchema = z.object({
 
 
 
-// **** admin user controller **** \\
-// Admin user change block status controller zod validation
-export const AdminChangeUserBlockStatusZOdSchema = z.object({
-    blockStatus: booleanField("User isBlocked")
-})
-
-
-
-
 
 // **** admin service controller **** \\
 // Admin adding new app service name controller zod validation
 export const AdminAddServiceXZodSchema = z.object({
     serviceName: stringField("Service name", 4, 50, /^[A-Za-z0-9 ]{4,50}$/, "Service name can only contain letters, numbers, and spaces"),
-    serviceCategory: z.enum(serviceCategoryArray),
+    serviceCategory: z.nativeEnum(ServiceCategory),
 });
-
-// Admin change app service block status controller zod validation
-export const AdminChangeServiceBlockStatusZodSchema = z.object({
-    blockStatus: booleanField("Service iBlocked"),
-});
-
-
 
 
 
@@ -70,9 +50,4 @@ export const AdminAddNewPlanZodSchema = z.object({
         .max(10, "Maximum 10 features allowed"),
     maxBookingPerMonth: numberField("Plan maximum booking", 0, 10000),
     adVisibility: booleanField("Plan adVisibility"),
-});
-
-// Admin change plan block status controller zod validation
-export const AdminChangePlanIsBlockStatusZodSchema = z.object({
-    blockStatus: booleanField("Plan isBlocked")
 });

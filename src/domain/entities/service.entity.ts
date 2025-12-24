@@ -16,6 +16,7 @@ export class Service {
         return new Service({
             _id: "",
             ...props,
+            isBlocked: false,
             createdAt: new Date(),
             updatedAt: new Date(),
         })
@@ -25,6 +26,14 @@ export class Service {
 
     get _id(): string {
         return this.props._id;
+    };
+
+    get isBlocked(): boolean {
+        return this.props.isBlocked;
+    };
+
+    get serviceName(): string {
+        return this.props.serviceName;
     }
 
     // Business Methods

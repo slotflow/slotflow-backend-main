@@ -195,6 +195,58 @@ export type AdminFetchProviderServiceAvailabilityResponse = FontendAvailabilityF
 
 
 
+// **** adminReview.usecase
+
+// Used as the request interface of admin chage review block status
+export interface AdminUpdateReviewBlockStatusRequest {
+    reviewId: ReviewDTO["_id"];
+    isBlocked: ReviewDTO["isBlocked"];
+};
+// Used as the response interface of admin chage review block status
+export type AdminUpdateReviewBlockStatusResponse = AdminUpdateReviewBlockStatusRequest;
+
+
+
+
+
+// **** adminService.usecase
+
+// Used as the request interface of admin fetch all app services
+export type AdminServiceListResponse = Array<Pick<ServiceDTO, "_id" | "serviceName" | "isBlocked">>;
+
+// admin add new service use case request payload interface
+export type AdminAddServiceRequest = Pick<ServiceDTO, "serviceName" | "serviceCategory">; 
+
+// Used as the request interface of admin change service block status
+export interface AdminChnageServiceIsBlockedStatusRequest {
+    serviceId: ServiceDTO["_id"];
+    isBlocked: ServiceDTO["isBlocked"];
+};
+// Used as the response interface of admin change service block status
+export type AdminChnageServiceIsBlockedStatusResponse = AdminChnageServiceIsBlockedStatusRequest;
+
+
+
+
+
+// **** adminUser.usecase
+
+// Used as the response type of asmin fetch all users
+export type AdminFetchAllUsers = Array<Pick<UserDTO, "_id" | "username" | "email" | "isBlocked" | "isEmailVerified">>;
+
+
+// Used as the request interface of admin change block status of user  
+export interface AdminChangeUserIsBlockedStatusRequest {
+    userId: UserDTO["_id"];
+    isBlocked: UserDTO["isBlocked"];
+};
+// Used as the response type of admin change user block status
+export type AdminChangeUserIsBlockedStatusResponse = AdminChangeUserIsBlockedStatusRequest;
+
+
+
+
+
 
 
 
@@ -234,22 +286,13 @@ export type AdminFetchProviderServiceAvailabilityResponse = FontendAvailabilityF
 
 // **************** used in adminUser.use-case **************** \\
 
-type AdminUserBaseInfo = Pick<UserDTO, "_id" | "username" | "email" | "isBlocked" | "isEmailVerified">;
 
-// **** adminFetchAllUsers
-// Used as the return type of fetch all users
-// Used in AdminUserListUseCase, the findAllUsers method in UserRepositoryImpl, 
-// and the findAllUsers method in IUserRepository as the response type with the ApiResponse interface
-export type AdminFetchAllUsers = Array<AdminUserBaseInfo>;
+
 
 
 
 // **** adminChangeUserBlockStatus
-// Used as the request interface of admin change block status of user  
-export interface AdminChangeUserIsBlockedStatusRequest {
-    userId: UserDTO["_id"];
-    isBlocked: UserDTO["isBlocked"];
-}
+
 
 // **** AdminFetchUserDetailsUseCase
 // Used as the request interface of admin fetch user profile details
@@ -257,7 +300,7 @@ export interface AdminFetchUserProfileDetailsRequest {
     userId: UserDTO["_id"];
 }
 // Used as the response type of admin fetch user profile details
-export type AdminFetchUserProfileDetailsResponse = Pick<UserDTO, "username" | "phone" | "profileImage" | "isEmailVerified" | "isBlocked" | "email" | "createdAt"> | {};
+export type AdminFetchUserProfileDetailsResponse = Pick<UserDTO, "username" | "phone" | "profileImage" | "isEmailVerified" | "isBlocked" | "email" | "createdAt"> | null;
 
 
 
@@ -266,18 +309,7 @@ export type AdminFetchUserProfileDetailsResponse = Pick<UserDTO, "username" | "p
 // **************** used in adminService.use-case **************** \\
 
 // **** adminFetchAllServices
-// Used as the request interface of admin fetch all app services
-export type AdminServiceListResponse = Array<Pick<ServiceDTO, "_id" | "serviceName" | "isBlocked">>;
 
-// admin add new service use case request payload interface
-export type AdminAddServiceRequest = Pick<ServiceDTO, "serviceName" | "serviceCategory">; 
-
-
-// admin change service isBlocked status use case request payload interface
-export interface AdminChnageServiceIsBlockedStatusRequest {
-    serviceId: ServiceDTO["_id"];
-    isBlocked: ServiceDTO["isBlocked"];
-}
 
 
 
@@ -297,9 +329,7 @@ export type AdminFetchAllSubscriptionsResponse = Array<Pick<SubscriptionDTO, "_i
 
 
 // Admin Review UseCase
-export interface AdminUpdateReviewBlockStatusRequest {
-    reviewId: ReviewDTO["_id"];
-}
+
 
 
 

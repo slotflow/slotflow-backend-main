@@ -1,15 +1,16 @@
-import { Types } from "mongoose";
+import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
+import { sendResponse } from "../../shared/utils/response";
+import { ISubscriptionQueries } from "../../application/queries/ISubscription.queries";
 import { RequestQueryCommonZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
-import { ISubscriptionRepository } from "../../domain/interfaces/repositories/ISubscription.repository";
+import { SubscriptionQueriesImpl } from "../../infrastructure/queries/subscriptionQueries.impl";
 import { FetchSubscriptionDetailsUseCase } from "../../application/useCases/common/subscription.useCase";
 import { AdminFetchAllSubscriptionsUseCase } from "../../application/useCases/admin/adminSubscription.useCase";
-import { SubscriptionRepositoryImpl } from "../../infrastructure/database/subscription/subscription.repository.impl";
 
-const subscriptionRepository: ISubscriptionRepository = new SubscriptionRepositoryImpl();
+const subscriptionQueries: ISubscriptionQueries = new SubscriptionQueriesImpl();
 
-const fetchSubscriptionDetailsUseCase = new FetchSubscriptionDetailsUseCase(subscriptionRepository);
-const adminFetchAllSubscriptionsUseCase = new AdminFetchAllSubscriptionsUseCase(subscriptionRepository);
+const adminFetchAllSubscriptionsUseCase = new AdminFetchAllSubscriptionsUseCase(subscriptionQueries);
+const fetchSubscriptionDetailsUseCase = new FetchSubscriptionDetailsUseCase(subscriptionQueries);
 
 export class AdminSubscriptionController {
     constructor(
@@ -18,34 +19,34 @@ export class AdminSubscriptionController {
     ) {
         this.getAllSubscriptions = this.getAllSubscriptions.bind(this);
         this.getSubscriptionDetails = this.getSubscriptionDetails.bind(this);
-    }
+    };
 
     async getAllSubscriptions(req: Request, res: Response, next: NextFunction) {
         try {
             const { page, limit } = RequestQueryCommonZodSchema.parse(req.query);
             const result = await this.adminFetchAllSubscriptionsUseCase.execute({ page, limit });
-            res.status(200).json(result);
+            sendResponse(res, result);
         } catch (error) {
-            console.log("getAllSubscriptions error : ", error);
-            next(error)
-        }
-    }
+            log.error("getAllSubscriptions failed", error as Error);
+            next(error);
+        };
+    };
 
     async getSubscriptionDetails(req: Request, res: Response, next: NextFunction) {
         try {
             const { id: subscriptionId } = ValidateObjectId(req.params.subscriptionId, "Subscription Id");
             if (!subscriptionId) throw new Error("Invalid request.");
-            const result = await this.fetchSubscriptionDetailsUseCase.execute({ subscriptionId: new Types.ObjectId(subscriptionId) });
-            res.status(200).json(result);
+            const result = await this.fetchSubscriptionDetailsUseCase.execute({ subscriptionId });
+            sendResponse(res, result);
         } catch (error) {
-            console.log("getSubscriptionDetails error : ", error);
-            next(error)
-        }
-    }
+            log.error("getSubscriptionDetails failed", error as Error);
+            next(error);
+        };
+    };
+
 }
 
-const adminSubscriptionController = new AdminSubscriptionController(
+export const adminSubscriptionController = new AdminSubscriptionController(
     adminFetchAllSubscriptionsUseCase,
     fetchSubscriptionDetailsUseCase
 );
-export { adminSubscriptionController }

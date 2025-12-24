@@ -1,10 +1,10 @@
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
+import { AdminAddNewPlanZodSchema } from "../../shared/zod/admin.zod";
 import { IPlanRepository } from "../../domain/interfaces/repositories/IPlan.repository";
-import { RequestQueryCommonZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
+import { changeBlockStatusZodSchema, RequestQueryCommonZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
 import { PlanRepositoryImpl } from "../../infrastructure/database/plan/plan.repository.impl";
-import { AdminAddNewPlanZodSchema, AdminChangePlanIsBlockStatusZodSchema } from "../../shared/zod/admin.zod";
 import { AdminChangePlanBlockStatusUseCase, AdminCreatePlanUseCase, AdminPlanListUseCase } from "../../application/useCases/admin/adminPlan.useCase";
 
 const planRepository: IPlanRepository = new PlanRepositoryImpl();
@@ -48,7 +48,7 @@ class AdminPlanController {
 
     async changePlanBlockStatus(req: Request, res: Response, next: NextFunction) {
         try {
-            const { blockStatus } = AdminChangePlanIsBlockStatusZodSchema.parse(req.body);
+            const { blockStatus } = changeBlockStatusZodSchema.parse(req.body);
             const { id: planId } = ValidateObjectId(req.params.planId, "Plan ID");
             const result = await this.adminChangePlanBlockStatusUseCase.execute({ planId, isBlocked: blockStatus });
             sendResponse(res,result,`plan ${result.isBlocked ? "blocked" : "unblocked"} successfully`);

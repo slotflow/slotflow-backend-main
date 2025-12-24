@@ -399,9 +399,7 @@ export interface FetchSubscriptionDetailsRequest {
   subscriptionId: SubscriptionDTO["_id"];
 }
 // admin fetch subscription details use case response interface 
-export interface FetchSubscriptionDetailsResponse extends CommonResponse {
-  subscriptionDetails: findSubscriptionFullDetailsResProps | {};
-}
+export type FetchSubscriptionDetailsResponse = findSubscriptionFullDetailsResProps | null;
 
 
 //// **** 12 create credential 

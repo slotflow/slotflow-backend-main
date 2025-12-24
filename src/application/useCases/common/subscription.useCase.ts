@@ -1,21 +1,22 @@
-import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
+import { log } from "../../../shared/logger/logger";
+import { ISubscriptionQueries } from "../../queries/ISubscription.queries";
 import { FetchSubscriptionDetailsRequest, FetchSubscriptionDetailsResponse } from "../../dtos/common.dto";
 
 export class FetchSubscriptionDetailsUseCase {
     constructor(
-        private subscriptionRepository: ISubscriptionRepository,
-    ) { }
+        private subscirptionQueries: ISubscriptionQueries
+    ) { };
 
     async execute(payload: FetchSubscriptionDetailsRequest): Promise<FetchSubscriptionDetailsResponse> {
         try {
             const { subscriptionId } = payload;
-
-            const subscriptionDetails = await this.subscriptionRepository.findSubscriptionFullDetails(subscriptionId);
-            if (Object.keys(subscriptionDetails).length === 0) return { success: true, message: "Subscription details not found.", subscriptionDetails: {} };
-            return { success: true, message: "Subscription details fetched successfully.", subscriptionDetails };
+            const subscriptionDetails = await this.subscirptionQueries.findDetails(subscriptionId);
+            if (!subscriptionDetails) return null;
+            return subscriptionDetails;
         } catch (error) {
-            console.log("FetchSubscriptionDetailsUseCase error : ", error);
-            throw new Error("Failed to fetch subscription details");
-        }
-    }
+            log.error("FetchSubscriptionDetailsUseCase failed", error as Error);
+            throw error;
+        };
+    };
+
 }
