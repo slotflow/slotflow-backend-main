@@ -33,7 +33,8 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
     const role = req.headers["x-user-role"];
 
     if (!userId || !role) {
-      return res.status(401).json({ success: false, message: "Unauthenticated request" });
+      res.status(401).json({ success: false, message: "Unauthenticated request" });
+      return;
     }
 
     const normalizedUserId = Array.isArray(userId) ? userId[0] : userId;

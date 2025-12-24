@@ -82,9 +82,10 @@ class AdminProviderController {
         try {
             const { page, limit } = RequestQueryCommonZodSchema.parse(req.query);
             const result = await this.adminProviderListUseCase.execute({ page, limit });
-            sendResponse(res,result);
+            // sendResponse(res,result);
+            res.status(200).json(result);
         } catch (error) {
-            log.error("getAllProviders failed",error as Error);
+            // log.error("getAllProviders failed",error as Error);
             next(error);
         }
     }
