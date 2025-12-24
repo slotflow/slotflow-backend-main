@@ -1,18 +1,18 @@
-import { SubscriptionRepositoryImpl } from "../../../infrastructure/database/subscription/subscription.repository.impl";
-import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
+import { log } from "../../../shared/logger/logger";
+import { ISubscriptionQueries } from "../../queries/ISubscription.queries";
 
 export class UpdateSubscriptionStatusUseCase {
     constructor(
-        private subscriptionRepository: ISubscriptionRepository
-    ) { }
+        private subscriptionQuerie: ISubscriptionQueries,
+    ) { };
 
     async execute(): Promise<boolean> {
         try {
-            const updatedSubscriptions = await this.subscriptionRepository.findSubscriptionsForUpdatinStatus();
+            const updatedSubscriptions = await this.subscriptionQuerie.findSubscriptionsForUpdatinStatus();
             return updatedSubscriptions;
         } catch (error) {
-            console.log("UpdateSubscriptionStatusUseCase error : ", error);
-            throw new Error("Failed to update subscription status");
-        }
-    }
-}
+            log.error("UpdateSubscriptionStatusUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};

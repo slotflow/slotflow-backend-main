@@ -1,17 +1,18 @@
-import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
+import { log } from "../../../shared/logger/logger";
+import { IBookingQueries } from "../../queries/IBooking.queries";
 
 export class UpdateBookingStatusCronUseCase {
     constructor(
-        private bookingRepository: IBookingRepository,
-    ) { }
+        private bookingQueries: IBookingQueries
+    ) { };
 
     async execute(): Promise<boolean> {
         try {
-            const todaysExhaustedBookings = await this.bookingRepository.findTodaysBookingForCronjob();
+            const todaysExhaustedBookings = await this.bookingQueries.findTodaysBookingForCronjob();
             return todaysExhaustedBookings;
         } catch (error) {
-            console.log("UpdateBookingStatusCronUseCase error : ", error);
-            throw new Error("Failed to update booking status");
-        }
-    }
-}
+            log.error("UpdateBookingStatusCronUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
