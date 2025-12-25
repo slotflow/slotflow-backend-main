@@ -1,4 +1,4 @@
-import { ApiResponse } from "../../dtos/common.dto";
+import { log } from "../../../shared/logger/logger";
 import { stripe } from "../../../infrastructure/lib/stripe";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { ProviderStripeConnectRequest, ProviderStripeConnectResponse } from "../../dtos/provider.dto";
@@ -6,9 +6,9 @@ import { ProviderStripeConnectRequest, ProviderStripeConnectResponse } from "../
 export class ProviderStripeConnectUseCase {
     constructor(
         private providerRepository: IProviderRepository,
-    ) { }
+    ) { };
 
-    async execute(payload: ProviderStripeConnectRequest): Promise<ApiResponse<ProviderStripeConnectResponse>> {
+    async execute(payload: ProviderStripeConnectRequest): Promise<ProviderStripeConnectResponse> {
         try {
 
             const { providerId } = payload
@@ -38,10 +38,10 @@ export class ProviderStripeConnectUseCase {
 
             console.log("accountLink : ", accountLink);
 
-            return { success: true, message: " Stripe connected", data: accountLink };
+            return accountLink;
         } catch (error) {
-            console.log("ProviderStripeConnectUseCase error : ", error);
-            throw new Error("Failed to connect stripe account");
-        }
-    }
-}
+            log.error("ProviderStripeConnectUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};

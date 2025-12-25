@@ -1,26 +1,22 @@
-import { ApiResponse } from "../../dtos/common.dto";
+import { log } from "../../../shared/logger/logger";
+import { ProviderChangeBookingAppoinmentStatusRequest } from "../../dtos/provider.dto";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { UpdateEventFromGoogleCalendarService } from "../../../infrastructure/services/googleCalendar";
-import { ProviderChangeBookingAppoinmentStatusRequest } from "../../dtos/provider.dto";
 
 export class ProviderChangeBookingAppointmentStatusUseCase {
     constructor(
         private bookingRepository: IBookingRepository,
         private updateEventFromGoogleCalendarService: UpdateEventFromGoogleCalendarService
-    ) { }
+    ) { };
 
-    async execute(payload: ProviderChangeBookingAppoinmentStatusRequest): Promise<ApiResponse> {
+    async execute(payload: ProviderChangeBookingAppoinmentStatusRequest): Promise<void> {
         try {
             const { _id, appointmentStatus } = payload;
 
-            const booking = await this.bookingRepository.findBookingById(_id);
+            const booking = await this.bookingRepository.findById(_id);
             if (!booking) throw new Error("No booking found");
 
-            booking.appointmentStatus = appointmentStatus;
-            booking.statusTrack.push({
-                appointmentStatus: appointmentStatus,
-                time: new Date(),
-            });
+            booking.updateAppointment({appointmentStatus});
 
             const response = await this.updateEventFromGoogleCalendarService.execute({
                 userId: booking.userId,
@@ -31,13 +27,11 @@ export class ProviderChangeBookingAppointmentStatusUseCase {
 
             if (!response.success) throw new Error("Booking status updating failed");
 
-            const updatedBooking = await this.bookingRepository.updateBooking(booking);
-            if (!updatedBooking) throw new Error("Status updating failed");
+            await this.bookingRepository.update(booking);
 
-            return { success: true, message: "Status updated successfully" };
         } catch (error) {
-            console.log("ProviderChangeBookingAppointmentStatus error : ", error);
-            throw new Error('Failed to update booking appointment status');
-        }
-    }
-}
+            log.error("ProviderChangeBookingAppointmentStatus failed", error as Error);
+            throw error;
+        };
+    };
+};

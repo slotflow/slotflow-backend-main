@@ -2,6 +2,7 @@ import { z } from "zod";
 import { Types } from "mongoose";
 import { roleArray, serviceCategoryArray } from "../utils/constants";
 import { addressLineRegex, cityRegex, countryRegex, districtRegex, landMarkRegex, phoneRegex, pincodeRegex, placeRegex, stateRegex } from "./regex";
+import { ServiceCategory } from "../../domain/enums/serviceCategories.enum";
 
 // ****** Common zod validations for reuse ****** \\
 
@@ -321,7 +322,7 @@ export const deleteFileZodSchema = z.object({
 });
 
 export const findServicesByCategoryName = z.object({
-  serviceCategory: z.enum(serviceCategoryArray, { message: "Invalid service category" }),
+  serviceCategory: z.nativeEnum(ServiceCategory, { message: "Invalid service category" }),
 });
 
 export const changeBlockStatusZodSchema = z.object({

@@ -18,7 +18,7 @@ export interface BookingProps {
     paymentId: string | null,
     videoCallRoomId: string | null,
     googleEventId: string | null,
-    onlineTrack: OnlineTrack,
+    onlineTrack: OnlineTrack | null,
     statusTrack: statusTrack[],
     createdAt: Date,
     updatedAt: Date,

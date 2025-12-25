@@ -23,7 +23,6 @@ export class S3Controller {
 
     async getFileUploadPresignedUrl(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            console.log("req.query : ",req.query);
             const validatedData = PresignedUrlZodSchema.parse(req.query);
             const result = await this.createFileUploadPresignedUrlUseCase.execute(validatedData);
             sendResponse(res, result);

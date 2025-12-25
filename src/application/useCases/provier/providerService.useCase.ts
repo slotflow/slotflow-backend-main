@@ -1,22 +1,27 @@
-import { ApiResponse } from '../../dtos/common.dto';
+import { log } from '../../../shared/logger/logger';
+import { IProviderServiceQueries } from '../../queries/IProviderService.queries';
+import { ProviderService } from '../../../domain/entities/providerService.entity';
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
-import { CreateProviderServiceRequest, IProviderServiceRepository } from '../../../domain/interfaces/repositories/IProviderService.repository';
-import { ProviderFetchProviderServiceRequest, ProviderFetchProviderServiceResponse, ProviderFindProviderServiceResProps, ProviderUpdateProviderServiceRequest, ProviderUpdateProviderServiceResponse } from '../../dtos/provider.dto';
+import { IProviderServiceRepository } from '../../../domain/interfaces/repositories/IProviderService.repository';
+import { CreateProviderServiceRequest, ProviderFetchProviderServiceRequest, ProviderFetchProviderServiceResponse, ProviderFindProviderServiceResProps, ProviderUpdateProviderServiceRequest, ProviderUpdateProviderServiceResponse } from '../../dtos/provider.dto';
 
 export class ProviderCreateServiceDetailsUseCase {
 
     constructor(
         private providerRepository: IProviderRepository,
         private providerServiceRepository: IProviderServiceRepository,
-    ) { }
+    ) { };
 
-    async execute(payload: CreateProviderServiceRequest): Promise<ApiResponse> {
+    async execute(payload: CreateProviderServiceRequest): Promise<void> {
         try {
             const provider = await this.providerRepository.findById(payload.providerId);
             if (!provider) throw new Error("Please logout and try again.");
 
-            const providerService = await this.providerServiceRepository.createProviderService({ ...payload })
-            if (!providerService) throw new Error("Service details adding error.");
+            const providerService = ProviderService.create({
+                ...payload
+            });
+
+            await this.providerServiceRepository.create(providerService);
 
             if (provider && providerService && providerService._id) {
                 provider.attachService(providerService._id);
@@ -24,39 +29,28 @@ export class ProviderCreateServiceDetailsUseCase {
                 if (!updatedProvider) throw new Error("Failed to update provider with service ID.");
             }
 
-            return { success: true, message: 'Service details saved.' };
-
         } catch (error) {
-            console.log("ProviderCreateServiceDetailsUseCase error : ", error);
-            throw new Error('Failed to save service details.')
-        }
-    }
-}
+            log.error("ProviderCreateServiceDetailsUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
 
 
 export class ProviderFetchServiceDetailsUseCase {
 
     constructor(
-        private provderServiceRepository: IProviderServiceRepository
+        private providerServiceQueries: IProviderServiceQueries
     ) { }
 
-    async execute(payload: ProviderFetchProviderServiceRequest): Promise<ApiResponse<ProviderFetchProviderServiceResponse>> {
+    async execute(payload: ProviderFetchProviderServiceRequest): Promise<ProviderFetchProviderServiceResponse> {
         try {
             const { providerId } = payload;
 
-            const service = await this.provderServiceRepository.findProviderServiceByProviderId(providerId);
-            if (service === null) return { success: true, message: "Provider service details not yet created", data: {} };
-            function isServiceData(obj: any): obj is ProviderFindProviderServiceResProps {
-                return obj && typeof obj === 'object' && '_id' in obj;
-            }
+            const service = await this.providerServiceQueries.findByProviderId(providerId);
+            if (!service) return null;
 
-            if (!isServiceData(service)) {
-                return { success: true, message: "Provider service details fetched successfully.", data: {} };
-            }
-
-            const { createdAt, updatedAt, ...rest } = service;
-
-            return { success: true, message: "Provider service details fetched successfully", data: rest };
+            return { ...service}
         } catch (error) {
             console.log("ProviderFetchServiceDetailsUseCase error : ", error);
             throw new Error("Failed to fetch service details");
@@ -68,27 +62,36 @@ export class ProviderFetchServiceDetailsUseCase {
 export class ProviderUpdateServiceDetailsUseCase {
     constructor(
         private provderServiceRepository: IProviderServiceRepository
-    ) { }
+    ) { };
 
-    async execute(payload: ProviderUpdateProviderServiceRequest): Promise<ApiResponse<ProviderUpdateProviderServiceResponse>> {
+    async execute(payload: ProviderUpdateProviderServiceRequest): Promise<ProviderUpdateProviderServiceResponse> {
         try {
-            const service = await this.provderServiceRepository.updateProviderServiceDetails(payload);
-            if (service === null) return { success: true, message: "Provider service details not yet created", data: {} };
-            function isServiceData(obj: any): obj is ProviderFindProviderServiceResProps {
-                return obj && typeof obj === 'object' && '_id' in obj;
-            }
+            
+            const { _id, ...updateData } = payload;
+            const providerService = await this.provderServiceRepository.findById(payload._id);
+            if(!providerService) return null;
 
-            if (!isServiceData(service)) {
-                return { success: true, message: "Provider service details updated successfully.", data: {} };
-            }
+            providerService.update({
+                ...updateData,
+                requirements: updateData.requirements ?? null,
+                videoUrl: updateData.videoUrl ?? null,
+            });
+            
+            const service = await this.provderServiceRepository.update(providerService);
+            if(!service) return null;
 
-            const { createdAt, updatedAt, ...rest } = service;
+            const { createdAt, updatedAt, ...rest } = service.getProps();
 
-            return { success: true, message: "Provider service details updated successfully", data: rest };
+            return {
+                ...rest,
+                service: {
+                    serviceName: rest.service,
+                },
+            };
 
         } catch(error) {
-            console.log("ProviderUpdateServiceDetailsUseCase error : ", error);
-            throw new Error("Failed to update service details");
-        }
-    }
-}
+            log.error("ProviderUpdateServiceDetailsUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};

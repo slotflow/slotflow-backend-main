@@ -1,29 +1,29 @@
+import { log } from "../../../shared/logger/logger";
 import { IPaymentRepository } from "../../../domain/interfaces/repositories/IPayment.repository";
-import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { ApiResponse, FetchPaymentResponse, FetchPaymentsRequest } from "../../dtos/common.dto";
-
 
 export class ProviderFetchAllPaymentsUseCase {
     constructor(
-        private providerRepository: IProviderRepository,
         private paymentRepository: IPaymentRepository,
-    ) { }
+    ) { };
 
     async execute(payload: FetchPaymentsRequest): Promise<ApiResponse<FetchPaymentResponse>> {
         try {
             const { providerId, page, limit } = payload;
             if (!providerId) throw new Error("Invalid request.");
 
-            const provider = await this.providerRepository.findById(providerId);
-            if (!provider) throw new Error("No user found.");
+            const result = await this.paymentRepository.findAll(page, limit, undefined, providerId );
+            const { data: payments, currentPage, totalCount, totalPages } = result;
 
-            const result = await this.paymentRepository.findAllPayments({ page, limit, providerId: providerId });
-            if (!result) throw new Error("Payments fetching error.");
-
-            return { data: result.data, totalPages: result.totalPages, currentPage: result.currentPage, totalCount: result.totalCount };
+            return { 
+                data: payments, 
+                totalPages, 
+                currentPage, 
+                totalCount,
+            };
         } catch (error) {
-            console.log("ProviderFetchAllPaymentsUseCase error : ", error);
-            throw new Error("Failed to fetch all payments");
-        }
-    }
-}
+            log.error("ProviderFetchAllPaymentsUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};

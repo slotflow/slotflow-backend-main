@@ -1,18 +1,18 @@
-import { ApiResponse } from "../../dtos/common.dto";
+import { log } from "../../../shared/logger/logger";
+import { IBookingQueries } from "../../queries/IBooking.queries";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
-import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { ProviderFetchUsersForChatSideBarResponse, ProviderFetchUsersForChatSideBarRequest } from "../../dtos/provider.dto";
 
 export class ProviderFetchUserForChatSidebarUseCase {
     constructor(
-        private bookingRepository: IBookingRepository,
-        private signedUrlService: ISignedUrlService
-    ) { }
+        private signedUrlService: ISignedUrlService,
+        private bookingQueries: IBookingQueries,
+    ) { };
 
-    async execute(payload: ProviderFetchUsersForChatSideBarRequest): Promise<ApiResponse<ProviderFetchUsersForChatSideBarResponse>> {
+    async execute(payload: ProviderFetchUsersForChatSideBarRequest): Promise<ProviderFetchUsersForChatSideBarResponse> {
         try {
             const { providerId } = payload;
-            const result = await this.bookingRepository.findUsersforChatSideBar(providerId);
+            const result = await this.bookingQueries.findUsersforChatSideBar(providerId);
 
             const updatedResult = await Promise.all(
                 (result as ProviderFetchUsersForChatSideBarResponse).map(async (user) => {
@@ -27,10 +27,10 @@ export class ProviderFetchUserForChatSidebarUseCase {
                 })
             )
 
-            return { data: updatedResult }
+            return updatedResult;
         } catch (error) {
-            console.log("ProviderFetchUserForChatSidebarUseCase error : ", error);
-            throw new Error("Failed to fetch user for chat sidebar");
-        }
-    }
-}
+            log.error("ProviderFetchUserForChatSidebarUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};

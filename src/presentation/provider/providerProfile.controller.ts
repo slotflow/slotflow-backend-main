@@ -1,6 +1,8 @@
 import { DecodedUser } from "../../express";
 import { s3Client } from "../../config/aws_s3";
+import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
+import { sendResponse } from "../../shared/utils/response";
 import { SignedUrlService } from "../../infrastructure/services/signedUrl.service";
 import { ISignedUrlService } from "../../domain/interfaces/services/ISignedUrl.service";
 import { IProviderRepository } from "../../domain/interfaces/repositories/IProvider.repository";
@@ -47,19 +49,19 @@ class ProviderProfileController {
         this.requestAdminApproval = this.requestAdminApproval.bind(this);
         this.deleteIdentityProof = this.deleteIdentityProof.bind(this);
         this.deleteServiceProof = this.deleteServiceProof.bind(this);
-    }
+    };
 
     async getProfileDetails(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
             if (!providerId) throw new Error("Invalid request.");
             const result = await this.providerFetchProfileDetailsUseCase.execute({providerId});
-            res.status(200).json(result);
+            sendResponse(res, result);
         } catch (error) {
-            console.log("getProfileDetails error : ", error);
+            log.error("getProfileDetails failed", error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
     async updateProfileImage(req: Request, res: Response, next: NextFunction) {
         try {
@@ -69,12 +71,12 @@ class ProviderProfileController {
                 providerId,
                 profileImage: validatedData.s3FileKey
             });
-            res.status(200).json(result);
+            sendResponse(res, result, "Profile image updated successfully");
         } catch (error) {
-            console.log("updateProfileImage error : ", error);
+            log.error("updateProfileImage failed", error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
     async updateInfo(req: Request, res: Response, next: NextFunction) {
         try {
@@ -86,12 +88,12 @@ class ProviderProfileController {
                 username,
                 phone
             })
-            res.status(200).json(result)
+            sendResponse(res, result, "Info updated successfully");
         } catch (error) {
-            console.log("updateProviderInfo error : ", error);
+            log.error("updateProviderInfo failed", error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
     async updateIdentityProof(req: Request, res: Response, next: NextFunction) {
         try {
@@ -101,12 +103,12 @@ class ProviderProfileController {
                 providerId,
                 identityProof: validatedData.s3FileKey
             });
-            res.status(200).json(result)
+            sendResponse(res, result, "Identity proof updated successfully");
         } catch (error) {
-            console.log("updateProviderIdentityProof error : ", error);
+            log.error("updateProviderIdentityProof failed", error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
     async updateServiceProof(req: Request, res: Response, next: NextFunction) {
         try {
@@ -116,12 +118,12 @@ class ProviderProfileController {
                 providerId,
                 serviceProof: validatedData.s3FileKey
             });
-            res.status(200).json(result)
+            sendResponse(res, result, "Service proof updated successfully");
         } catch (error) {
-            console.log("updateProviderServiceProof error : ", error);
+            log.error("updateProviderServiceProof failed", error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
     async fetchProofs(req: Request, res: Response, next: NextFunction) {
         try {
@@ -138,38 +140,38 @@ class ProviderProfileController {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
             const result = await this.providerRequestForApprovalUseCase.execute({providerId});
-            res.status(200).json(result);
+            sendResponse(res,result, "Request admin approval");
         } catch (error) {
-            console.log("updateAdminVerificationStatus error : ", error);
+            log.error("updateAdminVerificationStatus failed", error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
     async deleteIdentityProof(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
-            const result = await this.provideDeleteIdentityProofUseCase.execute({providerId});
-            res.status(200).json(result);
+            await this.provideDeleteIdentityProofUseCase.execute({providerId});
+            sendResponse(res, null, "Identity proof deleted successfully");
         } catch (error) {
-            console.log("deleteIdentityProof error : ", error);
+            log.error("deleteIdentityProof failed", error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
     async deleteServiceProof(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
             const result = await this.provideDeleteServiceProofUseCase.execute({providerId});
-            res.status(200).json(result);
+            sendResponse(res, null, "Service proof deleted successfully");
         } catch (error) {
-            console.log("deleteServiceProof error : ", error);
+            log.error("deleteServiceProof failed", error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
-}
+};
 
-const providerProfileController = new ProviderProfileController(
+export const providerProfileController = new ProviderProfileController(
     providerFetchProfileDetailsUseCase,
     providerUpdateProfileImageUseCase,
     providerUpdateProviderInfoUseCase,
@@ -180,5 +182,3 @@ const providerProfileController = new ProviderProfileController(
     provideDeleteIdentityProofUseCase,
     provideDeleteServiceProofUseCase
 );
-
-export { providerProfileController };

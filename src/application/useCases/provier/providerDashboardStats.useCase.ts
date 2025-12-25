@@ -1,15 +1,15 @@
-import { ApiResponse } from "../../dtos/common.dto";
-import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
-import { IPaymentRepository } from "../../../domain/interfaces/repositories/IPayment.repository";
+import { log } from "../../../shared/logger/logger";
+import { IBookingQueries } from "../../queries/IBooking.queries";
+import { IPaymentQueries } from "../../queries/IPayment.queries";
 import { ProviderFetchDashboardStatsDataRequest, ProviderFetchDashboardStatsDataResponse } from "../../dtos/provider.dto";
 
 export class ProviderFetchDashboardStatsUseCase {
     constructor(
-        private bookingRepository: IBookingRepository,
-        private paymentRepository: IPaymentRepository,
-    ) { }
+        private bookingQueries: IBookingQueries,
+        private paymentQueries: IPaymentQueries
+    ) { };
 
-    async execute(payload: ProviderFetchDashboardStatsDataRequest): Promise<ApiResponse<ProviderFetchDashboardStatsDataResponse>> {
+    async execute(payload: ProviderFetchDashboardStatsDataRequest): Promise<ProviderFetchDashboardStatsDataResponse> {
         try {
             const { providerId } = payload;
 
@@ -17,14 +17,14 @@ export class ProviderFetchDashboardStatsUseCase {
                 bookingStatsArray,
                 paymentStatsArray
             ] = await Promise.all([
-                this.bookingRepository.findBookingStatsDataForProviderDashboard(providerId),
-                this.paymentRepository.findPaymentStatsDataForProviderDashboard(providerId)
+                this.bookingQueries.findStatsDataForProviderDashboard(providerId),
+                this.paymentQueries.findStatsDataForProviderDashboard(providerId)
             ]);
 
-            return { success: true, message: "Dashboard stats fetched successfully", data: { ...bookingStatsArray, ...paymentStatsArray } }
+            return { ...bookingStatsArray, ...paymentStatsArray };
         } catch (error) {
-            console.error("ProviderFetchDashboardStatsUseCase error :", error);
-            throw new Error("Failed to fetch dashboard stats");
-        }
-    }
-}
+            log.error("ProviderFetchDashboardStatsUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};

@@ -8,7 +8,7 @@ export class UpdateBookingStatusCronUseCase {
 
     async execute(): Promise<boolean> {
         try {
-            const todaysExhaustedBookings = await this.bookingQueries.findTodaysBookingForCronjob();
+            const todaysExhaustedBookings = await this.bookingQueries.findTodaysBookingsForCronjob();
             return todaysExhaustedBookings;
         } catch (error) {
             log.error("UpdateBookingStatusCronUseCase failed", error as Error);

@@ -90,7 +90,7 @@ export class PaymentQueriesImpl implements IPaymentQueries {
         };
     };
 
-    async findStatsForAdminDashboard(): Promise<AdminFetchDashboardRevenueStatsDataResponse> {
+    async findStatsDataForAdminDashboard(): Promise<AdminFetchDashboardRevenueStatsDataResponse> {
         const paymentData = await PaymentModel.aggregate([
             {
                 $match: {
@@ -201,7 +201,7 @@ export class PaymentQueriesImpl implements IPaymentQueries {
         return { ...data};
     };
 
-    async findStatsForProviderDashboard(providerId: string): Promise<ProviderFetchDashboardPaymentStatsDataResponse> {
+    async findStatsDataForProviderDashboard(providerId: string): Promise<ProviderFetchDashboardPaymentStatsDataResponse> {
         const today = startOfToday();
         const tomorrow = startOfTomorrow();
 
@@ -319,7 +319,7 @@ export class PaymentQueriesImpl implements IPaymentQueries {
         return {...data};
     };
 
-    async findTodayStatsForAdminDashboard(): Promise<AdminFetchDashboardTodayPaymentStatsDataResponse> {
+    async findTodayStatsDataForAdminDashboard(): Promise<AdminFetchDashboardTodayPaymentStatsDataResponse> {
         const startOfToday = startOfDay(new Date());
         const endOfToday = endOfDay(new Date());
 

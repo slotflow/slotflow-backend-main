@@ -17,23 +17,24 @@ export type ProviderFetchAddressResponse = Pick<AddressDTO, "_id" | "addressLine
 
 // ************ used in providerService.use-case ************ \\
 
+// proivder create providerservice request type 
+export type CreateProviderServiceRequest = Pick<ProviderServiceDTO, "isGroupService" | "maxParticipants" | "providerId" | "requirements" | "service" | "serviceDescription" | "serviceExperience" | "serviceMode" | "serviceName" | "servicePrice" | "serviceType" | "tags" | "videoUrl">;
+
 // provider fetch service details use case request payload
 export interface ProviderFetchProviderServiceRequest {
     providerId: ProviderDTO["_id"];
 }
 // provider fetch service details use case respomse interface
-type FindProviderServiceProps = Pick<ProviderServiceDTO, "_id" | "serviceName" | "serviceDescription" | "servicePrice" | "isGroupService" | "maxParticipants" | "requirements" | "serviceExperience" | "serviceMode" | "serviceType" | "tags" | "videoUrl" | "updatedAt" | "createdAt">;
+type FindProviderServiceProps = Pick<ProviderServiceDTO, "_id" | "serviceName" | "serviceDescription" | "servicePrice" | "isGroupService" | "maxParticipants" | "requirements" | "serviceExperience" | "serviceMode" | "serviceType" | "tags" | "videoUrl">;
 export interface ProviderFindProviderServiceResProps extends FindProviderServiceProps {
-    serviceId: Pick<ServiceDTO, "serviceName">;
+    service: Pick<ServiceDTO, "serviceName">;
 }
-export type ProviderFetchProviderServiceResponse = ProviderFindProviderServiceResProps | {};
+export type ProviderFetchProviderServiceResponse = ProviderFindProviderServiceResProps | null;
 
 
 // provider update service details use case request type
-export type ProviderUpdateProviderServiceRequest = Pick<ProviderServiceDTO, "providerId" | "service" | "serviceName" | "serviceDescription" | "servicePrice" | "isGroupService" | "maxParticipants" | "serviceExperience" | "serviceMode" | "serviceType" | "tags"> & Partial<Pick<ProviderServiceDTO, "videoUrl" | "requirements">> & {
-    providerServiceId: ProviderServiceDTO["_id"];
-}
-export type ProviderUpdateProviderServiceResponse = ProviderFindProviderServiceResProps;
+export type ProviderUpdateProviderServiceRequest = Pick<ProviderServiceDTO, "_id" | "service" | "serviceName" | "serviceDescription" | "servicePrice" | "isGroupService" | "maxParticipants" | "serviceExperience" | "serviceMode" | "serviceType" | "tags"> & Partial<Pick<ProviderServiceDTO, "videoUrl" | "requirements">>;
+export type ProviderUpdateProviderServiceResponse = ProviderFindProviderServiceResProps | null;
 
 
 
@@ -53,7 +54,7 @@ export interface ProviderFetchProfileDetailsRequest {
     providerId: ProviderDTO["_id"];
 }
 // provider fetch profile detals use case response interface
-export type ProviderFetchProfileDetailsResponse = Pick<ProviderDTO, "username" | "email" | "isAdminVerified" | "isBlocked" | "isEmailVerified" | "phone" | "createdAt"> | {};
+export type ProviderFetchProfileDetailsResponse = Pick<ProviderDTO, "username" | "email" | "isAdminVerified" | "isBlocked" | "isEmailVerified" | "phone" | "createdAt"> | null;
 
 
 // provider update profile image use case request payload interface
@@ -117,7 +118,7 @@ export interface ProviderFetchServiceAvailabilityRequest {
     date: Date
 }
 //  provider fetch service availability use case response interface 
-export type ProviderFetchServiceAvailabilityResponse = FontendAvailabilityForResponse | {};
+export type ProviderFetchServiceAvailabilityResponse = FontendAvailabilityForResponse | null;
 
 
 

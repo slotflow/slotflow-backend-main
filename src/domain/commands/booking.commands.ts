@@ -12,6 +12,8 @@ export interface statusTrack {
     time: Date;
 }
 
-export type CreateBookingProps = Omit<BookingProps, "_id" | "createdAt" | "updatedAt">;
+export type CreateBookingProps = Omit<BookingProps, "_id" | "createdAt" | "updatedAt" | "onlineTrack">;
 
 export type UpdateBookingProps = Partial<Omit<BookingProps, "_id" | "serviceProviderId" | "userId" | "createdAt" | "updatedAt">>;
+
+export type UpdateAppointmentProps = Pick<BookingProps, "appointmentStatus">;

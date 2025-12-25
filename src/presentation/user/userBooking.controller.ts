@@ -1,51 +1,36 @@
 import { DecodedUser } from "../../express";
+import { log } from "../../shared/logger/logger";
+import { Role } from "../../domain/enums/role.enum";
 import { NextFunction, Request, Response } from "express";
-import { AesEncryption } from "../../infrastructure/services/aesEncryption.service";
+import { sendResponse } from "../../shared/utils/response";
+import { IBookingQueries } from "../../application/queries/IBooking.queries";
+import { BookingQueriesImpl } from "../../infrastructure/queries/bookingQueries.impl";
 import { IUserRepository } from "../../domain/interfaces/repositories/IUser.repository";
-import { IAesEncryption } from "../../domain/interfaces/services/IAesEncryption.service";
 import { UserCreateSessionIdForbookingViaStripeZodSchema } from "../../shared/zod/user.zod";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
+import { IProviderServiceQueries } from "../../application/queries/IProviderService.queries";
 import { IPaymentRepository } from "../../domain/interfaces/repositories/IPayment.repository";
 import { IBookingRepository } from "../../domain/interfaces/repositories/IBooking.repository";
 import { UserCancelBookingUseCase } from "../../application/useCases/user/userBooking.useCase";
-import { GoogleAuthTokenService } from "../../infrastructure/services/googleAuthToken.service";
 import { IProviderRepository } from "../../domain/interfaces/repositories/IProvider.repository";
-import { ICredentialRepository } from "../../domain/interfaces/repositories/ICredentialRepository";
-import { IGoogleAuthTokenService } from "../../domain/interfaces/services/IGoogleAuthToken.service";
 import { ValidateJoinRoomUsecase } from "../../application/useCases/common/validateJoinRoom.useCase";
+import { IServiceAvailabilityQueries } from "../../application/queries/IServiceAvailability.queries";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
+import { ProviderServiceQueriesImpl } from "../../infrastructure/queries/providerServiceQueries.impl";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { FetchBookingDetailsUsecase } from "../../application/useCases/common/fetchBookingDetails.useCase";
 import { FetchBookingAppointmentsUseCase } from "../../application/useCases/common/fetchAllBookings.useCase";
-import { IProviderServiceRepository } from "../../domain/interfaces/repositories/IProviderService.repository";
-import { CredentialRepositoryImpl } from "../../infrastructure/database/credential/credential.repository.impl";
-import { GetCredentialUseCase } from "../../application/useCases/common/credential.useCase";
-import { IServiceAvailabilityRepository } from "../../domain/interfaces/repositories/IServiceAvailability.repository";
-import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/common/updateBookingOnlineTracking.useCase";
-import { ProviderServiceRepositoryImpl } from "../../infrastructure/database/providerService/providerService.repository.impl";
-import { AddEventToGoogleCalendarService, UpdateEventFromGoogleCalendarService } from "../../infrastructure/services/googleCalendar";
-import { ServiceAvailabilityRepositoryImpl } from "../../infrastructure/database/serviceAvailability/serviceAvailability.repository.impl";
-import { JoinOrLeftRoomZodSchema, RequestQueryForBookingCommonZodSchema, SaveStripePaymentZodSchema, ValidateObjectId, validateRoomId } from "../../shared/zod/common.zod";
-import { UserAppointmentBookingViaStripeUseCase, UserSaveBookingAfterStripePaymentUseCase } from "../../application/useCases/user/userStripeBooking.useCase";
-import { IBookingQueries } from "../../application/queries/IBooking.queries";
-import { BookingQueriesImpl } from "../../infrastructure/queries/bookingQueries.impl";
-import { log } from "../../shared/logger/logger";
-import { sendResponse } from "../../shared/utils/response";
-import { IServiceAvailabilityQueries } from "../../application/queries/IServiceAvailability.queries";
 import { ServiceAvailabilityQueriesImpl } from "../../infrastructure/queries/serviceAvailabilityQueries.impl";
-import { Role } from "../../domain/enums/role.enum";
+import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/common/updateBookingOnlineTracking.useCase";
+import { AddEventToGoogleCalendarService, UpdateEventFromGoogleCalendarService } from "../../infrastructure/services/googleCalendar";
+import { UserAppointmentBookingViaStripeUseCase, UserSaveBookingAfterStripePaymentUseCase } from "../../application/useCases/user/userStripeBooking.useCase";
+import { JoinOrLeftRoomZodSchema, RequestQueryForBookingCommonZodSchema, SaveStripePaymentZodSchema, ValidateObjectId, validateRoomId } from "../../shared/zod/common.zod";
 
-const aesEncryption: IAesEncryption = new AesEncryption();
 const userRepository: IUserRepository = new UserRepositoryImpl();
 const paymentRepository: IPaymentRepository = new PaymentRepositoryImpl();
 const bookingRepository: IBookingRepository = new BookingRepositoryImpl();
 const proviserRepository: IProviderRepository = new ProviderRepositoryImpl();
-const credentialRepository: ICredentialRepository = new CredentialRepositoryImpl();
-const providerServiceRepository: IProviderServiceRepository = new ProviderServiceRepositoryImpl();
-const serviceAvailabilityRepository: IServiceAvailabilityRepository = new ServiceAvailabilityRepositoryImpl();
-
-const googleAuthTokenService: IGoogleAuthTokenService = new GoogleAuthTokenService();
 
 const bookingQueries: IBookingQueries = new BookingQueriesImpl();
 const serviceAvailabilityQueries: IServiceAvailabilityQueries = new ServiceAvailabilityQueriesImpl();
@@ -54,15 +39,18 @@ const fetchBookingAppointmentsUseCase = new FetchBookingAppointmentsUseCase(book
 
 const validateJoinRoomUsecase = new ValidateJoinRoomUsecase(bookingRepository)
 const fetchBookingDetailsUsecase = new FetchBookingDetailsUsecase(bookingQueries);
-const getCredentialUseCase = new GetCredentialUseCase(credentialRepository, aesEncryption, googleAuthTokenService);
+const providerServiceQueries: IProviderServiceQueries = new ProviderServiceQueriesImpl();
+
 // const updateCredentialUseCase = new UpdateCredentialUseCase(credentialRepository, aesEncryption);
 // const googleTokenService = new GoogleTokenService(getCredentialUseCase, updateCredentialUseCase);
-const addEventToGoogleCalendarService = new AddEventToGoogleCalendarService(googleTokenService);
-const updateEventFromGoogleCalendarService = new UpdateEventFromGoogleCalendarService(googleTokenService);
+
+const addEventToGoogleCalendarService = new AddEventToGoogleCalendarService();
+const updateEventFromGoogleCalendarService = new UpdateEventFromGoogleCalendarService();
+
 const updateBookingOnlineTrakingUseCase = new UpdateBookingOnlineTrakingUseCase(bookingRepository, serviceAvailabilityQueries);
 const userCancelBookingUseCase = new UserCancelBookingUseCase(userRepository, bookingRepository, paymentRepository, updateEventFromGoogleCalendarService);
-const userAppointmentBookingViaStrpieUseCase = new UserAppointmentBookingViaStripeUseCase(proviserRepository, providerServiceRepository, serviceAvailabilityRepository, bookingRepository);
-const userSaveBookingAfterStripePaymentUseCase = new UserSaveBookingAfterStripePaymentUseCase(userRepository, paymentRepository, bookingRepository, serviceAvailabilityRepository, addEventToGoogleCalendarService);
+const userAppointmentBookingViaStrpieUseCase = new UserAppointmentBookingViaStripeUseCase(proviserRepository, bookingRepository, providerServiceQueries, serviceAvailabilityQueries);
+const userSaveBookingAfterStripePaymentUseCase = new UserSaveBookingAfterStripePaymentUseCase(userRepository, paymentRepository, bookingRepository, addEventToGoogleCalendarService, serviceAvailabilityQueries);
 
 export class UserBookingController {
     constructor(
@@ -108,16 +96,16 @@ export class UserBookingController {
             const userId = (req.user as DecodedUser).userOrProviderId;
             const { id: bookingId } = ValidateObjectId(req.params.bookingId, "Booking ID");
             if (!userId || !bookingId) throw new Error("Invalid request");
-            const result = await this.userCancelBookingUseCase.execute({ 
+            await this.userCancelBookingUseCase.execute({ 
                 userId, 
                 bookingId,
             });
-            res.status(200).json(result);
+            sendResponse(res, null, "Booking cancelled");
         } catch (error) {
-            console.log("cancelBooking error : ", error);
-            next(error)
-        }
-    }
+            log.error("cancelBooking failed", error as Error);
+            next(error);
+        };
+    };
 
     async createSessionIdForbookingViaStripe(req: Request, res: Response, next: NextFunction) {
         try {
@@ -132,28 +120,28 @@ export class UserBookingController {
                 selectedServiceMode,
                 date: new Date(date),
             });
-            res.status(200).json(result);
+            sendResponse(res, result);
         } catch (error) {
-            console.log("createSessionIdForbookingViaStripe error : ", error);
-            next(error)
-        }
-    }
+            log.error("createSessionIdForbookingViaStripe failed", error as Error);
+            next(error);
+        };
+    };
 
     async saveBookingAfterStripePayment(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = (req.user as DecodedUser).userOrProviderId;
             const { sessionId } = SaveStripePaymentZodSchema.parse(req.body);
             if (!userId || !sessionId) throw new Error("Invalid request");
-            const result = await this.userSaveBookingAfterStripePaymentUseCase.execute({ 
+            await this.userSaveBookingAfterStripePaymentUseCase.execute({ 
                 userId, 
                 sessionId 
             });
-            res.status(200).json(result);
+            sendResponse(res, null, "Booking saved successfully");
         } catch (error) {
-            console.log("saveBookingAfterStripePayment error : ", error);
-            next(error)
-        }
-    }
+            log.error("saveBookingAfterStripePayment failed", error as Error);
+            next(error);
+        };
+    };
 
     async validateRoom(req: Request, res: Response, next: NextFunction) {
         try {

@@ -10,7 +10,7 @@ export interface IPlanRepository {
 
     findByNameOrPrice(name: string, price: number): Promise<Plan | null>;
 
-    findAll(page: number, limit: number): Promise<{ data: Array<Plan>, totalPages: number; currentPage: number; totalCount: number; }>;
+    findAll(page?: number, limit?: number): Promise<{ data: Array<Plan>, totalPages: number; currentPage: number; totalCount: number; }>;
 
     findAllForDisplay(): Promise<Array<Plan>>;
 

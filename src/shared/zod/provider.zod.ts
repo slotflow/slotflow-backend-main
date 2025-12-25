@@ -2,6 +2,10 @@ import { z } from "zod";
 import { objectIdField } from "./common.zod";
 import { serviceDescriptionRegex, serviceExperienceRegex, serviceNameRegex } from "./regex";
 import { appointmentStatusArray, daysArray, serviceModeArray, serviceTypeArray, subscriptionMonthArray } from "../utils/constants";
+import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
+import { ServiceType } from "../../domain/enums/serviceType.enum";
+import { ServiceMode } from "../../domain/enums/serviceMode.enum";
+import { Day } from "../../domain/enums/day.enum";
 
 
 // **** Provider Service Controller **** \\
@@ -54,9 +58,9 @@ export const ProviderCreateServiceDetailsZodSchema = z.object({
         .max(100, "Service ID cannot exceed 100 characters"),
 
 
-    serviceType: z.enum(serviceTypeArray),
+    serviceType: z.nativeEnum(ServiceType),
 
-    serviceMode: z.enum(serviceModeArray),
+    serviceMode: z.nativeEnum(ServiceMode),
 
     maxParticipants: z
         .number()
@@ -87,11 +91,11 @@ export const ProviderCreateServiceDetailsZodSchema = z.object({
 // Provider add service availability
 export const ProviderCreateServiceAvailabilityZodSchema = z.array(
     z.object({
-        day: z.enum(daysArray),
+        day: z.nativeEnum(Day),
         duration: z.number().min(10).max(480),
         startTime: z.string().regex(/^(0[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/),
         endTime: z.string().regex(/^(0[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/),
-        modes: z.array(z.enum(serviceModeArray)).min(1),
+        modes: z.array(z.nativeEnum(ServiceMode)).min(1),
         slots: z.array(z.string().min(1).max(30).regex(/^(0[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/)),
     })
 )
@@ -112,5 +116,5 @@ export const ProviderPlanSubscribeZodSchema = z.object({
 // **** Provider Booking Controller **** \\
 // Validating the page and limit in the request query zod schema
 export const ProviderChangeBookingAppointmentStatusZodSchema = z.object({
-    appointmentStatus: z.enum(appointmentStatusArray)
+    appointmentStatus: z.nativeEnum(AppointmentStatus)
 });

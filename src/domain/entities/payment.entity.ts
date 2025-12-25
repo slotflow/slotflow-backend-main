@@ -99,6 +99,21 @@ export class Payment {
         return this.props.totalAmount;
     };
 
+    get transactionId(): string {
+        return this.props.transactionId;
+    };
+
+    get initialAmount(): number {
+        return this.props.initialAmount;
+    };
+
+    get userId(): string {
+        if(!this.props.userId) {
+            throw new Error("UserId not found");
+        };
+        return this.props.userId;
+    };
+
     // Business Methods
 
     getProps(): Readonly<PaymentProps> {

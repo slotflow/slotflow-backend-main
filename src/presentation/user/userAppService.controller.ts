@@ -1,4 +1,6 @@
+import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
+import { sendResponse } from "../../shared/utils/response";
 import { IServiceRepository } from "../../domain/interfaces/repositories/IService.repository";
 import { UserFetchAllAppServiceUseCase } from "../../application/useCases/user/userAppService.useCase";
 import { ServiceRepositoryImpl } from "../../infrastructure/database/service/service.repository.impl";
@@ -12,20 +14,20 @@ export class UserAppServiceController {
         private userFetchAllAppServiceUseCase: UserFetchAllAppServiceUseCase
     ) {
         this.fetchAllAppService = this.fetchAllAppService.bind(this);
-    }
+    };
+
     async fetchAllAppService(req: Request, res: Response, next: NextFunction) {
         try {
             const result = await this.userFetchAllAppServiceUseCase.execute();
-            res.status(200).json(result);
+            sendResponse(res, result);
         } catch (error) {
-            console.log("fetchAllAppService error : ", error);
+            log.error("fetchAllAppService failed", error as Error);
             next(error);
-        }
-    }
-}
+        };
+    };
 
-const userAppServiceController = new UserAppServiceController(
+};
+
+export const userAppServiceController = new UserAppServiceController(
     userFetchAllAppServiceUseCase
 );
-
-export { userAppServiceController };

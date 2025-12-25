@@ -89,8 +89,8 @@ export class ProviderBookingController {
         try {
             const { id: bookingId } = ValidateObjectId(req.params.bookingId, "Booking ID");
             const validateData = ProviderChangeBookingAppointmentStatusZodSchema.parse(req.body);
-            const result = await this.providerChangeBookingAppointmentStatusUseCase.execute({ _id: bookingId, appointmentStatus: validateData.appointmentStatus });
-            res.status(200).json(result);
+            await this.providerChangeBookingAppointmentStatusUseCase.execute({ _id: bookingId, appointmentStatus: validateData.appointmentStatus });
+            sendResponse(res, null, "Booking status updated successfully");
         } catch (error) {
             log.error("updateBookingAppointmentStatus failed",error as Error);
             next(error);

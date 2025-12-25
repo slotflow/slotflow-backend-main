@@ -4,8 +4,11 @@ import {
     ProviderFetchServiceAvailabilityRequest,
     ProviderFetchServiceAvailabilityResponse,
 } from "../../dtos/provider.dto";
-import { ApiResponse, FrontendAvailabilityForRequest, FrontendAvailabilityUpdatedSlots } from "../../dtos/common.dto";
+import { log } from "../../../shared/logger/logger";
+import { IServiceAvailabilityQueries } from "../../queries/IServiceAvailability.queries";
+import { ServiceAvailability } from "../../../domain/entities/serviceAvailability.entity";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
+import { FrontendAvailabilityForRequest, FrontendAvailabilityUpdatedSlots } from "../../dtos/common.dto";
 import { IServiceAvailabilityRepository } from "../../../domain/interfaces/repositories/IServiceAvailability.repository";
 
 
@@ -13,9 +16,9 @@ export class ProviderCreateServiceAvailabilitiesUseCase {
     constructor(
         private providerRepository: IProviderRepository,
         private serviceAvailabilityRepository: IServiceAvailabilityRepository,
-    ) { }
+    ) { };
 
-    async execute(payload: ProviderAddServiceAvailabilityRewuest): Promise<ApiResponse> {
+    async execute(payload: ProviderAddServiceAvailabilityRewuest): Promise<void> {
         try {
             const { providerId, availabilities } = payload;
             if (!providerId || !availabilities || availabilities.length === 0) throw new Error("Invalid request.");
@@ -31,30 +34,34 @@ export class ProviderCreateServiceAvailabilitiesUseCase {
                 }))
             }));
 
-            const serviceAvailability = await this.serviceAvailabilityRepository.createServiceAvailabilities(providerId, newAvailabilities);
+            const serviceAvailabilityData = ServiceAvailability.create({
+                providerId,
+                availabilities: newAvailabilities
+            });
+
+            const serviceAvailability = await this.serviceAvailabilityRepository.create(serviceAvailabilityData);
             if (!serviceAvailability) throw new Error("Service availability saving failed.");
 
             if (provider && serviceAvailability && serviceAvailability._id) {
                 provider.attachServiceAvailability(serviceAvailability._id);
                 const updatedProvider = await this.providerRepository.update(provider);
                 if (!updatedProvider) throw new Error("Failed to update provider with service availability in profile.");
-            }
+            };
 
-            return { success: true, message: "Service availability saved successfuly." };
         } catch (error) {
-            console.log("ProviderCreateServiceAvailabilitiesUseCase error :", error);
-            throw new Error("Failed to create service availabilities.");
-        }
-    }
-}
+            log.error("ProviderCreateServiceAvailabilitiesUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
 
 
 export class ProviderFetchServiceAvailabilityUseCase {
     constructor(
-        private serviceAvailabilityRepository: IServiceAvailabilityRepository
-    ) { }
+        private serviceAvailabilityQueries: IServiceAvailabilityQueries
+    ) { };
 
-    async execute(payload: ProviderFetchServiceAvailabilityRequest): Promise<ApiResponse<ProviderFetchServiceAvailabilityResponse>> {
+    async execute(payload: ProviderFetchServiceAvailabilityRequest): Promise<ProviderFetchServiceAvailabilityResponse> {
         try {
             const { providerId, date } = payload;
             if (!providerId || !date) throw new Error("Invalid request.");
@@ -62,13 +69,8 @@ export class ProviderFetchServiceAvailabilityUseCase {
             const currentDateTime = dayjs();
             const selectedDate = dayjs(date).format('YYYY-MM-DD');
 
-            const availability = await this.serviceAvailabilityRepository.findServiceAvailabilityByProviderId(
-                providerId,
-                date
-            );
-
-            if (availability === null) return { success: true, message: "Provider service availability not yet added.", data: {} };
-            if (!availability) throw new Error("Provider service availability fetching error.");
+            const availability = await this.serviceAvailabilityQueries.findByProviderId(date , providerId);
+            if (!availability) return null;
 
             const updatedSlots = availability.slots.map((slot) => {
                 const slotDateTime = dayjs(`${selectedDate} ${slot.time}`, 'YYYY-MM-DD hh:mm A');
@@ -76,17 +78,13 @@ export class ProviderFetchServiceAvailabilityUseCase {
                 return {
                     ...slot,
                     available: !isWithin2Hours
-                }
+                };
             });
 
-            return {
-                success: true,
-                message: "Provider service availability fetched.",
-                data: { ...availability, slots: updatedSlots }
-            };
+            return { ...availability, slots: updatedSlots };
         } catch (error) {
-            console.log("ProviderFetchServiceAvailabilityUseCase error :", error);
-            throw new Error("Failed to fetch provider service availability.");
-        }
-    }
-}
+            log.error("ProviderFetchServiceAvailabilityUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};

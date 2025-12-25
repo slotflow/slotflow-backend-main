@@ -16,6 +16,8 @@ export class Review {
         return new Review({
             _id: "",
             ...props,
+            isBlocked: false,
+            reported: false,
             createdAt: new Date(),
             updatedAt: new Date(),
         })
@@ -29,6 +31,18 @@ export class Review {
 
     get isBlocked(): boolean {
         return this.props.isBlocked;
+    };
+
+    get providerId(): string {
+        return this.props.providerId;
+    };
+
+    get reported(): boolean {
+        return this.props.reported;
+    };
+
+    get userId(): string {
+        return this.props.userId;
     };
 
     // Business Methods

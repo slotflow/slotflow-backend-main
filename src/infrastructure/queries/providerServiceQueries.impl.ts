@@ -1,9 +1,10 @@
 import { Types } from "mongoose";
 import { SubscriptionStatus } from "../../domain/enums/subscriptionStatus.enum";
+import { FindProviderServiceResponse } from "../../application/dtos/common.dto";
 import { ProviderServiceModel } from "../database/providerService/providerService.model";
 import { IProviderServiceQueries } from "../../application/queries/IProviderService.queries";
-import { FindProviderServiceResponse, FindProvidersUsingServiceIdsResponse } from "../../application/dtos/common.dto";
 import { ProviderUpdateProviderServiceRequest, ProviderUpdateProviderServiceResponse } from "../../application/dtos/provider.dto";
+import { UserFetchServiceProvidersResponse } from "../../application/dtos/user.dto";
 
 export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
 
@@ -25,7 +26,7 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
         };
     };
 
-    async findProvidersUsingServiceIds(serviceIds: string[]): Promise<Array<FindProvidersUsingServiceIdsResponse> | []> {
+    async findProvidersUsingServiceIds(serviceIds: string[]): Promise<Array<UserFetchServiceProvidersResponse> | []> {
         const pipeline: any[] = [];
         const now = new Date();
 
@@ -135,9 +136,9 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
     };
 
     async updateProviderService(payload: ProviderUpdateProviderServiceRequest): Promise<ProviderUpdateProviderServiceResponse | null> {
-        const { providerServiceId, ...data } = payload;
+        const { _id, ...data } = payload;
         const service = await ProviderServiceModel.findOneAndUpdate(
-            { _id: new Types.ObjectId(providerServiceId) },
+            { _id: new Types.ObjectId(_id) },
             { $set: { ...data } },
             { new: true }
         )
@@ -151,8 +152,8 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
         return {
             ...service,
             _id: service._id.toString(),
-            serviceId: {
-                serviceName: service.serviceId.serviceName
+            service: {
+                serviceName: service.service.serviceName
             }
         }
     };

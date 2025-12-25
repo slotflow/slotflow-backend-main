@@ -26,8 +26,8 @@ export class AdminFetchDashboardTodaysDataUseCase {
             ] = await Promise.all([
                 this.userRepository.count(true),
                 this.providerRepository.count(true),
-                this.paymentQueries.findTodayStatsForAdminDashboard(),
-                this.bookingQueries.findTodayStatsForAdminDashboard()
+                this.paymentQueries.findTodayStatsDataForAdminDashboard(),
+                this.bookingQueries.findTodayStatsDataForAdminDashboard()
             ]);
 
             const responseData: AdminFetchDashboardTodayStatsDataResponse = {
@@ -104,7 +104,7 @@ export class AdminFetchDashboardRevenueStatsDataUseCase {
 
     async execute(): Promise<AdminFetchDashboardRevenueStatsDataResponse> {
         try {
-            return await this.paymentQueries.findStatsForAdminDashboard();
+            return await this.paymentQueries.findStatsDataForAdminDashboard();
         } catch (error) {
             log.error("AdminFetchDashboardRevenueStatsDataUseCase failed", error as Error);
             throw error;
@@ -119,7 +119,7 @@ export class AdminFetchDashboardAppointmentsStatsDataUseCase {
 
     async execute(): Promise<AdminFetchDashboardAppointmentStatsDataResponse> {
         try {
-            return await this.bookingQueries.findStatsForAdminDashboard();
+            return await this.bookingQueries.findStatsDataForAdminDashboard();
         } catch (error) {
             log.error("AdminFetchDashboardAppointmentsStatsDataUseCase failed", error as Error);
             throw error;

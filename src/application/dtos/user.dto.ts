@@ -96,11 +96,11 @@ export interface UserFetchServiceproviderServiceRequest {
     providerId: ProviderDTO["_id"];
 }
 // user fetch provider service use case response interface
-type FindProviderServiceProps = Pick<ProviderServiceDTO, "serviceName" | "serviceDescription" | "servicePrice" | "serviceExperience">;
+type FindProviderServiceProps = Pick<ProviderServiceDTO, "serviceName" | "serviceDescription" | "servicePrice" | "serviceExperience" | "videoUrl" | "serviceType" | "serviceMode" | "requirements" | "maxParticipants" | "isGroupService">;
 export interface FindProviderServiceResponse extends FindProviderServiceProps {
     service: Pick<ServiceDTO, "serviceName">
 }
-export type UserFetchProviderServiceResponse = FindProviderServiceResponse | {};
+export type UserFetchProviderServiceResponse = FindProviderServiceResponse | null;
 
 
 // user fetch provider service availability use case request payload interface

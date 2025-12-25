@@ -1,27 +1,33 @@
-import { Types } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
+import { log } from '../../../shared/logger/logger';
 import { stripe } from '../../../infrastructure/lib/stripe';
-import { ApiResponse } from '../../dtos/common.dto';
+import { Payment } from '../../../domain/entities/payment.entity';
+import { Booking } from '../../../domain/entities/booking.entity';
 import { FindProviderServiceResponse } from '../../dtos/admin.dto';
+import { PaymentFor } from '../../../domain/enums/paymentFor.enum';
+import { PaymentStatus } from '../../../domain/enums/paymentStatus.enum';
+import { PaymentMethod } from '../../../domain/enums/paymentMethod.enum';
+import { PaymentGateway } from '../../../domain/enums/paymentGateway.enum';
+import { AppointmentStatus } from '../../../domain/enums/appointmentStatus.enum';
+import { IProviderServiceQueries } from '../../queries/IProviderService.queries';
+import { IServiceAvailabilityQueries } from '../../queries/IServiceAvailability.queries';
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { IPaymentRepository } from '../../../domain/interfaces/repositories/IPayment.repository';
 import { IBookingRepository } from '../../../domain/interfaces/repositories/IBooking.repository';
 import { AddEventToGoogleCalendarService } from '../../../infrastructure/services/googleCalendar';
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
-import { appointmentStatusArray, paymentForArray, paymentGatewayArray } from '../../../shared/utils/constants';
-import { IProviderServiceRepository } from '../../../domain/interfaces/repositories/IProviderService.repository';
-import { IServiceAvailabilityRepository } from '../../../domain/interfaces/repositories/IServiceAvailability.repository';
 import { UserAppointmentBookingViaStripeRequest, UserSaveAppoinmentBookingRequest } from '../../dtos/user.dto';
+import { IServiceAvailabilityRepository } from '../../../domain/interfaces/repositories/IServiceAvailability.repository';
 
 export class UserAppointmentBookingViaStripeUseCase {
     constructor(
         private providerRepository: IProviderRepository,
-        private providerServiceRepository: IProviderServiceRepository,
-        private serviceAvailabilityRepository: IServiceAvailabilityRepository,
         private bookingRepository: IBookingRepository,
-    ) { }
+        private providerServiceQueries: IProviderServiceQueries,
+        private serviceAvailabilityQueries: IServiceAvailabilityQueries
+    ) { };
 
-    async execute(payload: UserAppointmentBookingViaStripeRequest): Promise<ApiResponse<string>> {
+    async execute(payload: UserAppointmentBookingViaStripeRequest): Promise<string> {
         try {
 
             const { userId, providerId, slotId, selectedServiceMode, date } = payload;
@@ -30,7 +36,7 @@ export class UserAppointmentBookingViaStripeUseCase {
             const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("No provider found");
 
-            const providerService = await this.providerServiceRepository.findProviderServiceByProviderId(providerId);
+            const providerService = await this.providerServiceQueries.findByProviderId(providerId);
             if (!providerService) throw new Error("No service found");
 
             function isServiceData(obj: any): obj is FindProviderServiceResponse {
@@ -39,7 +45,7 @@ export class UserAppointmentBookingViaStripeUseCase {
 
             if (!isServiceData(providerService)) throw new Error("No service data found");
 
-            const providerServiceAvailability = await this.serviceAvailabilityRepository.findServiceAvailabilityByProviderId(providerId, date);
+            const providerServiceAvailability = await this.serviceAvailabilityQueries.findByProviderId(date, providerId);
             if (!providerServiceAvailability) throw new Error("No availability found");
 
             console.log("usecase availability");
@@ -51,7 +57,7 @@ export class UserAppointmentBookingViaStripeUseCase {
 
             if (!selectedSlot[0].available) throw new Error("This slot is not available for today");
 
-            const existBooking = await this.bookingRepository.findBookingByUserId(userId, providerServiceAvailability.day, date, selectedSlot[0].time);
+            const existBooking = await this.bookingRepository.findByUserId(userId, providerServiceAvailability.day, date, selectedSlot[0].time);
             if (existBooking && existBooking.length > 0) throw new Error("You have already an appointment on the same time");
 
             const session = await stripe.checkout.sessions.create({
@@ -81,15 +87,13 @@ export class UserAppointmentBookingViaStripeUseCase {
                     totalAmount: providerService.servicePrice * 100,
                 }
             });
-            return { success: true, message: "Session id generated.", data: session.id };
+            return session.id;
         } catch (error) {
-            console.log("UserAppointmentBookingViaStripeUseCase error : ", error);
-            throw new Error("Failed to save appointment booking");
-        }
-
-    }
-
-}
+            log.error("UserAppointmentBookingViaStripeUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
 
 
 export class UserSaveBookingAfterStripePaymentUseCase {
@@ -97,11 +101,11 @@ export class UserSaveBookingAfterStripePaymentUseCase {
         private userRepository: IUserRepository,
         private paymentRepository: IPaymentRepository,
         private bookingRepository: IBookingRepository,
-        private serviceAvailabilityRepository: IServiceAvailabilityRepository,
         private addEventToGoogleCalendarService: AddEventToGoogleCalendarService,
-    ) { }
+        private serviceAvailabilityQueries: IServiceAvailabilityQueries,
+    ) { };
 
-    async execute(payload: UserSaveAppoinmentBookingRequest): Promise<ApiResponse> {
+    async execute(payload: UserSaveAppoinmentBookingRequest): Promise<void> {
         try {
             const { userId, sessionId } = payload;
             console.log("saving booking");
@@ -118,15 +122,15 @@ export class UserSaveBookingAfterStripePaymentUseCase {
             const selectedServiceMode = session?.metadata?.selectedServiceMode;
             const initialAmount = session?.metadata?.initialAmount;
             const totalAmount = session?.metadata?.totalAmount;
-            const paymentStatus = session?.payment_status === "paid" ? "Paid" : "Pending";
-            const paymentType = session?.payment_method_types[0];
+            const paymentStatus = session?.payment_status === "paid" ? PaymentStatus.Paid : PaymentStatus.Pending;
+            const paymentMethod = session?.payment_method_types[0] as PaymentMethod;
             const dateString = session?.metadata?.appointmentDate;
             const paymentIntent = session?.payment_intent;
             const slotDuration = session?.metadata?.slotDuration;
 
-            if (!providerId || !selectedDay || !slotId || !selectedServiceMode || !initialAmount || !totalAmount || !paymentStatus || !paymentType || !dateString || !paymentIntent || !slotDuration) throw new Error("Unexpected error, please try again");
+            if (!providerId || !selectedDay || !slotId || !selectedServiceMode || !initialAmount || !totalAmount || !paymentStatus || !paymentMethod || !dateString || !paymentIntent || !slotDuration) throw new Error("Unexpected error, please try again");
 
-            const providerServiceAvailability = await this.serviceAvailabilityRepository.findServiceAvailabilityByProviderId(new Types.ObjectId(providerId), new Date(dateString));
+            const providerServiceAvailability = await this.serviceAvailabilityQueries.findByProviderId(new Date(dateString), providerId);
             if (!providerServiceAvailability) throw new Error("No availability found");
 
             const selectedSlot = providerServiceAvailability.slots.filter((slot) => slot._id.toString() === slotId);
@@ -139,71 +143,64 @@ export class UserSaveBookingAfterStripePaymentUseCase {
             // mongoSession.startTransaction();
 
             try {
-                const payment = await this.paymentRepository.createPaymentForBooking({
+                const paymentData = Payment.createForBooking({
                     transactionId: paymentIntent.toString(),
-                    paymentStatus: paymentStatus,
-                    paymentMethod: paymentType,
-                    paymentGateway: paymentGatewayArray[0],
-                    paymentFor: paymentForArray[1],
+                    paymentStatus,
+                    paymentMethod,
+                    paymentGateway: PaymentGateway.Stripe,
+                    paymentFor: PaymentFor.AppointmentBooking,
                     initialAmount: Number(initialAmount) / 100,
                     discountAmount: 0,
                     totalAmount: Number(totalAmount) / 100,
-                    userId: new Types.ObjectId(userId),
-                    providerId: new Types.ObjectId(providerId),
-                }, 
-                // { session: mongoSession }
-            );
-
+                    userId,
+                    providerId,
+                });
+                const payment = await this.paymentRepository.create(paymentData);
                 if (!payment) throw new Error("Unexpected error, payment saving error.");
-
 
                 if (user.googleConnected) {
                     const response = await this.addEventToGoogleCalendarService.execute({
                         userId,
                         slotDuration: Number(slotDuration),
                         appointmentDate: new Date(dateString),
-                        appointmentStatus: appointmentStatusArray[0],
+                        appointmentStatus: AppointmentStatus.Booked,
                     });
                     if (!response.success) throw new Error("Booking saving failed");
 
-                    const newBooking = await this.bookingRepository.createBooking({
-                        serviceProviderId: new Types.ObjectId(providerId),
-                        userId: new Types.ObjectId(userId),
+                    const bookingData = Booking.create({
+                        serviceProviderId: providerId,
+                        userId,
                         appointmentDate: new Date(dateString),
                         appointmentMode: selectedServiceMode,
-                        appointmentStatus: appointmentStatusArray[0],
+                        appointmentStatus: AppointmentStatus.Booked,
                         appointmentTime: selectedSlot[0].time,
                         videoCallRoomId: "stw-" + uuidv4(),
                         googleEventId: response.data?.id!,
                         paymentId: payment._id,
                         slotId: selectedSlot[0]._id,
                         statusTrack: [{
-                            appointmentStatus: appointmentStatusArray[0],
+                            appointmentStatus: AppointmentStatus.Booked,
                             time: new Date(),
-                        }]
-                    }, 
-                    // { session: mongoSession }
-                );
-
-                console.log("newBooking one : ",newBooking);
+                        }],
+                    });
+                    const newBooking = await this.bookingRepository.create(bookingData);
+                    console.log("newBooking one : ", newBooking);
                     if (!newBooking) throw new Error("Error in slot booking, please try again");
-                    console.log("newBooking two : ",newBooking);
-
-                }
+                    console.log("newBooking two : ", newBooking);
+                };
 
                 // await mongoSession.commitTransaction();
                 // mongoSession.endSession();
 
-                return { success: true, message: "Your booking have been confirmed" }
             } catch (error) {
-                console.log("UserSaveBookingAfterStripePaymentUseCase error : ", error);
+                log.error("UserSaveBookingAfterStripePaymentUseCase failed", error as Error);
                 // await mongoSession.abortTransaction();
                 // mongoSession.endSession();
-                throw new Error("Subscribing error.");
-            }
+                throw error;
+            };
         } catch (error) {
-            console.log("UserSaveBookingAfterStripePaymentUseCase error : ", error);
-            throw new Error("Failed to save booking");
-        }
-    }
-}
+            log.error("UserSaveBookingAfterStripePaymentUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};

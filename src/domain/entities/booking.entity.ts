@@ -1,6 +1,6 @@
 import { AppointmentStatus } from "../enums/appointmentStatus.enum";
 import { BookingProps, OnlineTrack } from "../contracts/booking.contract";
-import { CreateBookingProps, statusTrack, UpdateBookingProps } from "../commands/booking.commands";
+import { CreateBookingProps, statusTrack, UpdateAppointmentProps, UpdateBookingProps } from "../commands/booking.commands";
 
 export class Booking {
 
@@ -22,13 +22,13 @@ export class Booking {
             appointmentStatus: props.appointmentStatus,
             appointmentTime: props.appointmentTime,
             googleEventId: props.googleEventId,
-            onlineTrack: props.onlineTrack,
             paymentId: props.paymentId,
             serviceProviderId: props.serviceProviderId,
             slotId: props.slotId,
             statusTrack: props.statusTrack,
             userId: props.userId,
             videoCallRoomId: props.videoCallRoomId,
+            onlineTrack: null,
             createdAt: new Date(),
             updatedAt: new Date(),
         })
@@ -45,6 +45,9 @@ export class Booking {
     };
 
     get onlineTrack(): OnlineTrack {
+        if(!this.props.onlineTrack) {
+            throw new Error("Onlinetrack not found");
+        };
         return this.props.onlineTrack;
     };
 
@@ -71,8 +74,22 @@ export class Booking {
     get videoCallRoomId(): string {
         if(!this.props.videoCallRoomId) {
             throw new Error("Room id not found");
-        }
+        };
         return this.props.videoCallRoomId;
+    };
+
+    get googleEventId(): string {
+        if(!this.props.googleEventId) {
+            throw new Error("googleEventId is not found");
+        };
+        return this.props.googleEventId;
+    };
+
+    get paymentId(): string {
+        if(!this.props.paymentId) {
+            throw new Error("No paymentId found");
+        };
+        return this.props.paymentId;
     };
 
     // Business methods
@@ -102,5 +119,34 @@ export class Booking {
         });
 
         this.touch();
-    }
-}
+    };
+
+    updateAppointment(props: UpdateAppointmentProps) {
+         if (this.props.appointmentStatus === props.appointmentStatus) {
+            return;
+        }
+
+        this.props.appointmentStatus = props.appointmentStatus;
+        this.props.statusTrack.push({
+            appointmentStatus: props.appointmentStatus,
+            time: new Date(),
+        });
+
+        this.touch();
+    };
+
+    cancelAppointment() {
+        if (this.props.appointmentStatus === AppointmentStatus.Cancelled) {
+            return;
+        }
+
+        this.props.appointmentStatus = AppointmentStatus.Cancelled;
+        this.props.statusTrack.push({
+            appointmentStatus: AppointmentStatus.Cancelled,
+            time: new Date(),
+        });
+
+        this.touch();
+    };
+
+};

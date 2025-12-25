@@ -1,17 +1,16 @@
-import { Types } from "mongoose";
 import { Day } from "../../domain/enums/day.enum";
 import { PaymentFor } from "../../domain/enums/paymentFor.enum";
 import { ServiceType } from "../../domain/enums/serviceType.enum";
 import { ServiceMode } from "../../domain/enums/serviceMode.enum";
 import { GeoLocation } from "../../domain/contracts/address.contract";
+import { PaymentMethod } from "../../domain/enums/paymentMethod.enum";
+import { PaymentStatus } from "../../domain/enums/paymentStatus.enum";
 import { PaymentGateway } from "../../domain/enums/paymentGateway.enum";
 import { ServiceCategory } from "../../domain/enums/serviceCategories.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { SubscriptionStatus } from "../../domain/enums/subscriptionStatus.enum";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
 import { adminVerificationStatusArray, appointmentStatusArray, daysArray, paymentForArray, paymentGatewayArray, roleArray, serviceCategoryArray, serviceModeArray, serviceTypeArray, subscriptionStatusArray } from "../../shared/utils/constants";
-import { PaymentMethod } from "../../domain/enums/paymentMethod.enum";
-import { PaymentStatus } from "../../domain/enums/paymentStatus.enum";
 
 export type RoleType = typeof roleArray[number];
 
@@ -112,7 +111,7 @@ export interface BookingDTO {
   appointmentDate: Date,
   appointmentTime: string,
   appointmentMode: string,
-  appointmentStatus: string,
+  appointmentStatus: AppointmentStatus,
   slotId: string,
   paymentId: string | null,
   videoCallRoomId: string | null,
@@ -313,7 +312,7 @@ export interface userIdAndProviderIdFilterForFetchPayments {
   providerId?: ProviderDTO["_id"];
 }
 export interface FetchPaymentsRequest extends ApiPaginationRequest, userIdAndProviderIdFilterForFetchPayments { };
-export type FetchPaymentResponse = Array<Pick<PaymentDTO, "_id" | "createdAt" | "totalAmount" | "paymentFor" | "paymentGateway" | "paymentStatus" | "paymentMethod" | "discountAmount">>;
+export type FetchPaymentResponse = Array<Pick<PaymentDTO, "_id" | "createdAt" | "totalAmount" | "paymentFor" | "paymentGateway" | "paymentStatus" | "paymentMethod" | "discountAmount">> | null;
 
 
 // Used as the request interface for fetching subscriptions with planName and plan price of a specific provider for the provider side and admin side
@@ -335,11 +334,11 @@ export type PopulatedSubscription = Omit<SubscriptionDTO, 'subscriptionPlanId' |
 };
 
 
-
-//// **** Used as the request type for adding address for user or provider
+// Used as the request type for adding address for user or provider
 export type CreateAddressRequest = Pick<AddressDTO, "userId" | "addressLine" | "landMark" | "place" | "phone" | "city" | "country" | "district" | "pincode" | "state" | "location">;
 
-//// **** Used as the request interface for fetching bookings for admin, provider and user side
+
+// Used as the request interface for fetching bookings for admin, provider and user side
 export interface userIdAndServiceProviderId {
   userId?: UserDTO["_id"];
   serviceProviderId?: ProviderDTO["_id"];
@@ -349,7 +348,7 @@ export interface FetchBookingsRequest extends ApiPaginationRequest, userIdAndSer
   raw: boolean;
   role: RoleType;
 }
-//// **** Used as the response type for fetching bookings for admin, provider and user side
+// Used as the response type for fetching bookings for admin, provider and user side
 export type FetchBookingsResponse = Array<Pick<BookingDTO, "_id" | "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "videoCallRoomId" | "serviceProviderId">>;
 export type FetchOnlineBookingsForProviderResponse = Array<
   Pick<
@@ -378,26 +377,29 @@ export type FetchOnlineBookingsForUserResponse = Array<
   }
 >;
 
-//// **** Used as the response type for fetching AppServices for provider and user side
-export type FetchAllAppServiceRequest = Pick<ServiceDTO, "serviceCategory">;
-export type FetchAllAppServicesResponse = Array<Pick<ServiceDTO, "_id" | "serviceName">>;
 
-//// **** Used as the request type for updating address for provider and user side
+// Used as the response type for fetching AppServices for provider and user side
+export type FetchAllAppServiceRequest = Pick<ServiceDTO, "serviceCategory">;
+export type FetchAllAppServicesResponse = Array<Pick<ServiceDTO, "_id" | "serviceName">> | null;
+
+
+// Used as the request type for updating address for provider and user side
 export type UpdateAddressRequest = Pick<AddressDTO, "_id" | "userId" | "addressLine" | "landMark" | "place" | "phone" | "city" | "country" | "district" | "pincode" | "state" | "location">;
 
-//// **** Used as the interface for the validate join room
+
+// Used as the interface for the validate join room
 export interface ValidateJoinRoomRequest {
   role: RoleType;
   bookingId: string;
   roomId: string;
   userOrProviderId: string;
-}
+};
 
 
-//// **** fetch subscription details use case request payload interface 
+// fetch subscription details use case request payload interface 
 export interface FetchSubscriptionDetailsRequest {
   subscriptionId: SubscriptionDTO["_id"];
-}
+};
 // admin fetch subscription details use case response interface 
 export type FetchSubscriptionDetailsResponse = findSubscriptionFullDetailsResProps | null;
 
@@ -472,14 +474,14 @@ export type UserBookingAddingToCalendar = Pick<GoogleCalendarEvent, "summary" | 
 export type UserBookingFetchingFromCalendar = Pick<GoogleCalendarEvent, "id" | "summary" | "description" | "start" | "end" | "creator" | "organizer" | "iCalUID" | "reminders" | "eventType" | "extendedProperties">
 
 export interface UpdateGoogleCalendarEventRequest {
-  userId: Types.ObjectId,
+  userId: string,
   eventId: string,
   appointmentDate: BookingDTO["appointmentDate"],
   appointmentStatus: BookingDTO["appointmentStatus"],
 }
 
 export interface CreateGoogleCalendarEventRequest {
-  userId: Types.ObjectId,
+  userId: string,
   appointmentDate: BookingDTO["appointmentDate"],
   appointmentStatus: BookingDTO["appointmentStatus"],
   slotDuration: number,
@@ -491,7 +493,6 @@ export interface UpdateBookingOnlineTrackRequest extends ParticipantPresence {
 }
 
 export type UpdateBookingOnlineTrackResponse = Pick<Availability, "duration">;
-
 
 
 //// **** Used as the request interface fetching reviews for admin, provider and user side
@@ -550,24 +551,6 @@ export type findAllPlansForDisplayResProps = Pick<PlanDTO, "_id" | "planName" | 
 type FindProviderServiceProps = Omit<ProviderServiceDTO, "service">;
 export interface FindProviderServiceResponse extends FindProviderServiceProps {
   service: Pick<ServiceDTO, "serviceName">
-}
-
-
-export interface FindProvidersUsingServiceIdsResponse {
-  _id: string,
-  provider: {
-    _id: string,
-    username: string,
-    profileImage: string | null,
-    trustedBySlotflow: boolean,
-  },
-  serviceDetails: {
-    serviceId: string;
-    service: string;
-    serviceCategory: string;
-    serviceName: string;
-    servicePrice: string;
-  }
 }
 
 

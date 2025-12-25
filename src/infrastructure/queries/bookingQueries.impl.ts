@@ -405,7 +405,7 @@ export class BookingQueriesImpl implements IBookingQueries {
         };
     }
 
-    async findStatsForAdminDashboard(): Promise<AdminFetchDashboardAppointmentStatsDataResponse> {
+    async findStatsDataForAdminDashboard(): Promise<AdminFetchDashboardAppointmentStatsDataResponse> {
         const result = await BookingModel.aggregate([
             {
                 $group: {
@@ -468,7 +468,7 @@ export class BookingQueriesImpl implements IBookingQueries {
         }));
     }
 
-    async findTodayStatsForAdminDashboard(): Promise<AdminFetchTodaysBookingStatsForDashboardResponse> {
+    async findTodayStatsDataForAdminDashboard(): Promise<AdminFetchTodaysBookingStatsForDashboardResponse> {
         const startOfToday = startOfDay(new Date());
         const endOfToday = endOfDay(new Date());
 
@@ -500,7 +500,7 @@ export class BookingQueriesImpl implements IBookingQueries {
         };
     }
 
-    async findTodaysBookingForCronjob(): Promise<boolean> {
+    async findTodaysBookingsForCronjob(): Promise<boolean> {
         const now = new Date();
         const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);

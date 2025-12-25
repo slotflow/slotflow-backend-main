@@ -1,27 +1,35 @@
 import dayjs from "dayjs";
-import { startSession, Types } from "mongoose";
 import {
     ProviderSaveSubscriptionRequest,
     ProviderSaveSubscriptionResponse,
     ProviderStripeSubscriptionCreateSessionIdRequest,
     ProviderStripeSubscriptionCreateSessionIdResponse,
 } from "../../dtos/provider.dto";
+// import { startSession } from "mongoose";
+import { log } from "../../../shared/logger/logger";
 import { stripe } from "../../../infrastructure/lib/stripe";
-import { ApiResponse } from "../../dtos/common.dto";
+import { Payment } from "../../../domain/entities/payment.entity";
+import { PaymentFor } from "../../../domain/enums/paymentFor.enum";
+import { PaymentMethod } from "../../../domain/enums/paymentMethod.enum";
+import { PaymentStatus } from "../../../domain/enums/paymentStatus.enum";
+import { PaymentGateway } from "../../../domain/enums/paymentGateway.enum";
+import { Subscription } from "../../../domain/entities/subscription.entity";
+import { SubscriptionStatus } from "../../../domain/enums/subscriptionStatus.enum";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { IPaymentRepository } from "../../../domain/interfaces/repositories/IPayment.repository";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
-import { paymentForArray, paymentGatewayArray, subscriptionStatusArray } from "../../../shared/utils/constants";
+
+// TODO can make the payment another service
 
 export class ProviderStripeSubscriptionCreateSessionIdUseCase {
     constructor(
         private planRepository: IPlanRepository,
         private providerRepository: IProviderRepository,
         private subscriptionRepository: ISubscriptionRepository,
-    ) { }
+    ) { };
 
-    async execute(payload: ProviderStripeSubscriptionCreateSessionIdRequest): Promise<ApiResponse<ProviderStripeSubscriptionCreateSessionIdResponse>> {
+    async execute(payload: ProviderStripeSubscriptionCreateSessionIdRequest): Promise<ProviderStripeSubscriptionCreateSessionIdResponse> {
         try {
             const { providerId, planId, duration } = payload;
 
@@ -30,19 +38,19 @@ export class ProviderStripeSubscriptionCreateSessionIdUseCase {
             const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("No user found, please logout and try again.");
 
-            const plan = await this.planRepository.findPlanById(planId);
+            const plan = await this.planRepository.findById(planId);
             if (!plan) throw new Error("Unexpected error, please try again after sometimes.");
 
             const providerLastSubscriptionsId = provider.subscription.pop();
 
             if (providerLastSubscriptionsId) {
-                const subscription = await this.subscriptionRepository.findSubscriptionById(providerLastSubscriptionsId!);
+                const subscription = await this.subscriptionRepository.findById(providerLastSubscriptionsId!);
                 if (subscription) {
                     if (subscription.subscriptionStatus === "Active") throw new Error("Your subscription is on live.");
                     const isSubscriptionExpired = dayjs().isAfter(dayjs(subscription.endDate), "day");
                     if (!isSubscriptionExpired) throw new Error("Your subscription is on live.");
-                }
-            }
+                };
+            };
 
             const session = await stripe.checkout.sessions.create({
                 payment_method_types: ["card"],
@@ -67,24 +75,24 @@ export class ProviderStripeSubscriptionCreateSessionIdUseCase {
                     planDuration: planDuration,
                     initialAmount: plan.price * planDuration * 100,
                     totalAmount: plan.price * planDuration * 100,
-                }
+                },
             });
-            return { success: true, message: "Session id generated.", data: session.id };
+            return session.id;
         } catch (error) {
-            console.log("ProviderStripeSubscriptionCreateSessionIdUseCase error : ", error);
-            throw new Error("Failed to subscribe");
-        }
-    }
-}
+            log.error("ProviderStripeSubscriptionCreateSessionIdUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
 
 export class ProviderSaveSubscriptionUseCase {
     constructor(
         private providerRepository: IProviderRepository,
         private paymentRepository: IPaymentRepository,
         private subscriptionRepository: ISubscriptionRepository,
-    ) { }
+    ) { };
 
-    async execute(payload: ProviderSaveSubscriptionRequest): Promise<ApiResponse<ProviderSaveSubscriptionResponse>> {
+    async execute(payload: ProviderSaveSubscriptionRequest): Promise<ProviderSaveSubscriptionResponse> {
         try {
             const { providerId, sessionId } = payload;
 
@@ -97,41 +105,43 @@ export class ProviderSaveSubscriptionUseCase {
             const planName = session?.metadata?.planName;
             const totalAmount = Number(session?.metadata?.totalAmount);
             const initialAmount = Number(session?.metadata?.initialAmount);
-            const paymentStatus = session?.payment_status === "paid" ? "Paid" : "Pending";
-            const paymentType = session?.payment_method_types[0];
+            const paymentStatus = session?.payment_status === "paid" ? PaymentStatus.Paid : PaymentStatus.Pending;
+            const paymentMethod = session?.payment_method_types[0] as PaymentMethod;
             const subscriptionPlanId = session?.metadata?.planId;
             const planDuration = Number(session?.metadata?.planDuration);
             const paymentIntent = session?.payment_intent;
 
-            if (!pId || isNaN(totalAmount) || isNaN(initialAmount) || !paymentStatus || !paymentType || !subscriptionPlanId || !planDuration || !paymentIntent) throw new Error("Unexpected error, please try again.");
+            if (!pId || isNaN(totalAmount) || isNaN(initialAmount) || !paymentStatus || !paymentMethod || !subscriptionPlanId || !planDuration || !paymentIntent) throw new Error("Unexpected error, please try again.");
 
-            const mongoSession = await startSession();
-            mongoSession.startTransaction();
+            // const mongoSession = await startSession();
+            // mongoSession.startTransaction();
             try {
 
-                const payment = await this.paymentRepository.createPaymentForSubscription({
+                const paymentData = Payment.createforSubscription({
                     transactionId: paymentIntent.toString(),
                     paymentStatus: paymentStatus,
-                    paymentMethod: paymentType,
-                    paymentGateway: paymentGatewayArray[0],
-                    paymentFor: paymentForArray[0],
+                    paymentMethod: paymentMethod,
+                    paymentGateway: PaymentGateway.Stripe,
+                    paymentFor: PaymentFor.ProviderSubscription,
                     initialAmount: Number(initialAmount) / 100,
                     discountAmount: 0,
                     totalAmount: Number(totalAmount) / 100,
-                    providerId: new Types.ObjectId(pId),
-                }, { session: mongoSession });
+                    providerId: pId,
+                });
 
+                const payment = await this.paymentRepository.create(paymentData);
                 if (!payment) throw new Error("Unexpected error, payment saving error.");
 
-                const subscription = await this.subscriptionRepository.createSubscription({
-                    providerId: new Types.ObjectId(pId),
-                    subscriptionPlanId: new Types.ObjectId(subscriptionPlanId),
+                const subscriptionData = Subscription.create({
+                    providerId: pId,
+                    subscriptionPlanId: subscriptionPlanId,
                     startDate: new Date(),
                     endDate: dayjs().add(Number(planDuration * 30), "day").toDate(),
-                    subscriptionStatus: subscriptionStatusArray[0],
+                    subscriptionStatus: SubscriptionStatus.Active,
                     paymentId: payment._id,
-                }, { session: mongoSession });
+                });
 
+                const subscription = await this.subscriptionRepository.create(subscriptionData);
                 if (!subscription) throw new Error("Subscription saving error.");
 
                 provider.activateSubscription(subscription._id);
@@ -139,18 +149,18 @@ export class ProviderSaveSubscriptionUseCase {
                 const updatedProvider = await this.providerRepository.update(provider);
                 if (!updatedProvider) throw new Error("Unexpected error, subscription adding error.");
 
-                await mongoSession.commitTransaction();
-                mongoSession.endSession();
+                // await mongoSession.commitTransaction();
+                // mongoSession.endSession();
 
-                return { success: true, message: "Your Subscription has been activated.", data: { planName } };
+                return { planName };
             } catch (error) {
-                await mongoSession.abortTransaction();
-                mongoSession.endSession();
-                throw new Error("Subscribing error."+error);
+                // await mongoSession.abortTransaction();
+                // mongoSession.endSession();
+                throw error;
             }
         } catch (error) {
-            console.log("ProviderSaveSubscriptionUseCase error : ", error);
-            throw new Error("Failed to save subscription");
-        }
-    }
-}
+            log.error("ProviderSaveSubscriptionUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};

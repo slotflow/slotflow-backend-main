@@ -1,20 +1,28 @@
-import { ApiResponse } from "../../dtos/common.dto";
+import { log } from "../../../shared/logger/logger";
 import { ProviderFetchAllPlansResponse } from "../../dtos/provider.dto";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 
 export class ProviderFetchAllPlansUseCase {
     constructor(
         private planRepository: IPlanRepository
-    ) { }
+    ) { };
 
-    async execute(): Promise<ApiResponse<ProviderFetchAllPlansResponse>> {
+    async execute(): Promise<ProviderFetchAllPlansResponse> {
         try {
-            const plans = await this.planRepository.findAllPlansForDisplay();
-            if (!plans) throw new Error("Plans Fetching error");
-            return { success: true, message: "Plans fetched.", data: plans };
+            const result = await this.planRepository.findAll();
+            if (!result) throw new Error("Plans Fetching error");
+            const { data: plans } = result;
+            return plans.map(plan => ({
+                _id: plan._id,
+                description: plan.description,
+                features: plan.features,
+                planName: plan.planName,
+                price: plan.price,
+            }));
         } catch (error) {
-            console.log("ProviderFetchAllPlansUseCase error : ", error);
-            throw new Error("Failed to fetch all plans");
-        }
-    }
-}
+            log.error("ProviderFetchAllPlansUseCase failed", error as Error);
+            throw error;
+        };
+    };
+
+};

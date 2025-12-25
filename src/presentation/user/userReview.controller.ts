@@ -1,26 +1,25 @@
 import { DecodedUser } from "../../express";
+import { log } from "../../shared/logger/logger";
+import { Role } from "../../domain/enums/role.enum";
 import { roleArray } from "../../shared/utils/constants";
 import { NextFunction, Request, Response } from "express";
+import { sendResponse } from "../../shared/utils/response";
 import { UserCreateReviewZodSchema } from "../../shared/zod/user.zod";
-import { RequestQueryFetchAllReviewsZodSchema } from "../../shared/zod/common.zod";
+import { IReviewQueries } from "../../application/queries/IReview.queries";
 import { SignedUrlService } from "../../infrastructure/services/signedUrl.service";
+import { RequestQueryFetchAllReviewsZodSchema } from "../../shared/zod/common.zod";
+import { ReviewQueriesImpl } from "../../infrastructure/queries/reviewQueries.impl";
 import { ISignedUrlService } from "../../domain/interfaces/services/ISignedUrl.service";
 import { FetchAllReviewsUseCase } from "../../application/useCases/common/fetchReviews.useCase";
 import { ReviewRepositoryImpl } from "../../infrastructure/database/review/review.repository.impl";
 import { CreateReviewUseCase, DeleteReviewUseCase } from "../../application/useCases/user/userReview.useCase";
 import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
-import { IReviewQueries } from "../../application/queries/IReview.queries";
-import { ReviewQueriesImpl } from "../../infrastructure/queries/reviewQueries.impl";
-import { sendResponse } from "../../shared/utils/response";
-import { log } from "../../shared/logger/logger";
-import { Role } from "../../domain/enums/role.enum";
 
 const reviewRepositoryImpl = new ReviewRepositoryImpl();
 const signedUrlCacheRepositoryImpl = new SignedUrlCacheRepositoryImpl();
 
 const signedUrlService: ISignedUrlService = new SignedUrlService(signedUrlCacheRepositoryImpl);
 const reviewQueries: IReviewQueries = new ReviewQueriesImpl();
-
 
 const createReviewUseCase = new CreateReviewUseCase(reviewRepositoryImpl);
 const deleteReviewUseCase = new DeleteReviewUseCase(reviewRepositoryImpl);
@@ -60,16 +59,16 @@ export class UserReviewController {
         try {
             const userId = (req.user as DecodedUser).userOrProviderId;
             const reviewId = req.params.reviewId;
-            const result = await this.deleteReviewUseCase.execute({
+            await this.deleteReviewUseCase.execute({
                 reviewId,
                 userId
             });
-            res.status(200).json(result);
+            sendResponse(res, null, "Review deleted successfully");
         } catch (error) {
-            console.log("findAllReviews error : ", error);
-            next(error)
-        }
-    }
+            log.error("findAllReviews failed", error as Error);
+            next(error);
+        };
+    };
 
     async findAllReviews(req: Request, res: Response, next: NextFunction) {
         try {
@@ -83,14 +82,17 @@ export class UserReviewController {
                 providerId: role === Role.Provider ? providerId : undefined,
                 role: roleArray[1]
             });
-            res.status(200).json(result);
+            sendResponse(res, result);
         } catch (error) {
-            console.log("findAllReviews error : ", error);
-            next(error)
-        }
-    }
+            log.error("findAllReviews failed", error as Error);
+            next(error);
+        };
+    };
 
-}
+};
 
-const userReviewController = new UserReviewController(createReviewUseCase, deleteReviewUseCase, fetchAllReviewsUseCase);
-export { userReviewController };
+export const userReviewController = new UserReviewController(
+    createReviewUseCase, 
+    deleteReviewUseCase, 
+    fetchAllReviewsUseCase
+);

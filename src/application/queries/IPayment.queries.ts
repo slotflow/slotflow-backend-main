@@ -4,11 +4,11 @@ import { AdminFetchDashboardRevenueStatsDataResponse, AdminFetchDashboardTodayPa
 
 export interface IPaymentQueries {
 
-    findStatsForProviderDashboard(providerId: string): Promise<ProviderFetchDashboardPaymentStatsDataResponse>;
+    findStatsDataForProviderDashboard(providerId: string): Promise<ProviderFetchDashboardPaymentStatsDataResponse>;
 
-    findTodayStatsForAdminDashboard(): Promise<AdminFetchDashboardTodayPaymentStatsDataResponse>;
+    findTodayStatsDataForAdminDashboard(): Promise<AdminFetchDashboardTodayPaymentStatsDataResponse>;
 
-    findStatsForAdminDashboard(): Promise<AdminFetchDashboardRevenueStatsDataResponse>;
+    findStatsDataForAdminDashboard(): Promise<AdminFetchDashboardRevenueStatsDataResponse>;
 
     findAdminRevenueReport(payload: AdminFetchRevenueReportRequest): Promise<TableData<AdminFetchRevenueReportResponse>>;
     

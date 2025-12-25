@@ -1,41 +1,42 @@
-import { Types } from "mongoose";
 import { DecodedUser } from "../../express";
+import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
+import { sendResponse } from "../../shared/utils/response";
+import { IBookingQueries } from "../../application/queries/IBooking.queries";
 import { SignedUrlService } from "../../infrastructure/services/signedUrl.service";
+import { BookingQueriesImpl } from "../../infrastructure/queries/bookingQueries.impl";
 import { ISignedUrlService } from "../../domain/interfaces/services/ISignedUrl.service";
-import { IBookingRepository } from "../../domain/interfaces/repositories/IBooking.repository";
-import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { ISignedUrlCacheRepository } from "../../domain/interfaces/repositories/ISignedUrlCache.repository";
 import { ProviderFetchUserForChatSidebarUseCase } from "../../application/useCases/provier/providerUser.useCase";
 import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
 
-const bookingRepository: IBookingRepository = new BookingRepositoryImpl();
 const signedUrlCacheRepository: ISignedUrlCacheRepository = new SignedUrlCacheRepositoryImpl();
+const bookingQueries: IBookingQueries = new BookingQueriesImpl();
 
 const signedUrlService: ISignedUrlService = new SignedUrlService(signedUrlCacheRepository);
 
-const providerFetchUserForChatSidebarUseCase = new ProviderFetchUserForChatSidebarUseCase(bookingRepository, signedUrlService);
+const providerFetchUserForChatSidebarUseCase = new ProviderFetchUserForChatSidebarUseCase(signedUrlService, bookingQueries);
 
 export class ProviderUserController {
     constructor(
         private providerFetchUserForChatSidebarUseCase: ProviderFetchUserForChatSidebarUseCase,
     ) {
         this.fetchUsersForChatSideBar = this.fetchUsersForChatSideBar.bind(this);
-    }
+    };
 
     async fetchUsersForChatSideBar(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
-            const result = await this.providerFetchUserForChatSidebarUseCase.execute({ providerId: new Types.ObjectId(providerId) });
-            res.status(200).json(result);
+            const result = await this.providerFetchUserForChatSidebarUseCase.execute({ providerId });
+            sendResponse(res, result);
         } catch (error) {
-            console.log("fetchUsersForChatSideBar error : ", error);
-            next(error)
-        }
-    }
-}
+            log.error("fetchUsersForChatSideBar failed", error as Error);
+            next(error);
+        };
+    };
+    
+};
 
-const providerUserController = new ProviderUserController(
+export const providerUserController = new ProviderUserController(
     providerFetchUserForChatSidebarUseCase
 );
-export { providerUserController };

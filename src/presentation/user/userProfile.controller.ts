@@ -1,7 +1,8 @@
-import { Types } from "mongoose";
 import { DecodedUser } from "../../express";
 import { s3Client } from "../../config/aws_s3";
+import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
+import { sendResponse } from "../../shared/utils/response";
 import { IUserRepository } from "../../domain/interfaces/repositories/IUser.repository";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { s3FileKeyZodSchmema, UserOrProviderUpdateInfoZodSchema } from "../../shared/zod/common.zod";
@@ -25,51 +26,50 @@ export class UserProfileController {
         this.getProfileDetails = this.getProfileDetails.bind(this);
         this.updateProfileImage = this.updateProfileImage.bind(this);
         this.updateUserInfo = this.updateUserInfo.bind(this);
-    }
+    };
 
     async getProfileDetails(req:Request, res: Response, next: NextFunction) {
         try{
             const userId = (req.user as DecodedUser).userOrProviderId;
             if(!userId) throw new Error("Invalid request.");
-            const result = await this.userFetchProfileDetailsUseCase.execute({userId: new Types.ObjectId(userId)});
-            res.status(200).json(result);
+            const result = await this.userFetchProfileDetailsUseCase.execute({ userId });
+            sendResponse(res, result);
         }catch(error){
-            console.log("getProfileDetails error : ",error);
-            next(error)
-        }
-    }
+            log.error("getProfileDetails failed",error as Error);
+            next(error);
+        };
+    };
 
     async updateProfileImage(req: Request, res: Response, next: NextFunction) {
         try{
             const userId = (req.user as DecodedUser).userOrProviderId;
             if(!userId) throw new Error("Invalid request.");
             const validatedData = s3FileKeyZodSchmema.parse(req.body);
-            const result = await this.userUpdateProfileImageUseCase.execute({userId: new Types.ObjectId(userId), key: validatedData.s3FileKey});
-            res.status(200).json(result);
+            const result = await this.userUpdateProfileImageUseCase.execute({userId, profileImage: validatedData.s3FileKey});
+            sendResponse(res, result, "Profile image updated successfully");
         }catch(error){
-            console.log("updateProfileImage error : ",error);
-            next(error)
-        }
-    }
+            log.error("updateProfileImage failed",error as Error);
+            next(error);
+        };
+    };
 
     async updateUserInfo(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = (req.user as DecodedUser).userOrProviderId;
             const { username, phone } = UserOrProviderUpdateInfoZodSchema.parse(req.body);
             if(!userId || !username || !phone) throw new Error("Invalid request");
-            const result = await this.userUpdateProviderInfoUseCase.execute({ userId: new Types.ObjectId(userId), username, phone })
-            res.status(200).json(result)
+            const result = await this.userUpdateProviderInfoUseCase.execute({ userId, username, phone })
+            sendResponse(res, result, "Info updated successfully");
         } catch(error){ 
-            console.log("updateUserInfo error : ",error);
+            log.error("updateUserInfo failed",error as Error);
             next(error);
-        }
-    }
+        };
+    };
     
-}
+};
 
-const userProfileController = new UserProfileController( 
+export const userProfileController = new UserProfileController( 
     userFetchProfileDetailsUseCase, 
     userUpdateProfileImageUseCase,
     userUpdateProviderInfoUseCase,
 );
-export { userProfileController };

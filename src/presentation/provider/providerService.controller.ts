@@ -1,19 +1,22 @@
-import { Types } from "mongoose";
 import { DecodedUser } from "../../express";
+import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
-import { ProviderCreateServiceDetailsZodSchema } from "../../shared/zod/provider.zod";
-import { IProviderRepository } from "../../domain/interfaces/repositories/IProvider.repository";
-import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
-import { ProviderServiceRepositoryImpl } from "../../infrastructure/database/providerService/providerService.repository.impl";
-import { CreateProviderServiceRequest, IProviderServiceRepository } from "../../domain/interfaces/repositories/IProviderService.repository";
-import { ProviderCreateServiceDetailsUseCase, ProviderFetchServiceDetailsUseCase, ProviderUpdateServiceDetailsUseCase } from "../../application/useCases/provier/providerService.useCase";
-import { ProviderUpdateProviderServiceRequest } from "../../application/dtos/provider.dto";
+import { sendResponse } from "../../shared/utils/response";
 import { ValidateObjectId } from "../../shared/zod/common.zod";
+import { ProviderCreateServiceDetailsZodSchema } from "../../shared/zod/provider.zod";
+import { IProviderServiceQueries } from "../../application/queries/IProviderService.queries";
+import { IProviderRepository } from "../../domain/interfaces/repositories/IProvider.repository";
+import { ProviderServiceQueriesImpl } from "../../infrastructure/queries/providerServiceQueries.impl";
+import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
+import { IProviderServiceRepository } from "../../domain/interfaces/repositories/IProviderService.repository";
+import { ProviderServiceRepositoryImpl } from "../../infrastructure/database/providerService/providerService.repository.impl";
+import { ProviderCreateServiceDetailsUseCase, ProviderFetchServiceDetailsUseCase, ProviderUpdateServiceDetailsUseCase } from "../../application/useCases/provier/providerService.useCase";
 
 const providerRepository: IProviderRepository = new ProviderRepositoryImpl();
 const providerServiceRepository: IProviderServiceRepository = new ProviderServiceRepositoryImpl();
+const providerServiceQueries: IProviderServiceQueries = new ProviderServiceQueriesImpl();
 
-const providerFetchServiceDetailsUseCase = new ProviderFetchServiceDetailsUseCase(providerServiceRepository);
+const providerFetchServiceDetailsUseCase = new ProviderFetchServiceDetailsUseCase(providerServiceQueries);
 const providerCreateServiceDetailsUseCase = new ProviderCreateServiceDetailsUseCase(providerRepository, providerServiceRepository);
 const providerUpdateServiceDetailsUseCase = new ProviderUpdateServiceDetailsUseCase(providerServiceRepository);
 
@@ -26,63 +29,56 @@ class ProviderServiceController {
         this.createServiceDetails = this.createServiceDetails.bind(this);
         this.getServiceDetails = this.getServiceDetails.bind(this);
         this.updateServiceDetails = this.updateServiceDetails.bind(this);
-    }
+    };
 
     async createServiceDetails(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
-            const validateData = ProviderCreateServiceDetailsZodSchema.parse(req.body);
-            const payload: CreateProviderServiceRequest = {
-                ...validateData,
-                providerId: new Types.ObjectId(providerId),
-                service: new Types.ObjectId(validateData.service),
-            };
-            const result = await this.providerCreateServiceDetailsUseCase.execute(payload);
-            res.status(200).json(result);
+            const validatedData = ProviderCreateServiceDetailsZodSchema.parse(req.body);
+            await this.providerCreateServiceDetailsUseCase.execute({
+                ...validatedData,
+                providerId,
+                requirements: validatedData.requirements ?? null,
+                videoUrl: validatedData.videoUrl ?? null
+            });
+            sendResponse(res, null, "Service details saved successfully", true, 201);
         } catch (error) {
-            console.log("createServiceDetails error : ", error);
-            next(error)
-        }
-    }
+            log.error("createServiceDetails failed", error as Error);
+            next(error);
+        };
+    };
 
     async getServiceDetails(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
             if (!providerId) throw new Error("Invalid request.");
-            const result = await this.providerFetchServiceDetailsUseCase.execute({ providerId: new Types.ObjectId(providerId) });
-            res.status(200).json(result);
+            const result = await this.providerFetchServiceDetailsUseCase.execute({ providerId });
+            sendResponse(res, result);
         } catch (error) {
-            console.log("getServiceDetails error : ", error);
-            next(error)
-        }
-    }
+            log.error("getServiceDetails failed", error as Error);
+            next(error);
+        };
+    };
 
     async updateServiceDetails(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log("service updating");
-            const providerId = (req.user as DecodedUser).userOrProviderId;
-            if (!providerId) throw new Error("Invalid request.");
             const { id: serviceId } = ValidateObjectId(req.params.serviceId, "Service ID");
-            const validateData = ProviderCreateServiceDetailsZodSchema.parse(req.body);
-            const payload: ProviderUpdateProviderServiceRequest = {
-                ...validateData,
-                providerId: new Types.ObjectId(providerId),
-                service: new Types.ObjectId(validateData.service),
-                serviceId: new Types.ObjectId(serviceId)
-            };
-            const result = await this.providerUpdateServiceDetailsUseCase.execute(payload);
-            res.status(200).json(result);
+            const validatedData = ProviderCreateServiceDetailsZodSchema.parse(req.body);
+            const result = await this.providerUpdateServiceDetailsUseCase.execute({
+                ...validatedData,
+                _id: serviceId,
+            });
+            sendResponse(res, result, "Service details updated successfully");
         } catch (error) {
-            console.log("updateServiceDetails error : ", error);
-            next(error)
-        }
-    }
+            log.error("updateServiceDetails failed", error as Error);
+            next(error);
+        };
+    };
 
-}
+};
 
-const providerServiceController = new ProviderServiceController(
+export const providerServiceController = new ProviderServiceController(
     providerCreateServiceDetailsUseCase,
     providerFetchServiceDetailsUseCase,
     providerUpdateServiceDetailsUseCase
 );
-export { providerServiceController };

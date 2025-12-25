@@ -53,6 +53,14 @@ export class Plan {
         return this.props.price;
     };
 
+    get description(): string {
+        return this.props.description;
+    };
+
+    get features(): string[] {
+        return this.props.features;
+    };
+
     // Business Method
     getProps(): Readonly<PlanProps> {
         return { ...this.props };
