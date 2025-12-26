@@ -22,7 +22,7 @@ class AdminServiceController {
         this.getAllServices = this.getAllServices.bind(this);
         this.createService = this.createService.bind(this);
         this.changeServiceBlockStatus = this.changeServiceBlockStatus.bind(this);
-    }
+    };
 
     async getAllServices(req: Request, res: Response, next: NextFunction) {
         try {
@@ -61,12 +61,10 @@ class AdminServiceController {
         };
     };
 
-}
+};
 
-const adminServiceController = new AdminServiceController(
+export const adminServiceController = new AdminServiceController(
     adminServiceListUseCase,
     adminCreateServiceUseCase,
     adminChnageServiceBlockStatusUseCase
 );
-export { adminServiceController };
-

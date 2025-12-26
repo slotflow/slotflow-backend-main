@@ -6,18 +6,15 @@ import { IBookingQueries } from "../../application/queries/IBooking.queries";
 import { SignedUrlService } from "../../infrastructure/services/signedUrl.service";
 import { BookingQueriesImpl } from "../../infrastructure/queries/bookingQueries.impl";
 import { ISignedUrlService } from "../../domain/interfaces/services/ISignedUrl.service";
-import { ISignedUrlCacheRepository } from "../../domain/interfaces/repositories/ISignedUrlCache.repository";
 import { ProviderFetchUserForChatSidebarUseCase } from "../../application/useCases/provier/providerUser.useCase";
-import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
 
-const signedUrlCacheRepository: ISignedUrlCacheRepository = new SignedUrlCacheRepositoryImpl();
 const bookingQueries: IBookingQueries = new BookingQueriesImpl();
 
-const signedUrlService: ISignedUrlService = new SignedUrlService(signedUrlCacheRepository);
+const signedUrlService: ISignedUrlService = new SignedUrlService();
 
 const providerFetchUserForChatSidebarUseCase = new ProviderFetchUserForChatSidebarUseCase(signedUrlService, bookingQueries);
 
-export class ProviderUserController {
+class ProviderUserController {
     constructor(
         private providerFetchUserForChatSidebarUseCase: ProviderFetchUserForChatSidebarUseCase,
     ) {

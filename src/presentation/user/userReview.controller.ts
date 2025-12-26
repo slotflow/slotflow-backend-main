@@ -13,19 +13,17 @@ import { ISignedUrlService } from "../../domain/interfaces/services/ISignedUrl.s
 import { FetchAllReviewsUseCase } from "../../application/useCases/common/fetchReviews.useCase";
 import { ReviewRepositoryImpl } from "../../infrastructure/database/review/review.repository.impl";
 import { CreateReviewUseCase, DeleteReviewUseCase } from "../../application/useCases/user/userReview.useCase";
-import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
 
 const reviewRepositoryImpl = new ReviewRepositoryImpl();
-const signedUrlCacheRepositoryImpl = new SignedUrlCacheRepositoryImpl();
 
-const signedUrlService: ISignedUrlService = new SignedUrlService(signedUrlCacheRepositoryImpl);
+const signedUrlService: ISignedUrlService = new SignedUrlService();
 const reviewQueries: IReviewQueries = new ReviewQueriesImpl();
 
 const createReviewUseCase = new CreateReviewUseCase(reviewRepositoryImpl);
 const deleteReviewUseCase = new DeleteReviewUseCase(reviewRepositoryImpl);
 const fetchAllReviewsUseCase = new FetchAllReviewsUseCase(reviewQueries, signedUrlService);
 
-export class UserReviewController {
+class UserReviewController {
     constructor(
         private createReviewUseCase: CreateReviewUseCase,
         private deleteReviewUseCase: DeleteReviewUseCase,

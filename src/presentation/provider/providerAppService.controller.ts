@@ -15,7 +15,7 @@ class ProviderAppServiceController {
         private providerFetchAllServicesUseCase: ProviderFetchAllAppServicesUseCase,
     ) {
         this.getAllAppServices = this.getAllAppServices.bind(this);
-    }
+    };
 
     async getAllAppServices(req: Request, res: Response, next: NextFunction) {
         try {
@@ -30,6 +30,7 @@ class ProviderAppServiceController {
             next(error);
         };
     };
+    
 };
 
 export const providerAppServiceController = new ProviderAppServiceController(

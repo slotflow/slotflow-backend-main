@@ -1,6 +1,5 @@
 import { ZodError } from "zod";
 import { ErrorRequestHandler } from "express";
-import { AppError } from "../../domain/errors/app.error";
 
 export const errorHandler: ErrorRequestHandler = (
     err,
@@ -13,11 +12,6 @@ export const errorHandler: ErrorRequestHandler = (
     if (err instanceof ZodError) {
         const message = err.errors.map(e => e.message).join(", ");
         res.status(400).json({ success: false, message });
-        return;
-    }
-
-    if (err instanceof AppError) {
-        res.status(err.statusCode).json({ success: false, message: err.message });
         return;
     }
 

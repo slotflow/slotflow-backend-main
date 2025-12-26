@@ -1,18 +1,14 @@
-import { s3Client } from "../../config/aws_s3";
+import { s3Client } from "../../infrastructure/lib/aws_s3";
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { PresignedUrlZodSchema, s3FileKeyZodSchmema } from "../../shared/zod/common.zod";
-import { ISignedUrlCacheRepository } from "../../domain/interfaces/repositories/ISignedUrlCache.repository";
-import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
 import { CreateFileSignedUrlUseCase, CreateFileUploadPresignedUrlUseCase } from "../../application/useCases/common/s3.useCase";
 
-const signedUrlCacheRepository: ISignedUrlCacheRepository = new SignedUrlCacheRepositoryImpl();
-
 const createFileUploadPresignedUrlUseCase = new CreateFileUploadPresignedUrlUseCase(s3Client);
-const createFileSignedUrlUseCase = new CreateFileSignedUrlUseCase(s3Client, signedUrlCacheRepository);
+const createFileSignedUrlUseCase = new CreateFileSignedUrlUseCase(s3Client);
 
-export class S3Controller {
+class S3Controller {
     constructor(
         private createFileUploadPresignedUrlUseCase: CreateFileUploadPresignedUrlUseCase,
         private createFileSignedUrlUseCase: CreateFileSignedUrlUseCase

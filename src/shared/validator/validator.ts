@@ -8,6 +8,23 @@ dayjs.extend(customParseFormat);
 
 export class Validator {
 
+    requireEnv(key: string): string {
+        const value = process.env[key];
+        if (!value) {
+            throw new Error(`${key} is not defined`);
+        }
+        return value;
+    }
+
+    requireNumber(key: string): number {
+        const value = Number(process.env[key]);
+        if (!Number.isFinite(value)) {
+            throw new Error(`${key} must be a valid number`);
+        }
+        return value;
+    }
+
+
     // app service name, that is the admin is adding different categories to the system for the providers can choose
     // service category, that is providers choose these app service names as their service categories
     // this can be used for validating both app service name and service category
@@ -148,7 +165,7 @@ export class Validator {
 
     // Service availability
     static validateDay(day: string): void {
-        
+
     }
 
     static validateDuration(duration: string): void {
@@ -240,7 +257,7 @@ export class Validator {
 
     // Plan duration
     static validatePlanDuration(value: string): void {
-        
+
     }
 
 
@@ -294,7 +311,7 @@ export class Validator {
     }
 
     static validateRole(value: string): void {
-       
+
     }
 
     static validateFile(file: Express.Multer.File): void {

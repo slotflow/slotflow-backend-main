@@ -1,4 +1,3 @@
-// import mongoose, { Types } from "mongoose";
 import { log } from "../../../shared/logger/logger";
 import { stripe } from "../../../infrastructure/lib/stripe";
 import { UserCancelBookingRequest } from "../../dtos/user.dto";
@@ -8,14 +7,12 @@ import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum"
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { IPaymentRepository } from "../../../domain/interfaces/repositories/IPayment.repository";
-import { UpdateEventFromGoogleCalendarService } from "../../../infrastructure/services/googleCalendar";
 
 export class UserCancelBookingUseCase {
     constructor(
         private userRepository: IUserRepository,
         private bookingRepository: IBookingRepository,
         private paymentRepository: IPaymentRepository,
-        private updateEventFromGoogleCalendarService: UpdateEventFromGoogleCalendarService,
     ) { };
 
     async execute(payload: UserCancelBookingRequest): Promise<void> {
@@ -39,9 +36,6 @@ export class UserCancelBookingUseCase {
             if (!booking.paymentId) throw new Error("No payment id found");
             const payment = await this.paymentRepository.findById(booking.paymentId);
             if (!payment) throw new Error("No payment found for this booking");
-
-            // const mongooseSession = await mongoose.startSession();
-            // mongooseSession.startTransaction();
 
             try {
 
@@ -91,19 +85,17 @@ export class UserCancelBookingUseCase {
                     if (!updatedPayment) throw new Error("Refund failed");
 
                     if (booking.googleEventId) {
-                        const response = await this.updateEventFromGoogleCalendarService.execute({
-                            userId: booking.userId,
-                            eventId: booking.googleEventId,
-                            appointmentDate: booking.appointmentDate,
-                            appointmentStatus: booking.appointmentStatus
-                        });
-                        if (!response.success) {
-                            throw new Error("Booking cancel failed");
-                        };
+                        // TODO update event
+                        // const response = await this.updateEventFromGoogleCalendarService.execute({
+                        //     userId: booking.userId,
+                        //     eventId: booking.googleEventId,
+                        //     appointmentDate: booking.appointmentDate,
+                        //     appointmentStatus: booking.appointmentStatus
+                        // });
+                        // if (!response.success) {
+                        //     throw new Error("Booking cancel failed");
+                        // };
                     };
-
-                    // await mongooseSession.commitTransaction();
-                    // mongooseSession.endSession();
 
                 } else {
                     throw new Error(`Refund not supported for payment gateway: ${payment.paymentGateway}`);
@@ -111,8 +103,6 @@ export class UserCancelBookingUseCase {
 
             } catch (error) {
                 log.error("UserCancelBookingUseCase failed", error as Error);
-                // await mongooseSession.abortTransaction();
-                // mongooseSession.endSession();
                 throw error;
             };
         } catch (error) {

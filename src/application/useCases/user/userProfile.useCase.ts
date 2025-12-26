@@ -1,9 +1,7 @@
-import { awsConfig } from "../../../config/env";
+import { S3Client } from "@aws-sdk/client-s3";
 import { log } from "../../../shared/logger/logger";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { ISignedUrlCacheRepository } from "../../../domain/interfaces/repositories/ISignedUrlCache.repository";
+import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { UserFetchProfileDetailsResponse, UserFetchProfileRequest, UserUpdateProfileImageResponse, UserUpdateUserInfoRequest, UserUpdateUserInfoResponse, UsrUpdateProfileImageRequest } from "../../dtos/user.dto";
 
 export class UserFetchProfileDetailsUseCase {
@@ -32,7 +30,7 @@ export class UserUpdateProfileImageUseCase {
     constructor(
         private s3Client: S3Client,
         private userRepository: IUserRepository,
-        private signedUrlCacheRepository: ISignedUrlCacheRepository
+        private signedUrlService: ISignedUrlService
     ) { };
 
     async execute(payload: UsrUpdateProfileImageRequest): Promise<UserUpdateProfileImageResponse> {
@@ -47,18 +45,8 @@ export class UserUpdateProfileImageUseCase {
             const updatedUser = await this.userRepository.update(user);
             if (!updatedUser) throw new Error("Failed to save profile image");
 
-            const command = new GetObjectCommand({
-                Bucket: awsConfig.aws_s3Bucket_name,
-                Key: profileImage,
-            });
-
-            const signedUrl = await getSignedUrl(this.s3Client, command, { expiresIn: 172800 });
-
-            await this.signedUrlCacheRepository.updateSignedUrl({
-                key: profileImage,
-                url: signedUrl,
-                expiresAt: new Date(Date.now() + 172800 * 1000),
-            });
+            const signedUrl = await this.signedUrlService.save(profileImage);
+            if(!signedUrl) throw new Error("Internal error");
 
             return signedUrl;
         } catch (error) {

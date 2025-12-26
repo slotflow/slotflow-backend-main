@@ -33,7 +33,7 @@ const adminFetchDashboardSubscriptionStatsDataUseCase = new AdminFetchDashboardS
 const adminFetchDashboardRevenueStatsDataUseCase = new AdminFetchDashboardRevenueStatsDataUseCase(paymentQueries);
 const adminFetchDashboardAppointmentsStatsDataUseCase = new AdminFetchDashboardAppointmentsStatsDataUseCase(bookingQueries);
 
-export class AdminDashboardController {
+class AdminDashboardController {
     constructor(
         private adminFetchDashboardTodaysDataUseCase: AdminFetchDashboardTodaysDataUseCase,
         private adminFetchDashboardUserStatsDataUseCase: AdminFetchDashboardUserStatsDataUseCase,
@@ -49,7 +49,7 @@ export class AdminDashboardController {
         this.fetchRevenueStats = this.fetchRevenueStats.bind(this);
         this.fetchAppointmentsStats = this.fetchAppointmentsStats.bind(this);
         this.fetchGraphData = this.fetchGraphData.bind(this);
-    }
+    };
 
     async fetchTodaysData(req: Request, res: Response, next: NextFunction) {
         try {
@@ -58,8 +58,8 @@ export class AdminDashboardController {
         } catch (error) {
             log.error("fetchTodaysData failed", error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
     async fetchUserStats(req: Request, res: Response, next: NextFunction) {
         try {
@@ -68,8 +68,8 @@ export class AdminDashboardController {
         } catch (error) {
             log.error("fetchUserStats failed", error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
     async fetchProviderStats(req: Request, res: Response, next: NextFunction) {
         try {
@@ -78,8 +78,8 @@ export class AdminDashboardController {
         } catch (error) {
             log.error("fetchProviderStats failed", error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
     async fetchSubscriptionStats(req: Request, res: Response, next: NextFunction) {
         try {
@@ -88,8 +88,8 @@ export class AdminDashboardController {
         } catch (error) {
             log.error("fetchSubscriptionStats failed", error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
     async fetchRevenueStats(req: Request, res: Response, next: NextFunction) {
         try {
@@ -98,8 +98,8 @@ export class AdminDashboardController {
         } catch (error) {
             log.error("fetchRevenueStats failed", error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
     async fetchAppointmentsStats(req: Request, res: Response, next: NextFunction) {
         try {
@@ -108,8 +108,8 @@ export class AdminDashboardController {
         } catch (error) {
             log.error("fetchAppointmentsStats failed", error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
     async fetchGraphData(req: Request, res: Response, next: NextFunction) {
         try {
@@ -118,10 +118,10 @@ export class AdminDashboardController {
         } catch (error) {
             log.error("fetchGraphData failed", error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
-}
+};
 
 export const adminDashboardController = new AdminDashboardController(
     adminFetchDashboardTodaysDataUseCase,

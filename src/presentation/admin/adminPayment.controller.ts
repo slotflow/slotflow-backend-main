@@ -15,7 +15,7 @@ const paymentQueries: IPaymentQueries = new PaymentQueriesImpl();
 const adminFetchAllPaymentsUseCase = new AdminFetchAllPaymentsUseCase(paymentRepository);
 const adminFetchRevenueReportUseCase = new AdminFetchRevenueReportUseCase(paymentQueries);
 
-export class AdminPaymentController {
+class AdminPaymentController {
     constructor(
         private adminFetchAllPaymentsUseCase: AdminFetchAllPaymentsUseCase,
         private adminFetchRevenueReportUseCase: AdminFetchRevenueReportUseCase
@@ -23,7 +23,7 @@ export class AdminPaymentController {
         this.getAllPayments = this.getAllPayments.bind(this);
         this.fetchRevenueReport = this.fetchRevenueReport.bind(this);
         this.fetchRefundReport = this.fetchRefundReport.bind(this);
-    }
+    };
 
     async getAllPayments(req: Request, res: Response, next: NextFunction) {
         try {
@@ -33,7 +33,7 @@ export class AdminPaymentController {
         } catch (error) {
             log.error("getAllPayments failed", error as Error);
             next(error);
-        }
+        };
     };
 
     async fetchRevenueReport(req: Request, res: Response, next: NextFunction) {
@@ -50,8 +50,8 @@ export class AdminPaymentController {
         } catch (error) {
             log.error("fetchRevenueReport failed", error as Error);
             next(error);
-        }
-    }
+        };
+    };
 
     async fetchRefundReport(req: Request, res: Response, next: NextFunction) {
         try {
@@ -59,9 +59,10 @@ export class AdminPaymentController {
         } catch (error) {
             log.error("fetchRefundReport failed", error as Error);
             next(error);
-        }
-    }
-}
+        };
+    };
+
+};
 
 export const adminPaymentController = new AdminPaymentController(
     adminFetchAllPaymentsUseCase,

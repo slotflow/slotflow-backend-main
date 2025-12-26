@@ -1,7 +1,7 @@
 import app from './app';
 import dotenv from 'dotenv';
 
-import './infrastructure/services/passport';
+import './infrastructure/services/passport.service.ts';
 import './infrastructure/cron-jobs/updateBookingsCron';
 import './infrastructure/cron-jobs/updateSubscriptionStatusCron';
 

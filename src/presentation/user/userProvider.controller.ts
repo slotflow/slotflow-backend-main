@@ -15,15 +15,13 @@ import { AddressRepositoryImpl } from "../../infrastructure/database/address/add
 import { ProviderServiceQueriesImpl } from "../../infrastructure/queries/providerServiceQueries.impl";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { ServiceAvailabilityQueriesImpl } from "../../infrastructure/queries/serviceAvailabilityQueries.impl";
-import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
 import { UserFetchProvidersForChatSidebar, UserFetchServiceProviderAddressUseCase, UserFetchServiceProviderProfileDetailsUseCase, UserFetchServiceProviderServiceAvailabilityUseCase, UserFetchServiceProviderServiceDetailsUseCase, UserFetchServiceProvidersUseCase } from "../../application/useCases/user/userProvider.useCase";
 
 const userRepositoryImpl = new UserRepositoryImpl();
 const addressRepositoryImpl = new AddressRepositoryImpl();
 const providerRepositoryImpl = new ProviderRepositoryImpl();
-const signedUrlCacheRepositoryImpl = new SignedUrlCacheRepositoryImpl();
 
-const signedUrlService: ISignedUrlService = new SignedUrlService(signedUrlCacheRepositoryImpl);
+const signedUrlService: ISignedUrlService = new SignedUrlService();
 
 const bookingQueries: IBookingQueries = new BookingQueriesImpl();
 const providerServiceQueries: IProviderServiceQueries = new ProviderServiceQueriesImpl();
@@ -36,7 +34,7 @@ const userFetchServiceProviderServiceDetailsUseCase = new UserFetchServiceProvid
 const userFetchServiceProviderServiceAvailabilityUseCase = new UserFetchServiceProviderServiceAvailabilityUseCase(providerRepositoryImpl, userRepositoryImpl, serviceAvailabilityQueries);
 const userFetchProvidersForChatSidebar = new UserFetchProvidersForChatSidebar(signedUrlService, bookingQueries);
 
-export class UserProviderController {
+class UserProviderController {
     constructor(
         private userFetchServiceProvidersUseCase: UserFetchServiceProvidersUseCase,
         private userFetchServiceProviderAddressUseCase: UserFetchServiceProviderAddressUseCase,

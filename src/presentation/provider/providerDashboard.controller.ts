@@ -20,7 +20,7 @@ const paymentQueries: IPaymentQueries = new PaymentQueriesImpl();
 const providerFetchDashboardStatsUseCase = new ProviderFetchDashboardStatsUseCase(bookingQueries, paymentQueries);
 const providerFetchDashboardGraphDataUseCase = new ProviderFetchDashboardGraphDataUseCase(bookingQueries, subscriptionMapping);
 
-export class ProviderDashboardController {
+class ProviderDashboardController {
     constructor(
         private providerFetchDashboardStatsUseCase: ProviderFetchDashboardStatsUseCase,
         private providerFetchDashboardGraphDataUseCase: ProviderFetchDashboardGraphDataUseCase,

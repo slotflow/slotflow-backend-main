@@ -2,14 +2,14 @@ import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { IServiceRepository } from "../../domain/interfaces/repositories/IService.repository";
-import { UserFetchAllAppServiceUseCase } from "../../application/useCases/user/userAppService.useCase";
 import { ServiceRepositoryImpl } from "../../infrastructure/database/service/service.repository.impl";
+import { UserFetchAllAppServiceUseCase } from "../../application/useCases/user/userAppService.useCase";
 
 const serviceRepository: IServiceRepository = new ServiceRepositoryImpl();
 
 const userFetchAllAppServiceUseCase = new UserFetchAllAppServiceUseCase(serviceRepository);
 
-export class UserAppServiceController {
+class UserAppServiceController {
     constructor(
         private userFetchAllAppServiceUseCase: UserFetchAllAppServiceUseCase
     ) {

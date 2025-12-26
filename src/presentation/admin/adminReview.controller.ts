@@ -10,21 +10,18 @@ import { IReviewRepository } from "../../domain/interfaces/repositories/IReview.
 import { FetchAllReviewsUseCase } from "../../application/useCases/common/fetchReviews.useCase";
 import { ReviewRepositoryImpl } from "../../infrastructure/database/review/review.repository.impl";
 import { AdminUpdateReviewBlockStatusUseCase } from "../../application/useCases/admin/adminReview.useCase";
-import { ISignedUrlCacheRepository } from "../../domain/interfaces/repositories/ISignedUrlCache.repository";
 import { changeBlockStatusZodSchema, RequestQueryFetchAllReviewsZodSchema } from "../../shared/zod/common.zod";
-import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
 
 const reviewRepository: IReviewRepository = new ReviewRepositoryImpl();
-const signedUrlCacheRepository: ISignedUrlCacheRepository = new SignedUrlCacheRepositoryImpl();
 
-const signedUrlService: ISignedUrlService = new SignedUrlService(signedUrlCacheRepository);
+const signedUrlService: ISignedUrlService = new SignedUrlService();
 
 const reviewQueries: IReviewQueries = new ReviewQueriesImpl();
 
 const fetchAllReviewsUseCase = new FetchAllReviewsUseCase(reviewQueries, signedUrlService);
 const adminUpdateReviewBlockStatusUseCase = new AdminUpdateReviewBlockStatusUseCase(reviewRepository);
 
-export class AdminReviewController {
+class AdminReviewController {
     constructor(
         private fetchAllReviewsUseCase: FetchAllReviewsUseCase,
         private adminUpdateReviewBlockStatusUseCase: AdminUpdateReviewBlockStatusUseCase,

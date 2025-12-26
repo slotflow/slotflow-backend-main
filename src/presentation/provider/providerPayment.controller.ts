@@ -11,7 +11,7 @@ const paymentRepository: IPaymentRepository = new PaymentRepositoryImpl();
 
 const providerFetchAllPaymentsUseCase = new ProviderFetchAllPaymentsUseCase(paymentRepository)
 
-export class ProviderPaymentController {
+class ProviderPaymentController {
     constructor(
         private providerFetchAllPaymentsUseCase: ProviderFetchAllPaymentsUseCase
     ) {

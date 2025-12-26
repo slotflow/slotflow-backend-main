@@ -3,8 +3,8 @@ import { log } from '../../../shared/logger/logger';
 import { stripe } from '../../../infrastructure/lib/stripe';
 import { Payment } from '../../../domain/entities/payment.entity';
 import { Booking } from '../../../domain/entities/booking.entity';
-import { FindProviderServiceResponse } from '../../dtos/admin.dto';
 import { PaymentFor } from '../../../domain/enums/paymentFor.enum';
+import { FindProviderServiceResponse } from '../../dtos/admin.dto';
 import { PaymentStatus } from '../../../domain/enums/paymentStatus.enum';
 import { PaymentMethod } from '../../../domain/enums/paymentMethod.enum';
 import { PaymentGateway } from '../../../domain/enums/paymentGateway.enum';
@@ -14,10 +14,9 @@ import { IServiceAvailabilityQueries } from '../../queries/IServiceAvailability.
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { IPaymentRepository } from '../../../domain/interfaces/repositories/IPayment.repository';
 import { IBookingRepository } from '../../../domain/interfaces/repositories/IBooking.repository';
-import { AddEventToGoogleCalendarService } from '../../../infrastructure/services/googleCalendar';
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
+import { ICredentialRepository } from '../../../domain/interfaces/repositories/ICredentialRepository';
 import { UserAppointmentBookingViaStripeRequest, UserSaveAppoinmentBookingRequest } from '../../dtos/user.dto';
-import { IServiceAvailabilityRepository } from '../../../domain/interfaces/repositories/IServiceAvailability.repository';
 
 export class UserAppointmentBookingViaStripeUseCase {
     constructor(
@@ -101,8 +100,8 @@ export class UserSaveBookingAfterStripePaymentUseCase {
         private userRepository: IUserRepository,
         private paymentRepository: IPaymentRepository,
         private bookingRepository: IBookingRepository,
-        private addEventToGoogleCalendarService: AddEventToGoogleCalendarService,
         private serviceAvailabilityQueries: IServiceAvailabilityQueries,
+        private credentialRepository: ICredentialRepository
     ) { };
 
     async execute(payload: UserSaveAppoinmentBookingRequest): Promise<void> {
@@ -113,6 +112,11 @@ export class UserSaveBookingAfterStripePaymentUseCase {
 
             const user = await this.userRepository.findById(userId);
             if (!user) throw new Error("No user found");
+
+            const credential = await this.credentialRepository.findById(userId);
+            if (!credential) {
+                throw new Error("Credential not found");
+            }
 
             const session = await stripe.checkout.sessions.retrieve(sessionId);
 
@@ -138,10 +142,6 @@ export class UserSaveBookingAfterStripePaymentUseCase {
 
             if (!selectedSlot[0].available) throw new Error("This slot is not available for today");
 
-            // TODO mongoSession not work with compass
-            // const mongoSession = await startSession();
-            // mongoSession.startTransaction();
-
             try {
                 const paymentData = Payment.createForBooking({
                     transactionId: paymentIntent.toString(),
@@ -159,13 +159,20 @@ export class UserSaveBookingAfterStripePaymentUseCase {
                 if (!payment) throw new Error("Unexpected error, payment saving error.");
 
                 if (user.googleConnected) {
-                    const response = await this.addEventToGoogleCalendarService.execute({
-                        userId,
-                        slotDuration: Number(slotDuration),
-                        appointmentDate: new Date(dateString),
-                        appointmentStatus: AppointmentStatus.Booked,
-                    });
-                    if (!response.success) throw new Error("Booking saving failed");
+                    // TODO create event
+                    // const response = await this.addEventToGoogleCalendarService.execute({
+                    //     userId,
+                    //     slotDuration: Number(slotDuration),
+                    //     appointmentDate: new Date(dateString),
+                    //     appointmentStatus: AppointmentStatus.Booked,
+                    // });
+                    // if (!response.success) throw new Error("Booking saving failed");
+
+                    let response = {
+                        data : {
+                            id: ""
+                        }
+                    }
 
                     const bookingData = Booking.create({
                         serviceProviderId: providerId,
@@ -175,7 +182,7 @@ export class UserSaveBookingAfterStripePaymentUseCase {
                         appointmentStatus: AppointmentStatus.Booked,
                         appointmentTime: selectedSlot[0].time,
                         videoCallRoomId: "stw-" + uuidv4(),
-                        googleEventId: response.data?.id!,
+                        googleEventId: response?.data?.id!,
                         paymentId: payment._id,
                         slotId: selectedSlot[0]._id,
                         statusTrack: [{
@@ -189,13 +196,8 @@ export class UserSaveBookingAfterStripePaymentUseCase {
                     console.log("newBooking two : ", newBooking);
                 };
 
-                // await mongoSession.commitTransaction();
-                // mongoSession.endSession();
-
             } catch (error) {
                 log.error("UserSaveBookingAfterStripePaymentUseCase failed", error as Error);
-                // await mongoSession.abortTransaction();
-                // mongoSession.endSession();
                 throw error;
             };
         } catch (error) {

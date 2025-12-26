@@ -1,23 +1,20 @@
 import { DecodedUser } from "../../express";
-import { s3Client } from "../../config/aws_s3";
+import { s3Client } from "../../infrastructure/lib/aws_s3";
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { IUserRepository } from "../../domain/interfaces/repositories/IUser.repository";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { s3FileKeyZodSchmema, UserOrProviderUpdateInfoZodSchema } from "../../shared/zod/common.zod";
-import { ISignedUrlCacheRepository } from "../../domain/interfaces/repositories/ISignedUrlCache.repository";
-import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
 import { UserFetchProfileDetailsUseCase, UserUpdateProfileImageUseCase, UserUpdateProviderInfoUseCase } from "../../application/useCases/user/userProfile.useCase";
 
 const userRepository: IUserRepository = new UserRepositoryImpl();
-const signedUrlCacheRepository: ISignedUrlCacheRepository = new SignedUrlCacheRepositoryImpl();
 
 const userUpdateProviderInfoUseCase = new UserUpdateProviderInfoUseCase(userRepository);
 const userFetchProfileDetailsUseCase = new UserFetchProfileDetailsUseCase(userRepository);
-const userUpdateProfileImageUseCase = new UserUpdateProfileImageUseCase(s3Client, userRepository, signedUrlCacheRepository);
+const userUpdateProfileImageUseCase = new UserUpdateProfileImageUseCase(s3Client, userRepository);
 
-export class UserProfileController {
+class UserProfileController {
     constructor(
         private userFetchProfileDetailsUseCase: UserFetchProfileDetailsUseCase,
         private userUpdateProfileImageUseCase: UserUpdateProfileImageUseCase,

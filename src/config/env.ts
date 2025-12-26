@@ -1,66 +1,75 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-export const mongoConfig = {
-    mongoURL: process.env.NODE_ENV === "development" ? process.env.MONGO_URI_DEV : process.env.MONGO_URI
-}
+import { Validator } from '../shared/validator/validator';
 
-export const mailConfig = {
-    user: process.env.OFFICIAL_EMAIL,
-    password: process.env.OFFICIALEMAIL_PASS
-}
-
-export const jwtConfig = {
-    jwtSecret: process.env.JWT_SECRET,
-}
+const validator = new Validator();
 
 export const appConfig = {
-    nodeEnv: process.env.NODE_ENV
-}
+    nodeEnv: validator.requireEnv("NODE_ENV"),
+};
+
+export const mongoConfig = {
+    mongoURL:
+        appConfig.nodeEnv === "development"
+            ? validator.requireEnv("MONGO_URI_DEV")
+            : validator.requireEnv("MONGO_URI"),
+};
+
+export const jwtConfig = {
+    jwtSecret: validator.requireEnv("JWT_SECRET"),
+};
+
+export const mailConfig = {
+    user: validator.requireEnv("OFFICIAL_EMAIL"),
+    password: validator.requireEnv("OFFICIAL_EMAIL_PASS"),
+};
 
 export const adminConfig = {
-    adminEmail: process.env.ADMIN_EMAIL,
-    adminPassword: process.env.ADMIN_PASSWORD
-}
+    adminEmail: validator.requireEnv("ADMIN_EMAIL"),
+    adminPassword: validator.requireEnv("ADMIN_PASSWORD"),
+};
 
 export const awsConfig = {
-    aws_access_key_id: process.env.AWS_ACCESS_KEY_ID,
-    aws_secret_access_key: process.env.AWS_SECRET_ACCESS_KEY,
-    aws_region: process.env.AWS_REGION,
-    aws_s3Bucket_name: process.env.AWS_S3_BUCKET_NAME,
-}
+    awsAccessKeyId: validator.requireEnv("AWS_ACCESS_KEY_ID"),
+    awsSecretAccessKey: validator.requireEnv("AWS_SECRET_ACCESS_KEY"),
+    awsRegion: validator.requireEnv("AWS_REGION"),
+    awsS3BucketName: validator.requireEnv("AWS_S3_BUCKET_NAME"),
+    awsUrlExpires: validator.requireNumber("AWS_URL_EXPIRY_SECONDS"),
+};
 
 export const redisConfig = {
-    redisUrl: process.env.REDIS_URL,
-    redisToken: process.env.REDIS_TOKEN
-}
+    redisUrl: validator.requireEnv("REDIS_URL"),
+    redisToken: validator.requireEnv("REDIS_TOKEN"),
+    redisTtl: validator.requireNumber("REDIS_TTL_SECONDS"),
+};
 
 export const googleClientConfig = {
-    googleClientId: process.env.GOOGLE_CLIENT_ID,
-    googleClientSecret: process.env.GOOGLE_CLIENT_SECRET
-}
+    googleClientId: validator.requireEnv("GOOGLE_CLIENT_ID"),
+    googleClientSecret: validator.requireEnv("GOOGLE_CLIENT_SECRET"),
+};
 
-export const appUrl = {
-    backendUrl: process.env.BACKEND_URL,
-    frontendUrl: process.env.FRONTEND_URL
-}
+export const appUrlConfig = {
+    backendUrl: validator.requireEnv("BACKEND_URL"),
+    frontendUrl: validator.requireEnv("FRONTEND_URL"),
+};
 
 export const aesConfig = {
-    aesSalt: process.env.AES_ENCRYPTION_SALT,
-    algorithm: process.env.AES_ALGORITHM,
-    ivLength: parseInt(process.env.AES_IV_LENGTH as string),
-    inputEncoding: process.env.AES_INPUT_ENCODING,
-    outputEncoding: process.env.AES_OUTPUT_ENCODING,
+    aesSalt: validator.requireEnv("AES_ENCRYPTION_SALT"),
+    algorithm: validator.requireEnv("AES_ALGORITHM"),
+    ivLength: validator.requireNumber("AES_IV_LENGTH"),
+    inputEncoding: validator.requireEnv("AES_INPUT_ENCODING"),
+    outputEncoding: validator.requireEnv("AES_OUTPUT_ENCODING"),
     separator: ":",
-}
+};
 
-export const stripeCOnfig = {
-    stripeSecretKey: process.env.STRIPE_SECRET_KEY,
-}
+export const stripeConfig = {
+    stripeSecretKey: validator.requireEnv("STRIPE_SECRET_KEY"),
+};
 
 export const kafkaConfig = {
-  clientId: process.env.KAFKA_CLIENT_ID,
-  groupId: process.env.KAFKA_GROUP_ID,
-  brokers: (process.env.KAFKA_BROKERS || "localhost:9092").split(","),
-  otpSendTopic: process.env.KAFKA_SENDOTP_TOPIC || "sendOtp-event"
+    clientId: validator.requireEnv("KAFKA_CLIENT_ID"),
+    groupId: validator.requireEnv("KAFKA_GROUP_ID"),
+    brokers: validator.requireEnv("KAFKA_BROKERS").split(","),
+    otpSendTopic: validator.requireEnv("KAFKA_SENDOTP_TOPIC"),
 };

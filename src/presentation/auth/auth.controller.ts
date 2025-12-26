@@ -16,18 +16,15 @@ import { UpdatePasswordUseCase } from '../../application/useCases/auth/updatePas
 import { IProviderRepository } from '../../domain/interfaces/repositories/IProvider.repository';
 import { ISubscriptionRepository } from '../../domain/interfaces/repositories/ISubscription.repository';
 import { ProviderRepositoryImpl } from '../../infrastructure/database/provider/provider.repository.impl';
-import { ISignedUrlCacheRepository } from '../../domain/interfaces/repositories/ISignedUrlCache.repository';
 import { SubscriptionRepositoryImpl } from '../../infrastructure/database/subscription/subscription.repository.impl';
-import { SignedUrlCacheRepositoryImpl } from '../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl';
 import { LoginZodSchema, OTPVerificationZodSchema, RegisterZodSchema, ResendOTPZodSchema, UpdatePasswordZodSchema } from '../../shared/zod/auth.zod';
 
 const userRepository: IUserRepository = new UserRepositoryImpl();
 const planRepository: IPlanRepository = new PlanRepositoryImpl();
 const providerRepository: IProviderRepository = new ProviderRepositoryImpl();
 const subscriptionRepository: ISubscriptionRepository = new SubscriptionRepositoryImpl();
-const signedUrlCacheRepository: ISignedUrlCacheRepository = new SignedUrlCacheRepositoryImpl();
 
-const signedUrlService: ISignedUrlService = new SignedUrlService(signedUrlCacheRepository);
+const signedUrlService: ISignedUrlService = new SignedUrlService();
 
 const registerUseCase = new RegisterUseCase(userRepository, providerRepository);
 const verifyOTPUseCase = new VerifyOTPUseCase(userRepository, providerRepository);
@@ -35,7 +32,7 @@ const resendOtpUseCase = new ResendOtpUseCase(userRepository, providerRepository
 const updatePasswordUseCase = new UpdatePasswordUseCase(userRepository, providerRepository);
 const loginUseCase = new LoginUseCase(userRepository, providerRepository, planRepository, subscriptionRepository, signedUrlService);
 
-export class AuthController {
+class AuthController {
 
   constructor(
     private registerUseCase: RegisterUseCase,
@@ -49,7 +46,7 @@ export class AuthController {
     this.resendOtp = this.resendOtp.bind(this);
     this.login = this.login.bind(this);
     this.updatePassword = this.updatePassword.bind(this);
-  }
+  };
 
   async register(req: Request, res: Response, next: NextFunction) {
     try {
@@ -66,7 +63,7 @@ export class AuthController {
     } catch (error) {
       log.error("RegisterUseCase failed", error as Error);
       next(error);
-    }
+    };
   };
 
   async verifyOTP(req: Request, res: Response, next: NextFunction) {
@@ -77,8 +74,8 @@ export class AuthController {
     } catch (error) {
       log.error("verifyOTP controller failed", error as Error);
       next(error)
-    }
-  }
+    };
+  };
   
   async resendOtp(req: Request, res: Response, next: NextFunction) {
     try {
@@ -90,8 +87,8 @@ export class AuthController {
     } catch (error) {
       log.error("resendOtp controller failed", error as Error);
       next(error)
-    }
-  }
+    };
+  };
 
   async login(req: Request, res: Response, next: NextFunction) {
     try {
@@ -110,8 +107,8 @@ export class AuthController {
     } catch (error) {
       log.error("login failed", error as Error);
       next(error)
-    }
-  }
+    };
+  };
 
   async logout(req: Request, res: Response, next: NextFunction) {
     try {
@@ -120,8 +117,8 @@ export class AuthController {
     } catch (error) {
       log.error("logout failed", error as Error);
       next(error)
-    }
-  }
+    };
+  };
 
   async updatePassword(req: Request, res: Response, next: NextFunction) {
     try {
@@ -133,11 +130,10 @@ export class AuthController {
     } catch (error) {
       log.error("updatePassword failed", error as Error);
       next(error);
-    }
-  }
+    };
+  };
 
-
-}
+};
 
 export const authController = new AuthController(
   registerUseCase,

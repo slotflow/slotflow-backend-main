@@ -31,7 +31,7 @@ const providerTrialSubscriptionUseCase = new ProviderTrialSubscriptionUseCase(pr
 const providerSaveSubscriptionUseCase = new ProviderSaveSubscriptionUseCase(providerRepository, paymentRepository, subscriptionRepository);
 const providerStripeSubscriptionCreateSessionIdUseCase = new ProviderStripeSubscriptionCreateSessionIdUseCase(planRepository, providerRepository, subscriptionRepository);
 
-export class ProviderSubscriptionController {
+class ProviderSubscriptionController {
     constructor(
         private providerStripeSubscriptionCreateSessionIdUseCase: ProviderStripeSubscriptionCreateSessionIdUseCase,
         private providerSaveSubscriptionUseCase: ProviderSaveSubscriptionUseCase,

@@ -15,7 +15,7 @@ const credentialRepository: ICredentialRepository = new CredentialRepositoryImpl
 
 const createCredentialUseCase = new CreateCredentialUseCase(credentialRepository, aesEncryption);
 
-export class GoogleAuthController {
+class GoogleAuthController {
     constructor(
         private createCredentialUseCase: CreateCredentialUseCase,
     ) {

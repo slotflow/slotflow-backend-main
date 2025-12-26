@@ -11,12 +11,14 @@ import { OTPService } from '../../../infrastructure/services/otp.service';
 import { PasswordHasher } from '../../../infrastructure/security/password-hashing';
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
+import { IOTPService } from '../../../domain/interfaces/services/IOtpService.service';
 
 export class RegisterUseCase {
 
   constructor(
     private userRepository: IUserRepository,
     private providerRepository: IProviderRepository,
+    private otpService: IOTPService
   ) { }
 
   async execute(payload: RegisterRequest): Promise<RegisterResponse> {
@@ -33,7 +35,7 @@ export class RegisterUseCase {
         const verificationToken = uuidv4();
         if (!verificationToken) throw new Error("Unexpected error, please try again.");
 
-        const otp = await OTPService.setOtp(verificationToken);
+        const otp = await this.otpService.setOtp(verificationToken);
         if (!otp) throw new Error("Unexpected error, please try again.");
 
         // await producer.send({
@@ -79,7 +81,7 @@ export class RegisterUseCase {
         const verificationToken = uuidv4();
         if (!verificationToken) throw new Error("Unexpected error, please try again.");
 
-        const otp = await OTPService.setOtp(verificationToken);
+        const otp = await this.otpService.setOtp(verificationToken);
         if (!otp) throw new Error("Unexpected error, please try again.");
 
         // await producer.send({

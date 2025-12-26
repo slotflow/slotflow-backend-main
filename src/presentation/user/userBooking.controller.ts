@@ -13,6 +13,7 @@ import { IPaymentRepository } from "../../domain/interfaces/repositories/IPaymen
 import { IBookingRepository } from "../../domain/interfaces/repositories/IBooking.repository";
 import { UserCancelBookingUseCase } from "../../application/useCases/user/userBooking.useCase";
 import { IProviderRepository } from "../../domain/interfaces/repositories/IProvider.repository";
+import { ICredentialRepository } from "../../domain/interfaces/repositories/ICredentialRepository";
 import { ValidateJoinRoomUsecase } from "../../application/useCases/common/validateJoinRoom.useCase";
 import { IServiceAvailabilityQueries } from "../../application/queries/IServiceAvailability.queries";
 import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
@@ -22,8 +23,8 @@ import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/p
 import { FetchBookingDetailsUsecase } from "../../application/useCases/common/fetchBookingDetails.useCase";
 import { FetchBookingAppointmentsUseCase } from "../../application/useCases/common/fetchAllBookings.useCase";
 import { ServiceAvailabilityQueriesImpl } from "../../infrastructure/queries/serviceAvailabilityQueries.impl";
+import { CredentialRepositoryImpl } from "../../infrastructure/database/credential/credential.repository.impl";
 import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/common/updateBookingOnlineTracking.useCase";
-import { AddEventToGoogleCalendarService, UpdateEventFromGoogleCalendarService } from "../../infrastructure/services/googleCalendar";
 import { UserAppointmentBookingViaStripeUseCase, UserSaveBookingAfterStripePaymentUseCase } from "../../application/useCases/user/userStripeBooking.useCase";
 import { JoinOrLeftRoomZodSchema, RequestQueryForBookingCommonZodSchema, SaveStripePaymentZodSchema, ValidateObjectId, validateRoomId } from "../../shared/zod/common.zod";
 
@@ -41,18 +42,15 @@ const validateJoinRoomUsecase = new ValidateJoinRoomUsecase(bookingRepository)
 const fetchBookingDetailsUsecase = new FetchBookingDetailsUsecase(bookingQueries);
 const providerServiceQueries: IProviderServiceQueries = new ProviderServiceQueriesImpl();
 
-// const updateCredentialUseCase = new UpdateCredentialUseCase(credentialRepository, aesEncryption);
-// const googleTokenService = new GoogleTokenService(getCredentialUseCase, updateCredentialUseCase);
+const credentialRepository: ICredentialRepository = new CredentialRepositoryImpl();
 
-const addEventToGoogleCalendarService = new AddEventToGoogleCalendarService();
-const updateEventFromGoogleCalendarService = new UpdateEventFromGoogleCalendarService();
 
 const updateBookingOnlineTrakingUseCase = new UpdateBookingOnlineTrakingUseCase(bookingRepository, serviceAvailabilityQueries);
-const userCancelBookingUseCase = new UserCancelBookingUseCase(userRepository, bookingRepository, paymentRepository, updateEventFromGoogleCalendarService);
+const userCancelBookingUseCase = new UserCancelBookingUseCase(userRepository, bookingRepository, paymentRepository);
 const userAppointmentBookingViaStrpieUseCase = new UserAppointmentBookingViaStripeUseCase(proviserRepository, bookingRepository, providerServiceQueries, serviceAvailabilityQueries);
-const userSaveBookingAfterStripePaymentUseCase = new UserSaveBookingAfterStripePaymentUseCase(userRepository, paymentRepository, bookingRepository, addEventToGoogleCalendarService, serviceAvailabilityQueries);
+const userSaveBookingAfterStripePaymentUseCase = new UserSaveBookingAfterStripePaymentUseCase(userRepository, paymentRepository, bookingRepository, serviceAvailabilityQueries, credentialRepository);
 
-export class UserBookingController {
+class UserBookingController {
     constructor(
         private fetchBookingAppointmentsUseCase: FetchBookingAppointmentsUseCase,
         private userCancelBookingUseCase: UserCancelBookingUseCase,
@@ -69,7 +67,7 @@ export class UserBookingController {
         this.validateRoom = this.validateRoom.bind(this);
         this.userJoinRoom = this.userJoinRoom.bind(this);
         this.fetchBookingDetails = this.fetchBookingDetails.bind(this);
-    }
+    };
 
     async fetchBookings(req: Request, res: Response, next: NextFunction) {
         try {
@@ -84,7 +82,7 @@ export class UserBookingController {
                 raw: raw ? true : false,
                 role: user.role,
             });
-            res.status(200).json(result);
+            sendResponse(res, result);
         } catch (error) {
             log.error("fetchBookings failed", error as Error);
             next(error);

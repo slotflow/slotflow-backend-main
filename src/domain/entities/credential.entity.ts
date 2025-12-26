@@ -62,7 +62,6 @@ export class Credential {
     updateCredential(props: UpdateCredentialProps) {
         this.props = {
             ...this.props,
-            expiryDate: new Date(Date.now() + 60 * 60 * 1000),
             ...props,
         };
 

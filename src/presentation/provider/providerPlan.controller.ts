@@ -9,7 +9,7 @@ const planRepository: IPlanRepository = new PlanRepositoryImpl();
 
 const providerFetchAllPlansUseCase = new ProviderFetchAllPlansUseCase(planRepository);
 
-export class ProviderPlanController {
+class ProviderPlanController {
     constructor(
         private providerFetchAllPlansUseCase: ProviderFetchAllPlansUseCase,
     ) {

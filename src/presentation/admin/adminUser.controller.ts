@@ -8,17 +8,14 @@ import { IUserRepository } from "../../domain/interfaces/repositories/IUser.repo
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { IAddressRepository } from "../../domain/interfaces/repositories/IAddress.repository";
 import { AddressRepositoryImpl } from "../../infrastructure/database/address/address.repository.impl";
-import { ISignedUrlCacheRepository } from "../../domain/interfaces/repositories/ISignedUrlCache.repository";
 import { AdminFetchUserOrProviderAddressUseCase } from "../../application/useCases/admin/adminAddress.useCase";
-import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
 import { changeBlockStatusZodSchema, RequestQueryCommonZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
 import { AdminChangeUserBlockStatusUseCase, AdminFetchUserDetailsUseCase, AdminUserListUseCase } from "../../application/useCases/admin/adminUser.useCase";
 
 const userRepository: IUserRepository = new UserRepositoryImpl();
 const addressRepository: IAddressRepository = new AddressRepositoryImpl();
-const signedUrlCacheRepository: ISignedUrlCacheRepository = new SignedUrlCacheRepositoryImpl();
 
-const signedUrlService = new SignedUrlService(signedUrlCacheRepository);
+const signedUrlService = new SignedUrlService();
 
 const userQueries: IUserQueries = new UserQueriesImpl();
 

@@ -11,20 +11,17 @@ import { ISignedUrlService } from "../../domain/interfaces/services/ISignedUrl.s
 import { IReviewRepository } from "../../domain/interfaces/repositories/IReview.repository";
 import { FetchAllReviewsUseCase } from "../../application/useCases/common/fetchReviews.useCase";
 import { ReviewRepositoryImpl } from "../../infrastructure/database/review/review.repository.impl";
-import { ISignedUrlCacheRepository } from "../../domain/interfaces/repositories/ISignedUrlCache.repository";
 import { ProviderChangeReviewRepostStatusUseCase } from "../../application/useCases/provier/providerReview.useCase";
-import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
 
 const reviewRepository: IReviewRepository = new ReviewRepositoryImpl();
-const signedUrlCacheRepository: ISignedUrlCacheRepository = new SignedUrlCacheRepositoryImpl();
 
 const reviewQueries: IReviewQueries = new ReviewQueriesImpl();
-const signedUrlService: ISignedUrlService = new SignedUrlService(signedUrlCacheRepository);
+const signedUrlService: ISignedUrlService = new SignedUrlService();
 
 const fetchAllReviewsUseCase = new FetchAllReviewsUseCase(reviewQueries, signedUrlService);
 const providerChangeReviewRepostStatusUseCase = new ProviderChangeReviewRepostStatusUseCase(reviewRepository);
 
-export class ProviderReviewController {
+class ProviderReviewController {
     constructor(
         private fetchAllReviewsUseCase: FetchAllReviewsUseCase,
         private providerChangeReviewRepostStatusUseCase: ProviderChangeReviewRepostStatusUseCase,

@@ -1,49 +1,42 @@
 import passport from "passport";
-import { Types } from "mongoose";
 import { DecodedUser } from "../../express";
+import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
+import { sendResponse } from "../../shared/utils/response";
 import { AesEncryption } from "../../infrastructure/services/aesEncryption.service";
-import { GoogleTokenService } from "../../infrastructure/services/googleTokenService";
-import { FethGoogleCalendarService } from "../../infrastructure/services/googleCalendar";
 import { IAesEncryption } from "../../domain/interfaces/services/IAesEncryption.service";
-import { GoogleAuthTokenService } from "../../infrastructure/services/googleAuthToken.service";
+import { IGoogleCalendarGateway } from "../../domain/interfaces/services/IGoogleCalendarGateway";
 import { ICredentialRepository } from "../../domain/interfaces/repositories/ICredentialRepository";
-import { IGoogleAuthTokenService } from "../../domain/interfaces/services/IGoogleAuthToken.service";
+import { GoogleCalendarGateway } from "../../infrastructure/services/googleCalendarGateway.service";
+import { FethGoogleCalendarUseCase } from "../../application/useCases/common/fetchGoogleCalendar.useCase";
 import { CredentialRepositoryImpl } from "../../infrastructure/database/credential/credential.repository.impl";
-import { GetCredentialUseCase, UpdateCredentialUseCase } from "../../application/useCases/common/credential.useCase";
 
 const aesEncryption: IAesEncryption = new AesEncryption();
+const googleCalendarGateway: IGoogleCalendarGateway = new GoogleCalendarGateway();
 const credentialRepository: ICredentialRepository = new CredentialRepositoryImpl();
 
-const googleAuthTokenService: IGoogleAuthTokenService = new GoogleAuthTokenService();
+const fethGoogleCalendarUseCase = new FethGoogleCalendarUseCase(credentialRepository, aesEncryption, googleCalendarGateway);
 
-const getCredentialUseCase = new GetCredentialUseCase(credentialRepository, aesEncryption, googleAuthTokenService);
-const updateCredentialUseCase = new UpdateCredentialUseCase(credentialRepository, aesEncryption);
-
-// TODO need to update with new google auth token service
-const googleTokenService = new GoogleTokenService(getCredentialUseCase, updateCredentialUseCase);
-const fethGoogleCalendarService = new FethGoogleCalendarService(googleTokenService);
-
-export class GoogleController {
+class GoogleController {
     constructor(
-        private fethGoogleCalendarService: FethGoogleCalendarService
+        private fethGoogleCalendarUseCase: FethGoogleCalendarUseCase
     ) {
         this.getUserEvents = this.getUserEvents.bind(this);
         this.connectGoogle = this.connectGoogle.bind(this);
-    }
+    };
 
     async getUserEvents(req: Request, res: Response, next: NextFunction) {
         try {
             console.log("getUserEvents constroller start");
             const userId = (req.user as DecodedUser).userOrProviderId;
-            const result = await this.fethGoogleCalendarService.execute(new Types.ObjectId(userId));
+            const result = await this.fethGoogleCalendarUseCase.execute(userId);
             console.log("getUserEvents constroller result : ", result);
-            res.status(200).json(result);
+            sendResponse(res, result);
         } catch (error) {
-            console.log("getUserEvents error : ",error);
-            next(error)
-        }
-    }
+            log.error("getUserEvents failed",error as Error);
+            next(error);
+        };
+    };
 
     async connectGoogle(req: Request, res: Response, next: NextFunction) {
         try {
@@ -70,12 +63,11 @@ export class GoogleController {
         } catch (error) {
             console.log("connectGoogle error : ", error);
             next(error)
-        }
-    }
+        };
+    };
 
-}
+};
 
-const googleController = new GoogleController(
-    fethGoogleCalendarService
+export const googleController = new GoogleController(
+    fethGoogleCalendarUseCase
 );
-export { googleController }

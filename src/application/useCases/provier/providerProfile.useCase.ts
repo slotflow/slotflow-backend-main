@@ -15,11 +15,10 @@ import {
   ProviderUpdateprofileImageRequestPayload,
 } from "../../dtos/provider.dto";
 import { log } from "../../../shared/logger/logger";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { DeleteObjectCommand, GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { AdminVerificationStatus } from "../../../domain/enums/adminVerificationStatus.enum";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-import { ISignedUrlCacheRepository } from "../../../domain/interfaces/repositories/ISignedUrlCache.repository";
 
 export class ProviderFetchProfileDetailsUseCase {
   constructor(
@@ -78,10 +77,9 @@ export class ProviderUpdateProviderInfoUseCase {
 export class ProviderUpdateIdentityProofUseCase {
 
   constructor(
-    protected s3Client: S3Client,
-    protected providerRepository: IProviderRepository,
-    protected signedUrlCacheRepository: ISignedUrlCacheRepository
-  ) { }
+    private providerRepository: IProviderRepository,
+    private signedUrlService: ISignedUrlService
+  ) { };
 
   async exeute(payload: ProviderUpdateIdentityProofRequest): Promise<ProviderUpdateIdentityProofResponse> {
     try {
@@ -96,20 +94,8 @@ export class ProviderUpdateIdentityProofUseCase {
       const updatedProvider = await this.providerRepository.update(provider);
       if(!updatedProvider) throw new Error("Failed to update proof");
       
-      const command = new GetObjectCommand({
-        Bucket: awsConfig.aws_s3Bucket_name,
-        Key: identityProof,
-      });
-      
-      const signedUrl = await getSignedUrl(this.s3Client, command, {
-        expiresIn: 172800,
-      });
-      
-      await this.signedUrlCacheRepository.updateSignedUrl({
-        key: identityProof,
-        url: signedUrl,
-        expiresAt: new Date(Date.now() + 172800 * 1000),
-      });
+      const signedUrl = await this.signedUrlService.save(identityProof);
+      if(!signedUrl) throw new Error("Failed to generate signed url");
       
       return signedUrl;
     } catch(error) {
@@ -122,10 +108,9 @@ export class ProviderUpdateIdentityProofUseCase {
 export class ProviderUpdateServiceProofUseCase {
 
   constructor(
-    protected s3Client: S3Client,
-    protected providerRepository: IProviderRepository,
-    protected signedUrlCacheRepository: ISignedUrlCacheRepository
-  ) { }
+    private providerRepository: IProviderRepository,
+    private signedUrlService: ISignedUrlService
+  ) { };
 
   async exeute(payload: ProviderUpdateServiceProofRequest): Promise<ProviderUpdateServiceProofResponse> {
     try {
@@ -140,20 +125,8 @@ export class ProviderUpdateServiceProofUseCase {
       const updatedProvider = await this.providerRepository.update(provider);
       if(!updatedProvider) throw new Error("Failed to update proof");
       
-      const command = new GetObjectCommand({
-        Bucket: awsConfig.aws_s3Bucket_name,
-        Key: serviceProof,
-      });
-      
-      const signedUrl = await getSignedUrl(this.s3Client, command, {
-        expiresIn: 172800,
-      });
-      
-      await this.signedUrlCacheRepository.updateSignedUrl({
-        key: serviceProof,
-        url: signedUrl,
-        expiresAt: new Date(Date.now() + 172800 * 1000),
-      });
+      const signedUrl = await this.signedUrlService.save(serviceProof);
+      if(!signedUrl) throw new Error("Failed to generate signed url");
       
       return signedUrl;
     } catch(error) {
@@ -167,9 +140,8 @@ export class ProviderUpdateServiceProofUseCase {
 export class ProviderUpdateProfileImageUseCase {
 
   constructor(
-    protected s3Client: S3Client,
-    protected providerRepository: IProviderRepository,
-    protected signedUrlCacheRepository: ISignedUrlCacheRepository
+    private providerRepository: IProviderRepository,
+    private signedUrlService: ISignedUrlService
   ) { };
 
   async execute(payload: ProviderUpdateprofileImageRequestPayload): Promise<ProviderUpdateprofileImageResponse> {
@@ -185,20 +157,8 @@ export class ProviderUpdateProfileImageUseCase {
       const updatedProvider = await this.providerRepository.update(provider);
       if(!updatedProvider) throw new Error("Failed to update profile image");
       
-      const command = new GetObjectCommand({
-        Bucket: awsConfig.aws_s3Bucket_name,
-        Key: profileImage,
-      });
-      
-      const signedUrl = await getSignedUrl(this.s3Client, command, {
-        expiresIn: 172800,
-      });
-      
-      await this.signedUrlCacheRepository.updateSignedUrl({
-        key: profileImage,
-        url: signedUrl,
-        expiresAt: new Date(Date.now() + 172800 * 1000),
-      });
+     const signedUrl = await this.signedUrlService.save(profileImage);
+     if(!signedUrl) throw new Error("Failed to generate signed url");
       
       return signedUrl;
     } catch (error) {
@@ -254,7 +214,7 @@ export class ProvideDeleteIdentityProofUseCase {
   constructor(
     private s3Client: S3Client,
     private providerRepository: IProviderRepository,
-    private signedUrlCacheRepository: ISignedUrlCacheRepository
+    private signedUrlService: ISignedUrlService
   ) { };
 
   async execute(payload: ProviderDeleteProofRequest): Promise<void> {
@@ -268,19 +228,15 @@ export class ProvideDeleteIdentityProofUseCase {
 
       await this.s3Client.send(
         new DeleteObjectCommand({
-          Bucket: awsConfig.aws_s3Bucket_name,
+          Bucket: awsConfig.awsS3BucketName,
           Key: provider.identityProof,
         })
       );
 
-      const signedUrl = await this.signedUrlCacheRepository.findSignedUrl({ key: provider.identityProof});
-      if(signedUrl) {
-        const result = await this.signedUrlCacheRepository.deleteSignedUrl(signedUrl._id);
-        if(!result) throw new Error("Faile to remove existing file");
-      }
-
       provider.submitIdentityProof({ identityProof: null });
       await this.providerRepository.update(provider);
+
+      await this.signedUrlService.delete(provider.identityProof);
       
     } catch(error) {
       log.error("ProvideDeleteIdentityProofUseCase failed",error as Error);
@@ -294,7 +250,7 @@ export class ProvideDeleteServiceProofUseCase {
   constructor(
     private s3Client: S3Client,
     private providerRepository: IProviderRepository,
-    private signedUrlCacheRepository: ISignedUrlCacheRepository
+    private signedUrlService: ISignedUrlService
   ) { };
 
   async execute(payload: ProviderDeleteProofRequest): Promise<void> {
@@ -308,19 +264,15 @@ export class ProvideDeleteServiceProofUseCase {
 
       await this.s3Client.send(
         new DeleteObjectCommand({
-          Bucket: awsConfig.aws_s3Bucket_name,
+          Bucket: awsConfig.awsS3BucketName,
           Key: provider.serviceProof,
         })
       );
 
-      const signedUrl = await this.signedUrlCacheRepository.findSignedUrl({ key: provider.serviceProof});
-      if(signedUrl) {
-        const result = await this.signedUrlCacheRepository.deleteSignedUrl(signedUrl._id);
-        if(!result) throw new Error("Faile to remove existing file");
-      }
-
       provider.submitServiceProof({ serviceProof: null });
       await this.providerRepository.update(provider);
+
+      await this.signedUrlService.delete(provider.serviceProof);
       
     } catch(error) {
       log.error("ProvideDeleteServiceProofUseCase failed",error as Error);

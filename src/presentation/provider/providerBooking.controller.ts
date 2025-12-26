@@ -1,38 +1,24 @@
 import { DecodedUser } from "../../express";
+import { log } from "../../shared/logger/logger";
+import { Role } from "../../domain/enums/role.enum";
 import { NextFunction, Request, Response } from "express";
-import { AesEncryption } from "../../infrastructure/services/aesEncryption.service";
-import { IAesEncryption } from "../../domain/interfaces/services/IAesEncryption.service";
+import { sendResponse } from "../../shared/utils/response";
+import { IBookingQueries } from "../../application/queries/IBooking.queries";
+import { BookingQueriesImpl } from "../../infrastructure/queries/bookingQueries.impl";
 import { IBookingRepository } from "../../domain/interfaces/repositories/IBooking.repository";
-import { GoogleAuthTokenService } from "../../infrastructure/services/googleAuthToken.service";
 import { ProviderChangeBookingAppointmentStatusZodSchema } from "../../shared/zod/provider.zod";
-import { ICredentialRepository } from "../../domain/interfaces/repositories/ICredentialRepository";
-import { UpdateEventFromGoogleCalendarService } from "../../infrastructure/services/googleCalendar";
-import { IGoogleAuthTokenService } from "../../domain/interfaces/services/IGoogleAuthToken.service";
 import { ValidateJoinRoomUsecase } from "../../application/useCases/common/validateJoinRoom.useCase";
+import { IServiceAvailabilityQueries } from "../../application/queries/IServiceAvailability.queries";
 import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { FetchBookingDetailsUsecase } from "../../application/useCases/common/fetchBookingDetails.useCase";
 import { FetchBookingAppointmentsUseCase } from "../../application/useCases/common/fetchAllBookings.useCase";
-import { CredentialRepositoryImpl } from "../../infrastructure/database/credential/credential.repository.impl";
-import { GetCredentialUseCase } from "../../application/useCases/common/credential.useCase";
-import { IServiceAvailabilityRepository } from "../../domain/interfaces/repositories/IServiceAvailability.repository";
+import { ServiceAvailabilityQueriesImpl } from "../../infrastructure/queries/serviceAvailabilityQueries.impl";
 import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/common/updateBookingOnlineTracking.useCase";
 import { ProviderChangeBookingAppointmentStatusUseCase } from "../../application/useCases/provier/providerBooking.useCase";
 import { JoinOrLeftRoomZodSchema, RequestQueryForBookingCommonZodSchema, ValidateObjectId, validateRoomId } from "../../shared/zod/common.zod";
-import { ServiceAvailabilityRepositoryImpl } from "../../infrastructure/database/serviceAvailability/serviceAvailability.repository.impl";
-import { IBookingQueries } from "../../application/queries/IBooking.queries";
-import { BookingQueriesImpl } from "../../infrastructure/queries/bookingQueries.impl";
-import { sendResponse } from "../../shared/utils/response";
-import { log } from "../../shared/logger/logger";
-import { IServiceAvailabilityQueries } from "../../application/queries/IServiceAvailability.queries";
-import { ServiceAvailabilityQueriesImpl } from "../../infrastructure/queries/serviceAvailabilityQueries.impl";
-import { Role } from "../../domain/enums/role.enum";
 
-const aesEncryption: IAesEncryption = new AesEncryption();
 const bookingRepository: IBookingRepository = new BookingRepositoryImpl();
-const credentialRepository: ICredentialRepository = new CredentialRepositoryImpl();
-const serviceAvailabilityRepository: IServiceAvailabilityRepository = new ServiceAvailabilityRepositoryImpl();
 
-const googleAuthTokenService: IGoogleAuthTokenService = new GoogleAuthTokenService();
 const bookingQueries: IBookingQueries = new BookingQueriesImpl();
 const serviceAvailabilityQueries: IServiceAvailabilityQueries = new ServiceAvailabilityQueriesImpl();
 
@@ -40,17 +26,11 @@ const fetchBookingAppointmentsUseCase = new FetchBookingAppointmentsUseCase(book
 
 const validateJoinRoomUsecase = new ValidateJoinRoomUsecase(bookingRepository);
 const fetchBookingDetailsUsecase = new FetchBookingDetailsUsecase(bookingQueries);
-// const updateCredentialUseCase = new UpdateCredentialUseCase(credentialRepository, aesEncryption);
-const getCredentialUseCase = new GetCredentialUseCase(credentialRepository, aesEncryption, googleAuthTokenService);
-
-// TODO need to update with new google auth token service
-// const googleTokenService = new GoogleTokenService(getCredentialUseCase, updateCredentialUseCase);
-const updateEventFromGoogleCalendarService = new UpdateEventFromGoogleCalendarService(googleTokenService);
 
 const updateBookingOnlineTrakingUseCase = new UpdateBookingOnlineTrakingUseCase(bookingRepository, serviceAvailabilityQueries);
-const providerChangeBookingAppointmentStatusUseCase = new ProviderChangeBookingAppointmentStatusUseCase(bookingRepository, updateEventFromGoogleCalendarService);
+const providerChangeBookingAppointmentStatusUseCase = new ProviderChangeBookingAppointmentStatusUseCase(bookingRepository);
 
-export class ProviderBookingController {
+class ProviderBookingController {
     constructor(
         private fetchBookingAppointmentsUseCase: FetchBookingAppointmentsUseCase,
         private providerChangeBookingAppointmentStatusUseCase: ProviderChangeBookingAppointmentStatusUseCase,
@@ -145,14 +125,12 @@ export class ProviderBookingController {
         };
     };
 
-}
+};
 
-const providerBookingController = new ProviderBookingController(
+export const providerBookingController = new ProviderBookingController(
     fetchBookingAppointmentsUseCase,
     providerChangeBookingAppointmentStatusUseCase,
     validateJoinRoomUsecase,
     updateBookingOnlineTrakingUseCase,
     fetchBookingDetailsUsecase
 );
-
-export { providerBookingController };

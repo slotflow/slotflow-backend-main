@@ -4,11 +4,13 @@ import { OTPVerificationRequest } from '../../dtos/auth.dto';
 import { OTPService } from '../../../infrastructure/services/otp.service';
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
+import { IOTPService } from '../../../domain/interfaces/services/IOtpService.service';
 
 export class VerifyOTPUseCase {
   constructor(
     private userRepository: IUserRepository, 
-    private providerRepository: IProviderRepository
+    private providerRepository: IProviderRepository,
+    private otpService: IOTPService
   ) { }
 
   async execute(payload: OTPVerificationRequest): Promise<void> {
@@ -16,7 +18,7 @@ export class VerifyOTPUseCase {
       const { otp, verificationToken, role } = payload;
       if (!otp || !verificationToken || !role) throw new Error("Invalid request");
 
-      const isValidOTP = await OTPService.verifyOTP(verificationToken, otp);
+      const isValidOTP = await this.otpService.verifyOtp(verificationToken, otp);
       if (!isValidOTP) throw new Error("Invalid or expired OTP");
 
       if (role === Role.User) {

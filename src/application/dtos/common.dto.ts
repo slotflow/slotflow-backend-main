@@ -467,24 +467,31 @@ export interface GoogleCalendarEvent extends Partial<BookingDTO> {
       textColor?: string;
     },
   },
-}
+};
+
+export type CreateGoogleEventResponse = Pick<GoogleCalendarEvent, "id">;
+
+export type UpdateGoogleEventResponse = Pick<GoogleCalendarEvent, "id">;
 
 export type UserBookingAddingToCalendar = Pick<GoogleCalendarEvent, "summary" | "description" | "start" | "end" | "extendedProperties">
 
-export type UserBookingFetchingFromCalendar = Pick<GoogleCalendarEvent, "id" | "summary" | "description" | "start" | "end" | "creator" | "organizer" | "iCalUID" | "reminders" | "eventType" | "extendedProperties">
+export type UserBookingFetchingFromCalendar = Pick<GoogleCalendarEvent, "id" | "summary" | "description" | "start" | "end" | "creator" | "organizer" | "iCalUID" | "reminders" | "eventType" | "extendedProperties">;
 
 export interface UpdateGoogleCalendarEventRequest {
   userId: string,
   eventId: string,
   appointmentDate: BookingDTO["appointmentDate"],
   appointmentStatus: BookingDTO["appointmentStatus"],
+  accessToken: string, 
+  event: Partial<UserBookingAddingToCalendar>
 }
 
 export interface CreateGoogleCalendarEventRequest {
-  userId: string,
+  userId: string;
   appointmentDate: BookingDTO["appointmentDate"],
   appointmentStatus: BookingDTO["appointmentStatus"],
   slotDuration: number,
+  accessToken: CredentialDTO["accessToken"];
 }
 
 export interface UpdateBookingOnlineTrackRequest extends ParticipantPresence {

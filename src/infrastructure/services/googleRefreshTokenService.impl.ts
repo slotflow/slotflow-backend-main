@@ -1,8 +1,9 @@
 import { googleClientConfig } from "../../config/env";
-import { IGoogleAuthTokenService } from "../../domain/interfaces/services/IGoogleAuthToken.service";
+import { IGoogleRefreshTokenService } from "../../domain/interfaces/services/IGoogleRefreshToken.service";
 
-export class GoogleAuthTokenService implements IGoogleAuthTokenService {
-    async refreshAccessToken(refreshToken: string): Promise<{ accessToken: string; refreshToken: string; expiresIn: Date; }> {
+export class GoogleRefreshTokenServiceImpl implements IGoogleRefreshTokenService {
+
+    async refreshAccessToken(refreshToken: string): Promise<{ accessToken: string; refreshToken: string; expiresIn: number; }> {
         const response = await fetch("https://oauth2.googleapis.com/token", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -22,5 +23,6 @@ export class GoogleAuthTokenService implements IGoogleAuthTokenService {
             refreshToken: data.refresh_token,
             expiresIn: data.expires_in
         };
-    }
-}
+    };
+
+};

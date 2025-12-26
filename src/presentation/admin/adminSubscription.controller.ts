@@ -12,7 +12,7 @@ const subscriptionQueries: ISubscriptionQueries = new SubscriptionQueriesImpl();
 const adminFetchAllSubscriptionsUseCase = new AdminFetchAllSubscriptionsUseCase(subscriptionQueries);
 const fetchSubscriptionDetailsUseCase = new FetchSubscriptionDetailsUseCase(subscriptionQueries);
 
-export class AdminSubscriptionController {
+class AdminSubscriptionController {
     constructor(
         private adminFetchAllSubscriptionsUseCase: AdminFetchAllSubscriptionsUseCase,
         private fetchSubscriptionDetailsUseCase: FetchSubscriptionDetailsUseCase,

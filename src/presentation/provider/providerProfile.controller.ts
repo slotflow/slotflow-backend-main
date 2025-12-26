@@ -1,5 +1,5 @@
 import { DecodedUser } from "../../express";
-import { s3Client } from "../../config/aws_s3";
+import { s3Client } from "../../infrastructure/lib/aws_s3";
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
@@ -9,24 +9,21 @@ import { IProviderRepository } from "../../domain/interfaces/repositories/IProvi
 import { s3FileKeyZodSchmema, UserOrProviderUpdateInfoZodSchema } from "../../shared/zod/common.zod";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { FetchProviderProofsUseCase } from "../../application/useCases/common/fetchProviderProofs.useCase";
-import { ISignedUrlCacheRepository } from "../../domain/interfaces/repositories/ISignedUrlCache.repository";
-import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
 import { ProvideDeleteIdentityProofUseCase, ProvideDeleteServiceProofUseCase, ProviderFetchProfileDetailsUseCase, ProviderUpdateIdentityProofUseCase, ProviderRequestForApprovalUseCase, ProviderUpdateServiceProofUseCase, ProviderUpdateProfileImageUseCase, ProviderUpdateProviderInfoUseCase } from "../../application/useCases/provier/providerProfile.useCase";
 
 const providerRepository: IProviderRepository = new ProviderRepositoryImpl();
-const signedUrlCacheRepository: ISignedUrlCacheRepository = new SignedUrlCacheRepositoryImpl();
 
-const signedUrlService: ISignedUrlService = new SignedUrlService(signedUrlCacheRepository);
+const signedUrlService: ISignedUrlService = new SignedUrlService();
 
 const providerUpdateProviderInfoUseCase = new ProviderUpdateProviderInfoUseCase(providerRepository);
 const providerRequestForApprovalUseCase = new ProviderRequestForApprovalUseCase(providerRepository);
 const providerFetchProfileDetailsUseCase = new ProviderFetchProfileDetailsUseCase(providerRepository);
 const fetchProviderProofsUseCase = new FetchProviderProofsUseCase(signedUrlService, providerRepository);
-const providerUpdateProfileImageUseCase = new ProviderUpdateProfileImageUseCase(s3Client, providerRepository, signedUrlCacheRepository);
-const providerUpdateServiceProofUseCase = new ProviderUpdateServiceProofUseCase(s3Client, providerRepository, signedUrlCacheRepository);
-const providerUpdateIdentityProofUseCase = new ProviderUpdateIdentityProofUseCase(s3Client, providerRepository, signedUrlCacheRepository);
-const provideDeleteIdentityProofUseCase = new ProvideDeleteIdentityProofUseCase(s3Client, providerRepository, signedUrlCacheRepository);
-const provideDeleteServiceProofUseCase = new ProvideDeleteServiceProofUseCase(s3Client, providerRepository, signedUrlCacheRepository);
+const providerUpdateProfileImageUseCase = new ProviderUpdateProfileImageUseCase(s3Client, providerRepository);
+const providerUpdateServiceProofUseCase = new ProviderUpdateServiceProofUseCase(s3Client, providerRepository);
+const providerUpdateIdentityProofUseCase = new ProviderUpdateIdentityProofUseCase(s3Client, providerRepository);
+const provideDeleteIdentityProofUseCase = new ProvideDeleteIdentityProofUseCase(s3Client, providerRepository);
+const provideDeleteServiceProofUseCase = new ProvideDeleteServiceProofUseCase(s3Client, providerRepository);
 
 class ProviderProfileController {
     constructor(
@@ -133,8 +130,8 @@ class ProviderProfileController {
         } catch (error) {
             console.log("fetchProviderProofs error : ", error);
             next(error);
-        }
-    }
+        };
+    };
 
     async requestAdminApproval(req: Request, res: Response, next: NextFunction) {
         try {

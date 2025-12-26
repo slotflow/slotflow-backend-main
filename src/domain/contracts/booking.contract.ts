@@ -1,5 +1,5 @@
-import { ParticipantPresence, statusTrack } from "../commands/booking.commands";
 import { AppointmentStatus } from "../enums/appointmentStatus.enum";
+import { ParticipantPresence, statusTrack } from "../commands/booking.commands";
 
 export interface OnlineTrack {
     user: ParticipantPresence;

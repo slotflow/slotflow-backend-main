@@ -1,12 +1,10 @@
 import { log } from "../../../shared/logger/logger";
 import { ProviderChangeBookingAppoinmentStatusRequest } from "../../dtos/provider.dto";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
-import { UpdateEventFromGoogleCalendarService } from "../../../infrastructure/services/googleCalendar";
 
 export class ProviderChangeBookingAppointmentStatusUseCase {
     constructor(
         private bookingRepository: IBookingRepository,
-        private updateEventFromGoogleCalendarService: UpdateEventFromGoogleCalendarService
     ) { };
 
     async execute(payload: ProviderChangeBookingAppoinmentStatusRequest): Promise<void> {
@@ -18,14 +16,15 @@ export class ProviderChangeBookingAppointmentStatusUseCase {
 
             booking.updateAppointment({appointmentStatus});
 
-            const response = await this.updateEventFromGoogleCalendarService.execute({
-                userId: booking.userId,
-                eventId: booking.googleEventId,
-                appointmentDate: booking.appointmentDate,
-                appointmentStatus: appointmentStatus
-            });
+            // TODO update event
+            // const response = await this.updateEventFromGoogleCalendarService.execute({
+            //     userId: booking.userId,
+            //     eventId: booking.googleEventId,
+            //     appointmentDate: booking.appointmentDate,
+            //     appointmentStatus: appointmentStatus
+            // });
 
-            if (!response.success) throw new Error("Booking status updating failed");
+            // if (!response.success) throw new Error("Booking status updating failed");
 
             await this.bookingRepository.update(booking);
 
