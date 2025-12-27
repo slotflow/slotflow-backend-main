@@ -32,21 +32,17 @@ const userRepository: IUserRepository = new UserRepositoryImpl();
 const paymentRepository: IPaymentRepository = new PaymentRepositoryImpl();
 const bookingRepository: IBookingRepository = new BookingRepositoryImpl();
 const proviserRepository: IProviderRepository = new ProviderRepositoryImpl();
+const credentialRepository: ICredentialRepository = new CredentialRepositoryImpl();
 
 const bookingQueries: IBookingQueries = new BookingQueriesImpl();
+const providerServiceQueries: IProviderServiceQueries = new ProviderServiceQueriesImpl();
 const serviceAvailabilityQueries: IServiceAvailabilityQueries = new ServiceAvailabilityQueriesImpl();
-
-const fetchBookingAppointmentsUseCase = new FetchBookingAppointmentsUseCase(bookingQueries);
 
 const validateJoinRoomUsecase = new ValidateJoinRoomUsecase(bookingRepository)
 const fetchBookingDetailsUsecase = new FetchBookingDetailsUsecase(bookingQueries);
-const providerServiceQueries: IProviderServiceQueries = new ProviderServiceQueriesImpl();
-
-const credentialRepository: ICredentialRepository = new CredentialRepositoryImpl();
-
-
-const updateBookingOnlineTrakingUseCase = new UpdateBookingOnlineTrakingUseCase(bookingRepository, serviceAvailabilityQueries);
+const fetchBookingAppointmentsUseCase = new FetchBookingAppointmentsUseCase(bookingQueries);
 const userCancelBookingUseCase = new UserCancelBookingUseCase(userRepository, bookingRepository, paymentRepository);
+const updateBookingOnlineTrakingUseCase = new UpdateBookingOnlineTrakingUseCase(bookingRepository, serviceAvailabilityQueries);
 const userAppointmentBookingViaStrpieUseCase = new UserAppointmentBookingViaStripeUseCase(proviserRepository, bookingRepository, providerServiceQueries, serviceAvailabilityQueries);
 const userSaveBookingAfterStripePaymentUseCase = new UserSaveBookingAfterStripePaymentUseCase(userRepository, paymentRepository, bookingRepository, serviceAvailabilityQueries, credentialRepository);
 

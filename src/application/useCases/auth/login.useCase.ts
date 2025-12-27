@@ -40,7 +40,7 @@ export class LoginUseCase {
 
                 let signedProfileImageUrl: string = "";
                 if (user.profileImage) {
-                    signedProfileImageUrl = await this.signedUrlService.generate(user.profileImage);
+                    signedProfileImageUrl = await this.signedUrlService.save(user.profileImage);
                 };
 
                 return {
@@ -72,7 +72,7 @@ export class LoginUseCase {
 
                 let signedProfileImageUrl: string = "";
                 if (provider.profileImage) {
-                    signedProfileImageUrl = await this.signedUrlService.generate(provider.profileImage);
+                    signedProfileImageUrl = await this.signedUrlService.save(provider.profileImage);
                 };
 
                 let providerSubscription: string | undefined = undefined;

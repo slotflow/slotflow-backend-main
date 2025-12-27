@@ -47,6 +47,7 @@ export const redisConfig = {
 export const googleClientConfig = {
     googleClientId: validator.requireEnv("GOOGLE_CLIENT_ID"),
     googleClientSecret: validator.requireEnv("GOOGLE_CLIENT_SECRET"),
+    googleCallbackUrl: validator.requireEnv("GOOGLE_CALLBACK_URL_DEV"),
 };
 
 export const appUrlConfig = {

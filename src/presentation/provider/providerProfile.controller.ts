@@ -1,10 +1,11 @@
 import { DecodedUser } from "../../express";
-import { s3Client } from "../../infrastructure/lib/aws_s3";
 import { log } from "../../shared/logger/logger";
+import { redis } from "../../infrastructure/lib/redis";
 import { NextFunction, Request, Response } from "express";
+import { s3Client } from "../../infrastructure/lib/aws_s3";
 import { sendResponse } from "../../shared/utils/response";
-import { SignedUrlService } from "../../infrastructure/services/signedUrl.service";
 import { ISignedUrlService } from "../../domain/interfaces/services/ISignedUrl.service";
+import { SignedUrlServiceImpl } from "../../infrastructure/services/signedUrlService.impl";
 import { IProviderRepository } from "../../domain/interfaces/repositories/IProvider.repository";
 import { s3FileKeyZodSchmema, UserOrProviderUpdateInfoZodSchema } from "../../shared/zod/common.zod";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
@@ -13,17 +14,17 @@ import { ProvideDeleteIdentityProofUseCase, ProvideDeleteServiceProofUseCase, Pr
 
 const providerRepository: IProviderRepository = new ProviderRepositoryImpl();
 
-const signedUrlService: ISignedUrlService = new SignedUrlService();
+const signedUrlService: ISignedUrlService = new SignedUrlServiceImpl(redis, s3Client);
 
 const providerUpdateProviderInfoUseCase = new ProviderUpdateProviderInfoUseCase(providerRepository);
 const providerRequestForApprovalUseCase = new ProviderRequestForApprovalUseCase(providerRepository);
 const providerFetchProfileDetailsUseCase = new ProviderFetchProfileDetailsUseCase(providerRepository);
 const fetchProviderProofsUseCase = new FetchProviderProofsUseCase(signedUrlService, providerRepository);
-const providerUpdateProfileImageUseCase = new ProviderUpdateProfileImageUseCase(s3Client, providerRepository);
-const providerUpdateServiceProofUseCase = new ProviderUpdateServiceProofUseCase(s3Client, providerRepository);
-const providerUpdateIdentityProofUseCase = new ProviderUpdateIdentityProofUseCase(s3Client, providerRepository);
-const provideDeleteIdentityProofUseCase = new ProvideDeleteIdentityProofUseCase(s3Client, providerRepository);
-const provideDeleteServiceProofUseCase = new ProvideDeleteServiceProofUseCase(s3Client, providerRepository);
+const providerUpdateProfileImageUseCase = new ProviderUpdateProfileImageUseCase(providerRepository, signedUrlService);
+const providerUpdateServiceProofUseCase = new ProviderUpdateServiceProofUseCase(providerRepository, signedUrlService);
+const providerUpdateIdentityProofUseCase = new ProviderUpdateIdentityProofUseCase(providerRepository, signedUrlService);
+const provideDeleteServiceProofUseCase = new ProvideDeleteServiceProofUseCase(s3Client, providerRepository, signedUrlService);
+const provideDeleteIdentityProofUseCase = new ProvideDeleteIdentityProofUseCase(s3Client, providerRepository, signedUrlService);
 
 class ProviderProfileController {
     constructor(

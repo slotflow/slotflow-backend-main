@@ -1,16 +1,17 @@
 import { log } from "../../shared/logger/logger";
 import { IAesEncryption } from "../../domain/interfaces/services/IAesEncryption.service";
+import { IGoogleTokenService } from "../../domain/interfaces/services/IGoogleToken.service";
 import { ICredentialRepository } from "../../domain/interfaces/repositories/ICredentialRepository";
 import { IGoogleRefreshTokenService } from "../../domain/interfaces/services/IGoogleRefreshToken.service";
 
-export class GoogleTokenService {
+export class GoogleTokenService implements IGoogleTokenService {
     constructor(
         private credentialRepository: ICredentialRepository,
         private aesEncryption: IAesEncryption,
         private IgoogleRefreshTokenService: IGoogleRefreshTokenService
     ) { };
 
-    async getValidAccessToken(userId: string): Promise<string> {
+    async getAccessToken(userId: string): Promise<string> {
         try {
             console.log("GoogleTokenService service start");
             console.log("Before credentials")

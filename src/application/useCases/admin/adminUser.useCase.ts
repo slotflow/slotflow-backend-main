@@ -8,7 +8,7 @@ import {
 import { log } from "../../../shared/logger/logger";
 import { IUserQueries } from "../../queries/IUser.queries";
 import { ApiPaginationRequest, TableData } from "../../dtos/common.dto";
-import { SignedUrlService } from "../../../infrastructure/services/signedUrl.service";
+import { SignedUrlService } from "../../../infrastructure/services/signedUrlService.impl";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 
 export class AdminUserListUseCase {

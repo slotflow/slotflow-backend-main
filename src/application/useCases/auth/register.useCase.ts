@@ -7,11 +7,10 @@ import { User } from '../../../domain/entities/user.entity';
 import { JWTService } from '../../../infrastructure/security/jwt';
 import { Provider } from '../../../domain/entities/provider.entity';
 import { RegisterRequest, RegisterResponse } from '../../dtos/auth.dto';
-import { OTPService } from '../../../infrastructure/services/otp.service';
 import { PasswordHasher } from '../../../infrastructure/security/password-hashing';
+import { IOTPService } from '../../../domain/interfaces/services/IOtpService.service';
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
-import { IOTPService } from '../../../domain/interfaces/services/IOtpService.service';
 
 export class RegisterUseCase {
 

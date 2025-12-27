@@ -1,13 +1,15 @@
 import { DecodedUser } from "../../express";
 import { log } from "../../shared/logger/logger";
+import { redis } from "../../infrastructure/lib/redis";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
+import { s3Client } from "../../infrastructure/lib/aws_s3";
 import { UserFetchAllProvidersZodSchema } from "../../shared/zod/user.zod";
 import { IBookingQueries } from "../../application/queries/IBooking.queries";
 import { DateZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
-import { SignedUrlService } from "../../infrastructure/services/signedUrl.service";
 import { BookingQueriesImpl } from "../../infrastructure/queries/bookingQueries.impl";
 import { ISignedUrlService } from "../../domain/interfaces/services/ISignedUrl.service";
+import { SignedUrlServiceImpl } from "../../infrastructure/services/signedUrlService.impl";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { IProviderServiceQueries } from "../../application/queries/IProviderService.queries";
 import { IServiceAvailabilityQueries } from "../../application/queries/IServiceAvailability.queries";
@@ -21,18 +23,18 @@ const userRepositoryImpl = new UserRepositoryImpl();
 const addressRepositoryImpl = new AddressRepositoryImpl();
 const providerRepositoryImpl = new ProviderRepositoryImpl();
 
-const signedUrlService: ISignedUrlService = new SignedUrlService();
-
 const bookingQueries: IBookingQueries = new BookingQueriesImpl();
 const providerServiceQueries: IProviderServiceQueries = new ProviderServiceQueriesImpl();
 const serviceAvailabilityQueries: IServiceAvailabilityQueries = new ServiceAvailabilityQueriesImpl();
 
-const userFetchServiceProvidersUseCase = new UserFetchServiceProvidersUseCase(userRepositoryImpl, signedUrlService, providerServiceQueries);
-const userFetchServiceProviderProfileDetailsUseCase = new UserFetchServiceProviderProfileDetailsUseCase(userRepositoryImpl, providerRepositoryImpl, signedUrlService);
-const userFetchServiceProviderAddressUseCase = new UserFetchServiceProviderAddressUseCase(userRepositoryImpl, addressRepositoryImpl);
-const userFetchServiceProviderServiceDetailsUseCase = new UserFetchServiceProviderServiceDetailsUseCase(userRepositoryImpl, providerServiceQueries);
-const userFetchServiceProviderServiceAvailabilityUseCase = new UserFetchServiceProviderServiceAvailabilityUseCase(providerRepositoryImpl, userRepositoryImpl, serviceAvailabilityQueries);
+const signedUrlService: ISignedUrlService = new SignedUrlServiceImpl(redis, s3Client);
+
 const userFetchProvidersForChatSidebar = new UserFetchProvidersForChatSidebar(signedUrlService, bookingQueries);
+const userFetchServiceProviderAddressUseCase = new UserFetchServiceProviderAddressUseCase(userRepositoryImpl, addressRepositoryImpl);
+const userFetchServiceProvidersUseCase = new UserFetchServiceProvidersUseCase(userRepositoryImpl, signedUrlService, providerServiceQueries);
+const userFetchServiceProviderServiceDetailsUseCase = new UserFetchServiceProviderServiceDetailsUseCase(userRepositoryImpl, providerServiceQueries);
+const userFetchServiceProviderProfileDetailsUseCase = new UserFetchServiceProviderProfileDetailsUseCase(userRepositoryImpl, providerRepositoryImpl, signedUrlService);
+const userFetchServiceProviderServiceAvailabilityUseCase = new UserFetchServiceProviderServiceAvailabilityUseCase(providerRepositoryImpl, userRepositoryImpl, serviceAvailabilityQueries);
 
 class UserProviderController {
     constructor(

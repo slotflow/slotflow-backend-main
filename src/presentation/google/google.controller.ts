@@ -3,17 +3,17 @@ import { DecodedUser } from "../../express";
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
-import { AesEncryption } from "../../infrastructure/services/aesEncryption.service";
 import { IAesEncryption } from "../../domain/interfaces/services/IAesEncryption.service";
+import { AesEncryptionImpl } from "../../infrastructure/services/aesEncryptionService.impl";
 import { IGoogleCalendarGateway } from "../../domain/interfaces/services/IGoogleCalendarGateway";
 import { ICredentialRepository } from "../../domain/interfaces/repositories/ICredentialRepository";
-import { GoogleCalendarGateway } from "../../infrastructure/services/googleCalendarGateway.service";
 import { FethGoogleCalendarUseCase } from "../../application/useCases/common/fetchGoogleCalendar.useCase";
+import { GoogleCalendarGatewayImpl } from "../../infrastructure/services/googleCalendarGatewayService.impl";
 import { CredentialRepositoryImpl } from "../../infrastructure/database/credential/credential.repository.impl";
 
-const aesEncryption: IAesEncryption = new AesEncryption();
-const googleCalendarGateway: IGoogleCalendarGateway = new GoogleCalendarGateway();
+const aesEncryption: IAesEncryption = new AesEncryptionImpl();
 const credentialRepository: ICredentialRepository = new CredentialRepositoryImpl();
+const googleCalendarGateway: IGoogleCalendarGateway = new GoogleCalendarGatewayImpl();
 
 const fethGoogleCalendarUseCase = new FethGoogleCalendarUseCase(credentialRepository, aesEncryption, googleCalendarGateway);
 

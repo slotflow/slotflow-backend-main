@@ -4,7 +4,7 @@ import { IGoogleCalendarGateway } from "../../domain/interfaces/services/IGoogle
 import { CreateGoogleCalendarEventRequest, UpdateGoogleCalendarEventRequest, UserBookingAddingToCalendar, UserBookingFetchingFromCalendar } from "../../application/dtos/common.dto";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 
-export class GoogleCalendarGateway implements IGoogleCalendarGateway {
+export class GoogleCalendarGatewayImpl implements IGoogleCalendarGateway {
 
     async createEvent(payload: CreateGoogleCalendarEventRequest): Promise<{ id: string }> {
 

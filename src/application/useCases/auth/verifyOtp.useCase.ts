@@ -1,10 +1,9 @@
 import { log } from '../../../shared/logger/logger';
 import { Role } from '../../../domain/enums/role.enum';
 import { OTPVerificationRequest } from '../../dtos/auth.dto';
-import { OTPService } from '../../../infrastructure/services/otp.service';
+import { IOTPService } from '../../../domain/interfaces/services/IOtpService.service';
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
-import { IOTPService } from '../../../domain/interfaces/services/IOtpService.service';
 
 export class VerifyOTPUseCase {
   constructor(

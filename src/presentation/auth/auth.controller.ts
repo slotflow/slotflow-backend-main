@@ -1,15 +1,19 @@
 import { appConfig } from '../../config/env';
 import { log } from '../../shared/logger/logger';
+import { redis } from '../../infrastructure/lib/redis';
 import { NextFunction, Request, Response } from 'express';
+import { s3Client } from '../../infrastructure/lib/aws_s3';
 import { sendResponse } from '../../shared/utils/response';
 import { LoginUseCase } from '../../application/useCases/auth/login.useCase';
+import { OTPServiceImpl } from '../../infrastructure/services/otpService.impl';
 import { RegisterUseCase } from '../../application/useCases/auth/register.useCase';
-import { SignedUrlService } from '../../infrastructure/services/signedUrl.service';
+import { IOTPService } from '../../domain/interfaces/services/IOtpService.service';
 import { ResendOtpUseCase } from '../../application/useCases/auth/resendOtp.useCase';
 import { VerifyOTPUseCase } from '../../application/useCases/auth/verifyOtp.useCase';
 import { ISignedUrlService } from '../../domain/interfaces/services/ISignedUrl.service';
 import { IUserRepository } from '../../domain/interfaces/repositories/IUser.repository';
 import { IPlanRepository } from '../../domain/interfaces/repositories/IPlan.repository';
+import { SignedUrlServiceImpl } from '../../infrastructure/services/signedUrlService.impl';
 import { PlanRepositoryImpl } from '../../infrastructure/database/plan/plan.repository.impl';
 import { UserRepositoryImpl } from '../../infrastructure/database/user/user.repository.impl';
 import { UpdatePasswordUseCase } from '../../application/useCases/auth/updatePassword.useCase';
@@ -24,12 +28,13 @@ const planRepository: IPlanRepository = new PlanRepositoryImpl();
 const providerRepository: IProviderRepository = new ProviderRepositoryImpl();
 const subscriptionRepository: ISubscriptionRepository = new SubscriptionRepositoryImpl();
 
-const signedUrlService: ISignedUrlService = new SignedUrlService();
+const otpService: IOTPService = new OTPServiceImpl();
+const signedUrlService: ISignedUrlService = new SignedUrlServiceImpl(redis, s3Client);
 
-const registerUseCase = new RegisterUseCase(userRepository, providerRepository);
-const verifyOTPUseCase = new VerifyOTPUseCase(userRepository, providerRepository);
-const resendOtpUseCase = new ResendOtpUseCase(userRepository, providerRepository);
+const registerUseCase = new RegisterUseCase(userRepository, providerRepository, otpService);
 const updatePasswordUseCase = new UpdatePasswordUseCase(userRepository, providerRepository);
+const verifyOTPUseCase = new VerifyOTPUseCase(userRepository, providerRepository, otpService);
+const resendOtpUseCase = new ResendOtpUseCase(userRepository, providerRepository, otpService);
 const loginUseCase = new LoginUseCase(userRepository, providerRepository, planRepository, subscriptionRepository, signedUrlService);
 
 class AuthController {

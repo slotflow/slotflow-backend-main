@@ -1,9 +1,11 @@
 import { log } from "../../shared/logger/logger";
+import { redis } from "../../infrastructure/lib/redis";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
-import { SignedUrlService } from "../../infrastructure/services/signedUrl.service";
+import { s3Client } from "../../infrastructure/lib/aws_s3";
 import { ISubscriptionQueries } from "../../application/queries/ISubscription.queries";
 import { ISignedUrlService } from "../../domain/interfaces/services/ISignedUrl.service";
+import { SignedUrlServiceImpl } from "../../infrastructure/services/signedUrlService.impl";
 import { IProviderServiceQueries } from "../../application/queries/IProviderService.queries";
 import { IAddressRepository } from "../../domain/interfaces/repositories/IAddress.repository";
 import { IPaymentRepository } from "../../domain/interfaces/repositories/IPayment.repository";
@@ -26,7 +28,7 @@ const paymentRepository: IPaymentRepository = new PaymentRepositoryImpl();
 const addressRepository: IAddressRepository = new AddressRepositoryImpl();
 const providerRepository: IProviderRepository = new ProviderRepositoryImpl();
 
-const signedUrlService: ISignedUrlService = new SignedUrlService();
+const signedUrlService: ISignedUrlService = new SignedUrlServiceImpl(redis, s3Client);
 
 const subscriptionQueries: ISubscriptionQueries = new SubscriptionQueriesImpl();
 const providerServiceQueries: IProviderServiceQueries = new ProviderServiceQueriesImpl();

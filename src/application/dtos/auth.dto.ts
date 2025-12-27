@@ -1,3 +1,4 @@
+import { Role } from "../../domain/enums/role.enum";
 import { CommonResponse, RoleType } from "./common.dto";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
 
@@ -36,10 +37,10 @@ export interface ResendOtpRequest {
     email?: string;
 }
 export interface ResendOtpResponse {
-  authUser: {
-    verificationToken: string,
-    role: string
-  }
+    authUser: {
+        verificationToken: string,
+        role: string
+    }
 }
 
 
@@ -100,11 +101,19 @@ export interface CheckUserStatusResponse extends CommonResponse {
 }
 
 
-// **** Google Auth
-export interface GoogleAuthRequest {
+export interface GoogleAuthOrchestrationRequest {
     googleId: string;
     email: string;
     name: string;
-    role: RoleType;
-    image: string | null;
+    image?: string | null;
+    role: Role;
+    connectOnly?: boolean;
+    userId?: string;
+    accessToken: string;
+    refreshToken: string;
+    expiryDate: Date;
+}
+
+export interface GoogleAuthOrchestrationResponse {
+    token?: string;
 }

@@ -3,7 +3,7 @@ import { log } from '../../shared/logger/logger';
 import { generateOTP } from 'otp-generator-module';
 import { IOTPService } from '../../domain/interfaces/services/IOtpService.service';
 
-export class OTPService implements IOTPService {
+export class OTPServiceImpl implements IOTPService {
 
   async setOtp(verificationToken: string): Promise<string> {
     try {

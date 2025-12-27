@@ -1,9 +1,11 @@
 import { log } from "../../shared/logger/logger";
+import { redis } from "../../infrastructure/lib/redis";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
+import { s3Client } from "../../infrastructure/lib/aws_s3";
 import { IUserQueries } from "../../application/queries/IUser.queries";
 import { UserQueriesImpl } from "../../infrastructure/queries/userQueries.impl";
-import { SignedUrlService } from "../../infrastructure/services/signedUrl.service";
+import { SignedUrlServiceImpl } from "../../infrastructure/services/signedUrlService.impl";
 import { IUserRepository } from "../../domain/interfaces/repositories/IUser.repository";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { IAddressRepository } from "../../domain/interfaces/repositories/IAddress.repository";
@@ -15,9 +17,9 @@ import { AdminChangeUserBlockStatusUseCase, AdminFetchUserDetailsUseCase, AdminU
 const userRepository: IUserRepository = new UserRepositoryImpl();
 const addressRepository: IAddressRepository = new AddressRepositoryImpl();
 
-const signedUrlService = new SignedUrlService();
-
 const userQueries: IUserQueries = new UserQueriesImpl();
+
+const signedUrlService = new SignedUrlServiceImpl(redis, s3Client);
 
 const adminUserListUseCase = new AdminUserListUseCase(userQueries);
 const adminChangeUserBlockStatusUseCase = new AdminChangeUserBlockStatusUseCase(userRepository);

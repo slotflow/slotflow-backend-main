@@ -1,22 +1,25 @@
 import { DecodedUser } from "../../express";
 import { log } from "../../shared/logger/logger";
 import { Role } from "../../domain/enums/role.enum";
+import { redis } from "../../infrastructure/lib/redis";
 import { roleArray } from "../../shared/utils/constants";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
+import { s3Client } from "../../infrastructure/lib/aws_s3";
 import { UserCreateReviewZodSchema } from "../../shared/zod/user.zod";
 import { IReviewQueries } from "../../application/queries/IReview.queries";
-import { SignedUrlService } from "../../infrastructure/services/signedUrl.service";
 import { RequestQueryFetchAllReviewsZodSchema } from "../../shared/zod/common.zod";
 import { ReviewQueriesImpl } from "../../infrastructure/queries/reviewQueries.impl";
 import { ISignedUrlService } from "../../domain/interfaces/services/ISignedUrl.service";
+import { SignedUrlServiceImpl } from "../../infrastructure/services/signedUrlService.impl";
 import { FetchAllReviewsUseCase } from "../../application/useCases/common/fetchReviews.useCase";
 import { ReviewRepositoryImpl } from "../../infrastructure/database/review/review.repository.impl";
 import { CreateReviewUseCase, DeleteReviewUseCase } from "../../application/useCases/user/userReview.useCase";
 
 const reviewRepositoryImpl = new ReviewRepositoryImpl();
 
-const signedUrlService: ISignedUrlService = new SignedUrlService();
+const signedUrlService: ISignedUrlService = new SignedUrlServiceImpl(redis, s3Client);
+
 const reviewQueries: IReviewQueries = new ReviewQueriesImpl();
 
 const createReviewUseCase = new CreateReviewUseCase(reviewRepositoryImpl);
