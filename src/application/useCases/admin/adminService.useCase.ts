@@ -25,6 +25,7 @@ export class AdminServiceListUseCase {
                     _id: service._id,
                     isBlocked: service.isBlocked,
                     serviceName: service.serviceName,
+                    serviceCategory: service.serviceCategory
                 })),
                 totalPages,
                 currentPage,

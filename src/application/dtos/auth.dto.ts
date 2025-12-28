@@ -75,7 +75,6 @@ export interface LoginResponse {
         isProofsVerified?: boolean,
         providerSubscription?: string;
         googleConnected?: boolean;
-        updatedAt?: Date;
     }
 }
 

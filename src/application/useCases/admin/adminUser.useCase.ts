@@ -8,8 +8,8 @@ import {
 import { log } from "../../../shared/logger/logger";
 import { IUserQueries } from "../../queries/IUser.queries";
 import { ApiPaginationRequest, TableData } from "../../dtos/common.dto";
-import { SignedUrlService } from "../../../infrastructure/services/signedUrlService.impl";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
+import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 
 export class AdminUserListUseCase {
     constructor(
@@ -46,7 +46,7 @@ export class AdminChangeUserBlockStatusUseCase {
             const user = await this.userRepository.findById(userId);
             if (!user) throw new Error("No user found.");
 
-            if (user.isBlocked !== isBlocked) {
+            if (user.isBlocked === isBlocked) {
                 isBlocked ? user.unblock() : user.block();
             };
 
@@ -64,7 +64,7 @@ export class AdminChangeUserBlockStatusUseCase {
 export class AdminFetchUserDetailsUseCase {
     constructor(
         private userRepository: IUserRepository,
-        private signedUrlService: SignedUrlService
+        private signedUrlService: ISignedUrlService
     ) { }
 
     async execute(payload: AdminFetchUserProfileDetailsRequest): Promise<AdminFetchUserProfileDetailsResponse> {
@@ -76,7 +76,7 @@ export class AdminFetchUserDetailsUseCase {
 
             let signedProfileImage: string | null = null;
             if (user.profileImage) {
-                signedProfileImage = await this.signedUrlService.generate(user.profileImage);
+                signedProfileImage = await this.signedUrlService.save(user.profileImage);
             }
 
             return {

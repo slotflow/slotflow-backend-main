@@ -7,6 +7,7 @@ import { IUserRepository } from "../../domain/interfaces/repositories/IUser.repo
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { IProviderRepository } from "../../domain/interfaces/repositories/IProvider.repository";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
+import { log } from "../../shared/logger/logger";
 
 const userRepository: IUserRepository = new UserRepositoryImpl();
 const providerRepository: IProviderRepository = new ProviderRepositoryImpl();
@@ -33,6 +34,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
     const role = req.headers["x-user-role"];
 
     if (!userId || !role) {
+      console.log("One");
       res.status(401).json({ success: false, message: "Unauthenticated request" });
       return;
     }
@@ -48,6 +50,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
     if (req.user.role === Role.User) {
       const user = await userRepository.findById(req.user.userOrProviderId);
       if (user?.isBlocked) {
+        console.log("two");
         res.status(403).json({ success: false, message: "Your account is blocked" });
         return;
       }
@@ -57,6 +60,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
       const provider = await providerRepository.findById(req.user.userOrProviderId);
       if (provider?.isBlocked) {
         console.log("Provider blocked");
+        console.log("three");
         res.status(403).json({ success: false, message: "Your account is blocked" });
         return;
       }
@@ -64,6 +68,8 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
 
     next();
   } catch (error) {
+    console.log("four");
+    log.error("error : ",error as Error);
     res.status(401).json({ success: false, message: "Unauthorized: Invalid token." });
   }
 };

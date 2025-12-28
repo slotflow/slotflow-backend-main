@@ -30,7 +30,7 @@ export class LoginUseCase {
                 const user = await this.userRepository.findByEmail(email);
                 if (!user) throw new Error("Invalid credentials");
                 if (user.isBlocked) throw new Error("Your account is blocked, please contact us");
-                if (user.isEmailVerified) throw new Error("Your registration is incomplete, please register again.");
+                if (!user.isEmailVerified) throw new Error("Your registration is incomplete, please register again.");
                 if (!user.password) throw new Error("Invalid request");
 
                 const valid = await PasswordHasher.comparePassword(password, user.password);
@@ -54,7 +54,6 @@ export class LoginUseCase {
                         isBlocked: user.isBlocked,
                         isLoggedIn: true,
                         googleConnected: user.googleConnected,
-                        updatedAt: user.updatedAt
                     },
                 };
 
@@ -62,7 +61,7 @@ export class LoginUseCase {
                 const provider = await this.providerRepository.findByEmail(email);
                 if (!provider) throw new Error("Invalid credentials");
                 if (provider.isBlocked) throw new Error("Your account is blocked, please contact us");
-                if (provider.isEmailVerified) throw new Error("Your registration is incomplete, please register again.");
+                if (!provider.isEmailVerified) throw new Error("Your registration is incomplete, please register again.");
                 if (!provider.password) throw new Error("Invalid request");
 
                 const valid = await PasswordHasher.comparePassword(password, provider.password);
@@ -114,7 +113,6 @@ export class LoginUseCase {
                         verificationRejectionReason: provider.verificationRejectionReason,
                         providerSubscription,
                         googleConnected: provider.googleConnected,
-                        updatedAt: provider.updatedAt
                     }
                 };
 

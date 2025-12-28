@@ -97,6 +97,7 @@ class AuthController {
 
   async login(req: Request, res: Response, next: NextFunction) {
     try {
+      console.log("login controller");
       const validateData = LoginZodSchema.parse(req.body);
       const { email, password, role } = validateData;
       if (!email || !password || !role) throw new Error("Invalid request.");
@@ -108,6 +109,7 @@ class AuthController {
         secure: appConfig.nodeEnv !== 'development'
       });
       const { token: token, ...authUserWithoutToken } = result.authUser;
+      console.log("result : ",result);
       sendResponse(res, authUserWithoutToken, "Login successfully");
     } catch (error) {
       log.error("login failed", error as Error);

@@ -20,11 +20,11 @@ export class FetchProviderProofsUseCase {
             let signedServiceProofUrl: string | null = null;
 
             if (provider.identityProof) {
-                signedIdentityProofUrl = await this.signedUrlService.generate(provider.identityProof);
+                signedIdentityProofUrl = await this.signedUrlService.get(provider.identityProof);
             };
 
             if (provider.serviceProof) {
-                signedServiceProofUrl = await this.signedUrlService.generate(provider.serviceProof);
+                signedServiceProofUrl = await this.signedUrlService.get(provider.serviceProof);
             };
 
             return {

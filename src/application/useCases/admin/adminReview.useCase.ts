@@ -14,7 +14,7 @@ export class AdminUpdateReviewBlockStatusUseCase {
             const review = await this.reviewRepository.findById(reviewId);
             if(!review) throw new Error("No review found");
 
-            if(review.isBlocked !== isBlocked) {
+            if(review.isBlocked === isBlocked) {
                 isBlocked ? review.unblock() : review.block();;
             };
 

@@ -170,7 +170,7 @@ export interface AdminFetchProviderDetailsRequest {
     providerId: ProviderDTO["_id"];
 }
 // Used as the return type of admin fetch provider profile details
-export type AdminFetchProviderDetailsResponse = Pick<ProviderDTO, "_id" | "username" | "email" | "isBlocked" | "isEmailVerified" | "isAdminVerified" | "phone" | "profileImage" | "trustedBySlotflow" | "createdAt"> | null;
+export type AdminFetchProviderDetailsResponse = Pick<ProviderDTO, "_id" | "username" | "email" | "isBlocked" | "isEmailVerified" | "isAdminVerified" | "phone" | "profileImage" | "trustedBySlotflow" | "createdAt" | "isServiceDetailsVerified" | "isProofsVerified" | "isAddressVerified" | "isAvailabilityVerified" | "adminVerificationStatus"> | null;
 
 // Used as the request interface of admin fetch provider service
 export type AdminFetchProviderServiceRequest = {
@@ -212,7 +212,7 @@ export type AdminUpdateReviewBlockStatusResponse = AdminUpdateReviewBlockStatusR
 // **** adminService.usecase
 
 // Used as the request interface of admin fetch all app services
-export type AdminServiceListResponse = Array<Pick<ServiceDTO, "_id" | "serviceName" | "isBlocked">>;
+export type AdminServiceListResponse = Array<Pick<ServiceDTO, "_id" | "serviceName" | "isBlocked" | "serviceCategory">>;
 
 // admin add new service use case request payload interface
 export type AdminAddServiceRequest = Pick<ServiceDTO, "serviceName" | "serviceCategory">; 

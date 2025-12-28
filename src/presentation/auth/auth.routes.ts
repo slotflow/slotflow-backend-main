@@ -10,8 +10,8 @@ router.post('/resendOtp', authController.resendOtp);
 router.post("/signin", authController.login);
 router.post('/signout', authController.logout);
 router.patch('/password',authController.updatePassword);
-
 router.get('/google', googleAuthController.googleAuth);
 router.get('/google/callback', googleAuthController.googleAuthCallback);
 
 export default router;
+ 

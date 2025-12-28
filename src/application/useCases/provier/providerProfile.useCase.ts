@@ -50,13 +50,13 @@ export class ProviderUpdateProviderInfoUseCase {
     try {
       const { providerId, username, phone } = payload;
 
-      if(!phone && !username) throw new Error("Invalid request");
+      if (!phone && !username) throw new Error("Invalid request");
 
       const provider = await this.providerRepository.findById(providerId);
       if (!provider) throw new Error("No user found");
 
-      provider.updateProfileInfo({ 
-        phone: phone ?? undefined, 
+      provider.updateProfileInfo({
+        phone: phone ?? undefined,
         username: username ?? undefined
       });
 
@@ -85,21 +85,21 @@ export class ProviderUpdateIdentityProofUseCase {
     try {
 
       const { providerId, identityProof } = payload;
-      if(!providerId || !identityProof) throw new Error("Invalid request");
-      
+      if (!providerId || !identityProof) throw new Error("Invalid request");
+
       const provider = await this.providerRepository.findById(providerId);
-      if(!provider) throw new Error("User not found");
-      
-      provider.submitIdentityProof({identityProof});
+      if (!provider) throw new Error("User not found");
+
+      provider.submitIdentityProof({ identityProof });
       const updatedProvider = await this.providerRepository.update(provider);
-      if(!updatedProvider) throw new Error("Failed to update proof");
-      
+      if (!updatedProvider) throw new Error("Failed to update proof");
+
       const signedUrl = await this.signedUrlService.save(identityProof);
-      if(!signedUrl) throw new Error("Failed to generate signed url");
-      
+      if (!signedUrl) throw new Error("Failed to generate signed url");
+
       return signedUrl;
-    } catch(error) {
-      log.error("ProviderUpdateIdentityProofUseCase failed",error as Error);
+    } catch (error) {
+      log.error("ProviderUpdateIdentityProofUseCase failed", error as Error);
       throw error;
     };
   };
@@ -115,21 +115,21 @@ export class ProviderUpdateServiceProofUseCase {
   async exeute(payload: ProviderUpdateServiceProofRequest): Promise<ProviderUpdateServiceProofResponse> {
     try {
 
-      const { providerId, serviceProof} = payload;
-      if(!providerId || !serviceProof) throw new Error("Invali drequest");
-      
+      const { providerId, serviceProof } = payload;
+      if (!providerId || !serviceProof) throw new Error("Invali drequest");
+
       const provider = await this.providerRepository.findById(providerId);
-      if(!provider) throw new Error("User not found");
-      
-      provider.submitServiceProof({serviceProof});
+      if (!provider) throw new Error("User not found");
+
+      provider.submitServiceProof({ serviceProof });
       const updatedProvider = await this.providerRepository.update(provider);
-      if(!updatedProvider) throw new Error("Failed to update proof");
-      
+      if (!updatedProvider) throw new Error("Failed to update proof");
+
       const signedUrl = await this.signedUrlService.save(serviceProof);
-      if(!signedUrl) throw new Error("Failed to generate signed url");
-      
+      if (!signedUrl) throw new Error("Failed to generate signed url");
+
       return signedUrl;
-    } catch(error) {
+    } catch (error) {
       log.error("ProviderUpdateServiceProofUseCase failed", error as Error);
       throw error;
     };
@@ -148,18 +148,18 @@ export class ProviderUpdateProfileImageUseCase {
     try {
 
       const { providerId, profileImage } = payload;
-      if(!providerId || !profileImage) throw new Error("Invalid request");
-      
+      if (!providerId || !profileImage) throw new Error("Invalid request");
+
       const provider = await this.providerRepository.findById(providerId);
-      if(!provider) throw new Error("User not found");
-      
+      if (!provider) throw new Error("User not found");
+
       provider.updateProfileImage({ profileImage });
       const updatedProvider = await this.providerRepository.update(provider);
-      if(!updatedProvider) throw new Error("Failed to update profile image");
-      
-     const signedUrl = await this.signedUrlService.save(profileImage);
-     if(!signedUrl) throw new Error("Failed to generate signed url");
-      
+      if (!updatedProvider) throw new Error("Failed to update profile image");
+
+      const signedUrl = await this.signedUrlService.save(profileImage);
+      if (!signedUrl) throw new Error("Failed to generate signed url");
+
       return signedUrl;
     } catch (error) {
       log.error("ProviderUpdateProfileImageUseCase failed", error as Error);
@@ -180,7 +180,7 @@ export class ProviderRequestForApprovalUseCase {
       const { providerId } = payload;
 
       const provider = await this.providerRepository.findById(providerId);
-      if(!provider) throw new Error("Invalid request");
+      if (!provider) throw new Error("Invalid request");
       if (provider?.isAdminVerified) throw new Error("You are already verified");
 
       if (provider?.adminVerificationStatus === AdminVerificationStatus.REQUESTED ||
@@ -189,16 +189,20 @@ export class ProviderRequestForApprovalUseCase {
         provider?.adminVerificationStatus === AdminVerificationStatus.RESUBMITTED
       ) {
         throw new Error("Invalid request");
-      }
+      };
 
       if (provider?.adminVerificationStatus === AdminVerificationStatus.NOT_REQUESTED) {
+        console.log("one")
         provider.submitForAdminVerification();
-      } else if (provider?.adminVerificationStatus === AdminVerificationStatus.REJECTED) {
+      };
+
+      if (provider?.adminVerificationStatus === AdminVerificationStatus.REJECTED) {
+        console.log("three")
         provider.resubmitForAdminVerification();
-      }
+      };
 
       const updatedProvider = await this.providerRepository.update(provider);
-      if(!updatedProvider) throw new Error("Failed to update approval request status");
+      if (!updatedProvider) throw new Error("Failed to update approval request status");
 
       return { adminVerificationStatus: updatedProvider?.adminVerificationStatus };
 
@@ -222,9 +226,9 @@ export class ProvideDeleteIdentityProofUseCase {
       const { providerId } = payload;
 
       const provider = await this.providerRepository.findById(providerId);
-      if(!provider) throw new Error("User not found");
-      
-      if(!provider.identityProof) throw new Error("No file found");
+      if (!provider) throw new Error("User not found");
+
+      if (!provider.identityProof) throw new Error("No file found");
 
       await this.s3Client.send(
         new DeleteObjectCommand({
@@ -237,9 +241,9 @@ export class ProvideDeleteIdentityProofUseCase {
       await this.providerRepository.update(provider);
 
       await this.signedUrlService.delete(provider.identityProof);
-      
-    } catch(error) {
-      log.error("ProvideDeleteIdentityProofUseCase failed",error as Error);
+
+    } catch (error) {
+      log.error("ProvideDeleteIdentityProofUseCase failed", error as Error);
       throw error;
     };
   };
@@ -258,9 +262,9 @@ export class ProvideDeleteServiceProofUseCase {
       const { providerId } = payload;
 
       const provider = await this.providerRepository.findById(providerId);
-      if(!provider) throw new Error("User not found");
-      
-      if(!provider.serviceProof) throw new Error("No file found");
+      if (!provider) throw new Error("User not found");
+
+      if (!provider.serviceProof) throw new Error("No file found");
 
       await this.s3Client.send(
         new DeleteObjectCommand({
@@ -273,9 +277,9 @@ export class ProvideDeleteServiceProofUseCase {
       await this.providerRepository.update(provider);
 
       await this.signedUrlService.delete(provider.serviceProof);
-      
-    } catch(error) {
-      log.error("ProvideDeleteServiceProofUseCase failed",error as Error);
+
+    } catch (error) {
+      log.error("ProvideDeleteServiceProofUseCase failed", error as Error);
       throw error;
     };
   };

@@ -114,7 +114,7 @@ export class AdminChangeProviderBlockStatusUseCase {
             const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");
 
-            if(provider.isBlocked !== isBlocked) {
+            if(provider.isBlocked === isBlocked) {
                 isBlocked ? provider.unblock() : provider.block();
             };
 
@@ -144,7 +144,7 @@ export class AdminChangeProviderTrustTagUseCase {
             const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");
 
-            if(provider.trustedBySlotflow !== trustedBySlotflow) {
+            if(provider.trustedBySlotflow === trustedBySlotflow) {
                 trustedBySlotflow ? provider.revokeTrustBadge() : provider.grantTrustBadge();
             };
 

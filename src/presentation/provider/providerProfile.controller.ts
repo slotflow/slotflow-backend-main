@@ -138,7 +138,7 @@ class ProviderProfileController {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
             const result = await this.providerRequestForApprovalUseCase.execute({providerId});
-            sendResponse(res,result, "Request admin approval");
+            sendResponse(res,result, "Requested admin approval");
         } catch (error) {
             log.error("updateAdminVerificationStatus failed", error as Error);
             next(error);

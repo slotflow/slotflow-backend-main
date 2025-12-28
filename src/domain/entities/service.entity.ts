@@ -1,5 +1,6 @@
 import { ServiceProps } from "../contracts/service.contract";
 import { CreateServiceProps, UpdateServiceProps } from "../commands/service.commands";
+import { ServiceCategory } from "../enums/serviceCategories.enum";
 
 export class Service {
     private props: ServiceProps;
@@ -34,7 +35,11 @@ export class Service {
 
     get serviceName(): string {
         return this.props.serviceName;
-    }
+    };
+
+    get serviceCategory(): ServiceCategory {
+        return this.props.serviceCategory;
+    };
 
     // Business Methods
 

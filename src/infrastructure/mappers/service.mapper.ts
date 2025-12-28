@@ -8,7 +8,7 @@ export class ServiceMapper {
             _id: doc._id.toString(),
             isBlocked: doc.isBlocked,
             serviceCategory: doc.serviceCategory,
-            serviceName: doc.serviceCategory,
+            serviceName: doc.serviceName,
             createdAt: doc.createdAt,
             updatedAt: doc.updatedAt,
         });
@@ -20,7 +20,7 @@ export class ServiceMapper {
         return {
             isBlocked: props.isBlocked,
             serviceCategory: props.serviceCategory,
-            serviceName: props.serviceCategory,
+            serviceName: props.serviceName,
             updatedAt: props.updatedAt,
         };
     }

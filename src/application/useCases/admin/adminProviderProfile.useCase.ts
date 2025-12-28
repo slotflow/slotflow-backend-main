@@ -32,7 +32,7 @@ export class AdminFetchProviderDetailsUseCase {
 
             let signedProfileImageUrl: string | null = null;
             if (providerData.profileImage) {
-                signedProfileImageUrl = await this.signedUrlService.generate(providerData.profileImage);
+                signedProfileImageUrl = await this.signedUrlService.save(providerData.profileImage);
             }
 
             return {
@@ -46,6 +46,11 @@ export class AdminFetchProviderDetailsUseCase {
                 profileImage: signedProfileImageUrl,
                 trustedBySlotflow: providerData.trustedBySlotflow,
                 username: providerData.username,
+                isAddressVerified: providerData.isAddressVerified,
+                isAvailabilityVerified: providerData.isAvailabilityVerified,
+                isProofsVerified: providerData.isProofsVerified,
+                isServiceDetailsVerified: providerData.isServiceDetailsVerified,
+                adminVerificationStatus: providerData.adminVerificationStatus
             };
 
         } catch (error) {

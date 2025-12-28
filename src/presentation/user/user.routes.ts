@@ -11,6 +11,8 @@ import { userAppServiceController } from "./userAppService.controller";
 
 const router = Router();
 
+router.get('/appservices', authMiddleware, userAppServiceController.fetchAllAppService);
+
 router.get('/profile', authMiddleware, userProfileController.getProfileDetails);
 router.post('/profile/image', authMiddleware, upload.single("profileImage"), userProfileController.updateProfileImage);
 router.patch('/profile', authMiddleware, userProfileController.updateUserInfo);
@@ -18,8 +20,6 @@ router.patch('/profile', authMiddleware, userProfileController.updateUserInfo);
 router.post('/addresses', authMiddleware, userAddressController.createAddress);
 router.get('/address', authMiddleware, userAddressController.getAddress);
 router.patch('/addresses/:addressId', authMiddleware, userAddressController.updateAddress);
-
-router.get('/appservices', authMiddleware, userAppServiceController.fetchAllAppService);
 
 router.get('/providers', authMiddleware, userProviderController.fetchServiceProviders);
 router.get('/providers/:providerId', authMiddleware, userProviderController.fetchServiceProviderProfileDetails);
