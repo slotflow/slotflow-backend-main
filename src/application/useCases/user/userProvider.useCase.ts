@@ -32,7 +32,7 @@ export class UserFetchServiceProvidersUseCase {
           let profileImageUrl = provider?.provider?.profileImage;
 
           if (profileImageUrl) {
-            const signedUrl = await this.signedUrlService.generate(profileImageUrl);
+            const signedUrl = await this.signedUrlService.get(profileImageUrl);
             provider.provider.profileImage = signedUrl;
           };
 
@@ -69,7 +69,7 @@ export class UserFetchServiceProviderProfileDetailsUseCase {
 
       let signedProfileImageUrl: string | null = null;
       if (provider.profileImage) {
-        signedProfileImageUrl = await this.signedUrlService.generate(provider.profileImage);
+        signedProfileImageUrl = await this.signedUrlService.get(provider.profileImage);
       };
 
       let props = provider.getProps();
@@ -132,20 +132,20 @@ export class UserFetchServiceProviderServiceDetailsUseCase {
       if (!user) throw new Error("No user found");
 
       const serviceData = await this.providerServiceQueries.findByProviderId(providerId);
-      if(!serviceData) return null;
+      if (!serviceData) return null;
 
-      return { 
-          isGroupService: serviceData.isGroupService,
-          maxParticipants: serviceData.maxParticipants,
-          requirements: serviceData.requirements,
-          service: serviceData.service,
-          serviceDescription: serviceData.serviceDescription,
-          serviceExperience: serviceData.serviceExperience,
-          serviceMode: serviceData.serviceMode,
-          serviceName: serviceData.serviceName,
-          servicePrice: serviceData.servicePrice,
-          serviceType: serviceData.serviceType,
-          videoUrl: serviceData.videoUrl,
+      return {
+        isGroupService: serviceData.isGroupService,
+        maxParticipants: serviceData.maxParticipants,
+        requirements: serviceData.requirements,
+        service: serviceData.service,
+        serviceDescription: serviceData.serviceDescription,
+        serviceExperience: serviceData.serviceExperience,
+        serviceMode: serviceData.serviceMode,
+        serviceName: serviceData.serviceName,
+        servicePrice: serviceData.servicePrice,
+        serviceType: serviceData.serviceType,
+        videoUrl: serviceData.videoUrl,
       };
     } catch (error) {
       log.error("UserFetchServiceProviderServiceDetailsUseCase failed", error as Error);
@@ -176,8 +176,8 @@ export class UserFetchServiceProviderServiceAvailabilityUseCase {
       if (!provider.serviceAvailabilityId) return null;
 
       const availability = await this.serviceAvailabilityQueries.findByProviderId(date, provider.serviceAvailabilityId);
-      if(!availability) return null;
-      
+      if (!availability) return null;
+
       const updatedSlots = availability.slots.map((slot) => {
         const slotDateTime = dayjs(`${selectedDate} ${slot.time}`, 'YYYY-MM-DD hh:mm A');
         const isWithin2Hours = slotDateTime.diff(currentDateTime, 'minute') < 120;
@@ -196,7 +196,7 @@ export class UserFetchServiceProviderServiceAvailabilityUseCase {
 };
 
 
-export class UserFetchProvidersForChatSidebar {
+export class UserFetchProvidersForChatSidebarUseCase {
   constructor(
     private signedUrlService: ISignedUrlService,
     private bookingQueries: IBookingQueries
@@ -213,7 +213,7 @@ export class UserFetchProvidersForChatSidebar {
           let profileImageUrl = provider?.profileImage;
 
           if (profileImageUrl) {
-            const signedUrl = await this.signedUrlService.generate(profileImageUrl);
+            const signedUrl = await this.signedUrlService.get(profileImageUrl);
             provider.profileImage = signedUrl;
           }
 
@@ -223,7 +223,7 @@ export class UserFetchProvidersForChatSidebar {
 
       return updatedResult;
     } catch (error) {
-      log.error("UserFetchProvidersForChatSidebar failed", error as Error);
+      log.error("UserFetchProvidersForChatSidebarUseCase failed", error as Error);
       throw error;
     };
   };

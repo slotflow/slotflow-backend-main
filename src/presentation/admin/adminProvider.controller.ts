@@ -1,51 +1,13 @@
 import { log } from "../../shared/logger/logger";
-import { redis } from "../../infrastructure/lib/redis";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
-import { s3Client } from "../../infrastructure/lib/aws_s3";
-import { ISubscriptionQueries } from "../../application/queries/ISubscription.queries";
-import { ISignedUrlService } from "../../domain/interfaces/services/ISignedUrl.service";
-import { SignedUrlServiceImpl } from "../../infrastructure/services/signedUrlService.impl";
-import { IProviderServiceQueries } from "../../application/queries/IProviderService.queries";
-import { IAddressRepository } from "../../domain/interfaces/repositories/IAddress.repository";
-import { IPaymentRepository } from "../../domain/interfaces/repositories/IPayment.repository";
-import { SubscriptionQueriesImpl } from "../../infrastructure/queries/subscriptionQueries.impl";
-import { IProviderRepository } from "../../domain/interfaces/repositories/IProvider.repository";
-import { IServiceAvailabilityQueries } from "../../application/queries/IServiceAvailability.queries";
-import { AddressRepositoryImpl } from "../../infrastructure/database/address/address.repository.impl";
-import { ProviderServiceQueriesImpl } from "../../infrastructure/queries/providerServiceQueries.impl";
-import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
-import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { FetchProviderProofsUseCase } from "../../application/useCases/common/fetchProviderProofs.useCase";
-import { ServiceAvailabilityQueriesImpl } from "../../infrastructure/queries/serviceAvailabilityQueries.impl";
 import { AdminFetchUserOrProviderAddressUseCase } from "../../application/useCases/admin/adminAddress.useCase";
 import { AdminChangeProviderTrustedTagZodSchema, adminRejectProviderZodSchema } from "../../shared/zod/admin.zod";
 import { changeBlockStatusZodSchema, DateZodSchema, RequestQueryCommonZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
 import { AdminApproveProviderUseCase, AdminChangeProviderBlockStatusUseCase, AdminChangeProviderTrustTagUseCase, AdminProviderListUseCase, AdminRejectProviderUseCase } from "../../application/useCases/admin/adminProvider.useCase";
 import { AdminFetchProviderDetailsUseCase, AdminFetchProviderPaymentsUseCase, AdminfetchProviderServiceAvailabilityUseCase, AdminFetchProviderServiceUseCase, AdminFetchProviderSubscriptionsUseCase } from "../../application/useCases/admin/adminProviderProfile.useCase";
-
-const paymentRepository: IPaymentRepository = new PaymentRepositoryImpl();
-const addressRepository: IAddressRepository = new AddressRepositoryImpl();
-const providerRepository: IProviderRepository = new ProviderRepositoryImpl();
-
-const signedUrlService: ISignedUrlService = new SignedUrlServiceImpl(redis, s3Client);
-
-const subscriptionQueries: ISubscriptionQueries = new SubscriptionQueriesImpl();
-const providerServiceQueries: IProviderServiceQueries = new ProviderServiceQueriesImpl();
-const serviceAvailabilityQueries: IServiceAvailabilityQueries = new ServiceAvailabilityQueriesImpl();
-
-const adminProviderListUseCase = new AdminProviderListUseCase(providerRepository);
-const adminRejectProviderUseCase = new AdminRejectProviderUseCase(providerRepository);
-const adminApproveProviderUseCase = new AdminApproveProviderUseCase(providerRepository);
-const adminFetchProviderPaymentsUseCase = new AdminFetchProviderPaymentsUseCase(paymentRepository);
-const adminFetchProviderServiceUseCase = new AdminFetchProviderServiceUseCase(providerServiceQueries);
-const adminChangeProviderTrustTagUseCase = new AdminChangeProviderTrustTagUseCase(providerRepository);
-const fetchProviderProofsUseCase = new FetchProviderProofsUseCase(signedUrlService, providerRepository);
-const adminChangeProviderBlockStatusUseCase = new AdminChangeProviderBlockStatusUseCase(providerRepository);
-const adminFetchUserOrProviderAddressUseCase = new AdminFetchUserOrProviderAddressUseCase(addressRepository);
-const adminFetchProviderSubscriptionsUseCase = new AdminFetchProviderSubscriptionsUseCase(subscriptionQueries);
-const adminFetchProviderDetailsUseCase = new AdminFetchProviderDetailsUseCase(providerRepository, signedUrlService);
-const adminFetchProviderServiceAvailabilityUseCase = new AdminfetchProviderServiceAvailabilityUseCase(providerRepository, serviceAvailabilityQueries);
+import { adminApproveProviderUseCase, adminChangeProviderBlockStatusUseCase, adminChangeProviderTrustTagUseCase, adminFetchProviderDetailsUseCase, adminFetchProviderPaymentsUseCase, adminFetchProviderServiceAvailabilityUseCase, adminFetchProviderServiceUseCase, adminFetchProviderSubscriptionsUseCase, adminFetchUserOrProviderAddressUseCase, adminProviderListUseCase, adminRejectProviderUseCase, fetchProviderProofsUseCase } from ".";
 
 class AdminProviderController {
     constructor(

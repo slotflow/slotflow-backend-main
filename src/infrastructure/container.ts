@@ -56,6 +56,8 @@ import { ProviderServiceRepositoryImpl } from './database/providerService/provid
 import { IGoogleCalendarGatewayService } from '../domain/interfaces/services/IGoogleCalendarGateway.service';
 import { IServiceAvailabilityRepository } from '../domain/interfaces/repositories/IServiceAvailability.repository';
 import { ServiceAvailabilityRepositoryImpl } from './database/serviceAvailability/serviceAvailability.repository.impl';
+import { ISubscriptionMapping } from '../domain/interfaces/helper/ISubscriptionMapping.helper';
+import { SubscriptionMappingImpl } from './helpers/subscriptionMapping';
 
 
 // **** Repository instance **** //
@@ -165,3 +167,7 @@ export const googleRefreshTokenService: IGoogleRefreshTokenService = new GoogleR
 
 // google token service instance
 export const googleTokenService: IGoogleTokenService = new GoogleTokenServiceImpl(credentialRepository, aesEncryptionService, googleRefreshTokenService);
+
+
+// subscription mapping helper instance
+export const subscriptionMapping: ISubscriptionMapping = new SubscriptionMappingImpl();

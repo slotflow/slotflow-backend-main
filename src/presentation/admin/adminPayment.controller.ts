@@ -2,18 +2,8 @@ import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { RequestQueryCommonZodSchema } from "../../shared/zod/common.zod";
-import { IPaymentQueries } from "../../application/queries/IPayment.queries";
-import { PaymentQueriesImpl } from "../../infrastructure/queries/paymentQueries.impl";
-import { IPaymentRepository } from "../../domain/interfaces/repositories/IPayment.repository";
-import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
 import { AdminFetchAllPaymentsUseCase, AdminFetchRevenueReportUseCase } from "../../application/useCases/admin/adminPayment.useCase";
-
-const paymentRepository: IPaymentRepository = new PaymentRepositoryImpl();
-
-const paymentQueries: IPaymentQueries = new PaymentQueriesImpl();
-
-const adminFetchAllPaymentsUseCase = new AdminFetchAllPaymentsUseCase(paymentRepository);
-const adminFetchRevenueReportUseCase = new AdminFetchRevenueReportUseCase(paymentQueries);
+import { adminFetchAllPaymentsUseCase, adminFetchRevenueReportUseCase } from ".";
 
 class AdminPaymentController {
     constructor(

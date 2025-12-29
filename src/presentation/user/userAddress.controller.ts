@@ -3,18 +3,8 @@ import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { CreateAddressZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
-import { IUserRepository } from "../../domain/interfaces/repositories/IUser.repository";
-import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
-import { IAddressRepository } from "../../domain/interfaces/repositories/IAddress.repository";
-import { AddressRepositoryImpl } from "../../infrastructure/database/address/address.repository.impl";
+import { userCreateAddressUseCase, userFetchAddressUseCase, userUpdateAddressUseCase } from ".";
 import { UserCreateAddressUseCase, UserFetchAddressUseCase, UserUpdateAddressUseCase } from "../../application/useCases/user/userAddress.useCase";
-
-const userRepository: IUserRepository = new UserRepositoryImpl();
-const addressRepository: IAddressRepository = new AddressRepositoryImpl();
-
-const userUpdateAddressUseCase = new UserUpdateAddressUseCase(addressRepository);
-const userFetchAddressUseCase = new UserFetchAddressUseCase(userRepository, addressRepository);
-const userCreateAddressUseCase = new UserCreateAddressUseCase(userRepository, addressRepository);
 
 class UserAddressController {
     constructor(

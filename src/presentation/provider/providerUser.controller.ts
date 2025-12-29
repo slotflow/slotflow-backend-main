@@ -1,20 +1,9 @@
 import { DecodedUser } from "../../express";
 import { log } from "../../shared/logger/logger";
-import { redis } from "../../infrastructure/lib/redis";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
-import { s3Client } from "../../infrastructure/lib/aws_s3";
-import { IBookingQueries } from "../../application/queries/IBooking.queries";
-import { BookingQueriesImpl } from "../../infrastructure/queries/bookingQueries.impl";
-import { ISignedUrlService } from "../../domain/interfaces/services/ISignedUrl.service";
-import { SignedUrlServiceImpl } from "../../infrastructure/services/signedUrlService.impl";
+import { providerFetchUserForChatSidebarUseCase } from ".";
 import { ProviderFetchUserForChatSidebarUseCase } from "../../application/useCases/provier/providerUser.useCase";
-
-const bookingQueries: IBookingQueries = new BookingQueriesImpl();
-
-const signedUrlService: ISignedUrlService = new SignedUrlServiceImpl(redis, s3Client);
-
-const providerFetchUserForChatSidebarUseCase = new ProviderFetchUserForChatSidebarUseCase(signedUrlService, bookingQueries);
 
 class ProviderUserController {
     constructor(

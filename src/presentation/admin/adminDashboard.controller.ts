@@ -1,37 +1,8 @@
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
-import { IUserQueries } from "../../application/queries/IUser.queries";
-import { IPaymentQueries } from "../../application/queries/IPayment.queries";
-import { IBookingQueries } from "../../application/queries/IBooking.queries";
-import { IProviderQueries } from "../../application/queries/IProvider.queries";
-import { UserQueriesImpl } from "../../infrastructure/queries/userQueries.impl";
-import { ProviderQueryImpl } from "../../infrastructure/queries/providerQueries.impl";
-import { PaymentQueriesImpl } from "../../infrastructure/queries/paymentQueries.impl";
-import { BookingQueriesImpl } from "../../infrastructure/queries/bookingQueries.impl";
-import { ISubscriptionQueries } from "../../application/queries/ISubscription.queries";
-import { IUserRepository } from "../../domain/interfaces/repositories/IUser.repository";
-import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
-import { IProviderRepository } from "../../domain/interfaces/repositories/IProvider.repository";
-import { SubscriptionQueriesImpl } from "../../infrastructure/queries/subscriptionQueries.impl";
-import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
+import { adminFetchDashboardAppointmentsStatsDataUseCase, adminFetchDashboardProviderStatsDataUseCase, adminFetchDashboardRevenueStatsDataUseCase, adminFetchDashboardSubscriptionStatsDataUseCase, adminFetchDashboardTodaysDataUseCase, adminFetchDashboardUserStatsDataUseCase } from ".";
 import { AdminFetchDashboardAppointmentsStatsDataUseCase, AdminFetchDashboardProviderStatsDataUseCase, AdminFetchDashboardRevenueStatsDataUseCase, AdminFetchDashboardSubscriptionStatsDataUseCase, AdminFetchDashboardTodaysDataUseCase, AdminFetchDashboardUserStatsDataUseCase } from "../../application/useCases/admin/adminDashboard.useCase";
-
-const userRepository: IUserRepository = new UserRepositoryImpl();
-const providerRepository: IProviderRepository = new ProviderRepositoryImpl();
-
-const providerQuerires: IProviderQueries = new ProviderQueryImpl();
-const paymentQueries: IPaymentQueries = new PaymentQueriesImpl();
-const bookingQueries: IBookingQueries = new BookingQueriesImpl();
-const userQueries: IUserQueries = new UserQueriesImpl();
-const subscriptionQueries: ISubscriptionQueries = new SubscriptionQueriesImpl()
-
-const adminFetchDashboardTodaysDataUseCase = new AdminFetchDashboardTodaysDataUseCase(userRepository, providerRepository, paymentQueries, bookingQueries);
-const adminFetchDashboardUserStatsDataUseCase = new AdminFetchDashboardUserStatsDataUseCase(userQueries);
-const adminFetchDashboardProviderStatsDataUseCase = new AdminFetchDashboardProviderStatsDataUseCase(providerQuerires);
-const adminFetchDashboardSubscriptionStatsDataUseCase = new AdminFetchDashboardSubscriptionStatsDataUseCase(subscriptionQueries);
-const adminFetchDashboardRevenueStatsDataUseCase = new AdminFetchDashboardRevenueStatsDataUseCase(paymentQueries);
-const adminFetchDashboardAppointmentsStatsDataUseCase = new AdminFetchDashboardAppointmentsStatsDataUseCase(bookingQueries);
 
 class AdminDashboardController {
     constructor(

@@ -1,12 +1,8 @@
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
-import { IProviderRepository } from "../../domain/interfaces/repositories/IProvider.repository";
-import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { ProviderStripeConnectUseCase } from "../../application/useCases/provier/providerStripe.useCase";
-
-const providerRepository: IProviderRepository = new ProviderRepositoryImpl();
-const providerStripeConnectUseCase = new ProviderStripeConnectUseCase(providerRepository);
+import { providerStripeConnectUseCase } from ".";
 
 class ProviderStripeController {
     constructor(

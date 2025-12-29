@@ -3,22 +3,9 @@ import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { SubscriptionPlan } from "../../application/dtos/common.dto";
-import { IBookingQueries } from "../../application/queries/IBooking.queries";
-import { IPaymentQueries } from "../../application/queries/IPayment.queries";
-import { BookingQueriesImpl } from "../../infrastructure/queries/bookingQueries.impl";
-import { PaymentQueriesImpl } from "../../infrastructure/queries/paymentQueries.impl";
-import { SubscriptionMapping } from "../../infrastructure/helpers/subscriptionMapping";
-import { ISubscriptionMapping } from "../../domain/interfaces/helper/ISubscriptionMapping.helper";
+import { providerFetchDashboardGraphDataUseCase, providerFetchDashboardStatsUseCase } from ".";
 import { ProviderFetchDashboardStatsUseCase } from "../../application/useCases/provier/providerDashboardStats.useCase";
 import { ProviderFetchDashboardGraphDataUseCase } from "../../application/useCases/provier/providerDashboardGraphData.useCase";
-
-const subscriptionMapping: ISubscriptionMapping = new SubscriptionMapping();
-
-const bookingQueries: IBookingQueries = new BookingQueriesImpl();
-const paymentQueries: IPaymentQueries = new PaymentQueriesImpl();
-
-const providerFetchDashboardStatsUseCase = new ProviderFetchDashboardStatsUseCase(bookingQueries, paymentQueries);
-const providerFetchDashboardGraphDataUseCase = new ProviderFetchDashboardGraphDataUseCase(bookingQueries, subscriptionMapping);
 
 class ProviderDashboardController {
     constructor(

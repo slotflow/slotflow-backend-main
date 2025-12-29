@@ -2,16 +2,9 @@ import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { AdminAddServiceXZodSchema } from "../../shared/zod/admin.zod";
-import { IServiceRepository } from "../../domain/interfaces/repositories/IService.repository";
-import { ServiceRepositoryImpl } from "../../infrastructure/database/service/service.repository.impl";
+import { adminChnageServiceBlockStatusUseCase, adminCreateServiceUseCase, adminServiceListUseCase } from ".";
 import { changeBlockStatusZodSchema, RequestQueryCommonZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
 import { AdminCreateServiceUseCase, AdminChnageServiceBlockStatusUseCase, AdminServiceListUseCase } from "../../application/useCases/admin/adminService.useCase";
-
-const serviceRepository: IServiceRepository = new ServiceRepositoryImpl();
-
-const adminServiceListUseCase = new AdminServiceListUseCase(serviceRepository);
-const adminCreateServiceUseCase = new AdminCreateServiceUseCase(serviceRepository);
-const adminChnageServiceBlockStatusUseCase = new AdminChnageServiceBlockStatusUseCase(serviceRepository);
 
 class AdminServiceController {
     constructor(

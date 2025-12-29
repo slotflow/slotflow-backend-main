@@ -3,32 +3,14 @@ import { log } from "../../shared/logger/logger";
 import { Role } from "../../domain/enums/role.enum";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
-import { IBookingQueries } from "../../application/queries/IBooking.queries";
-import { BookingQueriesImpl } from "../../infrastructure/queries/bookingQueries.impl";
-import { IBookingRepository } from "../../domain/interfaces/repositories/IBooking.repository";
 import { ProviderChangeBookingAppointmentStatusZodSchema } from "../../shared/zod/provider.zod";
 import { ValidateJoinRoomUsecase } from "../../application/useCases/common/validateJoinRoom.useCase";
-import { IServiceAvailabilityQueries } from "../../application/queries/IServiceAvailability.queries";
-import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
 import { FetchBookingDetailsUsecase } from "../../application/useCases/common/fetchBookingDetails.useCase";
 import { FetchBookingAppointmentsUseCase } from "../../application/useCases/common/fetchAllBookings.useCase";
-import { ServiceAvailabilityQueriesImpl } from "../../infrastructure/queries/serviceAvailabilityQueries.impl";
 import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/common/updateBookingOnlineTracking.useCase";
 import { ProviderChangeBookingAppointmentStatusUseCase } from "../../application/useCases/provier/providerBooking.useCase";
 import { JoinOrLeftRoomZodSchema, RequestQueryForBookingCommonZodSchema, ValidateObjectId, validateRoomId } from "../../shared/zod/common.zod";
-
-const bookingRepository: IBookingRepository = new BookingRepositoryImpl();
-
-const bookingQueries: IBookingQueries = new BookingQueriesImpl();
-const serviceAvailabilityQueries: IServiceAvailabilityQueries = new ServiceAvailabilityQueriesImpl();
-
-const fetchBookingAppointmentsUseCase = new FetchBookingAppointmentsUseCase(bookingQueries);
-
-const validateJoinRoomUsecase = new ValidateJoinRoomUsecase(bookingRepository);
-const fetchBookingDetailsUsecase = new FetchBookingDetailsUsecase(bookingQueries);
-
-const updateBookingOnlineTrakingUseCase = new UpdateBookingOnlineTrakingUseCase(bookingRepository, serviceAvailabilityQueries);
-const providerChangeBookingAppointmentStatusUseCase = new ProviderChangeBookingAppointmentStatusUseCase(bookingRepository);
+import { fetchBookingAppointmentsUseCase, fetchBookingDetailsUsecase, providerChangeBookingAppointmentStatusUseCase, updateBookingOnlineTrakingUseCase, validateJoinRoomUsecase } from ".";
 
 class ProviderBookingController {
     constructor(

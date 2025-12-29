@@ -1,15 +1,10 @@
 import { DecodedUser } from "../../express";
 import { log } from "../../shared/logger/logger";
+import { providerFetchAllPaymentsUseCase } from ".";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { RequestQueryCommonZodSchema } from "../../shared/zod/common.zod";
-import { IPaymentRepository } from "../../domain/interfaces/repositories/IPayment.repository";
-import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
 import { ProviderFetchAllPaymentsUseCase } from "../../application/useCases/provier/providerPayment.useCase";
-
-const paymentRepository: IPaymentRepository = new PaymentRepositoryImpl();
-
-const providerFetchAllPaymentsUseCase = new ProviderFetchAllPaymentsUseCase(paymentRepository)
 
 class ProviderPaymentController {
     constructor(

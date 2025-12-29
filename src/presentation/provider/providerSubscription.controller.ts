@@ -3,33 +3,12 @@ import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { ProviderPlanSubscribeZodSchema } from "../../shared/zod/provider.zod";
-import { ISubscriptionQueries } from "../../application/queries/ISubscription.queries";
-import { IPlanRepository } from "../../domain/interfaces/repositories/IPlan.repository";
-import { PlanRepositoryImpl } from "../../infrastructure/database/plan/plan.repository.impl";
-import { IPaymentRepository } from "../../domain/interfaces/repositories/IPayment.repository";
-import { IProviderRepository } from "../../domain/interfaces/repositories/IProvider.repository";
-import { SubscriptionQueriesImpl } from "../../infrastructure/queries/subscriptionQueries.impl";
-import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
-import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
-import { ISubscriptionRepository } from "../../domain/interfaces/repositories/ISubscription.repository";
 import { FetchSubscriptionDetailsUseCase } from "../../application/useCases/common/subscription.useCase";
-import { SubscriptionRepositoryImpl } from "../../infrastructure/database/subscription/subscription.repository.impl";
 import { ProviderFetchAllSubscriptionsUseCase } from "../../application/useCases/provier/providerSubscription.useCase";
 import { ProviderTrialSubscriptionUseCase } from "../../application/useCases/provier/providerTrailSubscription.useCase";
 import { RequestQueryCommonZodSchema, SaveStripePaymentZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
 import { ProviderSaveSubscriptionUseCase, ProviderStripeSubscriptionCreateSessionIdUseCase } from "../../application/useCases/provier/providerStripeSubscription.useCase";
-
-const planRepository: IPlanRepository = new PlanRepositoryImpl();
-const paymentRepository: IPaymentRepository = new PaymentRepositoryImpl();
-const providerRepository: IProviderRepository = new ProviderRepositoryImpl();
-const subscriptionQueries: ISubscriptionQueries = new SubscriptionQueriesImpl();
-const subscriptionRepository: ISubscriptionRepository = new SubscriptionRepositoryImpl();
-
-const fetchSubscriptionDetailsUseCase = new FetchSubscriptionDetailsUseCase(subscriptionQueries);
-const providerFetchAllSubscriptionsUseCase = new ProviderFetchAllSubscriptionsUseCase(providerRepository, subscriptionQueries);
-const providerTrialSubscriptionUseCase = new ProviderTrialSubscriptionUseCase(providerRepository, subscriptionRepository, planRepository);
-const providerSaveSubscriptionUseCase = new ProviderSaveSubscriptionUseCase(providerRepository, paymentRepository, subscriptionRepository);
-const providerStripeSubscriptionCreateSessionIdUseCase = new ProviderStripeSubscriptionCreateSessionIdUseCase(planRepository, providerRepository, subscriptionRepository);
+import { fetchSubscriptionDetailsUseCase, providerFetchAllSubscriptionsUseCase, providerSaveSubscriptionUseCase, providerStripeSubscriptionCreateSessionIdUseCase, providerTrialSubscriptionUseCase } from ".";
 
 class ProviderSubscriptionController {
     constructor(

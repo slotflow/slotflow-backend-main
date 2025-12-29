@@ -1,14 +1,9 @@
 import { log } from "../../shared/logger/logger";
+import { providerFetchAllServicesUseCase } from ".";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { findServicesByCategoryName } from "../../shared/zod/common.zod";
-import { IServiceRepository } from "../../domain/interfaces/repositories/IService.repository";
-import { ServiceRepositoryImpl } from "../../infrastructure/database/service/service.repository.impl";
 import { ProviderFetchAllAppServicesUseCase } from "../../application/useCases/provier/providerAppServices.useCase";
-
-const serviceRepository: IServiceRepository = new ServiceRepositoryImpl();
-
-const providerFetchAllServicesUseCase = new ProviderFetchAllAppServicesUseCase(serviceRepository);
 
 class ProviderAppServiceController {
     constructor(

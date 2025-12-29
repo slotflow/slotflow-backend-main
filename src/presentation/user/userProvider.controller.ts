@@ -1,40 +1,11 @@
 import { DecodedUser } from "../../express";
 import { log } from "../../shared/logger/logger";
-import { redis } from "../../infrastructure/lib/redis";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
-import { s3Client } from "../../infrastructure/lib/aws_s3";
 import { UserFetchAllProvidersZodSchema } from "../../shared/zod/user.zod";
-import { IBookingQueries } from "../../application/queries/IBooking.queries";
 import { DateZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
-import { BookingQueriesImpl } from "../../infrastructure/queries/bookingQueries.impl";
-import { ISignedUrlService } from "../../domain/interfaces/services/ISignedUrl.service";
-import { SignedUrlServiceImpl } from "../../infrastructure/services/signedUrlService.impl";
-import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
-import { IProviderServiceQueries } from "../../application/queries/IProviderService.queries";
-import { IServiceAvailabilityQueries } from "../../application/queries/IServiceAvailability.queries";
-import { AddressRepositoryImpl } from "../../infrastructure/database/address/address.repository.impl";
-import { ProviderServiceQueriesImpl } from "../../infrastructure/queries/providerServiceQueries.impl";
-import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
-import { ServiceAvailabilityQueriesImpl } from "../../infrastructure/queries/serviceAvailabilityQueries.impl";
-import { UserFetchProvidersForChatSidebar, UserFetchServiceProviderAddressUseCase, UserFetchServiceProviderProfileDetailsUseCase, UserFetchServiceProviderServiceAvailabilityUseCase, UserFetchServiceProviderServiceDetailsUseCase, UserFetchServiceProvidersUseCase } from "../../application/useCases/user/userProvider.useCase";
-
-const userRepositoryImpl = new UserRepositoryImpl();
-const addressRepositoryImpl = new AddressRepositoryImpl();
-const providerRepositoryImpl = new ProviderRepositoryImpl();
-
-const bookingQueries: IBookingQueries = new BookingQueriesImpl();
-const providerServiceQueries: IProviderServiceQueries = new ProviderServiceQueriesImpl();
-const serviceAvailabilityQueries: IServiceAvailabilityQueries = new ServiceAvailabilityQueriesImpl();
-
-const signedUrlService: ISignedUrlService = new SignedUrlServiceImpl(redis, s3Client);
-
-const userFetchProvidersForChatSidebar = new UserFetchProvidersForChatSidebar(signedUrlService, bookingQueries);
-const userFetchServiceProviderAddressUseCase = new UserFetchServiceProviderAddressUseCase(userRepositoryImpl, addressRepositoryImpl);
-const userFetchServiceProvidersUseCase = new UserFetchServiceProvidersUseCase(userRepositoryImpl, signedUrlService, providerServiceQueries);
-const userFetchServiceProviderServiceDetailsUseCase = new UserFetchServiceProviderServiceDetailsUseCase(userRepositoryImpl, providerServiceQueries);
-const userFetchServiceProviderProfileDetailsUseCase = new UserFetchServiceProviderProfileDetailsUseCase(userRepositoryImpl, providerRepositoryImpl, signedUrlService);
-const userFetchServiceProviderServiceAvailabilityUseCase = new UserFetchServiceProviderServiceAvailabilityUseCase(providerRepositoryImpl, userRepositoryImpl, serviceAvailabilityQueries);
+import { userFetchProvidersForChatSidebarUseCase, userFetchServiceProviderAddressUseCase, userFetchServiceProviderProfileDetailsUseCase, userFetchServiceProviderServiceAvailabilityUseCase, userFetchServiceProviderServiceDetailsUseCase, userFetchServiceProvidersUseCase } from ".";
+import { UserFetchProvidersForChatSidebarUseCase, UserFetchServiceProviderAddressUseCase, UserFetchServiceProviderProfileDetailsUseCase, UserFetchServiceProviderServiceAvailabilityUseCase, UserFetchServiceProviderServiceDetailsUseCase, UserFetchServiceProvidersUseCase } from "../../application/useCases/user/userProvider.useCase";
 
 class UserProviderController {
     constructor(
@@ -43,7 +14,7 @@ class UserProviderController {
         private userFetchServiceProviderProfileDetailsUseCase: UserFetchServiceProviderProfileDetailsUseCase,
         private userFetchServiceProviderServiceDetailsUseCase: UserFetchServiceProviderServiceDetailsUseCase,
         private userFetchServiceProviderServiceAvailabilityUseCase: UserFetchServiceProviderServiceAvailabilityUseCase,
-        private userFetchProvidersForChatSidebar: UserFetchProvidersForChatSidebar,
+        private userFetchProvidersForChatSidebar: UserFetchProvidersForChatSidebarUseCase,
     ) {
         this.fetchServiceProviders = this.fetchServiceProviders.bind(this);
         this.fetchServiceProviderAddress = this.fetchServiceProviderAddress.bind(this);
@@ -146,5 +117,5 @@ export const userProviderController = new UserProviderController(
     userFetchServiceProviderProfileDetailsUseCase,
     userFetchServiceProviderServiceDetailsUseCase,
     userFetchServiceProviderServiceAvailabilityUseCase,
-    userFetchProvidersForChatSidebar
+    userFetchProvidersForChatSidebarUseCase
 );

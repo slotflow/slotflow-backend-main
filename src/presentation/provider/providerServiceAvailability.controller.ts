@@ -4,20 +4,8 @@ import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { DateZodSchema } from "../../shared/zod/common.zod";
 import { ProviderCreateServiceAvailabilityZodSchema } from "../../shared/zod/provider.zod";
-import { IProviderRepository } from "../../domain/interfaces/repositories/IProvider.repository";
-import { IServiceAvailabilityQueries } from "../../application/queries/IServiceAvailability.queries";
-import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
-import { ServiceAvailabilityQueriesImpl } from "../../infrastructure/queries/serviceAvailabilityQueries.impl";
-import { IServiceAvailabilityRepository } from "../../domain/interfaces/repositories/IServiceAvailability.repository";
-import { ServiceAvailabilityRepositoryImpl } from "../../infrastructure/database/serviceAvailability/serviceAvailability.repository.impl";
+import { providerCreateServiceAvailabilitiesUseCase, providerFetchServiceAvailabilityUseCase } from ".";
 import { ProviderCreateServiceAvailabilitiesUseCase, ProviderFetchServiceAvailabilityUseCase } from "../../application/useCases/provier/providerServiceAvailability.useCase";
-
-const providerRepository: IProviderRepository = new ProviderRepositoryImpl();
-const serviceAvailabilityQueries: IServiceAvailabilityQueries = new ServiceAvailabilityQueriesImpl();
-const serviceAvailabilityRepository: IServiceAvailabilityRepository = new ServiceAvailabilityRepositoryImpl();
-
-const providerFetchServiceAvailabilityUseCase = new ProviderFetchServiceAvailabilityUseCase(serviceAvailabilityQueries);
-const providerCreateServiceAvailabilitiesUseCase = new ProviderCreateServiceAvailabilitiesUseCase(providerRepository, serviceAvailabilityRepository);
 
 class ProviderServiceAvailabilityController {
     constructor(

@@ -2,16 +2,9 @@ import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { AdminAddNewPlanZodSchema } from "../../shared/zod/admin.zod";
-import { IPlanRepository } from "../../domain/interfaces/repositories/IPlan.repository";
-import { PlanRepositoryImpl } from "../../infrastructure/database/plan/plan.repository.impl";
+import { adminChangePlanBlockStatusUseCase, adminCreatePlanUseCase, adminPlanListUseCase } from ".";
 import { changeBlockStatusZodSchema, RequestQueryCommonZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
 import { AdminChangePlanBlockStatusUseCase, AdminCreatePlanUseCase, AdminPlanListUseCase } from "../../application/useCases/admin/adminPlan.useCase";
-
-const planRepository: IPlanRepository = new PlanRepositoryImpl();
-
-const adminPlanListUseCase = new AdminPlanListUseCase(planRepository);
-const adminCreatePlanUseCase = new AdminCreatePlanUseCase(planRepository);
-const adminChangePlanBlockStatusUseCase = new AdminChangePlanBlockStatusUseCase(planRepository);
 
 class AdminPlanController {
     constructor(

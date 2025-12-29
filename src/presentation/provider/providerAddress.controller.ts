@@ -3,18 +3,8 @@ import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { CreateAddressZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
-import { IAddressRepository } from "../../domain/interfaces/repositories/IAddress.repository";
-import { IProviderRepository } from "../../domain/interfaces/repositories/IProvider.repository";
-import { AddressRepositoryImpl } from "../../infrastructure/database/address/address.repository.impl";
-import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
+import { providerCreateAddressUseCase, providerFetchAddressUseCase, providerUpdateAddressUseCase } from ".";
 import { ProviderCreateAddressUseCase, ProviderFetchAddressUseCase, ProviderUpdateAddressUseCase } from "../../application/useCases/provier/providerAddress.useCase";
-
-const addressRepository: IAddressRepository = new AddressRepositoryImpl();
-const providerRepository: IProviderRepository = new ProviderRepositoryImpl();
-
-const providerFetchAddressUseCase = new ProviderFetchAddressUseCase(addressRepository);
-const providerUpdateAddressUseCase = new ProviderUpdateAddressUseCase(addressRepository);
-const providerCreateAddressUseCase = new ProviderCreateAddressUseCase(providerRepository, addressRepository);
 
 class ProviderAddressController {
     constructor(

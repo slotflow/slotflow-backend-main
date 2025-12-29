@@ -3,17 +3,8 @@ import { DecodedUser } from "../../express";
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
-import { ICredentialRepository } from "../../domain/interfaces/repositories/ICredentialRepository";
 import { FethGoogleCalendarUseCase } from "../../application/useCases/common/fetchGoogleCalendar.useCase";
-import { GoogleCalendarGatewayImpl } from "../../infrastructure/services/googleCalendarGatewayService.impl";
-import { CredentialRepositoryImpl } from "../../infrastructure/database/credential/credential.repository.impl";
-import { IGoogleCalendarGatewayService } from "../../domain/interfaces/services/IGoogleCalendarGateway.service";
-import { aesEncryptionService } from "../../infrastructure/container";
-
-const credentialRepository: ICredentialRepository = new CredentialRepositoryImpl();
-const googleCalendarGateway: IGoogleCalendarGatewayService = new GoogleCalendarGatewayImpl();
-
-const fethGoogleCalendarUseCase = new FethGoogleCalendarUseCase(credentialRepository, aesEncryptionService, googleCalendarGateway);
+import { fethGoogleCalendarUseCase } from ".";
 
 class GoogleController {
     constructor(

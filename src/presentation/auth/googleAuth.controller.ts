@@ -3,18 +3,8 @@ import { log } from "../../shared/logger/logger";
 import { Role } from "../../domain/enums/role.enum";
 import { NextFunction, Request, Response } from "express";
 import { appConfig, appUrlConfig } from "../../config/env";
-import { IUserRepository } from "../../domain/interfaces/repositories/IUser.repository";
-import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
-import { IProviderRepository } from "../../domain/interfaces/repositories/IProvider.repository";
-import { ICredentialRepository } from "../../domain/interfaces/repositories/ICredentialRepository";
-import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { GoogleAuthOrchestratorUseCase } from "../../application/useCases/auth/googleAuthOrchestrate.useCase";
-import { CredentialRepositoryImpl } from "../../infrastructure/database/credential/credential.repository.impl";
-import { aesEncryptionService } from "../../infrastructure/container";
-
-const userRepository: IUserRepository = new UserRepositoryImpl();
-const providerRepository: IProviderRepository = new ProviderRepositoryImpl();
-const credentialRepository: ICredentialRepository = new CredentialRepositoryImpl();
+import { aesEncryptionService, credentialRepository, providerRepository, userRepository } from "../../infrastructure/container";
 
 const googleAuthOrchestratorUseCase = new GoogleAuthOrchestratorUseCase(userRepository, providerRepository, credentialRepository, aesEncryptionService);
 

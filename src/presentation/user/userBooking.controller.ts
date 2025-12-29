@@ -3,48 +3,15 @@ import { log } from "../../shared/logger/logger";
 import { Role } from "../../domain/enums/role.enum";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
-import { IBookingQueries } from "../../application/queries/IBooking.queries";
-import { BookingQueriesImpl } from "../../infrastructure/queries/bookingQueries.impl";
-import { IUserRepository } from "../../domain/interfaces/repositories/IUser.repository";
 import { UserCreateSessionIdForbookingViaStripeZodSchema } from "../../shared/zod/user.zod";
-import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
-import { IProviderServiceQueries } from "../../application/queries/IProviderService.queries";
-import { IPaymentRepository } from "../../domain/interfaces/repositories/IPayment.repository";
-import { IBookingRepository } from "../../domain/interfaces/repositories/IBooking.repository";
 import { UserCancelBookingUseCase } from "../../application/useCases/user/userBooking.useCase";
-import { IProviderRepository } from "../../domain/interfaces/repositories/IProvider.repository";
-import { ICredentialRepository } from "../../domain/interfaces/repositories/ICredentialRepository";
 import { ValidateJoinRoomUsecase } from "../../application/useCases/common/validateJoinRoom.useCase";
-import { IServiceAvailabilityQueries } from "../../application/queries/IServiceAvailability.queries";
-import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
-import { BookingRepositoryImpl } from "../../infrastructure/database/booking/booking.repository.impl";
-import { ProviderServiceQueriesImpl } from "../../infrastructure/queries/providerServiceQueries.impl";
-import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { FetchBookingDetailsUsecase } from "../../application/useCases/common/fetchBookingDetails.useCase";
 import { FetchBookingAppointmentsUseCase } from "../../application/useCases/common/fetchAllBookings.useCase";
-import { ServiceAvailabilityQueriesImpl } from "../../infrastructure/queries/serviceAvailabilityQueries.impl";
-import { CredentialRepositoryImpl } from "../../infrastructure/database/credential/credential.repository.impl";
 import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/common/updateBookingOnlineTracking.useCase";
 import { UserAppointmentBookingViaStripeUseCase, UserSaveBookingAfterStripePaymentUseCase } from "../../application/useCases/user/userStripeBooking.useCase";
 import { JoinOrLeftRoomZodSchema, RequestQueryForBookingCommonZodSchema, SaveStripePaymentZodSchema, ValidateObjectId, validateRoomId } from "../../shared/zod/common.zod";
-
-const userRepository: IUserRepository = new UserRepositoryImpl();
-const paymentRepository: IPaymentRepository = new PaymentRepositoryImpl();
-const bookingRepository: IBookingRepository = new BookingRepositoryImpl();
-const proviserRepository: IProviderRepository = new ProviderRepositoryImpl();
-const credentialRepository: ICredentialRepository = new CredentialRepositoryImpl();
-
-const bookingQueries: IBookingQueries = new BookingQueriesImpl();
-const providerServiceQueries: IProviderServiceQueries = new ProviderServiceQueriesImpl();
-const serviceAvailabilityQueries: IServiceAvailabilityQueries = new ServiceAvailabilityQueriesImpl();
-
-const validateJoinRoomUsecase = new ValidateJoinRoomUsecase(bookingRepository)
-const fetchBookingDetailsUsecase = new FetchBookingDetailsUsecase(bookingQueries);
-const fetchBookingAppointmentsUseCase = new FetchBookingAppointmentsUseCase(bookingQueries);
-const userCancelBookingUseCase = new UserCancelBookingUseCase(userRepository, bookingRepository, paymentRepository);
-const updateBookingOnlineTrakingUseCase = new UpdateBookingOnlineTrakingUseCase(bookingRepository, serviceAvailabilityQueries);
-const userAppointmentBookingViaStrpieUseCase = new UserAppointmentBookingViaStripeUseCase(proviserRepository, bookingRepository, providerServiceQueries, serviceAvailabilityQueries);
-const userSaveBookingAfterStripePaymentUseCase = new UserSaveBookingAfterStripePaymentUseCase(userRepository, paymentRepository, bookingRepository, serviceAvailabilityQueries, credentialRepository);
+import { fetchBookingAppointmentsUseCase, fetchBookingDetailsUsecase, updateBookingOnlineTrakingUseCase, userAppointmentBookingViaStrpieUseCase, userCancelBookingUseCase, userSaveBookingAfterStripePaymentUseCase, validateJoinRoomUsecase } from ".";
 
 class UserBookingController {
     constructor(

@@ -4,21 +4,8 @@ import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { ValidateObjectId } from "../../shared/zod/common.zod";
 import { ProviderCreateServiceDetailsZodSchema } from "../../shared/zod/provider.zod";
-import { IProviderServiceQueries } from "../../application/queries/IProviderService.queries";
-import { IProviderRepository } from "../../domain/interfaces/repositories/IProvider.repository";
-import { ProviderServiceQueriesImpl } from "../../infrastructure/queries/providerServiceQueries.impl";
-import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
-import { IProviderServiceRepository } from "../../domain/interfaces/repositories/IProviderService.repository";
-import { ProviderServiceRepositoryImpl } from "../../infrastructure/database/providerService/providerService.repository.impl";
+import { providerCreateServiceDetailsUseCase, providerFetchServiceDetailsUseCase, providerUpdateServiceDetailsUseCase } from ".";
 import { ProviderCreateServiceDetailsUseCase, ProviderFetchServiceDetailsUseCase, ProviderUpdateServiceDetailsUseCase } from "../../application/useCases/provier/providerService.useCase";
-
-const providerRepository: IProviderRepository = new ProviderRepositoryImpl();
-const providerServiceRepository: IProviderServiceRepository = new ProviderServiceRepositoryImpl();
-const providerServiceQueries: IProviderServiceQueries = new ProviderServiceQueriesImpl();
-
-const providerFetchServiceDetailsUseCase = new ProviderFetchServiceDetailsUseCase(providerServiceQueries);
-const providerCreateServiceDetailsUseCase = new ProviderCreateServiceDetailsUseCase(providerRepository, providerServiceRepository);
-const providerUpdateServiceDetailsUseCase = new ProviderUpdateServiceDetailsUseCase(providerServiceRepository);
 
 class ProviderServiceController {
     constructor(
