@@ -708,3 +708,13 @@
 [2025-12-29 23:08:53] [[32minfo[39m]: [32mKafka Admin disconnected[39m
 [2025-12-29 23:08:53] [[32minfo[39m]: [32mKafka Producer connected[39m
 [2025-12-29 23:08:53] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2025-12-30 01:21:17] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2025-12-30 01:21:18] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2025-12-30 01:21:18] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2025-12-30 01:21:18] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2025-12-30 01:21:18] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2025-12-30 01:29:54] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2025-12-30 01:29:54] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2025-12-30 01:29:54] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2025-12-30 01:29:54] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2025-12-30 01:29:54] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m

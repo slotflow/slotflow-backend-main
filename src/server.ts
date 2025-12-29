@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 import connectDB from './config/database/mongodb/mongodb.config';
 
 import './infrastructure/cron-jobs/updateBookingsCron';
-import './infrastructure/services/passportService.impl.ts';
 import './infrastructure/cron-jobs/updateSubscriptionStatusCron';
 
 import { initKafka, googlePassportStrategy } from './infrastructure/container';
