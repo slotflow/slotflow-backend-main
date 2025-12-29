@@ -1,6 +1,6 @@
+import path from "path";
 import winston from "winston";
 import { existsSync, mkdirSync } from "fs";
-import path from "path";
 
 const logsDir = path.resolve("logs");
 if (!existsSync(logsDir)) {

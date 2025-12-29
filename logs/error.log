@@ -587,3 +587,33 @@
 [31m    at async SubscriptionQueriesImpl.findSubscriptionsForUpdatinStatus (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\subscriptionQueries.impl.ts:187:25)[39m
 [31m    at async UpdateSubscriptionStatusUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\cronJob\updateSubscriptionStatus.useCase.ts:11:42)[39m
 [31m    at async Timeout._onTimeout (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\cron-jobs\updateSubscriptionStatusCron.ts:19:20)[39m
+[2025-12-29 15:56:58] [[31merror[39m]: [31m⚙️ Kafka Admin connected[39m
+[2025-12-29 16:21:06] [[31merror[39m]: [31m⚙️ Kafka Admin connected[39m
+[2025-12-29 16:21:46] [[31merror[39m]: [31mLoginUseCase failed[39m
+[31mInvalid credentials[39m
+[31mError: Invalid credentials[39m
+[31m    at LoginUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\auth\login.useCase.ts:33:34)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async AuthController.login (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\auth\auth.controller.ts:109:22)[39m
+[2025-12-29 16:21:46] [[31merror[39m]: [31mlogin failed[39m
+[31mInvalid credentials[39m
+[31mError: Invalid credentials[39m
+[31m    at LoginUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\auth\login.useCase.ts:33:34)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async AuthController.login (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\auth\auth.controller.ts:109:22)[39m
+[2025-12-29 16:21:56] [[31merror[39m]: [31mLoginUseCase failed[39m
+[31mProducer not connected[39m
+[31mError: Producer not connected[39m
+[31m    at KafkaClientAdapter.getProducer (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\messaging\kafka.ts:53:31)[39m
+[31m    at KafkaServiceImpl.send (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\services\kafkaService.impl.ts:12:50)[39m
+[31m    at LoginUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\auth\login.useCase.ts:48:41)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async AuthController.login (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\auth\auth.controller.ts:109:22)[39m
+[2025-12-29 16:21:56] [[31merror[39m]: [31mlogin failed[39m
+[31mProducer not connected[39m
+[31mError: Producer not connected[39m
+[31m    at KafkaClientAdapter.getProducer (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\messaging\kafka.ts:53:31)[39m
+[31m    at KafkaServiceImpl.send (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\services\kafkaService.impl.ts:12:50)[39m
+[31m    at LoginUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\auth\login.useCase.ts:48:41)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async AuthController.login (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\auth\auth.controller.ts:109:22)[39m

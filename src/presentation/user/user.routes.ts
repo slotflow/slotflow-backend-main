@@ -1,5 +1,4 @@
 import { Router } from "express";
-import upload from "../../infrastructure/lib/multer";
 import { authMiddleware } from "../middleware/auth.middleware";
 import { userReviewController } from "./userReview.controller";
 import { userProfileController } from "./userProfile.controller";
@@ -14,7 +13,7 @@ const router = Router();
 router.get('/appservices', authMiddleware, userAppServiceController.fetchAllAppService);
 
 router.get('/profile', authMiddleware, userProfileController.getProfileDetails);
-router.post('/profile/image', authMiddleware, upload.single("profileImage"), userProfileController.updateProfileImage);
+router.post('/profile/image', authMiddleware, userProfileController.updateProfileImage);
 router.patch('/profile', authMiddleware, userProfileController.updateUserInfo);
 
 router.post('/addresses', authMiddleware, userAddressController.createAddress);

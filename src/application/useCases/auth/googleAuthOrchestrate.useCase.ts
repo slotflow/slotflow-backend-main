@@ -4,7 +4,7 @@ import { JWTService } from "../../../infrastructure/security/jwt";
 import { Provider } from "../../../domain/entities/provider.entity";
 import { Credential } from "../../../domain/entities/credential.entity";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { IAesEncryption } from "../../../domain/interfaces/services/IAesEncryption.service";
+import { IAesEncryptionService } from "../../../domain/interfaces/services/IAesEncryption.service";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { GoogleAuthOrchestrationRequest, GoogleAuthOrchestrationResponse } from "../../dtos/auth.dto";
 import { ICredentialRepository } from "../../../domain/interfaces/repositories/ICredentialRepository";
@@ -14,7 +14,7 @@ export class GoogleAuthOrchestratorUseCase {
         private readonly userRepository: IUserRepository,
         private readonly providerRepository: IProviderRepository,
         private credentialRepository: ICredentialRepository,
-        private aesEncryption: IAesEncryption,
+        private aesEncryption: IAesEncryptionService,
     ) { };
 
     async execute(payload: GoogleAuthOrchestrationRequest): Promise<GoogleAuthOrchestrationResponse> {

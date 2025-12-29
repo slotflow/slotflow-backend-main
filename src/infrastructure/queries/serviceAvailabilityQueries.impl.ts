@@ -9,11 +9,9 @@ export class ServiceAvailabilityQueriesImpl implements IServiceAvailabilityQueri
 
     async findByProviderId(date: Date, availabilityId: string): Promise<FontendAvailabilityForResponse | null> {
         const startOfDay = new Date(date);
-        console.log("startOfDay : ", startOfDay);
         startOfDay.setHours(0, 0, 0, 0);
 
         const endOfDay = new Date(date);
-        console.log("endOfDay : ", endOfDay);
         endOfDay.setHours(23, 59, 59, 999);
 
         const targetDay = daysOfWeek[date.getDay()];
@@ -112,17 +110,15 @@ export class ServiceAvailabilityQueriesImpl implements IServiceAvailabilityQueri
                 $replaceWith: "$availabilityForDay"
             },
         ]);
-        console.log("availability : ", availability[0]);
-
         const data = availability[0];
         if (!data) return null;
 
         return {
             day: data.day,
             duration: data.duration,
-            endTime: data.endDate,
+            endTime: data.endTime,
             modes: data.modes,
-            startTime: data.startDate,
+            startTime: data.startTime,
             slots: data.slots.map((slot: TimeSlotForFrontendResponse) => ({
                 _id: slot._id.toString(),
                 time: slot.time,

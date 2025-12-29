@@ -1,4 +1,4 @@
-export interface IAesEncryption {
+export interface IAesEncryptionService {
 
     encrypt(text: string): Promise<string>;
 

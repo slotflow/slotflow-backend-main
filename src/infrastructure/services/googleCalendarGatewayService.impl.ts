@@ -1,10 +1,10 @@
 import { google } from "googleapis";
 import { EventData } from "../../shared/utils/constants";
-import { IGoogleCalendarGateway } from "../../domain/interfaces/services/IGoogleCalendarGateway";
-import { CreateGoogleCalendarEventRequest, UpdateGoogleCalendarEventRequest, UserBookingAddingToCalendar, UserBookingFetchingFromCalendar } from "../../application/dtos/common.dto";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
+import { IGoogleCalendarGatewayService } from "../../domain/interfaces/services/IGoogleCalendarGateway.service";
+import { CreateGoogleCalendarEventRequest, UpdateGoogleCalendarEventRequest, UserBookingAddingToCalendar, UserBookingFetchingFromCalendar } from "../../application/dtos/common.dto";
 
-export class GoogleCalendarGatewayImpl implements IGoogleCalendarGateway {
+export class GoogleCalendarGatewayImpl implements IGoogleCalendarGatewayService {
 
     async createEvent(payload: CreateGoogleCalendarEventRequest): Promise<{ id: string }> {
 

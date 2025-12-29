@@ -1,4 +1,4 @@
-import cors from 'cors';
+// import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 import express from 'express';

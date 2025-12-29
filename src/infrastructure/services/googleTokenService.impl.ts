@@ -1,13 +1,13 @@
 import { log } from "../../shared/logger/logger";
-import { IAesEncryption } from "../../domain/interfaces/services/IAesEncryption.service";
+import { IAesEncryptionService } from "../../domain/interfaces/services/IAesEncryption.service";
 import { IGoogleTokenService } from "../../domain/interfaces/services/IGoogleToken.service";
 import { ICredentialRepository } from "../../domain/interfaces/repositories/ICredentialRepository";
 import { IGoogleRefreshTokenService } from "../../domain/interfaces/services/IGoogleRefreshToken.service";
 
-export class GoogleTokenService implements IGoogleTokenService {
+export class GoogleTokenServiceImpl implements IGoogleTokenService {
     constructor(
         private credentialRepository: ICredentialRepository,
-        private aesEncryption: IAesEncryption,
+        private aesEncryption: IAesEncryptionService,
         private IgoogleRefreshTokenService: IGoogleRefreshTokenService
     ) { };
 

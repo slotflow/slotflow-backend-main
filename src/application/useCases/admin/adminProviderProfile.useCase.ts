@@ -129,6 +129,9 @@ export class AdminfetchProviderServiceAvailabilityUseCase {
                 }
             });
 
+            console.log("availability : ",availability);
+            console.log("updatedSlots : ",updatedSlots)
+
             return { ...availability, slots: updatedSlots };
         } catch (error) {
             log.error("AdminfetchProviderServiceAvailabilityUseCase failed", error as Error);

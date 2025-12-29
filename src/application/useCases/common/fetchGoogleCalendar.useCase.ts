@@ -1,14 +1,14 @@
 import { log } from "../../../shared/logger/logger";
 import { UserBookingFetchingFromCalendar } from "../../dtos/common.dto";
-import { IAesEncryption } from "../../../domain/interfaces/services/IAesEncryption.service";
-import { IGoogleCalendarGateway } from "../../../domain/interfaces/services/IGoogleCalendarGateway";
+import { IAesEncryptionService } from "../../../domain/interfaces/services/IAesEncryption.service";
 import { ICredentialRepository } from "../../../domain/interfaces/repositories/ICredentialRepository";
+import { IGoogleCalendarGatewayService } from "../../../domain/interfaces/services/IGoogleCalendarGateway.service";
 
 export class FethGoogleCalendarUseCase {
     constructor(
         private credentialRepository: ICredentialRepository,
-        private aesEncryption: IAesEncryption,
-        private googleCalendarGateway: IGoogleCalendarGateway
+        private aesEncryption: IAesEncryptionService,
+        private googleCalendarGateway: IGoogleCalendarGatewayService
     ) { }
 
     async execute(userId: string): Promise<Array<UserBookingFetchingFromCalendar>> {

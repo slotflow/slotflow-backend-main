@@ -1,8 +1,8 @@
 import crypto from "crypto";
 import { aesConfig } from "../../config/env";
-import { IAesEncryption } from "../../domain/interfaces/services/IAesEncryption.service";
+import { IAesEncryptionService } from "../../domain/interfaces/services/IAesEncryption.service";
 
-export class AesEncryptionImpl implements IAesEncryption {
+export class AesEncryptionServiceImpl implements IAesEncryptionService {
   
   private readonly key: Buffer;
 

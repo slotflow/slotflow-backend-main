@@ -69,8 +69,33 @@ export const stripeConfig = {
 };
 
 export const kafkaConfig = {
-    clientId: validator.requireEnv("KAFKA_CLIENT_ID"),
-    groupId: validator.requireEnv("KAFKA_GROUP_ID"),
-    brokers: validator.requireEnv("KAFKA_BROKERS").split(","),
-    otpSendTopic: validator.requireEnv("KAFKA_SENDOTP_TOPIC"),
+  clientId: validator.requireEnv("KAFKA_CLIENT_ID"),
+  groupId: validator.requireEnv("KAFKA_GROUP_ID"),
+  brokers: validator.requireEnv("KAFKA_BROKERS").split(","),
+
+  topics: {
+    sendOtp: validator.requireEnv("KAFKA_SENDOTP_TOPIC"),
+    registerSuccess: validator.requireEnv("KAFKA_REGISTER_SUCCESS_TOPIC"),
+
+    adminApproved: validator.requireEnv("KAFKA_ADMIN_APPROVED_TOPIC"),
+    adminRejected: validator.requireEnv("KAFKA_ADMIN_REJECTED_TOPIC"),
+
+    accountBlocked: validator.requireEnv("KAFKA_ACCOUNT_BLOCKED_TOPIC"),
+    accountUnblocked: validator.requireEnv("KAFKA_ACCOUNT_UNBLOCKED_TOPIC"),
+
+    accountTrusted: validator.requireEnv("KAFKA_ACCOUNT_TRUSTED_TOPIC"),
+    accountUntrusted: validator.requireEnv("KAFKA_ACCOUNT_UNTRUSTED_TOPIC"),
+
+    gotAppointment: validator.requireEnv("KAFKA_GOT_APPOINTMENT_TOPIC"),
+    confirmAppointment: validator.requireEnv("KAFKA_CONFIRM_APPOINTMENT_TOPIC"),
+    rejectAppointment: validator.requireEnv("KAFKA_REJECT_APPOINTMENT_TOPIC"),
+
+    userPayment: validator.requireEnv("KAFKA_USER_PAYMENT_TOPIC"),
+    providerSubscriptionPayment: validator.requireEnv("KAFKA_PROVIDER_SUBSCRIPTION_PAYMENT_TOPIC"),
+    providerPayout: validator.requireEnv("KAFKA_PROVIDER_PAYOUT_TOPIC"),
+
+    providerStripeAccount: validator.requireEnv("KAFKA_PROVIDER_STRIPE_ACCOUNT_TOPIC"),
+    userGoogleConnect: validator.requireEnv("KAFKA_USER_GOOGLE_CONNECT_TOPIC"),
+    providerGoogleConnect: validator.requireEnv("KAFKA_PROVIDER_GOOGLE_CONNECT_TOPIC"),
+  },
 };

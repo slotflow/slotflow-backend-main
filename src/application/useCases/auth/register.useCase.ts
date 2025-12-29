@@ -1,13 +1,13 @@
 import { v4 as uuidv4 } from 'uuid';
-// import { producer } from '../../../server';
+import { kafkaConfig } from '../../../config/env';
 import { log } from '../../../shared/logger/logger';
-// import { kafkaConfig } from '../../../config/env';
 import { Role } from '../../../domain/enums/role.enum';
 import { User } from '../../../domain/entities/user.entity';
 import { JWTService } from '../../../infrastructure/security/jwt';
 import { Provider } from '../../../domain/entities/provider.entity';
 import { RegisterRequest, RegisterResponse } from '../../dtos/auth.dto';
 import { PasswordHasher } from '../../../infrastructure/security/password-hashing';
+import { IKafkaService } from '../../../domain/interfaces/services/IKafka.service';
 import { IOTPService } from '../../../domain/interfaces/services/IOtpService.service';
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
@@ -17,8 +17,9 @@ export class RegisterUseCase {
   constructor(
     private userRepository: IUserRepository,
     private providerRepository: IProviderRepository,
-    private otpService: IOTPService
-  ) { }
+    private otpService: IOTPService,
+    private kafkaService: IKafkaService
+  ) { };
 
   async execute(payload: RegisterRequest): Promise<RegisterResponse> {
     try {
@@ -37,17 +38,16 @@ export class RegisterUseCase {
         const otp = await this.otpService.setOtp(verificationToken);
         if (!otp) throw new Error("Unexpected error, please try again.");
 
-        // await producer.send({
-        //   topic: kafkaConfig.otpSendTopic,
-        //   messages: [{
-        //     key: email,
-        //     value: JSON.stringify({
-        //       otp,
-        //       email,
-        //       contentNumber: 1
-        //     })
-        //   }],
-        // });
+        await this.kafkaService.send({
+          topic: kafkaConfig.topics.sendOtp,
+          key: email,
+          message: {
+            otp,
+            email,
+            contentNumber: 1
+          },
+        });
+
         if (user) {
           user.changePassword({ verificationToken, password: hashedPassword });
           await this.userRepository.update(user);

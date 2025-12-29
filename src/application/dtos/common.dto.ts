@@ -587,3 +587,15 @@ export interface FrontendAvailabilityForRequest extends Omit<Availability, "slot
 export interface FrontendAvailabilityUpdatedSlots extends Omit<Availability, "slots"> {
     slots: TimeSlot[];
 }
+
+export interface KafkaSendPayload<T> {
+  topic: string;
+  key: string;
+  message: T;
+}
+
+export type KafkaConsumeHandler<T> = (payload: {
+  topic: string;
+  partition: number;
+  message: T;
+}) => Promise<void>;

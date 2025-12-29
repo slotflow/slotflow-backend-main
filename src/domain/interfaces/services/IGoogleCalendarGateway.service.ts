@@ -1,6 +1,6 @@
 import { CreateGoogleCalendarEventRequest, UpdateGoogleCalendarEventRequest, UserBookingFetchingFromCalendar } from "../../../application/dtos/common.dto";
 
-export interface IGoogleCalendarGateway {
+export interface IGoogleCalendarGatewayService {
 
     createEvent(payload: CreateGoogleCalendarEventRequest): Promise<{ id: string }>;
 

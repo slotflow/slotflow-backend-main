@@ -2,7 +2,7 @@ import { ProviderModel } from "../database/provider/provider.model";
 import { IProviderQueries } from "../../application/queries/IProvider.queries";
 import { AdminFetchDashboardProviderStatsDataResponse } from "../../application/dtos/admin.dto";
 
-export class ProviderQueryImpl implements IProviderQueries {
+export class ProviderQueriesImpl implements IProviderQueries {
 
   async fetchStats(): Promise<AdminFetchDashboardProviderStatsDataResponse> {
     const [

@@ -1,33 +1,27 @@
 import app from './app';
 import dotenv from 'dotenv';
+import connectDB from './config/database/mongodb/mongodb.config';
 
-import './infrastructure/services/passportService.impl.ts';
 import './infrastructure/cron-jobs/updateBookingsCron';
+import './infrastructure/services/passportService.impl.ts';
 import './infrastructure/cron-jobs/updateSubscriptionStatusCron';
 
-// import { kafkaConfig } from './config/env';
-// import { KafkaService } from './infrastructure/lib/kafka';
-
-import connectDB from './config/database/mongodb/mongodb.config';
-import { GooglePassportStrategyImpl } from './infrastructure/passport/google.strategy.ts';
+import { initKafka, googlePassportStrategy } from './infrastructure/container';
 
 dotenv.config();
 
-// const kafkaService = new KafkaService(kafkaConfig.clientId!, kafkaConfig.brokers);
+(async () => {
+  try {
+    await initKafka();
+    googlePassportStrategy.register();
+    await connectDB();
 
-// await kafkaService.connectAdmin();
-// await kafkaService.createTopics([kafkaConfig.otpSendTopic]);
-// await kafkaService.disconnectAdmin();
-// await kafkaService.connectProducer();
-
-// export const producer = kafkaService.getProducer();
-
-new GooglePassportStrategyImpl().register();
-
-const port = process.env.PORT || 4000;
-
-connectDB();
-
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-})
+    const port = process.env.PORT || 4000;
+    app.listen(port, () =>
+      console.log(`Server running on http://localhost:${port}`)
+    );
+  } catch (err) {
+    console.error("Startup failed", err);
+    process.exit(1);
+  }
+})();

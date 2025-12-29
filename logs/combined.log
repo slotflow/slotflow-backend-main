@@ -587,3 +587,124 @@
 [31m    at async SubscriptionQueriesImpl.findSubscriptionsForUpdatinStatus (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\subscriptionQueries.impl.ts:187:25)[39m
 [31m    at async UpdateSubscriptionStatusUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\cronJob\updateSubscriptionStatus.useCase.ts:11:42)[39m
 [31m    at async Timeout._onTimeout (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\cron-jobs\updateSubscriptionStatusCron.ts:19:20)[39m
+[2025-12-29 15:56:58] [[31merror[39m]: [31m⚙️ Kafka Admin connected[39m
+[2025-12-29 15:56:59] [[32minfo[39m]: [32m📌 Kafka Topics created:[39m
+[2025-12-29 15:56:59] [[32minfo[39m]: [32m❎ Kafka Admin disconnected[39m
+[2025-12-29 15:56:59] [[32minfo[39m]: [32m🚀 Kafka Producer connected[39m
+[2025-12-29 16:21:06] [[31merror[39m]: [31m⚙️ Kafka Admin connected[39m
+[2025-12-29 16:21:06] [[32minfo[39m]: [32m📌 Kafka Topics created:[39m
+[2025-12-29 16:21:06] [[32minfo[39m]: [32m❎ Kafka Admin disconnected[39m
+[2025-12-29 16:21:06] [[32minfo[39m]: [32m🚀 Kafka Producer connected[39m
+[2025-12-29 16:21:46] [[31merror[39m]: [31mLoginUseCase failed[39m
+[31mInvalid credentials[39m
+[31mError: Invalid credentials[39m
+[31m    at LoginUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\auth\login.useCase.ts:33:34)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async AuthController.login (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\auth\auth.controller.ts:109:22)[39m
+[2025-12-29 16:21:46] [[31merror[39m]: [31mlogin failed[39m
+[31mInvalid credentials[39m
+[31mError: Invalid credentials[39m
+[31m    at LoginUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\auth\login.useCase.ts:33:34)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async AuthController.login (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\auth\auth.controller.ts:109:22)[39m
+[2025-12-29 16:21:56] [[31merror[39m]: [31mLoginUseCase failed[39m
+[31mProducer not connected[39m
+[31mError: Producer not connected[39m
+[31m    at KafkaClientAdapter.getProducer (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\messaging\kafka.ts:53:31)[39m
+[31m    at KafkaServiceImpl.send (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\services\kafkaService.impl.ts:12:50)[39m
+[31m    at LoginUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\auth\login.useCase.ts:48:41)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async AuthController.login (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\auth\auth.controller.ts:109:22)[39m
+[2025-12-29 16:21:56] [[31merror[39m]: [31mlogin failed[39m
+[31mProducer not connected[39m
+[31mError: Producer not connected[39m
+[31m    at KafkaClientAdapter.getProducer (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\messaging\kafka.ts:53:31)[39m
+[31m    at KafkaServiceImpl.send (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\services\kafkaService.impl.ts:12:50)[39m
+[31m    at LoginUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\auth\login.useCase.ts:48:41)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async AuthController.login (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\auth\auth.controller.ts:109:22)[39m
+[2025-12-29 16:23:25] [[32minfo[39m]: [32m⚙️ Kafka Admin connected[39m
+[2025-12-29 16:23:25] [[32minfo[39m]: [32m📌 Kafka Topics created:[39m
+[2025-12-29 16:23:25] [[32minfo[39m]: [32m❎ Kafka Admin disconnected[39m
+[2025-12-29 16:23:25] [[32minfo[39m]: [32m🚀 Kafka Producer connected[39m
+[2025-12-29 16:24:29] [[32minfo[39m]: [32m⚙️ Kafka Admin connected[39m
+[2025-12-29 16:24:30] [[32minfo[39m]: [32m📌 Kafka Topics created:[39m
+[2025-12-29 16:24:30] [[32minfo[39m]: [32m❎ Kafka Admin disconnected[39m
+[2025-12-29 16:24:30] [[32minfo[39m]: [32m🚀 Kafka Producer connected[39m
+[2025-12-29 16:24:53] [[32minfo[39m]: [32m⚙️ Kafka Admin connected[39m
+[2025-12-29 16:24:53] [[32minfo[39m]: [32m📌 Kafka Topics created:[39m
+[2025-12-29 16:24:53] [[32minfo[39m]: [32m❎ Kafka Admin disconnected[39m
+[2025-12-29 16:24:53] [[32minfo[39m]: [32m🚀 Kafka Producer connected[39m
+[2025-12-29 16:25:14] [[32minfo[39m]: [32m⚙️ Kafka Admin connected[39m
+[2025-12-29 16:25:14] [[32minfo[39m]: [32m📌 Kafka Topics created:[39m
+[2025-12-29 16:25:14] [[32minfo[39m]: [32m❎ Kafka Admin disconnected[39m
+[2025-12-29 16:25:15] [[32minfo[39m]: [32m🚀 Kafka Producer connected[39m
+[2025-12-29 16:27:13] [[32minfo[39m]: [32m⚙️ Kafka Admin connected[39m
+[2025-12-29 16:27:13] [[32minfo[39m]: [32m📌 Kafka Topics created:[39m
+[2025-12-29 16:27:13] [[32minfo[39m]: [32m❎ Kafka Admin disconnected[39m
+[2025-12-29 16:27:13] [[32minfo[39m]: [32m🚀 Kafka Producer connected[39m
+[2025-12-29 16:28:33] [[32minfo[39m]: [32m⚙️ Kafka Admin connected[39m
+[2025-12-29 16:28:34] [[32minfo[39m]: [32m📌 Kafka Topics created:[39m
+[2025-12-29 16:28:34] [[32minfo[39m]: [32m❎ Kafka Admin disconnected[39m
+[2025-12-29 16:28:34] [[32minfo[39m]: [32m🚀 Kafka Producer connected[39m
+[2025-12-29 18:57:09] [[32minfo[39m]: [32m⚙️ Kafka Admin connected[39m
+[2025-12-29 19:10:05] [[32minfo[39m]: [32m⚙️ Kafka Admin connected[39m
+[2025-12-29 19:11:37] [[32minfo[39m]: [32m⚙️ Kafka Admin connected[39m
+[2025-12-29 19:11:50] [[32minfo[39m]: [32m⚙️ Kafka Admin connected[39m
+[2025-12-29 19:12:12] [[32minfo[39m]: [32m⚙️ Kafka Admin connected[39m
+[2025-12-29 19:12:12] [[32minfo[39m]: [32m📌 Kafka Topics created:[39m
+[2025-12-29 19:12:12] [[32minfo[39m]: [32m❎ Kafka Admin disconnected[39m
+[2025-12-29 19:12:12] [[32minfo[39m]: [32m🚀 Kafka Producer connected[39m
+[2025-12-29 19:13:59] [[32minfo[39m]: [32m⚙️ Kafka Admin connected[39m
+[2025-12-29 19:13:59] [[32minfo[39m]: [32m📌 Kafka Topics created:[39m
+[2025-12-29 19:13:59] [[32minfo[39m]: [32m❎ Kafka Admin disconnected[39m
+[2025-12-29 19:13:59] [[32minfo[39m]: [32m🚀 Kafka Producer connected[39m
+[2025-12-29 19:14:06] [[32minfo[39m]: [32m⚙️ Kafka Admin connected[39m
+[2025-12-29 19:14:06] [[32minfo[39m]: [32m📌 Kafka Topics created:[39m
+[2025-12-29 19:14:06] [[32minfo[39m]: [32m❎ Kafka Admin disconnected[39m
+[2025-12-29 19:14:07] [[32minfo[39m]: [32m🚀 Kafka Producer connected[39m
+[2025-12-29 22:55:16] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2025-12-29 22:55:16] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2025-12-29 22:55:16] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2025-12-29 22:55:16] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2025-12-29 22:55:16] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2025-12-29 23:05:00] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2025-12-29 23:05:00] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2025-12-29 23:05:00] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2025-12-29 23:05:00] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2025-12-29 23:05:00] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2025-12-29 23:05:30] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2025-12-29 23:05:30] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2025-12-29 23:05:30] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2025-12-29 23:05:30] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2025-12-29 23:05:30] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2025-12-29 23:06:07] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2025-12-29 23:06:07] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2025-12-29 23:06:07] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2025-12-29 23:06:07] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2025-12-29 23:06:07] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2025-12-29 23:06:16] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2025-12-29 23:06:16] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2025-12-29 23:06:16] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2025-12-29 23:06:16] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2025-12-29 23:06:16] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2025-12-29 23:06:23] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2025-12-29 23:06:23] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2025-12-29 23:06:23] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2025-12-29 23:06:23] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2025-12-29 23:06:23] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2025-12-29 23:06:33] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2025-12-29 23:06:33] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2025-12-29 23:06:33] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2025-12-29 23:06:33] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2025-12-29 23:06:33] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2025-12-29 23:07:15] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2025-12-29 23:07:15] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2025-12-29 23:07:15] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2025-12-29 23:07:15] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2025-12-29 23:07:15] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2025-12-29 23:08:53] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2025-12-29 23:08:53] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2025-12-29 23:08:53] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2025-12-29 23:08:53] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2025-12-29 23:08:53] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m

@@ -23,6 +23,10 @@ import { ProviderRepositoryImpl } from '../../infrastructure/database/provider/p
 import { SubscriptionRepositoryImpl } from '../../infrastructure/database/subscription/subscription.repository.impl';
 import { LoginZodSchema, OTPVerificationZodSchema, RegisterZodSchema, ResendOTPZodSchema, UpdatePasswordZodSchema } from '../../shared/zod/auth.zod';
 
+import { getKafkaService } from '../../infrastructure/container';
+
+const kafkaService = getKafkaService();
+
 const userRepository: IUserRepository = new UserRepositoryImpl();
 const planRepository: IPlanRepository = new PlanRepositoryImpl();
 const providerRepository: IProviderRepository = new ProviderRepositoryImpl();
@@ -31,11 +35,11 @@ const subscriptionRepository: ISubscriptionRepository = new SubscriptionReposito
 const otpService: IOTPService = new OTPServiceImpl();
 const signedUrlService: ISignedUrlService = new SignedUrlServiceImpl(redis, s3Client);
 
-const registerUseCase = new RegisterUseCase(userRepository, providerRepository, otpService);
 const updatePasswordUseCase = new UpdatePasswordUseCase(userRepository, providerRepository);
 const verifyOTPUseCase = new VerifyOTPUseCase(userRepository, providerRepository, otpService);
 const resendOtpUseCase = new ResendOtpUseCase(userRepository, providerRepository, otpService);
-const loginUseCase = new LoginUseCase(userRepository, providerRepository, planRepository, subscriptionRepository, signedUrlService);
+const registerUseCase = new RegisterUseCase(userRepository, providerRepository, otpService, kafkaService);
+const loginUseCase = new LoginUseCase(userRepository, providerRepository, planRepository, subscriptionRepository, signedUrlService, kafkaService);
 
 class AuthController {
 

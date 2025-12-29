@@ -116,7 +116,6 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
         );
 
         const providers = await ProviderServiceModel.aggregate(pipeline);
-        console.log("providers : ", providers);
         return providers.map(p => ({
             _id: p._id.toString(),
             provider: {

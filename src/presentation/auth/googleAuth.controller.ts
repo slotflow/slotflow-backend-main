@@ -4,21 +4,19 @@ import { Role } from "../../domain/enums/role.enum";
 import { NextFunction, Request, Response } from "express";
 import { appConfig, appUrlConfig } from "../../config/env";
 import { IUserRepository } from "../../domain/interfaces/repositories/IUser.repository";
-import { IAesEncryption } from "../../domain/interfaces/services/IAesEncryption.service";
-import { AesEncryptionImpl } from "../../infrastructure/services/aesEncryptionService.impl";
 import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
 import { IProviderRepository } from "../../domain/interfaces/repositories/IProvider.repository";
 import { ICredentialRepository } from "../../domain/interfaces/repositories/ICredentialRepository";
 import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
 import { GoogleAuthOrchestratorUseCase } from "../../application/useCases/auth/googleAuthOrchestrate.useCase";
 import { CredentialRepositoryImpl } from "../../infrastructure/database/credential/credential.repository.impl";
+import { aesEncryptionService } from "../../infrastructure/container";
 
-const aesEncryption: IAesEncryption = new AesEncryptionImpl();
 const userRepository: IUserRepository = new UserRepositoryImpl();
 const providerRepository: IProviderRepository = new ProviderRepositoryImpl();
 const credentialRepository: ICredentialRepository = new CredentialRepositoryImpl();
 
-const googleAuthOrchestratorUseCase = new GoogleAuthOrchestratorUseCase(userRepository, providerRepository, credentialRepository, aesEncryption);
+const googleAuthOrchestratorUseCase = new GoogleAuthOrchestratorUseCase(userRepository, providerRepository, credentialRepository, aesEncryptionService);
 
 class GoogleAuthController {
     constructor(
@@ -55,6 +53,10 @@ class GoogleAuthController {
         try {
             console.log("google auth callback");
             passport.authenticate("google", { session: false }, async (err, user, info) => {
+
+                console.log("err : ",err);
+                console.log("user : ",user);
+                console.log("info : ",info);
 
                 if (err || !user) {
                     if (info.connectOnly) {
@@ -98,7 +100,7 @@ class GoogleAuthController {
                     };
                     const redirectData = encodeURIComponent(JSON.stringify(successPayload));
                     return res.redirect(`${appUrlConfig.frontendUrl}/${role === Role.Provider ? "provider" : "user"}/settings?response=${redirectData}`);
-                }
+                };
 
                 res.cookie("token", token, {
                     maxAge: 2 * 24 * 60 * 60 * 1000,

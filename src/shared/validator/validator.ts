@@ -314,23 +314,6 @@ export class Validator {
 
     }
 
-    static validateFile(file: Express.Multer.File): void {
-        if (!file) {
-            throw new Error("File is required.");
-        }
-
-        const allowedMimeTypes = ['image/jpeg', 'image/png'];
-        const maxSizeInBytes = 5 * 1024 * 1024;
-
-        if (!allowedMimeTypes.includes(file.mimetype)) {
-            throw new Error(`Invalid file type. Allowed types are: ${allowedMimeTypes.join(", ")}`);
-        }
-
-        if (file.size > maxSizeInBytes) {
-            throw new Error(`File size exceeds the maximum limit of ${maxSizeInBytes / (1024 * 1024)} MB.`);
-        }
-    }
-
     static validateStripeSessionId(value: string): void {
         if (typeof value !== "string" || !value.trim()) {
             throw new Error("Payment Intent ID must be a non-empty string.");
