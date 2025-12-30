@@ -105,6 +105,14 @@ const addressSchema = new Schema<IAddress>({
             },
         },
     },
+    createdAt: {
+        type: Date,
+        required: true
+    },
+    updatedAt: {
+        type: Date,
+        required: true
+    }
 });
 
 export const AddressModel = mongoose.model<IAddress>('Address', addressSchema);

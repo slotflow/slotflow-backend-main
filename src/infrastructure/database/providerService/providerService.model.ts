@@ -112,6 +112,14 @@ const ProviderServiceSchema = new Schema<IProviderService>(
       match: [/^https?:\/\/.+/, "Invalid video URL format"],
       default: null,
     },
+    createdAt: {
+      type: Date,
+      required: true
+    },
+    updatedAt: {
+      type: Date,
+      required: true
+    }
   });
 
 export const ProviderServiceModel = mongoose.model<IProviderService>("ProviderService", ProviderServiceSchema);

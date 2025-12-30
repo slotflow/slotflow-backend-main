@@ -28,6 +28,14 @@ const CredentialSchema = new Schema<ICredential>({
         type: Date,
         required: true
     },
+    createdAt: {
+        type: Date,
+        required: true
+    },
+    updatedAt: {
+        type: Date,
+        required: true
+    }
 });
 
 export const CredentialModel = model<ICredential>("Credential", CredentialSchema);

@@ -166,6 +166,14 @@ const ProviderSchema = new Schema<IProvider>({
   serviceProof: {
     type: String,
     default: null
+  },
+  createdAt: {
+    type: Date,
+    required: true
+  },
+  updatedAt: {
+    type: Date,
+    required: true
   }
 });
 

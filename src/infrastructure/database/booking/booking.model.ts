@@ -31,53 +31,53 @@ const ParticipantPresenceSchema = new Schema<ParticipantPresence>({
 }, { _id: false });
 
 const StatusTrackSchema = new Schema<statusTrack>({
-    appointmentStatus: { 
-        type: String, 
-        enum: Object.values(appointmentStatusArray), 
-        required: true 
+    appointmentStatus: {
+        type: String,
+        enum: Object.values(appointmentStatusArray),
+        required: true
     },
-    time: { 
-        type: Date, 
-        required: true 
+    time: {
+        type: Date,
+        required: true
     }
-},  { _id: false })
+}, { _id: false })
 
 const BookingSchema = new Schema<IBooking>({
-    serviceProviderId: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: "Provider", 
-        required: true 
+    serviceProviderId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Provider",
+        required: true
     },
-    userId: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: "User", 
-        required: true 
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true
     },
-    appointmentDate: { 
-        type: Date, 
-        required: true 
+    appointmentDate: {
+        type: Date,
+        required: true
     },
-    appointmentTime: { 
-        type: String, 
-        required: true 
+    appointmentTime: {
+        type: String,
+        required: true
     },
-    appointmentMode: { 
-        type: String, 
-        required: true 
+    appointmentMode: {
+        type: String,
+        required: true
     },
-    appointmentStatus: { 
-        type: String, 
-        enum: Object.values(AppointmentStatus), 
-        required: true 
+    appointmentStatus: {
+        type: String,
+        enum: Object.values(AppointmentStatus),
+        required: true
     },
-    slotId: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: "ServiceAvailability.slots", 
-        required: true 
+    slotId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "ServiceAvailability.slots",
+        required: true
     },
-    paymentId: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: "Payment" 
+    paymentId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Payment"
     },
     videoCallRoomId: {
         type: String,
@@ -92,8 +92,16 @@ const BookingSchema = new Schema<IBooking>({
         provider: { type: ParticipantPresenceSchema, default: () => ({}) },
     },
     statusTrack: {
-        type: [StatusTrackSchema], 
-        default: [] ,
+        type: [StatusTrackSchema],
+        default: [],
+    },
+    createdAt: {
+        type: Date,
+        required: true
+    },
+    updatedAt: {
+        type: Date,
+        required: true
     }
 });
 

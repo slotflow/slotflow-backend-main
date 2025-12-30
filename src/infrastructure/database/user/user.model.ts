@@ -87,6 +87,14 @@ const UserSchema = new Schema<IUser>({
       return !this.password;
     }
   },
+  createdAt: {
+    type: Date,
+    required: true
+  },
+  updatedAt: {
+    type: Date,
+    required: true
+  }
 });
 
 export const UserModel = mongoose.model<IUser>('User', UserSchema);

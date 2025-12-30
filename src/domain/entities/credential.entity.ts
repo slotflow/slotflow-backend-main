@@ -6,11 +6,11 @@ export class Credential {
 
     constructor(props: CredentialProps) {
         this.props = props;
-    }
+    };
 
     private touch() {
         this.props.updatedAt = new Date();
-    }
+    };
 
     static create(props: CreateCredentialProps) {
         return new Credential({
@@ -21,8 +21,8 @@ export class Credential {
             userId: props.userId,
             createdAt: new Date(),
             updatedAt: new Date()
-        })
-    }
+        });
+    };
 
     // Getters
     get _id(): string {
@@ -68,4 +68,4 @@ export class Credential {
         this.touch();
     };
 
-}
+};

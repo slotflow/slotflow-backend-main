@@ -26,7 +26,15 @@ const availabilitySchema = new Schema({
 
 const serviceAvailabilitySchema = new Schema<IServiceAvailability>({
   providerId: { type: Schema.Types.ObjectId, ref: "Provider", required: true },
-  availabilities: [availabilitySchema]
+  availabilities: [availabilitySchema],
+  createdAt: {
+    type: Date,
+    required: true
+  },
+  updatedAt: {
+    type: Date,
+    required: true
+  }
 });
 
 export const ServiceAvailabilityModel = mongoose.model<IServiceAvailability>('ServiceAvailability', serviceAvailabilitySchema)

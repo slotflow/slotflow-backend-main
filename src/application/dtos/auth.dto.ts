@@ -1,5 +1,5 @@
+import { CommonResponse } from "./common.dto";
 import { Role } from "../../domain/enums/role.enum";
-import { CommonResponse, RoleType } from "./common.dto";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
 
 // **** Register usec case
@@ -115,4 +115,7 @@ export interface GoogleAuthOrchestrationRequest {
 
 export interface GoogleAuthOrchestrationResponse {
     token?: string;
+    user: {
+        _id: string;
+    }
 }

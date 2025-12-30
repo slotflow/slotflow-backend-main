@@ -31,7 +31,7 @@ class GoogleAuthController {
                 accessType: "offline",
                 prompt: "consent",
                 session: false,
-                state: JSON.stringify({ role }),
+                state: JSON.stringify({ role, connectOnly: false }),
             })(req, res, next);
         } catch (error) {
             log.error("googleAuth failed", error as Error);
@@ -70,7 +70,7 @@ class GoogleAuthController {
                 console.log("User : ", user);
                 console.log("expiryDate : ", expiryDate);
 
-                const { token } = await this.googleAuthOrchestratorUseCase.execute({
+                const { token, user: updatedUser } = await this.googleAuthOrchestratorUseCase.execute({
                     email: user.email,
                     googleId: user.googleId,
                     name: user.name,
@@ -102,6 +102,7 @@ class GoogleAuthController {
                 const { token: _, googleAccessToken, googleRefreshToken, ...authUserWithoutToken } = user;
                 authUserWithoutToken.role = role;
                 authUserWithoutToken.googleConnected = !!user.googleAccessToken;
+                authUserWithoutToken._id = updatedUser._id;
 
                 const authUserWithoutTokenJson = JSON.stringify(authUserWithoutToken);
                 const frontendUrl = appUrlConfig.frontendUrl;

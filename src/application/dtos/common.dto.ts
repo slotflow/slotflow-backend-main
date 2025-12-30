@@ -11,6 +11,7 @@ import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { SubscriptionStatus } from "../../domain/enums/subscriptionStatus.enum";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
 import { adminVerificationStatusArray, appointmentStatusArray, daysArray, paymentForArray, paymentGatewayArray, roleArray, serviceCategoryArray, serviceModeArray, serviceTypeArray, subscriptionStatusArray } from "../../shared/utils/constants";
+import { Role } from "../../domain/enums/role.enum";
 
 export type RoleType = typeof roleArray[number];
 
@@ -599,3 +600,18 @@ export type KafkaConsumeHandler<T> = (payload: {
   partition: number;
   message: T;
 }) => Promise<void>;
+
+export interface DecodedUser {
+    userOrProviderId?: string;
+    role?: Role;
+    googleAccessToken?: string;
+    googleRefreshToken?: string;
+    googleId?: string;
+    email?: string;
+    name?: string;
+    image: string | null;
+    connectOnly?: boolean;
+    exp?: number;
+    iat?: number;
+    userId: string;
+};

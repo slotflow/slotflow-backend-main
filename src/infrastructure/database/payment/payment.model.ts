@@ -101,6 +101,14 @@ const PaymentSchema = new Schema<IPayment>({
     chargeId: {
         type: String
     },
+    createdAt: {
+        type: Date,
+        required: true
+    },
+    updatedAt: {
+        type: Date,
+        required: true
+    }
 });
 
 export const PaymentModel = mongoose.model<IPayment>("Payment", PaymentSchema);

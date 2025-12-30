@@ -63,6 +63,14 @@ const ReviewSchema: Schema<IReview> = new Schema<IReview>(
             type: Boolean,
             default: false,
         },
+        createdAt: {
+            type: Date,
+            required: true
+        },
+        updatedAt: {
+            type: Date,
+            required: true
+        }
     });
 
 export const ReviewModel: Model<IReview> = mongoose.model<IReview>("Review", ReviewSchema);

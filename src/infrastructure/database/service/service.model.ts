@@ -27,6 +27,14 @@ const serviceSchema = new Schema<IService>({
     isBlocked: {
         type: Boolean,
         default: false
+    },
+    createdAt: {
+        type: Date,
+        required: true
+    },
+    updatedAt: {
+        type: Date,
+        required: true
     }
 });
 

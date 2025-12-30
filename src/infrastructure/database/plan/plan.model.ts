@@ -51,14 +51,22 @@ const PlanSchema = new Schema<IPlan>({
         min: [0, "Min value is 0"],
         max: [10000, "Max value is 10000"]
     },
-    adVisibility: { 
-        type: Boolean, 
-        default: false 
+    adVisibility: {
+        type: Boolean,
+        default: false
     },
-    isBlocked: { 
-        type: Boolean, 
-        default: false 
-    },      
+    isBlocked: {
+        type: Boolean,
+        default: false
+    },
+    createdAt: {
+        type: Date,
+        required: true
+    },
+    updatedAt: {
+        type: Date,
+        required: true
+    }
 });
 
-export const PlanModel = mongoose.model<IPlan>('Plan',PlanSchema)
+export const PlanModel = mongoose.model<IPlan>('Plan', PlanSchema)
