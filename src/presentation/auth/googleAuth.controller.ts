@@ -4,9 +4,9 @@ import { Role } from "../../domain/enums/role.enum";
 import { NextFunction, Request, Response } from "express";
 import { appConfig, appUrlConfig } from "../../config/env";
 import { GoogleAuthOrchestratorUseCase } from "../../application/useCases/auth/googleAuthOrchestrate.useCase";
-import { aesEncryptionService, credentialRepository, providerRepository, userRepository } from "../../infrastructure/container";
+import { aesEncryptionService, credentialRepository, planRepository, providerRepository, subscriptionRepository, userRepository } from "../../infrastructure/container";
 
-const googleAuthOrchestratorUseCase = new GoogleAuthOrchestratorUseCase(userRepository, providerRepository, credentialRepository, aesEncryptionService);
+const googleAuthOrchestratorUseCase = new GoogleAuthOrchestratorUseCase(userRepository, providerRepository, credentialRepository, aesEncryptionService, subscriptionRepository, planRepository);
 
 class GoogleAuthController {
     constructor(
@@ -99,10 +99,15 @@ class GoogleAuthController {
                     secure: appConfig.nodeEnv !== "development",
                 });
 
-                const { token: _, googleAccessToken, googleRefreshToken, ...authUserWithoutToken } = user;
-                authUserWithoutToken.role = role;
-                authUserWithoutToken.googleConnected = !!user.googleAccessToken;
-                authUserWithoutToken._id = updatedUser._id;
+                const authUserWithoutToken = {
+                    email: user.email,
+                    name: user.name,
+                    role,
+                    googleConnected: !!user.googleAccessToken,
+                    image: user.image,
+                    googleId: user.googleId,
+                    ...updatedUser
+                };
 
                 const authUserWithoutTokenJson = JSON.stringify(authUserWithoutToken);
                 const frontendUrl = appUrlConfig.frontendUrl;

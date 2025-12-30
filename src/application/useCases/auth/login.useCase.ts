@@ -99,7 +99,7 @@ export class LoginUseCase {
                     } else {
                         providerSubscription = "NoSubscription"
                     }
-                }
+                };
 
 
                 return {

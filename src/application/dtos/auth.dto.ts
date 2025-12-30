@@ -117,5 +117,17 @@ export interface GoogleAuthOrchestrationResponse {
     token?: string;
     user: {
         _id: string;
+        isAddressAdded?: boolean;
+        isServiceDetailsAdded?: boolean;
+        isServiceAvailabilityAdded?: boolean;
+        isAdminVerified?: boolean;
+        isProofSubmitted?: boolean;
+        verificationRejectionReason?: string | null,
+        adminVerificationStatus?: AdminVerificationStatus,
+        isAddressVerified?: boolean,
+        isServiceDetailsVerified?: boolean,
+        isAvailabilityVerified?: boolean,
+        isProofsVerified?: boolean,
+        providerSubscription?: string;
     }
 }
