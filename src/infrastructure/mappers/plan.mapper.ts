@@ -29,6 +29,7 @@ export class PlanMapper {
             maxBookingPerMonth: props.maxBookingPerMonth,
             planName: props.planName,
             price: props.price,
+            createdAt: props.createdAt,
             updatedAt: props.updatedAt
         };
     }

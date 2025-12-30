@@ -40,6 +40,7 @@ export class UserMapper {
             verificationToken: props.verificationToken,
             googleConnected: props.googleConnected,
             googleId: props.googleId,
+            createdAt: props.createdAt,
             updatedAt: props.updatedAt,
         };
     }

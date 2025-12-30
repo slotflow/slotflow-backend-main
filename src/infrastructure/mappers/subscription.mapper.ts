@@ -28,6 +28,7 @@ export class SubscriptionMapper {
             startDate: props.startDate,
             subscriptionPlanId: new Types.ObjectId(props.subscriptionPlanId),
             subscriptionStatus: props.subscriptionStatus,
+            createdAt: props.createdAt,
             updatedAt: props.updatedAt,
         };
     }

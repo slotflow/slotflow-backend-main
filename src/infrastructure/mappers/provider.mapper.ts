@@ -66,6 +66,7 @@ export class ProviderMapper {
       trustedBySlotflow: props.trustedBySlotflow,
       identityProof: props.identityProof,
       serviceProof: props.serviceProof,
+      createdAt: props.createdAt,
       updatedAt: props.updatedAt,
     };
   }

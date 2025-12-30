@@ -24,6 +24,7 @@ export class CredentialMapper {
             expiryDate: props.expiryDate,
             refreshToken: props.refreshToken,
             userId: new Types.ObjectId(props.userId),
+            createdAt: props.createdAt,
             updatedAt: props.updatedAt,
         };
     }

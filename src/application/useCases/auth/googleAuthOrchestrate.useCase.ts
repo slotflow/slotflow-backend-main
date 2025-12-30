@@ -94,17 +94,12 @@ export class GoogleAuthOrchestratorUseCase {
             const encryptedAccessToken = await this.aesEncryption.encrypt(accessToken);
             const encryptedRefreshToken = await this.aesEncryption.encrypt(refreshToken);
 
-            console.log("entity : ", entity);
-            console.log("userId: ", userId);
-
             const credentials = Credential.create({
                 accessToken: encryptedAccessToken,
                 refreshToken: encryptedRefreshToken,
                 expiryDate,
                 userId: userId ?? (entity as User | Provider)._id,
             });
-
-            console.log("credentials : ",credentials);
 
             await this.credentialRepository.create(credentials);
 

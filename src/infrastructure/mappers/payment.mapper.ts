@@ -58,7 +58,7 @@ export class PaymentMapper {
             refundStatus: props.refundStatus ?? null,
             refundAt: props.refundAt ?? null,
             refundReason: props.refundReason ?? null,
-
+            createdAt: props.createdAt,
             updatedAt: props.updatedAt,
         };
     }

@@ -38,6 +38,7 @@ export class AddressMapper {
             state: props.state,
             country: props.country,
             location: props.location,
+            createdAt: props.createdAt,
             updatedAt: props.updatedAt
         };
     }

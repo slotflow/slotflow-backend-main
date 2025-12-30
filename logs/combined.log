@@ -1181,3 +1181,40 @@
 [2025-12-30 12:56:42] [[32minfo[39m]: [32mKafka Producer connected[39m
 [2025-12-30 12:56:42] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
 [2025-12-30 12:56:57] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2025-12-30 12:57:10] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2025-12-30 12:57:10] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2025-12-30 12:57:10] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2025-12-30 12:57:10] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2025-12-30 12:57:10] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2025-12-30 13:00:05] [[31merror[39m]: [31mGoogleAuthOrchestratorUseCase failed : [39m
+[31mProvider validation failed: createdAt: Path `createdAt` is required.[39m
+[31mValidationError: Provider validation failed: createdAt: Path `createdAt` is required.[39m
+[31m    at Document.invalidate (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\mongoose\lib\document.js:3329:32)[39m
+[31m    at D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\mongoose\lib\document.js:3090:17[39m
+[31m    at D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\mongoose\lib\schemaType.js:1407:9[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:85:11)[39m
+[2025-12-30 13:06:19] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2025-12-30 13:06:20] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2025-12-30 13:06:20] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2025-12-30 13:06:20] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2025-12-30 13:06:20] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2025-12-30 13:06:42] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2025-12-30 13:06:42] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2025-12-30 13:06:42] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2025-12-30 13:06:42] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2025-12-30 13:06:42] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2025-12-30 13:07:03] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2025-12-30 13:07:03] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2025-12-30 13:07:03] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2025-12-30 13:07:03] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2025-12-30 13:07:03] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2025-12-30 13:07:16] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2025-12-30 13:07:16] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2025-12-30 13:07:16] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2025-12-30 13:07:16] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2025-12-30 13:07:16] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2025-12-30 13:12:49] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2025-12-30 13:12:49] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2025-12-30 13:12:49] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2025-12-30 13:12:49] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2025-12-30 13:12:49] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m

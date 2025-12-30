@@ -20,6 +20,7 @@ export class ServiceAvailabilityMapper {
         return {
             availabilities: props.availabilities,
             providerId: new Types.ObjectId(props.providerId),
+            createdAt: props.createdAt,
             updatedAt: props.updatedAt,
         };
     }

@@ -40,6 +40,7 @@ export class BookingMapper {
             googleEventId: props.googleEventId,
             onlineTrack: props.onlineTrack,
             statusTrack: props.statusTrack,
+            createdAt: props.createdAt,
             updatedAt: props.updatedAt,
         };
     }

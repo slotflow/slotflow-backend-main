@@ -17,9 +17,6 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
     const userId = req.headers["x-user-id"];
     const role = req.headers["x-user-role"];
 
-    console.log("authMiddleware");
-    console.log("userId : ",userId);
-
     if (!userId || !role) {
       console.log("One");
       res.status(401).json({ success: false, message: "Unauthenticated request" });

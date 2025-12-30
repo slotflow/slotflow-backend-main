@@ -21,6 +21,7 @@ export class ServiceMapper {
             isBlocked: props.isBlocked,
             serviceCategory: props.serviceCategory,
             serviceName: props.serviceName,
+            createdAt: props.createdAt,
             updatedAt: props.updatedAt,
         };
     }

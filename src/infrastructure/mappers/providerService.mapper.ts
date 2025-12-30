@@ -42,6 +42,7 @@ export class ProviderServiceMapper {
             videoUrl: props.videoUrl,
             maxParticipants: props.maxParticipants,
             isGroupService: props.isGroupService,
+            createdAt: props.createdAt,
             updatedAt: props.updatedAt,
         };
     }

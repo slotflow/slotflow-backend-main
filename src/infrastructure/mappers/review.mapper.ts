@@ -30,6 +30,7 @@ export class ReviewMapper {
             reviewText: props.reviewText,
             reported: props.reported,
             isBlocked: props.isBlocked,
+            createdAt: props.createdAt,
             updatedAt: props.updatedAt,
         };
     }
