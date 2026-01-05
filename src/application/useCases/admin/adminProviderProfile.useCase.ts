@@ -32,25 +32,25 @@ export class AdminFetchProviderDetailsUseCase {
 
             let signedProfileImageUrl: string | null = null;
             if (providerData.profileImage) {
-                signedProfileImageUrl = await this.signedUrlService.save(providerData.profileImage);
-            }
+                signedProfileImageUrl = await this.signedUrlService.get(providerData.profileImage);
+            };
 
             return {
                 _id: providerData._id,
+                adminVerificationStatus: providerData.adminVerificationStatus,
                 createdAt: providerData.createdAt,
                 email: providerData.email,
+                isAddressVerified: providerData.isAddressVerified,
                 isAdminVerified: providerData.isAdminVerified,
+                isAvailabilityVerified: providerData.isAvailabilityVerified,
                 isBlocked: providerData.isBlocked,
                 isEmailVerified: providerData.isEmailVerified,
-                phone: providerData.phone,
-                profileImage: signedProfileImageUrl,
-                trustedBySlotflow: providerData.trustedBySlotflow,
-                username: providerData.username,
-                isAddressVerified: providerData.isAddressVerified,
-                isAvailabilityVerified: providerData.isAvailabilityVerified,
                 isProofsVerified: providerData.isProofsVerified,
                 isServiceDetailsVerified: providerData.isServiceDetailsVerified,
-                adminVerificationStatus: providerData.adminVerificationStatus
+                phone: providerData.phone,
+                trustedBySlotflow: providerData.trustedBySlotflow,
+                username: providerData.username,
+                profileImage: signedProfileImageUrl,
             };
 
         } catch (error) {
@@ -73,24 +73,9 @@ export class AdminFetchProviderServiceUseCase {
             const service = await this.providerServiceQueries.findByProviderId(providerId);
             if (!service) return null;
 
-            return {
-                _id: service._id,
-                createdAt: service.createdAt,
-                isGroupService: service.isGroupService,
-                maxParticipants: service.maxParticipants,
-                providerId: service.providerId,
-                requirements: service.requirements,
-                service: service.service,
-                serviceDescription: service.serviceDescription,
-                serviceExperience: service.serviceExperience,
-                serviceMode: service.serviceMode,
-                serviceName: service.serviceName,
-                servicePrice: service.servicePrice,
-                serviceType: service.serviceType,
-                tags: service.tags,
-                updatedAt: service.updatedAt,
-                videoUrl: service.videoUrl
-            };
+            console.log("service : ",service);
+
+            return {...service};
         } catch (error) {
             log.error("AdminFetchProviderServiceUseCase failed", error as Error);
             throw error;
@@ -125,12 +110,9 @@ export class AdminfetchProviderServiceAvailabilityUseCase {
                 const isWithin2Hours = slotDateTime.diff(currentDateTime, 'minute') < 120;
                 return {
                     ...slot,
-                    available: !isWithin2Hours
-                }
+                    available: !isWithin2Hours,
+                };
             });
-
-            console.log("availability : ",availability);
-            console.log("updatedSlots : ",updatedSlots)
 
             return { ...availability, slots: updatedSlots };
         } catch (error) {

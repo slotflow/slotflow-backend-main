@@ -1438,3 +1438,362 @@
 [2025-12-30 16:29:09] [[32minfo[39m]: [32mKafka Admin disconnected[39m
 [2025-12-30 16:29:09] [[32minfo[39m]: [32mKafka Producer connected[39m
 [2025-12-30 16:29:09] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2025-12-30 17:01:20] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2025-12-30 17:01:20] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2025-12-30 17:01:20] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2025-12-30 17:01:20] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2025-12-30 17:01:20] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2025-12-30 19:56:06] [[31merror[39m]: [31mGoogleAuthOrchestratorUseCase failed : [39m
+[31mCannot read properties of undefined (reading 'length')[39m
+[31mTypeError: Cannot read properties of undefined (reading 'length')[39m
+[31m    at GoogleAuthOrchestratorUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\auth\googleAuthOrchestrate.useCase.ts:291:104)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async <anonymous> (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\auth\googleAuth.controller.ts:73:54)[39m
+[2025-12-30 20:42:44] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2025-12-30 20:42:44] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2025-12-30 20:42:44] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2025-12-30 20:42:44] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2025-12-30 20:42:44] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2025-12-30 20:44:55] [[31merror[39m]: [31mGoogleAuthOrchestratorUseCase failed : [39m
+[31mCannot read properties of undefined (reading 'length')[39m
+[31mTypeError: Cannot read properties of undefined (reading 'length')[39m
+[31m    at GoogleAuthOrchestratorUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\auth\googleAuthOrchestrate.useCase.ts:291:104)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async <anonymous> (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\auth\googleAuth.controller.ts:73:54)[39m
+[2025-12-30 20:49:13] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2025-12-30 20:49:13] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2025-12-30 20:49:13] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2025-12-30 20:49:13] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2025-12-30 20:49:13] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2025-12-30 20:49:38] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2025-12-30 20:49:38] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2025-12-30 20:49:38] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2025-12-30 20:49:38] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2025-12-30 20:49:38] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2025-12-30 20:52:47] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2025-12-30 20:52:47] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2025-12-30 20:52:47] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2025-12-30 20:52:47] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2025-12-30 20:52:47] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2025-12-30 20:54:00] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2025-12-30 20:54:00] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2025-12-30 20:54:00] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2025-12-30 20:54:00] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2025-12-30 20:54:00] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2025-12-30 20:55:13] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2025-12-30 20:55:13] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2025-12-30 20:55:13] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2025-12-30 20:55:13] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2025-12-30 20:55:13] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2025-12-31 13:58:38] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2025-12-31 13:58:38] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2025-12-31 13:58:38] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2025-12-31 13:58:38] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2025-12-31 13:58:38] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2025-12-31 14:04:02] [[31merror[39m]: [31mFethGoogleCalendarUseCase failed[39m
+[31mCredential not found[39m
+[31mError: Credential not found[39m
+[31m    at FethGoogleCalendarUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\common\fetchGoogleCalendar.useCase.ts:18:19)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async GoogleController.getUserEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\google\google.controller.ts:21:28)[39m
+[2025-12-31 14:04:02] [[31merror[39m]: [31mgetUserEvents failed[39m
+[31mCalendar events fetching failed[39m
+[31mError: Calendar events fetching failed[39m
+[31m    at FethGoogleCalendarUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\common\fetchGoogleCalendar.useCase.ts:44:19)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async GoogleController.getUserEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\google\google.controller.ts:21:28)[39m
+[2025-12-31 14:04:03] [[31merror[39m]: [31mFethGoogleCalendarUseCase failed[39m
+[31mCredential not found[39m
+[31mError: Credential not found[39m
+[31m    at FethGoogleCalendarUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\common\fetchGoogleCalendar.useCase.ts:18:19)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async GoogleController.getUserEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\google\google.controller.ts:21:28)[39m
+[2025-12-31 14:04:03] [[31merror[39m]: [31mgetUserEvents failed[39m
+[31mCalendar events fetching failed[39m
+[31mError: Calendar events fetching failed[39m
+[31m    at FethGoogleCalendarUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\common\fetchGoogleCalendar.useCase.ts:44:19)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async GoogleController.getUserEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\google\google.controller.ts:21:28)[39m
+[2026-01-05 15:20:48] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 15:20:48] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 15:20:48] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 15:20:48] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 15:20:48] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 15:21:33] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 15:21:33] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 15:21:33] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 15:21:33] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 15:21:33] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 15:23:21] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 15:23:21] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 15:23:21] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 15:23:21] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 15:23:21] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 15:23:40] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 15:23:40] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 15:23:40] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 15:23:40] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 15:23:40] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 15:24:33] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 15:24:33] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 15:24:33] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 15:24:33] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 15:24:33] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 15:25:12] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 15:25:13] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 15:25:13] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 15:25:13] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 15:25:13] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 15:26:33] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 15:26:33] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 15:26:33] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 15:26:33] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 15:26:33] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 15:27:54] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 15:27:54] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 15:27:54] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 15:27:54] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 15:27:54] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 15:28:05] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 15:28:05] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 15:28:05] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 15:28:05] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 15:28:05] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 15:28:38] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 15:28:38] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 15:28:38] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 15:28:38] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 15:28:38] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 15:34:32] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 15:34:33] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 15:34:33] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 15:34:33] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 15:34:33] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 15:36:11] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 15:36:12] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 15:36:12] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 15:36:12] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 15:36:12] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 15:36:46] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 15:36:46] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 15:36:46] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 15:36:46] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 15:36:46] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 15:37:53] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 15:37:54] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 15:37:54] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 15:37:54] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 15:37:54] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 15:38:49] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 15:38:50] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 15:38:50] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 15:38:50] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 15:38:50] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 15:38:55] [[31merror[39m]: [31mAdminFetchProviderServiceUseCase failed[39m
+[31mCannot read properties of undefined (reading 'serviceName')[39m
+[31mTypeError: Cannot read properties of undefined (reading 'serviceName')[39m
+[31m    at ProviderServiceQueriesImpl.findByProviderId (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:25:47)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async AdminFetchProviderServiceUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\admin\adminProviderProfile.useCase.ts:73:29)[39m
+[31m    at async AdminProviderController.fetchProviderService (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\admin\adminProvider.controller.ts:140:28)[39m
+[2026-01-05 15:38:55] [[31merror[39m]: [31mfetchProviderService failed[39m
+[31mCannot read properties of undefined (reading 'serviceName')[39m
+[31mTypeError: Cannot read properties of undefined (reading 'serviceName')[39m
+[31m    at ProviderServiceQueriesImpl.findByProviderId (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:25:47)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async AdminFetchProviderServiceUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\admin\adminProviderProfile.useCase.ts:73:29)[39m
+[31m    at async AdminProviderController.fetchProviderService (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\admin\adminProvider.controller.ts:140:28)[39m
+[2026-01-05 15:38:56] [[31merror[39m]: [31mAdminFetchProviderServiceUseCase failed[39m
+[31mCannot read properties of undefined (reading 'serviceName')[39m
+[31mTypeError: Cannot read properties of undefined (reading 'serviceName')[39m
+[31m    at ProviderServiceQueriesImpl.findByProviderId (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:25:47)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async AdminFetchProviderServiceUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\admin\adminProviderProfile.useCase.ts:73:29)[39m
+[31m    at async AdminProviderController.fetchProviderService (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\admin\adminProvider.controller.ts:140:28)[39m
+[2026-01-05 15:38:56] [[31merror[39m]: [31mfetchProviderService failed[39m
+[31mCannot read properties of undefined (reading 'serviceName')[39m
+[31mTypeError: Cannot read properties of undefined (reading 'serviceName')[39m
+[31m    at ProviderServiceQueriesImpl.findByProviderId (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:25:47)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async AdminFetchProviderServiceUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\admin\adminProviderProfile.useCase.ts:73:29)[39m
+[31m    at async AdminProviderController.fetchProviderService (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\admin\adminProvider.controller.ts:140:28)[39m
+[2026-01-05 15:39:34] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 15:39:34] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 15:39:34] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 15:39:34] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 15:39:34] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 15:39:50] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 15:39:50] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 15:39:50] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 15:39:50] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 15:39:50] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 15:40:03] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 15:40:03] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 15:40:03] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 15:40:03] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 15:40:03] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 15:42:08] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 15:42:08] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 15:42:08] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 15:42:08] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 15:42:08] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 15:43:31] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 15:43:31] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 15:43:31] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 15:43:31] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 15:43:31] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 15:45:35] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 15:45:35] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 15:45:35] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 15:45:35] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 15:45:36] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 15:46:15] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 15:46:15] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 15:46:15] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 15:46:15] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 15:46:15] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 15:46:27] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 15:46:27] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 15:46:27] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 15:46:27] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 15:46:27] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 15:46:52] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 15:46:52] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 15:46:52] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 15:46:52] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 15:46:52] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 15:47:08] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 15:47:08] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 15:47:08] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 15:47:08] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 15:47:08] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 15:47:24] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 15:47:24] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 15:47:24] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 15:47:24] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 15:47:24] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 15:47:37] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 15:47:38] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 15:47:38] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 15:47:38] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 15:47:38] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 15:47:49] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 15:47:49] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 15:47:49] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 15:47:49] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 15:47:49] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 16:14:18] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 16:14:18] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 16:14:18] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 16:14:18] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 16:14:18] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 16:18:53] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 16:18:54] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 16:18:54] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 16:18:54] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 16:18:54] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 16:20:22] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 16:20:22] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 16:20:22] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 16:20:22] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 16:20:22] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 16:35:39] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 16:35:40] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 16:35:40] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 16:35:40] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 16:35:40] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 16:36:00] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 16:36:00] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 16:36:00] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 16:36:00] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 16:36:00] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 16:36:48] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 16:36:49] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 16:36:49] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 16:36:49] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 16:36:49] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 16:37:02] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 16:37:02] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 16:37:02] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 16:37:02] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 16:37:02] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 16:37:12] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 16:37:12] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 16:37:12] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 16:37:12] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 16:37:12] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 16:37:28] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 16:37:28] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 16:37:28] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 16:37:28] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 16:37:28] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 16:39:07] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 16:39:07] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 16:39:07] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 16:39:07] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 16:39:07] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 16:39:29] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 16:39:30] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 16:39:30] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 16:39:30] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 16:39:30] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 16:40:30] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 16:40:30] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 16:40:30] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 16:40:30] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 16:40:30] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 16:41:02] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 16:41:02] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 16:41:02] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 16:41:02] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 16:41:02] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 16:41:42] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 16:41:42] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 16:41:42] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 16:41:42] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 16:41:42] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 16:43:23] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 16:43:24] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 16:43:24] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 16:43:24] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 16:43:24] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 16:43:50] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 16:43:51] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 16:43:51] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 16:43:51] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 16:43:51] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 16:43:58] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 16:43:58] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 16:43:58] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 16:43:58] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 16:43:58] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 16:56:00] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 16:56:01] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 16:56:01] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 16:56:01] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 16:56:01] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 17:10:13] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 17:10:13] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 17:10:13] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 17:10:13] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 17:10:13] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 17:11:34] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 17:11:34] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 17:11:34] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 17:11:34] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 17:11:34] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 17:17:02] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 17:17:02] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 17:17:02] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 17:17:02] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 17:17:02] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 17:17:57] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 17:17:57] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 17:17:57] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 17:17:57] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 17:17:57] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-05 17:18:51] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-05 17:18:51] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-05 17:18:51] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-05 17:18:51] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-05 17:18:51] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m

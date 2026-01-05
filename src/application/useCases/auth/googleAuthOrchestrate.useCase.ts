@@ -288,16 +288,29 @@ export class GoogleAuthOrchestratorUseCase {
             await this.credentialRepository.create(credentials);
 
             let providerSubscription: string | undefined = "NoSubscription";
-            const subscriptionId = (entity as Provider).subscription[(entity as Provider).subscription.length - 1];
-            let subscription = await this.subscriptionRepository.findById(subscriptionId);
-            if (subscription) {
-                const now = new Date();
-                const isActive = subscription.subscriptionStatus === SubscriptionStatus.Active && new Date(subscription.endDate) > now;
-                if (isActive) {
-                    const subscribedPlanId = subscription.subscriptionPlanId;
-                    const subscribedPlan = await this.planRepository.findById(subscribedPlanId);
-                    providerSubscription = subscribedPlan?.planName;
-                }
+
+            const subscriptions = (entity as Provider)?.subscription;
+
+            if (Array.isArray(subscriptions) && subscriptions.length > 0) {
+                const subscriptionId = subscriptions[subscriptions.length - 1];
+
+                const subscription = await this.subscriptionRepository.findById(subscriptionId);
+
+                if (subscription) {
+                    const now = new Date();
+                    const isActive =
+                        subscription.subscriptionStatus === SubscriptionStatus.Active &&
+                        new Date(subscription.endDate) > now;
+
+                    if (isActive) {
+                        const subscribedPlan =
+                            await this.planRepository.findById(
+                                subscription.subscriptionPlanId
+                            );
+
+                        providerSubscription = subscribedPlan?.planName;
+                    };
+                };
             };
 
             return {

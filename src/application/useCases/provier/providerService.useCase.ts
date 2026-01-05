@@ -3,7 +3,7 @@ import { IProviderServiceQueries } from '../../queries/IProviderService.queries'
 import { ProviderService } from '../../../domain/entities/providerService.entity';
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
 import { IProviderServiceRepository } from '../../../domain/interfaces/repositories/IProviderService.repository';
-import { CreateProviderServiceRequest, ProviderFetchProviderServiceRequest, ProviderFetchProviderServiceResponse, ProviderFindProviderServiceResProps, ProviderUpdateProviderServiceRequest, ProviderUpdateProviderServiceResponse } from '../../dtos/provider.dto';
+import { CreateProviderServiceRequest, ProviderFetchProviderServiceRequest, ProviderFetchProviderServiceResponse, ProviderUpdateProviderServiceRequest, ProviderUpdateProviderServiceResponse } from '../../dtos/provider.dto';
 
 export class ProviderCreateServiceDetailsUseCase {
 
@@ -27,7 +27,7 @@ export class ProviderCreateServiceDetailsUseCase {
                 provider.attachService(providerService._id);
                 const updatedProvider = await this.providerRepository.update(provider);
                 if (!updatedProvider) throw new Error("Failed to update provider with service ID.");
-            }
+            };
 
         } catch (error) {
             log.error("ProviderCreateServiceDetailsUseCase failed", error as Error);

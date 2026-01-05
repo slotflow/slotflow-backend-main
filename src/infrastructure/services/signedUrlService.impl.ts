@@ -15,11 +15,30 @@ export class SignedUrlServiceImpl implements ISignedUrlService {
         return `signedurl:${key}`;
     };
 
+    private isExternalUrl(key: string): boolean {
+        try {
+            const url = new URL(key);
+
+            return (
+                url.hostname.includes("googleusercontent.com") ||
+                url.hostname.includes("google.com") ||
+                url.hostname.includes("githubusercontent.com")
+            );
+
+        } catch {
+            return false;
+        }
+    };
+
     async get(key: string): Promise<string> {
         try {
             if (!key) {
                 throw new Error("Invalid request");
             };
+
+            if (this.isExternalUrl(key)) {
+                return key;
+            }
 
             const redisKey = this.buildRedisKey(key);
 
@@ -100,6 +119,49 @@ export class SignedUrlServiceImpl implements ISignedUrlService {
             log.error("SignedUrlService delete failed", error as Error);
             throw error;
         };
+    };
+
+    async debugLogAllSignedUrls(): Promise<void> {
+        try {
+            let cursor = 0;
+            const allKeys: string[] = [];
+            const allData: Record<string, string | null> = {};
+
+            do {
+                const [nextCursor, keys] = await this.redis.scan(cursor, {
+                    match: "signedurl:*",
+                    count: 100,
+                });
+
+                cursor = Number(nextCursor);
+                allKeys.push(...keys);
+            } while (cursor !== 0);
+
+            for (const key of allKeys) {
+                allData[key] = await this.redis.get<string>(key);
+            }
+
+            console.log("Redis Signed URL Cache:", allData);
+        } catch (error) {
+            log.error("Failed to debug redis signed URLs", error as Error);
+        }
+    };
+
+    async cleanupInvalidSignedUrls(): Promise<void> {
+        let cursor = 0;
+
+        do {
+            const [nextCursor, keys] = await this.redis.scan(cursor, {
+                match: "signedurl:https*",
+                count: 100,
+            });
+
+            cursor = Number(nextCursor);
+
+            if (keys.length) {
+                await this.redis.del(...keys);
+            }
+        } while (cursor !== 0);
     };
 
 };

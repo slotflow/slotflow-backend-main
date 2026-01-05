@@ -1,4 +1,4 @@
-import { AddressDTO, ApiPaginationRequest, FontendAvailabilityForResponse, PaymentDTO, PlanDTO, ProviderDTO, ProviderServiceDTO, ReviewDTO, ServiceDTO, SubscriptionDTO, UserDTO } from "./common.dto";
+import { AddressDTO, ApiPaginationRequest, FindProviderServiceResponse, FontendAvailabilityForResponse, PaymentDTO, PlanDTO, ProviderDTO, ProviderServiceDTO, ReviewDTO, ServiceDTO, SubscriptionDTO, UserDTO } from "./common.dto";
 
 // **** adminAddress.usecase
 
@@ -177,10 +177,6 @@ export type AdminFetchProviderServiceRequest = {
     providerId: ProviderDTO["_id"];
 };
 // Used as the request interface of admin fetch provider service
-type FindProviderServiceProps = Omit<ProviderServiceDTO, "service">;
-export interface FindProviderServiceResponse extends FindProviderServiceProps {
-    service: Pick<ServiceDTO, "serviceName">
-};
 export type AdminFetchProviderServiceResponse = FindProviderServiceResponse | null;
 
 // Used as the request interface of admin fetch provider service availability

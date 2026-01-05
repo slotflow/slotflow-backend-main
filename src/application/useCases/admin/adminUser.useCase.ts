@@ -76,17 +76,17 @@ export class AdminFetchUserDetailsUseCase {
 
             let signedProfileImage: string | null = null;
             if (user.profileImage) {
-                signedProfileImage = await this.signedUrlService.save(user.profileImage);
-            }
+                signedProfileImage = await this.signedUrlService.get(user.profileImage);
+            };
 
             return {
-                createdAt: user.createdAt,
                 email: user.email,
                 isBlocked: user.isBlocked,
                 isEmailVerified: user.isEmailVerified,
                 phone: user.phone,
                 username: user.username,
                 profileImage: signedProfileImage,
+                createdAt: user.createdAt,
             };
         } catch (error) {
             log.error("AdminFetchUserDetailsUseCase failed", error as Error);

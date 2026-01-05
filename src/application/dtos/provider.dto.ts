@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import { Review } from "../../domain/entities/review.entity";
-import { AddressDTO, BookingDTO, ProviderDTO, UserDTO, PlanDTO, SubscriptionPlan, ProviderServiceDTO, ServiceDTO, FrontendAvailabilityForRequest, FontendAvailabilityForResponse } from "./common.dto";
+import { AddressDTO, BookingDTO, ProviderDTO, UserDTO, PlanDTO, SubscriptionPlan, ProviderServiceDTO, ServiceDTO, FrontendAvailabilityForRequest, FontendAvailabilityForResponse, FindProviderServiceResponse } from "./common.dto";
 
 
 // ************ used in providerAddress.use-case ************ \\
@@ -25,16 +25,12 @@ export interface ProviderFetchProviderServiceRequest {
     providerId: ProviderDTO["_id"];
 }
 // provider fetch service details use case respomse interface
-type FindProviderServiceProps = Pick<ProviderServiceDTO, "_id" | "serviceName" | "serviceDescription" | "servicePrice" | "isGroupService" | "maxParticipants" | "requirements" | "serviceExperience" | "serviceMode" | "serviceType" | "tags" | "videoUrl">;
-export interface ProviderFindProviderServiceResProps extends FindProviderServiceProps {
-    service: Pick<ServiceDTO, "serviceName">;
-}
-export type ProviderFetchProviderServiceResponse = ProviderFindProviderServiceResProps | null;
+export type ProviderFetchProviderServiceResponse = FindProviderServiceResponse | null;
 
 
 // provider update service details use case request type
 export type ProviderUpdateProviderServiceRequest = Pick<ProviderServiceDTO, "_id" | "service" | "serviceName" | "serviceDescription" | "servicePrice" | "isGroupService" | "maxParticipants" | "serviceExperience" | "serviceMode" | "serviceType" | "tags"> & Partial<Pick<ProviderServiceDTO, "videoUrl" | "requirements">>;
-export type ProviderUpdateProviderServiceResponse = ProviderFindProviderServiceResProps | null;
+export type ProviderUpdateProviderServiceResponse = FindProviderServiceResponse | null;
 
 
 

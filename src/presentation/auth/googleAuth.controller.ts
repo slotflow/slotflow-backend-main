@@ -44,9 +44,9 @@ class GoogleAuthController {
             console.log("google auth callback");
             passport.authenticate("google", { session: false }, async (err, user, info) => {
 
-                console.log("err : ",err);
-                console.log("user : ",user);
-                console.log("info : ",info);
+                console.log("err : ", err);
+                console.log("user : ", user);
+                console.log("info : ", info);
 
                 if (err || !user) {
                     if (info.connectOnly) {

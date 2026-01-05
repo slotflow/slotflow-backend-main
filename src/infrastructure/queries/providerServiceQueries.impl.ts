@@ -1,10 +1,10 @@
 import { Types } from "mongoose";
 import { SubscriptionStatus } from "../../domain/enums/subscriptionStatus.enum";
 import { FindProviderServiceResponse } from "../../application/dtos/common.dto";
+import { UserFetchServiceProvidersResponse } from "../../application/dtos/user.dto";
 import { ProviderServiceModel } from "../database/providerService/providerService.model";
 import { IProviderServiceQueries } from "../../application/queries/IProviderService.queries";
 import { ProviderUpdateProviderServiceRequest, ProviderUpdateProviderServiceResponse } from "../../application/dtos/provider.dto";
-import { UserFetchServiceProvidersResponse } from "../../application/dtos/user.dto";
 
 export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
 
@@ -13,7 +13,7 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
             .populate({
                 path: "service",
                 select: "-_id serviceName"
-            }).lean();
+            }).lean<FindProviderServiceResponse>();
 
         if (!service) return null;
         return {
@@ -21,8 +21,8 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
             _id: service._id.toString(),
             providerId: service.providerId.toString(),
             service: {
-                serviceName: service.serviceName
-            }
+                serviceName: service.service.serviceName
+            },
         };
     };
 

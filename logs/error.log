@@ -779,3 +779,67 @@
 [31m    at D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\mongoose\lib\document.js:3090:17[39m
 [31m    at D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\mongoose\lib\schemaType.js:1407:9[39m
 [31m    at process.processTicksAndRejections (node:internal/process/task_queues:85:11)[39m
+[2025-12-30 19:56:06] [[31merror[39m]: [31mGoogleAuthOrchestratorUseCase failed : [39m
+[31mCannot read properties of undefined (reading 'length')[39m
+[31mTypeError: Cannot read properties of undefined (reading 'length')[39m
+[31m    at GoogleAuthOrchestratorUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\auth\googleAuthOrchestrate.useCase.ts:291:104)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async <anonymous> (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\auth\googleAuth.controller.ts:73:54)[39m
+[2025-12-30 20:44:55] [[31merror[39m]: [31mGoogleAuthOrchestratorUseCase failed : [39m
+[31mCannot read properties of undefined (reading 'length')[39m
+[31mTypeError: Cannot read properties of undefined (reading 'length')[39m
+[31m    at GoogleAuthOrchestratorUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\auth\googleAuthOrchestrate.useCase.ts:291:104)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async <anonymous> (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\auth\googleAuth.controller.ts:73:54)[39m
+[2025-12-31 14:04:02] [[31merror[39m]: [31mFethGoogleCalendarUseCase failed[39m
+[31mCredential not found[39m
+[31mError: Credential not found[39m
+[31m    at FethGoogleCalendarUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\common\fetchGoogleCalendar.useCase.ts:18:19)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async GoogleController.getUserEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\google\google.controller.ts:21:28)[39m
+[2025-12-31 14:04:02] [[31merror[39m]: [31mgetUserEvents failed[39m
+[31mCalendar events fetching failed[39m
+[31mError: Calendar events fetching failed[39m
+[31m    at FethGoogleCalendarUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\common\fetchGoogleCalendar.useCase.ts:44:19)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async GoogleController.getUserEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\google\google.controller.ts:21:28)[39m
+[2025-12-31 14:04:03] [[31merror[39m]: [31mFethGoogleCalendarUseCase failed[39m
+[31mCredential not found[39m
+[31mError: Credential not found[39m
+[31m    at FethGoogleCalendarUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\common\fetchGoogleCalendar.useCase.ts:18:19)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async GoogleController.getUserEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\google\google.controller.ts:21:28)[39m
+[2025-12-31 14:04:03] [[31merror[39m]: [31mgetUserEvents failed[39m
+[31mCalendar events fetching failed[39m
+[31mError: Calendar events fetching failed[39m
+[31m    at FethGoogleCalendarUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\common\fetchGoogleCalendar.useCase.ts:44:19)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async GoogleController.getUserEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\google\google.controller.ts:21:28)[39m
+[2026-01-05 15:38:55] [[31merror[39m]: [31mAdminFetchProviderServiceUseCase failed[39m
+[31mCannot read properties of undefined (reading 'serviceName')[39m
+[31mTypeError: Cannot read properties of undefined (reading 'serviceName')[39m
+[31m    at ProviderServiceQueriesImpl.findByProviderId (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:25:47)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async AdminFetchProviderServiceUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\admin\adminProviderProfile.useCase.ts:73:29)[39m
+[31m    at async AdminProviderController.fetchProviderService (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\admin\adminProvider.controller.ts:140:28)[39m
+[2026-01-05 15:38:55] [[31merror[39m]: [31mfetchProviderService failed[39m
+[31mCannot read properties of undefined (reading 'serviceName')[39m
+[31mTypeError: Cannot read properties of undefined (reading 'serviceName')[39m
+[31m    at ProviderServiceQueriesImpl.findByProviderId (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:25:47)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async AdminFetchProviderServiceUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\admin\adminProviderProfile.useCase.ts:73:29)[39m
+[31m    at async AdminProviderController.fetchProviderService (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\admin\adminProvider.controller.ts:140:28)[39m
+[2026-01-05 15:38:56] [[31merror[39m]: [31mAdminFetchProviderServiceUseCase failed[39m
+[31mCannot read properties of undefined (reading 'serviceName')[39m
+[31mTypeError: Cannot read properties of undefined (reading 'serviceName')[39m
+[31m    at ProviderServiceQueriesImpl.findByProviderId (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:25:47)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async AdminFetchProviderServiceUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\admin\adminProviderProfile.useCase.ts:73:29)[39m
+[31m    at async AdminProviderController.fetchProviderService (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\admin\adminProvider.controller.ts:140:28)[39m
+[2026-01-05 15:38:56] [[31merror[39m]: [31mfetchProviderService failed[39m
+[31mCannot read properties of undefined (reading 'serviceName')[39m
+[31mTypeError: Cannot read properties of undefined (reading 'serviceName')[39m
+[31m    at ProviderServiceQueriesImpl.findByProviderId (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:25:47)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async AdminFetchProviderServiceUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\admin\adminProviderProfile.useCase.ts:73:29)[39m
+[31m    at async AdminProviderController.fetchProviderService (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\admin\adminProvider.controller.ts:140:28)[39m

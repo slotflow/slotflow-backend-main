@@ -8,5 +8,9 @@ export interface ISignedUrlService {
 
     // deleting the signed url
     delete(key: string): Promise<boolean>;
-    
+
+    debugLogAllSignedUrls(): Promise<void>;
+
+    cleanupInvalidSignedUrls(): Promise<void>;
+
 };

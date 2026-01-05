@@ -556,9 +556,9 @@ export type FetchProviderProofsResponse = Pick<ProviderDTO, "identityProof" | "s
 
 export type findAllPlansForDisplayResProps = Pick<PlanDTO, "_id" | "planName" | "price" | "features" | "description">
 
-type FindProviderServiceProps = Omit<ProviderServiceDTO, "service">;
+type FindProviderServiceProps = Omit<ProviderServiceDTO, "service" | "updatedAt" | "createdAt">;
 export interface FindProviderServiceResponse extends FindProviderServiceProps {
-  service: Pick<ServiceDTO, "serviceName">
+  service: { serviceName: string }
 }
 
 
