@@ -19,6 +19,8 @@ import { ICredentialRepository } from '../../../domain/interfaces/repositories/I
 import { UserAppointmentBookingViaStripeRequest, UserSaveAppoinmentBookingRequest } from '../../dtos/user.dto';
 import { IKafkaService } from '../../../domain/interfaces/services/IKafka.service';
 import { kafkaConfig } from '../../../config/env';
+import { IGoogleCalendarGatewayService } from '../../../domain/interfaces/services/IGoogleCalendarGateway.service';
+import { IGoogleTokenService } from '../../../domain/interfaces/services/IGoogleToken.service';
 
 export class UserAppointmentBookingViaStripeUseCase {
     constructor(
@@ -45,8 +47,10 @@ export class UserAppointmentBookingViaStripeUseCase {
             }
 
             if (!isServiceData(providerService)) throw new Error("No service data found");
+            if(!provider.serviceAvailabilityId) throw new Error("No service availability found");
 
-            const providerServiceAvailability = await this.serviceAvailabilityQueries.findByProviderId(date, providerId);
+            const providerServiceAvailability = await this.serviceAvailabilityQueries.findByProviderId(date, provider.serviceAvailabilityId);
+            console.log("providerServiceAvailability : ",providerServiceAvailability);
             if (!providerServiceAvailability) throw new Error("No availability found");
 
             console.log("usecase availability");
@@ -103,9 +107,10 @@ export class UserSaveBookingAfterStripePaymentUseCase {
         private paymentRepository: IPaymentRepository,
         private bookingRepository: IBookingRepository,
         private serviceAvailabilityQueries: IServiceAvailabilityQueries,
-        private credentialRepository: ICredentialRepository,
         private providerRepository: IProviderRepository,
         private kafkaService: IKafkaService,
+        private googleCalendarGatewayService: IGoogleCalendarGatewayService,
+        private googleTokenService: IGoogleTokenService
     ) { };
 
     async execute(payload: UserSaveAppoinmentBookingRequest): Promise<void> {
@@ -116,11 +121,6 @@ export class UserSaveBookingAfterStripePaymentUseCase {
 
             const user = await this.userRepository.findById(userId);
             if (!user) throw new Error("No user found");
-
-            const credential = await this.credentialRepository.findById(userId);
-            if (!credential) {
-                throw new Error("Credential not found");
-            };
 
             const session = await stripe.checkout.sessions.retrieve(sessionId);
 
@@ -140,11 +140,13 @@ export class UserSaveBookingAfterStripePaymentUseCase {
 
             const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("No provider found");
+            if(!provider.serviceAvailabilityId) throw new Error("No service availability found");
 
-            const providerServiceAvailability = await this.serviceAvailabilityQueries.findByProviderId(new Date(dateString), providerId);
+            const providerServiceAvailability = await this.serviceAvailabilityQueries.findByProviderId(new Date(dateString), provider.serviceAvailabilityId);
             if (!providerServiceAvailability) throw new Error("No availability found");
 
             const selectedSlot = providerServiceAvailability.slots.filter((slot) => slot._id.toString() === slotId);
+            console.log("selectedSlot : ",selectedSlot);
             if (!selectedSlot || selectedSlot.length === 0) throw new Error("No available slots found for this day");
 
             if (!selectedSlot[0].available) throw new Error("This slot is not available for today");
@@ -165,21 +167,18 @@ export class UserSaveBookingAfterStripePaymentUseCase {
                 const payment = await this.paymentRepository.create(paymentData);
                 if (!payment) throw new Error("Unexpected error, payment saving error.");
 
+                const accessToken = await this.googleTokenService.getAccessToken(userId);
+                let eventId: string | null = null;
                 if (user.googleConnected) {
-                    // TODO create event
-                    // const response = await this.addEventToGoogleCalendarService.execute({
-                    //     userId,
-                    //     slotDuration: Number(slotDuration),
-                    //     appointmentDate: new Date(dateString),
-                    //     appointmentStatus: AppointmentStatus.Booked,
-                    // });
-                    // if (!response.success) throw new Error("Booking saving failed");
-
-                    let response = {
-                        data: {
-                            id: ""
-                        }
-                    }
+                    const { id: eventId } = await this.googleCalendarGatewayService.createEvent({
+                        accessToken: accessToken,
+                        appointmentDate: new Date(dateString),
+                        appointmentStatus: AppointmentStatus.Booked,
+                        slotDuration: Number(slotDuration),
+                        userId,
+                    });
+                    if (!eventId) throw new Error("Booking saving failed");
+                };
 
                     const bookingData = Booking.create({
                         serviceProviderId: providerId,
@@ -189,7 +188,7 @@ export class UserSaveBookingAfterStripePaymentUseCase {
                         appointmentStatus: AppointmentStatus.Booked,
                         appointmentTime: selectedSlot[0].time,
                         videoCallRoomId: "stw-" + uuidv4(),
-                        googleEventId: response?.data?.id!,
+                        googleEventId: eventId,
                         paymentId: payment._id,
                         slotId: selectedSlot[0]._id,
                         statusTrack: [{
@@ -221,8 +220,6 @@ export class UserSaveBookingAfterStripePaymentUseCase {
                             contentNumber: 1
                         },
                     });
-
-                };
 
             } catch (error) {
                 log.error("UserSaveBookingAfterStripePaymentUseCase failed", error as Error);

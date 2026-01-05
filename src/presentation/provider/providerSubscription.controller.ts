@@ -1,7 +1,7 @@
-import { DecodedUser } from "../../express";
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
+import { DecodedUser } from "../../application/dtos/common.dto";
 import { ProviderPlanSubscribeZodSchema } from "../../shared/zod/provider.zod";
 import { FetchSubscriptionDetailsUseCase } from "../../application/useCases/common/subscription.useCase";
 import { ProviderFetchAllSubscriptionsUseCase } from "../../application/useCases/provier/providerSubscription.useCase";

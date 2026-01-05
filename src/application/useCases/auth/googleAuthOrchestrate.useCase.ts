@@ -14,6 +14,7 @@ import { ICredentialRepository } from "../../../domain/interfaces/repositories/I
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
 import { IKafkaService } from "../../../domain/interfaces/services/IKafka.service";
 import { kafkaConfig } from "../../../config/env";
+import { PlanName } from "../../../domain/enums/planName.enum";
 
 export class GoogleAuthOrchestratorUseCase {
     constructor(
@@ -134,7 +135,7 @@ export class GoogleAuthOrchestratorUseCase {
 
             await this.credentialRepository.create(credentials);
 
-            let providerSubscription: string | undefined = "NoSubscription";
+            let providerSubscription: string | undefined = PlanName.NoSubscription;
 
             const subscriptions = (entity as Provider)?.subscription;
 
@@ -160,7 +161,7 @@ export class GoogleAuthOrchestratorUseCase {
                 };
             };
 
-            if(!entity) throw new Error("Invalid request");
+            if (!entity) throw new Error("Invalid request");
 
             await this.kafkaService.send({
                 topic: connectOnly ? kafkaConfig.topics.googleConnect : kafkaConfig.topics.registerSuccess,

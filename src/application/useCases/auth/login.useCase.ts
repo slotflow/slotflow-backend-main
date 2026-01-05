@@ -11,6 +11,7 @@ import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.r
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
 import { IKafkaService } from "../../../domain/interfaces/services/IKafka.service";
+import { PlanName } from "../../../domain/enums/planName.enum";
 
 export class LoginUseCase {
     constructor(
@@ -86,7 +87,7 @@ export class LoginUseCase {
                     signedProfileImageUrl = await this.signedUrlService.save(provider.profileImage);
                 };
 
-                let providerSubscription: string | undefined = "NoSubscription";
+                let providerSubscription: string | undefined = PlanName.NoSubscription;
 
                 const subscriptions = provider?.subscription;
 

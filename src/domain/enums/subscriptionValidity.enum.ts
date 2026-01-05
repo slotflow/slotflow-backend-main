@@ -1,6 +1,7 @@
 export enum SubscriptionValidity {
-    OneMonth = "1 Month",
-    ThreeMonths = "3 Months",
-    SixMonths = "6 Months",
-    TwelveMonths = "12 Months",
+    SevenDays = 7,
+    OneMonth = 30,
+    ThreeMonths = 90,
+    SixMonths = 180,
+    TwelveMonths = 365,
 }

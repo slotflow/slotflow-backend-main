@@ -149,12 +149,19 @@ export class ProviderSaveSubscriptionUseCase {
                 const updatedProvider = await this.providerRepository.update(provider);
                 if (!updatedProvider) throw new Error("Unexpected error, subscription adding error.");
 
+                const startDate = new Date();
+                const endDate = dayjs(startDate).add(planDuration * 30, "day");
+
                 await this.kafkaService.send({
-                    topic: kafkaConfig.topics.providerSubscriptionPayment,
+                    topic: kafkaConfig.topics.confirmSubscription,
                     key: provider.email,
                     message: {
                         name: provider.username,
                         email: provider.email,
+                        subscription: planName,
+                        duration: planDuration,
+                        startDate,
+                        endDate,
                         contentNumber: 1
                     },
                 });

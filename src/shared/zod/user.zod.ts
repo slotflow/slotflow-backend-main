@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { numberField, objectIdField, stringField } from "./common.zod";
+import { ServiceMode } from "../../domain/enums/serviceMode.enum";
 
 // **** user profile controller **** \\
 // User update user info controller zod validation
@@ -43,10 +44,7 @@ export const UserCreateSessionIdForbookingViaStripeZodSchema = z.object({
         required_error: "Date is required",
         invalid_type_error: "Date must be a valid Date object",
     })),
-    selectedServiceMode: z.enum(["online", "offline"],{
-        required_error: "Selected service mode is required",
-        invalid_type_error: "Selected service mode must be a string"
-    }),
+    selectedServiceMode: z.nativeEnum(ServiceMode),
 });
 
 

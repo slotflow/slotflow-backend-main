@@ -3,6 +3,7 @@ import { serviceCategoryArray } from "../utils/constants";
 import { verificationRejectionReasonRegex } from "./regex";
 import { booleanField, numberField, stringField } from "./common.zod";
 import { ServiceCategory } from "../../domain/enums/serviceCategories.enum";
+import { PlanName } from "../../domain/enums/planName.enum";
 
 // **** admin provider controller **** \\
 // Admin provider trust tag change controller zod validation
@@ -40,7 +41,7 @@ export const AdminAddServiceXZodSchema = z.object({
 // **** admin plan controller **** \\
 //Admin add new plan controller zod validation
 export const AdminAddNewPlanZodSchema = z.object({
-    planName: stringField("PlanName", 4, 20, /^[a-zA-Z ]{4,20}$/, "Invalid plan name. Only alphabets and spaces are allowed, length between 4 and 20."),
+    planName: z.nativeEnum(PlanName),
     description: stringField("Plan description", 10, 200, /^[\w\d\s!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]{10,200}$/, "Invalid description. Contains unsupported characters."),
     price: numberField("Plan price", 0, 100000),
     features: z.array(

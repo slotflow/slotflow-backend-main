@@ -8,7 +8,7 @@ export class SubscriptionMapper {
         return new Subscription({
             _id: doc._id.toString(),
             endDate: doc.endDate,
-            paymentId: doc.paymentId.toString(),
+            paymentId: doc.paymentId ? doc.paymentId.toString() : null,
             providerId: doc.providerId.toString(),
             startDate: doc.startDate,
             subscriptionPlanId: doc.subscriptionPlanId.toString(),
@@ -23,7 +23,7 @@ export class SubscriptionMapper {
 
         return {
             endDate: props.endDate,
-            paymentId: new Types.ObjectId(props.paymentId),
+            paymentId: props.paymentId ? new Types.ObjectId(props.paymentId) : null,
             providerId: new Types.ObjectId(props.providerId),
             startDate: props.startDate,
             subscriptionPlanId: new Types.ObjectId(props.subscriptionPlanId),

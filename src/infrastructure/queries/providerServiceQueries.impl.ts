@@ -30,13 +30,15 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
         const pipeline: any[] = [];
         const now = new Date();
 
+        console.log("serviceIds : ",serviceIds);
+
         if (serviceIds.length > 0) {
             pipeline.push({
                 $match: {
                     service: { $in: serviceIds.map(id => new Types.ObjectId(id)) }
                 }
             });
-        }
+        };
 
         pipeline.push(
             {

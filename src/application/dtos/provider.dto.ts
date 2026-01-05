@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import { Review } from "../../domain/entities/review.entity";
-import { AddressDTO, BookingDTO, ProviderDTO, UserDTO, PlanDTO, SubscriptionPlan, ProviderServiceDTO, ServiceDTO, FrontendAvailabilityForRequest, FontendAvailabilityForResponse, FindProviderServiceResponse } from "./common.dto";
+import { AddressDTO, BookingDTO, ProviderDTO, UserDTO, PlanDTO, ProviderServiceDTO, ServiceDTO, FrontendAvailabilityForRequest, FontendAvailabilityForResponse, FindProviderServiceResponse } from "./common.dto";
 
 
 // ************ used in providerAddress.use-case ************ \\
@@ -84,13 +84,13 @@ export type ProviderUpdateServiceProofRequest = Pick<ProviderDTO, "serviceProof"
 // provider update service proof use case response interface
 export type ProviderUpdateServiceProofResponse = ProviderDTO["serviceProof"];
 
-export type ProviderUpdateProfileRequest = Pick<ProviderDTO,"_id"> & Partial<Pick<ProviderDTO, "username" | "profileImage" | "phone" | "identityProof" | "serviceProof" | "googleConnected" | "addressId" | "googleId" | "isAdminVerified" | "isEmailVerified" | "isBlocked" | "serviceAvailabilityId" | "serviceId" | "stripeAccountId" | "verificationToken" | "trustedBySlotflow" | "subscription" | "password">>
+export type ProviderUpdateProfileRequest = Pick<ProviderDTO, "_id"> & Partial<Pick<ProviderDTO, "username" | "profileImage" | "phone" | "identityProof" | "serviceProof" | "googleConnected" | "addressId" | "googleId" | "isAdminVerified" | "isEmailVerified" | "isBlocked" | "serviceAvailabilityId" | "serviceId" | "stripeAccountId" | "verificationToken" | "trustedBySlotflow" | "subscription" | "password">>
 
 // provider admin approval
 export interface ProviderAdminApprovalRequest {
     providerId: ProviderDTO["_id"];
 }
-export type ProviderAdminApprovalResponse = Pick<ProviderDTO, "adminVerificationStatus">; 
+export type ProviderAdminApprovalResponse = Pick<ProviderDTO, "adminVerificationStatus">;
 
 // provider delete proof request
 export interface ProviderDeleteProofRequest {
@@ -138,7 +138,7 @@ export interface ProviderSaveSubscriptionRequest {
 }
 export interface ProviderSaveSubscriptionResponse {
     planName?: string
-}; 
+};
 
 
 
@@ -192,7 +192,7 @@ export interface ProviderFetchDashboardPaymentStatsDataResponse {
 // Used as the request interface for the provider fetch dashboard graph data
 export interface ProviderFetchDashboardGraphDataRequest {
     providerId: ProviderDTO["_id"],
-    subscription: SubscriptionPlan,
+    subscription: PlanDTO["planName"],
     startDate?: Date,
     endDate?: Date,
 }
@@ -253,7 +253,7 @@ export type ProviderStripeConnectResponse = Stripe.Response<Stripe.AccountLink>;
 
 // Provider Report UseCase
 export interface ProviderRepostReviewRequest {
-    reviewId: Review["_id"]; 
+    reviewId: Review["_id"];
     providerId: ProviderDTO["_id"];
 }
 

@@ -52,6 +52,8 @@ export class PlanRepositoryImpl implements IPlanRepository {
                 maxBookingPerMonth: 1,
                 isBlocked: 1,
                 adVisibility: 1,
+                features: 1,
+                description: 1,
             }).skip(skip).limit(limit).lean(),
             PlanModel.countDocuments(),
         ]);

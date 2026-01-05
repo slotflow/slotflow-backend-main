@@ -1,8 +1,8 @@
-import { DecodedUser } from "../../express";
 import { log } from "../../shared/logger/logger";
 import { Role } from "../../domain/enums/role.enum";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
+import { DecodedUser } from "../../application/dtos/common.dto";
 import { UserCreateSessionIdForbookingViaStripeZodSchema } from "../../shared/zod/user.zod";
 import { UserCancelBookingUseCase } from "../../application/useCases/user/userBooking.useCase";
 import { ValidateJoinRoomUsecase } from "../../application/useCases/common/validateJoinRoom.useCase";
@@ -36,7 +36,7 @@ class UserBookingController {
         try {
             const user = (req.user as DecodedUser);
             const { page, limit, online, raw } = RequestQueryForBookingCommonZodSchema.parse(req.query);
-            if (!user) throw new Error("Invalid request");
+            if (!user || !user.role) throw new Error("Invalid request");
             const result = await this.fetchBookingAppointmentsUseCase.execute({
                 userId: user.userOrProviderId,
                 page,
@@ -109,6 +109,7 @@ class UserBookingController {
             const { id: bookingId } = ValidateObjectId(req.params.bookingId, "Booking ID");
             const {roomId} = validateRoomId.parse(req.query.roomId);
             const userId = (req.user as DecodedUser).userOrProviderId;
+            if(!userId) throw new Error("Invalid request");
             const result = await this.validateJoinRoomUsecase.execute({ 
                 bookingId, 
                 roomId, 

@@ -7,7 +7,7 @@ export interface SubscriptionProps {
     startDate: Date,
     endDate: Date,
     subscriptionStatus: SubscriptionStatus,
-    paymentId: string,
+    paymentId: string | null,
     createdAt: Date,
     updatedAt: Date,
 }

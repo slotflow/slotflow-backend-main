@@ -9,9 +9,9 @@ export class ProviderFetchAllPlansUseCase {
 
     async execute(): Promise<ProviderFetchAllPlansResponse> {
         try {
-            const result = await this.planRepository.findAll();
-            if (!result) throw new Error("Plans Fetching error");
-            const { data: plans } = result;
+            const planData = await this.planRepository.findAll();
+            if (!planData) throw new Error("Plans Fetching error");
+            const { data: plans } = planData;
             return plans.map(plan => ({
                 _id: plan._id,
                 description: plan.description,

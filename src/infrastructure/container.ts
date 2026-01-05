@@ -33,7 +33,7 @@ import { ISignedUrlService } from '../domain/interfaces/services/ISignedUrl.serv
 import { IPlanRepository } from '../domain/interfaces/repositories/IPlan.repository';
 import { IUserRepository } from '../domain/interfaces/repositories/IUser.repository';
 import { ProviderRepositoryImpl } from './database/provider/provider.repository.impl';
-import { GoogleCalendarGatewayImpl } from './services/googleCalendarGatewayService.impl';
+import { GoogleCalendarGatewayServiceImpl } from './services/googleCalendarGatewayService.impl';
 import { IReviewRepository } from '../domain/interfaces/repositories/IReview.repository';
 import { IGoogleTokenService } from '../domain/interfaces/services/IGoogleToken.service';
 import { IProviderServiceQueries } from '../application/queries/IProviderService.queries';
@@ -160,7 +160,7 @@ export const aesEncryptionService: IAesEncryptionService = new AesEncryptionServ
 export const googlePassportStrategy = new GooglePassportStrategyImpl();
 
 // google calendar service instance
-export const googleCalendarGateway: IGoogleCalendarGatewayService = new GoogleCalendarGatewayImpl();
+export const googleCalendarGatewayService: IGoogleCalendarGatewayService = new GoogleCalendarGatewayServiceImpl();
 
 // google refresh token service instance
 export const googleRefreshTokenService: IGoogleRefreshTokenService = new GoogleRefreshTokenServiceImpl();

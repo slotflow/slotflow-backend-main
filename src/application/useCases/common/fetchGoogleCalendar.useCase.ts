@@ -8,7 +8,7 @@ export class FethGoogleCalendarUseCase {
     constructor(
         private credentialRepository: ICredentialRepository,
         private aesEncryption: IAesEncryptionService,
-        private googleCalendarGateway: IGoogleCalendarGatewayService
+        private googleCalendarGatewayService: IGoogleCalendarGatewayService
     ) { }
 
     async execute(userId: string): Promise<Array<UserBookingFetchingFromCalendar>> {
@@ -22,9 +22,7 @@ export class FethGoogleCalendarUseCase {
             credential.accessToken
         );
 
-        const events = await this.googleCalendarGateway.fetchEvents(
-            accessToken
-        );
+        const events = await this.googleCalendarGatewayService.fetchEvents(accessToken);
 
         return events.map((event: UserBookingFetchingFromCalendar) => ({
             id: event.id,

@@ -63,7 +63,7 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
             endDate: data.endDate,
             startDate: data.startDate,
             subscriptionStatus: data.subscriptionStatus,
-            paymentId: {
+            paymentId: data.paymentId ? {
                 transactionId: data.paymentId.transactionId,
                 discountAmount: data.paymentId.discountAmount,
                 initialAmount: data.paymentId.initialAmount,
@@ -72,7 +72,7 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
                 paymentGateway: data.paymentId.paymentGateway,
                 paymentMethod: data.paymentId.paymentMethod,
                 paymentStatus: data.paymentId.paymentStatus,
-            },
+            } : null,
             subscriptionPlanId: {
                 planName: data.subscriptionPlanId.planName,
                 price: data.subscriptionPlanId.price,
@@ -173,7 +173,7 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
                 endDate: sub.endDate,
                 subscriptionStatus: sub.subscriptionStatus,
                 planName: sub.subscriptionPlanId.planName,
-                totalAmount: sub.paymentId.totalAmount,
+                totalAmount: sub.paymentId ? sub.paymentId.totalAmount : 0,
             })),
             totalPages,
             currentPage: page,

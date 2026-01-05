@@ -79,7 +79,7 @@ export const providerStripeConnectUseCase = new ProviderStripeConnectUseCase(pro
 // provider subscription controller dependency injection
 export const fetchSubscriptionDetailsUseCase = new FetchSubscriptionDetailsUseCase(subscriptionQueries);
 export const providerFetchAllSubscriptionsUseCase = new ProviderFetchAllSubscriptionsUseCase(providerRepository, subscriptionQueries);
-export const providerTrialSubscriptionUseCase = new ProviderTrialSubscriptionUseCase(providerRepository, subscriptionRepository, planRepository);
+export const providerTrialSubscriptionUseCase = new ProviderTrialSubscriptionUseCase(providerRepository, subscriptionRepository, planRepository, kafkaService);
 export const providerSaveSubscriptionUseCase = new ProviderSaveSubscriptionUseCase(providerRepository, paymentRepository, subscriptionRepository, kafkaService);
 export const providerStripeSubscriptionCreateSessionIdUseCase = new ProviderStripeSubscriptionCreateSessionIdUseCase(planRepository, providerRepository, subscriptionRepository);
 

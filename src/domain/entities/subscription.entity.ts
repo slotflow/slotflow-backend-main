@@ -17,6 +17,7 @@ export class Subscription {
         return new Subscription({
             _id: "",
             ...props,
+            paymentId: props.paymentId ?? null,
             createdAt: new Date(),
             updatedAt: new Date(),
         })

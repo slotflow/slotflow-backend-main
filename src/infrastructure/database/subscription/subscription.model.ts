@@ -40,7 +40,8 @@ const SubscriptionSchema = new Schema<ISubscription>({
     },
     paymentId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Payment"
+        ref: "Payment",
+        default: null,
     },
     createdAt: {
         type: Date,

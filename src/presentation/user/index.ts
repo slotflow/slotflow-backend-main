@@ -11,8 +11,8 @@ import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/co
 import { UserCreateAddressUseCase, UserFetchAddressUseCase, UserUpdateAddressUseCase } from "../../application/useCases/user/userAddress.useCase";
 import { UserAppointmentBookingViaStripeUseCase, UserSaveBookingAfterStripePaymentUseCase } from "../../application/useCases/user/userStripeBooking.useCase";
 import { UserFetchProfileDetailsUseCase, UserUpdateProfileImageUseCase, UserUpdateProviderInfoUseCase } from "../../application/useCases/user/userProfile.useCase";
-import { addressRepository, bookingQueries, bookingRepository, credentialRepository, kafkaService, paymentRepository, providerRepository, providerServiceQueries, reviewQueries, reviewRepository, serviceAvailabilityQueries, serviceRepository, signedUrlService, userRepository } from "../../infrastructure/container";
 import { UserFetchProvidersForChatSidebarUseCase, UserFetchServiceProviderAddressUseCase, UserFetchServiceProviderProfileDetailsUseCase, UserFetchServiceProviderServiceAvailabilityUseCase, UserFetchServiceProviderServiceDetailsUseCase, UserFetchServiceProvidersUseCase } from "../../application/useCases/user/userProvider.useCase";
+import { addressRepository, bookingQueries, bookingRepository, googleCalendarGatewayService, googleTokenService, kafkaService, paymentRepository, providerRepository, providerServiceQueries, reviewQueries, reviewRepository, serviceAvailabilityQueries, serviceRepository, signedUrlService, userRepository } from "../../infrastructure/container";
 
 // user address controller dependency injection
 export const userUpdateAddressUseCase = new UserUpdateAddressUseCase(addressRepository);
@@ -29,7 +29,7 @@ export const fetchBookingAppointmentsUseCase = new FetchBookingAppointmentsUseCa
 export const userCancelBookingUseCase = new UserCancelBookingUseCase(userRepository, bookingRepository, paymentRepository);
 export const updateBookingOnlineTrakingUseCase = new UpdateBookingOnlineTrakingUseCase(bookingRepository, serviceAvailabilityQueries);
 export const userAppointmentBookingViaStrpieUseCase = new UserAppointmentBookingViaStripeUseCase(providerRepository, bookingRepository, providerServiceQueries, serviceAvailabilityQueries);
-export const userSaveBookingAfterStripePaymentUseCase = new UserSaveBookingAfterStripePaymentUseCase(userRepository, paymentRepository, bookingRepository, serviceAvailabilityQueries, credentialRepository, providerRepository, kafkaService);
+export const userSaveBookingAfterStripePaymentUseCase = new UserSaveBookingAfterStripePaymentUseCase(userRepository, paymentRepository, bookingRepository, serviceAvailabilityQueries, providerRepository, kafkaService, googleCalendarGatewayService, googleTokenService);
 
 // user payment controller dependency injection
 export const userFetchAllPaymentsUseCase = new UserFetchAllPaymentsUseCase(userRepository, paymentRepository);

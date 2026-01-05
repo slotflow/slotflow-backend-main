@@ -1,4 +1,6 @@
 import { Day } from "../../domain/enums/day.enum";
+import { Role } from "../../domain/enums/role.enum";
+import { PlanName } from "../../domain/enums/planName.enum";
 import { PaymentFor } from "../../domain/enums/paymentFor.enum";
 import { ServiceType } from "../../domain/enums/serviceType.enum";
 import { ServiceMode } from "../../domain/enums/serviceMode.enum";
@@ -11,7 +13,6 @@ import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { SubscriptionStatus } from "../../domain/enums/subscriptionStatus.enum";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
 import { adminVerificationStatusArray, appointmentStatusArray, daysArray, paymentForArray, paymentGatewayArray, roleArray, serviceCategoryArray, serviceModeArray, serviceTypeArray, subscriptionStatusArray } from "../../shared/utils/constants";
-import { Role } from "../../domain/enums/role.enum";
 
 export type RoleType = typeof roleArray[number];
 
@@ -175,7 +176,7 @@ export interface CredentialDTO {
 // **** PLAN INTERFACE
 export interface PlanDTO {
   _id: string,
-  planName: string,
+  planName: PlanName,
   description: string,
   price: number,
   features: string[],
@@ -224,7 +225,7 @@ export interface SubscriptionDTO {
   startDate: Date,
   endDate: Date,
   subscriptionStatus: SubscriptionStatus,
-  paymentId: string,
+  paymentId: string | null,
   createdAt: Date,
   updatedAt: Date,
 }
@@ -245,30 +246,30 @@ export interface ReviewDTO {
 
 // **** SERVICEAVAILABILITY INTERFACE AND ITS SUPPORTS
 export interface TimeSlot {
-    time: string,
+  time: string,
 };
 
 export interface TimeSlotForFrontendResponse {
-    _id: string,
-    time: string,
-    available: boolean,
+  _id: string,
+  time: string,
+  available: boolean,
 };
 
 export interface Availability {
-    day: Day,
-    duration: number,
-    startTime: string,
-    endTime: string,
-    modes: ServiceMode[],
-    slots: TimeSlot[],
+  day: Day,
+  duration: number,
+  startTime: string,
+  endTime: string,
+  modes: ServiceMode[],
+  slots: TimeSlot[],
 };
 
 export interface ServiceAvailabilityDTO {
-    _id: string,
-    providerId: string,
-    availabilities: Availability[],
-    createdAt: Date,
-    updatedAt: Date,
+  _id: string,
+  providerId: string,
+  availabilities: Availability[],
+  createdAt: Date,
+  updatedAt: Date,
 };
 
 
@@ -327,7 +328,7 @@ export type FindSubscriptionsByProviderIdResponse = Array<
   Partial<Pick<PaymentDTO, "totalAmount">>;
 export type PopulatedSubscription = Omit<SubscriptionDTO, 'subscriptionPlanId' | "paymentId"> & {
   subscriptionPlanId: {
-    planName: string;
+    planName: PlanDTO["planName"];
   },
   paymentId: {
     totalAmount: string;
@@ -347,7 +348,7 @@ export interface userIdAndServiceProviderId {
 export interface FetchBookingsRequest extends ApiPaginationRequest, userIdAndServiceProviderId {
   online: boolean;
   raw: boolean;
-  role: RoleType;
+  role: Role;
 }
 // Used as the response type for fetching bookings for admin, provider and user side
 export type FetchBookingsResponse = Array<Pick<BookingDTO, "_id" | "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "videoCallRoomId" | "serviceProviderId">>;
@@ -483,7 +484,7 @@ export interface UpdateGoogleCalendarEventRequest {
   eventId: string,
   appointmentDate: BookingDTO["appointmentDate"],
   appointmentStatus: BookingDTO["appointmentStatus"],
-  accessToken: string, 
+  accessToken: string,
   event: Partial<UserBookingAddingToCalendar>
 }
 
@@ -526,10 +527,6 @@ export interface FetchBookingDetailsResponse extends Pick<BookingDTO, "appointme
   serviceProviderId: Pick<ProviderDTO, "username" | "email">;
 };
 
-
-export type SubscriptionPlan = "Free" | "NoSubscription" | "Starter" | "Professional" | "Enterprise";
-
-
 //// **** Used in s3 controller
 export type CreareFileUploadPresignedUrlRequest = {
   folderName: string;
@@ -567,26 +564,26 @@ type PaymentsProps = Pick<PaymentDTO, "transactionId" | "discountAmount" | "init
 type PlanProps = Pick<PlanDTO, "planName" | "price" | "adVisibility" | "maxBookingPerMonth">;
 export interface findSubscriptionFullDetailsResProps extends SubscriptionProps {
   subscriptionPlanId: PlanProps,
-  paymentId: PaymentsProps,
+  paymentId: PaymentsProps | null,
 }
 
 export interface PlanNameOnly {
   subscriptionPlanId: {
-    planName: string
+    planName: PlanDTO["planName"];
   }
 }
 
 
 export interface FontendAvailabilityForResponse extends Omit<Availability, "slots"> {
-    slots: TimeSlotForFrontendResponse[]
+  slots: TimeSlotForFrontendResponse[]
 }
 
 export interface FrontendAvailabilityForRequest extends Omit<Availability, "slots"> {
-    slots: string[];
+  slots: string[];
 }
 
 export interface FrontendAvailabilityUpdatedSlots extends Omit<Availability, "slots"> {
-    slots: TimeSlot[];
+  slots: TimeSlot[];
 }
 
 export interface KafkaSendPayload<T> {
@@ -602,16 +599,16 @@ export type KafkaConsumeHandler<T> = (payload: {
 }) => Promise<void>;
 
 export interface DecodedUser {
-    userOrProviderId?: string;
-    role?: Role;
-    googleAccessToken?: string;
-    googleRefreshToken?: string;
-    googleId?: string;
-    email?: string;
-    name?: string;
-    image: string | null;
-    connectOnly?: boolean;
-    exp?: number;
-    iat?: number;
-    userId: string;
+  userOrProviderId?: string;
+  role?: Role;
+  googleAccessToken?: string;
+  googleRefreshToken?: string;
+  googleId?: string;
+  email?: string;
+  name?: string;
+  image: string | null;
+  connectOnly?: boolean;
+  exp?: number;
+  iat?: number;
+  userId: string;
 };

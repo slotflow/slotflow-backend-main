@@ -1,3 +1,4 @@
+import { PlanName } from "../enums/planName.enum";
 import { PlanProps } from "../contracts/plan.contract";
 import { CreatePlanProps, UpdatePlanProps } from "../commands/plan.commands";
 
@@ -33,7 +34,7 @@ export class Plan {
         return this.props._id;
     };
 
-    get planName(): string {
+    get planName(): PlanName {
         return this.props.planName;
     };
 

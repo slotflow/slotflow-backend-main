@@ -91,10 +91,10 @@ export const kafkaConfig = {
     rejectAppointment: validator.requireEnv("KAFKA_REJECT_APPOINTMENT_TOPIC"),
 
     userPayment: validator.requireEnv("KAFKA_USER_PAYMENT_TOPIC"),
-    providerSubscriptionPayment: validator.requireEnv("KAFKA_PROVIDER_SUBSCRIPTION_PAYMENT_TOPIC"),
     providerPayout: validator.requireEnv("KAFKA_PROVIDER_PAYOUT_TOPIC"),
 
     providerStripeAccount: validator.requireEnv("KAFKA_PROVIDER_STRIPE_ACCOUNT_TOPIC"),
     googleConnect: validator.requireEnv("KAFKA_GOOGLE_CONNECT_TOPIC"),
+    confirmSubscription: validator.requireEnv("KAFKA_PROVIDER_CONFIRM_SUBSCRIPTION_TOPIC"),
   },
 };

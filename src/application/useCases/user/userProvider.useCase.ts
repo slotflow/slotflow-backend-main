@@ -27,7 +27,7 @@ export class UserFetchServiceProvidersUseCase {
       const providers = await this.providerServiceQueries.findProvidersUsingServiceIds(serviceIds);
       if (!providers) return null;
 
-      const updatedproviders = await Promise.all(
+      const updatedProviders = await Promise.all(
         providers.map(async (provider) => {
           let profileImageUrl = provider?.provider?.profileImage;
 
@@ -40,7 +40,9 @@ export class UserFetchServiceProvidersUseCase {
         }),
       );
 
-      return updatedproviders;
+      // console.log("updatedProviders : ",updatedProviders);
+
+      return updatedProviders;
     } catch (error) {
       log.error("UserFetchServiceProvidersUseCase failed", error as Error);
       throw error;

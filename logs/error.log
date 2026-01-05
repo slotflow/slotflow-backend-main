@@ -843,3 +843,354 @@
 [31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
 [31m    at async AdminFetchProviderServiceUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\admin\adminProviderProfile.useCase.ts:73:29)[39m
 [31m    at async AdminProviderController.fetchProviderService (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\admin\adminProvider.controller.ts:140:28)[39m
+[2026-01-05 19:38:06] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mCannot read properties of undefined (reading '_id')[39m
+[31mTypeError: Cannot read properties of undefined (reading '_id')[39m
+[31m    at <anonymous> (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:123:33)[39m
+[31m    at Array.map (<anonymous>)[39m
+[31m    at ProviderServiceQueriesImpl.findProvidersUsingServiceIds (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:120:26)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:27:25)[39m
+[31m    at async UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:28)[39m
+[2026-01-05 19:38:06] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mCannot read properties of undefined (reading '_id')[39m
+[31mTypeError: Cannot read properties of undefined (reading '_id')[39m
+[31m    at <anonymous> (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:123:33)[39m
+[31m    at Array.map (<anonymous>)[39m
+[31m    at ProviderServiceQueriesImpl.findProvidersUsingServiceIds (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:120:26)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:27:25)[39m
+[31m    at async UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:28)[39m
+[2026-01-05 19:38:07] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mCannot read properties of undefined (reading '_id')[39m
+[31mTypeError: Cannot read properties of undefined (reading '_id')[39m
+[31m    at <anonymous> (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:123:33)[39m
+[31m    at Array.map (<anonymous>)[39m
+[31m    at ProviderServiceQueriesImpl.findProvidersUsingServiceIds (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:120:26)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:27:25)[39m
+[31m    at async UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:28)[39m
+[2026-01-05 19:38:07] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mCannot read properties of undefined (reading '_id')[39m
+[31mTypeError: Cannot read properties of undefined (reading '_id')[39m
+[31m    at <anonymous> (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:123:33)[39m
+[31m    at Array.map (<anonymous>)[39m
+[31m    at ProviderServiceQueriesImpl.findProvidersUsingServiceIds (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:120:26)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:27:25)[39m
+[31m    at async UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:28)[39m
+[2026-01-05 19:39:00] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mCannot read properties of undefined (reading '_id')[39m
+[31mTypeError: Cannot read properties of undefined (reading '_id')[39m
+[31m    at <anonymous> (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:125:33)[39m
+[31m    at Array.map (<anonymous>)[39m
+[31m    at ProviderServiceQueriesImpl.findProvidersUsingServiceIds (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:122:26)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:27:25)[39m
+[31m    at async UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:28)[39m
+[2026-01-05 19:39:00] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mCannot read properties of undefined (reading '_id')[39m
+[31mTypeError: Cannot read properties of undefined (reading '_id')[39m
+[31m    at <anonymous> (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:125:33)[39m
+[31m    at Array.map (<anonymous>)[39m
+[31m    at ProviderServiceQueriesImpl.findProvidersUsingServiceIds (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:122:26)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:27:25)[39m
+[31m    at async UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:28)[39m
+[2026-01-05 19:39:02] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mCannot read properties of undefined (reading '_id')[39m
+[31mTypeError: Cannot read properties of undefined (reading '_id')[39m
+[31m    at <anonymous> (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:125:33)[39m
+[31m    at Array.map (<anonymous>)[39m
+[31m    at ProviderServiceQueriesImpl.findProvidersUsingServiceIds (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:122:26)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:27:25)[39m
+[31m    at async UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:28)[39m
+[2026-01-05 19:39:02] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mCannot read properties of undefined (reading '_id')[39m
+[31mTypeError: Cannot read properties of undefined (reading '_id')[39m
+[31m    at <anonymous> (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:125:33)[39m
+[31m    at Array.map (<anonymous>)[39m
+[31m    at ProviderServiceQueriesImpl.findProvidersUsingServiceIds (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:122:26)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:27:25)[39m
+[31m    at async UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:28)[39m
+[2026-01-05 19:39:03] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mCannot read properties of undefined (reading '_id')[39m
+[31mTypeError: Cannot read properties of undefined (reading '_id')[39m
+[31m    at <anonymous> (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:125:33)[39m
+[31m    at Array.map (<anonymous>)[39m
+[31m    at ProviderServiceQueriesImpl.findProvidersUsingServiceIds (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:122:26)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:27:25)[39m
+[31m    at async UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:28)[39m
+[2026-01-05 19:39:03] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mCannot read properties of undefined (reading '_id')[39m
+[31mTypeError: Cannot read properties of undefined (reading '_id')[39m
+[31m    at <anonymous> (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:125:33)[39m
+[31m    at Array.map (<anonymous>)[39m
+[31m    at ProviderServiceQueriesImpl.findProvidersUsingServiceIds (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:122:26)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:27:25)[39m
+[31m    at async UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:28)[39m
+[2026-01-05 19:40:48] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mCannot read properties of undefined (reading 'toString')[39m
+[31mTypeError: Cannot read properties of undefined (reading 'toString')[39m
+[31m    at <anonymous> (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:125:37)[39m
+[31m    at Array.map (<anonymous>)[39m
+[31m    at ProviderServiceQueriesImpl.findProvidersUsingServiceIds (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:122:26)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:27:25)[39m
+[31m    at async UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:28)[39m
+[2026-01-05 19:40:48] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mCannot read properties of undefined (reading 'toString')[39m
+[31mTypeError: Cannot read properties of undefined (reading 'toString')[39m
+[31m    at <anonymous> (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:125:37)[39m
+[31m    at Array.map (<anonymous>)[39m
+[31m    at ProviderServiceQueriesImpl.findProvidersUsingServiceIds (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\queries\providerServiceQueries.impl.ts:122:26)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:27:25)[39m
+[31m    at async UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:28)[39m
+[2026-01-05 20:03:21] [[31merror[39m]: [31mProviderTrialSubscriptionUseCase failed[39m
+[31minput must be a 24 character hex string, 12 byte Uint8Array, or an integer[39m
+[31mBSONError: input must be a 24 character hex string, 12 byte Uint8Array, or an integer[39m
+[31m    at new ObjectId (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\bson\src\objectid.ts:120:15)[39m
+[31m    at Function.toPersistence (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\mappers\subscription.mapper.ts:26:24)[39m
+[31m    at SubscriptionRepositoryImpl.create (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\database\subscription\subscription.repository.impl.ts:9:48)[39m
+[31m    at ProviderTrialSubscriptionUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\provier\providerTrailSubscription.useCase.ts:48:68)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async ProviderSubscriptionController.subscribeToTrialPlan (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\provider\providerSubscription.controller.ts:72:28)[39m
+[2026-01-05 20:03:21] [[31merror[39m]: [31msubscribeToTrialPlan failed[39m
+[31minput must be a 24 character hex string, 12 byte Uint8Array, or an integer[39m
+[31mBSONError: input must be a 24 character hex string, 12 byte Uint8Array, or an integer[39m
+[31m    at new ObjectId (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\bson\src\objectid.ts:120:15)[39m
+[31m    at Function.toPersistence (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\mappers\subscription.mapper.ts:26:24)[39m
+[31m    at SubscriptionRepositoryImpl.create (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\database\subscription\subscription.repository.impl.ts:9:48)[39m
+[31m    at ProviderTrialSubscriptionUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\provier\providerTrailSubscription.useCase.ts:48:68)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async ProviderSubscriptionController.subscribeToTrialPlan (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\provider\providerSubscription.controller.ts:72:28)[39m
+[2026-01-05 22:03:14] [[31merror[39m]: [31mProviderTrialSubscriptionUseCase failed[39m
+[31minput must be a 24 character hex string, 12 byte Uint8Array, or an integer[39m
+[31mBSONError: input must be a 24 character hex string, 12 byte Uint8Array, or an integer[39m
+[31m    at new ObjectId (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\bson\src\objectid.ts:120:15)[39m
+[31m    at Function.toPersistence (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\mappers\subscription.mapper.ts:26:24)[39m
+[31m    at SubscriptionRepositoryImpl.create (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\database\subscription\subscription.repository.impl.ts:9:48)[39m
+[31m    at ProviderTrialSubscriptionUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\provier\providerTrailSubscription.useCase.ts:53:68)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async ProviderSubscriptionController.subscribeToTrialPlan (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\provider\providerSubscription.controller.ts:72:28)[39m
+[2026-01-05 22:03:14] [[31merror[39m]: [31msubscribeToTrialPlan failed[39m
+[31minput must be a 24 character hex string, 12 byte Uint8Array, or an integer[39m
+[31mBSONError: input must be a 24 character hex string, 12 byte Uint8Array, or an integer[39m
+[31m    at new ObjectId (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\bson\src\objectid.ts:120:15)[39m
+[31m    at Function.toPersistence (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\mappers\subscription.mapper.ts:26:24)[39m
+[31m    at SubscriptionRepositoryImpl.create (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\database\subscription\subscription.repository.impl.ts:9:48)[39m
+[31m    at ProviderTrialSubscriptionUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\provier\providerTrailSubscription.useCase.ts:53:68)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async ProviderSubscriptionController.subscribeToTrialPlan (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\provider\providerSubscription.controller.ts:72:28)[39m
+[2026-01-05 22:05:20] [[31merror[39m]: [31mProviderTrialSubscriptionUseCase failed[39m
+[31minput must be a 24 character hex string, 12 byte Uint8Array, or an integer[39m
+[31mBSONError: input must be a 24 character hex string, 12 byte Uint8Array, or an integer[39m
+[31m    at new ObjectId (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\bson\src\objectid.ts:120:15)[39m
+[31m    at Function.toPersistence (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\mappers\subscription.mapper.ts:26:24)[39m
+[31m    at SubscriptionRepositoryImpl.create (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\database\subscription\subscription.repository.impl.ts:9:48)[39m
+[31m    at ProviderTrialSubscriptionUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\provier\providerTrailSubscription.useCase.ts:58:68)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async ProviderSubscriptionController.subscribeToTrialPlan (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\provider\providerSubscription.controller.ts:72:28)[39m
+[2026-01-05 22:05:20] [[31merror[39m]: [31msubscribeToTrialPlan failed[39m
+[31minput must be a 24 character hex string, 12 byte Uint8Array, or an integer[39m
+[31mBSONError: input must be a 24 character hex string, 12 byte Uint8Array, or an integer[39m
+[31m    at new ObjectId (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\bson\src\objectid.ts:120:15)[39m
+[31m    at Function.toPersistence (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\mappers\subscription.mapper.ts:26:24)[39m
+[31m    at SubscriptionRepositoryImpl.create (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\database\subscription\subscription.repository.impl.ts:9:48)[39m
+[31m    at ProviderTrialSubscriptionUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\provier\providerTrailSubscription.useCase.ts:58:68)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async ProviderSubscriptionController.subscribeToTrialPlan (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\provider\providerSubscription.controller.ts:72:28)[39m
+[2026-01-05 22:06:24] [[31merror[39m]: [31mProviderTrialSubscriptionUseCase failed[39m
+[31minput must be a 24 character hex string, 12 byte Uint8Array, or an integer[39m
+[31mBSONError: input must be a 24 character hex string, 12 byte Uint8Array, or an integer[39m
+[31m    at new ObjectId (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\bson\src\objectid.ts:120:15)[39m
+[31m    at Function.toPersistence (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\mappers\subscription.mapper.ts:26:24)[39m
+[31m    at SubscriptionRepositoryImpl.create (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\database\subscription\subscription.repository.impl.ts:9:48)[39m
+[31m    at ProviderTrialSubscriptionUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\provier\providerTrailSubscription.useCase.ts:58:68)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async ProviderSubscriptionController.subscribeToTrialPlan (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\provider\providerSubscription.controller.ts:72:28)[39m
+[2026-01-05 22:06:24] [[31merror[39m]: [31msubscribeToTrialPlan failed[39m
+[31minput must be a 24 character hex string, 12 byte Uint8Array, or an integer[39m
+[31mBSONError: input must be a 24 character hex string, 12 byte Uint8Array, or an integer[39m
+[31m    at new ObjectId (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\bson\src\objectid.ts:120:15)[39m
+[31m    at Function.toPersistence (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\mappers\subscription.mapper.ts:26:24)[39m
+[31m    at SubscriptionRepositoryImpl.create (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\database\subscription\subscription.repository.impl.ts:9:48)[39m
+[31m    at ProviderTrialSubscriptionUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\provier\providerTrailSubscription.useCase.ts:58:68)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async ProviderSubscriptionController.subscribeToTrialPlan (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\provider\providerSubscription.controller.ts:72:28)[39m
+[2026-01-05 22:08:24] [[31merror[39m]: [31mProviderTrialSubscriptionUseCase failed[39m
+[31minput must be a 24 character hex string, 12 byte Uint8Array, or an integer[39m
+[31mBSONError: input must be a 24 character hex string, 12 byte Uint8Array, or an integer[39m
+[31m    at new ObjectId (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\bson\src\objectid.ts:120:15)[39m
+[31m    at Function.toPersistence (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\mappers\subscription.mapper.ts:26:24)[39m
+[31m    at SubscriptionRepositoryImpl.create (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\database\subscription\subscription.repository.impl.ts:9:48)[39m
+[31m    at ProviderTrialSubscriptionUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\provier\providerTrailSubscription.useCase.ts:59:68)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async ProviderSubscriptionController.subscribeToTrialPlan (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\provider\providerSubscription.controller.ts:72:28)[39m
+[2026-01-05 22:08:24] [[31merror[39m]: [31msubscribeToTrialPlan failed[39m
+[31minput must be a 24 character hex string, 12 byte Uint8Array, or an integer[39m
+[31mBSONError: input must be a 24 character hex string, 12 byte Uint8Array, or an integer[39m
+[31m    at new ObjectId (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\bson\src\objectid.ts:120:15)[39m
+[31m    at Function.toPersistence (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\mappers\subscription.mapper.ts:26:24)[39m
+[31m    at SubscriptionRepositoryImpl.create (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\database\subscription\subscription.repository.impl.ts:9:48)[39m
+[31m    at ProviderTrialSubscriptionUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\provier\providerTrailSubscription.useCase.ts:59:68)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async ProviderSubscriptionController.subscribeToTrialPlan (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\provider\providerSubscription.controller.ts:72:28)[39m
+[2026-01-05 22:11:35] [[31merror[39m]: [31mProviderTrialSubscriptionUseCase failed[39m
+[31minput must be a 24 character hex string, 12 byte Uint8Array, or an integer[39m
+[31mBSONError: input must be a 24 character hex string, 12 byte Uint8Array, or an integer[39m
+[31m    at new ObjectId (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\bson\src\objectid.ts:120:15)[39m
+[31m    at Function.toPersistence (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\mappers\subscription.mapper.ts:26:24)[39m
+[31m    at SubscriptionRepositoryImpl.create (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\database\subscription\subscription.repository.impl.ts:9:48)[39m
+[31m    at ProviderTrialSubscriptionUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\provier\providerTrailSubscription.useCase.ts:59:68)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async ProviderSubscriptionController.subscribeToTrialPlan (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\provider\providerSubscription.controller.ts:72:28)[39m
+[2026-01-05 22:11:35] [[31merror[39m]: [31msubscribeToTrialPlan failed[39m
+[31minput must be a 24 character hex string, 12 byte Uint8Array, or an integer[39m
+[31mBSONError: input must be a 24 character hex string, 12 byte Uint8Array, or an integer[39m
+[31m    at new ObjectId (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\bson\src\objectid.ts:120:15)[39m
+[31m    at Function.toPersistence (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\mappers\subscription.mapper.ts:26:24)[39m
+[31m    at SubscriptionRepositoryImpl.create (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\database\subscription\subscription.repository.impl.ts:9:48)[39m
+[31m    at ProviderTrialSubscriptionUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\provier\providerTrailSubscription.useCase.ts:59:68)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async ProviderSubscriptionController.subscribeToTrialPlan (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\provider\providerSubscription.controller.ts:72:28)[39m
+[2026-01-06 00:03:38] [[31merror[39m]: [31mGoogleAuthOrchestratorUseCase failed : [39m
+[31mCannot read properties of undefined (reading 'send')[39m
+[31mTypeError: Cannot read properties of undefined (reading 'send')[39m
+[31m    at GoogleAuthOrchestratorUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\auth\googleAuthOrchestrate.useCase.ts:166:37)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async <anonymous> (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\auth\googleAuth.controller.ts:73:54)[39m
+[2026-01-06 00:28:39] [[31merror[39m]: [31mcreateSessionIdForbookingViaStripe failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "received": "Online",[39m
+[31m    "code": "invalid_enum_value",[39m
+[31m    "options": [[39m
+[31m      "online",[39m
+[31m      "offline"[39m
+[31m    ],[39m
+[31m    "path": [[39m
+[31m      "selectedServiceMode"[39m
+[31m    ],[39m
+[31m    "message": "Invalid enum value. Expected 'online' | 'offline', received 'Online'"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "received": "Online",[39m
+[31m    "code": "invalid_enum_value",[39m
+[31m    "options": [[39m
+[31m      "online",[39m
+[31m      "offline"[39m
+[31m    ],[39m
+[31m    "path": [[39m
+[31m      "selectedServiceMode"[39m
+[31m    ],[39m
+[31m    "message": "Invalid enum value. Expected 'online' | 'offline', received 'Online'"[39m
+[31m  }[39m
+[31m][39m
+[31m    at get error (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:587:31)[39m
+[31m    at ZodObject.parse (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:663:22)[39m
+[31m    at UserBookingController.createSessionIdForbookingViaStripe (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userBooking.controller.ts:74:82)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 00:33:35] [[31merror[39m]: [31mUserAppointmentBookingViaStripeUseCase failed[39m
+[31mNo availability found[39m
+[31mError: No availability found[39m
+[31m    at UserAppointmentBookingViaStripeUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userStripeBooking.useCase.ts:50:53)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async UserBookingController.createSessionIdForbookingViaStripe (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userBooking.controller.ts:77:28)[39m
+[2026-01-06 00:33:35] [[31merror[39m]: [31mcreateSessionIdForbookingViaStripe failed[39m
+[31mNo availability found[39m
+[31mError: No availability found[39m
+[31m    at UserAppointmentBookingViaStripeUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userStripeBooking.useCase.ts:50:53)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async UserBookingController.createSessionIdForbookingViaStripe (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userBooking.controller.ts:77:28)[39m
+[2026-01-06 00:43:32] [[31merror[39m]: [31mUserAppointmentBookingViaStripeUseCase failed[39m
+[31mNo availability found[39m
+[31mError: No availability found[39m
+[31m    at UserAppointmentBookingViaStripeUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userStripeBooking.useCase.ts:51:53)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async UserBookingController.createSessionIdForbookingViaStripe (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userBooking.controller.ts:77:28)[39m
+[2026-01-06 00:43:32] [[31merror[39m]: [31mcreateSessionIdForbookingViaStripe failed[39m
+[31mNo availability found[39m
+[31mError: No availability found[39m
+[31m    at UserAppointmentBookingViaStripeUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userStripeBooking.useCase.ts:51:53)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async UserBookingController.createSessionIdForbookingViaStripe (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userBooking.controller.ts:77:28)[39m
+[2026-01-06 00:45:04] [[31merror[39m]: [31mUserAppointmentBookingViaStripeUseCase failed[39m
+[31mNo availability found[39m
+[31mError: No availability found[39m
+[31m    at UserAppointmentBookingViaStripeUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userStripeBooking.useCase.ts:51:53)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async UserBookingController.createSessionIdForbookingViaStripe (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userBooking.controller.ts:77:28)[39m
+[2026-01-06 00:45:04] [[31merror[39m]: [31mcreateSessionIdForbookingViaStripe failed[39m
+[31mNo availability found[39m
+[31mError: No availability found[39m
+[31m    at UserAppointmentBookingViaStripeUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userStripeBooking.useCase.ts:51:53)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async UserBookingController.createSessionIdForbookingViaStripe (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userBooking.controller.ts:77:28)[39m
+[2026-01-06 00:46:18] [[31merror[39m]: [31mUserAppointmentBookingViaStripeUseCase failed[39m
+[31mNo availability found[39m
+[31mError: No availability found[39m
+[31m    at UserAppointmentBookingViaStripeUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userStripeBooking.useCase.ts:51:53)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async UserBookingController.createSessionIdForbookingViaStripe (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userBooking.controller.ts:77:28)[39m
+[2026-01-06 00:46:18] [[31merror[39m]: [31mcreateSessionIdForbookingViaStripe failed[39m
+[31mNo availability found[39m
+[31mError: No availability found[39m
+[31m    at UserAppointmentBookingViaStripeUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userStripeBooking.useCase.ts:51:53)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async UserBookingController.createSessionIdForbookingViaStripe (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userBooking.controller.ts:77:28)[39m
+[2026-01-06 00:54:10] [[31merror[39m]: [31mUserSaveBookingAfterStripePaymentUseCase failed[39m
+[31mCredential not found[39m
+[31mError: Credential not found[39m
+[31m    at UserSaveBookingAfterStripePaymentUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userStripeBooking.useCase.ts:124:23)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async UserBookingController.saveBookingAfterStripePayment (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userBooking.controller.ts:96:13)[39m
+[2026-01-06 00:54:10] [[31merror[39m]: [31msaveBookingAfterStripePayment failed[39m
+[31mCredential not found[39m
+[31mError: Credential not found[39m
+[31m    at UserSaveBookingAfterStripePaymentUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userStripeBooking.useCase.ts:124:23)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async UserBookingController.saveBookingAfterStripePayment (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userBooking.controller.ts:96:13)[39m
+[2026-01-06 00:59:25] [[31merror[39m]: [31mUserSaveBookingAfterStripePaymentUseCase failed[39m
+[31mNo availability found[39m
+[31mError: No availability found[39m
+[31m    at UserSaveBookingAfterStripePaymentUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userStripeBooking.useCase.ts:141:53)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async UserBookingController.saveBookingAfterStripePayment (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userBooking.controller.ts:96:13)[39m
+[2026-01-06 00:59:25] [[31merror[39m]: [31msaveBookingAfterStripePayment failed[39m
+[31mNo availability found[39m
+[31mError: No availability found[39m
+[31m    at UserSaveBookingAfterStripePaymentUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userStripeBooking.useCase.ts:141:53)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async UserBookingController.saveBookingAfterStripePayment (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userBooking.controller.ts:96:13)[39m
+[2026-01-06 01:04:55] [[31merror[39m]: [31mUserSaveBookingAfterStripePaymentUseCase failed[39m
+[31mPayment validation failed: paymentMethod: `card` is not a valid enum value for path `paymentMethod`.[39m
+[31mValidationError: Payment validation failed: paymentMethod: `card` is not a valid enum value for path `paymentMethod`.[39m
+[31m    at Document.invalidate (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\mongoose\lib\document.js:3329:32)[39m
+[31m    at D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\mongoose\lib\document.js:3090:17[39m
+[31m    at D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\mongoose\lib\schemaType.js:1407:9[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:85:11)[39m
+[2026-01-06 01:04:55] [[31merror[39m]: [31mUserSaveBookingAfterStripePaymentUseCase failed[39m
+[31mPayment validation failed: paymentMethod: `card` is not a valid enum value for path `paymentMethod`.[39m
+[31mValidationError: Payment validation failed: paymentMethod: `card` is not a valid enum value for path `paymentMethod`.[39m
+[31m    at Document.invalidate (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\mongoose\lib\document.js:3329:32)[39m
+[31m    at D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\mongoose\lib\document.js:3090:17[39m
+[31m    at D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\mongoose\lib\schemaType.js:1407:9[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:85:11)[39m
+[2026-01-06 01:04:55] [[31merror[39m]: [31msaveBookingAfterStripePayment failed[39m
+[31mPayment validation failed: paymentMethod: `card` is not a valid enum value for path `paymentMethod`.[39m
+[31mValidationError: Payment validation failed: paymentMethod: `card` is not a valid enum value for path `paymentMethod`.[39m
+[31m    at Document.invalidate (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\mongoose\lib\document.js:3329:32)[39m
+[31m    at D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\mongoose\lib\document.js:3090:17[39m
+[31m    at D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\mongoose\lib\schemaType.js:1407:9[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:85:11)[39m

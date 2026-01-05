@@ -1,6 +1,6 @@
 export enum PaymentMethod {
-    Card = "Card",
-    Upi = "Upi",
-    Wallet = "Wallet",
-    NetBanking = "NetBanking",
+    Card = "card",
+    Upi = "upi",
+    Wallet = "wallet",
+    NetBanking = "netBanking",
 }

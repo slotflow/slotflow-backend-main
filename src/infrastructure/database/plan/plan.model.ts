@@ -1,8 +1,9 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
+import { PlanName } from "../../../domain/enums/planName.enum";
 
 export interface IPlan extends Document {
     _id: Types.ObjectId;
-    planName: string;
+    planName: PlanName;
     description: string
     price: number;
     features: string[];
@@ -16,11 +17,9 @@ export interface IPlan extends Document {
 const PlanSchema = new Schema<IPlan>({
     planName: {
         type: String,
+        enum: Object.values(PlanName),
         required: [true, "Plan name is required"],
-        minlength: [4, "Plan name must be at least 4 characters"],
-        maxlength: [20, "Plan name must be at most 20 characters"],
         unique: true,
-        match: [/^[a-zA-Z ]+$/, "Plan name can only contain alphabets (A-Z, a-z)"]
     },
     description: {
         type: String,
