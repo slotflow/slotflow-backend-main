@@ -25,7 +25,12 @@ export interface RegisterResponse {
 export interface OTPVerificationRequest {
     otp: string;
     verificationToken: string;
-    role: string;
+    role: Role;
+}
+
+export interface VerifyAndActivateEntityRequest {
+    verificationToken: string;
+    role: Role;
 }
 
 

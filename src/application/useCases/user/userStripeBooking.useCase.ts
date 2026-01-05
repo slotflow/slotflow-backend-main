@@ -4,7 +4,7 @@ import { stripe } from '../../../infrastructure/lib/stripe';
 import { Payment } from '../../../domain/entities/payment.entity';
 import { Booking } from '../../../domain/entities/booking.entity';
 import { PaymentFor } from '../../../domain/enums/paymentFor.enum';
-import { FindProviderServiceResponse } from '../../dtos/admin.dto';
+import { FindProviderServiceResponse } from '../../dtos/common.dto';
 import { PaymentStatus } from '../../../domain/enums/paymentStatus.enum';
 import { PaymentMethod } from '../../../domain/enums/paymentMethod.enum';
 import { PaymentGateway } from '../../../domain/enums/paymentGateway.enum';
@@ -17,6 +17,8 @@ import { IBookingRepository } from '../../../domain/interfaces/repositories/IBoo
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
 import { ICredentialRepository } from '../../../domain/interfaces/repositories/ICredentialRepository';
 import { UserAppointmentBookingViaStripeRequest, UserSaveAppoinmentBookingRequest } from '../../dtos/user.dto';
+import { IKafkaService } from '../../../domain/interfaces/services/IKafka.service';
+import { kafkaConfig } from '../../../config/env';
 
 export class UserAppointmentBookingViaStripeUseCase {
     constructor(
@@ -101,7 +103,9 @@ export class UserSaveBookingAfterStripePaymentUseCase {
         private paymentRepository: IPaymentRepository,
         private bookingRepository: IBookingRepository,
         private serviceAvailabilityQueries: IServiceAvailabilityQueries,
-        private credentialRepository: ICredentialRepository
+        private credentialRepository: ICredentialRepository,
+        private providerRepository: IProviderRepository,
+        private kafkaService: IKafkaService,
     ) { };
 
     async execute(payload: UserSaveAppoinmentBookingRequest): Promise<void> {
@@ -116,7 +120,7 @@ export class UserSaveBookingAfterStripePaymentUseCase {
             const credential = await this.credentialRepository.findById(userId);
             if (!credential) {
                 throw new Error("Credential not found");
-            }
+            };
 
             const session = await stripe.checkout.sessions.retrieve(sessionId);
 
@@ -133,6 +137,9 @@ export class UserSaveBookingAfterStripePaymentUseCase {
             const slotDuration = session?.metadata?.slotDuration;
 
             if (!providerId || !selectedDay || !slotId || !selectedServiceMode || !initialAmount || !totalAmount || !paymentStatus || !paymentMethod || !dateString || !paymentIntent || !slotDuration) throw new Error("Unexpected error, please try again");
+
+            const provider = await this.providerRepository.findById(providerId);
+            if (!provider) throw new Error("No provider found");
 
             const providerServiceAvailability = await this.serviceAvailabilityQueries.findByProviderId(new Date(dateString), providerId);
             if (!providerServiceAvailability) throw new Error("No availability found");
@@ -169,7 +176,7 @@ export class UserSaveBookingAfterStripePaymentUseCase {
                     // if (!response.success) throw new Error("Booking saving failed");
 
                     let response = {
-                        data : {
+                        data: {
                             id: ""
                         }
                     }
@@ -192,8 +199,29 @@ export class UserSaveBookingAfterStripePaymentUseCase {
                     });
                     const newBooking = await this.bookingRepository.create(bookingData);
                     console.log("newBooking one : ", newBooking);
-                    if (!newBooking) throw new Error("Error in slot booking, please try again");
+                    if (!newBooking) throw new Error("Failed to confirm slot, please try again");
                     console.log("newBooking two : ", newBooking);
+
+                    await this.kafkaService.send({
+                        topic: kafkaConfig.topics.gotAppointment,
+                        key: provider.email,
+                        message: {
+                            name: user.username,
+                            email: provider.email,
+                            contentNumber: 1
+                        },
+                    });
+
+                    await this.kafkaService.send({
+                        topic: kafkaConfig.topics.userPayment,
+                        key: user.email,
+                        message: {
+                            name: user.username,
+                            email: user.email,
+                            contentNumber: 1
+                        },
+                    });
+
                 };
 
             } catch (error) {

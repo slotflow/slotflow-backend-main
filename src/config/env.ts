@@ -95,7 +95,6 @@ export const kafkaConfig = {
     providerPayout: validator.requireEnv("KAFKA_PROVIDER_PAYOUT_TOPIC"),
 
     providerStripeAccount: validator.requireEnv("KAFKA_PROVIDER_STRIPE_ACCOUNT_TOPIC"),
-    userGoogleConnect: validator.requireEnv("KAFKA_USER_GOOGLE_CONNECT_TOPIC"),
-    providerGoogleConnect: validator.requireEnv("KAFKA_PROVIDER_GOOGLE_CONNECT_TOPIC"),
+    googleConnect: validator.requireEnv("KAFKA_GOOGLE_CONNECT_TOPIC"),
   },
 };

@@ -11,7 +11,7 @@ import { AdminChnageServiceBlockStatusUseCase, AdminCreateServiceUseCase, AdminS
 import { AdminApproveProviderUseCase, AdminChangeProviderBlockStatusUseCase, AdminChangeProviderTrustTagUseCase, AdminProviderListUseCase, AdminRejectProviderUseCase } from "../../application/useCases/admin/adminProvider.useCase";
 import { AdminFetchProviderDetailsUseCase, AdminFetchProviderPaymentsUseCase, AdminfetchProviderServiceAvailabilityUseCase, AdminFetchProviderServiceUseCase, AdminFetchProviderSubscriptionsUseCase } from "../../application/useCases/admin/adminProviderProfile.useCase";
 import { AdminFetchDashboardAppointmentsStatsDataUseCase, AdminFetchDashboardProviderStatsDataUseCase, AdminFetchDashboardRevenueStatsDataUseCase, AdminFetchDashboardSubscriptionStatsDataUseCase, AdminFetchDashboardTodaysDataUseCase, AdminFetchDashboardUserStatsDataUseCase } from "../../application/useCases/admin/adminDashboard.useCase";
-import { addressRepository, bookingQueries, paymentQueries, paymentRepository, planRepository, providerQueries, providerRepository, providerServiceQueries, reviewQueries, reviewRepository, serviceAvailabilityQueries, serviceRepository, signedUrlService, subscriptionQueries, userQueries, userRepository } from "../../infrastructure/container";
+import { addressRepository, bookingQueries, kafkaService, paymentQueries, paymentRepository, planRepository, providerQueries, providerRepository, providerServiceQueries, reviewQueries, reviewRepository, serviceAvailabilityQueries, serviceRepository, signedUrlService, subscriptionQueries, userQueries, userRepository } from "../../infrastructure/container";
 
 // admin dashboard controller dependency injection
 export const adminFetchDashboardUserStatsDataUseCase = new AdminFetchDashboardUserStatsDataUseCase(userQueries);
@@ -32,16 +32,16 @@ export const adminChangePlanBlockStatusUseCase = new AdminChangePlanBlockStatusU
 
 // admin provider controller dependency injection
 export const adminProviderListUseCase = new AdminProviderListUseCase(providerRepository);
-export const adminRejectProviderUseCase = new AdminRejectProviderUseCase(providerRepository);
-export const adminApproveProviderUseCase = new AdminApproveProviderUseCase(providerRepository);
 export const adminFetchProviderPaymentsUseCase = new AdminFetchProviderPaymentsUseCase(paymentRepository);
+export const adminRejectProviderUseCase = new AdminRejectProviderUseCase(providerRepository, kafkaService);
+export const adminApproveProviderUseCase = new AdminApproveProviderUseCase(providerRepository, kafkaService);
 export const adminFetchProviderServiceUseCase = new AdminFetchProviderServiceUseCase(providerServiceQueries);
-export const adminChangeProviderTrustTagUseCase = new AdminChangeProviderTrustTagUseCase(providerRepository);
 export const fetchProviderProofsUseCase = new FetchProviderProofsUseCase(signedUrlService, providerRepository);
-export const adminChangeProviderBlockStatusUseCase = new AdminChangeProviderBlockStatusUseCase(providerRepository);
 export const adminFetchUserOrProviderAddressUseCase = new AdminFetchUserOrProviderAddressUseCase(addressRepository);
 export const adminFetchProviderSubscriptionsUseCase = new AdminFetchProviderSubscriptionsUseCase(subscriptionQueries);
 export const adminFetchProviderDetailsUseCase = new AdminFetchProviderDetailsUseCase(providerRepository, signedUrlService);
+export const adminChangeProviderTrustTagUseCase = new AdminChangeProviderTrustTagUseCase(providerRepository, kafkaService);
+export const adminChangeProviderBlockStatusUseCase = new AdminChangeProviderBlockStatusUseCase(providerRepository, kafkaService);
 export const adminFetchProviderServiceAvailabilityUseCase = new AdminfetchProviderServiceAvailabilityUseCase(providerRepository, serviceAvailabilityQueries);
 
 // admin review controller dependency injection

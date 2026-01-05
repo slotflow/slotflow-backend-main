@@ -5,7 +5,7 @@ import {
     ProviderStripeSubscriptionCreateSessionIdRequest,
     ProviderStripeSubscriptionCreateSessionIdResponse,
 } from "../../dtos/provider.dto";
-// import { startSession } from "mongoose";
+import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { stripe } from "../../../infrastructure/lib/stripe";
 import { Payment } from "../../../domain/entities/payment.entity";
@@ -15,6 +15,7 @@ import { PaymentStatus } from "../../../domain/enums/paymentStatus.enum";
 import { PaymentGateway } from "../../../domain/enums/paymentGateway.enum";
 import { Subscription } from "../../../domain/entities/subscription.entity";
 import { SubscriptionStatus } from "../../../domain/enums/subscriptionStatus.enum";
+import { IKafkaService } from "../../../domain/interfaces/services/IKafka.service";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { IPaymentRepository } from "../../../domain/interfaces/repositories/IPayment.repository";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
@@ -90,6 +91,7 @@ export class ProviderSaveSubscriptionUseCase {
         private providerRepository: IProviderRepository,
         private paymentRepository: IPaymentRepository,
         private subscriptionRepository: ISubscriptionRepository,
+        private kafkaService: IKafkaService
     ) { };
 
     async execute(payload: ProviderSaveSubscriptionRequest): Promise<ProviderSaveSubscriptionResponse> {
@@ -113,8 +115,6 @@ export class ProviderSaveSubscriptionUseCase {
 
             if (!pId || isNaN(totalAmount) || isNaN(initialAmount) || !paymentStatus || !paymentMethod || !subscriptionPlanId || !planDuration || !paymentIntent) throw new Error("Unexpected error, please try again.");
 
-            // const mongoSession = await startSession();
-            // mongoSession.startTransaction();
             try {
 
                 const paymentData = Payment.createforSubscription({
@@ -149,15 +149,20 @@ export class ProviderSaveSubscriptionUseCase {
                 const updatedProvider = await this.providerRepository.update(provider);
                 if (!updatedProvider) throw new Error("Unexpected error, subscription adding error.");
 
-                // await mongoSession.commitTransaction();
-                // mongoSession.endSession();
+                await this.kafkaService.send({
+                    topic: kafkaConfig.topics.providerSubscriptionPayment,
+                    key: provider.email,
+                    message: {
+                        name: provider.username,
+                        email: provider.email,
+                        contentNumber: 1
+                    },
+                });
 
                 return { planName };
             } catch (error) {
-                // await mongoSession.abortTransaction();
-                // mongoSession.endSession();
                 throw error;
-            }
+            };
         } catch (error) {
             log.error("ProviderSaveSubscriptionUseCase failed", error as Error);
             throw error;

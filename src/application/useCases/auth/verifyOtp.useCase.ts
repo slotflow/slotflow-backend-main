@@ -1,46 +1,90 @@
-import { log } from '../../../shared/logger/logger';
-import { Role } from '../../../domain/enums/role.enum';
-import { OTPVerificationRequest } from '../../dtos/auth.dto';
-import { IOTPService } from '../../../domain/interfaces/services/IOtpService.service';
-import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
-import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
+import { kafkaConfig } from "../../../config/env";
+import { log } from "../../../shared/logger/logger";
+import { Role } from "../../../domain/enums/role.enum";
+import { User } from "../../../domain/entities/user.entity";
+import { OTPVerificationRequest, VerifyAndActivateEntityRequest } from "../../dtos/auth.dto";
+import { Provider } from "../../../domain/entities/provider.entity";
+import { IKafkaService } from "../../../domain/interfaces/services/IKafka.service";
+import { IOTPService } from "../../../domain/interfaces/services/IOtpService.service";
+import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
+import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 
 export class VerifyOTPUseCase {
   constructor(
-    private userRepository: IUserRepository, 
-    private providerRepository: IProviderRepository,
-    private otpService: IOTPService
-  ) { }
+    private readonly userRepository: IUserRepository,
+    private readonly providerRepository: IProviderRepository,
+    private readonly otpService: IOTPService,
+    private readonly kafkaService: IKafkaService
+  ) {};
 
   async execute(payload: OTPVerificationRequest): Promise<void> {
     try {
       const { otp, verificationToken, role } = payload;
-      if (!otp || !verificationToken || !role) throw new Error("Invalid request");
 
-      const isValidOTP = await this.otpService.verifyOtp(verificationToken, otp);
-      if (!isValidOTP) throw new Error("Invalid or expired OTP");
+      if (!otp || !verificationToken || !role) {
+        throw new Error("Invalid request");
+      };
 
-      if (role === Role.User) {
-        const user = await this.userRepository.findByVerificationToken(verificationToken);
-        if (!user) throw new Error("Verification failed");
+      const isValidOTP = await this.otpService.verifyOtp(
+        verificationToken,
+        otp
+      );
 
-        user.markEmailVerified();
-        await this.userRepository.update(user);
+      if (!isValidOTP) {
+        throw new Error("Invalid or expired OTP");
+      };
 
-      } else if (role === Role.Provider) {
-        const provider = await this.providerRepository.findByVerificationToken(verificationToken);
-        if (!provider) throw new Error("Verification failed");
+      const entity = await this.verifyAndActivateEntity({
+        role,
+        verificationToken
+      });
 
-        provider.markEmailVerified();
-        await this.providerRepository.update(provider);
-
-      } else {
-        throw new Error("Unexpected error, please try again");
-      }
+      await this.kafkaService.send({
+        topic: kafkaConfig.topics.registerSuccess,
+        key: entity.email,
+        message: {
+          name: entity.username,
+          email: entity.email,
+          contentNumber: 1,
+        },
+      });
 
     } catch (error) {
       log.error("VerifyOTPUseCase failed", error as Error);
       throw error;
+    };
+  };
+
+  private async verifyAndActivateEntity(payload: VerifyAndActivateEntityRequest): Promise<User | Provider> {
+
+    const { role, verificationToken } = payload;
+
+    if (role === Role.User) {
+      const user = await this.userRepository.findByVerificationToken(
+        verificationToken
+      );
+
+      if (!user) {
+        throw new Error("Verification failed");
+      }
+
+      user.markEmailVerified();
+      return this.userRepository.update(user);
     }
+
+    if (role === Role.Provider) {
+      const provider =
+        await this.providerRepository.findByVerificationToken(
+          verificationToken
+        );
+
+      if (!provider) {
+        throw new Error("Verification failed");
+      }
+
+      provider.markEmailVerified();
+      return this.providerRepository.update(provider);
+    }
+    throw new Error("Unsupported role");
   }
 }

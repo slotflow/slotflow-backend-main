@@ -7,7 +7,7 @@ import { kafkaService, otpService, planRepository, providerRepository, signedUrl
 
 // auth controller dependency injection
 export const updatePasswordUseCase = new UpdatePasswordUseCase(userRepository, providerRepository);
-export const verifyOTPUseCase = new VerifyOTPUseCase(userRepository, providerRepository, otpService);
-export const resendOtpUseCase = new ResendOtpUseCase(userRepository, providerRepository, otpService);
 export const registerUseCase = new RegisterUseCase(userRepository, providerRepository, otpService, kafkaService);
+export const resendOtpUseCase = new ResendOtpUseCase(userRepository, providerRepository, otpService, kafkaService);
+export const verifyOTPUseCase = new VerifyOTPUseCase(userRepository, providerRepository, otpService, kafkaService);
 export const loginUseCase = new LoginUseCase(userRepository, providerRepository, planRepository, subscriptionRepository, signedUrlService, kafkaService);

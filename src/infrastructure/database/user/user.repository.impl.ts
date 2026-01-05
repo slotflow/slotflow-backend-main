@@ -11,7 +11,7 @@ export class UserRepositoryImpl implements IUserRepository {
         return UserMapper.toDomain(doc);
     };
 
-    async update(user: User): Promise<User | null> {
+    async update(user: User): Promise<User> {
         const persistence = UserMapper.toPersistence(user);
 
         const doc = await UserModel.findByIdAndUpdate(
@@ -20,7 +20,11 @@ export class UserRepositoryImpl implements IUserRepository {
             { new: true }
         );
 
-        return doc ? UserMapper.toDomain(doc) : null;
+         if (!doc) {
+            throw new Error("User not found");
+        }
+
+        return UserMapper.toDomain(doc);
     };
 
     async findById(userId: string): Promise<User | null> {

@@ -19,7 +19,7 @@ export class ProviderFetchUserForChatSidebarUseCase {
                     let profileImageUrl = user?.profileImage;
 
                     if (profileImageUrl) {
-                        const signedUrl = await this.signedUrlService.generate(profileImageUrl);
+                        const signedUrl = await this.signedUrlService.get(profileImageUrl);
                         user.profileImage = signedUrl;
                     }
 
