@@ -10,4 +10,4 @@ export const updatePasswordUseCase = new UpdatePasswordUseCase(userRepository, p
 export const registerUseCase = new RegisterUseCase(userRepository, providerRepository, otpService, kafkaService);
 export const resendOtpUseCase = new ResendOtpUseCase(userRepository, providerRepository, otpService, kafkaService);
 export const verifyOTPUseCase = new VerifyOTPUseCase(userRepository, providerRepository, otpService, kafkaService);
-export const loginUseCase = new LoginUseCase(userRepository, providerRepository, planRepository, subscriptionRepository, signedUrlService, kafkaService);
+export const loginUseCase = new LoginUseCase(userRepository, providerRepository, planRepository, subscriptionRepository, signedUrlService);

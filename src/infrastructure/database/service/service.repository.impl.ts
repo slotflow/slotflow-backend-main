@@ -1,6 +1,7 @@
 import { ServiceModel } from "./service.model";
 import { ServiceMapper } from "../../mappers/service.mapper";
 import { Service } from "../../../domain/entities/service.entity";
+import { ServiceCategory } from "../../../domain/enums/serviceCategories.enum";
 import { IServiceRepository } from "../../../domain/interfaces/repositories/IService.repository";
 
 export class ServiceRepositoryImpl implements IServiceRepository {
@@ -31,9 +32,9 @@ export class ServiceRepositoryImpl implements IServiceRepository {
         }
     }
 
-    async findAllByCategory(categoryName: string): Promise<Array<Service> | null> {
+    async findAllByCategory(categories: ServiceCategory[]): Promise<Array<Service> | null> {
         const docs = await ServiceModel.find({
-            serviceCategory: categoryName
+            serviceCategory: { $in: categories }
         },
             {
                 _id: 1,
@@ -68,14 +69,6 @@ export class ServiceRepositoryImpl implements IServiceRepository {
         };
 
         return ServiceMapper.toDomain(doc);
-    };
-
-    async findAllServiceNames(): Promise<Array<Service>> {
-        const docs = await ServiceModel.find({}, {
-            _id: 1,
-            serviceName: 1,
-        });
-        return docs.map(doc => ServiceMapper.toDomain(doc));
     };
 
 };

@@ -1,6 +1,7 @@
-import { adminConfig, kafkaConfig } from "../../../config/env";
+import { adminConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/role.enum";
+import { PlanName } from "../../../domain/enums/planName.enum";
 import { JWTService } from "../../../infrastructure/security/jwt";
 import { LoginRequest, LoginResponse } from "../../dtos/auth.dto";
 import { SubscriptionStatus } from "../../../domain/enums/subscriptionStatus.enum";
@@ -10,8 +11,6 @@ import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.r
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
-import { IKafkaService } from "../../../domain/interfaces/services/IKafka.service";
-import { PlanName } from "../../../domain/enums/planName.enum";
 
 export class LoginUseCase {
     constructor(
@@ -20,8 +19,7 @@ export class LoginUseCase {
         private planRepository: IPlanRepository,
         private subscriptionRepository: ISubscriptionRepository,
         private signedUrlService: ISignedUrlService,
-        private kafkaService: IKafkaService
-    ) { }
+    ) { };
 
     async execute(payload: LoginRequest): Promise<LoginResponse> {
         try {
@@ -45,16 +43,6 @@ export class LoginUseCase {
                 if (user.profileImage) {
                     signedProfileImageUrl = await this.signedUrlService.save(user.profileImage);
                 };
-
-                await this.kafkaService.send({
-                    topic: kafkaConfig.topics.sendOtp,
-                    key: email,
-                    message: {
-                        name: "Midhun Kalarikkal",
-                        email,
-                        contentNumber: 1
-                    },
-                });
 
                 return {
                     authUser: {

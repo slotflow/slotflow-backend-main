@@ -3188,3 +3188,1451 @@
 [2026-01-06 01:15:44] [[32minfo[39m]: [32mKafka Admin disconnected[39m
 [2026-01-06 01:15:44] [[32minfo[39m]: [32mKafka Producer connected[39m
 [2026-01-06 01:15:44] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 01:23:29] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 01:23:29] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 01:23:29] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 01:23:29] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 01:23:29] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 01:31:34] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 01:31:34] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 01:31:34] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 01:31:34] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 01:31:34] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 01:33:23] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 01:33:23] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 01:33:23] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 01:33:23] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 01:33:23] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 01:33:36] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 01:33:37] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 01:33:37] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 01:33:37] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 01:33:37] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 01:33:56] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 01:33:56] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 01:33:56] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 01:33:56] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 01:33:56] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 01:39:33] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 01:39:33] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 01:39:33] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 01:39:33] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 01:39:33] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 01:39:44] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 01:39:44] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 01:39:44] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 01:39:44] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 01:39:44] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 01:39:53] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 01:39:53] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 01:39:53] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 01:39:53] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 01:39:53] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:08:48] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:08:48] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:08:48] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:08:48] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:08:48] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:11:01] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:11:01] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:11:01] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:11:01] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:11:01] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:11:23] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:11:23] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:11:23] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:11:23] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:11:23] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:12:43] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:12:43] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:12:43] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:12:43] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:12:43] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:13:01] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:13:01] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:13:01] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:13:01] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:13:01] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:13:26] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:13:26] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:13:26] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:13:26] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:13:26] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:13:53] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:13:54] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:13:54] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:13:54] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:13:54] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:14:10] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:14:10] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:14:10] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:14:10] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:14:10] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:14:18] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:14:18] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:14:18] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:14:18] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:14:18] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:14:35] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:14:35] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:14:35] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:14:35] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:14:35] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:14:49] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:14:49] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:14:49] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:14:49] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:14:49] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:15:19] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:15:19] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:15:19] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:15:19] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:15:19] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:15:28] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:15:28] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:15:28] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:15:28] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:15:28] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:17:10] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:17:10] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:17:10] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:17:10] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:17:10] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:17:38] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:17:39] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:17:39] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:17:39] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:17:39] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:18:21] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:18:21] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:18:21] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:18:21] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:18:21] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:18:38] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:18:38] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:18:38] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:18:38] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:18:38] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:19:27] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:19:27] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:19:27] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:19:27] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:19:27] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:20:01] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:20:01] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:20:01] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:20:01] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:20:01] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:20:26] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:20:26] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:20:26] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:20:26] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:20:26] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:20:47] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:20:48] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:20:48] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:20:48] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:20:48] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:20:56] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:20:56] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:20:56] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:20:56] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:20:56] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:21:59] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:21:59] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:21:59] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:21:59] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:21:59] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:22:06] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:22:07] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:22:07] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:22:07] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:22:07] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:22:13] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:22:13] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:22:13] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:22:13] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:22:13] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:22:39] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:22:48] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:22:48] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:22:48] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:22:48] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:22:48] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:23:12] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:23:13] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:23:13] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:23:13] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:23:13] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:24:48] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:24:48] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:24:48] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:24:48] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:24:48] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:26:04] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:26:04] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:26:04] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:26:04] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:26:04] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:26:54] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:26:54] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:26:54] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:26:54] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:26:54] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:29:05] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:29:05] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:29:05] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:29:05] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:29:05] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:29:23] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:29:23] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:29:23] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:29:23] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:29:23] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:44:44] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:45:01] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:45:01] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:45:01] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:45:01] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:45:01] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:45:15] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:45:15] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:45:15] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:45:15] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:45:15] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:45:48] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:45:48] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:45:48] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:45:48] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:45:48] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:46:00] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:46:00] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:46:00] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:46:00] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:46:00] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:46:29] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:46:29] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:46:29] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:46:29] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:46:29] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:46:49] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:46:50] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:46:50] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:46:50] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:46:50] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:47:40] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:47:40] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:47:40] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:47:40] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:47:40] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:47:59] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:48:00] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:48:00] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:48:00] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:48:00] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:48:51] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:48:51] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:48:51] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:48:51] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:48:51] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:49:04] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:49:04] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:49:04] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:49:04] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:49:04] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:49:23] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:49:23] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:49:23] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:49:23] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:49:23] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:49:41] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:49:41] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:49:41] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:49:41] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:49:41] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:50:42] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:50:42] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:50:42] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:50:42] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:50:42] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:51:18] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:51:18] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:51:18] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:51:18] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:51:18] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:52:42] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:52:42] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:52:42] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:52:42] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:52:42] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:52:52] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:52:52] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:52:52] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:52:52] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:52:52] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:53:14] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:53:14] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:53:14] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:53:14] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:53:14] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:53:38] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:53:38] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:53:38] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:53:38] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:53:38] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:53:50] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:53:51] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:53:51] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:53:51] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:53:51] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:54:48] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:54:49] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:54:49] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:54:49] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:54:49] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:57:12] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:57:12] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:57:12] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:57:12] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:57:12] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 16:57:21] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 16:57:21] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 16:57:21] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 16:57:21] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 16:57:21] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 17:05:36] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 17:05:36] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 17:05:36] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 17:05:36] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 17:05:36] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 17:09:30] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 17:09:31] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 17:09:31] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 17:09:31] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 17:09:31] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 17:28:52] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 17:28:52] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 17:28:52] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 17:28:52] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 17:28:52] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 17:29:35] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 17:29:36] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 17:29:36] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 17:29:36] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 17:29:36] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 17:29:50] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 17:29:51] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 17:29:51] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 17:29:51] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 17:29:51] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 17:30:46] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:38:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:30:46] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:38:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:31:13] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:38:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:31:13] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:38:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:32:38] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:38:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:32:38] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:38:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:40:49] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:38:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:40:49] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:38:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:42:36] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 17:42:36] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 17:42:36] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 17:42:36] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 17:42:36] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 17:42:40] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:39:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:42:40] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:39:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:42:42] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:39:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:42:42] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:39:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:43:04] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 17:43:04] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 17:43:04] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 17:43:04] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 17:43:04] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 17:43:42] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 17:43:42] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 17:43:42] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 17:43:42] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 17:43:42] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 17:46:36] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:46:36] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:46:37] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:46:37] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:46:39] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:46:39] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:46:43] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:46:43] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:48:32] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:48:32] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:48:35] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:48:35] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:48:38] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:48:38] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:50:58] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 17:50:59] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 17:50:59] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 17:50:59] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 17:50:59] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 17:51:30] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:51:30] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:51:31] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:51:31] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:51:33] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:51:33] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:51:38] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:51:38] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:52:38] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:52:38] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:54:12] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:54:12] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:04:04] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 18:04:05] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 18:04:05] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 18:04:05] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 18:04:05] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 18:04:35] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:21:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:04:35] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:21:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:04:36] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:21:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:04:36] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:21:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:04:45] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:21:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:04:45] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:21:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:04:49] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:21:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:04:49] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:21:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:06:31] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:21:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:06:31] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:21:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:06:32] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:21:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:06:32] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:21:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:09:48] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 18:09:48] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 18:09:48] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 18:09:48] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 18:09:49] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 18:10:01] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 18:10:01] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 18:10:01] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 18:10:01] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 18:10:01] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 18:12:10] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 18:12:10] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 18:12:10] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 18:12:10] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 18:12:10] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 18:16:37] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "number",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "maxPrice"[39m
+[31m    ],[39m
+[31m    "message": "Expected number, received string"[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "boolean",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "slotflowTrusted"[39m
+[31m    ],[39m
+[31m    "message": "Expected boolean, received string"[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_literal",[39m
+[31m    "expected": "Point",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "type"[39m
+[31m    ],[39m
+[31m    "message": "Invalid literal value, expected \"Point\""[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "coordinates"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "number",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "maxPrice"[39m
+[31m    ],[39m
+[31m    "message": "Expected number, received string"[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "boolean",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "slotflowTrusted"[39m
+[31m    ],[39m
+[31m    "message": "Expected boolean, received string"[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_literal",[39m
+[31m    "expected": "Point",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "type"[39m
+[31m    ],[39m
+[31m    "message": "Invalid literal value, expected \"Point\""[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "coordinates"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31m    at get error (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:587:31)[39m
+[31m    at ZodObject.parse (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:663:22)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:30:66)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:18:13] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 18:18:13] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 18:18:13] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 18:18:13] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 18:18:13] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 18:18:21] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "number",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "maxPrice"[39m
+[31m    ],[39m
+[31m    "message": "Expected number, received string"[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_literal",[39m
+[31m    "expected": "Point",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "type"[39m
+[31m    ],[39m
+[31m    "message": "Invalid literal value, expected \"Point\""[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "coordinates"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "number",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "maxPrice"[39m
+[31m    ],[39m
+[31m    "message": "Expected number, received string"[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_literal",[39m
+[31m    "expected": "Point",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "type"[39m
+[31m    ],[39m
+[31m    "message": "Invalid literal value, expected \"Point\""[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "coordinates"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31m    at get error (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:587:31)[39m
+[31m    at ZodObject.parse (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:663:22)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:30:66)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:23:23] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "number",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "maxPrice"[39m
+[31m    ],[39m
+[31m    "message": "Expected number, received string"[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_literal",[39m
+[31m    "expected": "Point",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "type"[39m
+[31m    ],[39m
+[31m    "message": "Invalid literal value, expected \"Point\""[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "coordinates"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "number",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "maxPrice"[39m
+[31m    ],[39m
+[31m    "message": "Expected number, received string"[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_literal",[39m
+[31m    "expected": "Point",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "type"[39m
+[31m    ],[39m
+[31m    "message": "Invalid literal value, expected \"Point\""[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "coordinates"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31m    at get error (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:587:31)[39m
+[31m    at ZodObject.parse (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:663:22)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:30:66)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:24:06] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 18:24:06] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 18:24:06] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 18:24:06] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 18:24:06] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 18:24:51] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "number",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "maxPrice"[39m
+[31m    ],[39m
+[31m    "message": "Expected number, received string"[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "number",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "coordinates",[39m
+[31m      0[39m
+[31m    ],[39m
+[31m    "message": "Expected number, received string"[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "number",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "coordinates",[39m
+[31m      1[39m
+[31m    ],[39m
+[31m    "message": "Expected number, received string"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "number",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "maxPrice"[39m
+[31m    ],[39m
+[31m    "message": "Expected number, received string"[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "number",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "coordinates",[39m
+[31m      0[39m
+[31m    ],[39m
+[31m    "message": "Expected number, received string"[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "number",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "coordinates",[39m
+[31m      1[39m
+[31m    ],[39m
+[31m    "message": "Expected number, received string"[39m
+[31m  }[39m
+[31m][39m
+[31m    at get error (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:587:31)[39m
+[31m    at ZodObject.parse (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:663:22)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:30:66)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:26:08] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 18:26:08] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 18:26:08] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 18:26:08] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 18:26:08] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 18:26:29] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 18:26:29] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 18:26:29] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 18:26:29] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 18:26:29] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 18:26:30] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "number",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "maxPrice"[39m
+[31m    ],[39m
+[31m    "message": "Expected number, received string"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "number",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "maxPrice"[39m
+[31m    ],[39m
+[31m    "message": "Expected number, received string"[39m
+[31m  }[39m
+[31m][39m
+[31m    at get error (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:587:31)[39m
+[31m    at ZodObject.parse (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:663:22)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:30:66)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:31:10] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 18:31:11] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 18:31:11] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 18:31:11] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 18:31:11] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 19:34:05] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 19:34:05] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 19:34:05] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 19:34:05] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 19:34:05] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 19:34:37] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 19:34:37] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 19:34:37] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 19:34:37] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 19:34:37] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 19:34:46] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 19:34:46] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 19:34:46] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 19:34:46] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 19:34:46] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 19:34:53] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 19:34:53] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 19:34:53] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 19:34:53] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 19:34:53] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 19:36:10] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 19:36:10] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 19:36:10] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 19:36:10] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 19:36:10] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 19:36:35] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 19:36:35] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 19:36:35] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 19:36:35] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 19:36:35] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 19:36:56] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 19:36:56] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 19:36:56] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 19:36:56] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 19:36:56] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 19:37:34] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 19:37:34] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 19:37:34] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 19:37:34] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 19:37:34] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 19:39:34] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 19:39:34] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 19:39:34] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 19:39:34] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 19:39:34] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 19:40:37] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 19:40:37] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 19:40:37] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 19:40:37] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 19:40:37] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 19:40:51] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 19:40:51] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 19:40:51] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 19:40:51] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 19:40:51] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 19:42:25] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 19:42:26] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 19:42:26] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 19:42:26] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 19:42:26] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 19:43:02] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 19:43:02] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 19:43:02] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 19:43:02] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 19:43:02] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 19:44:17] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 19:44:17] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 19:44:17] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 19:44:17] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 19:44:17] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 19:44:31] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 19:44:31] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 19:44:31] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 19:44:31] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 19:44:31] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 19:47:02] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 19:47:02] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 19:47:02] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 19:47:02] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 19:47:02] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 19:47:24] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 19:47:25] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 19:47:25] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 19:47:25] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 19:47:25] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 19:54:07] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 19:54:07] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 19:54:07] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 19:54:07] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 19:54:07] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 19:54:13] [[31merror[39m]: [31mfetchAllAppService failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "object",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Expected array, received object"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "object",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Expected array, received object"[39m
+[31m  }[39m
+[31m][39m
+[31m    at get error (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:587:31)[39m
+[31m    at ZodObject.parse (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:663:22)[39m
+[31m    at UserAppServiceController.fetchAllAppService (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userAppService.controller.ts:17:65)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 19:54:15] [[31merror[39m]: [31mfetchAllAppService failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31m    at get error (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:587:31)[39m
+[31m    at ZodObject.parse (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:663:22)[39m
+[31m    at UserAppServiceController.fetchAllAppService (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userAppService.controller.ts:17:65)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 19:56:51] [[31merror[39m]: [31mfetchAllAppService failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31m    at get error (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:587:31)[39m
+[31m    at ZodObject.parse (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:663:22)[39m
+[31m    at UserAppServiceController.fetchAllAppService (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userAppService.controller.ts:17:65)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 19:58:54] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 19:58:55] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 19:58:55] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 19:58:55] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 19:58:55] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 20:01:31] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 20:01:31] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 20:01:31] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 20:01:31] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 20:01:31] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 20:14:22] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 20:14:23] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 20:14:23] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 20:14:23] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 20:14:23] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 20:15:09] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 20:15:09] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 20:15:09] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 20:15:09] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 20:15:09] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 20:17:31] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 20:17:32] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 20:17:32] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 20:17:32] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 20:17:32] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 20:17:44] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 20:17:44] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 20:17:44] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 20:17:44] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 20:17:44] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 20:19:51] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 20:19:52] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 20:19:52] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 20:19:52] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 20:19:52] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 20:25:48] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 20:25:48] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 20:25:48] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 20:25:48] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 20:25:48] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 20:26:12] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 20:26:12] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 20:26:12] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 20:26:12] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 20:26:12] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 20:27:14] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 20:27:15] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 20:27:15] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 20:27:15] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 20:27:15] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 20:29:29] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 20:29:30] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 20:29:30] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 20:29:30] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 20:29:30] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 20:29:45] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 20:29:45] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 20:29:45] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 20:29:45] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 20:29:45] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 20:30:09] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 20:30:09] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 20:30:09] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 20:30:09] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 20:30:09] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 20:30:37] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 20:30:37] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 20:30:37] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 20:30:37] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 20:30:37] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 20:31:01] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 20:31:01] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 20:31:01] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 20:31:01] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 20:31:01] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 20:31:32] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 20:31:33] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 20:31:33] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 20:31:33] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 20:31:33] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 20:57:44] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 20:57:45] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 20:57:45] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 20:57:45] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 20:57:45] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 21:06:15] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-06 21:06:15] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-06 21:06:15] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-06 21:06:15] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-06 21:06:15] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m

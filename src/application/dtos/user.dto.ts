@@ -1,6 +1,7 @@
 import { Review } from "../../domain/entities/review.entity";
 import { ProviderService } from "../../domain/entities/providerService.entity";
 import { AddressDTO, UserDTO, ProviderDTO, BookingDTO, ServiceDTO, ProviderServiceDTO, FontendAvailabilityForResponse, TimeSlotForFrontendResponse, ReviewDTO } from "./common.dto";
+import { ServiceCategory } from "../../domain/enums/serviceCategories.enum";
 
 
 // ************ used in userProfile.use-case ************ \\
@@ -49,9 +50,14 @@ export type UserFetchAddressResponse = Pick<AddressDTO, "_id" | "addressLine" | 
 
 // user fetch service providers use case request payload interface
 export interface UserFetchServiceProvidersRequest {
-    userId: UserDTO["_id"];
-    serviceIds: ProviderService["_id"][]
-}
+    serviceIds?: ProviderService["_id"][];
+    categories?: ServiceCategory[];
+    location?: AddressDTO["location"];
+    maxPrice?: number;
+    minPrice?: number;
+    slotflowTrusted?: boolean;
+    radius?: number;
+};
 // user fetch service providers use case response interface
 export interface FindProvidersUsingServiceIdsResponse {
     _id: string;
@@ -74,7 +80,6 @@ export type UserFetchServiceProvidersResponse = FindProvidersUsingServiceIdsResp
 
 // user fetch provider details use case request payload interface
 export interface UserFetchServiceProviderDetailsRequest {
-    userId: UserDTO["_id"];
     providerId: ProviderDTO["_id"];
 }
 // user fetch provider details use case response interface
@@ -83,7 +88,6 @@ export type UserFetchServiceProviderDetailsResponse = Pick<ProviderDTO, "_id" | 
 
 // user fetch provider address use case request payload interface
 export interface UserFetchServiceProviderAddressRequest {
-    userId: UserDTO["_id"];
     providerId: ProviderDTO["_id"];
 }
 // user fetch provider address use case response interface
@@ -92,7 +96,6 @@ export type UserFetchServiceProviderAddressResponse = Pick<AddressDTO, "userId" 
 
 // user fetch provider service use case request payload interface
 export interface UserFetchServiceproviderServiceRequest {
-    userId: UserDTO["_id"];
     providerId: ProviderDTO["_id"];
 }
 // user fetch provider service use case response interface
@@ -105,7 +108,6 @@ export type UserFetchProviderServiceResponse = FindProviderServiceResponse | nul
 
 // user fetch provider service availability use case request payload interface
 export interface UserFetchProviderServiceAvailabilityRequest {
-    userId: UserDTO["_id"];
     providerId: ProviderDTO["_id"];
     date: Date
 }

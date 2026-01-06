@@ -321,8 +321,8 @@ export const deleteFileZodSchema = z.object({
   folder: z.string().min(1).max(50, "Folername too long"),
 });
 
-export const findServicesByCategoryName = z.object({
-  serviceCategory: z.nativeEnum(ServiceCategory, { message: "Invalid service category" }),
+export const fetchAllAppServicesZodSchema = z.object({
+    categories: z.nativeEnum(ServiceCategory).array(),
 });
 
 export const changeBlockStatusZodSchema = z.object({

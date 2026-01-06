@@ -3,7 +3,7 @@ import { UserCancelBookingUseCase } from "../../application/useCases/user/userBo
 import { FetchAllReviewsUseCase } from "../../application/useCases/common/fetchReviews.useCase";
 import { UserFetchAllPaymentsUseCase } from "../../application/useCases/user/userPayment.useCase";
 import { ValidateJoinRoomUsecase } from "../../application/useCases/common/validateJoinRoom.useCase";
-import { UserFetchAllAppServiceUseCase } from "../../application/useCases/user/userAppService.useCase";
+import { FetchAllAppServicesUseCase } from "../../application/useCases/common/fetchAppServices.useCase";
 import { FetchBookingDetailsUsecase } from "../../application/useCases/common/fetchBookingDetails.useCase";
 import { FetchBookingAppointmentsUseCase } from "../../application/useCases/common/fetchAllBookings.useCase";
 import { CreateReviewUseCase, DeleteReviewUseCase } from "../../application/useCases/user/userReview.useCase";
@@ -20,7 +20,7 @@ export const userFetchAddressUseCase = new UserFetchAddressUseCase(userRepositor
 export const userCreateAddressUseCase = new UserCreateAddressUseCase(userRepository, addressRepository);
 
 // user app service controller dependency injection
-export const userFetchAllAppServiceUseCase = new UserFetchAllAppServiceUseCase(serviceRepository);
+export const fetchAllAppServicesUseCase = new FetchAllAppServicesUseCase(serviceRepository);
 
 // user booking controller dependency injection
 export const validateJoinRoomUsecase = new ValidateJoinRoomUsecase(bookingRepository)
@@ -41,11 +41,11 @@ export const userUpdateProfileImageUseCase = new UserUpdateProfileImageUseCase(s
 
 // user provider controller dependency injection
 export const userFetchProvidersForChatSidebarUseCase = new UserFetchProvidersForChatSidebarUseCase(signedUrlService, bookingQueries);
-export const userFetchServiceProviderAddressUseCase = new UserFetchServiceProviderAddressUseCase(userRepository, addressRepository);
-export const userFetchServiceProvidersUseCase = new UserFetchServiceProvidersUseCase(userRepository, signedUrlService, providerServiceQueries);
-export const userFetchServiceProviderServiceDetailsUseCase = new UserFetchServiceProviderServiceDetailsUseCase(userRepository, providerServiceQueries);
-export const userFetchServiceProviderProfileDetailsUseCase = new UserFetchServiceProviderProfileDetailsUseCase(userRepository, providerRepository, signedUrlService);
-export const userFetchServiceProviderServiceAvailabilityUseCase = new UserFetchServiceProviderServiceAvailabilityUseCase(providerRepository, userRepository, serviceAvailabilityQueries);
+export const userFetchServiceProviderAddressUseCase = new UserFetchServiceProviderAddressUseCase(addressRepository);
+export const userFetchServiceProvidersUseCase = new UserFetchServiceProvidersUseCase(signedUrlService, providerServiceQueries);
+export const userFetchServiceProviderServiceDetailsUseCase = new UserFetchServiceProviderServiceDetailsUseCase(providerServiceQueries);
+export const userFetchServiceProviderProfileDetailsUseCase = new UserFetchServiceProviderProfileDetailsUseCase(providerRepository, signedUrlService);
+export const userFetchServiceProviderServiceAvailabilityUseCase = new UserFetchServiceProviderServiceAvailabilityUseCase(providerRepository, serviceAvailabilityQueries);
 
 // user review controller dependency injection
 export const createReviewUseCase = new CreateReviewUseCase(reviewRepository);

@@ -3,7 +3,6 @@ import { log } from "../../../shared/logger/logger";
 import { IBookingQueries } from "../../queries/IBooking.queries";
 import { IProviderServiceQueries } from "../../queries/IProviderService.queries";
 import { IServiceAvailabilityQueries } from "../../queries/IServiceAvailability.queries";
-import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { IAddressRepository } from "../../../domain/interfaces/repositories/IAddress.repository";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
@@ -11,20 +10,22 @@ import { UserFetchProviderServiceAvailabilityRequest, UserFetchProviderServiceAv
 
 export class UserFetchServiceProvidersUseCase {
   constructor(
-    private userRepository: IUserRepository,
     private signedUrlService: ISignedUrlService,
     private providerServiceQueries: IProviderServiceQueries
   ) { };
 
   async execute(payload: UserFetchServiceProvidersRequest): Promise<Array<UserFetchServiceProvidersResponse> | null> {
     try {
-      const { userId, serviceIds } = payload;
-      if (!userId || !serviceIds) throw new Error("Invalid request.");
+      const { serviceIds, categories, location, maxPrice, minPrice, slotflowTrusted } = payload;
 
-      const user = await this.userRepository.findById(userId);
-      if (!user) throw new Error("No user found");
-
-      const providers = await this.providerServiceQueries.findProvidersUsingServiceIds(serviceIds);
+      const providers = await this.providerServiceQueries.findProvidersUsingServiceIds({
+        serviceIds: serviceIds ?? [], 
+        categories: categories ?? [], 
+        location, 
+        maxPrice, 
+        minPrice,
+        slotflowTrusted:slotflowTrusted
+      });
       if (!providers) return null;
 
       const updatedProviders = await Promise.all(
@@ -40,7 +41,7 @@ export class UserFetchServiceProvidersUseCase {
         }),
       );
 
-      // console.log("updatedProviders : ",updatedProviders);
+      console.log("updatedProviders : ",updatedProviders);
 
       return updatedProviders;
     } catch (error) {
@@ -53,18 +54,14 @@ export class UserFetchServiceProvidersUseCase {
 
 export class UserFetchServiceProviderProfileDetailsUseCase {
   constructor(
-    private userRepository: IUserRepository,
     private providerRepository: IProviderRepository,
     private signedUrlService: ISignedUrlService
   ) { };
 
   async execute(payload: UserFetchServiceProviderDetailsRequest): Promise<UserFetchServiceProviderDetailsResponse> {
     try {
-      const { userId, providerId } = payload;
-      if (!userId || !providerId) throw new Error("Invalid request");
-
-      const user = await this.userRepository.findById(userId);
-      if (!user) throw new Error("No user found");
+      const { providerId } = payload;
+      if (!providerId) throw new Error("Invalid request");
 
       const provider = await this.providerRepository.findById(providerId);
       if (!provider) throw new Error("No provider found");
@@ -94,17 +91,13 @@ export class UserFetchServiceProviderProfileDetailsUseCase {
 
 export class UserFetchServiceProviderAddressUseCase {
   constructor(
-    private userRepository: IUserRepository,
     private addressRepository: IAddressRepository,
   ) { };
 
   async execute(payload: UserFetchServiceProviderAddressRequest): Promise<UserFetchServiceProviderAddressResponse> {
     try {
-      const { userId, providerId } = payload;
-      if (!userId || !providerId) throw new Error("Invalid request");
-
-      const user = await this.userRepository.findById(userId);
-      if (!user) throw new Error("No user found");
+      const { providerId } = payload;
+      if (!providerId) throw new Error("Invalid request");
 
       const address = await this.addressRepository.findByUserId(providerId);
       if (!address) throw new Error("No address found");
@@ -122,16 +115,12 @@ export class UserFetchServiceProviderAddressUseCase {
 
 export class UserFetchServiceProviderServiceDetailsUseCase {
   constructor(
-    private userRepository: IUserRepository,
     private providerServiceQueries: IProviderServiceQueries,
   ) { };
 
   async execute(payload: UserFetchServiceproviderServiceRequest): Promise<UserFetchProviderServiceResponse> {
     try {
-      const { userId, providerId } = payload;
-
-      const user = await this.userRepository.findById(userId);
-      if (!user) throw new Error("No user found");
+      const { providerId } = payload;
 
       const serviceData = await this.providerServiceQueries.findByProviderId(providerId);
       if (!serviceData) return null;
@@ -160,18 +149,14 @@ export class UserFetchServiceProviderServiceDetailsUseCase {
 export class UserFetchServiceProviderServiceAvailabilityUseCase {
   constructor(
     private providerRepository: IProviderRepository,
-    private userRepository: IUserRepository,
     private serviceAvailabilityQueries: IServiceAvailabilityQueries
   ) { };
 
   async execute(payload: UserFetchProviderServiceAvailabilityRequest): Promise<UserFetchProviderServiceAvailabilityResponse> {
     try {
-      const { userId, providerId, date } = payload;
+      const { providerId, date } = payload;
       const currentDateTime = dayjs();
       const selectedDate = dayjs(date).format('YYYY-MM-DD');
-
-      const user = await this.userRepository.findById(userId);
-      if (!user) throw new Error("No user found");
 
       const provider = await this.providerRepository.findById(providerId);
       if (!provider) throw new Error("nNo provider found");

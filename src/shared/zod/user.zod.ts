@@ -1,12 +1,13 @@
 import { z } from "zod";
 import { numberField, objectIdField, stringField } from "./common.zod";
 import { ServiceMode } from "../../domain/enums/serviceMode.enum";
+import { ServiceCategory } from "../../domain/enums/serviceCategories.enum";
 
 // **** user profile controller **** \\
 // User update user info controller zod validation
 export const UserUpdateInfoZOdSchema = z.object({
-    username: stringField("Username",4,30,/^[a-zA-Z ]{4,30}$/,"Invalid username"),
-    phone: stringField("Phone",10,15,/^\+\d{10,15}$/, "Invalid phone number")
+    username: stringField("Username", 4, 30, /^[a-zA-Z ]{4,30}$/, "Invalid username"),
+    phone: stringField("Phone", 10, 15, /^\+\d{10,15}$/, "Invalid phone number")
 })
 
 
@@ -16,7 +17,20 @@ export const UserUpdateInfoZOdSchema = z.object({
 // **** user provider controller **** \\
 // User fetch providers for the dashboard provider listing
 export const UserFetchAllProvidersZodSchema = z.object({
-    selectedServices: z.union([z.string(), z.array(z.string())]).optional(),
+    appServiceIds: z.union([z.string(), z.array(z.string())]).optional(),
+    maxPrice: z.coerce.number().optional(),
+    minPrice: z.coerce.number().optional(),
+    slotflowTrusted: z
+        .enum(["true", "false"])
+        .transform(val => val === "true")
+        .optional(),
+    categories: z.nativeEnum(ServiceCategory).array().optional(),
+    location: z.object({
+        type: z.literal("Point"),
+        coordinates: z
+            .tuple([z.coerce.number(), z.coerce.number()])
+            .refine((arr) => arr.length === 2, "Coordinates must be [lon, lat]"),
+    }).optional(),
 });
 
 // User fetch provider address controller zod validation
@@ -56,6 +70,6 @@ export const UserCreateSessionIdForbookingViaStripeZodSchema = z.object({
 export const UserCreateReviewZodSchema = z.object({
     providerId: objectIdField("Provider Id"),
     bookingId: objectIdField("Booking Id"),
-    reviewText: stringField("Review text", 5, 1000, ),
-    rating: numberField("Rating",1,5),
+    reviewText: stringField("Review text", 5, 1000,),
+    rating: numberField("Rating", 1, 5),
 })

@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
-import { addressLineRegex, cityRegex, countryRegex, districtRegex, landMarkRegex, phoneRegex, pincodeRegex, placeRegex, stateRegex } from '../../../shared/zod/regex';
 import { GeoLocation } from "../../../domain/contracts/address.contract";
+import { addressLineRegex, cityRegex, countryRegex, districtRegex, landMarkRegex, phoneRegex, pincodeRegex, placeRegex, stateRegex } from '../../../shared/zod/regex';
 
 export interface IAddress extends Document {
     _id: Types.ObjectId,
@@ -114,5 +114,7 @@ const addressSchema = new Schema<IAddress>({
         required: true
     }
 });
+
+addressSchema.index({ location: "2dsphere" });
 
 export const AddressModel = mongoose.model<IAddress>('Address', addressSchema);

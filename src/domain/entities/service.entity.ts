@@ -1,6 +1,6 @@
 import { ServiceProps } from "../contracts/service.contract";
-import { CreateServiceProps, UpdateServiceProps } from "../commands/service.commands";
 import { ServiceCategory } from "../enums/serviceCategories.enum";
+import { CreateServiceProps, UpdateServiceProps } from "../commands/service.commands";
 
 export class Service {
     private props: ServiceProps;

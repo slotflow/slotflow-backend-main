@@ -26,18 +26,19 @@ class UserProviderController {
 
     async fetchServiceProviders(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = (req.user as DecodedUser).userOrProviderId;
-            const { selectedServices } = UserFetchAllProvidersZodSchema.parse(req.query);
-            if (!userId) throw new Error("Invalid request.");
+            console.log("req.query : ", req.query);
+            const validatedData = UserFetchAllProvidersZodSchema.parse(req.query);
+            const { categories, location, maxPrice, minPrice, slotflowTrusted, appServiceIds } = validatedData;
+            console.log("validatedData : ",validatedData);
             let serviceIds: string[] = [];
-            if (selectedServices) {
-                const servicesArray = Array.isArray(selectedServices)
-                    ? selectedServices
-                    : selectedServices.split(",");
+            if (appServiceIds) {
+                const servicesArray = Array.isArray(appServiceIds)
+                    ? appServiceIds
+                    : appServiceIds.split(",");
 
                 serviceIds = servicesArray.map(id => id);
             };
-            const result = await this.userFetchServiceProvidersUseCase.execute({ userId, serviceIds });
+            const result = await this.userFetchServiceProvidersUseCase.execute({ serviceIds, categories, location, maxPrice, minPrice, slotflowTrusted });
             sendResponse(res, result);
         } catch (error) {
             log.error("fetchServiceProviders failed", error as Error);
@@ -47,10 +48,9 @@ class UserProviderController {
 
     async fetchServiceProviderAddress(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = (req.user as DecodedUser).userOrProviderId;
             const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
-            if (!userId || !providerId) throw new Error("Invalid request");
-            const result = await this.userFetchServiceProviderAddressUseCase.execute({ userId, providerId });
+            if (!providerId) throw new Error("Invalid request");
+            const result = await this.userFetchServiceProviderAddressUseCase.execute({ providerId });
             sendResponse(res, result);
         } catch (error) {
             log.error("fetchServiceProviderAddress failed", error as Error);
@@ -60,10 +60,9 @@ class UserProviderController {
 
     async fetchServiceProviderProfileDetails(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = (req.user as DecodedUser).userOrProviderId;
             const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
-            if (!userId || !providerId) throw new Error("Invalid request");
-            const result = await this.userFetchServiceProviderProfileDetailsUseCase.execute({ userId, providerId });
+            if (!providerId) throw new Error("Invalid request");
+            const result = await this.userFetchServiceProviderProfileDetailsUseCase.execute({ providerId });
             sendResponse(res, result);
         } catch (error) {
             log.error("fetchServiceProviderProfileDetails failed", error as Error);
@@ -73,10 +72,9 @@ class UserProviderController {
 
     async fetchServiceProviderServiceDetails(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = (req.user as DecodedUser).userOrProviderId;
             const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
-            if (!userId || !providerId) throw new Error("Invalid request");
-            const result = await this.userFetchServiceProviderServiceDetailsUseCase.execute({ userId, providerId });
+            if (!providerId) throw new Error("Invalid request");
+            const result = await this.userFetchServiceProviderServiceDetailsUseCase.execute({ providerId });
             sendResponse(res, result);
         } catch (error) {
             log.error("fetchServiceProviderServiceDetails failed", error as Error);
@@ -86,11 +84,10 @@ class UserProviderController {
 
     async fetchServiceProviderServiceAvailability(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = (req.user as DecodedUser).userOrProviderId;
             const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
             const { date } = DateZodSchema.parse(req.query);
-            if (!userId || !providerId || !date) throw new Error("Invalid request");
-            const result = await this.userFetchServiceProviderServiceAvailabilityUseCase.execute({ userId, providerId, date: new Date(date) });
+            if (!providerId || !date) throw new Error("Invalid request");
+            const result = await this.userFetchServiceProviderServiceAvailabilityUseCase.execute({ providerId, date: new Date(date) });
             sendResponse(res, result);
         } catch (error) {
             log.error("fetchServiceProviderServiceAvailability failed", error as Error);
@@ -101,7 +98,7 @@ class UserProviderController {
     async fetchProvidersForChatSidebar(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = (req.user as DecodedUser).userOrProviderId;
-            if(!userId) throw new Error("Invalid request");
+            if (!userId) throw new Error("Invalid request");
             const result = await this.userFetchProvidersForChatSidebar.execute({ userId });
             sendResponse(res, result);
         } catch (error) {

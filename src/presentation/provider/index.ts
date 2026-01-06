@@ -9,7 +9,6 @@ import { FetchProviderProofsUseCase } from "../../application/useCases/common/fe
 import { FetchBookingAppointmentsUseCase } from "../../application/useCases/common/fetchAllBookings.useCase";
 import { ProviderFetchAllPaymentsUseCase } from "../../application/useCases/provier/providerPayment.useCase";
 import { ProviderFetchUserForChatSidebarUseCase } from "../../application/useCases/provier/providerUser.useCase";
-import { ProviderFetchAllAppServicesUseCase } from "../../application/useCases/provier/providerAppServices.useCase";
 import { ProviderChangeReviewRepostStatusUseCase } from "../../application/useCases/provier/providerReview.useCase";
 import { ProviderFetchDashboardStatsUseCase } from "../../application/useCases/provier/providerDashboardStats.useCase";
 import { ProviderFetchAllSubscriptionsUseCase } from "../../application/useCases/provier/providerSubscription.useCase";
@@ -23,6 +22,7 @@ import { ProviderCreateServiceAvailabilitiesUseCase, ProviderFetchServiceAvailab
 import { ProviderCreateServiceDetailsUseCase, ProviderFetchServiceDetailsUseCase, ProviderUpdateServiceDetailsUseCase } from "../../application/useCases/provier/providerService.useCase";
 import { ProvideDeleteIdentityProofUseCase, ProvideDeleteServiceProofUseCase, ProviderFetchProfileDetailsUseCase, ProviderRequestForApprovalUseCase, ProviderUpdateIdentityProofUseCase, ProviderUpdateProfileImageUseCase, ProviderUpdateProviderInfoUseCase, ProviderUpdateServiceProofUseCase } from "../../application/useCases/provier/providerProfile.useCase";
 import { addressRepository, bookingQueries, bookingRepository, kafkaService, paymentQueries, paymentRepository, planRepository, providerRepository, providerServiceQueries, providerServiceRepository, reviewQueries, reviewRepository, serviceAvailabilityQueries, serviceAvailabilityRepository, serviceRepository, signedUrlService, subscriptionMapping, subscriptionQueries, subscriptionRepository, userRepository } from "../../infrastructure/container";
+import { FetchAllAppServicesUseCase } from "../../application/useCases/common/fetchAppServices.useCase";
 
 // provider address controller dependency injection
 export const providerFetchAddressUseCase = new ProviderFetchAddressUseCase(addressRepository);
@@ -30,7 +30,7 @@ export const providerUpdateAddressUseCase = new ProviderUpdateAddressUseCase(add
 export const providerCreateAddressUseCase = new ProviderCreateAddressUseCase(providerRepository, addressRepository);
 
 // provider app service controller dependency injection
-export const providerFetchAllServicesUseCase = new ProviderFetchAllAppServicesUseCase(serviceRepository);
+export const fetchAllAppServicesUseCase = new FetchAllAppServicesUseCase(serviceRepository);
 
 // provider booking controller
 export const validateJoinRoomUsecase = new ValidateJoinRoomUsecase(bookingRepository);

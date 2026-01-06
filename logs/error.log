@@ -1194,3 +1194,869 @@
 [31m    at D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\mongoose\lib\document.js:3090:17[39m
 [31m    at D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\mongoose\lib\schemaType.js:1407:9[39m
 [31m    at process.processTicksAndRejections (node:internal/process/task_queues:85:11)[39m
+[2026-01-06 17:30:46] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:38:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:30:46] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:38:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:31:13] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:38:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:31:13] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:38:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:32:38] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:38:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:32:38] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:38:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:40:49] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:38:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:40:49] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:38:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:42:40] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:39:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:42:40] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:39:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:42:42] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:39:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:42:42] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:39:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:46:36] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:46:36] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:46:37] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:46:37] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:46:39] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:46:39] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:46:43] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:46:43] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:48:32] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:48:32] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:48:35] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:48:35] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:48:38] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:48:38] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:51:30] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:51:30] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:51:31] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:51:31] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:51:33] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:51:33] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:51:38] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:51:38] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:52:38] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:52:38] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:54:12] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 17:54:12] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:22:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:04:35] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:21:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:04:35] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:21:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:04:36] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:21:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:04:36] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:21:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:04:45] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:21:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:04:45] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:21:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:04:49] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:21:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:04:49] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:21:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:06:31] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:21:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:06:31] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:21:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:06:32] [[31merror[39m]: [31mUserFetchServiceProvidersUseCase failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:21:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:06:32] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31mthis.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31mTypeError: this.providerServiceQueries.findProvidersUsingServiceIds is not a function[39m
+[31m    at UserFetchServiceProvidersUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\user\userProvider.useCase.ts:21:59)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:40:72)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:16:37] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "number",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "maxPrice"[39m
+[31m    ],[39m
+[31m    "message": "Expected number, received string"[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "boolean",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "slotflowTrusted"[39m
+[31m    ],[39m
+[31m    "message": "Expected boolean, received string"[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_literal",[39m
+[31m    "expected": "Point",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "type"[39m
+[31m    ],[39m
+[31m    "message": "Invalid literal value, expected \"Point\""[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "coordinates"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "number",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "maxPrice"[39m
+[31m    ],[39m
+[31m    "message": "Expected number, received string"[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "boolean",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "slotflowTrusted"[39m
+[31m    ],[39m
+[31m    "message": "Expected boolean, received string"[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_literal",[39m
+[31m    "expected": "Point",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "type"[39m
+[31m    ],[39m
+[31m    "message": "Invalid literal value, expected \"Point\""[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "coordinates"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31m    at get error (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:587:31)[39m
+[31m    at ZodObject.parse (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:663:22)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:30:66)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:18:21] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "number",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "maxPrice"[39m
+[31m    ],[39m
+[31m    "message": "Expected number, received string"[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_literal",[39m
+[31m    "expected": "Point",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "type"[39m
+[31m    ],[39m
+[31m    "message": "Invalid literal value, expected \"Point\""[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "coordinates"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "number",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "maxPrice"[39m
+[31m    ],[39m
+[31m    "message": "Expected number, received string"[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_literal",[39m
+[31m    "expected": "Point",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "type"[39m
+[31m    ],[39m
+[31m    "message": "Invalid literal value, expected \"Point\""[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "coordinates"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31m    at get error (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:587:31)[39m
+[31m    at ZodObject.parse (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:663:22)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:30:66)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:23:23] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "number",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "maxPrice"[39m
+[31m    ],[39m
+[31m    "message": "Expected number, received string"[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_literal",[39m
+[31m    "expected": "Point",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "type"[39m
+[31m    ],[39m
+[31m    "message": "Invalid literal value, expected \"Point\""[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "coordinates"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "number",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "maxPrice"[39m
+[31m    ],[39m
+[31m    "message": "Expected number, received string"[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_literal",[39m
+[31m    "expected": "Point",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "type"[39m
+[31m    ],[39m
+[31m    "message": "Invalid literal value, expected \"Point\""[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "coordinates"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31m    at get error (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:587:31)[39m
+[31m    at ZodObject.parse (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:663:22)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:30:66)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:24:51] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "number",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "maxPrice"[39m
+[31m    ],[39m
+[31m    "message": "Expected number, received string"[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "number",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "coordinates",[39m
+[31m      0[39m
+[31m    ],[39m
+[31m    "message": "Expected number, received string"[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "number",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "coordinates",[39m
+[31m      1[39m
+[31m    ],[39m
+[31m    "message": "Expected number, received string"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "number",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "maxPrice"[39m
+[31m    ],[39m
+[31m    "message": "Expected number, received string"[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "number",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "coordinates",[39m
+[31m      0[39m
+[31m    ],[39m
+[31m    "message": "Expected number, received string"[39m
+[31m  },[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "number",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "location",[39m
+[31m      "coordinates",[39m
+[31m      1[39m
+[31m    ],[39m
+[31m    "message": "Expected number, received string"[39m
+[31m  }[39m
+[31m][39m
+[31m    at get error (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:587:31)[39m
+[31m    at ZodObject.parse (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:663:22)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:30:66)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 18:26:30] [[31merror[39m]: [31mfetchServiceProviders failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "number",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "maxPrice"[39m
+[31m    ],[39m
+[31m    "message": "Expected number, received string"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "number",[39m
+[31m    "received": "string",[39m
+[31m    "path": [[39m
+[31m      "maxPrice"[39m
+[31m    ],[39m
+[31m    "message": "Expected number, received string"[39m
+[31m  }[39m
+[31m][39m
+[31m    at get error (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:587:31)[39m
+[31m    at ZodObject.parse (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:663:22)[39m
+[31m    at UserProviderController.fetchServiceProviders (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userProvider.controller.ts:30:66)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 19:54:13] [[31merror[39m]: [31mfetchAllAppService failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "object",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Expected array, received object"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "object",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Expected array, received object"[39m
+[31m  }[39m
+[31m][39m
+[31m    at get error (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:587:31)[39m
+[31m    at ZodObject.parse (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:663:22)[39m
+[31m    at UserAppServiceController.fetchAllAppService (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userAppService.controller.ts:17:65)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 19:54:15] [[31merror[39m]: [31mfetchAllAppService failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31m    at get error (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:587:31)[39m
+[31m    at ZodObject.parse (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:663:22)[39m
+[31m    at UserAppServiceController.fetchAllAppService (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userAppService.controller.ts:17:65)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 19:56:51] [[31merror[39m]: [31mfetchAllAppService failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31m    at get error (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:587:31)[39m
+[31m    at ZodObject.parse (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:663:22)[39m
+[31m    at UserAppServiceController.fetchAllAppService (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userAppService.controller.ts:17:65)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m

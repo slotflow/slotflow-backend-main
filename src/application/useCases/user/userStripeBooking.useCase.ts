@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import { kafkaConfig } from '../../../config/env';
 import { log } from '../../../shared/logger/logger';
 import { stripe } from '../../../infrastructure/lib/stripe';
 import { Payment } from '../../../domain/entities/payment.entity';
@@ -10,17 +11,15 @@ import { PaymentMethod } from '../../../domain/enums/paymentMethod.enum';
 import { PaymentGateway } from '../../../domain/enums/paymentGateway.enum';
 import { AppointmentStatus } from '../../../domain/enums/appointmentStatus.enum';
 import { IProviderServiceQueries } from '../../queries/IProviderService.queries';
+import { IKafkaService } from '../../../domain/interfaces/services/IKafka.service';
 import { IServiceAvailabilityQueries } from '../../queries/IServiceAvailability.queries';
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
+import { IGoogleTokenService } from '../../../domain/interfaces/services/IGoogleToken.service';
 import { IPaymentRepository } from '../../../domain/interfaces/repositories/IPayment.repository';
 import { IBookingRepository } from '../../../domain/interfaces/repositories/IBooking.repository';
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
-import { ICredentialRepository } from '../../../domain/interfaces/repositories/ICredentialRepository';
 import { UserAppointmentBookingViaStripeRequest, UserSaveAppoinmentBookingRequest } from '../../dtos/user.dto';
-import { IKafkaService } from '../../../domain/interfaces/services/IKafka.service';
-import { kafkaConfig } from '../../../config/env';
 import { IGoogleCalendarGatewayService } from '../../../domain/interfaces/services/IGoogleCalendarGateway.service';
-import { IGoogleTokenService } from '../../../domain/interfaces/services/IGoogleToken.service';
 
 export class UserAppointmentBookingViaStripeUseCase {
     constructor(
@@ -146,7 +145,6 @@ export class UserSaveBookingAfterStripePaymentUseCase {
             if (!providerServiceAvailability) throw new Error("No availability found");
 
             const selectedSlot = providerServiceAvailability.slots.filter((slot) => slot._id.toString() === slotId);
-            console.log("selectedSlot : ",selectedSlot);
             if (!selectedSlot || selectedSlot.length === 0) throw new Error("No available slots found for this day");
 
             if (!selectedSlot[0].available) throw new Error("This slot is not available for today");
@@ -197,9 +195,9 @@ export class UserSaveBookingAfterStripePaymentUseCase {
                         }],
                     });
                     const newBooking = await this.bookingRepository.create(bookingData);
-                    console.log("newBooking one : ", newBooking);
                     if (!newBooking) throw new Error("Failed to confirm slot, please try again");
-                    console.log("newBooking two : ", newBooking);
+
+                    console.log("provider : ",provider);
 
                     await this.kafkaService.send({
                         topic: kafkaConfig.topics.gotAppointment,
