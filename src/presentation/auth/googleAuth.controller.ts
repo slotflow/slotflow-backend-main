@@ -42,10 +42,6 @@ class GoogleAuthController {
             console.log("google auth callback");
             passport.authenticate("google", { session: false }, async (err, user, info) => {
 
-                console.log("err : ", err);
-                console.log("user : ", user);
-                console.log("info : ", info);
-
                 if (err || !user) {
                     if (info.connectOnly) {
                         const errorPayload = {
@@ -55,7 +51,7 @@ class GoogleAuthController {
                         };
 
                         const redirectData = encodeURIComponent(JSON.stringify(errorPayload));
-                        return res.redirect(`${appUrlConfig.frontendUrl}/${info.role === Role.Provider ? "provider" : "user"}/settings?response=${redirectData}`);
+                        return res.redirect(`${appUrlConfig.frontendUrl}/${info.role === Role.Provider ? "provider" : "user"}/integrations?response=${redirectData}`);
                     } else {
                         return res.redirect(`${appUrlConfig.frontendUrl}/login?error=google_auth_failed`);
                     }
@@ -64,10 +60,6 @@ class GoogleAuthController {
                 const role = user.role;
                 const expiryDate = new Date(Date.now() + 60 * 60 * 1000);
 
-                console.log("google auth callback token storing")
-                console.log("User : ", user);
-                console.log("expiryDate : ", expiryDate);
-
                 const { token, user: updatedUser } = await this.googleAuthOrchestratorUseCase.execute({
                     email: user.email,
                     googleId: user.googleId,
@@ -75,7 +67,7 @@ class GoogleAuthController {
                     role,
                     connectOnly: user.connectOnly,
                     image: user.image,
-                    userId: user.UserId,
+                    userId: user.userId,
                     accessToken: user.googleAccessToken,
                     refreshToken: user.googleRefreshToken,
                     expiryDate,
@@ -87,7 +79,7 @@ class GoogleAuthController {
                         googleConnected: true,
                     };
                     const redirectData = encodeURIComponent(JSON.stringify(successPayload));
-                    return res.redirect(`${appUrlConfig.frontendUrl}/${role === Role.Provider ? "provider" : "user"}/settings?response=${redirectData}`);
+                    return res.redirect(`${appUrlConfig.frontendUrl}/${role === Role.Provider ? "provider" : "user"}/integrations?response=${redirectData}`);
                 };
 
                 res.cookie("token", token, {

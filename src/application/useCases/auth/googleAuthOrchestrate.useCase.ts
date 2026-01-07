@@ -102,7 +102,7 @@ export class GoogleAuthOrchestratorUseCase {
                         googleConnected: true,
                     });
                     entity = await this.userRepository.update(user);
-                };;
+                };
 
                 if (role === Role.Provider) {
                     const providerEntity =
@@ -121,15 +121,24 @@ export class GoogleAuthOrchestratorUseCase {
                 await this.aesEncryption.encrypt(accessToken);
             const encryptedRefreshToken =
                 await this.aesEncryption.encrypt(refreshToken);
-
-            const credentials = Credential.create({
+                
+            const existingCredential = await this.credentialRepository.findByUserId(userId ?? entity?._id!);
+            if (existingCredential) {
+                existingCredential.updateCredential({
                 accessToken: encryptedAccessToken,
                 refreshToken: encryptedRefreshToken,
                 expiryDate,
-                userId: userId ?? entity?._id!,
             });
-
-            await this.credentialRepository.create(credentials);
+                await this.credentialRepository.update(existingCredential);
+            } else {  
+                const credentials = Credential.create({
+                    accessToken: encryptedAccessToken,
+                    refreshToken: encryptedRefreshToken,
+                    expiryDate,
+                    userId: userId ?? entity?._id!,
+                });
+                await this.credentialRepository.create(credentials);
+            };
 
             let providerSubscription: string | undefined = PlanName.NoSubscription;
 

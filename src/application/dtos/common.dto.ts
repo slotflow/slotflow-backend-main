@@ -429,12 +429,14 @@ export interface GoogleCalendarEvent extends Partial<BookingDTO> {
 
   start: {
     dateTime: string,
+    date: string,
     timeZone: string,
-  }
+  } | string;
   end: {
     dateTime: string,
+    date: string,
     timeZone: string,
-  };
+  } | string;
 
   created?: string;
   updated?: string;
@@ -480,7 +482,7 @@ export type UpdateGoogleEventResponse = Pick<GoogleCalendarEvent, "id">;
 
 export type UserBookingAddingToCalendar = Pick<GoogleCalendarEvent, "summary" | "description" | "start" | "end" | "extendedProperties">
 
-export type UserBookingFetchingFromCalendar = Pick<GoogleCalendarEvent, "id" | "summary" | "description" | "start" | "end" | "creator" | "organizer" | "iCalUID" | "reminders" | "eventType" | "extendedProperties">;
+export type UserBookingFetchingFromCalendar = Pick<GoogleCalendarEvent, "id" | "summary" | "description" | "start" | "end" | "creator" | "organizer" | "iCalUID" | "reminders" | "eventType" | "extendedProperties" | "start" | "end">;
 
 export interface UpdateGoogleCalendarEventRequest {
   userId: string,

@@ -5302,3 +5302,423 @@
 [2026-01-07 17:39:19] [[32minfo[39m]: [32mKafka Admin disconnected[39m
 [2026-01-07 17:39:19] [[32minfo[39m]: [32mKafka Producer connected[39m
 [2026-01-07 17:39:19] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 18:37:56] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 18:37:56] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 18:37:56] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 18:37:56] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 18:37:56] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 18:38:14] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 18:38:14] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 18:38:14] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 18:38:14] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 18:38:14] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 18:38:46] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 18:38:46] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 18:38:46] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 18:38:46] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 18:38:46] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 18:41:13] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 18:41:13] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 18:41:13] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 18:41:13] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 18:41:13] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 18:42:10] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 18:42:10] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 18:42:10] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 18:42:10] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 18:42:10] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 18:44:49] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 18:44:49] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 18:44:49] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 18:44:49] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 18:44:49] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 18:45:56] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 18:45:56] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 18:45:56] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 18:45:56] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 18:45:56] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 18:54:59] [[31merror[39m]: [31mGoogleAuthOrchestratorUseCase failed : [39m
+[31mInvalid connect flow[39m
+[31mError: Invalid connect flow[39m
+[31m    at GoogleAuthOrchestratorUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\auth\googleAuthOrchestrate.useCase.ts:93:27)[39m
+[31m    at <anonymous> (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\auth\googleAuth.controller.ts:71:95)[39m
+[31m    at strategy.success (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\passport\lib\middleware\authenticate.js:222:18)[39m
+[31m    at verified (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\passport-oauth2\lib\strategy.js:189:20)[39m
+[31m    at Strategy._verify (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\passport\google.strategy.ts:24:20)[39m
+[31m    at D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\passport-oauth2\lib\strategy.js:198:24[39m
+[31m    at D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\passport-google-oauth20\lib\strategy.js:122:5[39m
+[31m    at passBackControl (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\oauth\lib\oauth2.js:134:9)[39m
+[31m    at IncomingMessage.<anonymous> (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\oauth\lib\oauth2.js:157:7)[39m
+[31m    at IncomingMessage.emit (node:events:531:35)[39m
+[2026-01-07 18:56:57] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 18:56:57] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 18:56:57] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 18:56:57] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 18:56:57] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 18:57:08] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 18:57:08] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 18:57:08] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 18:57:08] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 18:57:08] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 18:57:21] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 18:57:21] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 18:57:21] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 18:57:21] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 18:57:21] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 18:58:18] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 18:58:19] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 18:58:19] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 18:58:19] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 18:58:19] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 18:59:00] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 18:59:01] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 18:59:01] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 18:59:01] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 18:59:01] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 19:00:29] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 19:00:30] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 19:00:30] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 19:00:30] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 19:00:30] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 19:02:53] [[31merror[39m]: [31mGoogleAuthOrchestratorUseCase failed : [39m
+[31mInvalid connect flow[39m
+[31mError: Invalid connect flow[39m
+[31m    at GoogleAuthOrchestratorUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\auth\googleAuthOrchestrate.useCase.ts:95:27)[39m
+[31m    at <anonymous> (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\auth\googleAuth.controller.ts:70:95)[39m
+[31m    at strategy.success (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\passport\lib\middleware\authenticate.js:222:18)[39m
+[31m    at verified (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\passport-oauth2\lib\strategy.js:189:20)[39m
+[31m    at Strategy._verify (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\passport\google.strategy.ts:24:20)[39m
+[31m    at D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\passport-oauth2\lib\strategy.js:198:24[39m
+[31m    at D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\passport-google-oauth20\lib\strategy.js:122:5[39m
+[31m    at passBackControl (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\oauth\lib\oauth2.js:134:9)[39m
+[31m    at IncomingMessage.<anonymous> (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\oauth\lib\oauth2.js:157:7)[39m
+[31m    at IncomingMessage.emit (node:events:531:35)[39m
+[2026-01-07 19:04:25] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 19:04:26] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 19:04:26] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 19:04:26] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 19:04:26] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 19:58:48] [[31merror[39m]: [31mFethGoogleCalendarUseCase failed[39m
+[31mCredential not found[39m
+[31mError: Credential not found[39m
+[31m    at FethGoogleCalendarUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\common\fetchGoogleCalendar.useCase.ts:18:19)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async GoogleController.getUserEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\google\google.controller.ts:22:28)[39m
+[2026-01-07 19:58:48] [[31merror[39m]: [31mgetUserEvents failed[39m
+[31mCalendar events fetching failed[39m
+[31mError: Calendar events fetching failed[39m
+[31m    at FethGoogleCalendarUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\common\fetchGoogleCalendar.useCase.ts:42:19)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async GoogleController.getUserEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\google\google.controller.ts:22:28)[39m
+[2026-01-07 19:58:49] [[31merror[39m]: [31mFethGoogleCalendarUseCase failed[39m
+[31mCredential not found[39m
+[31mError: Credential not found[39m
+[31m    at FethGoogleCalendarUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\common\fetchGoogleCalendar.useCase.ts:18:19)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async GoogleController.getUserEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\google\google.controller.ts:22:28)[39m
+[2026-01-07 19:58:49] [[31merror[39m]: [31mgetUserEvents failed[39m
+[31mCalendar events fetching failed[39m
+[31mError: Calendar events fetching failed[39m
+[31m    at FethGoogleCalendarUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\common\fetchGoogleCalendar.useCase.ts:42:19)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async GoogleController.getUserEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\google\google.controller.ts:22:28)[39m
+[2026-01-07 19:58:51] [[31merror[39m]: [31mFethGoogleCalendarUseCase failed[39m
+[31mCredential not found[39m
+[31mError: Credential not found[39m
+[31m    at FethGoogleCalendarUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\common\fetchGoogleCalendar.useCase.ts:18:19)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async GoogleController.getUserEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\google\google.controller.ts:22:28)[39m
+[2026-01-07 19:58:51] [[31merror[39m]: [31mgetUserEvents failed[39m
+[31mCalendar events fetching failed[39m
+[31mError: Calendar events fetching failed[39m
+[31m    at FethGoogleCalendarUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\common\fetchGoogleCalendar.useCase.ts:42:19)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async GoogleController.getUserEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\google\google.controller.ts:22:28)[39m
+[2026-01-07 19:59:57] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 19:59:57] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 19:59:57] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 19:59:57] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 19:59:57] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 20:00:34] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:00:34] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 20:00:34] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 20:00:34] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 20:00:34] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 20:00:50] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:00:50] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 20:00:50] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 20:00:50] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 20:00:50] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 20:01:01] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:01:01] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 20:01:01] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 20:01:01] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 20:01:01] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 20:01:13] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:01:13] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 20:01:13] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 20:01:13] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 20:01:13] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 20:03:11] [[31merror[39m]: [31mFethGoogleCalendarUseCase failed[39m
+[31mCredential not found[39m
+[31mError: Credential not found[39m
+[31m    at FethGoogleCalendarUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\common\fetchGoogleCalendar.useCase.ts:20:23)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async GoogleController.getUserEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\google\google.controller.ts:22:28)[39m
+[2026-01-07 20:03:11] [[31merror[39m]: [31mgetUserEvents failed[39m
+[31mCredential not found[39m
+[31mError: Credential not found[39m
+[31m    at FethGoogleCalendarUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\common\fetchGoogleCalendar.useCase.ts:20:23)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async GoogleController.getUserEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\google\google.controller.ts:22:28)[39m
+[2026-01-07 20:05:15] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:05:15] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 20:05:15] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 20:05:15] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 20:05:15] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 20:05:23] [[31merror[39m]: [31mFethGoogleCalendarUseCase failed[39m
+[31mRequest had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.[39m
+[31mError: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.[39m
+[31m    at Gaxios._request (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\gaxios\src\gaxios.ts:211:15)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async OAuth2Client.requestAsync (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\google-auth-library\build\src\auth\oauth2client.js:463:20)[39m
+[31m    at async createAPIRequestAsync (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\googleapis-common\build\src\apirequest.js:308:25)[39m
+[31m    at async GoogleCalendarGatewayServiceImpl.fetchEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\services\googleCalendarGatewayService.impl.ts:114:26)[39m
+[31m    at async FethGoogleCalendarUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\common\fetchGoogleCalendar.useCase.ts:27:28)[39m
+[31m    at async GoogleController.getUserEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\google\google.controller.ts:22:28)[39m
+[2026-01-07 20:05:23] [[31merror[39m]: [31mgetUserEvents failed[39m
+[31mRequest had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.[39m
+[31mError: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.[39m
+[31m    at Gaxios._request (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\gaxios\src\gaxios.ts:211:15)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async OAuth2Client.requestAsync (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\google-auth-library\build\src\auth\oauth2client.js:463:20)[39m
+[31m    at async createAPIRequestAsync (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\googleapis-common\build\src\apirequest.js:308:25)[39m
+[31m    at async GoogleCalendarGatewayServiceImpl.fetchEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\services\googleCalendarGatewayService.impl.ts:114:26)[39m
+[31m    at async FethGoogleCalendarUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\common\fetchGoogleCalendar.useCase.ts:27:28)[39m
+[31m    at async GoogleController.getUserEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\google\google.controller.ts:22:28)[39m
+[2026-01-07 20:05:24] [[31merror[39m]: [31mFethGoogleCalendarUseCase failed[39m
+[31mRequest had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.[39m
+[31mError: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.[39m
+[31m    at Gaxios._request (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\gaxios\src\gaxios.ts:211:15)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async OAuth2Client.requestAsync (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\google-auth-library\build\src\auth\oauth2client.js:463:20)[39m
+[31m    at async createAPIRequestAsync (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\googleapis-common\build\src\apirequest.js:308:25)[39m
+[31m    at async GoogleCalendarGatewayServiceImpl.fetchEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\services\googleCalendarGatewayService.impl.ts:114:26)[39m
+[31m    at async FethGoogleCalendarUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\common\fetchGoogleCalendar.useCase.ts:27:28)[39m
+[31m    at async GoogleController.getUserEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\google\google.controller.ts:22:28)[39m
+[2026-01-07 20:05:24] [[31merror[39m]: [31mgetUserEvents failed[39m
+[31mRequest had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.[39m
+[31mError: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.[39m
+[31m    at Gaxios._request (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\gaxios\src\gaxios.ts:211:15)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async OAuth2Client.requestAsync (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\google-auth-library\build\src\auth\oauth2client.js:463:20)[39m
+[31m    at async createAPIRequestAsync (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\googleapis-common\build\src\apirequest.js:308:25)[39m
+[31m    at async GoogleCalendarGatewayServiceImpl.fetchEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\services\googleCalendarGatewayService.impl.ts:114:26)[39m
+[31m    at async FethGoogleCalendarUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\common\fetchGoogleCalendar.useCase.ts:27:28)[39m
+[31m    at async GoogleController.getUserEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\google\google.controller.ts:22:28)[39m
+[2026-01-07 20:05:27] [[31merror[39m]: [31mFethGoogleCalendarUseCase failed[39m
+[31mRequest had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.[39m
+[31mError: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.[39m
+[31m    at Gaxios._request (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\gaxios\src\gaxios.ts:211:15)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async OAuth2Client.requestAsync (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\google-auth-library\build\src\auth\oauth2client.js:463:20)[39m
+[31m    at async createAPIRequestAsync (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\googleapis-common\build\src\apirequest.js:308:25)[39m
+[31m    at async GoogleCalendarGatewayServiceImpl.fetchEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\services\googleCalendarGatewayService.impl.ts:114:26)[39m
+[31m    at async FethGoogleCalendarUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\common\fetchGoogleCalendar.useCase.ts:27:28)[39m
+[31m    at async GoogleController.getUserEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\google\google.controller.ts:22:28)[39m
+[2026-01-07 20:05:27] [[31merror[39m]: [31mgetUserEvents failed[39m
+[31mRequest had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.[39m
+[31mError: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.[39m
+[31m    at Gaxios._request (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\gaxios\src\gaxios.ts:211:15)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async OAuth2Client.requestAsync (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\google-auth-library\build\src\auth\oauth2client.js:463:20)[39m
+[31m    at async createAPIRequestAsync (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\googleapis-common\build\src\apirequest.js:308:25)[39m
+[31m    at async GoogleCalendarGatewayServiceImpl.fetchEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\services\googleCalendarGatewayService.impl.ts:114:26)[39m
+[31m    at async FethGoogleCalendarUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\common\fetchGoogleCalendar.useCase.ts:27:28)[39m
+[31m    at async GoogleController.getUserEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\google\google.controller.ts:22:28)[39m
+[2026-01-07 20:05:31] [[31merror[39m]: [31mFethGoogleCalendarUseCase failed[39m
+[31mRequest had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.[39m
+[31mError: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.[39m
+[31m    at Gaxios._request (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\gaxios\src\gaxios.ts:211:15)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async OAuth2Client.requestAsync (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\google-auth-library\build\src\auth\oauth2client.js:463:20)[39m
+[31m    at async createAPIRequestAsync (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\googleapis-common\build\src\apirequest.js:308:25)[39m
+[31m    at async GoogleCalendarGatewayServiceImpl.fetchEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\services\googleCalendarGatewayService.impl.ts:114:26)[39m
+[31m    at async FethGoogleCalendarUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\common\fetchGoogleCalendar.useCase.ts:27:28)[39m
+[31m    at async GoogleController.getUserEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\google\google.controller.ts:22:28)[39m
+[2026-01-07 20:05:31] [[31merror[39m]: [31mgetUserEvents failed[39m
+[31mRequest had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.[39m
+[31mError: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.[39m
+[31m    at Gaxios._request (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\gaxios\src\gaxios.ts:211:15)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async OAuth2Client.requestAsync (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\google-auth-library\build\src\auth\oauth2client.js:463:20)[39m
+[31m    at async createAPIRequestAsync (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\googleapis-common\build\src\apirequest.js:308:25)[39m
+[31m    at async GoogleCalendarGatewayServiceImpl.fetchEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\services\googleCalendarGatewayService.impl.ts:114:26)[39m
+[31m    at async FethGoogleCalendarUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\common\fetchGoogleCalendar.useCase.ts:27:28)[39m
+[31m    at async GoogleController.getUserEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\google\google.controller.ts:22:28)[39m
+[2026-01-07 20:07:20] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:07:21] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 20:07:21] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 20:07:21] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 20:07:21] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 20:07:42] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:07:42] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 20:07:42] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 20:07:42] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 20:07:42] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 20:07:53] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:07:53] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 20:07:53] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 20:07:53] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 20:07:53] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 20:08:15] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:08:26] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:08:26] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 20:08:26] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 20:08:26] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 20:08:26] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 20:08:47] [[31merror[39m]: [31mFethGoogleCalendarUseCase failed[39m
+[31mRequest had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.[39m
+[31mError: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.[39m
+[31m    at Gaxios._request (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\gaxios\src\gaxios.ts:211:15)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async OAuth2Client.requestAsync (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\google-auth-library\build\src\auth\oauth2client.js:463:20)[39m
+[31m    at async createAPIRequestAsync (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\googleapis-common\build\src\apirequest.js:308:25)[39m
+[31m    at async GoogleCalendarGatewayServiceImpl.fetchEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\services\googleCalendarGatewayService.impl.ts:114:26)[39m
+[31m    at async FethGoogleCalendarUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\common\fetchGoogleCalendar.useCase.ts:30:28)[39m
+[31m    at async GoogleController.getUserEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\google\google.controller.ts:22:28)[39m
+[2026-01-07 20:08:47] [[31merror[39m]: [31mgetUserEvents failed[39m
+[31mRequest had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.[39m
+[31mError: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.[39m
+[31m    at Gaxios._request (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\gaxios\src\gaxios.ts:211:15)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async OAuth2Client.requestAsync (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\google-auth-library\build\src\auth\oauth2client.js:463:20)[39m
+[31m    at async createAPIRequestAsync (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\googleapis-common\build\src\apirequest.js:308:25)[39m
+[31m    at async GoogleCalendarGatewayServiceImpl.fetchEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\infrastructure\services\googleCalendarGatewayService.impl.ts:114:26)[39m
+[31m    at async FethGoogleCalendarUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\common\fetchGoogleCalendar.useCase.ts:30:28)[39m
+[31m    at async GoogleController.getUserEvents (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\google\google.controller.ts:22:28)[39m
+[2026-01-07 20:12:29] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:12:30] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 20:12:30] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 20:12:30] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 20:12:30] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 20:13:33] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:13:33] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 20:13:33] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 20:13:33] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 20:13:33] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 20:17:02] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:17:03] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 20:17:03] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 20:17:03] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 20:17:03] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 20:17:20] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:17:20] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 20:17:20] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 20:17:20] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 20:17:20] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 20:30:17] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:30:17] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 20:30:17] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 20:30:17] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 20:30:17] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 20:30:52] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:30:52] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 20:30:52] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 20:30:52] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 20:30:52] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 20:31:04] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:31:04] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 20:31:04] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 20:31:04] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 20:31:04] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 20:31:26] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:31:26] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 20:31:26] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 20:31:26] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 20:31:26] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 20:31:34] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:31:34] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 20:31:34] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 20:31:34] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 20:31:34] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 20:31:50] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:31:50] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 20:31:50] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 20:31:50] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 20:31:50] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 20:32:07] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:32:07] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 20:32:07] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 20:32:07] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 20:32:07] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 20:32:47] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:32:47] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 20:32:47] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 20:32:47] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 20:32:47] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 20:35:32] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:35:32] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 20:35:32] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 20:35:32] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 20:35:32] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 20:35:54] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:35:54] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 20:35:54] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 20:35:54] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 20:35:54] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 20:36:01] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:36:01] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 20:36:01] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 20:36:01] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 20:36:01] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 20:36:22] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:36:22] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 20:36:22] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 20:36:22] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 20:36:22] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 20:36:44] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:36:44] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 20:36:44] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 20:36:44] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 20:36:44] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 20:36:52] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:36:52] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 20:36:52] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 20:36:52] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 20:36:52] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 20:37:08] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 20:37:08] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 20:37:08] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 20:37:08] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 20:37:08] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 21:14:09] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 21:14:09] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 21:14:09] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 21:14:09] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 21:14:09] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 21:14:26] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 21:14:26] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 21:14:26] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 21:14:26] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 21:14:26] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 21:16:50] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 21:16:50] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 21:16:50] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 21:16:50] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 21:16:50] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 21:16:59] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 21:16:59] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 21:16:59] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 21:16:59] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 21:16:59] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 21:23:42] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 21:23:42] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 21:23:42] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 21:23:42] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 21:23:42] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 21:24:56] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 21:24:56] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 21:24:56] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 21:24:56] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 21:24:56] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m

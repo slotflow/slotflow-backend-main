@@ -63,7 +63,6 @@ export class GoogleTokenServiceImpl implements IGoogleTokenService {
             });
 
             await this.credentialRepository.update(credentials);
-            await this.credentialRepository.update(credentials);
 
             return refreshed.accessToken;
         } catch (error) {

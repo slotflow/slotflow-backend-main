@@ -26,10 +26,8 @@ class UserProviderController {
 
     async fetchServiceProviders(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log("req.query : ", req.query);
             const validatedData = UserFetchAllProvidersZodSchema.parse(req.query);
             const { categories, location, maxPrice, minPrice, slotflowTrusted, appServiceIds, skip, limit } = validatedData;
-            console.log("validatedData : ",validatedData);
             let serviceIds: string[] = [];
             if (appServiceIds) {
                 const servicesArray = Array.isArray(appServiceIds)

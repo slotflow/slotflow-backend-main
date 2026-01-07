@@ -13,33 +13,33 @@ export class FethGoogleCalendarUseCase {
 
     async execute(userId: string): Promise<Array<UserBookingFetchingFromCalendar>> {
         try {
-            const credential = await this.credentialRepository.findById(userId);
-        if (!credential) {
-            throw new Error("Credential not found");
-        };
+            const credential = await this.credentialRepository.findByUserId(userId);
+            if (!credential) {
+                throw new Error("Credential not found");
+            };
 
-        const accessToken = await this.aesEncryption.decrypt(
-            credential.accessToken
-        );
+            const accessToken = await this.aesEncryption.decrypt(credential.accessToken);
+            const refreshToken = await this.aesEncryption.decrypt(credential.refreshToken);
 
-        const events = await this.googleCalendarGatewayService.fetchEvents(accessToken);
-
-        return events.map((event: UserBookingFetchingFromCalendar) => ({
-            id: event.id,
-            start: event.start,
-            end: event.end,
-            summary: event.summary,
-            description: event.description,
-            creator: event.creator,
-            organizer: event.organizer,
-            iCalUID: event.iCalUID,
-            reminders: event.reminders,
-            eventType: event.eventType,
-            ...event.extendedProperties?.private,
-        }));
+            const events = await this.googleCalendarGatewayService.fetchEvents(accessToken);
+            
+            return events.map((event: UserBookingFetchingFromCalendar) => ({
+                id: event.id,
+                summary: event.summary,
+                title: event.summary,
+                start: typeof event.start === 'object' ? (event.start.dateTime || event.start.date) : event.start,
+                end: typeof event.end === 'object' ? (event.end.dateTime || event.end.date) : event.end,
+                description: event.description,
+                creator: event.creator,
+                organizer: event.organizer,
+                iCalUID: event.iCalUID,
+                reminders: event.reminders,
+                eventType: event.eventType,
+                ...event.extendedProperties?.private,
+            }));
         } catch (error) {
             log.error("FethGoogleCalendarUseCase failed", error as Error);
-            throw new Error("Calendar events fetching failed");
+            throw error;
         };
     };
 };

@@ -1,10 +1,10 @@
 import passport from "passport";
-import { DecodedUser } from "../../express";
+import { fethGoogleCalendarUseCase } from ".";
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
+import { DecodedUser } from "../../application/dtos/common.dto";
 import { FethGoogleCalendarUseCase } from "../../application/useCases/common/fetchGoogleCalendar.useCase";
-import { fethGoogleCalendarUseCase } from ".";
 
 class GoogleController {
     constructor(
@@ -18,8 +18,8 @@ class GoogleController {
         try {
             console.log("getUserEvents constroller start");
             const userId = (req.user as DecodedUser).userOrProviderId;
+            if(!userId) throw new Error("Invalid request");
             const result = await this.fethGoogleCalendarUseCase.execute(userId);
-            console.log("getUserEvents constroller result : ", result);
             sendResponse(res, result);
         } catch (error) {
             log.error("getUserEvents failed",error as Error);
@@ -50,7 +50,7 @@ class GoogleController {
                 state: state,
             })(req, res, next);
         } catch (error) {
-            console.log("connectGoogle error : ", error);
+            log.error("connectGoogle failed",error as Error);
             next(error)
         };
     };

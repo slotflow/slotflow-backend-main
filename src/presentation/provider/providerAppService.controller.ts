@@ -14,7 +14,6 @@ class ProviderAppServiceController {
 
     async getAllAppServices(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log("req.query : ",req.query);
             const { categories } = fetchAllAppServicesZodSchema.parse(req.query);
             const result = await this.fetchAllAppServicesUseCase.execute({ categories });
             sendResponse(res, result);

@@ -31,9 +31,6 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
       role: normalizedRole
     } as DecodedUser;
 
-    console.log("req.user : ", req.user);
-
-
     if (req.user.role === Role.User) {
       const user = await userRepository.findById(req.user.userOrProviderId!);
       if (user?.isBlocked) {
