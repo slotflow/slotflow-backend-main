@@ -5297,3 +5297,8 @@
 [2026-01-07 16:45:22] [[32minfo[39m]: [32mKafka Admin disconnected[39m
 [2026-01-07 16:45:22] [[32minfo[39m]: [32mKafka Producer connected[39m
 [2026-01-07 16:45:22] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 17:39:19] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 17:39:19] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 17:39:19] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 17:39:19] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 17:39:19] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m

@@ -9,6 +9,7 @@ export interface TimeSlotForFrontendResponse {
     _id: string,
     time: string,
     available: boolean,
+    occupied?: boolean,
 };
 
 export interface Availability {
