@@ -21,11 +21,11 @@ export class ProviderFetchUserForChatSidebarUseCase {
                     if (profileImageUrl) {
                         const signedUrl = await this.signedUrlService.get(profileImageUrl);
                         user.profileImage = signedUrl;
-                    }
+                    };
 
                     return user;
-                })
-            )
+                }),
+            );
 
             return updatedResult;
         } catch (error) {

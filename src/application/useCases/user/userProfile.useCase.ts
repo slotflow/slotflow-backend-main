@@ -1,4 +1,3 @@
-import { S3Client } from "@aws-sdk/client-s3";
 import { log } from "../../../shared/logger/logger";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
@@ -16,9 +15,14 @@ export class UserFetchProfileDetailsUseCase {
             const user = await this.userRepository.findById(userId);
             if (!user) throw new Error("User not found.");
 
-            const { _id, password, profileImage, updatedAt, addressId, bookingsId, verificationToken, ...rest } = user.getProps();
-
-            return rest;
+            return {
+                createdAt: user.createdAt,
+                email: user.email,
+                isBlocked: user.isBlocked,
+                isEmailVerified: user.isEmailVerified,
+                phone: user.phone,
+                username: user.username
+            };
         } catch (error) {
             log.error("UserFetchProfileDetailsUseCase failed", error as Error);
             throw error;
@@ -28,7 +32,6 @@ export class UserFetchProfileDetailsUseCase {
 
 export class UserUpdateProfileImageUseCase {
     constructor(
-        private s3Client: S3Client,
         private userRepository: IUserRepository,
         private signedUrlService: ISignedUrlService
     ) { };
@@ -77,9 +80,7 @@ export class UserUpdateProviderInfoUseCase {
             const updatedUser = await this.userRepository.update(user);
             if (!updatedUser) throw new Error("Info adding failed, please try again");
 
-            const updatedData = { username: updatedUser.username, phone: updatedUser.phone };
-
-            return updatedData;
+            return { username: updatedUser.username, phone: updatedUser.phone };;
         } catch (error) {
             log.error("UserUpdateProviderInfoUseCase failed", error as Error);
             throw error;

@@ -25,6 +25,6 @@ export class AdminUpdateReviewBlockStatusUseCase {
         } catch (error) {
             log.error("AdminUpdateReviewBlockStatusUseCase failed", error as Error);
             throw error;
-        }
-    }
-}
+        };
+    };
+};

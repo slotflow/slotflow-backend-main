@@ -85,7 +85,7 @@ export interface UserFetchServiceProviderDetailsRequest {
     providerId: ProviderDTO["_id"];
 }
 // user fetch provider details use case response interface
-export type UserFetchServiceProviderDetailsResponse = Pick<ProviderDTO, "_id" | "username" | "email" | "profileImage" | "trustedBySlotflow" | "phone">;
+export type UserFetchServiceProviderDetailsResponse = Pick<ProviderDTO, "username" | "email" | "profileImage" | "trustedBySlotflow" | "phone">;
 
 
 // user fetch provider address use case request payload interface
@@ -93,7 +93,7 @@ export interface UserFetchServiceProviderAddressRequest {
     providerId: ProviderDTO["_id"];
 }
 // user fetch provider address use case response interface
-export type UserFetchServiceProviderAddressResponse = Pick<AddressDTO, "userId" | "addressLine" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location">
+export type UserFetchServiceProviderAddressResponse = Pick<AddressDTO, "addressLine" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location">
 
 
 // user fetch provider service use case request payload interface

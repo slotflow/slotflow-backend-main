@@ -5142,3 +5142,158 @@
 [2026-01-07 16:24:14] [[32minfo[39m]: [32mKafka Admin disconnected[39m
 [2026-01-07 16:24:14] [[32minfo[39m]: [32mKafka Producer connected[39m
 [2026-01-07 16:24:14] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:30:01] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:30:02] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:30:02] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:30:02] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:30:02] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:31:37] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:31:37] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:31:37] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:31:37] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:31:37] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:31:55] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:31:55] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:31:55] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:31:55] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:31:55] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:32:43] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:32:43] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:32:43] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:32:43] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:32:43] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:34:24] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:34:24] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:34:24] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:34:24] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:34:24] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:34:43] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:34:43] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:34:43] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:34:43] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:34:43] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:35:56] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:35:57] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:35:57] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:35:57] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:35:57] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:36:10] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:36:11] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:36:11] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:36:11] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:36:11] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:36:20] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:36:20] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:36:20] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:36:20] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:36:20] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:36:32] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:36:32] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:36:32] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:36:32] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:36:32] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:37:13] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:37:13] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:37:13] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:37:13] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:37:13] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:37:56] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:37:56] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:37:56] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:37:56] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:37:56] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:38:22] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:38:22] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:38:22] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:38:22] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:38:22] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:38:41] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:38:41] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:38:41] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:38:41] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:38:41] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:38:51] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:38:51] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:38:51] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:38:51] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:38:51] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:39:10] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:39:10] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:39:10] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:39:10] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:39:10] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:39:27] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:39:27] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:39:27] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:39:27] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:39:27] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:39:38] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:39:38] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:39:38] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:39:38] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:39:38] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:39:51] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:39:51] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:39:51] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:39:51] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:39:51] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:40:06] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:40:06] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:40:06] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:40:06] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:40:06] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:40:33] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:40:33] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:40:33] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:40:33] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:40:33] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:41:46] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:41:46] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:41:46] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:41:46] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:41:46] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:41:59] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:41:59] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:41:59] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:41:59] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:41:59] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:42:42] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:42:42] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:42:42] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:42:42] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:42:42] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:43:27] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:43:27] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:43:27] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:43:27] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:43:27] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:43:53] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:43:54] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:43:54] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:43:54] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:43:54] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:44:07] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:44:07] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:44:07] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:44:07] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:44:07] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:44:18] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:44:18] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:44:18] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:44:18] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:44:18] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:44:48] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:44:48] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:44:48] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:44:48] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:44:48] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:45:14] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:45:14] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:45:14] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:45:14] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:45:14] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:45:22] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:45:22] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:45:22] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:45:22] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:45:22] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m

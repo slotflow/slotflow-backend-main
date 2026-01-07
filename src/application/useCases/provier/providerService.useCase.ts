@@ -41,7 +41,7 @@ export class ProviderFetchServiceDetailsUseCase {
 
     constructor(
         private providerServiceQueries: IProviderServiceQueries
-    ) { }
+    ) { };
 
     async execute(payload: ProviderFetchProviderServiceRequest): Promise<ProviderFetchProviderServiceResponse> {
         try {
@@ -50,13 +50,13 @@ export class ProviderFetchServiceDetailsUseCase {
             const service = await this.providerServiceQueries.findByProviderId(providerId);
             if (!service) return null;
 
-            return { ...service}
+            return { ...service }
         } catch (error) {
-            console.log("ProviderFetchServiceDetailsUseCase error : ", error);
-            throw new Error("Failed to fetch service details");
-        }
-    }
-}
+            log.error("ProviderFetchServiceDetailsUseCase faile : ", error as Error);
+            throw error;
+        };
+    };
+};
 
 
 export class ProviderUpdateServiceDetailsUseCase {
@@ -66,30 +66,41 @@ export class ProviderUpdateServiceDetailsUseCase {
 
     async execute(payload: ProviderUpdateProviderServiceRequest): Promise<ProviderUpdateProviderServiceResponse> {
         try {
-            
+
             const { _id, ...updateData } = payload;
             const providerService = await this.provderServiceRepository.findById(payload._id);
-            if(!providerService) return null;
+            if (!providerService) return null;
 
             providerService.update({
                 ...updateData,
                 requirements: updateData.requirements ?? null,
                 videoUrl: updateData.videoUrl ?? null,
             });
-            
-            const service = await this.provderServiceRepository.update(providerService);
-            if(!service) return null;
 
-            const { createdAt, updatedAt, ...rest } = service.getProps();
+            const service = await this.provderServiceRepository.update(providerService);
+            if (!service) return null;
+
 
             return {
-                ...rest,
+                _id: service._id,
+                providerId: service.providerId,
                 service: {
-                    serviceName: rest.service,
+                    serviceName: service.serviceName,
                 },
+                serviceName: service.serviceName,
+                serviceDescription: service.serviceDescription,
+                servicePrice: service.servicePrice,
+                serviceExperience: service.serviceExperience,
+                serviceType: service.serviceType,
+                serviceMode: service.serviceMode,
+                tags: service.tags,
+                requirements: service.requirements,
+                videoUrl: service.videoUrl,
+                maxParticipants: service.maxParticipants,
+                isGroupService: service.isGroupService,
             };
 
-        } catch(error) {
+        } catch (error) {
             log.error("ProviderUpdateServiceDetailsUseCase failed", error as Error);
             throw error;
         };

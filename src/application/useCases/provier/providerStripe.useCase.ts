@@ -27,7 +27,7 @@ export class ProviderStripeConnectUseCase {
                 provider.linkStripeAccount(account.id);
                 const updatedProvider = await this.providerRepository.update(provider);
                 if (!updatedProvider) throw new Error("Stripe connecting failed");
-            }
+            };
 
             const accountLink = await stripe.accountLinks.create({
                 account: stripeAccountId,

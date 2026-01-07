@@ -13,13 +13,11 @@ export class FetchAllAppServicesUseCase {
             const { categories } = payload;
             const services = await this.serviceRepository.findAllByCategory(categories);
             if (!services) return null;
-        
-            const filteredServices = services.map(service => ({
+
+            return services.map(service => ({
                 _id: service._id,
                 serviceName: service.serviceName,
             }));
-
-            return filteredServices;
         } catch (error) {
             log.error("FetchAllAppServicesUseCase failed", error as Error);
             throw error;

@@ -73,8 +73,6 @@ export class AdminFetchProviderServiceUseCase {
             const service = await this.providerServiceQueries.findByProviderId(providerId);
             if (!service) return null;
 
-            console.log("service : ",service);
-
             return {...service};
         } catch (error) {
             log.error("AdminFetchProviderServiceUseCase failed", error as Error);

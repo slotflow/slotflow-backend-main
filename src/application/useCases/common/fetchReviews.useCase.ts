@@ -21,17 +21,17 @@ export class FetchAllReviewsUseCase {
             const updatedData = await Promise.all(
                 reviews.map(async (review) => {
                     if (review.userId?.profileImage) {
-                        const signedUrl = await this.signedUrlService.generate(review.userId.profileImage);
+                        const signedUrl = await this.signedUrlService.get(review.userId.profileImage);
                         review.userId.profileImage = signedUrl;
                     }
 
                     if (review.providerId?.profileImage) {
-                        const signedUrl = await this.signedUrlService.generate(review.providerId.profileImage);
+                        const signedUrl = await this.signedUrlService.get(review.providerId.profileImage);
                         review.providerId.profileImage = signedUrl;
                     }
 
                     return review;
-                })
+                }),
             );
 
             return { 

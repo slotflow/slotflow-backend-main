@@ -9,11 +9,10 @@ import { Plan } from "../../../domain/entities/plan.entity";
 import { ApiPaginationRequest, TableData } from "../../dtos/common.dto";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 
-
 export class AdminPlanListUseCase {
     constructor(
         private planRepository: IPlanRepository
-    ) { }
+    ) { };
 
     async execute(payload: ApiPaginationRequest): Promise<TableData<AdminPlanListResponse>> {
         try {
@@ -37,15 +36,15 @@ export class AdminPlanListUseCase {
         } catch (error) {
             log.error("AdminPlanListUseCase failed", error as Error);
             throw error;
-        }
-    }
-}
+        };
+    };
+};
 
 
 export class AdminCreatePlanUseCase {
     constructor(
         private planRepository: IPlanRepository
-    ) { }
+    ) { };
 
     async execute(payload: AdminCreatePlanRequest): Promise<void> {
         try {
@@ -68,16 +67,15 @@ export class AdminCreatePlanUseCase {
         } catch (error) {
             log.error("AdminCreatePlanUseCase failed", error as Error);
             throw error;
-        }
-    }
-
-}
+        };
+    };
+};
 
 
 export class AdminChangePlanBlockStatusUseCase {
     constructor(
         private planRepository: IPlanRepository
-    ) { }
+    ) { };
 
     async execute(payload: AdminChangePlanIsBlockedStatusRequest): Promise<AdminChangeBlockStatusResponse> {
         try {
@@ -92,10 +90,10 @@ export class AdminChangePlanBlockStatusUseCase {
 
             const updatedPlan = await this.planRepository.update(plan);
 
-            return { planId, isBlocked: updatedPlan.isBlocked};
+            return { planId, isBlocked: updatedPlan.isBlocked };
         } catch (error) {
             console.log("AdminChangePlanBlockStatusUseCase error :", error);
             throw new Error("Failed to change plan block status");
-        }
-    }
-}
+        };
+    };
+};

@@ -14,7 +14,7 @@ import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUr
 export class AdminUserListUseCase {
     constructor(
         private userQueries: IUserQueries,
-    ) { }
+    ) { };
 
     async execute(payload: ApiPaginationRequest): Promise<TableData<AdminFetchAllUsers>> {
         try {
@@ -37,7 +37,7 @@ export class AdminUserListUseCase {
 export class AdminChangeUserBlockStatusUseCase {
     constructor(
         private userRepository: IUserRepository,
-    ) { }
+    ) { };
 
     async execute(payload: AdminChangeUserIsBlockedStatusRequest): Promise<AdminChangeUserIsBlockedStatusResponse> {
         try {
@@ -65,7 +65,7 @@ export class AdminFetchUserDetailsUseCase {
     constructor(
         private userRepository: IUserRepository,
         private signedUrlService: ISignedUrlService
-    ) { }
+    ) { };
 
     async execute(payload: AdminFetchUserProfileDetailsRequest): Promise<AdminFetchUserProfileDetailsResponse> {
         try {

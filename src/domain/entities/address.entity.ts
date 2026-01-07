@@ -1,4 +1,4 @@
-import { AddressProps } from "../contracts/address.contract";
+import { AddressProps, GeoLocation } from "../contracts/address.contract";
 import { CreateAddressProps, UpdateAddressProps } from "../commands/address.commands";
 
 export class Address {
@@ -32,9 +32,60 @@ export class Address {
     }
 
     // Getters
-
     get _id(): string {
         return this.props._id;
+    }
+
+    get userId(): string {
+        return this.props.userId;
+    }
+
+    get addressLine(): string {
+        return this.props.addressLine;
+    }
+
+    get landMark(): string {
+        return this.props.landMark;
+    }
+
+    get phone(): string {
+        return this.props.phone;
+    }
+
+    get place(): string {
+        return this.props.place;
+    }
+
+    get city(): string {
+        return this.props.city;
+    }
+
+    get district(): string {
+        return this.props.district;
+    }
+
+    get pincode(): string {
+        return this.props.pincode;
+    }
+
+    get state(): string {
+        return this.props.state;
+    }
+
+    get country(): string {
+        return this.props.country;
+    }
+
+    get location(): GeoLocation {
+        return this.props.location;
+    }
+
+    get createdAt(): Date {
+        return this.props.createdAt;
+    }
+
+    get updatedAt(): Date {
+        return this.props.updatedAt;
     }
 
     // Business Methods

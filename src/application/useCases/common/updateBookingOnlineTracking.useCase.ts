@@ -35,9 +35,9 @@ export class UpdateBookingOnlineTrakingUseCase {
                     if (booking.onlineTrack.user.joined) {
                         if (booking.onlineTrack.user.joinedTime && booking.onlineTrack.user.leftCallTime) {
                             booking.completeAppointment();
-                        }
-                    }
-                }
+                        };
+                    };
+                };
             } else if (role === Role.User) {
                 if (joined && joinedTime) {
                     if (!booking.onlineTrack.user.joined && !booking.onlineTrack.user.joinedTime) {

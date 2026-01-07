@@ -32,7 +32,7 @@ export class ResendOtpUseCase {
           userOrProvider = await this.providerRepository.findByEmail(email);
         } else {
           throw new Error("Invalid request.");
-        }
+        };
 
       } else if (verificationToken && role) {
         if (role === Role.User) {
@@ -41,8 +41,8 @@ export class ResendOtpUseCase {
           userOrProvider = await this.providerRepository.findByVerificationToken(verificationToken);
         } else {
           throw new Error("Invalid request.");
-        }
-      }
+        };
+      };
 
       if (!userOrProvider || !userOrProvider?.email || !userOrProvider?.verificationToken) throw new Error("Please register.")
 
@@ -63,6 +63,6 @@ export class ResendOtpUseCase {
     } catch (error) {
       log.error("ResendOtpUseCase failed", error as Error);
       throw error;
-    }
-  }
-}
+    };
+  };
+};

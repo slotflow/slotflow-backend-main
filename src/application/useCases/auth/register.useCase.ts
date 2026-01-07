@@ -59,7 +59,7 @@ export class RegisterUseCase {
             verificationToken,
           });
           await this.userRepository.create(user);
-        }
+        };
 
         const token = JWTService.generateToken({ email, role });
 
@@ -68,7 +68,7 @@ export class RegisterUseCase {
             verificationToken,
             role,
             token
-          }
+          },
         };
 
       } else if (role === Role.Provider) {
@@ -83,17 +83,15 @@ export class RegisterUseCase {
         const otp = await this.otpService.setOtp(verificationToken);
         if (!otp) throw new Error("Unexpected error, please try again.");
 
-        // await producer.send({
-        //   topic: kafkaConfig.otpSendTopic,
-        //   messages: [{
-        //     key: email,
-        //     value: JSON.stringify({
-        //       otp,
-        //       email,
-        //       contentNumber: 1
-        //     })
-        //   }],
-        // });
+        await this.kafkaService.send({
+          topic: kafkaConfig.topics.sendOtp,
+          key: email,
+          message: {
+            otp,
+            email,
+            contentNumber: 1
+          },
+        });
 
         if (provider) {
           provider.changePassword({ verificationToken, password: hashedPassword });
@@ -106,7 +104,7 @@ export class RegisterUseCase {
             verificationToken,
           });
           await this.providerRepository.create(provider);
-        }
+        };
 
         const token = JWTService.generateToken({ email, role });
 
@@ -115,16 +113,16 @@ export class RegisterUseCase {
             verificationToken,
             role,
             token
-          }
+          },
         };
 
       } else {
         throw new Error("Invalid request.");
-      }
+      };
 
     } catch (error) {
       log.error("RegisterUseCase failed", error as Error);
       throw error;
-    }
-  }
-}
+    };
+  };
+};

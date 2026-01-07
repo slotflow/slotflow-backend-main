@@ -14,7 +14,7 @@ export class AdminFetchDashboardTodaysDataUseCase {
         private providerRepository: IProviderRepository,
         private paymentQueries: IPaymentQueries,
         private bookingQueries: IBookingQueries,
-    ) { }
+    ) { };
 
     async execute(): Promise<AdminFetchDashboardTodayStatsDataResponse> {
         try {
@@ -44,15 +44,15 @@ export class AdminFetchDashboardTodaysDataUseCase {
         } catch (error) {
             log.error("AdminFetchDashboardTodaysDataUseCase failed", error as Error);
             throw error;
-        }
-    }
-}
+        };
+    };
+};
 
 
 export class AdminFetchDashboardUserStatsDataUseCase {
     constructor(
         private useQueries: IUserQueries
-    ) { }
+    ) { };
 
     async execute(): Promise<AdminFetchDashboardUserStatsDataResponse> {
         try {
@@ -60,15 +60,15 @@ export class AdminFetchDashboardUserStatsDataUseCase {
         } catch (error) {
             log.error("AdminFetchDashboardUserStatsDataUseCase failed", error as Error);
             throw error;
-        }
-    }
-}
+        };
+    };
+};
 
 
 export class AdminFetchDashboardProviderStatsDataUseCase {
     constructor(
         private providerQuery: IProviderQueries
-    ) { }
+    ) { };
 
     async execute(): Promise<AdminFetchDashboardProviderStatsDataResponse> {
         try {
@@ -76,15 +76,15 @@ export class AdminFetchDashboardProviderStatsDataUseCase {
         } catch (error) {
             log.error("AdminFetchDashboardProviderStatsDataUseCase failed", error as Error);
             throw error;
-        }
-    }
-}
+        };
+    };
+};
 
 
 export class AdminFetchDashboardSubscriptionStatsDataUseCase {
     constructor(
         private subscriptionQueries: ISubscriptionQueries
-    ) { }
+    ) { };
 
     async execute(): Promise<AdminFetchDashboardSubscriptionStatsDataResponse> {
         try {
@@ -92,15 +92,15 @@ export class AdminFetchDashboardSubscriptionStatsDataUseCase {
         } catch (error) {
             log.error("AdminFetchDashboardSubscriptionStatsDataUseCase failed", error as Error);
             throw error;
-        }
-    }
-}
+        };
+    };
+};
 
 
 export class AdminFetchDashboardRevenueStatsDataUseCase {
     constructor(
         private paymentQueries: IPaymentQueries
-    ) { }
+    ) { };
 
     async execute(): Promise<AdminFetchDashboardRevenueStatsDataResponse> {
         try {
@@ -108,14 +108,14 @@ export class AdminFetchDashboardRevenueStatsDataUseCase {
         } catch (error) {
             log.error("AdminFetchDashboardRevenueStatsDataUseCase failed", error as Error);
             throw error;
-        }
-    }
-}
+        };
+    };
+};
 
 export class AdminFetchDashboardAppointmentsStatsDataUseCase {
     constructor(
         private bookingQueries: IBookingQueries
-    ) { }
+    ) { };
 
     async execute(): Promise<AdminFetchDashboardAppointmentStatsDataResponse> {
         try {
@@ -123,6 +123,6 @@ export class AdminFetchDashboardAppointmentsStatsDataUseCase {
         } catch (error) {
             log.error("AdminFetchDashboardAppointmentsStatsDataUseCase failed", error as Error);
             throw error;
-        }
-    }
-}
+        };
+    };
+};

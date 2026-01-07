@@ -1,10 +1,13 @@
+import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/role.enum";
 import { User } from "../../../domain/entities/user.entity";
+import { PlanName } from "../../../domain/enums/planName.enum";
 import { JWTService } from "../../../infrastructure/security/jwt";
 import { Provider } from "../../../domain/entities/provider.entity";
 import { Credential } from "../../../domain/entities/credential.entity";
 import { SubscriptionStatus } from "../../../domain/enums/subscriptionStatus.enum";
+import { IKafkaService } from "../../../domain/interfaces/services/IKafka.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { IAesEncryptionService } from "../../../domain/interfaces/services/IAesEncryption.service";
@@ -12,9 +15,6 @@ import { IProviderRepository } from "../../../domain/interfaces/repositories/IPr
 import { GoogleAuthOrchestrationRequest, GoogleAuthOrchestrationResponse } from "../../dtos/auth.dto";
 import { ICredentialRepository } from "../../../domain/interfaces/repositories/ICredentialRepository";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
-import { IKafkaService } from "../../../domain/interfaces/services/IKafka.service";
-import { kafkaConfig } from "../../../config/env";
-import { PlanName } from "../../../domain/enums/planName.enum";
 
 export class GoogleAuthOrchestratorUseCase {
     constructor(
@@ -27,9 +27,7 @@ export class GoogleAuthOrchestratorUseCase {
         private kafkaService: IKafkaService
     ) { };
 
-    async execute(
-        payload: GoogleAuthOrchestrationRequest,
-    ): Promise<GoogleAuthOrchestrationResponse> {
+    async execute(payload: GoogleAuthOrchestrationRequest): Promise<GoogleAuthOrchestrationResponse> {
         try {
             const {
                 connectOnly,
@@ -63,7 +61,6 @@ export class GoogleAuthOrchestratorUseCase {
                         });
                         user = await this.userRepository.create(userData);
                     };
-
                     entity = user;
                 };
 
@@ -82,10 +79,9 @@ export class GoogleAuthOrchestratorUseCase {
                         });
                         providerEntity =
                             await this.providerRepository.create(providerData);
-                    }
-
+                    };
                     entity = providerEntity;
-                }
+                };
 
                 token = JWTService.generateToken({
                     email,
@@ -95,7 +91,7 @@ export class GoogleAuthOrchestratorUseCase {
             } else {
                 if (!userId || !role) {
                     throw new Error("Invalid connect flow");
-                }
+                };
 
                 if (role === Role.User) {
                     const user = await this.userRepository.findById(userId);
@@ -106,7 +102,7 @@ export class GoogleAuthOrchestratorUseCase {
                         googleConnected: true,
                     });
                     entity = await this.userRepository.update(user);
-                }
+                };;
 
                 if (role === Role.Provider) {
                     const providerEntity =
@@ -118,8 +114,8 @@ export class GoogleAuthOrchestratorUseCase {
                         googleConnected: true,
                     });
                     entity = await this.providerRepository.update(providerEntity);
-                }
-            }
+                };
+            };
 
             const encryptedAccessToken =
                 await this.aesEncryption.encrypt(accessToken);
@@ -163,10 +159,6 @@ export class GoogleAuthOrchestratorUseCase {
 
             if (!entity) throw new Error("Invalid request");
 
-            console.log("connectOnly : ",connectOnly);
-            console.log("kafkaConfig.topics.googleConnect : ",kafkaConfig.topics.googleConnect);
-            console.log("kafkaConfig.topics.registerSuccess : ",kafkaConfig.topics.registerSuccess);
-            console.log("entity : ",entity);
             await this.kafkaService.send({
                 topic: connectOnly ? kafkaConfig.topics.googleConnect : kafkaConfig.topics.registerSuccess,
                 key: entity.email,
@@ -204,11 +196,8 @@ export class GoogleAuthOrchestratorUseCase {
             };
 
         } catch (error) {
-            log.error(
-                "GoogleAuthOrchestratorUseCase failed : ",
-                error as Error,
-            );
+            log.error("GoogleAuthOrchestratorUseCase failed : ",error as Error,);
             throw error;
-        }
-    }
-}
+        };
+    };
+};

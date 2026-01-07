@@ -7,7 +7,7 @@ export class FetchProviderProofsUseCase {
     constructor(
         private signedUrlService: ISignedUrlService,
         private providerRepository: IProviderRepository,
-    ) { }
+    ) { };
 
     async execute(payload: FetchProviderProofsRequest): Promise<ApiResponse<FetchProviderProofsResponse>> {
         try {
@@ -33,7 +33,7 @@ export class FetchProviderProofsUseCase {
                 data: {
                     identityProof: signedIdentityProofUrl,
                     serviceProof: signedServiceProofUrl,
-                }
+                },
             };
         } catch (error) {
             log.error("FetchProviderProofsUseCase failed", error as Error);

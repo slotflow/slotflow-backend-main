@@ -43,8 +43,6 @@ export class UserFetchServiceProvidersUseCase {
         }),
       );
 
-      console.log("updatedProviders : ",updatedProviders);
-
       return updatedProviders;
     } catch (error) {
       log.error("UserFetchServiceProvidersUseCase failed", error as Error);
@@ -73,15 +71,12 @@ export class UserFetchServiceProviderProfileDetailsUseCase {
         signedProfileImageUrl = await this.signedUrlService.get(provider.profileImage);
       };
 
-      let props = provider.getProps();
-
       return {
-        _id: props._id,
-        username: props.username,
-        email: props.email,
-        phone: props.phone,
+        username: provider.username,
+        email: provider.email,
+        phone: provider.phone,
         profileImage: signedProfileImageUrl,
-        trustedBySlotflow: props.trustedBySlotflow,
+        trustedBySlotflow: provider.trustedBySlotflow,
       };
     } catch (error) {
       log.error("UserFetchServiceProviderProfileDetailsUseCase failed", error as Error);
@@ -104,9 +99,17 @@ export class UserFetchServiceProviderAddressUseCase {
       const address = await this.addressRepository.findByUserId(providerId);
       if (!address) throw new Error("No address found");
 
-      let { createdAt, updatedAt, _id, ...rest } = address.getProps();
-
-      return rest;
+      return {
+        addressLine: address.addressLine,
+        city: address.city,
+        country: address.country,
+        district: address.district,
+        location: address.location,
+        phone: address.phone,
+        pincode: address.pincode,
+        place: address.place,
+        state: address.state,
+      };
     } catch (error) {
       log.error("UserFetchServiceProviderAddressUseCase failed", error as Error);
       throw error;

@@ -49,14 +49,11 @@ export class UserAppointmentBookingViaStripeUseCase {
             if(!provider.serviceAvailabilityId) throw new Error("No service availability found");
 
             const providerServiceAvailability = await this.serviceAvailabilityQueries.findByProviderId(date, provider.serviceAvailabilityId);
-            console.log("providerServiceAvailability : ",providerServiceAvailability);
             if (!providerServiceAvailability) throw new Error("No availability found");
 
-            console.log("usecase availability");
             console.dir(providerServiceAvailability, { depth: null, colors: true });
 
             const selectedSlot = providerServiceAvailability.slots.filter((slot) => slot._id.toString() === slotId.toString());
-            console.log("selectedSlot : ", selectedSlot);
             if (!selectedSlot || selectedSlot.length === 0) throw new Error("Not slot found");
 
             if (!selectedSlot[0].available) throw new Error("This slot is not available for today");
@@ -115,7 +112,6 @@ export class UserSaveBookingAfterStripePaymentUseCase {
     async execute(payload: UserSaveAppoinmentBookingRequest): Promise<void> {
         try {
             const { userId, sessionId } = payload;
-            console.log("saving booking");
             if (!userId || !sessionId) throw new Error("Invalid request");
 
             const user = await this.userRepository.findById(userId);
@@ -196,8 +192,6 @@ export class UserSaveBookingAfterStripePaymentUseCase {
                     });
                     const newBooking = await this.bookingRepository.create(bookingData);
                     if (!newBooking) throw new Error("Failed to confirm slot, please try again");
-
-                    console.log("provider : ",provider);
 
                     await this.kafkaService.send({
                         topic: kafkaConfig.topics.gotAppointment,

@@ -124,13 +124,13 @@ export class LoginUseCase {
                         verificationRejectionReason: provider.verificationRejectionReason,
                         providerSubscription,
                         googleConnected: provider.googleConnected,
-                    }
+                    },
                 };
 
             } else if (role === Role.Admin) {
                 if (email !== adminConfig.adminEmail || password !== adminConfig.adminPassword) {
                     throw new Error("Invalid credentials.");
-                }
+                };
                 const token = JWTService.generateToken({ email: email, role: role });
                 return {
                     authUser: {
@@ -143,11 +143,11 @@ export class LoginUseCase {
                 };
             } else {
                 throw new Error("Invalid request.");
-            }
+            };
 
         } catch (error) {
             log.error("LoginUseCase failed", error as Error);
             throw error;
-        }
-    }
-}
+        };
+    };
+};

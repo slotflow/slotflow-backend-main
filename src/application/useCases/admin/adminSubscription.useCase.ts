@@ -6,7 +6,7 @@ import { ISubscriptionQueries } from "../../queries/ISubscription.queries";
 export class AdminFetchAllSubscriptionsUseCase {
     constructor(
         private subscirptionQueries: ISubscriptionQueries
-    ) { }
+    ) { };
 
     async execute(payload: ApiPaginationRequest): Promise<TableData<AdminFetchAllSubscriptionsResponse>> {
         try {

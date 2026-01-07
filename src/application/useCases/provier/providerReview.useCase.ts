@@ -16,13 +16,13 @@ export class ProviderChangeReviewRepostStatusUseCase {
 
             if (review.providerId !== providerId) {
                 throw new Error("You are not permitted to report this review");
-            }
+            };
 
             if(review.reported) {
                 review.unreport();
             } else {
                 review.report()
-            }
+            };
 
             const updatedReview = await this.reviewRepository.update(review);
 

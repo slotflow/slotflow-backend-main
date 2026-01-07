@@ -24,5 +24,4 @@ export class ProviderFetchAllPlansUseCase {
             throw error;
         };
     };
-
 };

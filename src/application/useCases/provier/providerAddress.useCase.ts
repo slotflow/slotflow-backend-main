@@ -66,8 +66,19 @@ export class ProviderFetchAddressUseCase {
             const address = await this.addressRepository.findByUserId(providerId);
             if (!address) return null;
 
-            const { userId, createdAt, ...rest } = address.getProps();
-            return rest;
+            return {
+                _id: address._id,
+                addressLine: address.addressLine,
+                landMark: address.landMark,
+                phone: address.phone,
+                place: address.place,
+                city: address.city,
+                district: address.district,
+                pincode: address.pincode,
+                state: address.state,
+                country: address.country,
+                location: address.location,
+            };
 
         } catch (error) {
             log.error("ProviderFetchAddressUseCase failed", error as Error);
@@ -95,8 +106,19 @@ export class ProviderUpdateAddressUseCase {
             const updatedAddress = await this.addressRepository.update(address);
             if (!updatedAddress) throw new Error("Address updating failed.");
 
-            const { userId: providerId, createdAt, ...rest } = updatedAddress.getProps();
-            return rest;
+            return {
+                _id: updatedAddress._id,
+                addressLine: updatedAddress.addressLine,
+                landMark: updatedAddress.landMark,
+                phone: updatedAddress.phone,
+                place: updatedAddress.place,
+                city: updatedAddress.city,
+                district: updatedAddress.district,
+                pincode: updatedAddress.pincode,
+                state: updatedAddress.state,
+                country: updatedAddress.country,
+                location: updatedAddress.location,
+            };
         } catch (error) {
             log.error("ProviderUpdateAddressUseCase failed", error as Error);
             throw error;

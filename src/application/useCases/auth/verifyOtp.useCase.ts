@@ -2,11 +2,11 @@ import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/role.enum";
 import { User } from "../../../domain/entities/user.entity";
-import { OTPVerificationRequest, VerifyAndActivateEntityRequest } from "../../dtos/auth.dto";
 import { Provider } from "../../../domain/entities/provider.entity";
 import { IKafkaService } from "../../../domain/interfaces/services/IKafka.service";
 import { IOTPService } from "../../../domain/interfaces/services/IOtpService.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
+import { OTPVerificationRequest, VerifyAndActivateEntityRequest } from "../../dtos/auth.dto";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 
 export class VerifyOTPUseCase {
@@ -66,11 +66,11 @@ export class VerifyOTPUseCase {
 
       if (!user) {
         throw new Error("Verification failed");
-      }
+      };
 
       user.markEmailVerified();
       return this.userRepository.update(user);
-    }
+    };
 
     if (role === Role.Provider) {
       const provider =
@@ -80,11 +80,11 @@ export class VerifyOTPUseCase {
 
       if (!provider) {
         throw new Error("Verification failed");
-      }
+      };
 
       provider.markEmailVerified();
       return this.providerRepository.update(provider);
-    }
+    };
     throw new Error("Unsupported role");
-  }
-}
+  };
+};

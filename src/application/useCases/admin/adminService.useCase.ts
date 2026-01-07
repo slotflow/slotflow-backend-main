@@ -12,7 +12,7 @@ import { IServiceRepository } from "../../../domain/interfaces/repositories/ISer
 export class AdminServiceListUseCase {
     constructor(
         private seriveRepository: IServiceRepository,
-    ) { }
+    ) { };
 
     async execute(payload: ApiPaginationRequest): Promise<ApiResponse<AdminServiceListResponse>> {
         try {
@@ -34,14 +34,14 @@ export class AdminServiceListUseCase {
         } catch (error) {
             log.error("AdminServiceListUseCase failed", error as Error);
             throw error;
-        }
-    }
-}
+        };
+    };
+};
 
 export class AdminCreateServiceUseCase {
     constructor(
         private seriveRepository: IServiceRepository
-    ) { }
+    ) { };
 
     async execute(payload: AdminAddServiceRequest): Promise<void> {
         try {
@@ -59,14 +59,14 @@ export class AdminCreateServiceUseCase {
         } catch (error) {
             log.error("AdminCreateServiceUseCase failed", error as Error);
             throw error;
-        }
-    }
-}
+        };
+    };
+};
 
 export class AdminChnageServiceBlockStatusUseCase {
     constructor(
         private seriveRepository: IServiceRepository
-    ) { }
+    ) { };
 
     async execute(payload: AdminChnageServiceIsBlockedStatusRequest): Promise<AdminChnageServiceIsBlockedStatusResponse> {
         try {
@@ -86,6 +86,6 @@ export class AdminChnageServiceBlockStatusUseCase {
         } catch (error) {
             log.error("AdminChnageServiceBlockStatusUseCase failed", error as Error);
             throw error;
-        }
-    }
-}
+        };
+    };
+};

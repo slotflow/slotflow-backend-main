@@ -15,8 +15,6 @@ export class ProviderFetchAllPaymentsUseCase {
             const result = await this.paymentRepository.findAll(page, limit, undefined, providerId );
             const { data: payments, currentPage, totalCount, totalPages } = result;
 
-            console.log("payments : ",payments);
-
             return { 
                 data: payments.map(payment => ({
                     _id: payment._id,

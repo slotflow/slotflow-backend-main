@@ -5,7 +5,7 @@ import { IAddressRepository } from "../../../domain/interfaces/repositories/IAdd
 export class AdminFetchUserOrProviderAddressUseCase {
     constructor(
         private addressRepository: IAddressRepository
-    ) { }
+    ) { };
 
     async execute({userId}: {userId: string}): Promise<AdminFetchUserOrProviderAddressResponse> {
         try {
@@ -13,12 +13,22 @@ export class AdminFetchUserOrProviderAddressUseCase {
             const address = await this.addressRepository.findByUserId(userId);
             if(!address) return null;
 
-            const { _id, ...rest } = address.getProps();
-            return rest;
+            return {
+                userId: address.userId,
+                addressLine: address.addressLine,
+                phone: address.phone,
+                place: address.place,
+                city: address.city,
+                district: address.district,
+                pincode: address.pincode,
+                state: address.state,
+                country: address.country,
+                location: address.location
+            };
 
         } catch (error) {
             log.error("AdminFetchUserOrProviderAddressUseCase failed : ", error as Error);
             throw error;
-        }
-    }
-}
+        };
+    };
+};

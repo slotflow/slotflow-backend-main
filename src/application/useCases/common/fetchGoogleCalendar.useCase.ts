@@ -9,14 +9,14 @@ export class FethGoogleCalendarUseCase {
         private credentialRepository: ICredentialRepository,
         private aesEncryption: IAesEncryptionService,
         private googleCalendarGatewayService: IGoogleCalendarGatewayService
-    ) { }
+    ) { };
 
     async execute(userId: string): Promise<Array<UserBookingFetchingFromCalendar>> {
         try {
             const credential = await this.credentialRepository.findById(userId);
         if (!credential) {
             throw new Error("Credential not found");
-        }
+        };
 
         const accessToken = await this.aesEncryption.decrypt(
             credential.accessToken
@@ -40,6 +40,6 @@ export class FethGoogleCalendarUseCase {
         } catch (error) {
             log.error("FethGoogleCalendarUseCase failed", error as Error);
             throw new Error("Calendar events fetching failed");
-        }
-    }
-}
+        };
+    };
+};

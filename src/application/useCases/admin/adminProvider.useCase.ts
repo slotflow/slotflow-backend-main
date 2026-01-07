@@ -16,7 +16,7 @@ import { IProviderRepository } from "../../../domain/interfaces/repositories/IPr
 export class AdminProviderListUseCase {
     constructor(
         private providerRepository: IProviderRepository
-    ) { }
+    ) { };
 
     async execute(payload: ApiPaginationRequest): Promise<TableData<AdiminFetchAllProviders>> {
         try {

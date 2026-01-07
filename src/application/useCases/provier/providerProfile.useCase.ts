@@ -32,8 +32,15 @@ export class ProviderFetchProfileDetailsUseCase {
       const provider = await this.providerRepository.findById(providerId);
       if (!provider) return null;
 
-      const { _id, password, addressId, serviceId, subscription, updatedAt, profileImage, ...rest } = provider.getProps();
-      return rest;
+      return {
+        createdAt: provider.createdAt,
+        email: provider.email,
+        isAdminVerified: provider.isAdminVerified,
+        isBlocked: provider.isBlocked,
+        isEmailVerified: provider.isEmailVerified,
+        phone: provider.phone,
+        username: provider.username
+      };
     } catch (error) {
       log.error("ProviderFetchProfileDetailsUseCase failed", error as Error);
       throw error;
@@ -63,9 +70,7 @@ export class ProviderUpdateProviderInfoUseCase {
       const updatedProvider = await this.providerRepository.update(provider);
       if (!updatedProvider) throw new Error("Failed to update info, please try again");
 
-      const updatedData = { username: updatedProvider.username, phone: updatedProvider.phone };
-
-      return updatedData;
+      return { username: updatedProvider.username, phone: updatedProvider.phone };
     } catch (error) {
       log.error("ProviderUpdateProviderInfoUseCase failed", error as Error);
       throw error;

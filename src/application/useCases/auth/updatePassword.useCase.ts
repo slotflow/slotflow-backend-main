@@ -9,7 +9,7 @@ export class UpdatePasswordUseCase {
     constructor(
         private userRepository: IUserRepository, 
         private providerRepository: IProviderRepository
-    ) { }
+    ) { };
 
     async execute(payload: UpdatePasswordRequest): Promise<void> {
         try {
@@ -32,11 +32,13 @@ export class UpdatePasswordUseCase {
 
                 provider.changePassword({ password: hashedPassword });
                 await this.providerRepository.update(provider);
-            }
+            };
+
+            // TODO send email
 
         } catch (error) {
             log.error("UpdatePasswordUseCase failed : ", error as Error);
             throw error;
-        }
-    }
-}
+        };
+    };
+};
