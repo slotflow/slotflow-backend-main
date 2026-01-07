@@ -1,9 +1,9 @@
+import { Types } from "mongoose";
 import { PaymentModel } from "./payment.model";
 import { PaymentMapper } from "../../mappers/payment.mapper";
 import { Payment } from "../../../domain/entities/payment.entity";
-import { IPaymentRepository } from "../../../domain/interfaces/repositories/IPayment.repository";
 import { PaymentFor } from "../../../domain/enums/paymentFor.enum";
-import { Types } from "mongoose";
+import { IPaymentRepository } from "../../../domain/interfaces/repositories/IPayment.repository";
 
 export class PaymentRepositoryImpl implements IPaymentRepository {
 

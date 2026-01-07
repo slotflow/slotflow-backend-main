@@ -125,7 +125,7 @@ export type ProviderFetchServiceAvailabilityResponse = FontendAvailabilityForRes
 export interface ProviderStripeSubscriptionCreateSessionIdRequest {
     providerId: ProviderDTO["_id"];
     planId: PlanDTO["_id"];
-    duration: string;
+    duration: number;
 }
 // provider stripe subscription create sessionId use case response interface
 export type ProviderStripeSubscriptionCreateSessionIdResponse = string;
@@ -137,8 +137,8 @@ export interface ProviderSaveSubscriptionRequest {
     sessionId: string
 }
 export interface ProviderSaveSubscriptionResponse {
-    planName?: string
-};
+    planName: PlanDTO["planName"]; 
+}
 
 
 

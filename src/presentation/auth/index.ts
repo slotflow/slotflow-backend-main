@@ -3,7 +3,8 @@ import { RegisterUseCase } from "../../application/useCases/auth/register.useCas
 import { ResendOtpUseCase } from "../../application/useCases/auth/resendOtp.useCase";
 import { VerifyOTPUseCase } from "../../application/useCases/auth/verifyOtp.useCase";
 import { UpdatePasswordUseCase } from "../../application/useCases/auth/updatePassword.useCase";
-import { kafkaService, otpService, planRepository, providerRepository, signedUrlService, subscriptionRepository, userRepository } from "../../infrastructure/container";
+import { GoogleAuthOrchestratorUseCase } from "../../application/useCases/auth/googleAuthOrchestrate.useCase";
+import { aesEncryptionService, credentialRepository, kafkaService, otpService, planRepository, providerRepository, signedUrlService, subscriptionRepository, userRepository } from "../../infrastructure/container";
 
 // auth controller dependency injection
 export const updatePasswordUseCase = new UpdatePasswordUseCase(userRepository, providerRepository);
@@ -11,3 +12,6 @@ export const registerUseCase = new RegisterUseCase(userRepository, providerRepos
 export const resendOtpUseCase = new ResendOtpUseCase(userRepository, providerRepository, otpService, kafkaService);
 export const verifyOTPUseCase = new VerifyOTPUseCase(userRepository, providerRepository, otpService, kafkaService);
 export const loginUseCase = new LoginUseCase(userRepository, providerRepository, planRepository, subscriptionRepository, signedUrlService);
+
+// google auth controller dependency injection
+export const googleAuthOrchestratorUseCase = new GoogleAuthOrchestratorUseCase(userRepository, providerRepository, credentialRepository, aesEncryptionService, subscriptionRepository, planRepository, kafkaService);

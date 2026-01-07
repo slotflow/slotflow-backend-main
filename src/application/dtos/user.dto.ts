@@ -57,6 +57,8 @@ export interface UserFetchServiceProvidersRequest {
     minPrice?: number;
     slotflowTrusted?: boolean;
     radius?: number;
+    skip?: number;
+    limit?: number;
 };
 // user fetch service providers use case response interface
 export interface FindProvidersUsingServiceIdsResponse {

@@ -4636,3 +4636,509 @@
 [2026-01-06 21:06:15] [[32minfo[39m]: [32mKafka Admin disconnected[39m
 [2026-01-06 21:06:15] [[32minfo[39m]: [32mKafka Producer connected[39m
 [2026-01-06 21:06:15] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-06 21:25:36] [[31merror[39m]: [31mfetchAllAppService failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31m    at get error (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:587:31)[39m
+[31m    at ZodObject.parse (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:663:22)[39m
+[31m    at UserAppServiceController.fetchAllAppService (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userAppService.controller.ts:17:65)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 21:25:43] [[31merror[39m]: [31mfetchAllAppService failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31m    at get error (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:587:31)[39m
+[31m    at ZodObject.parse (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:663:22)[39m
+[31m    at UserAppServiceController.fetchAllAppService (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userAppService.controller.ts:17:65)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-06 21:25:49] [[31merror[39m]: [31mfetchAllAppService failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31m    at get error (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:587:31)[39m
+[31m    at ZodObject.parse (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:663:22)[39m
+[31m    at UserAppServiceController.fetchAllAppService (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userAppService.controller.ts:17:65)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-07 03:33:57] [[31merror[39m]: [31mfetchAllAppService failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31m    at get error (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:587:31)[39m
+[31m    at ZodObject.parse (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:663:22)[39m
+[31m    at UserAppServiceController.fetchAllAppService (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userAppService.controller.ts:17:65)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-07 03:34:29] [[31merror[39m]: [31mfetchAllAppService failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31m    at get error (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:587:31)[39m
+[31m    at ZodObject.parse (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:663:22)[39m
+[31m    at UserAppServiceController.fetchAllAppService (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userAppService.controller.ts:17:65)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-07 03:34:32] [[31merror[39m]: [31mfetchAllAppService failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31m    at get error (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:587:31)[39m
+[31m    at ZodObject.parse (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:663:22)[39m
+[31m    at UserAppServiceController.fetchAllAppService (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userAppService.controller.ts:17:65)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-07 03:34:35] [[31merror[39m]: [31mfetchAllAppService failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31m    at get error (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:587:31)[39m
+[31m    at ZodObject.parse (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:663:22)[39m
+[31m    at UserAppServiceController.fetchAllAppService (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userAppService.controller.ts:17:65)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-07 03:35:21] [[31merror[39m]: [31mfetchAllAppService failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "code": "invalid_type",[39m
+[31m    "expected": "array",[39m
+[31m    "received": "undefined",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Required"[39m
+[31m  }[39m
+[31m][39m
+[31m    at get error (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:587:31)[39m
+[31m    at ZodObject.parse (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:663:22)[39m
+[31m    at UserAppServiceController.fetchAllAppService (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\user\userAppService.controller.ts:17:65)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-07 03:38:59] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 03:39:00] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 03:39:00] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 03:39:00] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 03:39:00] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 03:39:27] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 03:39:28] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 03:39:28] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 03:39:28] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 03:39:28] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 03:40:15] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 03:40:15] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 03:40:15] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 03:40:15] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 03:40:15] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 03:40:43] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 03:40:43] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 03:40:43] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 03:40:43] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 03:40:43] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 03:41:51] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 03:41:51] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 03:41:51] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 03:41:51] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 03:41:51] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 03:42:01] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 03:42:01] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 03:42:01] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 03:42:01] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 03:42:01] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 03:42:56] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 03:42:56] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 03:42:56] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 03:42:56] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 03:42:56] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 03:43:12] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 03:43:13] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 03:43:13] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 03:43:13] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 03:43:13] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 03:43:29] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 03:43:30] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 03:43:30] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 03:43:30] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 03:43:30] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 03:45:07] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 03:45:07] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 03:45:07] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 03:45:07] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 03:45:07] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 03:45:33] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 03:45:33] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 03:45:33] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 03:45:33] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 03:45:33] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 03:45:53] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 03:45:53] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 03:45:53] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 03:45:53] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 03:45:53] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 03:46:23] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 03:46:23] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 03:46:23] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 03:46:23] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 03:46:23] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 04:08:09] [[31merror[39m]: [31mGoogleAuthOrchestratorUseCase failed : [39m
+[31mCannot read properties of undefined (reading 'send')[39m
+[31mTypeError: Cannot read properties of undefined (reading 'send')[39m
+[31m    at GoogleAuthOrchestratorUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\auth\googleAuthOrchestrate.useCase.ts:166:37)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async <anonymous> (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\auth\googleAuth.controller.ts:73:54)[39m
+[2026-01-07 04:13:14] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 04:13:14] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 04:13:14] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 04:13:14] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 04:13:14] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 04:13:24] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 04:13:24] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 04:13:24] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 04:13:24] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 04:13:24] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 04:13:34] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 04:13:34] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 04:13:34] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 04:13:34] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 04:13:34] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 04:15:57] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 04:15:58] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 04:15:58] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 04:15:58] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 04:15:58] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 04:31:58] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 04:31:58] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 04:31:58] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 04:31:58] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 04:31:58] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 04:55:41] [[31merror[39m]: [31msubscribe failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "expected": "'1 Month' | '3 Months' | '6 Months' | '12 Months'",[39m
+[31m    "received": "number",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [[39m
+[31m      "planDuration"[39m
+[31m    ],[39m
+[31m    "message": "Expected '1 Month' | '3 Months' | '6 Months' | '12 Months', received number"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "expected": "'1 Month' | '3 Months' | '6 Months' | '12 Months'",[39m
+[31m    "received": "number",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [[39m
+[31m      "planDuration"[39m
+[31m    ],[39m
+[31m    "message": "Expected '1 Month' | '3 Months' | '6 Months' | '12 Months', received number"[39m
+[31m  }[39m
+[31m][39m
+[31m    at get error (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:587:31)[39m
+[31m    at ZodObject.parse (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:663:22)[39m
+[31m    at ProviderSubscriptionController.subscribe (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\provider\providerSubscription.controller.ts:31:77)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-07 15:21:12] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 15:21:12] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 15:21:12] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 15:21:12] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 15:21:12] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 15:22:45] [[31merror[39m]: [31msubscribe failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "expected": "'1 Month' | '3 Months' | '6 Months' | '12 Months'",[39m
+[31m    "received": "number",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [[39m
+[31m      "planDuration"[39m
+[31m    ],[39m
+[31m    "message": "Expected '1 Month' | '3 Months' | '6 Months' | '12 Months', received number"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "expected": "'1 Month' | '3 Months' | '6 Months' | '12 Months'",[39m
+[31m    "received": "number",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [[39m
+[31m      "planDuration"[39m
+[31m    ],[39m
+[31m    "message": "Expected '1 Month' | '3 Months' | '6 Months' | '12 Months', received number"[39m
+[31m  }[39m
+[31m][39m
+[31m    at get error (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:587:31)[39m
+[31m    at ZodObject.parse (file:///D:/Projects/BrocamP/Projects/Personal%20Projects/21.%20Slotflow/Slotflow-Main-Backend/node_modules/zod/lib/index.mjs:663:22)[39m
+[31m    at ProviderSubscriptionController.subscribe (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\provider\providerSubscription.controller.ts:31:77)[39m
+[31m    at Layer.handle [as handle_request] (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\middleware\auth.middleware.ts:56:5)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[2026-01-07 15:23:52] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 15:23:52] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 15:23:52] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 15:23:52] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 15:23:52] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 15:24:58] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 15:24:58] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 15:24:58] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 15:24:58] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 15:24:58] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 15:26:19] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 15:26:20] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 15:26:20] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 15:26:20] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 15:26:20] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 15:41:56] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 15:41:56] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 15:41:56] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 15:41:56] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 15:41:56] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 15:42:24] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 15:42:24] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 15:42:24] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 15:42:24] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 15:42:24] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 15:43:53] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 15:43:53] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 15:43:53] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 15:43:53] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 15:43:53] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 15:44:28] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 15:44:28] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 15:44:28] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 15:44:28] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 15:44:28] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 15:55:13] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 15:55:13] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 15:55:13] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 15:55:13] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 15:55:13] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 15:55:52] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 15:55:52] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 15:55:52] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 15:55:52] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 15:55:52] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 15:56:14] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 15:56:14] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 15:56:14] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 15:56:14] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 15:56:14] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 15:57:25] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 15:57:26] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 15:57:26] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 15:57:26] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 15:57:26] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 15:57:49] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 15:57:49] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 15:57:49] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 15:57:49] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 15:57:49] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 15:58:08] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 15:58:08] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 15:58:08] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 15:58:08] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 15:58:08] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 15:58:43] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 15:58:43] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 15:58:43] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 15:58:43] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 15:58:43] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 15:59:06] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 15:59:06] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 15:59:06] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 15:59:06] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 15:59:06] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 15:59:26] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 15:59:26] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 15:59:26] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 15:59:26] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 15:59:26] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:19:26] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:19:26] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:19:26] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:19:26] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:19:26] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:21:23] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:21:23] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:21:23] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:21:23] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:21:23] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:22:10] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:22:11] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:22:11] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:22:11] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:22:11] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:22:24] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:22:24] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:22:24] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:22:24] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:22:24] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
+[2026-01-07 16:24:14] [[32minfo[39m]: [32mKafka Admin connected[39m
+[2026-01-07 16:24:14] [[32minfo[39m]: [32mKafka Topics created:[39m
+[2026-01-07 16:24:14] [[32minfo[39m]: [32mKafka Admin disconnected[39m
+[2026-01-07 16:24:14] [[32minfo[39m]: [32mKafka Producer connected[39m
+[2026-01-07 16:24:14] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m

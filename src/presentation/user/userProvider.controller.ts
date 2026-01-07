@@ -28,7 +28,7 @@ class UserProviderController {
         try {
             console.log("req.query : ", req.query);
             const validatedData = UserFetchAllProvidersZodSchema.parse(req.query);
-            const { categories, location, maxPrice, minPrice, slotflowTrusted, appServiceIds } = validatedData;
+            const { categories, location, maxPrice, minPrice, slotflowTrusted, appServiceIds, skip, limit } = validatedData;
             console.log("validatedData : ",validatedData);
             let serviceIds: string[] = [];
             if (appServiceIds) {
@@ -38,7 +38,7 @@ class UserProviderController {
 
                 serviceIds = servicesArray.map(id => id);
             };
-            const result = await this.userFetchServiceProvidersUseCase.execute({ serviceIds, categories, location, maxPrice, minPrice, slotflowTrusted });
+            const result = await this.userFetchServiceProvidersUseCase.execute({ serviceIds, categories, location, maxPrice, minPrice, slotflowTrusted, skip, limit });
             sendResponse(res, result);
         } catch (error) {
             log.error("fetchServiceProviders failed", error as Error);

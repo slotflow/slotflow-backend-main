@@ -6,6 +6,7 @@ import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { ServiceType } from "../../domain/enums/serviceType.enum";
 import { ServiceMode } from "../../domain/enums/serviceMode.enum";
 import { Day } from "../../domain/enums/day.enum";
+import { SubscriptionValidity } from "../../domain/enums/subscriptionValidity.enum";
 
 
 // **** Provider Service Controller **** \\
@@ -108,7 +109,7 @@ export const ProviderCreateServiceAvailabilityZodSchema = z.array(
 // Provider plan subscription duration validation
 export const ProviderPlanSubscribeZodSchema = z.object({
     planId: objectIdField("Plan ID"),
-    planDuration: z.enum(subscriptionMonthArray),
+    planDuration: z.nativeEnum(SubscriptionValidity),
 });
 
 

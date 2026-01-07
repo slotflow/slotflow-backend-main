@@ -16,7 +16,7 @@ export class UserFetchServiceProvidersUseCase {
 
   async execute(payload: UserFetchServiceProvidersRequest): Promise<Array<UserFetchServiceProvidersResponse> | null> {
     try {
-      const { serviceIds, categories, location, maxPrice, minPrice, slotflowTrusted } = payload;
+      const { serviceIds, categories, location, maxPrice, minPrice, slotflowTrusted, skip, limit } = payload;
 
       const providers = await this.providerServiceQueries.findProvidersUsingServiceIds({
         serviceIds: serviceIds ?? [], 
@@ -24,7 +24,9 @@ export class UserFetchServiceProvidersUseCase {
         location, 
         maxPrice, 
         minPrice,
-        slotflowTrusted:slotflowTrusted
+        slotflowTrusted: slotflowTrusted,
+        skip,
+        limit
       });
       if (!providers) return null;
 

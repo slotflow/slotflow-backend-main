@@ -31,6 +31,8 @@ export const UserFetchAllProvidersZodSchema = z.object({
             .tuple([z.coerce.number(), z.coerce.number()])
             .refine((arr) => arr.length === 2, "Coordinates must be [lon, lat]"),
     }).optional(),
+    skip: z.coerce.number().optional(),
+    limit: z.coerce.number().optional(),
 });
 
 // User fetch provider address controller zod validation

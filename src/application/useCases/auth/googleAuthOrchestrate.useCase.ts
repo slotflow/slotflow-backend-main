@@ -163,6 +163,10 @@ export class GoogleAuthOrchestratorUseCase {
 
             if (!entity) throw new Error("Invalid request");
 
+            console.log("connectOnly : ",connectOnly);
+            console.log("kafkaConfig.topics.googleConnect : ",kafkaConfig.topics.googleConnect);
+            console.log("kafkaConfig.topics.registerSuccess : ",kafkaConfig.topics.registerSuccess);
+            console.log("entity : ",entity);
             await this.kafkaService.send({
                 topic: connectOnly ? kafkaConfig.topics.googleConnect : kafkaConfig.topics.registerSuccess,
                 key: entity.email,

@@ -1,12 +1,10 @@
 import passport from "passport";
 import { log } from "../../shared/logger/logger";
+import { googleAuthOrchestratorUseCase } from ".";
 import { Role } from "../../domain/enums/role.enum";
 import { NextFunction, Request, Response } from "express";
 import { appConfig, appUrlConfig } from "../../config/env";
 import { GoogleAuthOrchestratorUseCase } from "../../application/useCases/auth/googleAuthOrchestrate.useCase";
-import { aesEncryptionService, credentialRepository, planRepository, providerRepository, subscriptionRepository, userRepository } from "../../infrastructure/container";
-
-const googleAuthOrchestratorUseCase = new GoogleAuthOrchestratorUseCase(userRepository, providerRepository, credentialRepository, aesEncryptionService, subscriptionRepository, planRepository);
 
 class GoogleAuthController {
     constructor(

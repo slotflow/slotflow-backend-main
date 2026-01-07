@@ -8,6 +8,7 @@ import {
 import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { stripe } from "../../../infrastructure/lib/stripe";
+import { PlanName } from "../../../domain/enums/planName.enum";
 import { Payment } from "../../../domain/entities/payment.entity";
 import { PaymentFor } from "../../../domain/enums/paymentFor.enum";
 import { PaymentMethod } from "../../../domain/enums/paymentMethod.enum";
@@ -34,7 +35,7 @@ export class ProviderStripeSubscriptionCreateSessionIdUseCase {
         try {
             const { providerId, planId, duration } = payload;
 
-            let planDuration: number = parseInt(duration.trim().split(" ")[0]);
+            let planDuration: number = duration / 30;
 
             const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("No user found, please logout and try again.");
@@ -47,9 +48,9 @@ export class ProviderStripeSubscriptionCreateSessionIdUseCase {
             if (providerLastSubscriptionsId) {
                 const subscription = await this.subscriptionRepository.findById(providerLastSubscriptionsId!);
                 if (subscription) {
-                    if (subscription.subscriptionStatus === "Active") throw new Error("Your subscription is on live.");
+                    if (subscription.subscriptionStatus === SubscriptionStatus.Active) throw new Error("Your subscription is on live.");
                     const isSubscriptionExpired = dayjs().isAfter(dayjs(subscription.endDate), "day");
-                    if (!isSubscriptionExpired) throw new Error("Your subscription is on live.");
+                    if (!isSubscriptionExpired) throw new Error("Your current subscription is on live.");
                 };
             };
 
@@ -104,7 +105,7 @@ export class ProviderSaveSubscriptionUseCase {
             const session = await stripe.checkout.sessions.retrieve(sessionId);
 
             const pId = session?.metadata?.providerId;
-            const planName = session?.metadata?.planName;
+            const planName = session?.metadata?.planName as PlanName;
             const totalAmount = Number(session?.metadata?.totalAmount);
             const initialAmount = Number(session?.metadata?.initialAmount);
             const paymentStatus = session?.payment_status === "paid" ? PaymentStatus.Paid : PaymentStatus.Pending;
@@ -113,7 +114,7 @@ export class ProviderSaveSubscriptionUseCase {
             const planDuration = Number(session?.metadata?.planDuration);
             const paymentIntent = session?.payment_intent;
 
-            if (!pId || isNaN(totalAmount) || isNaN(initialAmount) || !paymentStatus || !paymentMethod || !subscriptionPlanId || !planDuration || !paymentIntent) throw new Error("Unexpected error, please try again.");
+            if (!pId || isNaN(totalAmount) || isNaN(initialAmount) || !paymentStatus || !paymentMethod || !subscriptionPlanId || !planDuration || !paymentIntent || !planName) throw new Error("Unexpected error, please try again.");
 
             try {
 

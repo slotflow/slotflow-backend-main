@@ -69,7 +69,7 @@ class ProviderSubscriptionController {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
             if (!providerId) throw new Error("Invalid request.");
-            const result = await this.providerTrialSubscriptionUseCase.execute({ providerId });
+            await this.providerTrialSubscriptionUseCase.execute({ providerId });
             sendResponse(res, null, "Your trial plan is on live");
         } catch (error) {
             log.error("subscribeToTrialPlan failed", error as Error);
