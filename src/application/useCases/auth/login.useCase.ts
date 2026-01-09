@@ -2,15 +2,15 @@ import { adminConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/role.enum";
 import { PlanName } from "../../../domain/enums/planName.enum";
-import { JWTService } from "../../../infrastructure/security/jwt";
+import { IJWT } from "../../../domain/interfaces/security/IJwt";
 import { LoginRequest, LoginResponse } from "../../dtos/auth.dto";
 import { SubscriptionStatus } from "../../../domain/enums/subscriptionStatus.enum";
-import { PasswordHasher } from "../../../infrastructure/security/password-hashing";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
+import { IPasswordHasher } from "../../../domain/interfaces/security/IPasswordHasher";
 
 export class LoginUseCase {
     constructor(
@@ -19,6 +19,8 @@ export class LoginUseCase {
         private planRepository: IPlanRepository,
         private subscriptionRepository: ISubscriptionRepository,
         private signedUrlService: ISignedUrlService,
+        private jwtService: IJWT,
+        private passwordHasher: IPasswordHasher
     ) { };
 
     async execute(payload: LoginRequest): Promise<LoginResponse> {
@@ -34,10 +36,10 @@ export class LoginUseCase {
                 if (!user.isEmailVerified) throw new Error("Your registration is incomplete, please register again.");
                 if (!user.password) throw new Error("Invalid request");
 
-                const valid = await PasswordHasher.comparePassword(password, user.password);
+                const valid = await this.passwordHasher.comparePassword(password, user.password);
                 if (!valid) throw new Error("Invalid credentials.");
 
-                const token = JWTService.generateToken({ userOrProviderId: user._id, role: role });
+                const token = await this.jwtService.generateToken({ userOrProviderId: user._id, role: role });
 
                 let signedProfileImageUrl: string = "";
                 if (user.profileImage) {
@@ -65,10 +67,10 @@ export class LoginUseCase {
                 if (!provider.isEmailVerified) throw new Error("Your registration is incomplete, please register again.");
                 if (!provider.password) throw new Error("Invalid request");
 
-                const valid = await PasswordHasher.comparePassword(password, provider.password);
+                const valid = await this.passwordHasher.comparePassword(password, provider.password);
                 if (!valid) throw new Error("Invalid credentials.");
 
-                const token = JWTService.generateToken({ userOrProviderId: provider._id, role: role });
+                const token = await this.jwtService.generateToken({ userOrProviderId: provider._id, role: role });
 
                 let signedProfileImageUrl: string = "";
                 if (provider.profileImage) {
@@ -131,7 +133,7 @@ export class LoginUseCase {
                 if (email !== adminConfig.adminEmail || password !== adminConfig.adminPassword) {
                     throw new Error("Invalid credentials.");
                 };
-                const token = JWTService.generateToken({ email: email, role: role });
+                const token = await this.jwtService.generateToken({ email: email, role: role });
                 return {
                     authUser: {
                         username: "Admin",

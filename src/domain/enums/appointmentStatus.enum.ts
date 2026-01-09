@@ -5,4 +5,6 @@ export enum AppointmentStatus {
   RejectedByProvider = "RejectedByProvider",
   NotAttended = "NotAttended",
   Confirmed = "Confirmed",
+  PaymentPending = "PaymentPending",
+  Expired = "Expired",
 }

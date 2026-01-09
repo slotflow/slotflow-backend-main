@@ -7,12 +7,16 @@ import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum"
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { IPaymentRepository } from "../../../domain/interfaces/repositories/IPayment.repository";
+import { IGoogleCalendarGatewayService } from "../../../domain/interfaces/services/IGoogleCalendarGateway.service";
+import { IGoogleTokenService } from "../../../domain/interfaces/services/IGoogleToken.service";
 
 export class UserCancelBookingUseCase {
     constructor(
         private userRepository: IUserRepository,
         private bookingRepository: IBookingRepository,
         private paymentRepository: IPaymentRepository,
+        private googleCalendarGatewayService: IGoogleCalendarGatewayService,
+        private googleTokenService: IGoogleTokenService
     ) { };
 
     async execute(payload: UserCancelBookingRequest): Promise<void> {
@@ -84,17 +88,17 @@ export class UserCancelBookingUseCase {
                     const updatedPayment = await this.paymentRepository.update(payment);
                     if (!updatedPayment) throw new Error("Refund failed");
 
+                    const accessToken = await this.googleTokenService.getAccessToken(userId);
                     if (booking.googleEventId) {
-                        // TODO update event
-                        // const response = await this.updateEventFromGoogleCalendarService.execute({
-                        //     userId: booking.userId,
-                        //     eventId: booking.googleEventId,
-                        //     appointmentDate: booking.appointmentDate,
-                        //     appointmentStatus: booking.appointmentStatus
-                        // });
-                        // if (!response.success) {
-                        //     throw new Error("Booking cancel failed");
-                        // };
+                        const eventId = await this.googleCalendarGatewayService.updateEvent({
+                            accessToken: accessToken,
+                            eventId: booking.googleEventId,
+                            appointmentDate: booking.appointmentDate,
+                            appointmentStatus: booking.appointmentStatus,
+                        });
+                        if (!eventId) {
+                            throw new Error("Booking cancel failed");
+                        };
                     };
 
                 } else {

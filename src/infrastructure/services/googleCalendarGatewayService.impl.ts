@@ -1,19 +1,18 @@
 import { google } from "googleapis";
 import { EventData } from "../../shared/utils/constants";
-import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { IGoogleCalendarGatewayService } from "../../domain/interfaces/services/IGoogleCalendarGateway.service";
-import { CreateGoogleCalendarEventRequest, UpdateGoogleCalendarEventRequest, UserBookingAddingToCalendar, UserBookingFetchingFromCalendar } from "../../application/dtos/common.dto";
+import { CreateGoogleCalendarEventRequest, UpdateGoogleCalendarEventRequest, AddEventToCalendarProps, FetchEventsFromCalendarProps } from "../../application/dtos/common.dto";
 
 export class GoogleCalendarGatewayServiceImpl implements IGoogleCalendarGatewayService {
 
-    async createEvent(payload: CreateGoogleCalendarEventRequest): Promise<{ id: string }> {
+    async createEvent(payload: CreateGoogleCalendarEventRequest): Promise<string> {
 
         const { appointmentDate, appointmentStatus, slotDuration, accessToken } = payload;
 
         const startDate = new Date(appointmentDate);
         const endDate = new Date(startDate.getTime() + slotDuration * 60 * 1000);
 
-        const event: UserBookingAddingToCalendar = {
+        const event: AddEventToCalendarProps = {
             summary: "Service Appointment",
             description: `You have an appointment scheduled on ${startDate.toLocaleString("en-IN", {
                 dateStyle: "full",
@@ -54,33 +53,25 @@ export class GoogleCalendarGatewayServiceImpl implements IGoogleCalendarGatewayS
             throw new Error("Failed to create Google Calendar event");
         }
 
-        return { id: response.data.id };
+        return response.data.id;
     };
 
-    async updateEvent(payload: UpdateGoogleCalendarEventRequest): Promise<{ id: string }> {
+    async updateEvent(payload: UpdateGoogleCalendarEventRequest): Promise<string> {
 
-        const { accessToken, appointmentDate, appointmentStatus, event, eventId, userId } = payload;
+        const { accessToken, appointmentDate, appointmentStatus, eventId } = payload;
 
         const startDate = new Date(appointmentDate);
 
-        const isCancelled =
-            appointmentStatus === AppointmentStatus.RejectedByProvider ||
-            appointmentStatus === AppointmentStatus.Cancelled;
-
-        const eventUpdate: Partial<UserBookingAddingToCalendar> = {
-            description: isCancelled
-                ? `Appointment scheduled on ${startDate.toLocaleString("en-IN", {
-                    dateStyle: "full",
-                    timeStyle: "short",
-                })} has been cancelled`
-                : undefined,
+        const eventUpdate: Partial<AddEventToCalendarProps> = {
+            description: `Appointment scheduled on ${startDate.toLocaleString("en-IN", {
+                dateStyle: "full",
+                timeStyle: "short",
+            })} has been ${appointmentStatus}`,
             extendedProperties: {
                 private: {
                     bookingStatus: appointmentStatus,
                     title: `${EventData.eventTitle} ${appointmentStatus}`,
-                    backgroundColor: isCancelled
-                        ? EventData.eventCancelBorderColor
-                        : EventData.eventAddBorderColor,
+                    backgroundColor: EventData.eventCancelBorderColor,
                     textColor: EventData.eventCancelTextColor,
                 },
             },
@@ -94,17 +85,17 @@ export class GoogleCalendarGatewayServiceImpl implements IGoogleCalendarGatewayS
         const response = await calendar.events.update({
             calendarId: "primary",
             eventId,
-            requestBody: event,
+            requestBody: eventUpdate,
         });
 
         if (!response.data?.id) {
             throw new Error("Failed to update Google Calendar event");
         }
 
-        return { id: response.data.id };
+        return response.data.id;
     };
 
-    async fetchEvents(accessToken: string): Promise<Array<UserBookingFetchingFromCalendar>> {
+    async fetchEvents(accessToken: string): Promise<Array<FetchEventsFromCalendarProps>> {
 
         const auth = new google.auth.OAuth2();
         auth.setCredentials({ access_token: accessToken });
@@ -115,7 +106,7 @@ export class GoogleCalendarGatewayServiceImpl implements IGoogleCalendarGatewayS
             calendarId: "primary",
         });
 
-        return (response.data.items ?? []) as Array<UserBookingFetchingFromCalendar>;
+        return (response.data.items ?? []) as Array<FetchEventsFromCalendarProps>;
     };
 
 };

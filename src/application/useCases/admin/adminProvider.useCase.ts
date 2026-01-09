@@ -7,10 +7,8 @@ import {
     AdminChangeProviderTrustTagRequest,
     AdminChangeProviderTrustTagResponse,
 } from "../../dtos/admin.dto";
-import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { ApiPaginationRequest, TableData } from "../../dtos/common.dto";
-import { IKafkaService } from "../../../domain/interfaces/services/IKafka.service";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 
 export class AdminProviderListUseCase {
@@ -49,7 +47,7 @@ export class AdminProviderListUseCase {
 export class AdminApproveProviderUseCase {
     constructor(
         private providerRepository: IProviderRepository,
-        private kafkaService: IKafkaService
+        // private kafkaService: IKafkaService
     ) { };
 
     async execute(payload: AdminApproveProviderRequest): Promise<void> {
@@ -64,15 +62,15 @@ export class AdminApproveProviderUseCase {
 
             await this.providerRepository.update(provider);
 
-            await this.kafkaService.send({
-                topic: kafkaConfig.topics.adminApproved,
-                key: provider.email,
-                message: {
-                    name: provider.username,
-                    email: provider.email,
-                    contentNumber: 1
-                },
-            });
+            // await this.kafkaService.send({
+            //     topic: kafkaConfig.topics.adminApproved,
+            //     key: provider.email,
+            //     message: {
+            //         name: provider.username,
+            //         email: provider.email,
+            //         contentNumber: 1
+            //     },
+            // });
 
         } catch (error) {
             log.error("AdminApproveProviderUseCase failed", error as Error);
@@ -85,7 +83,7 @@ export class AdminApproveProviderUseCase {
 export class AdminRejectProviderUseCase {
     constructor(
         private providerRepository: IProviderRepository,
-        private kafkaService: IKafkaService
+        // private kafkaService: IKafkaService
     ) { };
 
     async execute(payload: AdminRejectProviderRequest): Promise<void> {
@@ -105,15 +103,15 @@ export class AdminRejectProviderUseCase {
 
             await this.providerRepository.update(provider);
 
-            await this.kafkaService.send({
-                topic: kafkaConfig.topics.adminRejected,
-                key: provider.email,
-                message: {
-                    name: provider.username,
-                    email: provider.email,
-                    contentNumber: 1
-                },
-            });
+            // await this.kafkaService.send({
+            //     topic: kafkaConfig.topics.adminRejected,
+            //     key: provider.email,
+            //     message: {
+            //         name: provider.username,
+            //         email: provider.email,
+            //         contentNumber: 1
+            //     },
+            // });
 
         } catch (error) {
             log.error("AdminRejectProviderUseCase failed", error as Error);
@@ -126,7 +124,7 @@ export class AdminRejectProviderUseCase {
 export class AdminChangeProviderBlockStatusUseCase {
     constructor(
         private providerRepository: IProviderRepository,
-        private kafkaService: IKafkaService
+        // private kafkaService: IKafkaService
     ) { };
 
     async execute(payload: AdminChangeProviderStatusRequest): Promise<AdminChangeProviderStatusResponse> {
@@ -143,15 +141,27 @@ export class AdminChangeProviderBlockStatusUseCase {
             const updatedProvider = await this.providerRepository.update(provider);
             if (!updatedProvider) throw new Error("Provider not found");
 
-            await this.kafkaService.send({
-                topic: updatedProvider.isBlocked ? kafkaConfig.topics.accountBlocked : kafkaConfig.topics.accountUnblocked,
-                key: provider.email,
-                message: {
-                    name: provider.username,
-                    email: provider.email,
-                    contentNumber: 1
-                },
-            });
+            // await producer.send({
+            //     topic: "account-block-status-event",
+            //     messages: [
+            //         {
+            //             value: JSON.stringify({
+            //                 providerId: provider._id,
+            //                 isBlocked: provider.isBlocked
+            //             })
+            //         }
+            //     ]
+            // })
+
+            // await this.kafkaService.send({
+            //     topic: updatedProvider.isBlocked ? kafkaConfig.topics.accountBlocked : kafkaConfig.topics.accountUnblocked,
+            //     key: provider.email,
+            //     message: {
+            //         name: provider.username,
+            //         email: provider.email,
+            //         contentNumber: 1
+            //     },
+            // });
 
             return { providerId, isBlocked: updatedProvider.isBlocked };
         } catch (error) {
@@ -165,7 +175,7 @@ export class AdminChangeProviderBlockStatusUseCase {
 export class AdminChangeProviderTrustTagUseCase {
     constructor(
         private providerRepository: IProviderRepository,
-        private kafkaService: IKafkaService
+        // private kafkaService: IKafkaService
     ) { };
 
     async execute(payload: AdminChangeProviderTrustTagRequest): Promise<AdminChangeProviderTrustTagResponse> {
@@ -182,15 +192,15 @@ export class AdminChangeProviderTrustTagUseCase {
             const updatedProvider = await this.providerRepository.update(provider);
             if (!updatedProvider) throw new Error("Provider not found");
 
-            await this.kafkaService.send({
-                topic: updatedProvider.trustedBySlotflow ? kafkaConfig.topics.accountTrusted : kafkaConfig.topics.accountUntrusted,
-                key: provider.email,
-                message: {
-                    name: provider.username,
-                    email: provider.email,
-                    contentNumber: 1
-                },
-            });
+            // await this.kafkaService.send({
+            //     topic: updatedProvider.trustedBySlotflow ? kafkaConfig.topics.accountTrusted : kafkaConfig.topics.accountUntrusted,
+            //     key: provider.email,
+            //     message: {
+            //         name: provider.username,
+            //         email: provider.email,
+            //         contentNumber: 1
+            //     },
+            // });
 
             return { providerId, trustedBySlotflow: updatedProvider.trustedBySlotflow };
         } catch (error) {

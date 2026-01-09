@@ -5,7 +5,7 @@ import {
     ProviderStripeSubscriptionCreateSessionIdRequest,
     ProviderStripeSubscriptionCreateSessionIdResponse,
 } from "../../dtos/provider.dto";
-import { kafkaConfig } from "../../../config/env";
+// import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { stripe } from "../../../infrastructure/lib/stripe";
 import { PlanName } from "../../../domain/enums/planName.enum";
@@ -16,7 +16,7 @@ import { PaymentStatus } from "../../../domain/enums/paymentStatus.enum";
 import { PaymentGateway } from "../../../domain/enums/paymentGateway.enum";
 import { Subscription } from "../../../domain/entities/subscription.entity";
 import { SubscriptionStatus } from "../../../domain/enums/subscriptionStatus.enum";
-import { IKafkaService } from "../../../domain/interfaces/services/IKafka.service";
+// import { IKafkaService } from "../../../domain/interfaces/services/IKafka.service";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { IPaymentRepository } from "../../../domain/interfaces/repositories/IPayment.repository";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
@@ -92,7 +92,7 @@ export class ProviderSaveSubscriptionUseCase {
         private providerRepository: IProviderRepository,
         private paymentRepository: IPaymentRepository,
         private subscriptionRepository: ISubscriptionRepository,
-        private kafkaService: IKafkaService
+        // private kafkaService: IKafkaService
     ) { };
 
     async execute(payload: ProviderSaveSubscriptionRequest): Promise<ProviderSaveSubscriptionResponse> {
@@ -118,6 +118,7 @@ export class ProviderSaveSubscriptionUseCase {
 
             try {
 
+                // TODO move this to payment service
                 const paymentData = Payment.createforSubscription({
                     transactionId: paymentIntent.toString(),
                     paymentStatus: paymentStatus,
@@ -138,7 +139,7 @@ export class ProviderSaveSubscriptionUseCase {
                     subscriptionPlanId: subscriptionPlanId,
                     startDate: new Date(),
                     endDate: dayjs().add(Number(planDuration * 30), "day").toDate(),
-                    subscriptionStatus: SubscriptionStatus.Active,
+                    subscriptionStatus: SubscriptionStatus.Active, // TODO update to SubscriptionStatus.PaymentPending
                     paymentId: payment._id,
                 });
 
@@ -153,19 +154,20 @@ export class ProviderSaveSubscriptionUseCase {
                 const startDate = new Date();
                 const endDate = dayjs(startDate).add(planDuration * 30, "day");
 
-                await this.kafkaService.send({
-                    topic: kafkaConfig.topics.confirmSubscription,
-                    key: provider.email,
-                    message: {
-                        name: provider.username,
-                        email: provider.email,
-                        subscription: planName,
-                        duration: planDuration,
-                        startDate,
-                        endDate,
-                        contentNumber: 1
-                    },
-                });
+                // TODO make this from payment service
+                // await this.kafkaService.send({
+                //     topic: kafkaConfig.topics.confirmSubscription,
+                //     key: provider.email,
+                //     message: {
+                //         name: provider.username,
+                //         email: provider.email,
+                //         subscription: planName,
+                //         duration: planDuration,
+                //         startDate,
+                //         endDate,
+                //         contentNumber: 1
+                //     },
+                // });
 
                 return { planName };
             } catch (error) {

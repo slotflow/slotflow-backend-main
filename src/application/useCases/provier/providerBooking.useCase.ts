@@ -1,7 +1,7 @@
-import { kafkaConfig } from "../../../config/env";
+// import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
-import { IKafkaService } from "../../../domain/interfaces/services/IKafka.service";
+// import { IKafkaService } from "../../../domain/interfaces/services/IKafka.service";
 import { ProviderChangeBookingAppoinmentStatusRequest } from "../../dtos/provider.dto";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
@@ -9,8 +9,8 @@ import { IBookingRepository } from "../../../domain/interfaces/repositories/IBoo
 export class ProviderChangeBookingAppointmentStatusUseCase {
     constructor(
         private bookingRepository: IBookingRepository,
-        private kafkaService: IKafkaService,
         private userRepository: IUserRepository,
+        // private kafkaService: IKafkaService,
     ) { };
 
     async execute(payload: ProviderChangeBookingAppoinmentStatusRequest): Promise<void> {
@@ -37,15 +37,15 @@ export class ProviderChangeBookingAppointmentStatusUseCase {
 
             await this.bookingRepository.update(booking);
 
-            await this.kafkaService.send({
-                topic: appointmentStatus === AppointmentStatus.Confirmed ? kafkaConfig.topics.confirmAppointment : kafkaConfig.topics.rejectAppointment,
-                key: user.email,
-                message: {
-                    name: user.username,
-                    email: user.email,
-                    contentNumber: 1
-                },
-            });
+            // await this.kafkaService.send({
+            //     topic: appointmentStatus === AppointmentStatus.Confirmed ? kafkaConfig.topics.confirmAppointment : kafkaConfig.topics.rejectAppointment,
+            //     key: user.email,
+            //     message: {
+            //         name: user.username,
+            //         email: user.email,
+            //         contentNumber: 1
+            //     },
+            // });
 
         } catch (error) {
             log.error("ProviderChangeBookingAppointmentStatus failed", error as Error);

@@ -2,5 +2,6 @@ export enum PaymentFor {
     ProviderSubscription = "ProviderSubscription",
     AppointmentBooking = "AppointmentBooking",
     ProviderPayout = "ProviderPayout",
-    CancelBooking = "CancelBooking"
+    CancelBooking = "CancelBooking",
+    CancelSubscription = "CancelSubscription",
 }

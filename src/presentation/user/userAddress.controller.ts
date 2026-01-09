@@ -1,7 +1,7 @@
-import { DecodedUser } from "../../express";
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
+import { DecodedUser } from "../../application/dtos/common.dto";
 import { CreateAddressZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
 import { userCreateAddressUseCase, userFetchAddressUseCase, userUpdateAddressUseCase } from ".";
 import { UserCreateAddressUseCase, UserFetchAddressUseCase, UserUpdateAddressUseCase } from "../../application/useCases/user/userAddress.useCase";

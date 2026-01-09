@@ -1,11 +1,11 @@
 import dayjs from "dayjs";
-import { kafkaConfig } from "../../../config/env";
+// import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { PlanName } from "../../../domain/enums/planName.enum";
 import { ProviderTrialSubscriptionRequest } from "../../dtos/provider.dto";
 import { Subscription } from "../../../domain/entities/subscription.entity";
 import { SubscriptionStatus } from "../../../domain/enums/subscriptionStatus.enum";
-import { IKafkaService } from "../../../domain/interfaces/services/IKafka.service";
+// import { IKafkaService } from "../../../domain/interfaces/services/IKafka.service";
 import { SubscriptionValidity } from "../../../domain/enums/subscriptionValidity.enum";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
@@ -16,7 +16,7 @@ export class ProviderTrialSubscriptionUseCase {
         private providerRepository: IProviderRepository,
         private subscriptionRepository: ISubscriptionRepository,
         private planRepository: IPlanRepository,
-        private kafkaService: IKafkaService
+        // private kafkaService: IKafkaService
     ) { };
 
     async execute(payload: ProviderTrialSubscriptionRequest): Promise<void> {
@@ -59,19 +59,19 @@ export class ProviderTrialSubscriptionUseCase {
             const startDate = new Date();
             const endDate = dayjs(startDate).add(SubscriptionValidity.SevenDays, "day");
 
-            await this.kafkaService.send({
-                topic: kafkaConfig.topics.confirmSubscription,
-                key: provider.email,
-                message: {
-                    name: provider.username,
-                    email: provider.email,
-                    subscription: PlanName.Trial,
-                    duration: SubscriptionValidity.SevenDays,
-                    startDate,
-                    endDate,
-                    contentNumber: 1
-                },
-            });
+            // await this.kafkaService.send({
+            //     topic: kafkaConfig.topics.confirmSubscription,
+            //     key: provider.email,
+            //     message: {
+            //         name: provider.username,
+            //         email: provider.email,
+            //         subscription: PlanName.Trial,
+            //         duration: SubscriptionValidity.SevenDays,
+            //         startDate,
+            //         endDate,
+            //         contentNumber: 1
+            //     },
+            // });
 
         } catch (error) {
             log.error("ProviderTrialSubscriptionUseCase failed", error as Error);

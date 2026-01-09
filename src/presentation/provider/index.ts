@@ -1,7 +1,10 @@
 import { s3Client } from "../../infrastructure/lib/aws_s3";
+import { signedUrlService } from "../../infrastructure/services";
+import { subscriptionMapping } from "../../infrastructure/helpers";
 import { FetchAllReviewsUseCase } from "../../application/useCases/common/fetchReviews.useCase";
 import { ValidateJoinRoomUsecase } from "../../application/useCases/common/validateJoinRoom.useCase";
 import { ProviderFetchAllPlansUseCase } from "../../application/useCases/provier/providerPlan.useCase";
+import { FetchAllAppServicesUseCase } from "../../application/useCases/common/fetchAppServices.useCase";
 import { FetchSubscriptionDetailsUseCase } from "../../application/useCases/common/subscription.useCase";
 import { ProviderStripeConnectUseCase } from "../../application/useCases/provier/providerStripe.useCase";
 import { FetchBookingDetailsUsecase } from "../../application/useCases/common/fetchBookingDetails.useCase";
@@ -17,12 +20,12 @@ import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/co
 import { ProviderChangeBookingAppointmentStatusUseCase } from "../../application/useCases/provier/providerBooking.useCase";
 import { ProviderFetchDashboardGraphDataUseCase } from "../../application/useCases/provier/providerDashboardGraphData.useCase";
 import { ProviderCreateAddressUseCase, ProviderFetchAddressUseCase, ProviderUpdateAddressUseCase } from "../../application/useCases/provier/providerAddress.useCase";
+import { bookingQueries, paymentQueries, providerServiceQueries, reviewQueries, serviceAvailabilityQueries, subscriptionQueries } from "../../infrastructure/queries";
 import { ProviderSaveSubscriptionUseCase, ProviderStripeSubscriptionCreateSessionIdUseCase } from "../../application/useCases/provier/providerStripeSubscription.useCase";
 import { ProviderCreateServiceAvailabilitiesUseCase, ProviderFetchServiceAvailabilityUseCase } from "../../application/useCases/provier/providerServiceAvailability.useCase";
 import { ProviderCreateServiceDetailsUseCase, ProviderFetchServiceDetailsUseCase, ProviderUpdateServiceDetailsUseCase } from "../../application/useCases/provier/providerService.useCase";
+import { addressRepository, bookingRepository, paymentRepository, planRepository, providerRepository, providerServiceRepository, reviewRepository, serviceAvailabilityRepository, serviceRepository, subscriptionRepository, userRepository } from "../../infrastructure/database";
 import { ProvideDeleteIdentityProofUseCase, ProvideDeleteServiceProofUseCase, ProviderFetchProfileDetailsUseCase, ProviderRequestForApprovalUseCase, ProviderUpdateIdentityProofUseCase, ProviderUpdateProfileImageUseCase, ProviderUpdateProviderInfoUseCase, ProviderUpdateServiceProofUseCase } from "../../application/useCases/provier/providerProfile.useCase";
-import { addressRepository, bookingQueries, bookingRepository, kafkaService, paymentQueries, paymentRepository, planRepository, providerRepository, providerServiceQueries, providerServiceRepository, reviewQueries, reviewRepository, serviceAvailabilityQueries, serviceAvailabilityRepository, serviceRepository, signedUrlService, subscriptionMapping, subscriptionQueries, subscriptionRepository, userRepository } from "../../infrastructure/container";
-import { FetchAllAppServicesUseCase } from "../../application/useCases/common/fetchAppServices.useCase";
 
 // provider address controller dependency injection
 export const providerFetchAddressUseCase = new ProviderFetchAddressUseCase(addressRepository);
@@ -36,7 +39,7 @@ export const fetchAllAppServicesUseCase = new FetchAllAppServicesUseCase(service
 export const validateJoinRoomUsecase = new ValidateJoinRoomUsecase(bookingRepository);
 export const fetchBookingDetailsUsecase = new FetchBookingDetailsUsecase(bookingQueries);
 export const fetchBookingAppointmentsUseCase = new FetchBookingAppointmentsUseCase(bookingQueries);
-export const providerChangeBookingAppointmentStatusUseCase = new ProviderChangeBookingAppointmentStatusUseCase(bookingRepository, kafkaService, userRepository);
+export const providerChangeBookingAppointmentStatusUseCase = new ProviderChangeBookingAppointmentStatusUseCase(bookingRepository, userRepository);
 export const updateBookingOnlineTrakingUseCase = new UpdateBookingOnlineTrakingUseCase(bookingRepository, serviceAvailabilityQueries);
 
 // provider dashboard controller dependency injection
@@ -79,8 +82,8 @@ export const providerStripeConnectUseCase = new ProviderStripeConnectUseCase(pro
 // provider subscription controller dependency injection
 export const fetchSubscriptionDetailsUseCase = new FetchSubscriptionDetailsUseCase(subscriptionQueries);
 export const providerFetchAllSubscriptionsUseCase = new ProviderFetchAllSubscriptionsUseCase(providerRepository, subscriptionQueries);
-export const providerTrialSubscriptionUseCase = new ProviderTrialSubscriptionUseCase(providerRepository, subscriptionRepository, planRepository, kafkaService);
-export const providerSaveSubscriptionUseCase = new ProviderSaveSubscriptionUseCase(providerRepository, paymentRepository, subscriptionRepository, kafkaService);
+export const providerTrialSubscriptionUseCase = new ProviderTrialSubscriptionUseCase(providerRepository, subscriptionRepository, planRepository);
+export const providerSaveSubscriptionUseCase = new ProviderSaveSubscriptionUseCase(providerRepository, paymentRepository, subscriptionRepository);
 export const providerStripeSubscriptionCreateSessionIdUseCase = new ProviderStripeSubscriptionCreateSessionIdUseCase(planRepository, providerRepository, subscriptionRepository);
 
 // provider user controller dependency injection

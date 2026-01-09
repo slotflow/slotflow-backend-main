@@ -418,6 +418,35 @@ export type FetchCredentialsResponse = Pick<CredentialDTO, "accessToken" | "refr
 
 
 // Google Event
+interface GoogleCalendarEventsPropsForBackend {
+  start: {
+    dateTime: string,
+    timeZone: string,
+  };
+  end: {
+    dateTime: string,
+    timeZone: string,
+  };
+}
+
+interface GoogleCalendarEventsPropsForFrontend {
+  start: string;
+  end: string;
+}
+
+interface CombinedStartAndEndProps {
+  start: {
+    dateTime: string,
+    date: string,
+    timeZone: string,
+  } | string;
+  end: {
+    dateTime: string,
+    date: string,
+    timeZone: string,
+  } | string;
+}
+
 export interface GoogleCalendarEvent extends Partial<BookingDTO> {
   id: string;
   iCalUID?: string;
@@ -428,14 +457,14 @@ export interface GoogleCalendarEvent extends Partial<BookingDTO> {
   description?: string;
 
   start: {
-    dateTime: string,
-    date: string,
-    timeZone: string,
+    dateTime?: string,
+    date?: string,
+    timeZone?: string,
   } | string;
   end: {
-    dateTime: string,
-    date: string,
-    timeZone: string,
+    dateTime?: string,
+    date?: string,
+    timeZone?: string,
   } | string;
 
   created?: string;
@@ -476,25 +505,18 @@ export interface GoogleCalendarEvent extends Partial<BookingDTO> {
   },
 };
 
-export type CreateGoogleEventResponse = Pick<GoogleCalendarEvent, "id">;
+export type AddEventToCalendarProps = Pick<GoogleCalendarEvent, "summary" | "description" | "extendedProperties"> & GoogleCalendarEventsPropsForBackend;
 
-export type UpdateGoogleEventResponse = Pick<GoogleCalendarEvent, "id">;
-
-export type UserBookingAddingToCalendar = Pick<GoogleCalendarEvent, "summary" | "description" | "start" | "end" | "extendedProperties">
-
-export type UserBookingFetchingFromCalendar = Pick<GoogleCalendarEvent, "id" | "summary" | "description" | "start" | "end" | "creator" | "organizer" | "iCalUID" | "reminders" | "eventType" | "extendedProperties" | "start" | "end">;
+export type FetchEventsFromCalendarProps = Pick<GoogleCalendarEvent, "id" | "summary" | "description" | "creator" | "organizer" | "iCalUID" | "reminders" | "eventType" | "extendedProperties"> & CombinedStartAndEndProps;
 
 export interface UpdateGoogleCalendarEventRequest {
-  userId: string,
   eventId: string,
   appointmentDate: BookingDTO["appointmentDate"],
   appointmentStatus: BookingDTO["appointmentStatus"],
   accessToken: string,
-  event: Partial<UserBookingAddingToCalendar>
 }
 
 export interface CreateGoogleCalendarEventRequest {
-  userId: string;
   appointmentDate: BookingDTO["appointmentDate"],
   appointmentStatus: BookingDTO["appointmentStatus"],
   slotDuration: number,
@@ -617,3 +639,13 @@ export interface DecodedUser {
   iat?: number;
   userId: string;
 };
+
+// kafka client adapter props
+export interface KafkaClientAdapterProps<T> {
+  topic: string;
+  partition: number;
+  message: T;
+}
+
+// kafka client adapter message handler
+export type MessageHandler<T = any> = (payload: KafkaClientAdapterProps<T>) => Promise<void>;

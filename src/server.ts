@@ -1,26 +1,29 @@
 import app from './app';
-import dotenv from 'dotenv';
+import { appConfig } from './config/env';
+import { log } from './shared/logger/logger';
+import { kafkaClientAdapter } from './infrastructure/messaging';
 import connectDB from './config/database/mongodb/mongodb.config';
+import { googlePassportStrategy } from './infrastructure/container';
 
+// Cron jobs
 import './infrastructure/cron-jobs/updateBookingsCron';
 import './infrastructure/cron-jobs/updateSubscriptionStatusCron';
 
-import { initKafka, googlePassportStrategy } from './infrastructure/container';
 
-dotenv.config();
-
-(async () => {
+const start = async () => {
   try {
-    await initKafka();
-    googlePassportStrategy.register();
     await connectDB();
+    googlePassportStrategy.register();
+    await kafkaClientAdapter.connectConsumer();
+    await kafkaClientAdapter.connectProducer();
 
-    const port = process.env.PORT || 4000;
-    app.listen(port, () =>
-      console.log(`Server running on http://localhost:${port}`)
+    app.listen(appConfig.port, () =>
+      log.info(`Main Backend Service is running on http://localhost:${appConfig.port}`)
     );
-  } catch (err) {
-    console.error("Startup failed", err);
+  } catch (error) {
+    log.error("Startup failed", error as Error);
     process.exit(1);
   }
-})();
+};
+
+start();

@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { kafkaConfig } from '../../../config/env';
+// import { kafkaConfig } from '../../../config/env';
 import { log } from '../../../shared/logger/logger';
 import { stripe } from '../../../infrastructure/lib/stripe';
 import { Payment } from '../../../domain/entities/payment.entity';
@@ -104,9 +104,9 @@ export class UserSaveBookingAfterStripePaymentUseCase {
         private bookingRepository: IBookingRepository,
         private serviceAvailabilityQueries: IServiceAvailabilityQueries,
         private providerRepository: IProviderRepository,
-        private kafkaService: IKafkaService,
         private googleCalendarGatewayService: IGoogleCalendarGatewayService,
-        private googleTokenService: IGoogleTokenService
+        private googleTokenService: IGoogleTokenService,
+        // private kafkaService: IKafkaService,
     ) { };
 
     async execute(payload: UserSaveAppoinmentBookingRequest): Promise<void> {
@@ -164,12 +164,11 @@ export class UserSaveBookingAfterStripePaymentUseCase {
                 const accessToken = await this.googleTokenService.getAccessToken(userId);
                 let eventId: string | null = null;
                 if (user.googleConnected) {
-                    const { id: eventId } = await this.googleCalendarGatewayService.createEvent({
+                    eventId = await this.googleCalendarGatewayService.createEvent({
                         accessToken: accessToken,
                         appointmentDate: new Date(dateString),
                         appointmentStatus: AppointmentStatus.Booked,
                         slotDuration: Number(slotDuration),
-                        userId,
                     });
                     if (!eventId) throw new Error("Booking saving failed");
                 };
@@ -193,25 +192,25 @@ export class UserSaveBookingAfterStripePaymentUseCase {
                     const newBooking = await this.bookingRepository.create(bookingData);
                     if (!newBooking) throw new Error("Failed to confirm slot, please try again");
 
-                    await this.kafkaService.send({
-                        topic: kafkaConfig.topics.gotAppointment,
-                        key: provider.email,
-                        message: {
-                            name: user.username,
-                            email: provider.email,
-                            contentNumber: 1
-                        },
-                    });
+                    // await this.kafkaService.send({
+                    //     topic: kafkaConfig.topics.gotAppointment,
+                    //     key: provider.email,
+                    //     message: {
+                    //         name: user.username,
+                    //         email: provider.email,
+                    //         contentNumber: 1
+                    //     },
+                    // });
 
-                    await this.kafkaService.send({
-                        topic: kafkaConfig.topics.userPayment,
-                        key: user.email,
-                        message: {
-                            name: user.username,
-                            email: user.email,
-                            contentNumber: 1
-                        },
-                    });
+                    // await this.kafkaService.send({
+                    //     topic: kafkaConfig.topics.userPayment,
+                    //     key: user.email,
+                    //     message: {
+                    //         name: user.username,
+                    //         email: user.email,
+                    //         contentNumber: 1
+                    //     },
+                    // });
 
             } catch (error) {
                 log.error("UserSaveBookingAfterStripePaymentUseCase failed", error as Error);

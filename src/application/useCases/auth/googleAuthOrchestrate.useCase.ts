@@ -1,13 +1,11 @@
-import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/role.enum";
 import { User } from "../../../domain/entities/user.entity";
 import { PlanName } from "../../../domain/enums/planName.enum";
-import { JWTService } from "../../../infrastructure/security/jwt";
+import { IJWT } from "../../../domain/interfaces/security/IJwt";
 import { Provider } from "../../../domain/entities/provider.entity";
 import { Credential } from "../../../domain/entities/credential.entity";
 import { SubscriptionStatus } from "../../../domain/enums/subscriptionStatus.enum";
-import { IKafkaService } from "../../../domain/interfaces/services/IKafka.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { IAesEncryptionService } from "../../../domain/interfaces/services/IAesEncryption.service";
@@ -24,7 +22,8 @@ export class GoogleAuthOrchestratorUseCase {
         private aesEncryption: IAesEncryptionService,
         private subscriptionRepository: ISubscriptionRepository,
         private planRepository: IPlanRepository,
-        private kafkaService: IKafkaService
+        private jwtService: IJWT
+        // private kafkaService: IKafkaService
     ) { };
 
     async execute(payload: GoogleAuthOrchestrationRequest): Promise<GoogleAuthOrchestrationResponse> {
@@ -83,7 +82,7 @@ export class GoogleAuthOrchestratorUseCase {
                     entity = providerEntity;
                 };
 
-                token = JWTService.generateToken({
+                token = await this .jwtService.generateToken({
                     email,
                     userOrProviderId: entity?._id,
                     role,
@@ -121,16 +120,16 @@ export class GoogleAuthOrchestratorUseCase {
                 await this.aesEncryption.encrypt(accessToken);
             const encryptedRefreshToken =
                 await this.aesEncryption.encrypt(refreshToken);
-                
+
             const existingCredential = await this.credentialRepository.findByUserId(userId ?? entity?._id!);
             if (existingCredential) {
                 existingCredential.updateCredential({
-                accessToken: encryptedAccessToken,
-                refreshToken: encryptedRefreshToken,
-                expiryDate,
-            });
+                    accessToken: encryptedAccessToken,
+                    refreshToken: encryptedRefreshToken,
+                    expiryDate,
+                });
                 await this.credentialRepository.update(existingCredential);
-            } else {  
+            } else {
                 const credentials = Credential.create({
                     accessToken: encryptedAccessToken,
                     refreshToken: encryptedRefreshToken,
@@ -168,15 +167,15 @@ export class GoogleAuthOrchestratorUseCase {
 
             if (!entity) throw new Error("Invalid request");
 
-            await this.kafkaService.send({
-                topic: connectOnly ? kafkaConfig.topics.googleConnect : kafkaConfig.topics.registerSuccess,
-                key: entity.email,
-                message: {
-                    name: entity.username,
-                    email: entity.email,
-                    contentNumber: 1
-                },
-            });
+            // await this.kafkaService.send({
+            //     topic: connectOnly ? kafkaConfig.topics.googleConnect : kafkaConfig.topics.registerSuccess,
+            //     key: entity.email,
+            //     message: {
+            //         name: entity.username,
+            //         email: entity.email,
+            //         contentNumber: 1
+            //     },
+            // });
 
             return {
                 token,
@@ -205,7 +204,7 @@ export class GoogleAuthOrchestratorUseCase {
             };
 
         } catch (error) {
-            log.error("GoogleAuthOrchestratorUseCase failed : ",error as Error,);
+            log.error("GoogleAuthOrchestratorUseCase failed : ", error as Error,);
             throw error;
         };
     };

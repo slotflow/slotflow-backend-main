@@ -1,14 +1,15 @@
 import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/role.enum";
 import { UpdatePasswordRequest } from "../../dtos/auth.dto";
-import { PasswordHasher } from "../../../infrastructure/security/password-hashing";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
+import { IPasswordHasher } from "../../../domain/interfaces/security/IPasswordHasher";
 
 export class UpdatePasswordUseCase {
     constructor(
-        private userRepository: IUserRepository, 
-        private providerRepository: IProviderRepository
+        private userRepository: IUserRepository,
+        private providerRepository: IProviderRepository,
+        private passwordHasher: IPasswordHasher
     ) { };
 
     async execute(payload: UpdatePasswordRequest): Promise<void> {
@@ -17,7 +18,7 @@ export class UpdatePasswordUseCase {
 
             if (!role || !verificationToken || !password) throw new Error("Invalid Request");
 
-            const hashedPassword = await PasswordHasher.hashPassword(password);
+            const hashedPassword = await this.passwordHasher.hashPassword(password);
 
             if (role === Role.User) {
                 const user = await this.userRepository.findByVerificationToken(verificationToken);
