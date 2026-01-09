@@ -1,7 +1,7 @@
 import { log } from "../../../shared/logger/logger";
 import { IBookingQueries } from "../../queries/IBooking.queries";
 
-export class UpdateBookingStatusCronUseCase {
+export class UpdateBookingStatusUseCase {
     constructor(
         private bookingQueries: IBookingQueries
     ) { };
@@ -11,7 +11,7 @@ export class UpdateBookingStatusCronUseCase {
             const todaysExhaustedBookings = await this.bookingQueries.findTodaysBookingsForCronjob();
             return todaysExhaustedBookings;
         } catch (error) {
-            log.error("UpdateBookingStatusCronUseCase failed", error as Error);
+            log.error("UpdateBookingStatusUseCase failed", error as Error);
             throw error;
         };
     };
