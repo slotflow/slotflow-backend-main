@@ -1,19 +1,18 @@
 import app from './app';
 import { appConfig } from './config/env';
 import { log } from './shared/logger/logger';
+import { passportStrategy } from './infrastructure/passport';
 import { kafkaClientAdapter } from './infrastructure/messaging';
 import connectDB from './config/database/mongodb/mongodb.config';
-import { googlePassportStrategy } from './infrastructure/container';
 
 // Cron jobs
 import './infrastructure/cron-jobs/updateBookingsCron';
 import './infrastructure/cron-jobs/updateSubscriptionStatusCron';
 
-
 const start = async () => {
   try {
     await connectDB();
-    googlePassportStrategy.register();
+    passportStrategy.register();
     await kafkaClientAdapter.connectConsumer();
     await kafkaClientAdapter.connectProducer();
 
