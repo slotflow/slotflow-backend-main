@@ -1,14 +1,20 @@
 import { v4 as uuidv4 } from 'uuid';
+import { kafkaConfig } from '../../../config/env';
 import { log } from '../../../shared/logger/logger';
+import { SendOtpEvent } from '../../dtos/common.dto';
 import { Role } from '../../../domain/enums/role.enum';
 import { User } from '../../../domain/entities/user.entity';
+import { IJWT } from '../../../domain/interfaces/security/IJwt';
+import { OtpPurpose } from '../../../domain/enums/otpPurpose.enum';
 import { Provider } from '../../../domain/entities/provider.entity';
 import { RegisterRequest, RegisterResponse } from '../../dtos/auth.dto';
 import { IOTPService } from '../../../domain/interfaces/services/IOtpService.service';
-import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
-import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
-import { IJWT } from '../../../domain/interfaces/security/IJwt';
 import { IPasswordHasher } from '../../../domain/interfaces/security/IPasswordHasher';
+import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
+// import { IKafkaClientAdapter } from '../../../domain/interfaces/message/IKafkaClientAdapter';
+import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
+
+// CAN OPTIMISE ( REDUCE SAME TYPE OF CODE )
 
 export class RegisterUseCase {
 
@@ -17,7 +23,8 @@ export class RegisterUseCase {
     private providerRepository: IProviderRepository,
     private otpService: IOTPService,
     private jwtService: IJWT,
-    private passwordHasher: IPasswordHasher
+    private passwordHasher: IPasswordHasher,
+    // private kafkaClientAdapter: IKafkaClientAdapter
   ) { };
 
   async execute(payload: RegisterRequest): Promise<RegisterResponse> {
@@ -37,16 +44,6 @@ export class RegisterUseCase {
         const otp = await this.otpService.setOtp(verificationToken);
         if (!otp) throw new Error("Unexpected error, please try again.");
 
-        // await this.kafkaService.send({
-        //   topic: kafkaConfig.topics.sendOtp,
-        //   key: email,
-        //   message: {
-        //     otp,
-        //     email,
-        //     contentNumber: 1
-        //   },
-        // });
-
         if (user) {
           user.changePassword({ verificationToken, password: hashedPassword });
           await this.userRepository.update(user);
@@ -61,6 +58,13 @@ export class RegisterUseCase {
         };
 
         const token = await this.jwtService.generateToken({ email, role });
+
+        // await this.kafkaClientAdapter.publish<SendOtpEvent>(kafkaConfig.topics.pub.sendOtp, {
+        //   email,
+        //   name: username,
+        //   otp,
+        //   purpose: OtpPurpose.REGISTRATION
+        // });
 
         return {
           authUser: {
@@ -82,16 +86,6 @@ export class RegisterUseCase {
         const otp = await this.otpService.setOtp(verificationToken);
         if (!otp) throw new Error("Unexpected error, please try again.");
 
-        // await this.kafkaService.send({
-        //   topic: kafkaConfig.topics.sendOtp,
-        //   key: email,
-        //   message: {
-        //     otp,
-        //     email,
-        //     contentNumber: 1
-        //   },
-        // });
-
         if (provider) {
           provider.changePassword({ verificationToken, password: hashedPassword });
           await this.providerRepository.update(provider);
@@ -106,6 +100,13 @@ export class RegisterUseCase {
         };
 
         const token = await this.jwtService.generateToken({ email, role });
+
+        // await this.kafkaClientAdapter.publish<SendOtpEvent>(kafkaConfig.topics.pub.sendOtp, {
+        //   email,
+        //   name: username,
+        //   otp,
+        //   purpose: OtpPurpose.REGISTRATION
+        // });
 
         return {
           authUser: {

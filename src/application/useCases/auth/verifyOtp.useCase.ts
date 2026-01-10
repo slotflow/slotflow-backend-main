@@ -1,12 +1,13 @@
-// import { kafkaConfig } from "../../../config/env";
+import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/role.enum";
+import { SendWelcomeEvent } from "../../dtos/common.dto";
 import { User } from "../../../domain/entities/user.entity";
 import { Provider } from "../../../domain/entities/provider.entity";
-// import { IKafkaService } from "../../../domain/interfaces/services/IKafka.service";
 import { IOTPService } from "../../../domain/interfaces/services/IOtpService.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { OTPVerificationRequest, VerifyAndActivateEntityRequest } from "../../dtos/auth.dto";
+import { IKafkaClientAdapter } from "../../../domain/interfaces/message/IKafkaClientAdapter";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 
 export class VerifyOTPUseCase {
@@ -14,7 +15,7 @@ export class VerifyOTPUseCase {
     private readonly userRepository: IUserRepository,
     private readonly providerRepository: IProviderRepository,
     private readonly otpService: IOTPService,
-    // private readonly kafkaService: IKafkaService
+    private readonly kafkaClientAdapter: IKafkaClientAdapter
   ) {};
 
   async execute(payload: OTPVerificationRequest): Promise<void> {
@@ -39,15 +40,11 @@ export class VerifyOTPUseCase {
         verificationToken
       });
 
-      // await this.kafkaService.send({
-      //   topic: kafkaConfig.topics.registerSuccess,
-      //   key: entity.email,
-      //   message: {
-      //     name: entity.username,
-      //     email: entity.email,
-      //     contentNumber: 1,
-      //   },
-      // });
+      await this.kafkaClientAdapter.publish<SendWelcomeEvent>(kafkaConfig.topics.pub.registerSuccess, {
+        email: entity.email,
+        name: entity.username,
+        role
+      });
 
     } catch (error) {
       log.error("VerifyOTPUseCase failed", error as Error);

@@ -63,6 +63,10 @@ export class Booking {
         return this.props.appointmentDate;
     };
 
+    get appointmentMode(): string {
+        return this.props.appointmentMode;
+    }
+
     get userId(): string {
         return this.props.userId;
     };

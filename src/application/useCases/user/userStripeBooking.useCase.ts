@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from 'uuid';
-// import { kafkaConfig } from '../../../config/env';
 import { log } from '../../../shared/logger/logger';
 import { stripe } from '../../../infrastructure/lib/stripe';
 import { Payment } from '../../../domain/entities/payment.entity';
@@ -11,7 +10,6 @@ import { PaymentMethod } from '../../../domain/enums/paymentMethod.enum';
 import { PaymentGateway } from '../../../domain/enums/paymentGateway.enum';
 import { AppointmentStatus } from '../../../domain/enums/appointmentStatus.enum';
 import { IProviderServiceQueries } from '../../queries/IProviderService.queries';
-import { IKafkaService } from '../../../domain/interfaces/services/IKafka.service';
 import { IServiceAvailabilityQueries } from '../../queries/IServiceAvailability.queries';
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { IGoogleTokenService } from '../../../domain/interfaces/services/IGoogleToken.service';
@@ -106,7 +104,6 @@ export class UserSaveBookingAfterStripePaymentUseCase {
         private providerRepository: IProviderRepository,
         private googleCalendarGatewayService: IGoogleCalendarGatewayService,
         private googleTokenService: IGoogleTokenService,
-        // private kafkaService: IKafkaService,
     ) { };
 
     async execute(payload: UserSaveAppoinmentBookingRequest): Promise<void> {
@@ -192,25 +189,6 @@ export class UserSaveBookingAfterStripePaymentUseCase {
                     const newBooking = await this.bookingRepository.create(bookingData);
                     if (!newBooking) throw new Error("Failed to confirm slot, please try again");
 
-                    // await this.kafkaService.send({
-                    //     topic: kafkaConfig.topics.gotAppointment,
-                    //     key: provider.email,
-                    //     message: {
-                    //         name: user.username,
-                    //         email: provider.email,
-                    //         contentNumber: 1
-                    //     },
-                    // });
-
-                    // await this.kafkaService.send({
-                    //     topic: kafkaConfig.topics.userPayment,
-                    //     key: user.email,
-                    //     message: {
-                    //         name: user.username,
-                    //         email: user.email,
-                    //         contentNumber: 1
-                    //     },
-                    // });
 
             } catch (error) {
                 log.error("UserSaveBookingAfterStripePaymentUseCase failed", error as Error);

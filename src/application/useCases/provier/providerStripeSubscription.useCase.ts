@@ -16,11 +16,13 @@ import { PaymentStatus } from "../../../domain/enums/paymentStatus.enum";
 import { PaymentGateway } from "../../../domain/enums/paymentGateway.enum";
 import { Subscription } from "../../../domain/entities/subscription.entity";
 import { SubscriptionStatus } from "../../../domain/enums/subscriptionStatus.enum";
-// import { IKafkaService } from "../../../domain/interfaces/services/IKafka.service";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { IPaymentRepository } from "../../../domain/interfaces/repositories/IPayment.repository";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
+// import { IKafkaClientAdapter } from "../../../domain/interfaces/message/IKafkaClientAdapter";
+// import { SendPaymentRequestEvent } from "../../dtos/common.dto";
+// import { kafkaConfig } from "../../../config/env";
 
 // TODO can make the payment another service
 
@@ -92,7 +94,7 @@ export class ProviderSaveSubscriptionUseCase {
         private providerRepository: IProviderRepository,
         private paymentRepository: IPaymentRepository,
         private subscriptionRepository: ISubscriptionRepository,
-        // private kafkaService: IKafkaService
+        //  private kafkaClientAdapter: IKafkaClientAdapter
     ) { };
 
     async execute(payload: ProviderSaveSubscriptionRequest): Promise<ProviderSaveSubscriptionResponse> {
@@ -131,6 +133,7 @@ export class ProviderSaveSubscriptionUseCase {
                     providerId: pId,
                 });
 
+
                 const payment = await this.paymentRepository.create(paymentData);
                 if (!payment) throw new Error("Unexpected error, payment saving error.");
 
@@ -152,22 +155,7 @@ export class ProviderSaveSubscriptionUseCase {
                 if (!updatedProvider) throw new Error("Unexpected error, subscription adding error.");
 
                 const startDate = new Date();
-                const endDate = dayjs(startDate).add(planDuration * 30, "day");
-
-                // TODO make this from payment service
-                // await this.kafkaService.send({
-                //     topic: kafkaConfig.topics.confirmSubscription,
-                //     key: provider.email,
-                //     message: {
-                //         name: provider.username,
-                //         email: provider.email,
-                //         subscription: planName,
-                //         duration: planDuration,
-                //         startDate,
-                //         endDate,
-                //         contentNumber: 1
-                //     },
-                // });
+                // const endDate = dayjs(startDate).add(planDuration * 30, "day");
 
                 return { planName };
             } catch (error) {

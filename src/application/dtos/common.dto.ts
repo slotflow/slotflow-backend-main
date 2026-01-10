@@ -13,6 +13,8 @@ import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { SubscriptionStatus } from "../../domain/enums/subscriptionStatus.enum";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
 import { adminVerificationStatusArray, appointmentStatusArray, daysArray, paymentForArray, paymentGatewayArray, roleArray, serviceCategoryArray, serviceModeArray, serviceTypeArray, subscriptionStatusArray } from "../../shared/utils/constants";
+import { OtpPurpose } from "../../domain/enums/otpPurpose.enum";
+import { AppConnect } from "../../domain/enums/appConnect.enum";
 
 export type RoleType = typeof roleArray[number];
 
@@ -639,6 +641,135 @@ export interface DecodedUser {
   iat?: number;
   userId: string;
 };
+
+
+// send email common
+export interface SendEmailCommon {
+  email: string;
+  name: string;
+}
+
+// send otp event for registration and password update
+export interface SendOtpEvent extends SendEmailCommon {
+  otp: string;
+  purpose: OtpPurpose;
+}
+
+// send welcome event
+export interface SendWelcomeEvent extends SendEmailCommon {
+  role: Role;
+}
+
+// send admin provider review event
+export interface SendAdminProviderReviewEvent extends SendEmailCommon {
+  status: AdminVerificationStatus;
+  reason?: string;
+}
+
+// send account block status event
+export interface SendAccountBlockStatusEvent extends SendEmailCommon {
+  blocked: boolean;
+  reason?: string;
+}
+
+// send account trust status event
+export interface SendAccountTrustStatusEvent extends SendEmailCommon {
+  trusted: boolean;
+  reason?: string;
+}
+
+// send provider got appointment event
+export interface SendGotAppointmentEvent extends SendEmailCommon {
+  appointmentDate: string;
+  appointmentTime: string;
+  appointmentDuration: string;
+  appointmentMode: string;
+}
+
+// send appointment status change event
+export interface SendAppointmentStatusChangeEvent extends SendEmailCommon {
+  appointmentDate: string;
+  appointmentTime: string;
+  appointmentMode: string;
+  appointmentStatus: AppointmentStatus;
+}
+
+// send user payment event
+export interface SendUserPaymentEvent extends SendEmailCommon {
+  amount: number;
+  transactionId: string;
+  paymentDate: string;
+  appointmentDate: string;
+  paymentStatus: PaymentStatus;
+  paymentFor: PaymentFor;
+}
+
+// send provider payment event
+export interface SendProviderPaymentEvent extends SendEmailCommon {
+  amount: number;
+  transactionId: string;
+  paymentDate: string;
+  subscriptionStartDate: string;
+  subscriptionEndDate: string;
+  paymentStatus: PaymentStatus;
+  paymentFor: PaymentFor;
+}
+
+// send provider payout event
+export interface SendProviderPayoutEvent extends SendEmailCommon {
+  amount: number;
+  transactionId: string;
+  payoutDate: string;
+}
+
+// send app connect event
+export interface SendAppConnectEvent extends SendEmailCommon {
+  appConnect: AppConnect;
+}
+
+// send provider trial subscription event
+export interface SendProviderTrialSubscriptionEvent extends SendEmailCommon {
+  startDate: string;
+  endDate: string;
+}
+
+// send payment request event
+export interface SendPaymentRequestEvent {
+  transactionId: string,
+  paymentStatus: string,
+  paymentMethod: string,
+  paymentGateway: PaymentGateway,
+  paymentFor: PaymentFor,
+  initialAmount: number,
+  discountAmount: number,
+  totalAmount: number,
+  providerId?: string,
+  userId?: string,
+}
+
+// create google calendar event
+export interface CreateGoogleCalendarEvent {
+  accessToken: string;
+  appointmentDate: string;
+  appointmentStatus: AppointmentStatus;
+  slotDuration: number;
+  bookingId: string;
+}
+
+// google calendar event response
+export interface GoogleCalendarEventResponse {
+  eventId: string;
+  bookingId: string;
+}
+
+// update google calendar event
+export interface UpdateGoogleCalendarEvent {
+  accessToken: string;
+  eventId: string;
+  appointmentDate: string;
+  appointmentStatus: AppointmentStatus;
+  bookingId: string;
+}
 
 // kafka client adapter props
 export interface KafkaClientAdapterProps<T> {

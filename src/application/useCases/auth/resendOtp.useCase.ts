@@ -1,13 +1,15 @@
-// import { kafkaConfig } from '../../../config/env';
+import { kafkaConfig } from '../../../config/env';
 import { log } from '../../../shared/logger/logger';
+import { SendOtpEvent } from '../../dtos/common.dto';
 import { Role } from '../../../domain/enums/role.enum';
 import { User } from '../../../domain/entities/user.entity';
+import { OtpPurpose } from '../../../domain/enums/otpPurpose.enum';
 import { Provider } from '../../../domain/entities/provider.entity';
 import { ResendOtpRequest, ResendOtpResponse } from '../../dtos/auth.dto';
 import { IOTPService } from '../../../domain/interfaces/services/IOtpService.service';
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
+// import { IKafkaClientAdapter } from '../../../domain/interfaces/message/IKafkaClientAdapter';
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
-// import { IKafkaService } from '../../../domain/interfaces/services/IKafka.service';
 
 export class ResendOtpUseCase {
 
@@ -15,7 +17,7 @@ export class ResendOtpUseCase {
     private userRepository: IUserRepository,
     private providerRepository: IProviderRepository,
     private otpService: IOTPService,
-    // private kafkaService: IKafkaService
+    // private kafkaClientAdapter: IKafkaClientAdapter 
   ) { };
 
   async execute(payload: ResendOtpRequest): Promise<ResendOtpResponse> {
@@ -49,14 +51,11 @@ export class ResendOtpUseCase {
       const otp = await this.otpService.setOtp(userOrProvider?.verificationToken);
       if (!otp) throw new Error("Unexpected error, please try again.");
 
-      // await this.kafkaService.send({
-      //   topic: kafkaConfig.topics.sendOtp,
-      //   key: userOrProvider.email,
-      //   message: {
-      //     otp,
-      //     email,
-      //     contentNumber: 1
-      //   },
+      // await this.kafkaClientAdapter.publish<SendOtpEvent>(kafkaConfig.topics.pub.sendOtp, {
+      //   email: userOrProvider.email,
+      //   name: userOrProvider.username,
+      //   otp,
+      //   purpose: OtpPurpose.REGISTRATION
       // });
 
       return { authUser: { verificationToken: userOrProvider.verificationToken, role } };

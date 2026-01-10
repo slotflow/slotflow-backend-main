@@ -13,6 +13,10 @@ import { IProviderRepository } from "../../../domain/interfaces/repositories/IPr
 import { GoogleAuthOrchestrationRequest, GoogleAuthOrchestrationResponse } from "../../dtos/auth.dto";
 import { ICredentialRepository } from "../../../domain/interfaces/repositories/ICredentialRepository";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
+// import { IKafkaClientAdapter } from "../../../domain/interfaces/message/IKafkaClientAdapter";
+// import { kafkaConfig } from "../../../config/env";
+// import { SendAppConnectEvent, SendWelcomeEvent } from "../../dtos/common.dto";
+// import { AppConnect } from "../../../domain/enums/appConnect.enum";
 
 export class GoogleAuthOrchestratorUseCase {
     constructor(
@@ -22,8 +26,8 @@ export class GoogleAuthOrchestratorUseCase {
         private aesEncryption: IAesEncryptionService,
         private subscriptionRepository: ISubscriptionRepository,
         private planRepository: IPlanRepository,
-        private jwtService: IJWT
-        // private kafkaService: IKafkaService
+        private jwtService: IJWT,
+        // private kafkaClientAdapter: IKafkaClientAdapter
     ) { };
 
     async execute(payload: GoogleAuthOrchestrationRequest): Promise<GoogleAuthOrchestrationResponse> {
@@ -82,7 +86,7 @@ export class GoogleAuthOrchestratorUseCase {
                     entity = providerEntity;
                 };
 
-                token = await this .jwtService.generateToken({
+                token = await this.jwtService.generateToken({
                     email,
                     userOrProviderId: entity?._id,
                     role,
@@ -143,7 +147,7 @@ export class GoogleAuthOrchestratorUseCase {
 
             const subscriptions = (entity as Provider)?.subscription;
 
-            if (Array.isArray(subscriptions) && subscriptions.length > 0) {
+            if (Array.isArray(subscriptions) && subscriptions.length > 0 && role === Role.Provider) {
                 const subscriptionId = subscriptions[subscriptions.length - 1];
 
                 const subscription = await this.subscriptionRepository.findById(subscriptionId);
@@ -167,15 +171,21 @@ export class GoogleAuthOrchestratorUseCase {
 
             if (!entity) throw new Error("Invalid request");
 
-            // await this.kafkaService.send({
-            //     topic: connectOnly ? kafkaConfig.topics.googleConnect : kafkaConfig.topics.registerSuccess,
-            //     key: entity.email,
-            //     message: {
-            //         name: entity.username,
+            // CONFUSION 
+
+            // if (connectOnly) {
+            //     await this.kafkaClientAdapter.publish<SendAppConnectEvent>(kafkaConfig.topics.pub.appConnect, {
             //         email: entity.email,
-            //         contentNumber: 1
-            //     },
-            // });
+            //         name: entity.username,
+            //         appConnect: AppConnect.Google
+            //     });
+            // } else {
+            //     await this.kafkaClientAdapter.publish<SendWelcomeEvent>(kafkaConfig.topics.pub.registerSuccess, {
+            //         email: entity.email,
+            //         name: entity.username,
+            //         role
+            //     });
+            // };
 
             return {
                 token,
