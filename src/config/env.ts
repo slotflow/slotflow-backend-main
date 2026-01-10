@@ -71,35 +71,46 @@ export const stripeConfig = {
 
 export const kafkaConfig = {
     clientId: validator.requireEnv("KAFKA_CLIENT_ID"),
-    groupId: validator.requireEnv("KAFKA_GROUP_ID"),
-    broker1: validator.requireEnv("KAFKA_BROKER_1"),
-    broker2: validator.requireEnv("KAFKA_BROKER_2"),
-    broker3: validator.requireEnv("KAFKA_BROKER_3"),
+    groups: {
+        groupId: validator.requireEnv("KAFKA_GROUP_ID"),
+    },
+
+    brokers: [
+        validator.requireEnv("KAFKA_BROKER_1"),
+        validator.requireEnv("KAFKA_BROKER_2"),
+        validator.requireEnv("KAFKA_BROKER_3"),
+    ],
 
     topics: {
-        pub: {
-            sendOtp: validator.requireEnv("KAFKA_SENDOTP_TOPIC"),
-            registerSuccess: validator.requireEnv("KAFKA_REGISTER_SUCCESS_TOPIC"),
-            adminProviderReview: validator.requireEnv("KAFKA_ADMIN_PROVIDER_REVIEW_TOPIC"),
-            accountBlockStatus: validator.requireEnv("KAFKA_ACCOUNT_BLOCK_STATUS_TOPIC"),
-            accountTrustStatus: validator.requireEnv("KAFKA_ACCOUNT_TRUST_STATUS_TOPIC"),
-            gotAppointment: validator.requireEnv("KAFKA_GOT_APPOINTMENT_TOPIC"),
-            appointmentStatus: validator.requireEnv("KAFKA_APPOINTMENT_STATUS_TOPIC"),
-            userPayment: validator.requireEnv("KAFKA_USER_PAYMENT_STATUS_TOPIC"),
-            providerPayment: validator.requireEnv("KAFKA_PROVIDER_PAYMENT_STATUS_TOPIC"),
-            providerPayout: validator.requireEnv("KAFKA_PROVIDER_PAYOUT_TOPIC"),
-            appConnect: validator.requireEnv("KAFKA_APP_CONNECT_TOPIC"),
-            trialSubscription: validator.requireEnv("KAFKA_TRIAL_SUBSCRIPTION_TOPIC"),
-
-            googleCalendarCreateRequest: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_CREATE_REQUEST_TOPIC"),
-            googleCalendarUpdateRequest: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_UPDATE_REQUEST_TOPIC"),
-        },
         sub: {
-            googleCalendarCreateSuccess: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_CREATE_SUCCESS_TOPIC"),
-            googleCalendarCreateFailed: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_CREATE_FAILED_TOPIC"),
+            // PS -> MBS
+            providerSubscriptionPaymentSuccess: validator.requireEnv("KAFKA_PROVIDER_SUBSCRIPTION_PAYMENT_SUCCESS"),
+            providerSubscriptionPaymentFailed: validator.requireEnv("KAFKA_PROVIDER_SUBSCRIPTION_PAYMENT_FAILED"),
+            userBookingPaymentSuccess: validator.requireEnv("KAFKA_USER_BOOKING_PAYMENT_SUCCESS"),
+            userBookingPaymentFailed: validator.requireEnv("KAFKA_USER_BOOKING_PAYMENT_FAILED"),
+            providerPayoutSuccess: validator.requireEnv("KAFKA_PROVIDER_PAYOUT_SUCCESS"),
+            providerPayoutFailed: validator.requireEnv("KAFKA_PROVIDER_PAYOUT_FAILED"),
 
-            googleCalendarUpdateSuccess: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_UPDATE_SUCCESS_TOPIC"),
-            googleCalendarUpdateFailed: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_UPDATE_FAILED_TOPIC"),
+            // NS -> MBS
+            googleCalendarEventsCreated: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_EVENTS_CREATED"),
+            userCancelBookingFailed: validator.requireEnv("KAFKA_USER_CANCEL_BOOKING_FAILED"),
+        },
+        pub: {
+            // MBS -> NS
+            sendOtp: validator.requireEnv("KAFKA_SEND_OTP"),
+            registerSuccess: validator.requireEnv("KAFKA_REGISTER_SUCCESS"),
+            adminProviderReview: validator.requireEnv("KAFKA_ADMIN_PROVIDER_REVIEW"),
+            accountBlockStatus: validator.requireEnv("KAFKA_ACCOUNT_BLOCK_STATUS"),
+            accountTrustStatus: validator.requireEnv("KAFKA_ACCOUNT_TRUST_STATUS"),
+            providerAppointmentStatus: validator.requireEnv("KAFKA_PROVIDER_APPOINTMENT_STATUS"),
+            appConnect: validator.requireEnv("KAFKA_APP_CONNECT"),
+            providerTrialSubscription: validator.requireEnv("KAFKA_PROVIDER_TRIAL_SUBSCRIPTION"),
+
+            // MBS -> PS
+            providerSubscriptionPayment: validator.requireEnv("KAFKA_PROVIDER_SUBSCRIPTION_PAYMENT"),
+            userBookingPayment: validator.requireEnv("KAFKA_USER_BOOKING_PAYMENT"),
+            providerPayout: validator.requireEnv("KAFKA_PROVIDER_PAYOUT"),
+            userCancelBooking: validator.requireEnv("KAFKA_USER_CANCEL_BOOKING"),
         }
     },
 };
