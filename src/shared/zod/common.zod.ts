@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { Types } from "mongoose";
-import { roleArray, serviceCategoryArray } from "../utils/constants";
-import { addressLineRegex, cityRegex, countryRegex, districtRegex, landMarkRegex, phoneRegex, pincodeRegex, placeRegex, stateRegex } from "./regex";
+import { Role } from "../../domain/enums/role.enum";
 import { ServiceCategory } from "../../domain/enums/serviceCategories.enum";
+import { addressLineRegex, cityRegex, countryRegex, districtRegex, landMarkRegex, phoneRegex, pincodeRegex, placeRegex, stateRegex } from "./regex";
 
 // ****** Common zod validations for reuse ****** \\
 
@@ -280,7 +280,7 @@ export const JoinOrLeftRoomZodSchema = z.object({
   joined: booleanField("joined"),
   joinedTime: stringField("joinedTime").optional(),
   leftCallTime: stringField("leftCallTime").optional(),
-  role: z.enum(roleArray),
+  role: z.nativeEnum(Role),
 })
 
 
@@ -297,7 +297,7 @@ export const RequestQueryFetchAllReviewsZodSchema = z.object({
     .refine((val) => !isNaN(val) && val > 0, {
       message: "Limit must be a valid positive number",
     }),
-  role: z.enum(roleArray),
+  role: z.nativeEnum(Role),
 });
 
 

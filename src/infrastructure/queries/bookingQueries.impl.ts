@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { Types } from "mongoose";
-import { roleArray } from "../../shared/utils/constants";
+import { Role } from "../../domain/enums/role.enum";
 import { BookingModel } from "../database/booking.model";
 import { IBookingQueries } from "../../application/queries/IBooking.queries";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
@@ -56,9 +56,9 @@ export class BookingQueriesImpl implements IBookingQueries {
             .sort({ createdAt: -1 })
             .lean<FetchBookingsResponse | FetchOnlineBookingsForProviderResponse | FetchOnlineBookingsForUserResponse>();
 
-        if (online && role === roleArray[1]) {
+        if (online && role === Role.User) {
             query = query.populate("serviceProviderId", "username -_id");
-        } else if (online && role === roleArray[2]) {
+        } else if (online && role === Role.Provider) {
             query = query.populate("userId", "username -_id");
         }
 
@@ -69,7 +69,7 @@ export class BookingQueriesImpl implements IBookingQueries {
 
         const totalPages = Math.ceil(totalCount / limit);
 
-        if (online && roleArray[1]) {
+        if (online && role === Role.User) {
             return {
                 data: (bookings as FetchOnlineBookingsForUserResponse).map(booking => ({
                     ...booking,
@@ -82,7 +82,7 @@ export class BookingQueriesImpl implements IBookingQueries {
                 currentPage: page,
                 totalCount
             }
-        } else if (online && roleArray[2]) {
+        } else if (online && role === Role.Provider) {
             return {
                 data: (bookings as FetchOnlineBookingsForProviderResponse).map(booking => ({
                     ...booking,

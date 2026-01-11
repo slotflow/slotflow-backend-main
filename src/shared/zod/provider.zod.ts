@@ -1,12 +1,11 @@
 import { z } from "zod";
 import { objectIdField } from "./common.zod";
-import { serviceDescriptionRegex, serviceExperienceRegex, serviceNameRegex } from "./regex";
-import { appointmentStatusArray, daysArray, serviceModeArray, serviceTypeArray, subscriptionMonthArray } from "../utils/constants";
-import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
+import { Day } from "../../domain/enums/day.enum";
 import { ServiceType } from "../../domain/enums/serviceType.enum";
 import { ServiceMode } from "../../domain/enums/serviceMode.enum";
-import { Day } from "../../domain/enums/day.enum";
+import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { SubscriptionValidity } from "../../domain/enums/subscriptionValidity.enum";
+import { serviceDescriptionRegex, serviceExperienceRegex, serviceNameRegex } from "./regex";
 
 
 // **** Provider Service Controller **** \\

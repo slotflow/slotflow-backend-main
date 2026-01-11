@@ -1,9 +1,8 @@
 import { z } from "zod";
-import { serviceCategoryArray } from "../utils/constants";
 import { verificationRejectionReasonRegex } from "./regex";
+import { PlanName } from "../../domain/enums/planName.enum";
 import { booleanField, numberField, stringField } from "./common.zod";
 import { ServiceCategory } from "../../domain/enums/serviceCategories.enum";
-import { PlanName } from "../../domain/enums/planName.enum";
 
 // **** admin provider controller **** \\
 // Admin provider trust tag change controller zod validation

@@ -2,7 +2,7 @@ import { isSameDay, startOfDay } from "date-fns";
 import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/role.enum";
 import { ValidateJoinRoomRequest } from "../../dtos/common.dto";
-import { appointmentStatusArray } from "../../../shared/utils/constants";
+import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 
 export class ValidateJoinRoomUsecase {
@@ -22,7 +22,7 @@ export class ValidateJoinRoomUsecase {
                 throw new Error("Booking is not scheduled for today");
             };
 
-            if (booking.appointmentStatus !== appointmentStatusArray[5]) {
+            if (booking.appointmentStatus !== AppointmentStatus.Confirmed) {
                 throw new Error("Booking is not confirmed");
             };
 

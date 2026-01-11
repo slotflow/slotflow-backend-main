@@ -2,6 +2,8 @@ import { Day } from "../../domain/enums/day.enum";
 import { Role } from "../../domain/enums/role.enum";
 import { PlanName } from "../../domain/enums/planName.enum";
 import { PaymentFor } from "../../domain/enums/paymentFor.enum";
+import { OtpPurpose } from "../../domain/enums/otpPurpose.enum";
+import { AppConnect } from "../../domain/enums/appConnect.enum";
 import { ServiceType } from "../../domain/enums/serviceType.enum";
 import { ServiceMode } from "../../domain/enums/serviceMode.enum";
 import { GeoLocation } from "../../domain/contracts/address.contract";
@@ -12,29 +14,7 @@ import { ServiceCategory } from "../../domain/enums/serviceCategories.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { SubscriptionStatus } from "../../domain/enums/subscriptionStatus.enum";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
-import { adminVerificationStatusArray, appointmentStatusArray, daysArray, paymentForArray, paymentGatewayArray, roleArray, serviceCategoryArray, serviceModeArray, serviceTypeArray, subscriptionStatusArray } from "../../shared/utils/constants";
-import { OtpPurpose } from "../../domain/enums/otpPurpose.enum";
-import { AppConnect } from "../../domain/enums/appConnect.enum";
 
-export type RoleType = typeof roleArray[number];
-
-export type DayType = typeof daysArray[number];
-
-export type ServiceModeType = typeof serviceModeArray[number];
-
-export type ServiceTypeType = typeof serviceTypeArray[number];
-
-export type AppointmentStatusType = typeof appointmentStatusArray[number];
-
-export type PaymentForType = typeof paymentForArray[number];
-
-export type PaymentGatewayType = typeof paymentGatewayArray[number];
-
-export type SubscriptionStatusType = typeof subscriptionStatusArray[number];
-
-export type ServiceCategoryType = typeof serviceCategoryArray[number];
-
-export type AdminVerificationStatusType = typeof adminVerificationStatusArray[number];
 
 // **** ENTITY INTERFACES FOR APPLICATION LAYER **** \\
 
@@ -398,7 +378,7 @@ export type UpdateAddressRequest = Pick<AddressDTO, "_id" | "userId" | "addressL
 
 // Used as the interface for the validate join room
 export interface ValidateJoinRoomRequest {
-  role: RoleType;
+  role: Role;
   bookingId: string;
   roomId: string;
   userOrProviderId: string;
@@ -528,7 +508,7 @@ export interface CreateGoogleCalendarEventRequest {
 }
 
 export interface UpdateBookingOnlineTrackRequest extends ParticipantPresence {
-  role: RoleType,
+  role: Role,
   roomId: string,
 }
 
@@ -539,7 +519,7 @@ export type UpdateBookingOnlineTrackResponse = Pick<Availability, "duration">;
 export interface userIdAndProviderIdFilterForFetchReviews {
   userId?: UserDTO["_id"];
   providerId?: ProviderDTO["_id"];
-  role?: RoleType;
+  role?: Role;
 }
 export interface FetchReviesRequest extends ApiPaginationRequest, userIdAndProviderIdFilterForFetchReviews { }
 //// **** Used as the response type fetching payments for admin, provider and user side

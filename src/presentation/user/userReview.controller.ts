@@ -1,9 +1,8 @@
-import { DecodedUser } from "../../express";
 import { log } from "../../shared/logger/logger";
 import { Role } from "../../domain/enums/role.enum";
-import { roleArray } from "../../shared/utils/constants";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
+import { DecodedUser } from "../../application/dtos/common.dto";
 import { UserCreateReviewZodSchema } from "../../shared/zod/user.zod";
 import { RequestQueryFetchAllReviewsZodSchema } from "../../shared/zod/common.zod";
 import { createReviewUseCase, deleteReviewUseCase, fetchAllReviewsUseCase } from ".";
@@ -24,6 +23,7 @@ class UserReviewController {
     async createReview(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = (req.user as DecodedUser).userOrProviderId;
+            if(!userId) throw new Error("Invalid request");
             const validateData = UserCreateReviewZodSchema.parse(req.body);
             const { providerId, bookingId, reviewText, rating } = validateData;
             const result = await this.createReviewUseCase.execute({
@@ -43,6 +43,7 @@ class UserReviewController {
     async deleteReview(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = (req.user as DecodedUser).userOrProviderId;
+            if(!userId) throw new Error("Invalid request");
             const reviewId = req.params.reviewId;
             await this.deleteReviewUseCase.execute({
                 reviewId,
@@ -65,7 +66,7 @@ class UserReviewController {
                 limit,
                 userId: role === Role.User ? userId : undefined,
                 providerId: role === Role.Provider ? providerId : undefined,
-                role: roleArray[1]
+                role
             });
             sendResponse(res, result);
         } catch (error) {

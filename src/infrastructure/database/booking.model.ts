@@ -1,5 +1,4 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
-import { appointmentStatusArray } from "../../shared/utils/constants";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { ParticipantPresence, statusTrack } from "../../domain/commands/booking.commands";
 
@@ -33,7 +32,7 @@ const ParticipantPresenceSchema = new Schema<ParticipantPresence>({
 const StatusTrackSchema = new Schema<statusTrack>({
     appointmentStatus: {
         type: String,
-        enum: Object.values(appointmentStatusArray),
+        enum: Object.values(AppointmentStatus),
         required: true
     },
     time: {
