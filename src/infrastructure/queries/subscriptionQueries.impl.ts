@@ -51,9 +51,6 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
         const data = await SubscriptionModel.findById(subscriptionId)
             .select("startDate endDate subscriptionStatus createdAt -_id")
             .populate([{
-                path: "paymentId",
-                select: "-_id transactionId discountAmount initialAmount totalAmount paymentFor paymentGateway paymentMethod paymentStatus"
-            }, {
                 path: "subscriptionPlanId",
                 select: "-_id planName price adVisibility maxBookingPerMonth"
             }]).lean<findSubscriptionFullDetailsResProps>();
@@ -63,16 +60,6 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
             endDate: data.endDate,
             startDate: data.startDate,
             subscriptionStatus: data.subscriptionStatus,
-            paymentId: data.paymentId ? {
-                transactionId: data.paymentId.transactionId,
-                discountAmount: data.paymentId.discountAmount,
-                initialAmount: data.paymentId.initialAmount,
-                totalAmount: data.paymentId.totalAmount,
-                paymentFor: data.paymentId.paymentFor,
-                paymentGateway: data.paymentId.paymentGateway,
-                paymentMethod: data.paymentId.paymentMethod,
-                paymentStatus: data.paymentId.paymentStatus,
-            } : null,
             subscriptionPlanId: {
                 planName: data.subscriptionPlanId.planName,
                 price: data.subscriptionPlanId.price,
@@ -157,9 +144,6 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
             }).populate<PopulatedSubscription>([{
                 path: "subscriptionPlanId",
                 select: "-_id planName price"
-            }, {
-                path: "paymentId",
-                select: "-_id totalAmount"
             }]).sort({ startDate: -1 }).skip(skip).limit(limit).lean(),
             SubscriptionModel.countDocuments({ providerId: providerId }),
         ]);
@@ -173,7 +157,6 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
                 endDate: sub.endDate,
                 subscriptionStatus: sub.subscriptionStatus,
                 planName: sub.subscriptionPlanId.planName,
-                totalAmount: sub.paymentId ? sub.paymentId.totalAmount : 0,
             })),
             totalPages,
             currentPage: page,

@@ -325,17 +325,19 @@ export interface FetchProviderSubscriptionsRequest extends ApiPaginationRequest 
   providerId: ProviderDTO["_id"];
 }
 // Used as the response type for fetching subscriptions with planName and plan price of a specific provider for the provider side and admin side
+// removing payment dependedcy data from here the data will be requested from payment service from client directly
 export type FindSubscriptionsByProviderIdResponse = Array<
   Pick<SubscriptionDTO, "_id" | "startDate" | "endDate" | "subscriptionStatus"> &
-  Partial<Pick<PlanDTO, "planName">>> &
-  Partial<Pick<PaymentDTO, "totalAmount">>;
+  Partial<Pick<PlanDTO, "planName">>>
+  // Partial<Pick<PaymentDTO, "totalAmount">>
+  ;
 export type PopulatedSubscription = Omit<SubscriptionDTO, 'subscriptionPlanId' | "paymentId"> & {
   subscriptionPlanId: {
     planName: PlanDTO["planName"];
   },
-  paymentId: {
-    totalAmount: string;
-  }
+  // paymentId: {
+  //   totalAmount: string;
+  // }
 };
 
 
@@ -589,11 +591,12 @@ export interface FindProviderServiceResponse extends FindProviderServiceProps {
 
 
 type SubscriptionProps = Pick<SubscriptionDTO, "startDate" | "endDate" | "subscriptionStatus" | "createdAt">;
-type PaymentsProps = Pick<PaymentDTO, "transactionId" | "discountAmount" | "initialAmount" | "paymentFor" | "paymentGateway" | "paymentMethod" | "paymentStatus" | "totalAmount">;
+// type PaymentsProps = Pick<PaymentDTO, "transactionId" | "discountAmount" | "initialAmount" | "paymentFor" | "paymentGateway" | "paymentMethod" | "paymentStatus" | "totalAmount">;
 type PlanProps = Pick<PlanDTO, "planName" | "price" | "adVisibility" | "maxBookingPerMonth">;
 export interface findSubscriptionFullDetailsResProps extends SubscriptionProps {
   subscriptionPlanId: PlanProps,
-  paymentId: PaymentsProps | null,
+  // removing payment data from here and the data will come from payment service to client
+  // paymentId: PaymentsProps | null,
 }
 
 export interface PlanNameOnly {
