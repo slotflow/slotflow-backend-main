@@ -1,7 +1,7 @@
-import { PlanModel } from "./plan.model";
-import { PlanMapper } from "../../mappers/plan.mapper";
-import { Plan } from "../../../domain/entities/plan.entity";
-import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
+import { PlanModel } from "../database/plan.model";
+import { PlanMapper } from "../mappers/plan.mapper";
+import { Plan } from "../../domain/entities/plan.entity";
+import { IPlanRepository } from "../../domain/interfaces/repositories/IPlan.repository";
 
 export class PlanRepositoryImpl implements IPlanRepository {
 

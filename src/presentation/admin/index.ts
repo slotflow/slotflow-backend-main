@@ -9,7 +9,7 @@ import { AdminFetchAllPaymentsUseCase, AdminFetchRevenueReportUseCase } from "..
 import { AdminChangePlanBlockStatusUseCase, AdminCreatePlanUseCase, AdminPlanListUseCase } from "../../application/useCases/admin/adminPlan.useCase";
 import { AdminChangeUserBlockStatusUseCase, AdminFetchUserDetailsUseCase, AdminUserListUseCase } from "../../application/useCases/admin/adminUser.useCase";
 import { AdminChnageServiceBlockStatusUseCase, AdminCreateServiceUseCase, AdminServiceListUseCase } from "../../application/useCases/admin/adminService.useCase";
-import { addressRepository, paymentRepository, planRepository, providerRepository, reviewRepository, serviceRepository, userRepository } from "../../infrastructure/database";
+import { addressRepository, paymentRepository, planRepository, providerRepository, reviewRepository, serviceRepository, userRepository } from "../../infrastructure/repositoryImpls";
 import { bookingQueries, paymentQueries, providerQueries, providerServiceQueries, reviewQueries, serviceAvailabilityQueries, subscriptionQueries, userQueries } from "../../infrastructure/queries";
 import { AdminApproveProviderUseCase, AdminChangeProviderBlockStatusUseCase, AdminChangeProviderTrustTagUseCase, AdminProviderListUseCase, AdminRejectProviderUseCase } from "../../application/useCases/admin/adminProvider.useCase";
 import { AdminFetchProviderDetailsUseCase, AdminFetchProviderPaymentsUseCase, AdminfetchProviderServiceAvailabilityUseCase, AdminFetchProviderServiceUseCase, AdminFetchProviderSubscriptionsUseCase } from "../../application/useCases/admin/adminProviderProfile.useCase";

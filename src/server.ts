@@ -2,15 +2,15 @@ import app from './app';
 import { appConfig } from './config/env';
 import { log } from './shared/logger/logger';
 import { initCronJobs } from './presentation/cron';
-import { passportStrategy } from './infrastructure/passport';
 import { kafkaClientAdapter } from './infrastructure/messaging';
 import connectDB from './config/database/mongodb/mongodb.config';
+import { googlePassportStrategy } from './infrastructure/passport';
 
 const start = async () => {
   try {
     await connectDB();
     initCronJobs();
-    passportStrategy.register();
+    googlePassportStrategy.register();
     await kafkaClientAdapter.connectConsumer();
     await kafkaClientAdapter.connectProducer();
 

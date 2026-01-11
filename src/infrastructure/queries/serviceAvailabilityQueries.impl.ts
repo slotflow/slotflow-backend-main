@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
+import { ServiceAvailabilityModel } from "../database/serviceAvailability.model";
 import { IServiceAvailabilityQueries } from "../../application/queries/IServiceAvailability.queries";
-import { ServiceAvailabilityModel } from "../database/serviceAvailability/serviceAvailability.model";
 import { FontendAvailabilityForResponse, TimeSlotForFrontendResponse } from "../../application/dtos/common.dto";
 
 const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];

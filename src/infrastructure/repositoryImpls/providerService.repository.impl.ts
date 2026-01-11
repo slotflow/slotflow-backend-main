@@ -1,7 +1,7 @@
-import { ProviderServiceModel } from "./providerService.model";
-import { ProviderServiceMapper } from "../../mappers/providerService.mapper";
-import { ProviderService } from "../../../domain/entities/providerService.entity";
-import { IProviderServiceRepository } from "../../../domain/interfaces/repositories/IProviderService.repository";
+import { ProviderServiceModel } from "../database/providerService.model";
+import { ProviderServiceMapper } from "../mappers/providerService.mapper";
+import { ProviderService } from "../../domain/entities/providerService.entity";
+import { IProviderServiceRepository } from "../../domain/interfaces/repositories/IProviderService.repository";
 
 export class ProviderServiceRepositoryImpl implements IProviderServiceRepository {
 

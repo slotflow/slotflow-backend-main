@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
-import { ServiceCategory } from "../../../domain/enums/serviceCategories.enum";
+import { ServiceCategory } from "../../domain/enums/serviceCategories.enum";
 
 export interface IService extends Document {
     _id: Types.ObjectId;

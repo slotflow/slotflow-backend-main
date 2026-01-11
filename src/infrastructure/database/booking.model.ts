@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
-import { appointmentStatusArray } from "../../../shared/utils/constants";
-import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
-import { ParticipantPresence, statusTrack } from "../../../domain/commands/booking.commands";
+import { appointmentStatusArray } from "../../shared/utils/constants";
+import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
+import { ParticipantPresence, statusTrack } from "../../domain/commands/booking.commands";
 
 export interface IBooking extends Document {
     _id: Types.ObjectId,

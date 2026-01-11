@@ -1,5 +1,5 @@
+import { PlanName } from "../../domain/enums/planName.enum";
 import mongoose, { Document, Schema, Types } from "mongoose";
-import { PlanName } from "../../../domain/enums/planName.enum";
 
 export interface IPlan extends Document {
     _id: Types.ObjectId;

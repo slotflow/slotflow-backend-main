@@ -1,7 +1,7 @@
-import { ServiceAvailabilityModel } from './serviceAvailability.model';
-import { ServiceAvailabilityMapper } from '../../mappers/serviceAvailability.mapper';
-import { ServiceAvailability } from '../../../domain/entities/serviceAvailability.entity';
-import { IServiceAvailabilityRepository } from '../../../domain/interfaces/repositories/IServiceAvailability.repository';
+import { ServiceAvailabilityModel } from '../database/serviceAvailability.model';
+import { ServiceAvailabilityMapper } from '../mappers/serviceAvailability.mapper';
+import { ServiceAvailability } from '../../domain/entities/serviceAvailability.entity';
+import { IServiceAvailabilityRepository } from '../../domain/interfaces/repositories/IServiceAvailability.repository';
 
 export class ServiceAvailabilityRepositoryImpl implements IServiceAvailabilityRepository {
 
@@ -27,7 +27,7 @@ export class ServiceAvailabilityRepositoryImpl implements IServiceAvailabilityRe
         const doc = await ServiceAvailabilityModel.findByIdAndUpdate(
             serviceAvailability._id,
             { $set: persistence },
-            {new: true}
+            { new: true }
         );
 
         if (!doc) {

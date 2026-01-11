@@ -1,12 +1,12 @@
 import passport from "passport";
 import { googleClientConfig } from "../../config/env";
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-import { IPassportStrategy } from "../../domain/interfaces/passport/IPassportStratergy";
+import { IGooglePassportStrategy } from "../../domain/interfaces/passport/IGooglePassportStratergy";
 
-export class PassportStrategyImpl implements IPassportStrategy {
+export class GooglePassportStrategyImpl implements IGooglePassportStrategy {
 
   constructor(
-  ) {};
+  ) { };
 
   register(): void {
     passport.use(

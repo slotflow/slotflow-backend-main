@@ -1,4 +1,4 @@
-import { credentialRepository } from "../../infrastructure/database";
+import { credentialRepository } from "../../infrastructure/repositoryImpls";
 import { aesEncryptionService, googleCalendarGatewayService } from "../../infrastructure/services";
 import { FethGoogleCalendarUseCase } from "../../application/useCases/common/fetchGoogleCalendar.useCase";
 

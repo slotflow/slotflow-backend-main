@@ -6,7 +6,7 @@ import { VerifyOTPUseCase } from "../../application/useCases/auth/verifyOtp.useC
 import { UpdatePasswordUseCase } from "../../application/useCases/auth/updatePassword.useCase";
 import { aesEncryptionService, otpService, signedUrlService } from "../../infrastructure/services";
 import { GoogleAuthOrchestratorUseCase } from "../../application/useCases/auth/googleAuthOrchestrate.useCase";
-import { credentialRepository, planRepository, providerRepository, subscriptionRepository, userRepository } from "../../infrastructure/database";
+import { credentialRepository, planRepository, providerRepository, subscriptionRepository, userRepository } from "../../infrastructure/repositoryImpls";
 
 // auth controller dependency injection
 export const updatePasswordUseCase = new UpdatePasswordUseCase(userRepository, providerRepository, passwordHasher);

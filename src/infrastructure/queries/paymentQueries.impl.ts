@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
+import { PaymentModel } from "../database/payment.model";
 import { TableData } from "../../application/dtos/common.dto";
 import { PaymentFor } from "../../domain/enums/paymentFor.enum";
-import { PaymentModel } from "../database/payment/payment.model";
 import { PaymentStatus } from "../../domain/enums/paymentStatus.enum";
 import { PaymentGateway } from "../../domain/enums/paymentGateway.enum";
 import { IPaymentQueries } from "../../application/queries/IPayment.queries";

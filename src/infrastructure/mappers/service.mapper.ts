@@ -1,5 +1,5 @@
+import { IService } from "../database/service.model";
 import { Service } from "../../domain/entities/service.entity";
-import { IService } from "../database/service/service.model";
 
 export class ServiceMapper {
 

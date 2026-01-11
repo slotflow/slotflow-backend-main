@@ -6,23 +6,29 @@ import { Validator } from '../shared/validator/validator';
 const validator = new Validator();
 
 export const appConfig = {
-    nodeEnv: validator.requireEnv("NODE_ENV"),
     port: validator.requireNumber("PORT"),
+    nodeEnv: validator.requireEnv("NODE_ENV"),
 };
 
-export const mongoConfig = {
-    mongoURL:
-        appConfig.nodeEnv === "development"
-            ? validator.requireEnv("MONGO_URI_DEV")
-            : validator.requireEnv("MONGO_URI"),
+export const mongodbConfig = {
+    mongoURL: appConfig.nodeEnv === "development" ? validator.requireEnv("MONGO_URI_DEV") : validator.requireEnv("MONGO_URI"),
+};
+
+export const serviceConfig = {
+    frontendUrl: appConfig.nodeEnv === "development" ? validator.requireEnv("FRONTEND_URL_DEV") : validator.requireEnv("FRONTEND_URL"),
+    apiGatewayUrl: appConfig.nodeEnv === "development" ? validator.requireEnv("API_GATEWAY_URL_DEV") : validator.requireEnv("API_GATEWAY_URL"),
+    mainBackendServiceUrl: appConfig.nodeEnv === "development" ? validator.requireEnv("MAIN_BACKEND_SERVICE_URL_DEV") : validator.requireEnv("MAIN_BACKEND_SERVICE_URL"),
+    realtimeServiceUrl: appConfig.nodeEnv === "development" ? validator.requireEnv("REALTIME_SERVICE_URL_DEV") : validator.requireEnv("REALTIME_SERVICE_URL"),
+    notificationServiceUrl: appConfig.nodeEnv === "development" ? validator.requireEnv("NOTIFICATION_SERVICE_URL_DEV") : validator.requireEnv("NOTIFICATION_SERVICE_URL"),
+    paymentServiceUrl: appConfig.nodeEnv === "development" ? validator.requireEnv("PAYMENT_SERVICE_URL_DEV") : validator.requireEnv("PAYMENT_SERVICE_URL"),
 };
 
 export const jwtConfig = {
     jwtSecret: validator.requireEnv("JWT_SECRET"),
 };
 
-export const mailConfig = {
-    user: validator.requireEnv("OFFICIAL_EMAIL"),
+export const officialConfig = {
+    email: validator.requireEnv("OFFICIAL_EMAIL"),
     password: validator.requireEnv("OFFICIAL_EMAIL_PASS"),
 };
 
@@ -51,11 +57,6 @@ export const googleClientConfig = {
     googleCallbackUrl: validator.requireEnv("GOOGLE_CALLBACK_URL_DEV"),
 };
 
-export const appUrlConfig = {
-    backendUrl: validator.requireEnv("BACKEND_URL"),
-    frontendUrl: validator.requireEnv("FRONTEND_URL"),
-};
-
 export const aesConfig = {
     aesSalt: validator.requireEnv("AES_ENCRYPTION_SALT"),
     algorithm: validator.requireEnv("AES_ALGORITHM"),
@@ -66,11 +67,12 @@ export const aesConfig = {
 };
 
 export const stripeConfig = {
-    stripeSecretKey: validator.requireEnv("STRIPE_SECRET_KEY"),
+    stripeSecretKey: appConfig.nodeEnv === "development" ? validator.requireEnv("STRIPE_SECRET_KEY_DEV") : validator.requireEnv("STRIPE_SECRET_KEY"),
 };
 
 export const kafkaConfig = {
     clientId: validator.requireEnv("KAFKA_CLIENT_ID"),
+
     groups: {
         groupId: validator.requireEnv("KAFKA_GROUP_ID"),
     },

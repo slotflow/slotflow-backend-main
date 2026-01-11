@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 import { ProviderService } from "../../domain/entities/providerService.entity";
-import { IProviderService } from "../database/providerService/providerService.model";
+import { IProviderService } from "../database/providerService.model";
 
 export class ProviderServiceMapper {
 

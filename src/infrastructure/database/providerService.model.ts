@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
-import { ServiceType } from "../../../domain/enums/serviceType.enum";
-import { ServiceMode } from "../../../domain/enums/serviceMode.enum";
-import { serviceNameRegex, serviceExperienceRegex, serviceDescriptionRegex } from "../../../shared/zod/regex";
+import { ServiceType } from "../../domain/enums/serviceType.enum";
+import { ServiceMode } from "../../domain/enums/serviceMode.enum";
+import { serviceDescriptionRegex, serviceExperienceRegex, serviceNameRegex } from "../../shared/zod/regex";
 
 export interface IProviderService extends Document {
   _id: Types.ObjectId;

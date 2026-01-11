@@ -1,8 +1,8 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
-import { PaymentFor } from "../../../domain/enums/paymentFor.enum";
-import { PaymentStatus } from "../../../domain/enums/paymentStatus.enum";
-import { PaymentMethod } from "../../../domain/enums/paymentMethod.enum";
-import { PaymentGateway } from "../../../domain/enums/paymentGateway.enum";
+import { PaymentFor } from "../../domain/enums/paymentFor.enum";
+import { PaymentStatus } from "../../domain/enums/paymentStatus.enum";
+import { PaymentMethod } from "../../domain/enums/paymentMethod.enum";
+import { PaymentGateway } from "../../domain/enums/paymentGateway.enum";
 
 export interface IPayment extends Document {
     _id: Types.ObjectId;
@@ -17,15 +17,15 @@ export interface IPayment extends Document {
     createdAt: Date;
     updatedAt: Date;
 
-    userId?: Types.ObjectId;
-    providerId?: Types.ObjectId;
+    userId?: Types.ObjectId | null;
+    providerId?: Types.ObjectId | null;
 
-    refundId?: string;
-    refundAmount?: number;
-    refundStatus?: PaymentStatus;
-    refundAt?: Date;
-    refundReason?: string;
-    chargeId?: string;
+    refundId?: string | null;
+    refundAmount?: number | null;
+    refundStatus?: PaymentStatus | null;
+    refundAt?: Date | null;
+    refundReason?: string | null;
+    chargeId?: string | null;
 };
 
 const PaymentSchema = new Schema<IPayment>({

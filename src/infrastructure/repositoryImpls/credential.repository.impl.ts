@@ -1,7 +1,7 @@
-import { CredentialModel } from "./credential.model";
-import { CredentialMapper } from "../../mappers/credential.mapper";
-import { Credential } from "../../../domain/entities/credential.entity";
-import { ICredentialRepository } from "../../../domain/interfaces/repositories/ICredentialRepository";
+import { CredentialMapper } from "../mappers/credential.mapper";
+import { Credential } from "../../domain/entities/credential.entity";
+import { CredentialModel } from "../database/credential.model";
+import { ICredentialRepository } from "../../domain/interfaces/repositories/ICredentialRepository";
 
 export class CredentialRepositoryImpl implements ICredentialRepository {
 
@@ -12,7 +12,7 @@ export class CredentialRepositoryImpl implements ICredentialRepository {
     };
 
     async findByUserId(userId: string): Promise<Credential | null> {
-        const doc = await CredentialModel.findOne({userId});
+        const doc = await CredentialModel.findOne({ userId });
         return doc ? CredentialMapper.toDomain(doc) : null;
     };
 

@@ -1,8 +1,8 @@
-import { BookingModel } from "./booking.model";
-import { BookingMapper } from "../../mappers/booking.mapper";
-import { Booking } from "../../../domain/entities/booking.entity";
-import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
-import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
+import { BookingMapper } from "../mappers/booking.mapper";
+import { Booking } from "../../domain/entities/booking.entity";
+import { BookingModel } from "../database/booking.model";
+import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
+import { IBookingRepository } from "../../domain/interfaces/repositories/IBooking.repository";
 
 export class BookingRepositoryImpl implements IBookingRepository {
 

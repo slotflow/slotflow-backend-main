@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
+import { ISubscription } from "../database/subscription.model";
 import { Subscription } from "../../domain/entities/subscription.entity";
-import { ISubscription } from "../database/subscription/subscription.model";
 
 export class SubscriptionMapper {
 

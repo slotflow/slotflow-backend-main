@@ -1,6 +1,5 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
-import { subscriptionStatusArray } from "../../../shared/utils/constants";
-import { SubscriptionStatus } from "../../../domain/enums/subscriptionStatus.enum";
+import { SubscriptionStatus } from "../../domain/enums/subscriptionStatus.enum";
 
 export interface ISubscription extends Document {
     _id: Types.ObjectId,

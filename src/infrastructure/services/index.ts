@@ -3,11 +3,10 @@
 import { s3Client } from "../lib/aws_s3";
 import { redisClient } from "../lib/redis";
 import { OTPServiceImpl } from "./otpService.impl";
-import { credentialRepository } from "../database";
+import { credentialRepository } from "../repositoryImpls";
 import { SignedUrlServiceImpl } from "./signedUrlService.impl";
 import { GoogleTokenServiceImpl } from "./googleTokenService.impl";
 import { AesEncryptionServiceImpl } from "./aesEncryptionService.impl";
-import { GooglePassportStrategyImpl } from "../passport/google.strategy";
 import { GoogleRefreshTokenServiceImpl } from "./googleRefreshTokenService.impl";
 import { IOTPService } from "../../domain/interfaces/services/IOtpService.service";
 import { GoogleCalendarGatewayServiceImpl } from "./googleCalendarGatewayService.impl";
@@ -25,9 +24,6 @@ export const otpService: IOTPService = new OTPServiceImpl();
 
 // aesEncryption service instance
 export const aesEncryptionService: IAesEncryptionService = new AesEncryptionServiceImpl();
-
-// passport google stratergy instance
-export const googlePassportStrategy = new GooglePassportStrategyImpl();
 
 // google calendar service instance
 export const googleCalendarGatewayService: IGoogleCalendarGatewayService = new GoogleCalendarGatewayServiceImpl();

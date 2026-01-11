@@ -1,4 +1,4 @@
-import { ProviderModel } from "../database/provider/provider.model";
+import { ProviderModel } from "../database/provider.model";
 import { IProviderQueries } from "../../application/queries/IProvider.queries";
 import { AdminFetchDashboardProviderStatsDataResponse } from "../../application/dtos/admin.dto";
 

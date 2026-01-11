@@ -1,6 +1,6 @@
 // passport stratergy instance
 
-import { PassportStrategyImpl } from "./google.strategy";
-import { IPassportStrategy } from "../../domain/interfaces/passport/IPassportStratergy";
+import { GooglePassportStrategyImpl } from "./google.strategy";
+import { IGooglePassportStrategy } from "../../domain/interfaces/passport/IGooglePassportStratergy";
 
-export const passportStrategy: IPassportStrategy = new PassportStrategyImpl();
+export const googlePassportStrategy: IGooglePassportStrategy = new GooglePassportStrategyImpl();

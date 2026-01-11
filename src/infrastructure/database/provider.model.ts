@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
-import { AdminVerificationStatus } from '../../../domain/enums/adminVerificationStatus.enum';
+import { AdminVerificationStatus } from '../../domain/enums/adminVerificationStatus.enum';
 
 export interface IProvider extends Document {
   _id: Types.ObjectId;

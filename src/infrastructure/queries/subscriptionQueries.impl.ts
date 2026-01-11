@@ -1,4 +1,4 @@
-import { SubscriptionModel } from "../database/subscription/subscription.model";
+import { SubscriptionModel } from "../database/subscription.model";
 import { SubscriptionStatus } from "../../domain/enums/subscriptionStatus.enum";
 import { ISubscriptionQueries } from "../../application/queries/ISubscription.queries";
 import { AdminFetchAllSubscriptionsResponse, AdminFetchDashboardSubscriptionStatsDataResponse } from "../../application/dtos/admin.dto";

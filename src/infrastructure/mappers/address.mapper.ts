@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { IAddress } from "../database/address/address.model";
+import { IAddress } from "../database/address.model";
 import { Address } from "../../domain/entities/address.entity";
 
 export class AddressMapper {

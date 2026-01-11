@@ -3,7 +3,7 @@ import { log } from "../../shared/logger/logger";
 import { googleAuthOrchestratorUseCase } from ".";
 import { Role } from "../../domain/enums/role.enum";
 import { NextFunction, Request, Response } from "express";
-import { appConfig, appUrlConfig } from "../../config/env";
+import { appConfig, serviceConfig } from "../../config/env";
 import { GoogleAuthOrchestratorUseCase } from "../../application/useCases/auth/googleAuthOrchestrate.useCase";
 
 class GoogleAuthController {
@@ -51,9 +51,9 @@ class GoogleAuthController {
                         };
 
                         const redirectData = encodeURIComponent(JSON.stringify(errorPayload));
-                        return res.redirect(`${appUrlConfig.frontendUrl}/${info.role === Role.Provider ? "provider" : "user"}/integrations?response=${redirectData}`);
+                        return res.redirect(`${serviceConfig.frontendUrl}/${info.role === Role.Provider ? "provider" : "user"}/integrations?response=${redirectData}`);
                     } else {
-                        return res.redirect(`${appUrlConfig.frontendUrl}/login?error=google_auth_failed`);
+                        return res.redirect(`${serviceConfig.frontendUrl}/login?error=google_auth_failed`);
                     }
                 }
 
@@ -79,7 +79,7 @@ class GoogleAuthController {
                         googleConnected: true,
                     };
                     const redirectData = encodeURIComponent(JSON.stringify(successPayload));
-                    return res.redirect(`${appUrlConfig.frontendUrl}/${role === Role.Provider ? "provider" : "user"}/integrations?response=${redirectData}`);
+                    return res.redirect(`${serviceConfig.frontendUrl}/${role === Role.Provider ? "provider" : "user"}/integrations?response=${redirectData}`);
                 };
 
                 res.cookie("token", token, {
@@ -100,7 +100,7 @@ class GoogleAuthController {
                 };
 
                 const authUserWithoutTokenJson = JSON.stringify(authUserWithoutToken);
-                const frontendUrl = appUrlConfig.frontendUrl;
+                const frontendUrl = serviceConfig.frontendUrl;
                 return res.redirect(`${frontendUrl}?authUser=${encodeURIComponent(authUserWithoutTokenJson)}`);
             })(req, res);
         } catch (error) {

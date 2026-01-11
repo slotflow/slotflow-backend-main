@@ -2,13 +2,7 @@ import { log } from "../../shared/logger/logger";
 import { Role } from "../../domain/enums/role.enum";
 import { NextFunction, Request, Response } from "express";
 import { DecodedUser } from "../../application/dtos/common.dto";
-import { IUserRepository } from "../../domain/interfaces/repositories/IUser.repository";
-import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
-import { IProviderRepository } from "../../domain/interfaces/repositories/IProvider.repository";
-import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
-
-const userRepository: IUserRepository = new UserRepositoryImpl();
-const providerRepository: IProviderRepository = new ProviderRepositoryImpl();
+import { providerRepository, userRepository } from "../../infrastructure/repositoryImpls";
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
 
