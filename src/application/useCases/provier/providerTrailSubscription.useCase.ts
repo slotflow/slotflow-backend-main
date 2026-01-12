@@ -1,11 +1,14 @@
-import dayjs from "dayjs";
+import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { ProviderTrialSubscriptionRequest } from "../../dtos/provider.dto";
+import { SendProviderTrialSubscriptionEvent } from "../../dtos/kafka.dtos";
 import { Subscription } from "../../../domain/entities/subscription.entity";
 import { SubscriptionStatus } from "../../../domain/enums/subscriptionStatus.enum";
-// import { SubscriptionValidity } from "../../../domain/enums/subscriptionValidity.enum";
+import { SubscriptionValidity } from "../../../domain/enums/subscriptionValidity.enum";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
+import { IKafkaProducerAdapter } from "../../../domain/interfaces/message/IKafkaProducerAdapter";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
+import { getDateAfterDays, getUtcDateRange, isSubscriptionExpired } from "../../../shared/utils/dateTime";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
 
 export class ProviderTrialSubscriptionUseCase {
@@ -13,6 +16,7 @@ export class ProviderTrialSubscriptionUseCase {
         private providerRepository: IProviderRepository,
         private subscriptionRepository: ISubscriptionRepository,
         private planRepository: IPlanRepository,
+        private kafkaProducer: IKafkaProducerAdapter
     ) { };
 
     async execute(payload: ProviderTrialSubscriptionRequest): Promise<void> {
@@ -26,8 +30,10 @@ export class ProviderTrialSubscriptionUseCase {
             if (providerSubscriptions.length > 0) {
                 const providerLastSubscriptionId = providerSubscriptions.pop();
                 const subscription = await this.subscriptionRepository.findById(providerLastSubscriptionId!);
-                const isSubscriptionExpired = dayjs().isAfter(dayjs(subscription?.endDate), "day");
-                if (!isSubscriptionExpired) throw new Error("Your current subscription is on live.");
+                if(subscription) {
+                    const isExpired = isSubscriptionExpired(subscription.endDate);
+                    if (!isExpired) throw new Error("Your current subscription is on live.");
+                }
             };
             
             const trialPlan = await this.planRepository.findByNameOrPrice("TRIAL", 0);
@@ -41,7 +47,7 @@ export class ProviderTrialSubscriptionUseCase {
                 providerId,
                 subscriptionPlanId: trialPlanId,
                 startDate: new Date(),
-                endDate: dayjs().add(Number(7), "day").toDate(),
+                endDate: getDateAfterDays(SubscriptionValidity.SevenDays),
                 subscriptionStatus: SubscriptionStatus.Active,
             });
 
@@ -52,8 +58,14 @@ export class ProviderTrialSubscriptionUseCase {
             const updatedProvider = await this.providerRepository.update(provider);
             if (!updatedProvider) throw new Error("Trail plan activating error.");
 
-            const startDate = new Date();
-            // const endDate = dayjs(startDate).add(SubscriptionValidity.SevenDays, "day");
+            const { startDate, endDate } = getUtcDateRange(subscription.startDate, subscription.endDate);
+
+            await this.kafkaProducer.publish<SendProviderTrialSubscriptionEvent>(kafkaConfig.topics.pub.providerTrialSubscription, {
+                email: provider.email,
+                name: provider.username,
+                startDate,
+                endDate,
+            });
 
         } catch (error) {
             log.error("ProviderTrialSubscriptionUseCase failed", error as Error);

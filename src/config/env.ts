@@ -11,7 +11,7 @@ export const appConfig = {
 };
 
 export const mongodbConfig = {
-    mongoURL: appConfig.nodeEnv === "development" ? validator.requireEnv("MONGO_URI_DEV") : validator.requireEnv("MONGO_URI"),
+    mongoUri: appConfig.nodeEnv === "development" ? validator.requireEnv("MONGO_URI_DEV") : validator.requireEnv("MONGO_URI"),
 };
 
 export const serviceConfig = {
@@ -84,35 +84,23 @@ export const kafkaConfig = {
     ],
 
     topics: {
-        sub: {
-            // PS -> MBS
-            providerSubscriptionPaymentSuccess: validator.requireEnv("KAFKA_PROVIDER_SUBSCRIPTION_PAYMENT_SUCCESS"),
-            providerSubscriptionPaymentFailed: validator.requireEnv("KAFKA_PROVIDER_SUBSCRIPTION_PAYMENT_FAILED"),
-            userBookingPaymentSuccess: validator.requireEnv("KAFKA_USER_BOOKING_PAYMENT_SUCCESS"),
-            userBookingPaymentFailed: validator.requireEnv("KAFKA_USER_BOOKING_PAYMENT_FAILED"),
-            providerPayoutSuccess: validator.requireEnv("KAFKA_PROVIDER_PAYOUT_SUCCESS"),
-            providerPayoutFailed: validator.requireEnv("KAFKA_PROVIDER_PAYOUT_FAILED"),
-
-            // NS -> MBS
-            googleCalendarEventsCreated: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_EVENTS_CREATED"),
-            userCancelBookingFailed: validator.requireEnv("KAFKA_USER_CANCEL_BOOKING_FAILED"),
-        },
-        pub: {
+         pub: {
             // MBS -> NS
             sendOtp: validator.requireEnv("KAFKA_SEND_OTP"),
             registerSuccess: validator.requireEnv("KAFKA_REGISTER_SUCCESS"),
+            passwordReset: validator.requireEnv("KAFKA_PASSWORD_RESET"),
             adminProviderReview: validator.requireEnv("KAFKA_ADMIN_PROVIDER_REVIEW"),
             accountBlockStatus: validator.requireEnv("KAFKA_ACCOUNT_BLOCK_STATUS"),
             accountTrustStatus: validator.requireEnv("KAFKA_ACCOUNT_TRUST_STATUS"),
             providerAppointmentStatus: validator.requireEnv("KAFKA_PROVIDER_APPOINTMENT_STATUS"),
             appConnect: validator.requireEnv("KAFKA_APP_CONNECT"),
             providerTrialSubscription: validator.requireEnv("KAFKA_PROVIDER_TRIAL_SUBSCRIPTION"),
+           
+        },
+        sub: {
+            
 
-            // MBS -> PS
-            providerSubscriptionPayment: validator.requireEnv("KAFKA_PROVIDER_SUBSCRIPTION_PAYMENT"),
-            userBookingPayment: validator.requireEnv("KAFKA_USER_BOOKING_PAYMENT"),
-            providerPayout: validator.requireEnv("KAFKA_PROVIDER_PAYOUT"),
-            userCancelBooking: validator.requireEnv("KAFKA_USER_CANCEL_BOOKING"),
-        }
+           
+        },
     },
 };

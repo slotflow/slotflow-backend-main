@@ -1,7 +1,7 @@
-import { ReviewModel } from "./review.model";
-import { ReviewMapper } from "../../mappers/review.mapper";
-import { Review } from "../../../domain/entities/review.entity";
-import { IReviewRepository } from "../../../domain/interfaces/repositories/IReview.repository";
+import { ReviewModel } from "../database/review.model";
+import { ReviewMapper } from "../mappers/review.mapper";
+import { Review } from "../../domain/entities/review.entity";
+import { IReviewRepository } from "../../domain/interfaces/repositories/IReview.repository";
 
 export class ReviewRepositoryImpl implements IReviewRepository {
 

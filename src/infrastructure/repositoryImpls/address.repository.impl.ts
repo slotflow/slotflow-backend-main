@@ -1,6 +1,6 @@
+import { AddressModel } from "../database/address.model";
 import { AddressMapper } from "../mappers/address.mapper";
 import { Address } from "../../domain/entities/address.entity";
-import { AddressModel } from "../database/address.model";
 import { IAddressRepository } from "../../domain/interfaces/repositories/IAddress.repository";
 
 export class AddressRepositoryImpl implements IAddressRepository {

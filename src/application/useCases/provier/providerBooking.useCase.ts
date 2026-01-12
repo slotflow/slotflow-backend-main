@@ -1,19 +1,19 @@
 import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
-import { formatToISTDateTime } from "../../../shared/utils/dateTime.ts";
+import { formatUtcDateTime } from "../../../shared/utils/dateTime";
+import { SendAppointmentStatusChangeEvent } from "../../dtos/kafka.dtos";
 import { ProviderChangeBookingAppoinmentStatusRequest } from "../../dtos/provider.dto";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-// import { IKafkaClientAdapter } from "../../../domain/interfaces/message/IKafkaClientAdapter";
+import { IGoogleTokenService } from "../../../domain/interfaces/services/IGoogleToken.service";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
-import { IGoogleTokenService } from "../../../domain/interfaces/services/IGoogleToken.service.ts";
-import { SendAppointmentStatusChangeEvent, UpdateGoogleCalendarEvent } from "../../dtos/common.dto";
+import { IKafkaProducerAdapter } from "../../../domain/interfaces/message/IKafkaProducerAdapter";
 
 export class ProviderChangeBookingAppointmentStatusUseCase {
     constructor(
         private bookingRepository: IBookingRepository,
         private userRepository: IUserRepository,
         private googleTokenService: IGoogleTokenService,
-        // private kafkaClientAdapter: IKafkaClientAdapter,
+        private kafkaProducer: IKafkaProducerAdapter
     ) { };
 
     async execute(payload: ProviderChangeBookingAppoinmentStatusRequest): Promise<void> {
@@ -33,24 +33,20 @@ export class ProviderChangeBookingAppointmentStatusUseCase {
 
             await this.bookingRepository.update(booking);
             
-            const { date, time } = formatToISTDateTime(booking.appointmentDate);
+            const { date, time } = formatUtcDateTime(booking.appointmentDate);
 
-            // await this.kafkaClientAdapter.publish<UpdateGoogleCalendarEvent>(kafkaConfig.topics.pub.googleCalendarUpdateRequest, {
-            //     accessToken: accessToken,
-            //     appointmentDate: date,
-            //     appointmentStatus: booking.appointmentStatus,
-            //     bookingId: booking._id,
-            //     eventId: booking.googleEventId
-            // });
-
-            // await this.kafkaClientAdapter.publish<SendAppointmentStatusChangeEvent>(kafkaConfig.topics.pub.appointmentStatus, {
-            //     appointmentDate: date,
-            //     appointmentMode: booking.appointmentMode,
-            //     appointmentStatus: booking.appointmentStatus,
-            //     appointmentTime: time,
-            //     email: user.email,
-            //     name: user.username
-            // });
+            await this.kafkaProducer.publish<SendAppointmentStatusChangeEvent>(kafkaConfig.topics.pub.providerAppointmentStatus, {
+                appointmentDate: date,
+                appointmentMode: booking.appointmentMode,
+                appointmentStatus: booking.appointmentStatus,
+                appointmentTime: time,
+                email: user.email,
+                name: user.username,
+                userId: user._id,
+                providerId: booking.providerId,
+                providerAccessToken: "",
+                userAccessToken: "",
+            });
 
         } catch (error) {
             log.error("ProviderChangeBookingAppointmentStatus failed", error as Error);

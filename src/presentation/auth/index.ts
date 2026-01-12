@@ -1,3 +1,4 @@
+import { kafkaProducer } from "../../infrastructure/messaging";
 import { jwtService, passwordHasher } from "../../infrastructure/security";
 import { LoginUseCase } from "../../application/useCases/auth/login.useCase";
 import { RegisterUseCase } from "../../application/useCases/auth/register.useCase";
@@ -9,11 +10,11 @@ import { GoogleAuthOrchestratorUseCase } from "../../application/useCases/auth/g
 import { credentialRepository, planRepository, providerRepository, subscriptionRepository, userRepository } from "../../infrastructure/repositoryImpls";
 
 // auth controller dependency injection
-export const updatePasswordUseCase = new UpdatePasswordUseCase(userRepository, providerRepository, passwordHasher);
-export const registerUseCase = new RegisterUseCase(userRepository, providerRepository, otpService, jwtService, passwordHasher);
-export const resendOtpUseCase = new ResendOtpUseCase(userRepository, providerRepository, otpService);
-export const verifyOTPUseCase = new VerifyOTPUseCase(userRepository, providerRepository, otpService);
+export const resendOtpUseCase = new ResendOtpUseCase(userRepository, providerRepository, otpService, kafkaProducer);
+export const verifyOTPUseCase = new VerifyOTPUseCase(userRepository, providerRepository, otpService, kafkaProducer);
+export const updatePasswordUseCase = new UpdatePasswordUseCase(userRepository, providerRepository, passwordHasher, kafkaProducer);
+export const registerUseCase = new RegisterUseCase(userRepository, providerRepository, otpService, jwtService, passwordHasher, kafkaProducer);
 export const loginUseCase = new LoginUseCase(userRepository, providerRepository, planRepository, subscriptionRepository, signedUrlService, jwtService, passwordHasher);
 
 // google auth controller dependency injection
-export const googleAuthOrchestratorUseCase = new GoogleAuthOrchestratorUseCase(userRepository, providerRepository, credentialRepository, aesEncryptionService, subscriptionRepository, planRepository, jwtService);
+export const googleAuthOrchestratorUseCase = new GoogleAuthOrchestratorUseCase(userRepository, providerRepository, credentialRepository, aesEncryptionService, subscriptionRepository, planRepository, jwtService, kafkaProducer);

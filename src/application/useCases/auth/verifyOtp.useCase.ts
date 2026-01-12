@@ -1,13 +1,13 @@
 import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/role.enum";
-import { SendWelcomeEvent } from "../../dtos/common.dto";
+import { SendWelcomeEvent } from "../../dtos/kafka.dtos";
 import { User } from "../../../domain/entities/user.entity";
 import { Provider } from "../../../domain/entities/provider.entity";
 import { IOTPService } from "../../../domain/interfaces/services/IOtpService.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { OTPVerificationRequest, VerifyAndActivateEntityRequest } from "../../dtos/auth.dto";
-import { IKafkaClientAdapter } from "../../../domain/interfaces/message/IKafkaClientAdapter";
+import { IKafkaProducerAdapter } from "../../../domain/interfaces/message/IKafkaProducerAdapter";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 
 export class VerifyOTPUseCase {
@@ -15,7 +15,7 @@ export class VerifyOTPUseCase {
     private readonly userRepository: IUserRepository,
     private readonly providerRepository: IProviderRepository,
     private readonly otpService: IOTPService,
-    private readonly kafkaClientAdapter: IKafkaClientAdapter
+    private readonly kafkaProducer: IKafkaProducerAdapter
   ) {};
 
   async execute(payload: OTPVerificationRequest): Promise<void> {
@@ -40,7 +40,7 @@ export class VerifyOTPUseCase {
         verificationToken
       });
 
-      await this.kafkaClientAdapter.publish<SendWelcomeEvent>(kafkaConfig.topics.pub.registerSuccess, {
+      await this.kafkaProducer.publish<SendWelcomeEvent>(kafkaConfig.topics.pub.registerSuccess, {
         email: entity.email,
         name: entity.username,
         role

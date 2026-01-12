@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from '../../../config/env';
 import { log } from '../../../shared/logger/logger';
-import { SendOtpEvent } from '../../dtos/common.dto';
+import { SendOtpEvent } from '../../dtos/kafka.dtos';
 import { Role } from '../../../domain/enums/role.enum';
 import { User } from '../../../domain/entities/user.entity';
 import { IJWT } from '../../../domain/interfaces/security/IJwt';
@@ -11,7 +11,7 @@ import { RegisterRequest, RegisterResponse } from '../../dtos/auth.dto';
 import { IOTPService } from '../../../domain/interfaces/services/IOtpService.service';
 import { IPasswordHasher } from '../../../domain/interfaces/security/IPasswordHasher';
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
-// import { IKafkaClientAdapter } from '../../../domain/interfaces/message/IKafkaClientAdapter';
+import { IKafkaProducerAdapter } from '../../../domain/interfaces/message/IKafkaProducerAdapter';
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
 
 // CAN OPTIMISE ( REDUCE SAME TYPE OF CODE )
@@ -24,7 +24,7 @@ export class RegisterUseCase {
     private otpService: IOTPService,
     private jwtService: IJWT,
     private passwordHasher: IPasswordHasher,
-    // private kafkaClientAdapter: IKafkaClientAdapter
+    private kafkaProducer: IKafkaProducerAdapter
   ) { };
 
   async execute(payload: RegisterRequest): Promise<RegisterResponse> {
@@ -59,12 +59,12 @@ export class RegisterUseCase {
 
         const token = await this.jwtService.generateToken({ email, role });
 
-        // await this.kafkaClientAdapter.publish<SendOtpEvent>(kafkaConfig.topics.pub.sendOtp, {
-        //   email,
-        //   name: username,
-        //   otp,
-        //   purpose: OtpPurpose.REGISTRATION
-        // });
+        await this.kafkaProducer.publish<SendOtpEvent>(kafkaConfig.topics.pub.sendOtp, {
+          email,
+          name: username,
+          otp,
+          purpose: OtpPurpose.REGISTRATION
+        });
 
         return {
           authUser: {
@@ -101,12 +101,12 @@ export class RegisterUseCase {
 
         const token = await this.jwtService.generateToken({ email, role });
 
-        // await this.kafkaClientAdapter.publish<SendOtpEvent>(kafkaConfig.topics.pub.sendOtp, {
-        //   email,
-        //   name: username,
-        //   otp,
-        //   purpose: OtpPurpose.REGISTRATION
-        // });
+        await this.kafkaProducer.publish<SendOtpEvent>(kafkaConfig.topics.pub.sendOtp, {
+          email,
+          name: username,
+          otp,
+          purpose: OtpPurpose.REGISTRATION
+        });
 
         return {
           authUser: {

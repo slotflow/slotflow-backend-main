@@ -36,6 +36,10 @@ export class Subscription {
         return this.props.endDate;
     };
 
+    get startDate(): Date {
+        return this.props.startDate;
+    };
+
     get subscriptionPlanId(): string {
         return this.props.subscriptionPlanId;
     }

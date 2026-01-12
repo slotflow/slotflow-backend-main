@@ -185,7 +185,7 @@ export interface ProviderFetchDashboardPaymentStatsDataResponse {
     todaysEarnings: number;
     totalPayoutsMade: number;
     pendingPayout: number;
-}
+};
 
 
 // ************ used in providerDashboard.use-case  ************ \\

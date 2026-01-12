@@ -8,7 +8,7 @@ import { FetchBookingAppointmentsUseCase } from "../../application/useCases/comm
 import { CreateReviewUseCase, DeleteReviewUseCase } from "../../application/useCases/user/userReview.useCase";
 import { googleCalendarGatewayService, googleTokenService, signedUrlService } from "../../infrastructure/services";
 import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/common/updateBookingOnlineTracking.useCase";
-import { bookingQueries, providerServiceQueries, reviewQueries, serviceAvailabilityQueries } from "../../infrastructure/queries";
+import { bookingQueries, providerServiceQueries, reviewQueries, serviceAvailabilityQueries } from "../../infrastructure/queriesImpls";
 import { UserCreateAddressUseCase, UserFetchAddressUseCase, UserUpdateAddressUseCase } from "../../application/useCases/user/userAddress.useCase";
 import { UserAppointmentBookingViaStripeUseCase, UserSaveBookingAfterStripePaymentUseCase } from "../../application/useCases/user/userStripeBooking.useCase";
 import { UserFetchProfileDetailsUseCase, UserUpdateProfileImageUseCase, UserUpdateProviderInfoUseCase } from "../../application/useCases/user/userProfile.useCase";

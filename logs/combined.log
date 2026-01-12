@@ -5928,3 +5928,59 @@
 [2026-01-08 01:51:05] [[32minfo[39m]: [32mKafka Producer connected[39m
 [2026-01-08 01:51:05] [[32minfo[39m]: [32mKafka Consumer connected (group: notification-group)[39m
 [2026-01-08 19:05:59] [[32minfo[39m]: [32mKafka Producer Connected[39m
+[2026-01-12 19:35:18] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-01-12 19:35:18] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-01-12 19:35:18] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-01-12 19:35:29] [[31merror[39m]: [31mStartup failed[39m
+[31mConnection error: [39m
+[31mKafkaJSNonRetriableError[39m
+[31m  Caused by: KafkaJSConnectionError: Connection error: [39m
+[31m    at Socket.onError (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\node_modules\kafkajs\src\network\connection.js:210:23)[39m
+[31m    at Socket.emit (node:events:519:28)[39m
+[31m    at emitErrorNT (node:internal/streams/destroy:170:8)[39m
+[31m    at emitErrorCloseNT (node:internal/streams/destroy:129:3)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)[39m
+[2026-01-12 19:38:41] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-01-12 19:38:41] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-01-12 19:38:41] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-01-12 19:38:41] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-01-12 19:38:41] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-01-12 19:38:41] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-01-12 19:55:35] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-01-12 19:55:35] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-01-12 19:55:35] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-01-12 19:55:35] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-01-12 19:55:35] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-01-12 19:55:35] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-01-12 19:57:43] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-01-12 19:57:43] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-01-12 19:57:43] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-01-12 19:57:43] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-01-12 19:57:43] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-01-12 19:57:43] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-01-12 20:00:32] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-01-12 20:00:32] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-01-12 20:00:32] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-01-12 20:00:33] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-01-12 20:00:33] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-01-12 20:00:33] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-01-12 20:01:05] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-01-12 20:01:05] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-01-12 20:01:05] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-01-12 20:01:05] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-01-12 20:01:05] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-01-12 20:01:05] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-01-12 20:03:28] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-01-12 20:03:28] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-01-12 20:03:28] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-01-12 20:03:28] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-01-12 20:03:28] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-01-12 20:03:28] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-01-12 21:03:28] [[32minfo[39m]: [32m[CRON] Running UpdateBookingStatusCron[39m
+[2026-01-12 21:03:28] [[32minfo[39m]: [32m[CRON] Running UpdateSubscriptionStatusCron[39m
+[2026-01-12 21:03:28] [[32minfo[39m]: [32m[CRON] No updates performed. Will retry later[39m
+[2026-01-12 21:03:28] [[32minfo[39m]: [32m[CRON] No subscription updates. Will retry later.[39m
+[2026-01-12 22:03:28] [[32minfo[39m]: [32m[CRON] Running UpdateBookingStatusCron[39m
+[2026-01-12 22:03:28] [[32minfo[39m]: [32m[CRON] No updates performed. Will retry later[39m
+[2026-01-12 22:03:28] [[32minfo[39m]: [32m[CRON] Running UpdateSubscriptionStatusCron[39m
+[2026-01-12 22:03:28] [[32minfo[39m]: [32m[CRON] No subscription updates. Will retry later.[39m

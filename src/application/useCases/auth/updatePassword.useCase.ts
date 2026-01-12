@@ -1,15 +1,19 @@
+import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/role.enum";
+import { SendEmailCommon } from "../../dtos/kafka.dtos";
 import { UpdatePasswordRequest } from "../../dtos/auth.dto";
-import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { IPasswordHasher } from "../../../domain/interfaces/security/IPasswordHasher";
+import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
+import { IKafkaProducerAdapter } from "../../../domain/interfaces/message/IKafkaProducerAdapter";
+import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 
 export class UpdatePasswordUseCase {
     constructor(
         private userRepository: IUserRepository,
         private providerRepository: IProviderRepository,
-        private passwordHasher: IPasswordHasher
+        private passwordHasher: IPasswordHasher,
+        private kafkaProducer: IKafkaProducerAdapter
     ) { };
 
     async execute(payload: UpdatePasswordRequest): Promise<void> {
@@ -27,15 +31,23 @@ export class UpdatePasswordUseCase {
                 user.changePassword({ password: hashedPassword });
                 await this.userRepository.update(user);
 
+                await this.kafkaProducer.publish<SendEmailCommon>(kafkaConfig.topics.pub.passwordReset, {
+                    email: user.email,
+                    name: user.username
+                });
+
             } else if (role === Role.Provider) {
                 const provider = await this.providerRepository.findByVerificationToken(verificationToken);
                 if (!provider) throw new Error("User not found.");
 
                 provider.changePassword({ password: hashedPassword });
                 await this.providerRepository.update(provider);
-            };
 
-            // TODO send email
+                await this.kafkaProducer.publish<SendEmailCommon>(kafkaConfig.topics.pub.passwordReset, {
+                    email: provider.email,
+                    name: provider.username
+                });
+            };
 
         } catch (error) {
             log.error("UpdatePasswordUseCase failed : ", error as Error);

@@ -1,6 +1,6 @@
+import { CredentialModel } from "../database/credential.model";
 import { CredentialMapper } from "../mappers/credential.mapper";
 import { Credential } from "../../domain/entities/credential.entity";
-import { CredentialModel } from "../database/credential.model";
 import { ICredentialRepository } from "../../domain/interfaces/repositories/ICredentialRepository";
 
 export class CredentialRepositoryImpl implements ICredentialRepository {

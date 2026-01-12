@@ -1,7 +1,7 @@
-import { SubscriptionModel } from "./subscription.model";
-import { SubscriptionMapper } from "../../mappers/subscription.mapper";
-import { Subscription } from "../../../domain/entities/subscription.entity";
-import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
+import { SubscriptionModel } from "../database/subscription.model";
+import { SubscriptionMapper } from "../mappers/subscription.mapper";
+import { Subscription } from "../../domain/entities/subscription.entity";
+import { ISubscriptionRepository } from "../../domain/interfaces/repositories/ISubscription.repository";
 
 export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
 

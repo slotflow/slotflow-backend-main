@@ -1,7 +1,7 @@
-import { UserModel } from "./user.model";
-import { UserMapper } from "../../mappers/user.mapper";
-import { User } from "../../../domain/entities/user.entity";
-import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
+import { UserModel } from "../database/user.model";
+import { UserMapper } from "../mappers/user.mapper";
+import { User } from "../../domain/entities/user.entity";
+import { IUserRepository } from "../../domain/interfaces/repositories/IUser.repository";
 
 export class UserRepositoryImpl implements IUserRepository {
 

@@ -1,22 +1,22 @@
+import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/role.enum";
 import { User } from "../../../domain/entities/user.entity";
 import { PlanName } from "../../../domain/enums/planName.enum";
 import { IJWT } from "../../../domain/interfaces/security/IJwt";
+import { AppConnect } from "../../../domain/enums/appConnect.enum";
 import { Provider } from "../../../domain/entities/provider.entity";
 import { Credential } from "../../../domain/entities/credential.entity";
+import { SendAppConnectEvent, SendWelcomeEvent } from "../../dtos/kafka.dtos";
 import { SubscriptionStatus } from "../../../domain/enums/subscriptionStatus.enum";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
+import { IKafkaProducerAdapter } from "../../../domain/interfaces/message/IKafkaProducerAdapter";
 import { IAesEncryptionService } from "../../../domain/interfaces/services/IAesEncryption.service";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { GoogleAuthOrchestrationRequest, GoogleAuthOrchestrationResponse } from "../../dtos/auth.dto";
 import { ICredentialRepository } from "../../../domain/interfaces/repositories/ICredentialRepository";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
-// import { IKafkaClientAdapter } from "../../../domain/interfaces/message/IKafkaClientAdapter";
-// import { kafkaConfig } from "../../../config/env";
-// import { SendAppConnectEvent, SendWelcomeEvent } from "../../dtos/common.dto";
-// import { AppConnect } from "../../../domain/enums/appConnect.enum";
 
 export class GoogleAuthOrchestratorUseCase {
     constructor(
@@ -27,7 +27,7 @@ export class GoogleAuthOrchestratorUseCase {
         private subscriptionRepository: ISubscriptionRepository,
         private planRepository: IPlanRepository,
         private jwtService: IJWT,
-        // private kafkaClientAdapter: IKafkaClientAdapter
+        private kafkaProducer: IKafkaProducerAdapter
     ) { };
 
     async execute(payload: GoogleAuthOrchestrationRequest): Promise<GoogleAuthOrchestrationResponse> {
@@ -171,21 +171,23 @@ export class GoogleAuthOrchestratorUseCase {
 
             if (!entity) throw new Error("Invalid request");
 
-            // CONFUSION 
 
-            // if (connectOnly) {
-            //     await this.kafkaClientAdapter.publish<SendAppConnectEvent>(kafkaConfig.topics.pub.appConnect, {
-            //         email: entity.email,
-            //         name: entity.username,
-            //         appConnect: AppConnect.Google
-            //     });
-            // } else {
-            //     await this.kafkaClientAdapter.publish<SendWelcomeEvent>(kafkaConfig.topics.pub.registerSuccess, {
-            //         email: entity.email,
-            //         name: entity.username,
-            //         role
-            //     });
-            // };
+            if (!entity.googleConnected) {
+                if (connectOnly) {
+                    await this.kafkaProducer.publish<SendAppConnectEvent>(kafkaConfig.topics.pub.appConnect, {
+                        email: entity.email,
+                        name: entity.username,
+                        appConnect: AppConnect.Google,
+                        userOrProviderId: entity._id,
+                    });
+                } else {
+                    await this.kafkaProducer.publish<SendWelcomeEvent>(kafkaConfig.topics.pub.registerSuccess, {
+                        email: entity.email,
+                        name: entity.username,
+                        role
+                    });
+                };
+            }
 
             return {
                 token,

@@ -7,12 +7,13 @@ import {
     AdminChangeProviderTrustTagRequest,
     AdminChangeProviderTrustTagResponse,
 } from "../../dtos/admin.dto";
-// import { kafkaConfig } from "../../../config/env";
+import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
-// import { IKafkaClientAdapter } from "../../../domain/interfaces/message/IKafkaClientAdapter";
-// import { AdminVerificationStatus } from "../../../domain/enums/adminVerificationStatus.enum";
+import { ApiPaginationRequest, TableData } from "../../dtos/common.dto";
+import { AdminVerificationStatus } from "../../../domain/enums/adminVerificationStatus.enum";
+import { IKafkaProducerAdapter } from "../../../domain/interfaces/message/IKafkaProducerAdapter";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-import { ApiPaginationRequest, SendAccountBlockStatusEvent, SendAccountTrustStatusEvent, SendAdminProviderReviewEvent, TableData } from "../../dtos/common.dto";
+import { SendAccountBlockStatusEvent, SendAccountTrustStatusEvent, SendAdminProviderReviewEvent } from "../../dtos/kafka.dtos";
 
 export class AdminProviderListUseCase {
     constructor(
@@ -50,7 +51,7 @@ export class AdminProviderListUseCase {
 export class AdminApproveProviderUseCase {
     constructor(
         private providerRepository: IProviderRepository,
-        // private kafkaClientAdapter: IKafkaClientAdapter
+        private kafkaProducer: IKafkaProducerAdapter
     ) { };
 
     async execute(payload: AdminApproveProviderRequest): Promise<void> {
@@ -65,11 +66,11 @@ export class AdminApproveProviderUseCase {
 
             await this.providerRepository.update(provider);
 
-            // await this.kafkaClientAdapter.publish<SendAdminProviderReviewEvent>(kafkaConfig.topics.pub.adminProviderReview, {
-            //     email: provider.email,
-            //     name: provider.username,
-            //     status: AdminVerificationStatus.APPROVED,
-            // });
+            await this.kafkaProducer.publish<SendAdminProviderReviewEvent>(kafkaConfig.topics.pub.adminProviderReview, {
+                email: provider.email,
+                name: provider.username,
+                status: AdminVerificationStatus.APPROVED,
+            });
 
         } catch (error) {
             log.error("AdminApproveProviderUseCase failed", error as Error);
@@ -82,7 +83,7 @@ export class AdminApproveProviderUseCase {
 export class AdminRejectProviderUseCase {
     constructor(
         private providerRepository: IProviderRepository,
-        // private kafkaClientAdapter: IKafkaClientAdapter
+        private kafkaProducer: IKafkaProducerAdapter
     ) { };
 
     async execute(payload: AdminRejectProviderRequest): Promise<void> {
@@ -102,12 +103,12 @@ export class AdminRejectProviderUseCase {
 
             await this.providerRepository.update(provider);
 
-            // await this.kafkaClientAdapter.publish<SendAdminProviderReviewEvent>(kafkaConfig.topics.pub.adminProviderReview, {
-            //     email: provider.email,
-            //     name: provider.username,
-            //     status: AdminVerificationStatus.REJECTED,
-            //     reason: provider.verificationRejectionReason ?? undefined
-            // });
+            await this.kafkaProducer.publish<SendAdminProviderReviewEvent>(kafkaConfig.topics.pub.adminProviderReview, {
+                email: provider.email,
+                name: provider.username,
+                status: AdminVerificationStatus.REJECTED,
+                reason: provider.verificationRejectionReason ?? undefined
+            });
 
         } catch (error) {
             log.error("AdminRejectProviderUseCase failed", error as Error);
@@ -120,12 +121,12 @@ export class AdminRejectProviderUseCase {
 export class AdminChangeProviderBlockStatusUseCase {
     constructor(
         private providerRepository: IProviderRepository,
-        // private kafkaClientAdapter: IKafkaClientAdapter
+        private kafkaProducer: IKafkaProducerAdapter
     ) { };
 
     async execute(payload: AdminChangeProviderStatusRequest): Promise<AdminChangeProviderStatusResponse> {
         try {
-            const { providerId, isBlocked } = payload; // TODO need to update input DTO
+            const { providerId, isBlocked } = payload;
 
             const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");
@@ -137,11 +138,12 @@ export class AdminChangeProviderBlockStatusUseCase {
             const updatedProvider = await this.providerRepository.update(provider);
             if (!updatedProvider) throw new Error("Provider not found");
 
-            // await this.kafkaClientAdapter.publish<SendAccountBlockStatusEvent>(kafkaConfig.topics.pub.accountBlockStatus, {
-            //     email: provider.email,
-            //     name: provider.username,
-            //     blocked: updatedProvider.isBlocked
-            // });
+            await this.kafkaProducer.publish<SendAccountBlockStatusEvent>(kafkaConfig.topics.pub.accountBlockStatus, {
+                email: provider.email,
+                name: provider.username,
+                blocked: updatedProvider.isBlocked,
+                userId: provider._id
+            });
 
             return { providerId, isBlocked: updatedProvider.isBlocked };
         } catch (error) {
@@ -155,7 +157,7 @@ export class AdminChangeProviderBlockStatusUseCase {
 export class AdminChangeProviderTrustTagUseCase {
     constructor(
         private providerRepository: IProviderRepository,
-        // private kafkaClientAdapter: IKafkaClientAdapter
+        private kafkaProducer: IKafkaProducerAdapter
     ) { };
 
     async execute(payload: AdminChangeProviderTrustTagRequest): Promise<AdminChangeProviderTrustTagResponse> {
@@ -172,11 +174,12 @@ export class AdminChangeProviderTrustTagUseCase {
             const updatedProvider = await this.providerRepository.update(provider);
             if (!updatedProvider) throw new Error("Provider not found");
 
-            // await this.kafkaClientAdapter.publish<SendAccountTrustStatusEvent>(kafkaConfig.topics.pub.accountTrustStatus, {
-            //     email: provider.email,
-            //     name: provider.username,
-            //     trusted: updatedProvider.trustedBySlotflow
-            // });
+            await this.kafkaProducer.publish<SendAccountTrustStatusEvent>(kafkaConfig.topics.pub.accountTrustStatus, {
+                email: provider.email,
+                name: provider.username,
+                trusted: updatedProvider.trustedBySlotflow,
+                providerId: provider._id
+            });
 
             return { providerId, trustedBySlotflow: updatedProvider.trustedBySlotflow };
         } catch (error) {

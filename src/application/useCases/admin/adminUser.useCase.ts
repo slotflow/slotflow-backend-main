@@ -5,11 +5,14 @@ import {
     AdminChangeUserIsBlockedStatusRequest,
     AdminChangeUserIsBlockedStatusResponse,
 } from "../../dtos/admin.dto";
+import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { IUserQueries } from "../../queries/IUser.queries";
+import { SendAccountBlockStatusEvent } from "../../dtos/kafka.dtos";
 import { ApiPaginationRequest, TableData } from "../../dtos/common.dto";
-import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
+import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
+import { IKafkaProducerAdapter } from "../../../domain/interfaces/message/IKafkaProducerAdapter";
 
 export class AdminUserListUseCase {
     constructor(
@@ -37,6 +40,7 @@ export class AdminUserListUseCase {
 export class AdminChangeUserBlockStatusUseCase {
     constructor(
         private userRepository: IUserRepository,
+        private kafkaProducer: IKafkaProducerAdapter
     ) { };
 
     async execute(payload: AdminChangeUserIsBlockedStatusRequest): Promise<AdminChangeUserIsBlockedStatusResponse> {
@@ -52,6 +56,13 @@ export class AdminChangeUserBlockStatusUseCase {
 
             const updatedUser = await this.userRepository.update(user);
             if (!updatedUser) throw new Error("User not found");
+
+            await this.kafkaProducer.publish<SendAccountBlockStatusEvent>(kafkaConfig.topics.pub.accountBlockStatus, {
+                userId,
+                blocked: updatedUser.isBlocked,
+                email: user.email,
+                name: user.username
+            });
 
             return { userId, isBlocked: updatedUser.isBlocked };
         } catch (error) {
