@@ -1,8 +1,8 @@
-import { DecodedUser } from "../../express";
 import { userFetchAllPaymentsUseCase } from ".";
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
+import { DecodedUser } from "../../application/dtos/common.dto";
 import { RequestQueryCommonZodSchema } from "../../shared/zod/common.zod";
 import { UserFetchAllPaymentsUseCase } from "../../application/useCases/user/userPayment.useCase";
 
@@ -20,9 +20,9 @@ class UserPaymentController {
             const { page, limit } = validateQueryData;
             if (!userId) throw new Error("Invalid request");
             const result = await this.userFetchAllPaymentsUseCase.execute({ userId, page, limit });
-            sendResponse(res,result);
+            sendResponse(res, result);
         } catch (error) {
-            log.error("fetchPayments failed",error as Error);
+            log.error("fetchPayments failed", error as Error);
             next(error);
         };
     };

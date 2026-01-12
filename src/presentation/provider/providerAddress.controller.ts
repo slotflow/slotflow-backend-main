@@ -1,7 +1,7 @@
-import { DecodedUser } from "../../express";
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
+import { DecodedUser } from "../../application/dtos/common.dto";
 import { CreateAddressZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
 import { providerCreateAddressUseCase, providerFetchAddressUseCase, providerUpdateAddressUseCase } from ".";
 import { ProviderCreateAddressUseCase, ProviderFetchAddressUseCase, ProviderUpdateAddressUseCase } from "../../application/useCases/provier/providerAddress.useCase";
@@ -20,10 +20,11 @@ class ProviderAddressController {
     async createAddress(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
+            if (!providerId) throw new Error("Invalid request.");
             const validateData = CreateAddressZodSchema.parse(req.body);
-            await this.providerCreateAddressUseCase.execute({ 
-                userId: providerId, 
-                ...validateData 
+            await this.providerCreateAddressUseCase.execute({
+                userId: providerId,
+                ...validateData
             });
             sendResponse(res, null, "Address saved successfully", true, 201);
         } catch (error) {
@@ -52,7 +53,7 @@ class ProviderAddressController {
             if (!addressId) throw new Error("Invalid request");
             const validateData = CreateAddressZodSchema.parse(req.body);
             const result = await this.providerUpdateAddressUseCase.execute({ _id: addressId, userId: providerId, ...validateData });
-            sendResponse(res, result,"Address updated successfully");
+            sendResponse(res, result, "Address updated successfully");
         } catch (error) {
             log.error("updateAddress failed", error as Error);
             next(error);

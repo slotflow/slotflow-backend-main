@@ -1,8 +1,8 @@
-import { DecodedUser } from "../../express";
 import { log } from "../../shared/logger/logger";
 import { providerFetchAllPaymentsUseCase } from ".";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
+import { DecodedUser } from "../../application/dtos/common.dto";
 import { RequestQueryCommonZodSchema } from "../../shared/zod/common.zod";
 import { ProviderFetchAllPaymentsUseCase } from "../../application/useCases/provier/providerPayment.useCase";
 
@@ -21,7 +21,7 @@ class ProviderPaymentController {
             const result = await this.providerFetchAllPaymentsUseCase.execute({ providerId, page, limit });
             sendResponse(res, result);
         } catch (error) {
-            log.error("getPayments failed",error as Error);
+            log.error("getPayments failed", error as Error);
             next(error);
         };
     };

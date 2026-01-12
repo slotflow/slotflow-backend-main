@@ -1,3 +1,4 @@
+import { KafkaMessage } from "kafkajs";
 import { Role } from "../../domain/enums/role.enum";
 import { AppConnect } from "../../domain/enums/appConnect.enum";
 import { OtpPurpose } from "../../domain/enums/otpPurpose.enum";
@@ -7,28 +8,24 @@ import { PaymentGateway } from "../../domain/enums/paymentGateway.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
 
-
-export interface KafkaSendPayload<T> {
-  topic: string;
-  key: string;
-  message: T;
-}
-
-export type KafkaConsumeHandler<T> = (payload: {
+// kafka client adapter props
+export interface KafkaClientAdapterProps {
   topic: string;
   partition: number;
-  message: T;
-}) => Promise<void>;
+  message: KafkaMessage;
+}
 
+// kafka client adapter message handler
+export type MessageHandler = (payload: KafkaClientAdapterProps) => Promise<void>;
+
+
+// **** KAFKA EVENTS PAYLOAD TYPES ****//
 
 // send email common
 export interface SendEmailCommon {
   email: string;
   name: string;
 }
-
-
-// **** KAFKA EVENTS PAYLOAD TYPES ****//
 
 // send otp event for registration and password update
 export interface SendOtpEvent extends SendEmailCommon {
@@ -154,13 +151,3 @@ export interface UpdateGoogleCalendarEvent {
   appointmentStatus: AppointmentStatus;
   bookingId: string;
 }
-
-// kafka client adapter props
-export interface KafkaClientAdapterProps<T> {
-  topic: string;
-  partition: number;
-  message: T;
-}
-
-// kafka client adapter message handler
-export type MessageHandler<T = any> = (payload: KafkaClientAdapterProps<T>) => Promise<void>;

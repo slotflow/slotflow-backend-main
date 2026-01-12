@@ -1,8 +1,8 @@
-import { DecodedUser } from "../../express";
 import { log } from "../../shared/logger/logger";
 import { Role } from "../../domain/enums/role.enum";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
+import { DecodedUser } from "../../application/dtos/common.dto";
 import { ProviderChangeBookingAppointmentStatusZodSchema } from "../../shared/zod/provider.zod";
 import { ValidateJoinRoomUsecase } from "../../application/useCases/common/validateJoinRoom.useCase";
 import { FetchBookingDetailsUsecase } from "../../application/useCases/common/fetchBookingDetails.useCase";
@@ -38,11 +38,11 @@ class ProviderBookingController {
                 limit,
                 online: online ? true : false,
                 raw: raw ? true : false,
-                role: provider.role
+                role: Role.Provider
             });
             sendResponse(res, result);
         } catch (error) {
-            log.error("fetchBookingAppointments failed",error as Error);
+            log.error("fetchBookingAppointments failed", error as Error);
             next(error);
         };
     };
@@ -54,7 +54,7 @@ class ProviderBookingController {
             await this.providerChangeBookingAppointmentStatusUseCase.execute({ _id: bookingId, appointmentStatus: validateData.appointmentStatus });
             sendResponse(res, null, "Booking status updated successfully");
         } catch (error) {
-            log.error("updateBookingAppointmentStatus failed",error as Error);
+            log.error("updateBookingAppointmentStatus failed", error as Error);
             next(error);
         };
     };
@@ -64,10 +64,11 @@ class ProviderBookingController {
             const { id: bookingId } = ValidateObjectId(req.params.bookingId, "Booking ID");
             const { roomId } = validateRoomId.parse(req.query.roomId);
             const providerId = (req.user as DecodedUser).userOrProviderId;
-            const result = await this.validateJoinRoomUsecase.execute({ 
-                bookingId, 
-                roomId, 
-                role: Role.Provider, 
+            if(!providerId) throw new Error("Invalid request");
+            const result = await this.validateJoinRoomUsecase.execute({
+                bookingId,
+                roomId,
+                role: Role.Provider,
                 userOrProviderId: providerId
             });
             res.status(200).json(result);
@@ -95,8 +96,8 @@ class ProviderBookingController {
             next(error);
         };
     };
-    
-    async fetchBookingDetails (req: Request, res: Response, next: NextFunction) {
+
+    async fetchBookingDetails(req: Request, res: Response, next: NextFunction) {
         try {
             const { id: bookingId } = ValidateObjectId(req.params.bookingId, "Booking ID");
             const result = await this.fetchBookingDetailsUsecase.execute({ bookingId });

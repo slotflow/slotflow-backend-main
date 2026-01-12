@@ -1,8 +1,8 @@
-import { DecodedUser } from "../../express";
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { ValidateObjectId } from "../../shared/zod/common.zod";
+import { DecodedUser } from "../../application/dtos/common.dto";
 import { ProviderCreateServiceDetailsZodSchema } from "../../shared/zod/provider.zod";
 import { providerCreateServiceDetailsUseCase, providerFetchServiceDetailsUseCase, providerUpdateServiceDetailsUseCase } from ".";
 import { ProviderCreateServiceDetailsUseCase, ProviderFetchServiceDetailsUseCase, ProviderUpdateServiceDetailsUseCase } from "../../application/useCases/provier/providerService.useCase";
@@ -21,6 +21,7 @@ class ProviderServiceController {
     async createServiceDetails(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
+            if(!providerId) throw new Error("Invalid request");
             const validatedData = ProviderCreateServiceDetailsZodSchema.parse(req.body);
             await this.providerCreateServiceDetailsUseCase.execute({
                 ...validatedData,

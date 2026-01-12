@@ -1,11 +1,11 @@
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
+import { PlanName } from "../../domain/enums/planName.enum";
+import { DecodedUser } from "../../application/dtos/common.dto";
 import { providerFetchDashboardGraphDataUseCase, providerFetchDashboardStatsUseCase } from ".";
 import { ProviderFetchDashboardStatsUseCase } from "../../application/useCases/provier/providerDashboardStats.useCase";
 import { ProviderFetchDashboardGraphDataUseCase } from "../../application/useCases/provier/providerDashboardGraphData.useCase";
-import { DecodedUser } from "../../application/dtos/common.dto";
-import { PlanName } from "../../domain/enums/planName.enum";
 
 class ProviderDashboardController {
     constructor(

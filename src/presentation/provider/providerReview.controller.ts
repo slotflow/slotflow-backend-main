@@ -1,8 +1,8 @@
-import { DecodedUser } from "../../express";
 import { log } from "../../shared/logger/logger";
 import { Role } from "../../domain/enums/role.enum";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
+import { DecodedUser } from "../../application/dtos/common.dto";
 import { RequestQueryCommonZodSchema } from "../../shared/zod/common.zod";
 import { fetchAllReviewsUseCase, providerChangeReviewRepostStatusUseCase } from ".";
 import { FetchAllReviewsUseCase } from "../../application/useCases/common/fetchReviews.useCase";
@@ -37,6 +37,7 @@ class ProviderReviewController {
     async chnageReportReview(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
+            if(!providerId) throw new Error("Invalid request");
             const reviewId = req.params.reviewId;
             const result = await this.providerChangeReviewRepostStatusUseCase.execute({
                 reviewId,

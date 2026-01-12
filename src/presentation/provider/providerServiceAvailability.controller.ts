@@ -1,4 +1,4 @@
-import { DecodedUser } from "../../express";
+import { DecodedUser } from "../../application/dtos/common.dto";
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
@@ -19,8 +19,9 @@ class ProviderServiceAvailabilityController {
     async createServiceAvailability(req: Request, res: Response, next: NextFunction) {
         try {
             const providerId = (req.user as DecodedUser).userOrProviderId;
+            if(!providerId) throw new Error("Invalid request");
             const availabilities = ProviderCreateServiceAvailabilityZodSchema.parse(req.body);
-            if (!providerId || !availabilities || availabilities.length === 0) throw new Error("Invalid request.");
+            if (!availabilities || availabilities.length === 0) throw new Error("Invalid request.");
             await this.providerCreateServiceAvailabilitiesUseCase.execute({ providerId, availabilities });
             sendResponse(res,null,"Service availability saved successfully",true,201);
         } catch (error) {
