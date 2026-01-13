@@ -1,4 +1,4 @@
-import { ReviewModel } from "../database/review.model";
+import { ReviewModel } from "../models/review.model";
 import { ReviewMapper } from "../mappers/review.mapper";
 import { Review } from "../../domain/entities/review.entity";
 import { IReviewRepository } from "../../domain/interfaces/repositories/IReview.repository";

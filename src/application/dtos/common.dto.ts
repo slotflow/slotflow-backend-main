@@ -2,8 +2,6 @@ import { Day } from "../../domain/enums/day.enum";
 import { Role } from "../../domain/enums/role.enum";
 import { PlanName } from "../../domain/enums/planName.enum";
 import { PaymentFor } from "../../domain/enums/paymentFor.enum";
-import { OtpPurpose } from "../../domain/enums/otpPurpose.enum";
-import { AppConnect } from "../../domain/enums/appConnect.enum";
 import { ServiceType } from "../../domain/enums/serviceType.enum";
 import { ServiceMode } from "../../domain/enums/serviceMode.enum";
 import { GeoLocation } from "../../domain/contracts/address.contract";

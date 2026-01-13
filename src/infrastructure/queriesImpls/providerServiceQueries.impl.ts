@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 import { PipelineStage } from "mongoose";
-import { ProviderServiceModel } from "../database/providerService.model";
+import { ProviderServiceModel } from "../models/providerService.model";
 import { SubscriptionStatus } from "../../domain/enums/subscriptionStatus.enum";
 import { FindProviderServiceResponse } from "../../application/dtos/common.dto";
 import { UserFetchServiceProvidersRequest, UserFetchServiceProvidersResponse } from "../../application/dtos/user.dto";

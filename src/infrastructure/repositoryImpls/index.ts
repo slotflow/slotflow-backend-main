@@ -1,4 +1,4 @@
-// **** Repository instance **** //
+// Repository instance
 
 import { PlanRepositoryImpl } from "./plan.repository.impl";
 import { UserRepositoryImpl } from "./user.repository.impl";

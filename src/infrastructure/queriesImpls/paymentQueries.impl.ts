@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { PaymentModel } from "../database/payment.model";
+import { PaymentModel } from "../models/payment.model";
 import { TableData } from "../../application/dtos/common.dto";
 import { PaymentFor } from "../../domain/enums/paymentFor.enum";
 import { PaymentStatus } from "../../domain/enums/paymentStatus.enum";
@@ -198,7 +198,7 @@ export class PaymentQueriesImpl implements IPaymentQueries {
         ]);
 
         const data = paymentData[0];
-        return { ...data};
+        return { ...data };
     };
 
     async findStatsDataForProviderDashboard(providerId: string): Promise<ProviderFetchDashboardPaymentStatsDataResponse> {
@@ -316,7 +316,7 @@ export class PaymentQueriesImpl implements IPaymentQueries {
         ]);
 
         const data = result[0];
-        return {...data};
+        return { ...data };
     };
 
     async findTodayStatsDataForAdminDashboard(): Promise<AdminFetchDashboardTodayPaymentStatsDataResponse> {
@@ -385,7 +385,7 @@ export class PaymentQueriesImpl implements IPaymentQueries {
         ]);
 
         const data = result[0];
-        return {...data};
+        return { ...data };
     };
 
 }

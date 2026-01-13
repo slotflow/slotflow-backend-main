@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { IBooking } from "../database/booking.model";
+import { IBooking } from "../models/booking.model";
 import { Booking } from "../../domain/entities/booking.entity";
 
 export class BookingMapper {

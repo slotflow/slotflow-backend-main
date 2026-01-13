@@ -6,11 +6,11 @@ export class Address {
 
     constructor(props: AddressProps) {
         this.props = props;
-    }
+    };
 
     private touch() {
         this.props.updatedAt = new Date();
-    }
+    };
 
     static create(props: CreateAddressProps) {
         return new Address({
@@ -92,7 +92,7 @@ export class Address {
 
     getProps(): Readonly<AddressProps> {
         return { ...this.props };
-    }
+    };
 
     updateAddress(props: UpdateAddressProps) {
         this.props = {

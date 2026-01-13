@@ -1,4 +1,4 @@
-import { UserModel } from "../database/user.model";
+import { UserModel } from "../models/user.model";
 import { IUserQueries } from "../../application/queries/IUser.queries";
 import { ApiPaginationRequest, TableData } from "../../application/dtos/common.dto";
 import { AdminFetchAllUsers, AdminFetchDashboardUserStatsDataResponse } from "../../application/dtos/admin.dto";

@@ -1,5 +1,5 @@
 import { Plan } from "../../domain/entities/plan.entity";
-import { IPlan } from "../database/plan.model";
+import { IPlan } from "../models/plan.model";
 
 export class PlanMapper {
 

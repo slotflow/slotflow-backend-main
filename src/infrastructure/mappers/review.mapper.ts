@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { IReview } from "../database/review.model";
+import { IReview } from "../models/review.model";
 import { Review } from "../../domain/entities/review.entity";
 
 export class ReviewMapper {

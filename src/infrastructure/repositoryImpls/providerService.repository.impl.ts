@@ -1,4 +1,4 @@
-import { ProviderServiceModel } from "../database/providerService.model";
+import { ProviderServiceModel } from "../models/providerService.model";
 import { ProviderServiceMapper } from "../mappers/providerService.mapper";
 import { ProviderService } from "../../domain/entities/providerService.entity";
 import { IProviderServiceRepository } from "../../domain/interfaces/repositories/IProviderService.repository";
@@ -16,7 +16,7 @@ export class ProviderServiceRepositoryImpl implements IProviderServiceRepository
 
         const doc = await ProviderServiceModel.findByIdAndUpdate(
             providerService._id,
-            { $set: persistence},
+            { $set: persistence },
             { new: true }
         );
 

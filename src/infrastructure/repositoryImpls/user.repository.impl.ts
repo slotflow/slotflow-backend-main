@@ -1,4 +1,4 @@
-import { UserModel } from "../database/user.model";
+import { UserModel } from "../models/user.model";
 import { UserMapper } from "../mappers/user.mapper";
 import { User } from "../../domain/entities/user.entity";
 import { IUserRepository } from "../../domain/interfaces/repositories/IUser.repository";
@@ -20,7 +20,7 @@ export class UserRepositoryImpl implements IUserRepository {
             { new: true }
         );
 
-         if (!doc) {
+        if (!doc) {
             throw new Error("User not found");
         }
 

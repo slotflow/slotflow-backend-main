@@ -1,4 +1,4 @@
-import { ServiceAvailabilityModel } from '../database/serviceAvailability.model';
+import { ServiceAvailabilityModel } from '../models/serviceAvailability.model';
 import { ServiceAvailabilityMapper } from '../mappers/serviceAvailability.mapper';
 import { ServiceAvailability } from '../../domain/entities/serviceAvailability.entity';
 import { IServiceAvailabilityRepository } from '../../domain/interfaces/repositories/IServiceAvailability.repository';

@@ -1,4 +1,4 @@
-import { CredentialModel } from "../database/credential.model";
+import { CredentialModel } from "../models/credential.model";
 import { CredentialMapper } from "../mappers/credential.mapper";
 import { Credential } from "../../domain/entities/credential.entity";
 import { ICredentialRepository } from "../../domain/interfaces/repositories/ICredentialRepository";

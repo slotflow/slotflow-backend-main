@@ -1,4 +1,4 @@
-import { ProviderModel } from "../database/provider.model";
+import { ProviderModel } from "../models/provider.model";
 import { ProviderMapper } from "../mappers/provider.mapper";
 import { Provider } from "../../domain/entities/provider.entity";
 import { IProviderRepository } from "../../domain/interfaces/repositories/IProvider.repository";

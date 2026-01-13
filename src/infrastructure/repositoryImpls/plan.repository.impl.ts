@@ -1,4 +1,4 @@
-import { PlanModel } from "../database/plan.model";
+import { PlanModel } from "../models/plan.model";
 import { PlanMapper } from "../mappers/plan.mapper";
 import { Plan } from "../../domain/entities/plan.entity";
 import { IPlanRepository } from "../../domain/interfaces/repositories/IPlan.repository";
@@ -17,12 +17,12 @@ export class PlanRepositoryImpl implements IPlanRepository {
     };
 
     async findByNameOrPrice(name: string, price: number): Promise<Plan | null> {
-        const doc = await PlanModel.findOne({ 
-             $or: [
-                    { planName: name },
-                    { price }
-                ]
-         });
+        const doc = await PlanModel.findOne({
+            $or: [
+                { planName: name },
+                { price }
+            ]
+        });
         return doc ? PlanMapper.toDomain(doc) : null;
     };
 

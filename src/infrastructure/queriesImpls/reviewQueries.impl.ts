@@ -1,7 +1,7 @@
 import { FilterQuery } from "mongoose";
 import { Role } from "../../domain/enums/role.enum";
 import { Review } from "../../domain/entities/review.entity";
-import { ReviewModel } from "../database/review.model";
+import { ReviewModel } from "../models/review.model";
 import { IReviewQueries } from "../../application/queries/IReview.queries";
 import { FetchReviesRequest, TableData, FetchReviewsResponse } from "../../application/dtos/common.dto";
 

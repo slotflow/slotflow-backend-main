@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { ServiceAvailabilityModel } from "../database/serviceAvailability.model";
+import { ServiceAvailabilityModel } from "../models/serviceAvailability.model";
 import { IServiceAvailabilityQueries } from "../../application/queries/IServiceAvailability.queries";
 import { FontendAvailabilityForResponse, TimeSlotForFrontendResponse } from "../../application/dtos/common.dto";
 

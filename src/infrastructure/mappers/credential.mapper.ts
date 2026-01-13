@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 import { Credential } from "../../domain/entities/credential.entity";
-import { ICredential } from "../database/credential.model";
+import { ICredential } from "../models/credential.model";
 
 export class CredentialMapper {
 

@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { IProvider } from "../database/provider.model";
+import { IProvider } from "../models/provider.model";
 import { Provider } from "../../domain/entities/provider.entity";
 
 export class ProviderMapper {

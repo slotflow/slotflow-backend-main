@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { IUser } from "../database/user.model";
+import { IUser } from "../models/user.model";
 import { User } from "../../domain/entities/user.entity";
 
 export class UserMapper {

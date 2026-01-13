@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { IPayment } from "../database/payment.model";
+import { IPayment } from "../models/payment.model";
 import { Payment } from "../../domain/entities/payment.entity";
 
 export class PaymentMapper {

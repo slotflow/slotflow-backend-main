@@ -15,7 +15,8 @@
     "allowImportingTsExtensions": true,
     "rewriteRelativeImportExtensions": true
  },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "dist-bundle"]
 }
 
  

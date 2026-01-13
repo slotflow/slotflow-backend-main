@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { PaymentModel } from "../database/payment.model";
+import { PaymentModel } from "../models/payment.model";
 import { PaymentMapper } from "../mappers/payment.mapper";
 import { Payment } from "../../domain/entities/payment.entity";
 import { PaymentFor } from "../../domain/enums/paymentFor.enum";

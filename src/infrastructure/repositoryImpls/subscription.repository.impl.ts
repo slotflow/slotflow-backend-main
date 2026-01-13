@@ -1,4 +1,4 @@
-import { SubscriptionModel } from "../database/subscription.model";
+import { SubscriptionModel } from "../models/subscription.model";
 import { SubscriptionMapper } from "../mappers/subscription.mapper";
 import { Subscription } from "../../domain/entities/subscription.entity";
 import { ISubscriptionRepository } from "../../domain/interfaces/repositories/ISubscription.repository";

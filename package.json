@@ -7,6 +7,7 @@
   "scripts": {
     "predev": "npx kill-port 4000",
     "dev": "tsx watch src/server.ts",
+    "lint": "eslint \"src/**/*.ts\" --max-warnings=0",
     "build": "tsc",
     "start": "node dist/server.js",
     "bundle": "tsup src/server.ts --format esm --dts --out-dir dist-bundle"
@@ -48,7 +49,6 @@
     "@types/express": "^5.0.3",
     "@types/helmet": "^4.0.0",
     "@types/jsonwebtoken": "^9.0.8",
-    "@types/mongoose": "^5.11.97",
     "@types/node": "^22.15.32",
     "@types/passport": "^1.0.17",
     "@types/passport-google-oauth20": "^2.0.16",

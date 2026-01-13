@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { IServiceAvailability } from "../database/serviceAvailability.model";
+import { IServiceAvailability } from "../models/serviceAvailability.model";
 import { ServiceAvailability } from "../../domain/entities/serviceAvailability.entity";
 
 export class ServiceAvailabilityMapper {

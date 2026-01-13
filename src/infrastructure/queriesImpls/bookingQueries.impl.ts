@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { Types } from "mongoose";
 import { Role } from "../../domain/enums/role.enum";
-import { BookingModel } from "../database/booking.model";
+import { BookingModel } from "../models/booking.model";
 import { IBookingQueries } from "../../application/queries/IBooking.queries";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { endOfDay, startOfDay, startOfToday, startOfTomorrow } from "date-fns";

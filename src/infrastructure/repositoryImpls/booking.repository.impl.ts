@@ -1,4 +1,4 @@
-import { BookingModel } from "../database/booking.model";
+import { BookingModel } from "../models/booking.model";
 import { BookingMapper } from "../mappers/booking.mapper";
 import { Booking } from "../../domain/entities/booking.entity";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
