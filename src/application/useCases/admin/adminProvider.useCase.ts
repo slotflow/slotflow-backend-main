@@ -14,6 +14,7 @@ import { AdminVerificationStatus } from "../../../domain/enums/adminVerification
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/message/IKafkaProducerAdapter";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { SendAccountBlockStatusEvent, SendAccountTrustStatusEvent, SendAdminProviderReviewEvent } from "../../dtos/kafka.dtos";
+import { Redis } from "@upstash/redis";
 
 export class AdminProviderListUseCase {
     constructor(
@@ -121,7 +122,8 @@ export class AdminRejectProviderUseCase {
 export class AdminChangeProviderBlockStatusUseCase {
     constructor(
         private providerRepository: IProviderRepository,
-        private kafkaProducer: IKafkaProducerAdapter
+        private kafkaProducer: IKafkaProducerAdapter,
+        private redisClient: Redis
     ) { };
 
     async execute(payload: AdminChangeProviderStatusRequest): Promise<AdminChangeProviderStatusResponse> {
@@ -137,6 +139,8 @@ export class AdminChangeProviderBlockStatusUseCase {
 
             const updatedProvider = await this.providerRepository.update(provider);
             if (!updatedProvider) throw new Error("Provider not found");
+
+            await this.redisClient.set(`user:block-status:${providerId}`,updatedProvider.isBlocked);
 
             await this.kafkaProducer.publish<SendAccountBlockStatusEvent>(kafkaConfig.topics.pub.accountBlockStatus, {
                 email: provider.email,

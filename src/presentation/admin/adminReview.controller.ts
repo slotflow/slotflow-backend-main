@@ -5,7 +5,7 @@ import { sendResponse } from "../../shared/utils/response";
 import { adminUpdateReviewBlockStatusUseCase, fetchAllReviewsUseCase } from ".";
 import { FetchAllReviewsUseCase } from "../../application/useCases/common/fetchReviews.useCase";
 import { AdminUpdateReviewBlockStatusUseCase } from "../../application/useCases/admin/adminReview.useCase";
-import { changeBlockStatusZodSchema, RequestQueryFetchAllReviewsZodSchema } from "../../shared/zod/common.zod";
+import { adminChangeReviewBlockStatusSchema, adminFetchAllReviewsSchema } from "../../shared/zod/admin.zod";
 
 class AdminReviewController {
     constructor(
@@ -19,7 +19,10 @@ class AdminReviewController {
     async findAllReviews(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = req.params.userId;
-            const { limit, page, role } = RequestQueryFetchAllReviewsZodSchema.parse(req.query);
+            const { limit, page, role } = adminFetchAllReviewsSchema.parse({
+                userId: req.params.userId,
+                ...req.query
+            });
             const result = await this.fetchAllReviewsUseCase.execute({
                 page,
                 limit,
@@ -37,8 +40,10 @@ class AdminReviewController {
 
     async updateReviewBlockStatus(req: Request, res: Response, next: NextFunction) {
         try {
-            const { blockStatus } = changeBlockStatusZodSchema.parse(req.body);
-            const reviewId = req.params.reviewId;
+            const { blockStatus, reviewId } = adminChangeReviewBlockStatusSchema.parse({
+                reviewId: req.params.reviewId,
+                blockStatus: req.body.blockStatus
+            });
             const result = await this.adminUpdateReviewBlockStatusUseCase.execute({ reviewId, isBlocked: blockStatus });
             sendResponse(res, result);
         } catch (error) {

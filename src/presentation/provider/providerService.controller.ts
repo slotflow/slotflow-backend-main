@@ -1,10 +1,9 @@
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
-import { ValidateObjectId } from "../../shared/zod/common.zod";
 import { DecodedUser } from "../../application/dtos/common.dto";
-import { ProviderCreateServiceDetailsZodSchema } from "../../shared/zod/provider.zod";
 import { providerCreateServiceDetailsUseCase, providerFetchServiceDetailsUseCase, providerUpdateServiceDetailsUseCase } from ".";
+import { providerCreateServiceDetailsSchema, providerUpdateServiceDetailsSchema, validateProviderIdSchema } from "../../shared/zod/provider.zod";
 import { ProviderCreateServiceDetailsUseCase, ProviderFetchServiceDetailsUseCase, ProviderUpdateServiceDetailsUseCase } from "../../application/useCases/provier/providerService.useCase";
 
 class ProviderServiceController {
@@ -20,14 +19,15 @@ class ProviderServiceController {
 
     async createServiceDetails(req: Request, res: Response, next: NextFunction) {
         try {
-            const providerId = (req.user as DecodedUser).userOrProviderId;
-            if(!providerId) throw new Error("Invalid request");
-            const validatedData = ProviderCreateServiceDetailsZodSchema.parse(req.body);
+            const {providerId, ...serviceData } = providerCreateServiceDetailsSchema.parse({
+                providerId: (req.user as DecodedUser).userOrProviderId,
+                ...req.body
+            });
             await this.providerCreateServiceDetailsUseCase.execute({
-                ...validatedData,
+                ...serviceData,
                 providerId,
-                requirements: validatedData.requirements ?? null,
-                videoUrl: validatedData.videoUrl ?? null
+                requirements: serviceData.requirements ?? null,
+                videoUrl: serviceData.videoUrl ?? null
             });
             sendResponse(res, null, "Service details saved successfully", true, 201);
         } catch (error) {
@@ -38,8 +38,7 @@ class ProviderServiceController {
 
     async getServiceDetails(req: Request, res: Response, next: NextFunction) {
         try {
-            const providerId = (req.user as DecodedUser).userOrProviderId;
-            if (!providerId) throw new Error("Invalid request.");
+            const { providerId } = validateProviderIdSchema.parse((req.user as DecodedUser).userOrProviderId);
             const result = await this.providerFetchServiceDetailsUseCase.execute({ providerId });
             sendResponse(res, result);
         } catch (error) {
@@ -50,10 +49,12 @@ class ProviderServiceController {
 
     async updateServiceDetails(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id: serviceId } = ValidateObjectId(req.params.serviceId, "Service ID");
-            const validatedData = ProviderCreateServiceDetailsZodSchema.parse(req.body);
+            const { serviceId, ...serviceData } = providerUpdateServiceDetailsSchema.parse({
+                serviceId: req.params.serviceId,
+                ...req.body,
+            });
             const result = await this.providerUpdateServiceDetailsUseCase.execute({
-                ...validatedData,
+                ...serviceData,
                 _id: serviceId,
             });
             sendResponse(res, result, "Service details updated successfully");

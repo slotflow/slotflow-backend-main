@@ -608,5 +608,4 @@ export interface DecodedUser {
   connectOnly?: boolean;
   exp?: number;
   iat?: number;
-  userId: string;
 };

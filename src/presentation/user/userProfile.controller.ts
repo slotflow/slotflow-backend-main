@@ -2,7 +2,7 @@ import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
-import { s3FileKeyZodSchmema, UserOrProviderUpdateInfoZodSchema } from "../../shared/zod/common.zod";
+import { userUpdateFileSchema, userUpdateInfoSchema, validateUserIdSchema } from "../../shared/zod/user.zod";
 import { userFetchProfileDetailsUseCase, userUpdateProfileImageUseCase, userUpdateProviderInfoUseCase } from ".";
 import { UserFetchProfileDetailsUseCase, UserUpdateProfileImageUseCase, UserUpdateProviderInfoUseCase } from "../../application/useCases/user/userProfile.useCase";
 
@@ -19,8 +19,7 @@ class UserProfileController {
 
     async getProfileDetails(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = (req.user as DecodedUser).userOrProviderId;
-            if (!userId) throw new Error("Invalid request.");
+            const { userId } = validateUserIdSchema.parse({ userId: (req.user as DecodedUser).userOrProviderId });
             const result = await this.userFetchProfileDetailsUseCase.execute({ userId });
             sendResponse(res, result);
         } catch (error) {
@@ -31,10 +30,11 @@ class UserProfileController {
 
     async updateProfileImage(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = (req.user as DecodedUser).userOrProviderId;
-            if (!userId) throw new Error("Invalid request.");
-            const validatedData = s3FileKeyZodSchmema.parse(req.body);
-            const result = await this.userUpdateProfileImageUseCase.execute({ userId, profileImage: validatedData.s3FileKey });
+            const { s3FileKey, userId } = userUpdateFileSchema.parse({
+                userId: (req.user as DecodedUser).userOrProviderId,
+                ...req.body,
+            });
+            const result = await this.userUpdateProfileImageUseCase.execute({ userId, profileImage: s3FileKey });
             sendResponse(res, result, "Profile image updated successfully");
         } catch (error) {
             log.error("updateProfileImage failed", error as Error);
@@ -44,10 +44,11 @@ class UserProfileController {
 
     async updateUserInfo(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = (req.user as DecodedUser).userOrProviderId;
-            const { username, phone } = UserOrProviderUpdateInfoZodSchema.parse(req.body);
-            if (!userId || !username || !phone) throw new Error("Invalid request");
-            const result = await this.userUpdateProviderInfoUseCase.execute({ userId, username, phone })
+            const { phone, userId, username } = userUpdateInfoSchema.parse({
+                userId: (req.user as DecodedUser).userOrProviderId,
+                ...req.body
+            });
+            const result = await this.userUpdateProviderInfoUseCase.execute({ userId, username, phone });
             sendResponse(res, result, "Info updated successfully");
         } catch (error) {
             log.error("updateUserInfo failed", error as Error);

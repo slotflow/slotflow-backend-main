@@ -8,13 +8,13 @@ export interface RegisterRequest {
     username: string;
     email: string;
     password: string;
-    role: string;
+    role: Role;
 }
 // user or provider register usecase response interface
 export interface RegisterResponse {
     authUser: {
         verificationToken: string,
-        role: string,
+        role: Role,
         token: string
     }
 }
@@ -37,7 +37,7 @@ export interface VerifyAndActivateEntityRequest {
 // **** Resend OTP use case
 // user or provider Resend use case request payload interface
 export interface ResendOtpRequest {
-    role: string;
+    role: Role;
     verificationToken?: string;
     email?: string;
 }
@@ -54,7 +54,7 @@ export interface ResendOtpResponse {
 export interface LoginRequest {
     email: string;
     password: string;
-    role: string;
+    role: Role;
 }
 // user or provider login use case response interface
 export interface LoginResponse {
@@ -63,7 +63,7 @@ export interface LoginResponse {
         username: string;
         phone?: string;
         profileImage?: string | null;
-        role: string;
+        role: Role;
         token: string;
         isBlocked?: boolean;
         isLoggedIn: boolean;
@@ -87,7 +87,7 @@ export interface LoginResponse {
 // **** Update password use case
 // user or provider update password use case request payload interface
 export interface UpdatePasswordRequest {
-    role: string;
+    role: Role;
     verificationToken: string;
     password: string;
 }
@@ -97,7 +97,7 @@ export interface UpdatePasswordRequest {
 // check user status use case request payload interface
 export interface CheckUserStatusRequest {
     _id: string;
-    role: string;
+    role: Role;
 }
 // check user status use case response interface
 export interface CheckUserStatusResponse extends CommonResponse {

@@ -4,6 +4,7 @@ import { googleAuthOrchestratorUseCase } from ".";
 import { Role } from "../../domain/enums/role.enum";
 import { NextFunction, Request, Response } from "express";
 import { appConfig, serviceConfig } from "../../config/env";
+import { roleValidationSchema } from "../../shared/zod/common.zod";
 import { GoogleAuthOrchestratorUseCase } from "../../application/useCases/auth/googleAuthOrchestrate.useCase";
 
 class GoogleAuthController {
@@ -17,7 +18,7 @@ class GoogleAuthController {
     async googleAuth(req: Request, res: Response, next: NextFunction) {
         try {
             console.log("google auth login");
-            const role = req.query.role;
+            const { role } = roleValidationSchema.parse({ role: req.query.role });
             passport.authenticate("google", {
                 scope: [
                     "openid",

@@ -2,7 +2,7 @@ import { fetchAllAppServicesUseCase } from ".";
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
-import { fetchAllAppServicesZodSchema } from "../../shared/zod/common.zod";
+import { fetchAllAppServicesSchema } from "../../shared/zod/common.zod";
 import { FetchAllAppServicesUseCase } from "../../application/useCases/common/fetchAppServices.useCase";
 
 class ProviderAppServiceController {
@@ -14,7 +14,7 @@ class ProviderAppServiceController {
 
     async getAllAppServices(req: Request, res: Response, next: NextFunction) {
         try {
-            const { categories } = fetchAllAppServicesZodSchema.parse(req.query);
+            const { categories } = fetchAllAppServicesSchema.parse(req.query);
             const result = await this.fetchAllAppServicesUseCase.execute({ categories });
             sendResponse(res, result);
         } catch (error) {

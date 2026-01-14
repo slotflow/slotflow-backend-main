@@ -2,8 +2,8 @@ import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
-import { CreateAddressZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
 import { userCreateAddressUseCase, userFetchAddressUseCase, userUpdateAddressUseCase } from ".";
+import { userCreateAddressSchema, userUpdateAddressSchema, validateUserIdSchema } from "../../shared/zod/user.zod";
 import { UserCreateAddressUseCase, UserFetchAddressUseCase, UserUpdateAddressUseCase } from "../../application/useCases/user/userAddress.useCase";
 
 class UserAddressController {
@@ -19,10 +19,9 @@ class UserAddressController {
 
     async getAddress(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = (req.user as DecodedUser).userOrProviderId;
-            if (!userId) throw new Error("Invalid request.");
+            const { userId } = validateUserIdSchema.parse((req.user as DecodedUser).userOrProviderId);
             const result = await this.userFetchAddressUseCase.execute({ userId });
-             sendResponse(res, result, `Address ${result ? "fetched successfully" : "not added yet"}`);
+            sendResponse(res, result, `Address ${result ? "fetched successfully" : "not added yet"}`);
         } catch (error) {
             log.error("getAddress failed", error as Error);
             next(error);
@@ -31,11 +30,11 @@ class UserAddressController {
 
     async createAddress(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log("crwating address");
-            const userId = (req.user as DecodedUser).userOrProviderId;
-            if (!userId) throw new Error("Invalid request");
-            const validateData = CreateAddressZodSchema.parse(req.body)
-            await this.userCreateAddressUseCase.execute({ userId, ...validateData });
+            const { userId, ...address } = userCreateAddressSchema.parse({
+                ...req.body,
+                providerId: (req.user as DecodedUser).userOrProviderId,
+            });
+            await this.userCreateAddressUseCase.execute({ userId, ...address });
             sendResponse(res, null, "Address saved successfully", true, 201);
         } catch (error) {
             log.error("addAddress failed", error as Error);
@@ -45,13 +44,13 @@ class UserAddressController {
 
     async updateAddress(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = (req.user as DecodedUser).userOrProviderId;
-            if (!userId) throw new Error("Invalid request.");
-            const { id: addressId } = ValidateObjectId(req.params.addressId, "Address ID");
-            if (!addressId) throw new Error("Invalid request");
-            const validateData = CreateAddressZodSchema.parse(req.body);
-            const result = await this.userUpdateAddressUseCase.execute({ _id: addressId, userId, ...validateData });
-            sendResponse(res, result,"Address updated successfully");
+            const { addressId, userId, ...updateDta } = userUpdateAddressSchema.parse({
+                providerId: (req.user as DecodedUser).userOrProviderId,
+                addressId: req.params.addressId,
+                ...req.body,
+            });
+            const result = await this.userUpdateAddressUseCase.execute({ _id: addressId, userId, ...updateDta });
+            sendResponse(res, result, "Address updated successfully");
         } catch (error) {
             log.error("updateAddress failed", error as Error);
             next(error);

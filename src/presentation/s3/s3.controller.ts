@@ -2,7 +2,7 @@ import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { createFileSignedUrlUseCase, createFileUploadPresignedUrlUseCase } from ".";
-import { PresignedUrlZodSchema, s3FileKeyZodSchmema } from "../../shared/zod/common.zod";
+import { presignedUrlSchema, s3FileKeySchema } from "../../shared/zod/common.zod";
 import { CreateFileSignedUrlUseCase, CreateFileUploadPresignedUrlUseCase } from "../../application/useCases/common/s3.useCase";
 
 class S3Controller {
@@ -16,7 +16,7 @@ class S3Controller {
 
     async getFileUploadPresignedUrl(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const validatedData = PresignedUrlZodSchema.parse(req.query);
+            const validatedData = presignedUrlSchema.parse(req.query);
             const result = await this.createFileUploadPresignedUrlUseCase.execute(validatedData);
             sendResponse(res, result);
         } catch (error) {
@@ -27,7 +27,7 @@ class S3Controller {
 
     async getFileSignedUrl(req: Request, res: Response, next: NextFunction) {
         try {
-            const validatedData = s3FileKeyZodSchmema.parse(req.query);
+            const validatedData = s3FileKeySchema.parse(req.query);
             const result = await this.createFileSignedUrlUseCase.execute({ key: validatedData.s3FileKey });
             sendResponse(res, result);
         } catch (error) {

@@ -2,11 +2,11 @@ import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
-import { ProviderPlanSubscribeZodSchema } from "../../shared/zod/provider.zod";
+import { validateSubscriptionIdSchema } from "../../shared/zod/common.zod";
 import { FetchSubscriptionDetailsUseCase } from "../../application/useCases/common/subscription.useCase";
 import { ProviderFetchAllSubscriptionsUseCase } from "../../application/useCases/provier/providerSubscription.useCase";
 import { ProviderTrialSubscriptionUseCase } from "../../application/useCases/provier/providerTrailSubscription.useCase";
-import { RequestQueryCommonZodSchema, SaveStripePaymentZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
+import { providerIdWithPaginationSchema, providerPlanSubscribeSchema, providerSaveSubscriptionSchema, validateProviderIdSchema } from "../../shared/zod/provider.zod";
 import { ProviderSaveSubscriptionUseCase, ProviderStripeSubscriptionCreateSessionIdUseCase } from "../../application/useCases/provier/providerStripeSubscription.useCase";
 import { fetchSubscriptionDetailsUseCase, providerFetchAllSubscriptionsUseCase, providerSaveSubscriptionUseCase, providerStripeSubscriptionCreateSessionIdUseCase, providerTrialSubscriptionUseCase } from ".";
 
@@ -27,9 +27,10 @@ class ProviderSubscriptionController {
 
     async subscribe(req: Request, res: Response, next: NextFunction) {
         try {
-            const providerId = (req.user as DecodedUser).userOrProviderId;
-            const { planId, planDuration } = ProviderPlanSubscribeZodSchema.parse(req.body);
-            if (!providerId || !planId || !planDuration) throw new Error("Invalid request.");
+            const { planId, planDuration, providerId } = providerPlanSubscribeSchema.parse({
+                providerId: (req.user as DecodedUser).userOrProviderId,
+                ...req.body
+            });
             const result = await this.providerStripeSubscriptionCreateSessionIdUseCase.execute({ providerId, planId, duration: planDuration });
             sendResponse(res, result);
         } catch (error) {
@@ -40,9 +41,10 @@ class ProviderSubscriptionController {
 
     async saveSubscription(req: Request, res: Response, next: NextFunction) {
         try {
-            const providerId = (req.user as DecodedUser).userOrProviderId;
-            const { sessionId } = SaveStripePaymentZodSchema.parse(req.body);
-            if (!providerId || !sessionId) throw new Error("Invalid request.");
+            const { providerId, sessionId } = providerSaveSubscriptionSchema.parse({
+                providerId: (req.user as DecodedUser).userOrProviderId,
+                ...req.body
+            });
             const result = await this.providerSaveSubscriptionUseCase.execute({ providerId, sessionId });
             sendResponse(res, result, "Your subscription has been activated");
         } catch (error) {
@@ -53,10 +55,10 @@ class ProviderSubscriptionController {
 
     async fetchProviderSubscriptions(req: Request, res: Response, next: NextFunction) {
         try {
-            const validateQueryData = RequestQueryCommonZodSchema.parse(req.query);
-            const { page, limit } = validateQueryData;
-            const providerId = (req.user as DecodedUser).userOrProviderId;
-            if (!providerId) throw new Error("Invalid request.");
+            const { limit, page, providerId } = providerIdWithPaginationSchema.parse({
+                providerId: (req.user as DecodedUser).userOrProviderId,
+                ...req.query
+            });
             const result = await this.providerFetchAllSubscriptionsUseCase.execute({ providerId, page, limit });
             sendResponse(res, result);
         } catch (error) {
@@ -67,8 +69,7 @@ class ProviderSubscriptionController {
 
     async subscribeToTrialPlan(req: Request, res: Response, next: NextFunction) {
         try {
-            const providerId = (req.user as DecodedUser).userOrProviderId;
-            if (!providerId) throw new Error("Invalid request.");
+            const { providerId } = validateProviderIdSchema.parse((req.user as DecodedUser).userOrProviderId);
             await this.providerTrialSubscriptionUseCase.execute({ providerId });
             sendResponse(res, null, "Your trial plan is on live");
         } catch (error) {
@@ -79,8 +80,7 @@ class ProviderSubscriptionController {
 
     async getSubscriptionDetails(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id: subscriptionId } = ValidateObjectId(req.params.subscriptionId, "Subscription Id");
-            if (!subscriptionId) throw new Error("Invalid request.");
+            const { subscriptionId } = validateSubscriptionIdSchema.parse({ subscriptionId: req.params.subscriptionId });
             const result = await this.fetchSubscriptionDetailsUseCase.execute({ subscriptionId });
             sendResponse(res, result);
         } catch (error) {

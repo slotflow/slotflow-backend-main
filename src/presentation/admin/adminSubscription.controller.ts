@@ -2,9 +2,10 @@ import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { adminFetchAllSubscriptionsUseCase, fetchSubscriptionDetailsUseCase } from ".";
-import { RequestQueryCommonZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
+import { paginationSchema } from "../../shared/zod/common.zod";
 import { FetchSubscriptionDetailsUseCase } from "../../application/useCases/common/subscription.useCase";
 import { AdminFetchAllSubscriptionsUseCase } from "../../application/useCases/admin/adminSubscription.useCase";
+import { adminGetSubscriptionDetailsSchema } from "../../shared/zod/admin.zod";
 
 class AdminSubscriptionController {
     constructor(
@@ -17,7 +18,7 @@ class AdminSubscriptionController {
 
     async getAllSubscriptions(req: Request, res: Response, next: NextFunction) {
         try {
-            const { page, limit } = RequestQueryCommonZodSchema.parse(req.query);
+            const { page, limit } = paginationSchema.parse(req.query);
             const result = await this.adminFetchAllSubscriptionsUseCase.execute({ page, limit });
             sendResponse(res, result);
         } catch (error) {
@@ -28,7 +29,7 @@ class AdminSubscriptionController {
 
     async getSubscriptionDetails(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id: subscriptionId } = ValidateObjectId(req.params.subscriptionId, "Subscription Id");
+            const { subscriptionId } = adminGetSubscriptionDetailsSchema.parse({ subscriptionId: req.params.subscriptionId });
             if (!subscriptionId) throw new Error("Invalid request.");
             const result = await this.fetchSubscriptionDetailsUseCase.execute({ subscriptionId });
             sendResponse(res, result);

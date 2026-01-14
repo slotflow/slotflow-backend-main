@@ -1,9 +1,9 @@
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
-import { AdminAddNewPlanZodSchema } from "../../shared/zod/admin.zod";
+import { paginationSchema } from "../../shared/zod/common.zod";
 import { adminChangePlanBlockStatusUseCase, adminCreatePlanUseCase, adminPlanListUseCase } from ".";
-import { changeBlockStatusZodSchema, RequestQueryCommonZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
+import { adminChangePlanBlockStatusSchema, adminCreateNewPlanSchema } from "../../shared/zod/admin.zod";
 import { AdminChangePlanBlockStatusUseCase, AdminCreatePlanUseCase, AdminPlanListUseCase } from "../../application/useCases/admin/adminPlan.useCase";
 
 class AdminPlanController {
@@ -19,7 +19,7 @@ class AdminPlanController {
 
     async getAllPlans(req: Request, res: Response, next: NextFunction) {
         try {
-            const { page, limit } = RequestQueryCommonZodSchema.parse(req.query);
+            const { page, limit } = paginationSchema.parse(req.query);
             const result = await this.adminPlanListUseCase.execute({ page, limit });
             sendResponse(res,result);
         } catch (error) {
@@ -30,7 +30,7 @@ class AdminPlanController {
 
     async createNewPlan(req: Request, res: Response, next: NextFunction) {
         try {
-            const validateBody = AdminAddNewPlanZodSchema.parse(req.body);
+            const validateBody = adminCreateNewPlanSchema.parse(req.body);
             await this.adminCreatePlanUseCase.execute(validateBody);
             sendResponse(res,null,"New plan created", true, 201);
         } catch (error) {
@@ -41,8 +41,10 @@ class AdminPlanController {
 
     async changePlanBlockStatus(req: Request, res: Response, next: NextFunction) {
         try {
-            const { blockStatus } = changeBlockStatusZodSchema.parse(req.body);
-            const { id: planId } = ValidateObjectId(req.params.planId, "Plan ID");
+            const { blockStatus, planId } = adminChangePlanBlockStatusSchema.parse({
+                planId: req.params.planId,
+                blockStatus: req.body.blockStatus
+            });
             const result = await this.adminChangePlanBlockStatusUseCase.execute({ planId, isBlocked: blockStatus });
             sendResponse(res,result,`plan ${result.isBlocked ? "blocked" : "unblocked"} successfully`);
         } catch (error) {

@@ -1,9 +1,10 @@
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
-import { RequestQueryCommonZodSchema } from "../../shared/zod/common.zod";
-import { AdminFetchAllPaymentsUseCase, AdminFetchRevenueReportUseCase } from "../../application/useCases/admin/adminPayment.useCase";
+import { paginationSchema } from "../../shared/zod/common.zod";
+import { adminFetchRevenuewReposrtSchema } from "../../shared/zod/admin.zod";
 import { adminFetchAllPaymentsUseCase, adminFetchRevenueReportUseCase } from ".";
+import { AdminFetchAllPaymentsUseCase, AdminFetchRevenueReportUseCase } from "../../application/useCases/admin/adminPayment.useCase";
 
 class AdminPaymentController {
     constructor(
@@ -17,7 +18,7 @@ class AdminPaymentController {
 
     async getAllPayments(req: Request, res: Response, next: NextFunction) {
         try {
-            const { page, limit } = RequestQueryCommonZodSchema.parse(req.query);
+            const { page, limit } = paginationSchema.parse(req.query);
             const result = await this.adminFetchAllPaymentsUseCase.execute({ page, limit });
             sendResponse(res, result);
         } catch (error) {
@@ -28,8 +29,10 @@ class AdminPaymentController {
 
     async fetchRevenueReport(req: Request, res: Response, next: NextFunction) {
         try {
-            const { startDate, endDate } = req.body;
-            const { page, limit } = RequestQueryCommonZodSchema.parse(req.query);
+            const { endDate, limit, page, startDate } = adminFetchRevenuewReposrtSchema.parse({
+                ...req.body,
+                ...req.query
+            });
             const result = await this.adminFetchRevenueReportUseCase.execute({
                 page,
                 limit,
@@ -45,7 +48,7 @@ class AdminPaymentController {
 
     async fetchRefundReport(req: Request, res: Response, next: NextFunction) {
         try {
-
+            // TODO
         } catch (error) {
             log.error("fetchRefundReport failed", error as Error);
             next(error);

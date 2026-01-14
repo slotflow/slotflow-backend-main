@@ -3,9 +3,9 @@ import { Role } from "../../domain/enums/role.enum";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
-import { RequestQueryCommonZodSchema } from "../../shared/zod/common.zod";
 import { fetchAllReviewsUseCase, providerChangeReviewRepostStatusUseCase } from ".";
 import { FetchAllReviewsUseCase } from "../../application/useCases/common/fetchReviews.useCase";
+import { providerChnageReviewReportSchema, providerIdWithPaginationSchema } from "../../shared/zod/provider.zod";
 import { ProviderChangeReviewRepostStatusUseCase } from "../../application/useCases/provier/providerReview.useCase";
 
 class ProviderReviewController {
@@ -19,8 +19,10 @@ class ProviderReviewController {
 
     async findAllReviews(req: Request, res: Response, next: NextFunction) {
         try {
-            const providerId = (req.user as DecodedUser).userOrProviderId;
-            const { limit, page } = RequestQueryCommonZodSchema.parse(req.query);
+            const { limit, page, providerId } = providerIdWithPaginationSchema.parse({
+                            providerId: (req.user as DecodedUser).userOrProviderId,
+                            ...req.query
+                        });
             const result = await this.fetchAllReviewsUseCase.execute({
                 page,
                 limit,
@@ -36,9 +38,10 @@ class ProviderReviewController {
 
     async chnageReportReview(req: Request, res: Response, next: NextFunction) {
         try {
-            const providerId = (req.user as DecodedUser).userOrProviderId;
-            if(!providerId) throw new Error("Invalid request");
-            const reviewId = req.params.reviewId;
+            const { providerId, reviewId } = providerChnageReviewReportSchema.parse({
+                providerId: (req.user as DecodedUser).userOrProviderId,
+                reviewId: req.params.reviewId
+            });
             const result = await this.providerChangeReviewRepostStatusUseCase.execute({
                 reviewId,
                 providerId

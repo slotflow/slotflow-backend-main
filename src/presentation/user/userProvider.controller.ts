@@ -2,8 +2,9 @@ import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
-import { UserFetchAllProvidersZodSchema } from "../../shared/zod/user.zod";
-import { DateZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
+import { validateProviderIdSchema } from "../../shared/zod/provider.zod";
+import { fetchProviderServiceAvailabilitySchema } from "../../shared/zod/common.zod";
+import { userFetchAllProvidersSchema, validateUserIdSchema } from "../../shared/zod/user.zod";
 import { userFetchProvidersForChatSidebarUseCase, userFetchServiceProviderAddressUseCase, userFetchServiceProviderProfileDetailsUseCase, userFetchServiceProviderServiceAvailabilityUseCase, userFetchServiceProviderServiceDetailsUseCase, userFetchServiceProvidersUseCase } from ".";
 import { UserFetchProvidersForChatSidebarUseCase, UserFetchServiceProviderAddressUseCase, UserFetchServiceProviderProfileDetailsUseCase, UserFetchServiceProviderServiceAvailabilityUseCase, UserFetchServiceProviderServiceDetailsUseCase, UserFetchServiceProvidersUseCase } from "../../application/useCases/user/userProvider.useCase";
 
@@ -26,7 +27,7 @@ class UserProviderController {
 
     async fetchServiceProviders(req: Request, res: Response, next: NextFunction) {
         try {
-            const validatedData = UserFetchAllProvidersZodSchema.parse(req.query);
+            const validatedData = userFetchAllProvidersSchema.parse(req.query);
             const { categories, location, maxPrice, minPrice, slotflowTrusted, appServiceIds, skip, limit } = validatedData;
             let serviceIds: string[] = [];
             if (appServiceIds) {
@@ -46,8 +47,7 @@ class UserProviderController {
 
     async fetchServiceProviderAddress(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
-            if (!providerId) throw new Error("Invalid request");
+            const { providerId } = validateProviderIdSchema.parse({providerId: req.params.providerId});
             const result = await this.userFetchServiceProviderAddressUseCase.execute({ providerId });
             sendResponse(res, result);
         } catch (error) {
@@ -58,8 +58,7 @@ class UserProviderController {
 
     async fetchServiceProviderProfileDetails(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
-            if (!providerId) throw new Error("Invalid request");
+            const { providerId } = validateProviderIdSchema.parse({providerId: req.params.providerId});
             const result = await this.userFetchServiceProviderProfileDetailsUseCase.execute({ providerId });
             sendResponse(res, result);
         } catch (error) {
@@ -70,8 +69,7 @@ class UserProviderController {
 
     async fetchServiceProviderServiceDetails(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
-            if (!providerId) throw new Error("Invalid request");
+            const { providerId } = validateProviderIdSchema.parse({providerId: req.params.providerId});
             const result = await this.userFetchServiceProviderServiceDetailsUseCase.execute({ providerId });
             sendResponse(res, result);
         } catch (error) {
@@ -82,9 +80,10 @@ class UserProviderController {
 
     async fetchServiceProviderServiceAvailability(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
-            const { date } = DateZodSchema.parse(req.query);
-            if (!providerId || !date) throw new Error("Invalid request");
+            const { date, providerId } = fetchProviderServiceAvailabilitySchema.parse({
+                providerId: req.params.providerId,
+                date: req.query.date
+            });
             const result = await this.userFetchServiceProviderServiceAvailabilityUseCase.execute({ providerId, date: new Date(date) });
             sendResponse(res, result);
         } catch (error) {
@@ -95,8 +94,7 @@ class UserProviderController {
 
     async fetchProvidersForChatSidebar(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = (req.user as DecodedUser).userOrProviderId;
-            if (!userId) throw new Error("Invalid request");
+            const { userId } = validateUserIdSchema.parse({ providerId: (req.user as DecodedUser).userOrProviderId });
             const result = await this.userFetchProvidersForChatSidebar.execute({ userId });
             sendResponse(res, result);
         } catch (error) {

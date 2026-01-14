@@ -3,7 +3,7 @@ import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
-import { RequestQueryCommonZodSchema } from "../../shared/zod/common.zod";
+import { userIdWithPaginationSchema } from "../../shared/zod/user.zod";
 import { UserFetchAllPaymentsUseCase } from "../../application/useCases/user/userPayment.useCase";
 
 class UserPaymentController {
@@ -15,10 +15,10 @@ class UserPaymentController {
 
     async fetchPayments(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = (req.user as DecodedUser).userOrProviderId;
-            const validateQueryData = RequestQueryCommonZodSchema.parse(req.query);
-            const { page, limit } = validateQueryData;
-            if (!userId) throw new Error("Invalid request");
+            const { limit, page, userId } = userIdWithPaginationSchema.parse({
+                userId: (req.user as DecodedUser).userOrProviderId,
+                ...req.query
+            });
             const result = await this.userFetchAllPaymentsUseCase.execute({ userId, page, limit });
             sendResponse(res, result);
         } catch (error) {

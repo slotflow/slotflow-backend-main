@@ -8,7 +8,7 @@ import { ResendOtpUseCase } from '../../application/useCases/auth/resendOtp.useC
 import { VerifyOTPUseCase } from '../../application/useCases/auth/verifyOtp.useCase';
 import { UpdatePasswordUseCase } from '../../application/useCases/auth/updatePassword.useCase';
 import { loginUseCase, registerUseCase, resendOtpUseCase, updatePasswordUseCase, verifyOTPUseCase } from '.';
-import { LoginZodSchema, OTPVerificationZodSchema, RegisterZodSchema, ResendOTPZodSchema, UpdatePasswordZodSchema } from '../../shared/zod/auth.zod';
+import { loginSchema, otpVerificationSchema, registerSchema, resendOTPSchema, updatePasswordSchema } from '../../shared/zod/auth.zod';
 
 class AuthController {
 
@@ -28,7 +28,7 @@ class AuthController {
 
   async register(req: Request, res: Response, next: NextFunction) {
     try {
-      const validateData = RegisterZodSchema.parse(req.body);
+      const validateData = registerSchema.parse(req.body);
       const result = await this.registerUseCase.execute({ ...validateData });
       res.cookie("token", result.authUser.token, {
         maxAge: 2 * 24 * 60 * 60 * 1000,
@@ -46,7 +46,7 @@ class AuthController {
 
   async verifyOTP(req: Request, res: Response, next: NextFunction) {
     try {
-      const validateData = OTPVerificationZodSchema.parse(req.body);
+      const validateData = otpVerificationSchema.parse(req.body);
       await this.verifyOTPUseCase.execute({ ...validateData });
       sendResponse(res, null, "OTP verified successfully");
     } catch (error) {
@@ -57,7 +57,7 @@ class AuthController {
   
   async resendOtp(req: Request, res: Response, next: NextFunction) {
     try {
-      const validateData = ResendOTPZodSchema.parse(req.body);
+      const validateData = resendOTPSchema.parse(req.body);
       const { role, verificationToken, email } = validateData;
       if (!role || (!verificationToken && !email)) throw new Error("Invalid request.");
       const result = await this.resendOtpUseCase.execute({ role, verificationToken, email });
@@ -71,7 +71,7 @@ class AuthController {
   async login(req: Request, res: Response, next: NextFunction) {
     try {
       console.log("login controller");
-      const validateData = LoginZodSchema.parse(req.body);
+      const validateData = loginSchema.parse(req.body);
       const { email, password, role } = validateData;
       if (!email || !password || !role) throw new Error("Invalid request.");
       const result = await this.loginUseCase.execute({ email, password, role });
@@ -102,7 +102,7 @@ class AuthController {
 
   async updatePassword(req: Request, res: Response, next: NextFunction) {
     try {
-      const validateData = UpdatePasswordZodSchema.parse(req.body);
+      const validateData = updatePasswordSchema.parse(req.body);
       const { role, verificationToken, password } = validateData;
       if (!role || !verificationToken || !password) throw new Error("Invalid request.");
       await this.updatePasswordUseCase.execute({ role, verificationToken, password });

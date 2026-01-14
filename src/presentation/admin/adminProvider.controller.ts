@@ -1,10 +1,11 @@
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
+import { fetchProviderServiceAvailabilitySchema, paginationSchema } from "../../shared/zod/common.zod";
+import { providerIdWithPaginationSchema, validateProviderIdSchema } from "../../shared/zod/provider.zod";
 import { FetchProviderProofsUseCase } from "../../application/useCases/common/fetchProviderProofs.useCase";
 import { AdminFetchUserOrProviderAddressUseCase } from "../../application/useCases/admin/adminAddress.useCase";
-import { AdminChangeProviderTrustedTagZodSchema, adminRejectProviderZodSchema } from "../../shared/zod/admin.zod";
-import { changeBlockStatusZodSchema, DateZodSchema, RequestQueryCommonZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
+import { adminChangeProviderBlockStatusSchema, adminChangeProviderTrustTagSchema, adminRejectProviderSchema } from "../../shared/zod/admin.zod";
 import { AdminApproveProviderUseCase, AdminChangeProviderBlockStatusUseCase, AdminChangeProviderTrustTagUseCase, AdminProviderListUseCase, AdminRejectProviderUseCase } from "../../application/useCases/admin/adminProvider.useCase";
 import { AdminFetchProviderDetailsUseCase, AdminFetchProviderPaymentsUseCase, AdminfetchProviderServiceAvailabilityUseCase, AdminFetchProviderServiceUseCase, AdminFetchProviderSubscriptionsUseCase } from "../../application/useCases/admin/adminProviderProfile.useCase";
 import { adminApproveProviderUseCase, adminChangeProviderBlockStatusUseCase, adminChangeProviderTrustTagUseCase, adminFetchProviderDetailsUseCase, adminFetchProviderPaymentsUseCase, adminFetchProviderServiceAvailabilityUseCase, adminFetchProviderServiceUseCase, adminFetchProviderSubscriptionsUseCase, adminFetchUserOrProviderAddressUseCase, adminProviderListUseCase, adminRejectProviderUseCase, fetchProviderProofsUseCase } from ".";
@@ -40,7 +41,7 @@ class AdminProviderController {
 
     async getAllProviders(req: Request, res: Response, next: NextFunction) {
         try {
-            const { page, limit } = RequestQueryCommonZodSchema.parse(req.query);
+            const { page, limit } = paginationSchema.parse(req.query);
             const result = await this.adminProviderListUseCase.execute({ page, limit });
             sendResponse(res,result);
         } catch (error) {
@@ -51,8 +52,7 @@ class AdminProviderController {
 
     async approveProvider(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
-            if (!providerId) throw new Error("Invalid request.");
+            const { providerId } = validateProviderIdSchema.parse({ providerId: req.params.providerId });
             await this.adminApproveProviderUseCase.execute({ providerId });
             sendResponse(res,null,"Successfully approved provider");
         } catch (error) {
@@ -63,11 +63,11 @@ class AdminProviderController {
 
     async rejectProvider(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
-            if (!providerId) throw new Error("Invalid request.");
-            const validatedData = adminRejectProviderZodSchema.parse(req.body);
+            const validatedData = adminRejectProviderSchema.parse({
+                providerId: req.params.providerId,
+                ...req.body
+            });
             await this.adminRejectProviderUseCase.execute({
-                providerId,
                 ...validatedData
             });
             sendResponse(res,null,"Successfully rejected provider");
@@ -79,9 +79,10 @@ class AdminProviderController {
 
     async changeProviderBlockStatus(req: Request, res: Response, next: NextFunction) {
         try {
-            const { blockStatus } = changeBlockStatusZodSchema.parse(req.body);
-            const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
-            if (!providerId || blockStatus === null) throw new Error("Invalid request.");
+            const { blockStatus, providerId } = adminChangeProviderBlockStatusSchema.parse({
+                providerId: req.params.providerId,
+                blockStatus: req.body.blockStatus
+            });
             const result = await this.adminChangeProviderBlockStatusUseCase.execute({ providerId, isBlocked: blockStatus });
             sendResponse(res,result,`Successfully ${result.isBlocked ? "blocked" : "unblocked"} provider`);
         } catch (error) {
@@ -92,9 +93,10 @@ class AdminProviderController {
 
     async changeProviderTrustedTag(req: Request, res: Response, next: NextFunction) {
         try {
-            const { trustTag } = AdminChangeProviderTrustedTagZodSchema.parse(req.body);
-            const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
-            if (!providerId || trustTag === null || undefined) throw new Error("Invalid request.");
+            const { providerId, trustTag } = adminChangeProviderTrustTagSchema.parse({
+                trustTag: req.body.trustTag,
+                providerId: req.params.providerId
+            });
             const result = await this.adminChangeProviderTrustTagUseCase.execute({ providerId, trustedBySlotflow: trustTag });
             sendResponse(res,result,`Successfully ${result.trustedBySlotflow ? "given" : "revoked"} provider trust tag`);
         } catch (error) {
@@ -105,8 +107,7 @@ class AdminProviderController {
 
     async fetchProviderDetails(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
-            if (!providerId) throw new Error("Invalid request.");
+            const { providerId } = validateProviderIdSchema.parse({ providerId: req.params.providerId });
             const result = await this.adminFetchProviderDetailsUseCase.execute({ providerId });
             sendResponse(res,result)
         } catch (error) {
@@ -117,8 +118,7 @@ class AdminProviderController {
 
     async fetchProviderAddress(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
-            if (!providerId) throw new Error("Invalid request.");
+            const { providerId } = validateProviderIdSchema.parse({ providerId: req.params.providerId });
             const result = await this.adminFetchUserOrProviderAddressUseCase.execute({ userId: providerId });
             res.status(200).json({ 
                 success: true, 
@@ -135,8 +135,7 @@ class AdminProviderController {
 
     async fetchProviderService(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
-            if (!providerId) throw new Error("Invalid request.");
+            const { providerId } = validateProviderIdSchema.parse({ providerId: req.params.providerId });
             const result = await this.adminFetchProviderServiceUseCase.execute({ providerId });
             sendResponse(res,result);
         } catch (error) {
@@ -147,9 +146,10 @@ class AdminProviderController {
 
     async fetchProviderServiceAvailability(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
-            const { date } = DateZodSchema.parse(req.query);
-            if (!providerId || !date) throw new Error("Invalid request.");
+            const { date, providerId } = fetchProviderServiceAvailabilitySchema.parse({
+                providerId: req.params.providerId,
+                date: req.query.date
+            });
             const result = await this.adminFetchProviderServiceAvailabilityUseCase.execute({ providerId, date: new Date(date) });
             res.status(200).json(result);
         } catch (error) {
@@ -160,8 +160,10 @@ class AdminProviderController {
 
     async fetchProviderSubscriptions(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
-            const { page, limit } = RequestQueryCommonZodSchema.parse(req.query);
+            const { limit, page, providerId } = providerIdWithPaginationSchema.parse({
+                providerId: req.params.providerId,
+                ...req.query
+            });
             const result = await this.adminFetchProviderSubscriptionsUseCase.execute({ providerId, page, limit });
             sendResponse(res,result);
         } catch (error) {
@@ -172,9 +174,10 @@ class AdminProviderController {
 
     async fetchProviderPayments(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
-            const { page, limit } = RequestQueryCommonZodSchema.parse(req.query);
-            if (!providerId) throw new Error("Invalid request.");
+           const { limit, page, providerId } = providerIdWithPaginationSchema.parse({
+                providerId: req.params.providerId,
+                ...req.query
+            });
             const result = await this.adminFetchProviderPaymentsUseCase.execute({ providerId, page, limit });
             sendResponse(res,result);
         } catch (error) {
@@ -185,8 +188,7 @@ class AdminProviderController {
 
     async fetchProviderProofs(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id: providerId } = ValidateObjectId(req.params.providerId, "Provider ID");
-            if (!providerId) throw new Error("Invalid request.");
+            const { providerId } = validateProviderIdSchema.parse({ providerId: req.params.providerId });
             const result = await this.fetchProviderProofsUseCase.execute({ providerId });
             res.status(200).json(result);
         } catch (error) {

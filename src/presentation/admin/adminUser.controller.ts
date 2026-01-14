@@ -1,8 +1,10 @@
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
+import { validateUserIdSchema } from "../../shared/zod/user.zod";
+import { paginationSchema } from "../../shared/zod/common.zod";
+import { adminUserBlockStatusSchema } from "../../shared/zod/admin.zod";
 import { AdminFetchUserOrProviderAddressUseCase } from "../../application/useCases/admin/adminAddress.useCase";
-import { changeBlockStatusZodSchema, RequestQueryCommonZodSchema, ValidateObjectId } from "../../shared/zod/common.zod";
 import { adminChangeUserBlockStatusUseCase, adminFetchUserDetailsUseCase, adminFetchUserOrProviderAddressUseCase, adminUserListUseCase } from ".";
 import { AdminChangeUserBlockStatusUseCase, AdminFetchUserDetailsUseCase, AdminUserListUseCase } from "../../application/useCases/admin/adminUser.useCase";
 
@@ -21,7 +23,7 @@ class AdminUserController {
 
     async getAllUsers(req: Request, res: Response, next: NextFunction) {
         try {
-            const { page, limit } = RequestQueryCommonZodSchema.parse(req.query);
+            const { page, limit } = paginationSchema.parse(req.query);
             const result = await this.adminUserListUseCase.execute({ page, limit });
             sendResponse(res, result);
         } catch (error) {
@@ -32,10 +34,14 @@ class AdminUserController {
 
     async changeUserBlockStatus(req: Request, res: Response, next: NextFunction) {
         try {
-            const { blockStatus } = changeBlockStatusZodSchema.parse(req.body);
-            const { id: userId } = ValidateObjectId(req.params.userId, "User ID");
-            if (!userId || blockStatus === null) throw new Error("Invalid request");
-            const result = await this.adminChangeUserBlockStatusUseCase.execute({ userId, isBlocked: blockStatus });
+            const { blockStatus, userId } = adminUserBlockStatusSchema.parse({
+                userId: req.params.userId,
+                blockStatus: req.body.blockStatus
+            });
+            const result = await this.adminChangeUserBlockStatusUseCase.execute({ 
+                userId, 
+                isBlocked: blockStatus 
+            });
             sendResponse(res, result, `Successfully ${result.isBlocked ? "blocked" : "unblocked"} user`);
         } catch (error) {
             log.error("changeUserBlockStatus failed", error as Error);
@@ -45,8 +51,7 @@ class AdminUserController {
 
     async fetchUserDetails(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id: userId } = ValidateObjectId(req.params.userId, "User ID");
-            if (!userId) throw new Error("Invalid request.");
+            const { userId } = validateUserIdSchema.parse({ userId: req.params.userId });
             const result = await this.adminFetchUserDetailsUseCase.execute({ userId });
             sendResponse(res, result);
         } catch (error) {
@@ -57,8 +62,7 @@ class AdminUserController {
 
     async fetchUserAddress(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id: userId } = ValidateObjectId(req.params.userId, "User ID");
-            if (!userId) throw new Error("Invalid request.");
+             const { userId } = validateUserIdSchema.parse({ userId: req.params.userId });
             const result = await this.adminFetchUserOrProviderAddressUseCase.execute({ userId });
             sendResponse(res, result, `${result ? "fetched successfully" : "not added yet"}`)
         } catch (error) {

@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import { Types } from 'mongoose';
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
 import { validateEmail, validateOtp, validatePassword, validateUsername } from '@codebymk/validator';
-import { addressLineRegex, countryRegex, districtRegex, landMarkRegex, phoneRegex, pincodeRegex, placeRegex, stateRegex } from "../../shared/zod/regex";
+import { addressLineRegex, countryRegex, districtRegex, landMarkRegex, phoneRegex, pincodeRegex, placeRegex, stateRegex } from "../utils/regex";
 
 dayjs.extend(customParseFormat);
 

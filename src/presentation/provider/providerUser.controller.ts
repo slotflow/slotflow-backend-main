@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { providerFetchUserForChatSidebarUseCase } from ".";
 import { DecodedUser } from "../../application/dtos/common.dto";
+import { validateProviderIdSchema } from "../../shared/zod/provider.zod";
 import { ProviderFetchUserForChatSidebarUseCase } from "../../application/useCases/provier/providerUser.useCase";
 
 class ProviderUserController {
@@ -14,8 +15,7 @@ class ProviderUserController {
 
     async fetchUsersForChatSideBar(req: Request, res: Response, next: NextFunction) {
         try {
-            const providerId = (req.user as DecodedUser).userOrProviderId;
-            if(!providerId) throw new Error("Invalid request");
+            const { providerId } = validateProviderIdSchema.parse((req.user as DecodedUser).userOrProviderId);
             const result = await this.providerFetchUserForChatSidebarUseCase.execute({ providerId });
             sendResponse(res, result);
         } catch (error) {

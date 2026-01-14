@@ -13,6 +13,7 @@ import { ApiPaginationRequest, TableData } from "../../dtos/common.dto";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/message/IKafkaProducerAdapter";
+import { Redis } from "@upstash/redis";
 
 export class AdminUserListUseCase {
     constructor(
@@ -40,7 +41,8 @@ export class AdminUserListUseCase {
 export class AdminChangeUserBlockStatusUseCase {
     constructor(
         private userRepository: IUserRepository,
-        private kafkaProducer: IKafkaProducerAdapter
+        private kafkaProducer: IKafkaProducerAdapter,
+        private redisClient: Redis
     ) { };
 
     async execute(payload: AdminChangeUserIsBlockedStatusRequest): Promise<AdminChangeUserIsBlockedStatusResponse> {
@@ -56,6 +58,8 @@ export class AdminChangeUserBlockStatusUseCase {
 
             const updatedUser = await this.userRepository.update(user);
             if (!updatedUser) throw new Error("User not found");
+
+            await this.redisClient.set(`user:block-status:${userId}`,updatedUser.isBlocked);
 
             await this.kafkaProducer.publish<SendAccountBlockStatusEvent>(kafkaConfig.topics.pub.accountBlockStatus, {
                 userId,

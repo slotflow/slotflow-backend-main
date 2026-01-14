@@ -3,14 +3,14 @@ import { Role } from "../../domain/enums/role.enum";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
-import { UserCreateSessionIdForbookingViaStripeZodSchema } from "../../shared/zod/user.zod";
+import { validateBookingIdSchema, validateJoinRoomSchema } from "../../shared/zod/common.zod";
 import { UserCancelBookingUseCase } from "../../application/useCases/user/userBooking.useCase";
 import { ValidateJoinRoomUsecase } from "../../application/useCases/common/validateJoinRoom.useCase";
 import { FetchBookingDetailsUsecase } from "../../application/useCases/common/fetchBookingDetails.useCase";
 import { FetchBookingAppointmentsUseCase } from "../../application/useCases/common/fetchAllBookings.useCase";
 import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/common/updateBookingOnlineTracking.useCase";
 import { UserAppointmentBookingViaStripeUseCase, UserSaveBookingAfterStripePaymentUseCase } from "../../application/useCases/user/userStripeBooking.useCase";
-import { JoinOrLeftRoomZodSchema, RequestQueryForBookingCommonZodSchema, SaveStripePaymentZodSchema, ValidateObjectId, validateRoomId } from "../../shared/zod/common.zod";
+import { userCancelBookingSchema, userCreateSessionIdForbookingViaStripeSchema, userFetchAllAppointmentsSchema, userSaveBookingSchema, userValidateRoomSchema } from "../../shared/zod/user.zod";
 import { fetchBookingAppointmentsUseCase, fetchBookingDetailsUsecase, updateBookingOnlineTrakingUseCase, userAppointmentBookingViaStrpieUseCase, userCancelBookingUseCase, userSaveBookingAfterStripePaymentUseCase, validateJoinRoomUsecase } from ".";
 
 class UserBookingController {
@@ -34,16 +34,17 @@ class UserBookingController {
 
     async fetchBookings(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = (req.user as DecodedUser);
-            const { page, limit, online, raw } = RequestQueryForBookingCommonZodSchema.parse(req.query);
-            if (!user || !user.role) throw new Error("Invalid request");
+            const { limit, page, userId, online, raw } = userFetchAllAppointmentsSchema.parse({
+                providerId: (req.user as DecodedUser).userOrProviderId,
+                ...req.query
+            });
             const result = await this.fetchBookingAppointmentsUseCase.execute({
-                userId: user.userOrProviderId,
+                userId,
                 page,
                 limit,
                 online: online ? true : false,
                 raw: raw ? true : false,
-                role: user.role,
+                role: Role.User,
             });
             sendResponse(res, result);
         } catch (error) {
@@ -54,11 +55,12 @@ class UserBookingController {
 
     async cancelBooking(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = (req.user as DecodedUser).userOrProviderId;
-            const { id: bookingId } = ValidateObjectId(req.params.bookingId, "Booking ID");
-            if (!userId || !bookingId) throw new Error("Invalid request");
-            await this.userCancelBookingUseCase.execute({ 
-                userId, 
+            const { bookingId, userId } = userCancelBookingSchema.parse({
+                userId: (req.user as DecodedUser).userOrProviderId,
+                bookingId: req.params.bookingId
+            });
+            await this.userCancelBookingUseCase.execute({
+                userId,
                 bookingId,
             });
             sendResponse(res, null, "Booking cancelled");
@@ -70,10 +72,10 @@ class UserBookingController {
 
     async createSessionIdForbookingViaStripe(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = (req.user as DecodedUser).userOrProviderId;
-            const validateData = UserCreateSessionIdForbookingViaStripeZodSchema.parse(req.body);
-            const { providerId, slotId, date, selectedServiceMode } = validateData;
-            if (!userId || !providerId || !slotId || !selectedServiceMode || !date) throw new Error("Invalid request");
+            const { date, providerId, selectedServiceMode, slotId, userId } = userCreateSessionIdForbookingViaStripeSchema.parse({
+                userId: (req.user as DecodedUser).userOrProviderId,
+                ...req.body
+            });
             const result = await this.userAppointmentBookingViaStripeUseCase.execute({
                 userId,
                 providerId,
@@ -90,12 +92,13 @@ class UserBookingController {
 
     async saveBookingAfterStripePayment(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = (req.user as DecodedUser).userOrProviderId;
-            const { sessionId } = SaveStripePaymentZodSchema.parse(req.body);
-            if (!userId || !sessionId) throw new Error("Invalid request");
-            await this.userSaveBookingAfterStripePaymentUseCase.execute({ 
-                userId, 
-                sessionId 
+            const { sessionId, userId } = userSaveBookingSchema.parse({
+                userId: (req.user as DecodedUser).userOrProviderId,
+                ...req.body,
+            });
+            await this.userSaveBookingAfterStripePaymentUseCase.execute({
+                userId,
+                sessionId
             });
             sendResponse(res, null, "Booking saved successfully");
         } catch (error) {
@@ -106,14 +109,16 @@ class UserBookingController {
 
     async validateRoom(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id: bookingId } = ValidateObjectId(req.params.bookingId, "Booking ID");
-            const {roomId} = validateRoomId.parse(req.query.roomId);
-            const userId = (req.user as DecodedUser).userOrProviderId;
-            if(!userId) throw new Error("Invalid request");
-            const result = await this.validateJoinRoomUsecase.execute({ 
-                bookingId, 
-                roomId, 
-                role: Role.User, 
+            const { bookingId, roomId, userId } = userValidateRoomSchema.parse({
+                bookingId: req.params.bookingId,
+                roomId: req.query.roomId,
+                userId: (req.user as DecodedUser).userOrProviderId
+            });
+            if (!userId) throw new Error("Invalid request");
+            const result = await this.validateJoinRoomUsecase.execute({
+                bookingId,
+                roomId,
+                role: Role.User,
                 userOrProviderId: userId
             });
             sendResponse(res, result);
@@ -125,9 +130,10 @@ class UserBookingController {
 
     async userJoinRoom(req: Request, res: Response, next: NextFunction) {
         try {
-            const roomId = req.params.roomId;
-            const validatedData = JoinOrLeftRoomZodSchema.parse(req.body);
-            const { joined, joinedTime, leftCallTime, role } = validatedData;
+            const { joined, role, roomId, joinedTime, leftCallTime } = validateJoinRoomSchema.parse({
+                roomId: req.params.roomId,
+                ...req.body,
+            });
             const result = await this.updateBookingOnlineTrakingUseCase.execute({
                 roomId,
                 joined,
@@ -144,7 +150,7 @@ class UserBookingController {
 
     async fetchBookingDetails(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id: bookingId } = ValidateObjectId(req.params.bookingId, "Booking ID");
+            const { bookingId } = validateBookingIdSchema.parse({ bookingId: req.params.bookingId });
             const result = await this.fetchBookingDetailsUsecase.execute({ bookingId });
             sendResponse(res, result);
         } catch (error) {
