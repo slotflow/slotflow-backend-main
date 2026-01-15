@@ -4,4 +4,6 @@ export interface IOTPService {
 
     verifyOtp(verificationToken: string, otp: string): Promise<boolean>;
 
+    deleteOtp(verificationToken: string): Promise<void>;
+
 };

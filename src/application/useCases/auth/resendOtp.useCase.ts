@@ -6,7 +6,7 @@ import { User } from '../../../domain/entities/user.entity';
 import { OtpPurpose } from '../../../domain/enums/otpPurpose.enum';
 import { Provider } from '../../../domain/entities/provider.entity';
 import { ResendOtpRequest, ResendOtpResponse } from '../../dtos/auth.dto';
-import { IOTPService } from '../../../domain/interfaces/services/IOtpService.service';
+import { IOTPService } from '../../../domain/interfaces/services/IOtp.service';
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { IKafkaProducerAdapter } from '../../../domain/interfaces/message/IKafkaProducerAdapter';
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';

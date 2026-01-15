@@ -1,9 +1,15 @@
 import { z } from "zod";
-import { validateUserIdSchema } from "./user.zod";
-import { validateProviderIdSchema } from "./provider.zod";
 import { PlanName } from "../../domain/enums/planName.enum";
 import { ServiceCategory } from "../../domain/enums/serviceCategories.enum";
-import { changeBlockStatusSchema, dateSchema, paginationSchema, roleValidationSchema } from "./common.zod";
+import {
+    validateUserIdSchema,
+    validateProviderIdSchema,
+    validateReviewIdSchema,
+    paginationSchema,
+    dateSchema,
+    roleValidationSchema
+} from "./base.zod";
+import { changeBlockStatusSchema } from "./common.zod";
 import { descriptionRegex, objectIdRegex, serviceNameRegex, verificationRejectionReasonRegex } from "../utils/regex";
 
 //Admin add new plan controller zod validation
@@ -25,11 +31,6 @@ export const adminCreateNewPlanSchema = z.object({
         .min(0, "Plan maximum booking must be at least 0")
         .max(10000, "Plan maximum booking must be at most 10000"),
     adVisibility: z.coerce.boolean(),
-});
-
-//
-export const validateReviewIdSchema = z.object({
-    reviewId: z.string().regex(objectIdRegex, "Invalid reviewId"),
 });
 
 // Admin change user block status
@@ -78,7 +79,7 @@ export const adminChangePlanBlockStatusSchema = z.object({
 
 //
 export const adminFetchRevenuewReposrtSchema = z.object({
-    startDate: dateSchema, 
+    startDate: dateSchema,
     endDate: dateSchema
 }).merge(paginationSchema);
 
@@ -87,3 +88,5 @@ export const adminFetchAllReviewsSchema = z.object({
     userId: z.string().regex(objectIdRegex, "Invalid planId").optional(),
     providerId: z.string().regex(objectIdRegex, "Invalid planId").optional(),
 }).merge(roleValidationSchema).merge(paginationSchema);
+
+export { validateReviewIdSchema };

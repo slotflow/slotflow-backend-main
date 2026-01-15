@@ -8,7 +8,7 @@ import { IJWT } from '../../../domain/interfaces/security/IJwt';
 import { OtpPurpose } from '../../../domain/enums/otpPurpose.enum';
 import { Provider } from '../../../domain/entities/provider.entity';
 import { RegisterRequest, RegisterResponse } from '../../dtos/auth.dto';
-import { IOTPService } from '../../../domain/interfaces/services/IOtpService.service';
+import { IOTPService } from '../../../domain/interfaces/services/IOtp.service';
 import { IPasswordHasher } from '../../../domain/interfaces/security/IPasswordHasher';
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { IKafkaProducerAdapter } from '../../../domain/interfaces/message/IKafkaProducerAdapter';

@@ -13,7 +13,7 @@ import { ApiPaginationRequest, TableData } from "../../dtos/common.dto";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/message/IKafkaProducerAdapter";
-import { Redis } from "@upstash/redis";
+import { ICacheService } from "../../../domain/interfaces/services/ICache.service";
 
 export class AdminUserListUseCase {
     constructor(
@@ -42,7 +42,7 @@ export class AdminChangeUserBlockStatusUseCase {
     constructor(
         private userRepository: IUserRepository,
         private kafkaProducer: IKafkaProducerAdapter,
-        private redisClient: Redis
+        private cacheService: ICacheService
     ) { };
 
     async execute(payload: AdminChangeUserIsBlockedStatusRequest): Promise<AdminChangeUserIsBlockedStatusResponse> {
@@ -59,7 +59,11 @@ export class AdminChangeUserBlockStatusUseCase {
             const updatedUser = await this.userRepository.update(user);
             if (!updatedUser) throw new Error("User not found");
 
-            await this.redisClient.set(`user:block-status:${userId}`,updatedUser.isBlocked);
+            if(updatedUser.isBlocked) {   
+                await this.cacheService.setBlockList(userId,JSON.stringify(isBlocked));
+            } else {
+                await this.cacheService.deleteBlockList(userId);
+            };
 
             await this.kafkaProducer.publish<SendAccountBlockStatusEvent>(kafkaConfig.topics.pub.accountBlockStatus, {
                 userId,

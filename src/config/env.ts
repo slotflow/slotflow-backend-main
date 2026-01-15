@@ -48,7 +48,8 @@ export const awsConfig = {
 export const redisConfig = {
     redisUrl: validator.requireEnv("REDIS_URL"),
     redisToken: validator.requireEnv("REDIS_TOKEN"),
-    redisTtl: validator.requireNumber("REDIS_TTL_SECONDS"),
+    redisBlockListTtl: validator.requireNumber("REDIS_TTL_SECONDS_BLOCKLIST"),
+    redisOtpTtl: validator.requireNumber("REDIS_TTL_SECONDS_OTP"),
 };
 
 export const googleClientConfig = {

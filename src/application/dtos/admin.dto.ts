@@ -144,12 +144,12 @@ export type AdminRejectProviderRequest = Pick<ProviderDTO, "verificationRejectio
 };
 
 // Used as the request interface of admin change provider block status
-export interface AdminChangeProviderStatusRequest {
+export interface AdminChangeProviderBlockStatusRequest {
     providerId: ProviderDTO["_id"];
     isBlocked: ProviderDTO["isBlocked"];
 };
 // Used as the response type of admin change provider block status
-export type AdminChangeProviderStatusResponse = AdminChangeProviderStatusRequest;
+export type AdminChangeProviderBlockStatusResponse = AdminChangeProviderBlockStatusRequest;
 
 // Used as the request interface of admin change provider trust tag 
 export interface AdminChangeProviderTrustTagRequest  {

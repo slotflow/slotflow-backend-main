@@ -1,16 +1,22 @@
 import { z } from "zod";
 import { objectIdRegex } from "../utils/regex";
-import { addressSchema, dateSchema, fetchBookingCommonSchema, paginationSchema, s3FileKeySchema, saveStripePaymentSchema, updateInfoSchema, validateBookingIdSchema, validateRoomIdSchema } from "./common.zod";
+import { Role } from "../../domain/enums/role.enum";
 import { ServiceMode } from "../../domain/enums/serviceMode.enum";
 import { ServiceCategory } from "../../domain/enums/serviceCategories.enum";
-import { validateProviderIdSchema } from "./provider.zod";
-import { validateReviewIdSchema } from "./admin.zod";
-import { Role } from "../../domain/enums/role.enum";
-
-//
-export const validateUserIdSchema = z.object({
-    userId: z.string().regex(objectIdRegex, "Invalid userId"),
-});
+import {
+    validateUserIdSchema,
+    paginationSchema,
+    dateSchema,
+    addressSchema,
+    updateInfoSchema,
+    saveStripePaymentSchema,
+    s3FileKeySchema,
+    validateBookingIdSchema,
+    validateRoomIdSchema,
+    validateProviderIdSchema,
+    validateReviewIdSchema
+} from "./base.zod";
+import { fetchBookingCommonSchema } from "./common.zod";
 
 //
 export const userIdWithPaginationSchema = validateUserIdSchema.merge(paginationSchema);
@@ -80,6 +86,8 @@ export const userUpdateInfoSchema = validateUserIdSchema.merge(updateInfoSchema)
 //
 export const userFetchAllReviewsSchema = z.object({
     userId: z.string().regex(objectIdRegex, "Invalid userId"),
-    providerId:z.string().regex(objectIdRegex, "Invalid providerId"),
+    providerId: z.string().regex(objectIdRegex, "Invalid providerId"),
     role: z.nativeEnum(Role).optional(),
 }).merge(paginationSchema)
+
+export { validateUserIdSchema };

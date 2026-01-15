@@ -2,19 +2,19 @@ import {
     AdiminFetchAllProviders,
     AdminRejectProviderRequest,
     AdminApproveProviderRequest,
-    AdminChangeProviderStatusRequest,
-    AdminChangeProviderStatusResponse,
     AdminChangeProviderTrustTagRequest,
     AdminChangeProviderTrustTagResponse,
+    AdminChangeProviderBlockStatusRequest,
+    AdminChangeProviderBlockStatusResponse,
 } from "../../dtos/admin.dto";
 import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { ApiPaginationRequest, TableData } from "../../dtos/common.dto";
+import { ICacheService } from "../../../domain/interfaces/services/ICache.service";
 import { AdminVerificationStatus } from "../../../domain/enums/adminVerificationStatus.enum";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/message/IKafkaProducerAdapter";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { SendAccountBlockStatusEvent, SendAccountTrustStatusEvent, SendAdminProviderReviewEvent } from "../../dtos/kafka.dtos";
-import { Redis } from "@upstash/redis";
 
 export class AdminProviderListUseCase {
     constructor(
@@ -123,10 +123,10 @@ export class AdminChangeProviderBlockStatusUseCase {
     constructor(
         private providerRepository: IProviderRepository,
         private kafkaProducer: IKafkaProducerAdapter,
-        private redisClient: Redis
+        private cacheService: ICacheService
     ) { };
 
-    async execute(payload: AdminChangeProviderStatusRequest): Promise<AdminChangeProviderStatusResponse> {
+    async execute(payload: AdminChangeProviderBlockStatusRequest): Promise<AdminChangeProviderBlockStatusResponse> {
         try {
             const { providerId, isBlocked } = payload;
 
@@ -140,7 +140,11 @@ export class AdminChangeProviderBlockStatusUseCase {
             const updatedProvider = await this.providerRepository.update(provider);
             if (!updatedProvider) throw new Error("Provider not found");
 
-            await this.redisClient.set(`user:block-status:${providerId}`,updatedProvider.isBlocked);
+            if(updatedProvider.isBlocked) {   
+                await this.cacheService.setBlockList(providerId,JSON.stringify(isBlocked));
+            } else {
+                await this.cacheService.deleteBlockList(providerId);
+            };
 
             await this.kafkaProducer.publish<SendAccountBlockStatusEvent>(kafkaConfig.topics.pub.accountBlockStatus, {
                 email: provider.email,

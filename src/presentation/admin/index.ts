@@ -1,6 +1,5 @@
-import { redisClient } from "../../infrastructure/lib/redis";
 import { kafkaProducer } from "../../infrastructure/messaging";
-import { signedUrlService } from "../../infrastructure/services";
+import { cacheService, signedUrlService } from "../../infrastructure/services";
 import { FetchAllReviewsUseCase } from "../../application/useCases/common/fetchReviews.useCase";
 import { FetchSubscriptionDetailsUseCase } from "../../application/useCases/common/subscription.useCase";
 import { AdminUpdateReviewBlockStatusUseCase } from "../../application/useCases/admin/adminReview.useCase";
@@ -45,7 +44,7 @@ export const adminFetchUserOrProviderAddressUseCase = new AdminFetchUserOrProvid
 export const adminFetchProviderSubscriptionsUseCase = new AdminFetchProviderSubscriptionsUseCase(subscriptionQueries);
 export const adminFetchProviderDetailsUseCase = new AdminFetchProviderDetailsUseCase(providerRepository, signedUrlService);
 export const adminChangeProviderTrustTagUseCase = new AdminChangeProviderTrustTagUseCase(providerRepository, kafkaProducer);
-export const adminChangeProviderBlockStatusUseCase = new AdminChangeProviderBlockStatusUseCase(providerRepository, kafkaProducer, redisClient);
+export const adminChangeProviderBlockStatusUseCase = new AdminChangeProviderBlockStatusUseCase(providerRepository, kafkaProducer, cacheService);
 export const adminFetchProviderServiceAvailabilityUseCase = new AdminfetchProviderServiceAvailabilityUseCase(providerRepository, serviceAvailabilityQueries);
 
 // admin review controller dependency injection
@@ -63,5 +62,5 @@ export const adminFetchAllSubscriptionsUseCase = new AdminFetchAllSubscriptionsU
 
 // admin user controller dependency injection
 export const adminUserListUseCase = new AdminUserListUseCase(userQueries);
-export const adminChangeUserBlockStatusUseCase = new AdminChangeUserBlockStatusUseCase(userRepository, kafkaProducer, redisClient);
+export const adminChangeUserBlockStatusUseCase = new AdminChangeUserBlockStatusUseCase(userRepository, kafkaProducer, cacheService);
 export const adminFetchUserDetailsUseCase = new AdminFetchUserDetailsUseCase(userRepository, signedUrlService);

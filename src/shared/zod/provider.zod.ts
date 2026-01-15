@@ -6,13 +6,19 @@ import { ServiceMode } from "../../domain/enums/serviceMode.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { SubscriptionValidity } from "../../domain/enums/subscriptionValidity.enum";
 import { objectIdRegex, serviceDescriptionRegex, serviceExperienceRegex, serviceNameRegex, timeRegex } from "../utils/regex";
-import { addressSchema, dateSchema, fetchBookingCommonSchema, JoinOrLeftRoomSchema, paginationSchema, s3FileKeySchema, saveStripePaymentSchema, updateInfoSchema, validateBookingIdSchema, validateRoomIdSchema } from "./common.zod";
-import { validateReviewIdSchema } from "./admin.zod";
-
-//
-export const validateProviderIdSchema = z.object({
-    providerId: z.string().regex(objectIdRegex, "Invalid userId"),
-});
+import {
+    validateProviderIdSchema,
+    paginationSchema,
+    dateSchema,
+    addressSchema,
+    updateInfoSchema,
+    saveStripePaymentSchema,
+    s3FileKeySchema,
+    validateRoomIdSchema,
+    validateBookingIdSchema,
+    validateReviewIdSchema
+} from "./base.zod";
+import { fetchBookingCommonSchema } from "./common.zod";
 
 //
 export const providerIdWithPaginationSchema = validateProviderIdSchema.merge(paginationSchema);
@@ -104,10 +110,10 @@ export const providerCreateServiceAvailabilitySchema = z.array(
     z.object({
         day: z.nativeEnum(Day),
         duration: z.number().min(10).max(480),
-        startTime: z.string().regex(timeRegex,"Invalid start time"),
-        endTime: z.string().regex(timeRegex,"Invalid end time"),
+        startTime: z.string().regex(timeRegex, "Invalid start time"),
+        endTime: z.string().regex(timeRegex, "Invalid end time"),
         modes: z.array(z.nativeEnum(ServiceMode)).min(1),
-        slots: z.array(z.string().min(1).max(30).regex(timeRegex,"Invalid slot time")),
+        slots: z.array(z.string().min(1).max(30).regex(timeRegex, "Invalid slot time")),
     })
 );
 
@@ -154,3 +160,5 @@ export const providerValidateUpdateInfoSchema = validateProviderIdSchema.merge(u
 
 //
 export const providerChnageReviewReportSchema = validateReviewIdSchema.merge(validateProviderIdSchema);
+
+export { validateProviderIdSchema };

@@ -4,7 +4,7 @@ import { Role } from "../../../domain/enums/role.enum";
 import { SendWelcomeEvent } from "../../dtos/kafka.dtos";
 import { User } from "../../../domain/entities/user.entity";
 import { Provider } from "../../../domain/entities/provider.entity";
-import { IOTPService } from "../../../domain/interfaces/services/IOtpService.service";
+import { IOTPService } from "../../../domain/interfaces/services/IOtp.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { OTPVerificationRequest, VerifyAndActivateEntityRequest } from "../../dtos/auth.dto";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/message/IKafkaProducerAdapter";
@@ -16,7 +16,7 @@ export class VerifyOTPUseCase {
     private readonly providerRepository: IProviderRepository,
     private readonly otpService: IOTPService,
     private readonly kafkaProducer: IKafkaProducerAdapter
-  ) {};
+  ) { };
 
   async execute(payload: OTPVerificationRequest): Promise<void> {
     try {

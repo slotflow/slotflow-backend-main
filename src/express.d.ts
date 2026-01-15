@@ -7,7 +7,7 @@ declare global {
         interface User extends DecodedUser { }
         interface Request {
             user: User;
-        }
-    }
-}
+        };
+    };
+};
 
