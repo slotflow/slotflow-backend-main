@@ -34,6 +34,7 @@ export class User {
             verificationToken: null,
             googleConnected: false,
             googleId: null,
+            allowPushNotification: null,
             createdAt: new Date(),
             updatedAt: new Date(),
         })
@@ -54,6 +55,7 @@ export class User {
             verificationToken: null,
             googleConnected: true,
             googleId: props.googleId,
+            allowPushNotification: null,
             createdAt: new Date(),
             updatedAt: new Date(),
         })
@@ -112,6 +114,10 @@ export class User {
     get bookingsId(): string | null {
         return this.props.bookingsId;
     }
+
+    get allowPushNotification(): boolean | null {
+        return this.props.allowPushNotification;
+    };
 
     get createdAt(): Date {
         return this.props.createdAt;

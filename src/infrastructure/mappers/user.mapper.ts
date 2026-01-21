@@ -19,6 +19,7 @@ export class UserMapper {
             verificationToken: doc.verificationToken ?? null,
             googleConnected: doc.googleConnected,
             googleId: doc.googleId ?? null,
+            allowPushNotification: doc.allowPushNotification,
             createdAt: doc.createdAt,
             updatedAt: doc.updatedAt,
         });
@@ -40,6 +41,7 @@ export class UserMapper {
             verificationToken: props.verificationToken,
             googleConnected: props.googleConnected,
             googleId: props.googleId,
+            allowPushNotification: props.allowPushNotification,
             createdAt: props.createdAt,
             updatedAt: props.updatedAt,
         };

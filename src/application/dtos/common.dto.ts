@@ -62,6 +62,7 @@ export interface ProviderDTO {
   trustedBySlotflow: boolean;
   identityProof: string | null;
   serviceProof: string | null;
+  allowPushNotification: boolean | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -81,6 +82,7 @@ export interface UserDTO {
   verificationToken: string | null;
   googleConnected: boolean;
   googleId: string | null;
+  allowPushNotification: boolean | null;
   createdAt: Date,
   updatedAt: Date
 }

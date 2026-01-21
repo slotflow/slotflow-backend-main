@@ -55,6 +55,8 @@ export class Provider {
       identityProof: null,
       serviceProof: null,
 
+      allowPushNotification: null,
+
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -95,6 +97,8 @@ export class Provider {
 
       identityProof: null,
       serviceProof: null,
+
+      allowPushNotification: null,
 
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -207,46 +211,50 @@ export class Provider {
     return this.props.verificationToken;
   }
 
+  get allowPushNotification(): boolean | null {
+    return this.props.allowPushNotification;
+  };
+
   get createdAt(): Date {
     return this.props.createdAt;
-  }
+  };
 
   get updatedAt(): Date {
     return this.props.updatedAt;
-  }
+  };
 
   // Business Methods
 
   getProps(): Readonly<ProviderProps> {
     return { ...this.props }
-  }
+  };
 
   block() {
     this.props.isBlocked = true;
     this.touch();
-  }
+  };
 
   unblock() {
     this.props.isBlocked = false;
     this.touch();
-  }
+  };
 
   markEmailVerified() {
     this.props.isEmailVerified = true;
     this.touch();
-  }
+  };
 
   submitForAdminVerification() {
     this.props.adminVerificationStatus = AdminVerificationStatus.REQUESTED;
     this.props.verificationRejectionReason = null;
     this.touch();
-  }
+  };
 
   resubmitForAdminVerification() {
     this.props.adminVerificationStatus = AdminVerificationStatus.RESUBMITTED;
     this.props.verificationRejectionReason = null;
     this.touch();
-  }
+  };
 
   approveVerification() {
     if (
@@ -254,7 +262,7 @@ export class Provider {
       this.props.adminVerificationStatus !== AdminVerificationStatus.RESUBMITTED
     ) {
       throw new Error("Provider has not requested verification");
-    }
+    };
 
     this.props.isAdminVerified = true;
     this.props.verificationRejectionReason = null;
@@ -266,7 +274,7 @@ export class Provider {
     this.props.isProofsVerified = true;
 
     this.touch();
-  }
+  };
 
   rejectVerification(props: RejectVerification) {
     this.props.isAdminVerified = false;
@@ -279,7 +287,7 @@ export class Provider {
     this.props.isProofsVerified = props.isProofsVerified;
 
     this.touch();
-  }
+  };
 
 
   grantTrustBadge() {

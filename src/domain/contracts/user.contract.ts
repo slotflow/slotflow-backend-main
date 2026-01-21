@@ -12,6 +12,7 @@ export interface UserProps {
     verificationToken: string | null;
     googleConnected: boolean;
     googleId: string | null;
+    allowPushNotification: boolean | null;
     createdAt: Date,
     updatedAt: Date
 }

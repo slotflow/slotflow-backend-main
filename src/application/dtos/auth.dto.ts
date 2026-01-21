@@ -80,6 +80,7 @@ export interface LoginResponse {
         isProofsVerified?: boolean,
         providerSubscription?: string;
         googleConnected?: boolean;
+        allowPushNotification?: boolean;
     }
 }
 
@@ -134,5 +135,6 @@ export interface GoogleAuthOrchestrationResponse {
         isAvailabilityVerified?: boolean,
         isProofsVerified?: boolean,
         providerSubscription?: string;
+        allowPushNotification: boolean | null,
     }
 }

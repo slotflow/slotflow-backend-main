@@ -31,6 +31,9 @@ export interface IProvider extends Document {
   trustedBySlotflow: boolean;
   identityProof: string;
   serviceProof: string;
+
+  allowPushNotification: boolean | null;
+
   createdAt: Date;
   updatedAt: Date;
 };
@@ -165,6 +168,10 @@ const ProviderSchema = new Schema<IProvider>({
   },
   serviceProof: {
     type: String,
+    default: null
+  },
+  allowPushNotification: {
+    type: Boolean,
     default: null
   },
   createdAt: {

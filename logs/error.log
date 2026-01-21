@@ -2567,3 +2567,27 @@
 [31m    at emitErrorNT (node:internal/streams/destroy:170:8)[39m
 [31m    at emitErrorCloseNT (node:internal/streams/destroy:129:3)[39m
 [31m    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)[39m
+[2026-01-15 16:23:04] [[31merror[39m]: [31mLoginUseCase failed[39m
+[31mYour account is blocked, please contact us[39m
+[31mError: Your account is blocked, please contact us[39m
+[31m    at LoginUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\auth\login.useCase.ts:35:43)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async AuthController.login (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\auth\auth.controller.ts:77:22)[39m
+[2026-01-15 16:23:04] [[31merror[39m]: [31mlogin failed[39m
+[31mYour account is blocked, please contact us[39m
+[31mError: Your account is blocked, please contact us[39m
+[31m    at LoginUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\auth\login.useCase.ts:35:43)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async AuthController.login (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\auth\auth.controller.ts:77:22)[39m
+[2026-01-15 16:24:29] [[31merror[39m]: [31mLoginUseCase failed[39m
+[31mYour account is blocked, please contact us[39m
+[31mError: Your account is blocked, please contact us[39m
+[31m    at LoginUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\auth\login.useCase.ts:35:43)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async AuthController.login (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\auth\auth.controller.ts:77:22)[39m
+[2026-01-15 16:24:29] [[31merror[39m]: [31mlogin failed[39m
+[31mYour account is blocked, please contact us[39m
+[31mError: Your account is blocked, please contact us[39m
+[31m    at LoginUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\auth\login.useCase.ts:35:43)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async AuthController.login (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\auth\auth.controller.ts:77:22)[39m

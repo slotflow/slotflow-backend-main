@@ -14,6 +14,7 @@ export interface IUser extends Document {
   verificationToken: string;
   googleConnected: boolean;
   googleId: string;
+  allowPushNotification: boolean | null;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -86,6 +87,10 @@ const UserSchema = new Schema<IUser>({
     required: function () {
       return !this.password;
     }
+  },
+  allowPushNotification: {
+    type: Boolean,
+    default: null
   },
   createdAt: {
     type: Date,

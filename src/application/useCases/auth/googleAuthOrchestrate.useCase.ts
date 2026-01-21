@@ -212,6 +212,7 @@ export class GoogleAuthOrchestratorUseCase {
                     verificationRejectionReason:
                         (entity as Provider)?.verificationRejectionReason,
                     providerSubscription,
+                    allowPushNotification: entity.allowPushNotification,
                 },
             };
 
