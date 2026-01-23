@@ -1,7 +1,6 @@
 import { ProviderServiceProps } from '../contracts/providerService.contract';
-import { ServiceMode } from '../enums/serviceMode.enum';
-import { ServiceType } from '../enums/serviceType.enum';
 import { CreateProviderServiceProps, UpdateProviderServiceProps } from '../commands/providerService.commands';
+import { ServiceMode, ServiceType } from '../enums/service.enum';
 
 export class ProviderService {
     private props: ProviderServiceProps;

@@ -1,12 +1,12 @@
 import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
-import { Role } from "../../../domain/enums/role.enum";
 import { SendEmailCommon } from "../../dtos/kafka.dtos";
 import { UpdatePasswordRequest } from "../../dtos/auth.dto";
 import { IPasswordHasher } from "../../../domain/interfaces/security/IPasswordHasher";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/message/IKafkaProducerAdapter";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
+import { Role } from "../../../domain/enums/common.enum";
 
 export class UpdatePasswordUseCase {
     constructor(
@@ -24,7 +24,7 @@ export class UpdatePasswordUseCase {
 
             const hashedPassword = await this.passwordHasher.hashPassword(password);
 
-            if (role === Role.User) {
+            if (role === Role.USER) {
                 const user = await this.userRepository.findByVerificationToken(verificationToken);
                 if (!user) throw new Error("User not found.");
 
@@ -36,7 +36,7 @@ export class UpdatePasswordUseCase {
                     name: user.username
                 });
 
-            } else if (role === Role.Provider) {
+            } else if (role === Role.PROVIDER) {
                 const provider = await this.providerRepository.findByVerificationToken(verificationToken);
                 if (!provider) throw new Error("User not found.");
 

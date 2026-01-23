@@ -3,11 +3,7 @@ import { log } from '../../../shared/logger/logger';
 import { stripe } from '../../../infrastructure/lib/stripe';
 import { Payment } from '../../../domain/entities/payment.entity';
 import { Booking } from '../../../domain/entities/booking.entity';
-import { PaymentFor } from '../../../domain/enums/paymentFor.enum';
 import { FindProviderServiceResponse } from '../../dtos/common.dto';
-import { PaymentStatus } from '../../../domain/enums/paymentStatus.enum';
-import { PaymentMethod } from '../../../domain/enums/paymentMethod.enum';
-import { PaymentGateway } from '../../../domain/enums/paymentGateway.enum';
 import { AppointmentStatus } from '../../../domain/enums/appointmentStatus.enum';
 import { IProviderServiceQueries } from '../../queries/IProviderService.queries';
 import { IServiceAvailabilityQueries } from '../../queries/IServiceAvailability.queries';
@@ -18,6 +14,7 @@ import { IBookingRepository } from '../../../domain/interfaces/repositories/IBoo
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
 import { UserAppointmentBookingViaStripeRequest, UserSaveAppoinmentBookingRequest } from '../../dtos/user.dto';
 import { IGoogleCalendarGatewayService } from '../../../domain/interfaces/services/IGoogleCalendarGateway.service';
+import { PaymentFor, PaymentGateway, PaymentMethod, PaymentStatus } from '../../../domain/enums/payment.enum';
 
 export class UserAppointmentBookingViaStripeUseCase {
     constructor(
@@ -122,7 +119,7 @@ export class UserSaveBookingAfterStripePaymentUseCase {
             const selectedServiceMode = session?.metadata?.selectedServiceMode;
             const initialAmount = session?.metadata?.initialAmount;
             const totalAmount = session?.metadata?.totalAmount;
-            const paymentStatus = session?.payment_status === "paid" ? PaymentStatus.Paid : PaymentStatus.Pending;
+            const paymentStatus = session?.payment_status === "paid" ? PaymentStatus.PAID : PaymentStatus.PENDING;
             const paymentMethod = session?.payment_method_types[0] as PaymentMethod;
             const dateString = session?.metadata?.appointmentDate;
             const paymentIntent = session?.payment_intent;
@@ -147,8 +144,8 @@ export class UserSaveBookingAfterStripePaymentUseCase {
                     transactionId: paymentIntent.toString(),
                     paymentStatus,
                     paymentMethod,
-                    paymentGateway: PaymentGateway.Stripe,
-                    paymentFor: PaymentFor.AppointmentBooking,
+                    paymentGateway: PaymentGateway.STRIPE,
+                    paymentFor: PaymentFor.APPOINTMENT_BOOKING,
                     initialAmount: Number(initialAmount) / 100,
                     discountAmount: 0,
                     totalAmount: Number(totalAmount) / 100,
@@ -164,7 +161,7 @@ export class UserSaveBookingAfterStripePaymentUseCase {
                     eventId = await this.googleCalendarGatewayService.createEvent({
                         accessToken: accessToken,
                         appointmentDate: new Date(dateString),
-                        appointmentStatus: AppointmentStatus.Booked,
+                        appointmentStatus: AppointmentStatus.BOOKED,
                         slotDuration: Number(slotDuration),
                     });
                     if (!eventId) throw new Error("Booking saving failed");
@@ -175,14 +172,14 @@ export class UserSaveBookingAfterStripePaymentUseCase {
                         userId,
                         appointmentDate: new Date(dateString),
                         appointmentMode: selectedServiceMode,
-                        appointmentStatus: AppointmentStatus.Booked,
+                        appointmentStatus: AppointmentStatus.BOOKED,
                         appointmentTime: selectedSlot[0].time,
                         videoCallRoomId: "stw-" + uuidv4(),
                         googleEventId: eventId,
                         paymentId: payment._id,
                         slotId: selectedSlot[0]._id,
                         statusTrack: [{
-                            appointmentStatus: AppointmentStatus.Booked,
+                            appointmentStatus: AppointmentStatus.BOOKED,
                             time: new Date(),
                         }],
                     });

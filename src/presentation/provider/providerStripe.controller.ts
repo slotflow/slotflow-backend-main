@@ -4,7 +4,7 @@ import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { validateProviderIdSchema } from "../../shared/zod/provider.zod";
-import { ProviderStripeConnectUseCase } from "../../application/useCases/provier/providerStripe.useCase";
+import { ProviderStripeConnectUseCase } from "../../application/useCases/provider/providerStripe.useCase";
 
 class ProviderStripeController {
     constructor(

@@ -1,7 +1,7 @@
 import { log } from "../../../shared/logger/logger";
-import { Role } from "../../../domain/enums/role.enum";
 import { IBookingQueries } from "../../queries/IBooking.queries";
 import { FetchBookingsRequest, FetchBookingsResponse, FetchOnlineBookingsForProviderResponse, FetchOnlineBookingsForUserResponse, TableData } from "../../dtos/common.dto";
+import { Role } from "../../../domain/enums/common.enum";
 
 export class FetchBookingAppointmentsUseCase {
     constructor(
@@ -12,10 +12,10 @@ export class FetchBookingAppointmentsUseCase {
         try {
             const { serviceProviderId, userId, page, limit, online, raw, role } = payload;
             
-            if (role === Role.Provider) {
+            if (role === Role.PROVIDER) {
                 if (!serviceProviderId) throw new Error("Invalid request");
             };
-            if (role === Role.User) {
+            if (role === Role.USER) {
                 if (!userId) throw new Error("Invalid request");
             };
 

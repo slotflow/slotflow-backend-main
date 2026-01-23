@@ -1,6 +1,5 @@
 import { Review } from "../../domain/entities/review.entity";
-import { ServiceMode } from "../../domain/enums/serviceMode.enum";
-import { ServiceCategory } from "../../domain/enums/serviceCategories.enum";
+import { ServiceCategory, ServiceMode } from "../../domain/enums/service.enum";
 import { ProviderService } from "../../domain/entities/providerService.entity";
 import { AddressDTO, UserDTO, ProviderDTO, BookingDTO, ServiceDTO, ProviderServiceDTO, FontendAvailabilityForResponse, TimeSlotForFrontendResponse, ReviewDTO } from "./common.dto";
 
@@ -122,7 +121,7 @@ export type UserFetchProviderServiceAvailabilityResponse = FontendAvailabilityFo
 export interface UserFetchProvidersForChatSidebarRequest {
     userId: UserDTO["_id"]
 }
-export type UserFetchProvidersForChatSidebarResponse = Array<Pick<ProviderDTO, "_id" | "username" | "profileImage" >>;
+export type UserFetchProvidersForChatSidebarResponse = Array<Pick<ProviderDTO, "_id" | "username" | "profileImage">>;
 
 
 
@@ -133,9 +132,9 @@ export type UserFetchProvidersForChatSidebarResponse = Array<Pick<ProviderDTO, "
 // user appointment booking via stripe creating session id use case request payload
 export interface UserAppointmentBookingViaStripeRequest {
     userId: UserDTO["_id"];
-    providerId: ProviderDTO["_id"]; 
-    slotId: TimeSlotForFrontendResponse["_id"]; 
-    selectedServiceMode: ServiceMode; 
+    providerId: ProviderDTO["_id"];
+    slotId: TimeSlotForFrontendResponse["_id"];
+    selectedServiceMode: ServiceMode;
     date: Date
 }
 

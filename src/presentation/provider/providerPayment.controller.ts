@@ -4,7 +4,7 @@ import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { providerIdWithPaginationSchema } from "../../shared/zod/provider.zod";
-import { ProviderFetchAllPaymentsUseCase } from "../../application/useCases/provier/providerPayment.useCase";
+import { ProviderFetchAllPaymentsUseCase } from "../../application/useCases/provider/providerPayment.useCase";
 
 class ProviderPaymentController {
     constructor(

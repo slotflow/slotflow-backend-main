@@ -1,9 +1,9 @@
 import { isSameDay, startOfDay } from "date-fns";
 import { log } from "../../../shared/logger/logger";
-import { Role } from "../../../domain/enums/role.enum";
 import { ValidateJoinRoomRequest } from "../../dtos/common.dto";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
+import { Role } from "../../../domain/enums/common.enum";
 
 export class ValidateJoinRoomUsecase {
     constructor(
@@ -22,16 +22,16 @@ export class ValidateJoinRoomUsecase {
                 throw new Error("Booking is not scheduled for today");
             };
 
-            if (booking.appointmentStatus !== AppointmentStatus.Confirmed) {
+            if (booking.appointmentStatus !== AppointmentStatus.CONFIRMED) {
                 throw new Error("Booking is not confirmed");
             };
 
-            if (role === Role.User) {
+            if (role === Role.USER) {
                 console.log("Checking user authorization...");
                 if (String(booking.userId) !== String(userOrProviderId)) {
                     throw new Error("You are not authorized for this booking");
                 }
-            } else if (role === Role.Provider) {
+            } else if (role === Role.PROVIDER) {
                 if (String(booking.serviceProviderId) !== String(userOrProviderId)) {
                     throw new Error("You are not authorized for this booking provider");
                 }

@@ -1,7 +1,4 @@
-import { PaymentFor } from "../enums/paymentFor.enum";
-import { PaymentGateway } from "../enums/paymentGateway.enum";
-import { PaymentMethod } from "../enums/paymentMethod.enum";
-import { PaymentStatus } from "../enums/paymentStatus.enum";
+import { PaymentFor, PaymentGateway, PaymentMethod, PaymentStatus } from "../enums/payment.enum";
 
 export interface PaymentProps {
     _id: string,

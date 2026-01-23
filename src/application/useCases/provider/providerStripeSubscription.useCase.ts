@@ -8,18 +8,15 @@ import {
 // import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { stripe } from "../../../infrastructure/lib/stripe";
-import { PlanName } from "../../../domain/enums/planName.enum";
+import { PlanName } from "../../../domain/enums/plan.enum";
 import { Payment } from "../../../domain/entities/payment.entity";
-import { PaymentFor } from "../../../domain/enums/paymentFor.enum";
-import { PaymentMethod } from "../../../domain/enums/paymentMethod.enum";
-import { PaymentStatus } from "../../../domain/enums/paymentStatus.enum";
-import { PaymentGateway } from "../../../domain/enums/paymentGateway.enum";
 import { Subscription } from "../../../domain/entities/subscription.entity";
-import { SubscriptionStatus } from "../../../domain/enums/subscriptionStatus.enum";
+import { SubscriptionStatus } from "../../../domain/enums/subscription.enum";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { IPaymentRepository } from "../../../domain/interfaces/repositories/IPayment.repository";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
+import { PaymentFor, PaymentGateway, PaymentMethod, PaymentStatus } from "../../../domain/enums/payment.enum";
 // import { IKafkaClientAdapter } from "../../../domain/interfaces/message/IKafkaClientAdapter";
 // import { SendPaymentRequestEvent } from "../../dtos/common.dto";
 // import { kafkaConfig } from "../../../config/env";
@@ -50,7 +47,7 @@ export class ProviderStripeSubscriptionCreateSessionIdUseCase {
             if (providerLastSubscriptionsId) {
                 const subscription = await this.subscriptionRepository.findById(providerLastSubscriptionsId!);
                 if (subscription) {
-                    if (subscription.subscriptionStatus === SubscriptionStatus.Active) throw new Error("Your subscription is on live.");
+                    if (subscription.subscriptionStatus === SubscriptionStatus.ACTIVE) throw new Error("Your subscription is on live.");
                     const isSubscriptionExpired = dayjs().isAfter(dayjs(subscription.endDate), "day");
                     if (!isSubscriptionExpired) throw new Error("Your current subscription is on live.");
                 };
@@ -110,7 +107,7 @@ export class ProviderSaveSubscriptionUseCase {
             const planName = session?.metadata?.planName as PlanName;
             const totalAmount = Number(session?.metadata?.totalAmount);
             const initialAmount = Number(session?.metadata?.initialAmount);
-            const paymentStatus = session?.payment_status === "paid" ? PaymentStatus.Paid : PaymentStatus.Pending;
+            const paymentStatus = session?.payment_status === "paid" ? PaymentStatus.PAID : PaymentStatus.PENDING;
             const paymentMethod = session?.payment_method_types[0] as PaymentMethod;
             const subscriptionPlanId = session?.metadata?.planId;
             const planDuration = Number(session?.metadata?.planDuration);
@@ -125,8 +122,8 @@ export class ProviderSaveSubscriptionUseCase {
                     transactionId: paymentIntent.toString(),
                     paymentStatus: paymentStatus,
                     paymentMethod: paymentMethod,
-                    paymentGateway: PaymentGateway.Stripe,
-                    paymentFor: PaymentFor.ProviderSubscription,
+                    paymentGateway: PaymentGateway.STRIPE,
+                    paymentFor: PaymentFor.PROVIDER_SUBSCRIPTION,
                     initialAmount: Number(initialAmount) / 100,
                     discountAmount: 0,
                     totalAmount: Number(totalAmount) / 100,
@@ -142,7 +139,7 @@ export class ProviderSaveSubscriptionUseCase {
                     subscriptionPlanId: subscriptionPlanId,
                     startDate: new Date(),
                     endDate: dayjs().add(Number(planDuration * 30), "day").toDate(),
-                    subscriptionStatus: SubscriptionStatus.Active, // TODO update to SubscriptionStatus.PaymentPending
+                    subscriptionStatus: SubscriptionStatus.ACTIVE, // TODO update to SubscriptionStatus.PaymentPending
                     paymentId: payment._id,
                 });
 

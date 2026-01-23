@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 import { PipelineStage } from "mongoose";
 import { ProviderServiceModel } from "../models/providerService.model";
-import { SubscriptionStatus } from "../../domain/enums/subscriptionStatus.enum";
+import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 import { FindProviderServiceResponse } from "../../application/dtos/common.dto";
 import { UserFetchServiceProvidersRequest, UserFetchServiceProvidersResponse } from "../../application/dtos/user.dto";
 import { IProviderServiceQueries } from "../../application/queries/IProviderService.queries";
@@ -97,7 +97,7 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
                                 $expr: {
                                     $and: [
                                         { $eq: ["$providerId", "$$providerId"] },
-                                        { $eq: ["$subscriptionStatus", SubscriptionStatus.Active] },
+                                        { $eq: ["$subscriptionStatus", SubscriptionStatus.ACTIVE] },
                                         { $gt: ["$endDate", now] }
                                     ]
                                 }

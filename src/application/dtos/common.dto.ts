@@ -1,17 +1,11 @@
-import { Day } from "../../domain/enums/day.enum";
-import { Role } from "../../domain/enums/role.enum";
-import { PlanName } from "../../domain/enums/planName.enum";
-import { PaymentFor } from "../../domain/enums/paymentFor.enum";
-import { ServiceType } from "../../domain/enums/serviceType.enum";
-import { ServiceMode } from "../../domain/enums/serviceMode.enum";
+import { PlanName } from "../../domain/enums/plan.enum";
 import { GeoLocation } from "../../domain/contracts/address.contract";
-import { PaymentMethod } from "../../domain/enums/paymentMethod.enum";
-import { PaymentStatus } from "../../domain/enums/paymentStatus.enum";
-import { PaymentGateway } from "../../domain/enums/paymentGateway.enum";
-import { ServiceCategory } from "../../domain/enums/serviceCategories.enum";
+import { ServiceCategory, ServiceMode, ServiceType } from "../../domain/enums/service.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
-import { SubscriptionStatus } from "../../domain/enums/subscriptionStatus.enum";
+import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
+import { Day, Role } from "../../domain/enums/common.enum";
+import { PaymentFor, PaymentGateway, PaymentMethod, PaymentStatus } from "../../domain/enums/payment.enum";
 
 
 // **** ENTITY INTERFACES FOR APPLICATION LAYER **** \\
@@ -610,4 +604,5 @@ export interface DecodedUser {
   connectOnly?: boolean;
   exp?: number;
   iat?: number;
+  userId?: string;
 };

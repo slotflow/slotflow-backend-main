@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { PlanName } from "../../domain/enums/planName.enum";
-import { ServiceCategory } from "../../domain/enums/serviceCategories.enum";
+import { PlanName } from "../../domain/enums/plan.enum";
+import { ServiceCategory } from "../../domain/enums/service.enum";
 import {
     validateUserIdSchema,
     validateProviderIdSchema,

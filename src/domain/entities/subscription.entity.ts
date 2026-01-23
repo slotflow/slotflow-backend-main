@@ -1,6 +1,6 @@
 import { SubscriptionProps } from "../contracts/subscription.contract";
 import { CreateSubscriptionProps, UpdateSubscriptionProps } from "../commands/subscription.commands";
-import { SubscriptionStatus } from "../enums/subscriptionStatus.enum";
+import { SubscriptionStatus } from "../enums/subscription.enum";
 
 export class Subscription {
     private props: SubscriptionProps;

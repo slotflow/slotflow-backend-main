@@ -112,13 +112,13 @@ export class Booking {
     };
 
     completeAppointment() {
-        if (this.props.appointmentStatus === AppointmentStatus.Completed) {
+        if (this.props.appointmentStatus === AppointmentStatus.COMPLETED) {
             return;
         }
 
-        this.props.appointmentStatus = AppointmentStatus.Completed;
+        this.props.appointmentStatus = AppointmentStatus.COMPLETED;
         this.props.statusTrack.push({
-            appointmentStatus: AppointmentStatus.Completed,
+            appointmentStatus: AppointmentStatus.COMPLETED,
             time: new Date(),
         });
 
@@ -140,13 +140,13 @@ export class Booking {
     };
 
     cancelAppointment() {
-        if (this.props.appointmentStatus === AppointmentStatus.Cancelled) {
+        if (this.props.appointmentStatus === AppointmentStatus.CANCELLED) {
             return;
         }
 
-        this.props.appointmentStatus = AppointmentStatus.Cancelled;
+        this.props.appointmentStatus = AppointmentStatus.CANCELLED;
         this.props.statusTrack.push({
-            appointmentStatus: AppointmentStatus.Cancelled,
+            appointmentStatus: AppointmentStatus.CANCELLED,
             time: new Date(),
         });
 

@@ -1,5 +1,4 @@
 import { log } from "../../shared/logger/logger";
-import { Role } from "../../domain/enums/role.enum";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
@@ -7,6 +6,7 @@ import { createReviewUseCase, deleteReviewUseCase, fetchAllReviewsUseCase } from
 import { FetchAllReviewsUseCase } from "../../application/useCases/common/fetchReviews.useCase";
 import { CreateReviewUseCase, DeleteReviewUseCase } from "../../application/useCases/user/userReview.useCase";
 import { userCreateReviewSchema, userDeleteReviewSchema, userFetchAllReviewsSchema } from "../../shared/zod/user.zod";
+import { Role } from "../../domain/enums/common.enum";
 
 class UserReviewController {
     constructor(
@@ -66,8 +66,8 @@ class UserReviewController {
             const result = await this.fetchAllReviewsUseCase.execute({
                 page,
                 limit,
-                userId: role === Role.User ? userId : undefined,
-                providerId: role === Role.Provider ? providerId : undefined,
+                userId: role === Role.USER ? userId : undefined,
+                providerId: role === Role.PROVIDER ? providerId : undefined,
                 role
             });
             sendResponse(res, result);

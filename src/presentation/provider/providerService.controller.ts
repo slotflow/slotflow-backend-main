@@ -4,7 +4,7 @@ import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { providerCreateServiceDetailsUseCase, providerFetchServiceDetailsUseCase, providerUpdateServiceDetailsUseCase } from ".";
 import { providerCreateServiceDetailsSchema, providerUpdateServiceDetailsSchema, validateProviderIdSchema } from "../../shared/zod/provider.zod";
-import { ProviderCreateServiceDetailsUseCase, ProviderFetchServiceDetailsUseCase, ProviderUpdateServiceDetailsUseCase } from "../../application/useCases/provier/providerService.useCase";
+import { ProviderCreateServiceDetailsUseCase, ProviderFetchServiceDetailsUseCase, ProviderUpdateServiceDetailsUseCase } from "../../application/useCases/provider/providerService.useCase";
 
 class ProviderServiceController {
     constructor(
@@ -19,7 +19,7 @@ class ProviderServiceController {
 
     async createServiceDetails(req: Request, res: Response, next: NextFunction) {
         try {
-            const {providerId, ...serviceData } = providerCreateServiceDetailsSchema.parse({
+            const { providerId, ...serviceData } = providerCreateServiceDetailsSchema.parse({
                 providerId: (req.user as DecodedUser).userOrProviderId,
                 ...req.body
             });

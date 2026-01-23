@@ -1,9 +1,9 @@
 import { log } from "../../shared/logger/logger";
-import { Role } from "../../domain/enums/role.enum";
 import { NextFunction, Request, Response } from "express";
 import { cacheService } from "../../infrastructure/services";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { providerRepository, userRepository } from "../../infrastructure/repositoryImpls";
+import { Role } from "../../domain/enums/common.enum";
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -11,7 +11,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
     const userId = req.headers["x-user-id"];
     const role = req.headers["x-user-role"];
 
-    if (role !== Role.Admin && !userId) {
+    if (role !== Role.ADMIN && !userId) {
       res.status(401).json({ success: false, message: "Unauthenticated request" });
       return;
     };
@@ -27,7 +27,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
     } as DecodedUser;
 
     // User auth
-    if (req.user.role === Role.User) {
+    if (req.user.role === Role.USER) {
       const cacheKey = req.user.userOrProviderId!;
       const cachedStatus = await cacheService.getBlockList(cacheKey);
 
@@ -58,7 +58,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
     };
 
     // Provider auth
-    if (req.user.role === Role.Provider) {
+    if (req.user.role === Role.PROVIDER) {
       const cacheKey = req.user.userOrProviderId!;
       const cachedStatus = await cacheService.getBlockList(cacheKey);
 

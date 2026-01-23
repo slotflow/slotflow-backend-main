@@ -2591,3 +2591,10 @@
 [31m    at LoginUseCase.execute (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\application\useCases\auth\login.useCase.ts:35:43)[39m
 [31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
 [31m    at async AuthController.login (D:\Projects\BrocamP\Projects\Personal Projects\21. Slotflow\Slotflow-Main-Backend\src\presentation\auth\auth.controller.ts:77:22)[39m
+[2026-01-24 00:53:42] [[31merror[39m]: [31mMongoDB Connection Error : [39m
+[31mconnect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017[39m
+[31mMongooseServerSelectionError: connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017[39m
+[31m    at _handleConnectionErrors (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\mongoose\lib\connection.js:1163:11)[39m
+[31m    at NativeConnection.openUri (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\mongoose\lib\connection.js:1094:11)[39m
+[31m    at async connectDB (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\config\database\mongodb\mongodb.config.ts:7:9)[39m
+[31m    at async start (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\server.ts:11:5)[39m

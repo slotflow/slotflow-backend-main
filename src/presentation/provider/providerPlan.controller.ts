@@ -2,7 +2,7 @@ import { log } from "../../shared/logger/logger";
 import { providerFetchAllPlansUseCase } from ".";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
-import { ProviderFetchAllPlansUseCase } from "../../application/useCases/provier/providerPlan.useCase";
+import { ProviderFetchAllPlansUseCase } from "../../application/useCases/provider/providerPlan.useCase";
 
 class ProviderPlanController {
     constructor(

@@ -1,8 +1,5 @@
-import { PaymentFor } from "../enums/paymentFor.enum";
 import { PaymentProps } from "../contracts/payment.contract";
-import { PaymentMethod } from "../enums/paymentMethod.enum";
-import { PaymentStatus } from "../enums/paymentStatus.enum";
-import { PaymentGateway } from "../enums/paymentGateway.enum";
+import { PaymentFor, PaymentGateway, PaymentMethod, PaymentStatus } from "../enums/payment.enum";
 import { CreateForBookingProps, CreateForSubscriptionProps, UpdatePaymentProps } from "../commands/payment.commands";
 
 export class Payment {

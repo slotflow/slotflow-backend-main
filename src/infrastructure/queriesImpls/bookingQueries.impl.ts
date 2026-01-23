@@ -1,6 +1,5 @@
 import dayjs from "dayjs";
 import { Types } from "mongoose";
-import { Role } from "../../domain/enums/role.enum";
 import { BookingModel } from "../models/booking.model";
 import { IBookingQueries } from "../../application/queries/IBooking.queries";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
@@ -9,6 +8,7 @@ import { UserFetchProvidersForChatSidebarResponse } from "../../application/dtos
 import { AdminFetchDashboardAppointmentStatsDataResponse, AdminFetchTodaysBookingStatsForDashboardResponse } from "../../application/dtos/admin.dto";
 import { FetchBookingsRequest, TableData, FetchBookingsResponse, FetchOnlineBookingsForProviderResponse, FetchOnlineBookingsForUserResponse, FetchBookingDetailsResponse } from "../../application/dtos/common.dto";
 import { ProviderFetchDashboardGraphRepository, ProviderFetchDashboardGraphDataResponse, ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchUsersForChatSideBarResponse } from "../../application/dtos/provider.dto";
+import { Role } from "../../domain/enums/common.enum";
 
 export class BookingQueriesImpl implements IBookingQueries {
 
@@ -56,9 +56,9 @@ export class BookingQueriesImpl implements IBookingQueries {
             .sort({ createdAt: -1 })
             .lean<FetchBookingsResponse | FetchOnlineBookingsForProviderResponse | FetchOnlineBookingsForUserResponse>();
 
-        if (online && role === Role.User) {
+        if (online && role === Role.USER) {
             query = query.populate("serviceProviderId", "username -_id");
-        } else if (online && role === Role.Provider) {
+        } else if (online && role === Role.PROVIDER) {
             query = query.populate("userId", "username -_id");
         }
 
@@ -69,7 +69,7 @@ export class BookingQueriesImpl implements IBookingQueries {
 
         const totalPages = Math.ceil(totalCount / limit);
 
-        if (online && role === Role.User) {
+        if (online && role === Role.USER) {
             return {
                 data: (bookings as FetchOnlineBookingsForUserResponse).map(booking => ({
                     ...booking,
@@ -82,7 +82,7 @@ export class BookingQueriesImpl implements IBookingQueries {
                 currentPage: page,
                 totalCount
             }
-        } else if (online && role === Role.Provider) {
+        } else if (online && role === Role.PROVIDER) {
             return {
                 data: (bookings as FetchOnlineBookingsForProviderResponse).map(booking => ({
                     ...booking,
@@ -182,17 +182,17 @@ export class BookingQueriesImpl implements IBookingQueries {
                         },
                         completed: {
                             $sum: {
-                                $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Completed] }, 1, 0],
+                                $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.COMPLETED] }, 1, 0],
                             },
                         },
                         missed: {
                             $sum: {
-                                $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.NotAttended] }, 1, 0],
+                                $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.NOT_ATTENDED] }, 1, 0],
                             },
                         },
                         cancelled: {
                             $sum: {
-                                $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Cancelled] }, 1, 0],
+                                $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.CANCELLED] }, 1, 0],
                             },
                         },
                     },
@@ -303,12 +303,12 @@ export class BookingQueriesImpl implements IBookingQueries {
                         status: {
                             $switch: {
                                 branches: [
-                                    { case: { $eq: ["$_id", AppointmentStatus.Completed] }, then: "completed" },
-                                    { case: { $eq: ["$_id", AppointmentStatus.NotAttended] }, then: "missed" },
-                                    { case: { $eq: ["$_id", AppointmentStatus.Cancelled] }, then: "cancelled" },
-                                    { case: { $eq: ["$_id", AppointmentStatus.RejectedByProvider] }, then: "rejected" },
-                                    { case: { $eq: ["$_id", AppointmentStatus.Confirmed] }, then: "confirmed" },
-                                    { case: { $eq: ["$_id", AppointmentStatus.Booked] }, then: "booked" },
+                                    { case: { $eq: ["$_id", AppointmentStatus.COMPLETED] }, then: "completed" },
+                                    { case: { $eq: ["$_id", AppointmentStatus.NOT_ATTENDED] }, then: "missed" },
+                                    { case: { $eq: ["$_id", AppointmentStatus.CANCELLED] }, then: "cancelled" },
+                                    { case: { $eq: ["$_id", AppointmentStatus.REJECTED_BY_PROVIDER] }, then: "rejected" },
+                                    { case: { $eq: ["$_id", AppointmentStatus.CONFIRMED] }, then: "confirmed" },
+                                    { case: { $eq: ["$_id", AppointmentStatus.BOOKED] }, then: "booked" },
                                 ],
                             },
                         },
@@ -355,16 +355,16 @@ export class BookingQueriesImpl implements IBookingQueries {
                     _id: null,
                     totalAppointments: { $sum: 1 },
                     completedAppointments: {
-                        $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Completed] }, 1, 0] }
+                        $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.COMPLETED] }, 1, 0] }
                     },
                     missedAppointments: {
-                        $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.NotAttended] }, 1, 0] }
+                        $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.NOT_ATTENDED] }, 1, 0] }
                     },
                     cancelledAppointmentsByUser: {
-                        $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Cancelled] }, 1, 0] }
+                        $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.CANCELLED] }, 1, 0] }
                     },
                     rejectedAppointmentsByProvider: {
-                        $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.RejectedByProvider] }, 1, 0] }
+                        $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.REJECTED_BY_PROVIDER] }, 1, 0] }
                     },
                     todaysAppointments: {
                         $sum: {
@@ -373,7 +373,7 @@ export class BookingQueriesImpl implements IBookingQueries {
                                     $and: [
                                         { $gte: ["$appointmentDate", today] },
                                         { $lt: ["$appointmentDate", tomorrow] },
-                                        { $eq: ["$appointmentStatus", AppointmentStatus.Booked] }
+                                        { $eq: ["$appointmentStatus", AppointmentStatus.BOOKED] }
                                     ]
                                 }, 1, 0
                             ]
@@ -411,10 +411,10 @@ export class BookingQueriesImpl implements IBookingQueries {
                 $group: {
                     _id: null,
                     totalAppointments: { $sum: 1 },
-                    completedAppointments: { $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Completed] }, 1, 0] } },
-                    cancelledAppointments: { $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Cancelled] }, 1, 0] } },
-                    missedAppointments: { $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.NotAttended] }, 1, 0] } },
-                    rejectedAppointments: { $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.RejectedByProvider] }, 1, 0] } }
+                    completedAppointments: { $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.COMPLETED] }, 1, 0] } },
+                    cancelledAppointments: { $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.CANCELLED] }, 1, 0] } },
+                    missedAppointments: { $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.NOT_ATTENDED] }, 1, 0] } },
+                    rejectedAppointments: { $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.REJECTED_BY_PROVIDER] }, 1, 0] } }
                 }
             },
         ])
@@ -482,13 +482,13 @@ export class BookingQueriesImpl implements IBookingQueries {
                 $group: {
                     _id: null,
                     todaysBookedAppointments: {
-                        $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Booked] }, 1, 0] }
+                        $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.BOOKED] }, 1, 0] }
                     },
                     todaysCancelledAppointments: {
-                        $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Cancelled] }, 1, 0] }
+                        $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.CANCELLED] }, 1, 0] }
                     },
                     todaysCompletedAppointments: {
-                        $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.Completed] }, 1, 0] }
+                        $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.COMPLETED] }, 1, 0] }
                     }
                 }
             },
@@ -507,17 +507,17 @@ export class BookingQueriesImpl implements IBookingQueries {
 
         const bookings = await BookingModel.updateMany(
             {
-                appointmentStatus: AppointmentStatus.Booked,
+                appointmentStatus: AppointmentStatus.BOOKED,
                 appointmentDate: {
                     $gte: todayStart,
                     $lt: todayEnd
                 }
             },
             {
-                $set: { appointmentStatus: AppointmentStatus.NotAttended },
+                $set: { appointmentStatus: AppointmentStatus.NOT_ATTENDED },
                 $push: {
                     statusTrack: {
-                        appointmentStatus: AppointmentStatus.NotAttended,
+                        appointmentStatus: AppointmentStatus.NOT_ATTENDED,
                         time: new Date()
                     }
                 }

@@ -4,7 +4,7 @@ import { sendResponse } from "../../shared/utils/response";
 import { providerFetchUserForChatSidebarUseCase } from ".";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { validateProviderIdSchema } from "../../shared/zod/provider.zod";
-import { ProviderFetchUserForChatSidebarUseCase } from "../../application/useCases/provier/providerUser.useCase";
+import { ProviderFetchUserForChatSidebarUseCase } from "../../application/useCases/provider/providerUser.useCase";
 
 class ProviderUserController {
     constructor(

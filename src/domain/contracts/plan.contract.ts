@@ -1,4 +1,4 @@
-import { PlanName } from "../enums/planName.enum";
+import { PlanName } from "../enums/plan.enum";
 
 export interface PlanProps {
     _id: string,

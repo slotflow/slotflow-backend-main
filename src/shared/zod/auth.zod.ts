@@ -1,8 +1,8 @@
 import { z } from 'zod';
-import { Role } from '../../domain/enums/role.enum';
-import { strongPasswordRegex, usernameRegex, verificationTokenRegex } from '../utils/regex';
 import { validateUserIdSchema } from './user.zod';
 import { roleValidationSchema } from './common.zod';
+import { strongPasswordRegex, usernameRegex, verificationTokenRegex } from '../utils/regex';
+import { Role } from '../../domain/enums/common.enum';
 
 // Regist controller zod validation
 export const registerSchema = z

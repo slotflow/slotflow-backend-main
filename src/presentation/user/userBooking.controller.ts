@@ -1,5 +1,4 @@
 import { log } from "../../shared/logger/logger";
-import { Role } from "../../domain/enums/role.enum";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
@@ -12,6 +11,7 @@ import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/co
 import { UserAppointmentBookingViaStripeUseCase, UserSaveBookingAfterStripePaymentUseCase } from "../../application/useCases/user/userStripeBooking.useCase";
 import { userCancelBookingSchema, userCreateSessionIdForbookingViaStripeSchema, userFetchAllAppointmentsSchema, userSaveBookingSchema, userValidateRoomSchema } from "../../shared/zod/user.zod";
 import { fetchBookingAppointmentsUseCase, fetchBookingDetailsUsecase, updateBookingOnlineTrakingUseCase, userAppointmentBookingViaStrpieUseCase, userCancelBookingUseCase, userSaveBookingAfterStripePaymentUseCase, validateJoinRoomUsecase } from ".";
+import { Role } from "../../domain/enums/common.enum";
 
 class UserBookingController {
     constructor(
@@ -44,7 +44,7 @@ class UserBookingController {
                 limit,
                 online: online ? true : false,
                 raw: raw ? true : false,
-                role: Role.User,
+                role: Role.USER,
             });
             sendResponse(res, result);
         } catch (error) {
@@ -118,7 +118,7 @@ class UserBookingController {
             const result = await this.validateJoinRoomUsecase.execute({
                 bookingId,
                 roomId,
-                role: Role.User,
+                role: Role.USER,
                 userOrProviderId: userId
             });
             sendResponse(res, result);

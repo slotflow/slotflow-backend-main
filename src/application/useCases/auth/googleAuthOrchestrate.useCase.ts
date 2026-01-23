@@ -1,14 +1,12 @@
 import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
-import { Role } from "../../../domain/enums/role.enum";
 import { User } from "../../../domain/entities/user.entity";
-import { PlanName } from "../../../domain/enums/planName.enum";
+import { PlanName } from "../../../domain/enums/plan.enum";
 import { IJWT } from "../../../domain/interfaces/security/IJwt";
-import { AppConnect } from "../../../domain/enums/appConnect.enum";
 import { Provider } from "../../../domain/entities/provider.entity";
 import { Credential } from "../../../domain/entities/credential.entity";
 import { SendAppConnectEvent, SendWelcomeEvent } from "../../dtos/kafka.dtos";
-import { SubscriptionStatus } from "../../../domain/enums/subscriptionStatus.enum";
+import { SubscriptionStatus } from "../../../domain/enums/subscription.enum";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/message/IKafkaProducerAdapter";
@@ -17,6 +15,7 @@ import { IProviderRepository } from "../../../domain/interfaces/repositories/IPr
 import { GoogleAuthOrchestrationRequest, GoogleAuthOrchestrationResponse } from "../../dtos/auth.dto";
 import { ICredentialRepository } from "../../../domain/interfaces/repositories/ICredentialRepository";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
+import { AppConnect, Role } from "../../../domain/enums/common.enum";
 
 export class GoogleAuthOrchestratorUseCase {
     constructor(
@@ -49,7 +48,7 @@ export class GoogleAuthOrchestratorUseCase {
             let token: string | undefined;
 
             if (!connectOnly) {
-                if (role === Role.User) {
+                if (role === Role.USER) {
                     let user =
                         (await this.userRepository.findByGoogleId(googleId)) ??
                         (await this.userRepository.findByEmail(email));
@@ -67,7 +66,7 @@ export class GoogleAuthOrchestratorUseCase {
                     entity = user;
                 };
 
-                if (role === Role.Provider) {
+                if (role === Role.PROVIDER) {
                     let providerEntity =
                         (await this.providerRepository.findByGoogleId(googleId)) ??
                         (await this.providerRepository.findByEmail(email));
@@ -96,7 +95,7 @@ export class GoogleAuthOrchestratorUseCase {
                     throw new Error("Invalid connect flow");
                 };
 
-                if (role === Role.User) {
+                if (role === Role.USER) {
                     const user = await this.userRepository.findById(userId);
                     if (!user) throw new Error("User not found");
 
@@ -107,7 +106,7 @@ export class GoogleAuthOrchestratorUseCase {
                     entity = await this.userRepository.update(user);
                 };
 
-                if (role === Role.Provider) {
+                if (role === Role.PROVIDER) {
                     const providerEntity =
                         await this.providerRepository.findById(userId);
                     if (!providerEntity) throw new Error("User not found");
@@ -143,11 +142,11 @@ export class GoogleAuthOrchestratorUseCase {
                 await this.credentialRepository.create(credentials);
             };
 
-            let providerSubscription: string | undefined = PlanName.NoSubscription;
+            let providerSubscription: string | undefined = PlanName.NO_SUBSCRIPTION;
 
             const subscriptions = (entity as Provider)?.subscription;
 
-            if (Array.isArray(subscriptions) && subscriptions.length > 0 && role === Role.Provider) {
+            if (Array.isArray(subscriptions) && subscriptions.length > 0 && role === Role.PROVIDER) {
                 const subscriptionId = subscriptions[subscriptions.length - 1];
 
                 const subscription = await this.subscriptionRepository.findById(subscriptionId);
@@ -155,7 +154,7 @@ export class GoogleAuthOrchestratorUseCase {
                 if (subscription) {
                     const now = new Date();
                     const isActive =
-                        subscription.subscriptionStatus === SubscriptionStatus.Active &&
+                        subscription.subscriptionStatus === SubscriptionStatus.ACTIVE &&
                         new Date(subscription.endDate) > now;
 
                     if (isActive) {
@@ -177,7 +176,7 @@ export class GoogleAuthOrchestratorUseCase {
                     await this.kafkaProducer.publish<SendAppConnectEvent>(kafkaConfig.topics.pub.appConnect, {
                         email: entity.email,
                         name: entity.username,
-                        appConnect: AppConnect.Google,
+                        appConnect: AppConnect.GOOGLE,
                         userOrProviderId: entity._id,
                     });
                 } else {

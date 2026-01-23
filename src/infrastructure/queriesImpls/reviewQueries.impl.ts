@@ -1,9 +1,9 @@
 import { FilterQuery } from "mongoose";
-import { Role } from "../../domain/enums/role.enum";
 import { Review } from "../../domain/entities/review.entity";
 import { ReviewModel } from "../models/review.model";
 import { IReviewQueries } from "../../application/queries/IReview.queries";
 import { FetchReviesRequest, TableData, FetchReviewsResponse } from "../../application/dtos/common.dto";
+import { Role } from "../../domain/enums/common.enum";
 
 export class ReviewQueriesImpl implements IReviewQueries {
 
@@ -14,11 +14,11 @@ export class ReviewQueriesImpl implements IReviewQueries {
 
         const filter: FilterQuery<typeof Review> = {};
 
-        if (role === Role.User && userId) {
+        if (role === Role.USER && userId) {
             filter.userId = userId;
-        } else if (role === Role.Provider && providerId) {
+        } else if (role === Role.PROVIDER && providerId) {
             filter.providerId = providerId;
-        } else if (role === Role.User && providerId) {
+        } else if (role === Role.USER && providerId) {
             filter.providerId = providerId;
             filter.isBlocked = false;
         }

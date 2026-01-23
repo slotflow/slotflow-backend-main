@@ -24,7 +24,7 @@ export class BookingRepositoryImpl implements IBookingRepository {
                 ppointmentDay: day,
                 createdAt: date,
                 appointmentTime: time,
-                appointmentStatus: AppointmentStatus.Booked,
+                appointmentStatus: AppointmentStatus.BOOKED,
             }
         );
 

@@ -1,4 +1,4 @@
-import { PlanName } from "../../domain/enums/planName.enum";
+import { PlanName } from "../../domain/enums/plan.enum";
 import mongoose, { Document, Schema, Types } from "mongoose";
 
 export interface IPlan extends Document {

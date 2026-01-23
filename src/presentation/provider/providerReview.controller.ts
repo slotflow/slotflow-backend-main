@@ -1,12 +1,12 @@
 import { log } from "../../shared/logger/logger";
-import { Role } from "../../domain/enums/role.enum";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { fetchAllReviewsUseCase, providerChangeReviewRepostStatusUseCase } from ".";
 import { FetchAllReviewsUseCase } from "../../application/useCases/common/fetchReviews.useCase";
 import { providerChnageReviewReportSchema, providerIdWithPaginationSchema } from "../../shared/zod/provider.zod";
-import { ProviderChangeReviewRepostStatusUseCase } from "../../application/useCases/provier/providerReview.useCase";
+import { ProviderChangeReviewRepostStatusUseCase } from "../../application/useCases/provider/providerReview.useCase";
+import { Role } from "../../domain/enums/common.enum";
 
 class ProviderReviewController {
     constructor(
@@ -20,14 +20,14 @@ class ProviderReviewController {
     async findAllReviews(req: Request, res: Response, next: NextFunction) {
         try {
             const { limit, page, providerId } = providerIdWithPaginationSchema.parse({
-                            providerId: (req.user as DecodedUser).userOrProviderId,
-                            ...req.query
-                        });
+                providerId: (req.user as DecodedUser).userOrProviderId,
+                ...req.query
+            });
             const result = await this.fetchAllReviewsUseCase.execute({
                 page,
                 limit,
                 providerId,
-                role: Role.Provider
+                role: Role.PROVIDER
             });
             sendResponse(res, result);
         } catch (error) {

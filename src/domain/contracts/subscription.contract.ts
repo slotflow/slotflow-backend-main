@@ -1,4 +1,4 @@
-import { SubscriptionStatus } from "../enums/subscriptionStatus.enum";
+import { SubscriptionStatus } from "../enums/subscription.enum";
 
 export interface SubscriptionProps {
     _id: string,

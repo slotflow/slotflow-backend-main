@@ -2,10 +2,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from '../../../config/env';
 import { log } from '../../../shared/logger/logger';
 import { SendOtpEvent } from '../../dtos/kafka.dtos';
-import { Role } from '../../../domain/enums/role.enum';
 import { User } from '../../../domain/entities/user.entity';
 import { IJWT } from '../../../domain/interfaces/security/IJwt';
-import { OtpPurpose } from '../../../domain/enums/otpPurpose.enum';
 import { Provider } from '../../../domain/entities/provider.entity';
 import { RegisterRequest, RegisterResponse } from '../../dtos/auth.dto';
 import { IOTPService } from '../../../domain/interfaces/services/IOtp.service';
@@ -13,6 +11,7 @@ import { IPasswordHasher } from '../../../domain/interfaces/security/IPasswordHa
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { IKafkaProducerAdapter } from '../../../domain/interfaces/message/IKafkaProducerAdapter';
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
+import { OtpPurpose, Role } from '../../../domain/enums/common.enum';
 
 // CAN OPTIMISE ( REDUCE SAME TYPE OF CODE )
 
@@ -32,7 +31,7 @@ export class RegisterUseCase {
       const { username, email, password, role } = payload;
       if (!username || !email || !password || !role) throw new Error("Invalid request");
 
-      if (role === Role.User) {
+      if (role === Role.USER) {
         const user = await this.userRepository.findByEmail(email);
         if (user && user.isEmailVerified) throw new Error("Email already exist.");
 
@@ -74,7 +73,7 @@ export class RegisterUseCase {
           },
         };
 
-      } else if (role === Role.Provider) {
+      } else if (role === Role.PROVIDER) {
         const provider = await this.providerRepository.findByEmail(email);
         if (provider && provider.isEmailVerified) throw new Error("Email already exist.");
 

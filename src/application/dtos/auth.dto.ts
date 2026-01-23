@@ -1,6 +1,6 @@
 import { CommonResponse } from "./common.dto";
-import { Role } from "../../domain/enums/role.enum";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
+import { Role } from "../../domain/enums/common.enum";
 
 // **** Register usec case
 // user or provider register usecase request payload interface

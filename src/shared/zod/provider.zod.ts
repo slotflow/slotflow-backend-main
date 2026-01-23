@@ -1,10 +1,6 @@
 import { z } from "zod";
-import { Day } from "../../domain/enums/day.enum";
-import { PlanName } from "../../domain/enums/planName.enum";
-import { ServiceType } from "../../domain/enums/serviceType.enum";
-import { ServiceMode } from "../../domain/enums/serviceMode.enum";
+import { PlanName } from "../../domain/enums/plan.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
-import { SubscriptionValidity } from "../../domain/enums/subscriptionValidity.enum";
 import { objectIdRegex, serviceDescriptionRegex, serviceExperienceRegex, serviceNameRegex, timeRegex } from "../utils/regex";
 import {
     validateProviderIdSchema,
@@ -19,6 +15,9 @@ import {
     validateReviewIdSchema
 } from "./base.zod";
 import { fetchBookingCommonSchema } from "./common.zod";
+import { Day } from "../../domain/enums/common.enum";
+import { ServiceMode, ServiceType } from "../../domain/enums/service.enum";
+import { SubscriptionValidity } from "../../domain/enums/subscription.enum";
 
 //
 export const providerIdWithPaginationSchema = validateProviderIdSchema.merge(paginationSchema);
@@ -147,7 +146,7 @@ export const providerValidateRoomSchema = validateBookingIdSchema.merge(validate
 
 //
 export const providerValidateDashboardDataSchema = z.object({
-    subscription: z.nativeEnum(PlanName).default(PlanName.Trial),
+    subscription: z.nativeEnum(PlanName).default(PlanName.TRIAL),
     endDate: dateSchema.optional(),
     startDate: dateSchema.optional(),
 }).merge(validateProviderIdSchema);

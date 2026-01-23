@@ -1,8 +1,5 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
-import { PaymentFor } from "../../domain/enums/paymentFor.enum";
-import { PaymentStatus } from "../../domain/enums/paymentStatus.enum";
-import { PaymentMethod } from "../../domain/enums/paymentMethod.enum";
-import { PaymentGateway } from "../../domain/enums/paymentGateway.enum";
+import { PaymentFor, PaymentGateway, PaymentMethod, PaymentStatus } from "../../domain/enums/payment.enum";
 
 export interface IPayment extends Document {
     _id: Types.ObjectId;

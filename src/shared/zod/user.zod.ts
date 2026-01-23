@@ -1,8 +1,6 @@
 import { z } from "zod";
 import { objectIdRegex } from "../utils/regex";
-import { Role } from "../../domain/enums/role.enum";
-import { ServiceMode } from "../../domain/enums/serviceMode.enum";
-import { ServiceCategory } from "../../domain/enums/serviceCategories.enum";
+import { ServiceCategory, ServiceMode } from "../../domain/enums/service.enum";
 import {
     validateUserIdSchema,
     paginationSchema,
@@ -17,6 +15,7 @@ import {
     validateReviewIdSchema
 } from "./base.zod";
 import { fetchBookingCommonSchema } from "./common.zod";
+import { Role } from "../../domain/enums/common.enum";
 
 //
 export const userIdWithPaginationSchema = validateUserIdSchema.merge(paginationSchema);

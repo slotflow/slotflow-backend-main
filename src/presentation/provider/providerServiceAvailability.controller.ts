@@ -5,7 +5,7 @@ import { DecodedUser } from "../../application/dtos/common.dto";
 import { fetchProviderServiceAvailabilitySchema } from "../../shared/zod/common.zod";
 import { providerCreateServiceAvailabilitySchema, validateProviderIdSchema } from "../../shared/zod/provider.zod";
 import { providerCreateServiceAvailabilitiesUseCase, providerFetchServiceAvailabilityUseCase } from ".";
-import { ProviderCreateServiceAvailabilitiesUseCase, ProviderFetchServiceAvailabilityUseCase } from "../../application/useCases/provier/providerServiceAvailability.useCase";
+import { ProviderCreateServiceAvailabilitiesUseCase, ProviderFetchServiceAvailabilityUseCase } from "../../application/useCases/provider/providerServiceAvailability.useCase";
 
 class ProviderServiceAvailabilityController {
     constructor(

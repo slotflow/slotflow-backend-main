@@ -1,4 +1,4 @@
-import { PlanName } from "../enums/planName.enum";
+import { PlanName } from "../enums/plan.enum";
 import { PlanProps } from "../contracts/plan.contract";
 import { CreatePlanProps, UpdatePlanProps } from "../commands/plan.commands";
 

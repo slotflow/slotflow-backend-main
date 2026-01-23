@@ -1,5 +1,5 @@
 import { Service } from "../../entities/service.entity";
-import { ServiceCategory } from "../../enums/serviceCategories.enum";
+import { ServiceCategory } from "../../enums/service.enum";
 
 export interface IServiceRepository {
 

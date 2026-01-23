@@ -62,7 +62,7 @@ export class SignedUrlServiceImpl implements ISignedUrlService {
             await this.redis.set(
                 redisKey,
                 signedUrl,
-                { ex: redisConfig.redisTtl }
+                { ex: redisConfig.redisSignedUrlTtl }
             );
 
             return signedUrl;
@@ -95,7 +95,7 @@ export class SignedUrlServiceImpl implements ISignedUrlService {
             await this.redis.set(
                 redisKey,
                 signedUrl,
-                { ex: redisConfig.redisTtl }
+                { ex: redisConfig.redisSignedUrlTtl }
             );
 
             return signedUrl;

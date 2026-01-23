@@ -1,5 +1,5 @@
 import { SubscriptionModel } from "../models/subscription.model";
-import { SubscriptionStatus } from "../../domain/enums/subscriptionStatus.enum";
+import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 import { ISubscriptionQueries } from "../../application/queries/ISubscription.queries";
 import { AdminFetchAllSubscriptionsResponse, AdminFetchDashboardSubscriptionStatsDataResponse } from "../../application/dtos/admin.dto";
 import { ApiPaginationRequest, FetchProviderSubscriptionsRequest, findSubscriptionFullDetailsResProps, FindSubscriptionsByProviderIdResponse, PlanNameOnly, PopulatedSubscription, TableData } from "../../application/dtos/common.dto";
@@ -84,11 +84,11 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
             {
                 $facet: {
                     activeSubscriptions: [
-                        { $match: { subscriptionStatus: SubscriptionStatus.Active } },
+                        { $match: { subscriptionStatus: SubscriptionStatus.ACTIVE } },
                         { $count: "count" }
                     ],
                     expiredSubscriptions: [
-                        { $match: { subscriptionStatus: SubscriptionStatus.Cancelled } },
+                        { $match: { subscriptionStatus: SubscriptionStatus.CANCELLED } },
                         { $count: "count" }
                     ],
                     subscriptionsByFreePlan: [
@@ -169,11 +169,11 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
 
         const updated = await SubscriptionModel.updateMany(
             {
-                subscriptionStatus: SubscriptionStatus.Active,
+                subscriptionStatus: SubscriptionStatus.ACTIVE,
                 endDate: { $lt: now }
             },
             {
-                $set: { subscriptionStatus: SubscriptionStatus.Expired }
+                $set: { subscriptionStatus: SubscriptionStatus.EXPIRED }
             }
         );
 

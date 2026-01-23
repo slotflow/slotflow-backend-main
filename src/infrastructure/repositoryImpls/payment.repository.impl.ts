@@ -2,8 +2,8 @@ import { Types } from "mongoose";
 import { PaymentModel } from "../models/payment.model";
 import { PaymentMapper } from "../mappers/payment.mapper";
 import { Payment } from "../../domain/entities/payment.entity";
-import { PaymentFor } from "../../domain/enums/paymentFor.enum";
 import { IPaymentRepository } from "../../domain/interfaces/repositories/IPayment.repository";
+import { PaymentFor } from "../../domain/enums/payment.enum";
 
 export class PaymentRepositoryImpl implements IPaymentRepository {
 
@@ -45,12 +45,12 @@ export class PaymentRepositoryImpl implements IPaymentRepository {
 
         if (userId) {
             filter.userId = new Types.ObjectId(userId);
-            filter.paymentFor = PaymentFor.AppointmentBooking
+            filter.paymentFor = PaymentFor.APPOINTMENT_BOOKING
         }
 
         if (providerId) {
             filter.providerId = new Types.ObjectId(providerId);
-            filter.paymentFor = { $in: [PaymentFor.ProviderPayout, PaymentFor.ProviderSubscription] }
+            filter.paymentFor = { $in: [PaymentFor.PROVIDER_PAYOUT, PaymentFor.PROVIDER_SUBSCRIPTION] }
         }
 
         const [payments, totalCount] = await Promise.all([

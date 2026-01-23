@@ -1,15 +1,14 @@
 import { kafkaConfig } from '../../../config/env';
 import { log } from '../../../shared/logger/logger';
 import { SendOtpEvent } from '../../dtos/kafka.dtos';
-import { Role } from '../../../domain/enums/role.enum';
 import { User } from '../../../domain/entities/user.entity';
-import { OtpPurpose } from '../../../domain/enums/otpPurpose.enum';
 import { Provider } from '../../../domain/entities/provider.entity';
 import { ResendOtpRequest, ResendOtpResponse } from '../../dtos/auth.dto';
 import { IOTPService } from '../../../domain/interfaces/services/IOtp.service';
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { IKafkaProducerAdapter } from '../../../domain/interfaces/message/IKafkaProducerAdapter';
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
+import { OtpPurpose, Role } from '../../../domain/enums/common.enum';
 
 export class ResendOtpUseCase {
 
@@ -28,18 +27,18 @@ export class ResendOtpUseCase {
       let userOrProvider: Provider | User | null = null;
 
       if (email && role) {
-        if (role === Role.User) {
+        if (role === Role.USER) {
           userOrProvider = await this.userRepository.findByEmail(email);
-        } else if (role === Role.Provider) {
+        } else if (role === Role.PROVIDER) {
           userOrProvider = await this.providerRepository.findByEmail(email);
         } else {
           throw new Error("Invalid request.");
         };
 
       } else if (verificationToken && role) {
-        if (role === Role.User) {
+        if (role === Role.USER) {
           userOrProvider = await this.userRepository.findByVerificationToken(verificationToken);
-        } else if (role === Role.Provider) {
+        } else if (role === Role.PROVIDER) {
           userOrProvider = await this.providerRepository.findByVerificationToken(verificationToken);
         } else {
           throw new Error("Invalid request.");

@@ -1,14 +1,13 @@
 import { log } from "../../../shared/logger/logger";
 import { stripe } from "../../../infrastructure/lib/stripe";
 import { UserCancelBookingRequest } from "../../dtos/user.dto";
-import { PaymentStatus } from "../../../domain/enums/paymentStatus.enum";
-import { PaymentGateway } from "../../../domain/enums/paymentGateway.enum";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { IPaymentRepository } from "../../../domain/interfaces/repositories/IPayment.repository";
 import { IGoogleCalendarGatewayService } from "../../../domain/interfaces/services/IGoogleCalendarGateway.service";
 import { IGoogleTokenService } from "../../../domain/interfaces/services/IGoogleToken.service";
+import { PaymentGateway, PaymentStatus } from "../../../domain/enums/payment.enum";
 
 export class UserCancelBookingUseCase {
     constructor(
@@ -29,11 +28,11 @@ export class UserCancelBookingUseCase {
             const booking = await this.bookingRepository.findById(bookingId);
             if (!booking) throw new Error("No booking found");
 
-            if (booking.appointmentStatus === AppointmentStatus.Cancelled) {
+            if (booking.appointmentStatus === AppointmentStatus.CANCELLED) {
                 throw new Error("Already cancelled");
-            } else if (booking.appointmentStatus === AppointmentStatus.Completed) {
+            } else if (booking.appointmentStatus === AppointmentStatus.COMPLETED) {
                 throw new Error("Appointment completed");
-            } else if (booking.appointmentStatus === AppointmentStatus.RejectedByProvider) {
+            } else if (booking.appointmentStatus === AppointmentStatus.REJECTED_BY_PROVIDER) {
                 throw new Error("Appointment rejected by the Service provider");
             };
 
@@ -47,7 +46,7 @@ export class UserCancelBookingUseCase {
                 const updateBooking = await this.bookingRepository.update(booking);
                 if (!updateBooking) throw new Error("Booking status updating error");
 
-                if (payment.paymentGateway === PaymentGateway.Stripe) {
+                if (payment.paymentGateway === PaymentGateway.STRIPE) {
 
                     let refundAmount = 0
                     const currentDate = new Date();
@@ -69,7 +68,7 @@ export class UserCancelBookingUseCase {
                     if (!refund) throw new Error("Refund processinga failed");
 
                     payment.update({
-                        paymentStatus: PaymentStatus.Refunded,
+                        paymentStatus: PaymentStatus.REFUNDED,
                         paymentMethod: payment.paymentMethod,
                         paymentGateway: payment.paymentGateway,
                         paymentFor: payment.paymentFor,
@@ -81,7 +80,7 @@ export class UserCancelBookingUseCase {
                         refundAt: new Date(refund.created * 1000),
                         refundId: refund.id,
                         refundReason: "Booking cancelled",
-                        refundStatus: refund.status as PaymentStatus ?? PaymentStatus.Pending,
+                        refundStatus: refund.status as PaymentStatus ?? PaymentStatus.PENDING,
                         chargeId: typeof refund.charge === "string" ? refund.charge : refund.charge?.id ?? undefined,
                     });
 

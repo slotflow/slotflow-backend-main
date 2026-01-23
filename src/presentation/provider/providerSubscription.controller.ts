@@ -4,10 +4,10 @@ import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { validateSubscriptionIdSchema } from "../../shared/zod/common.zod";
 import { FetchSubscriptionDetailsUseCase } from "../../application/useCases/common/subscription.useCase";
-import { ProviderFetchAllSubscriptionsUseCase } from "../../application/useCases/provier/providerSubscription.useCase";
-import { ProviderTrialSubscriptionUseCase } from "../../application/useCases/provier/providerTrailSubscription.useCase";
+import { ProviderFetchAllSubscriptionsUseCase } from "../../application/useCases/provider/providerSubscription.useCase";
+import { ProviderTrialSubscriptionUseCase } from "../../application/useCases/provider/providerTrailSubscription.useCase";
 import { providerIdWithPaginationSchema, providerPlanSubscribeSchema, providerSaveSubscriptionSchema, validateProviderIdSchema } from "../../shared/zod/provider.zod";
-import { ProviderSaveSubscriptionUseCase, ProviderStripeSubscriptionCreateSessionIdUseCase } from "../../application/useCases/provier/providerStripeSubscription.useCase";
+import { ProviderSaveSubscriptionUseCase, ProviderStripeSubscriptionCreateSessionIdUseCase } from "../../application/useCases/provider/providerStripeSubscription.useCase";
 import { fetchSubscriptionDetailsUseCase, providerFetchAllSubscriptionsUseCase, providerSaveSubscriptionUseCase, providerStripeSubscriptionCreateSessionIdUseCase, providerTrialSubscriptionUseCase } from ".";
 
 class ProviderSubscriptionController {

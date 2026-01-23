@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { Boolean, FileType } from "../../domain/enums/common.enum";
-import { ServiceCategory } from "../../domain/enums/serviceCategories.enum";
+import { ServiceCategory } from "../../domain/enums/service.enum";
 import {
   roleValidationSchema,
   paginationSchema,

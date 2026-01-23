@@ -1,5 +1,4 @@
 import { log } from "../../shared/logger/logger";
-import { Role } from "../../domain/enums/role.enum";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
@@ -8,9 +7,10 @@ import { ValidateJoinRoomUsecase } from "../../application/useCases/common/valid
 import { FetchBookingDetailsUsecase } from "../../application/useCases/common/fetchBookingDetails.useCase";
 import { FetchBookingAppointmentsUseCase } from "../../application/useCases/common/fetchAllBookings.useCase";
 import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/common/updateBookingOnlineTracking.useCase";
-import { ProviderChangeBookingAppointmentStatusUseCase } from "../../application/useCases/provier/providerBooking.useCase";
+import { ProviderChangeBookingAppointmentStatusUseCase } from "../../application/useCases/provider/providerBooking.useCase";
 import { providerChangeAppointmentStatusSchema, providerFetchAllAppointmentsSchema, providerValidateRoomSchema } from "../../shared/zod/provider.zod";
 import { fetchBookingAppointmentsUseCase, fetchBookingDetailsUsecase, providerChangeBookingAppointmentStatusUseCase, updateBookingOnlineTrakingUseCase, validateJoinRoomUsecase } from ".";
+import { Role } from "../../domain/enums/common.enum";
 
 class ProviderBookingController {
     constructor(
@@ -39,7 +39,7 @@ class ProviderBookingController {
                 limit,
                 online: online ? true : false,
                 raw: raw ? true : false,
-                role: Role.Provider
+                role: Role.PROVIDER
             });
             sendResponse(res, result);
         } catch (error) {
@@ -72,7 +72,7 @@ class ProviderBookingController {
             const result = await this.validateJoinRoomUsecase.execute({
                 bookingId,
                 roomId,
-                role: Role.Provider,
+                role: Role.PROVIDER,
                 userOrProviderId: providerId
             });
             res.status(200).json(result);

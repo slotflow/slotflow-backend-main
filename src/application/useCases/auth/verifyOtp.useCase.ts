@@ -1,6 +1,5 @@
 import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
-import { Role } from "../../../domain/enums/role.enum";
 import { SendWelcomeEvent } from "../../dtos/kafka.dtos";
 import { User } from "../../../domain/entities/user.entity";
 import { Provider } from "../../../domain/entities/provider.entity";
@@ -9,6 +8,7 @@ import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.r
 import { OTPVerificationRequest, VerifyAndActivateEntityRequest } from "../../dtos/auth.dto";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/message/IKafkaProducerAdapter";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
+import { Role } from "../../../domain/enums/common.enum";
 
 export class VerifyOTPUseCase {
   constructor(
@@ -56,7 +56,7 @@ export class VerifyOTPUseCase {
 
     const { role, verificationToken } = payload;
 
-    if (role === Role.User) {
+    if (role === Role.USER) {
       const user = await this.userRepository.findByVerificationToken(
         verificationToken
       );
@@ -69,7 +69,7 @@ export class VerifyOTPUseCase {
       return this.userRepository.update(user);
     };
 
-    if (role === Role.Provider) {
+    if (role === Role.PROVIDER) {
       const provider =
         await this.providerRepository.findByVerificationToken(
           verificationToken

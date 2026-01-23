@@ -4,8 +4,8 @@ import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { providerFetchDashboardGraphDataUseCase, providerFetchDashboardStatsUseCase } from ".";
 import { providerValidateDashboardDataSchema, validateProviderIdSchema } from "../../shared/zod/provider.zod";
-import { ProviderFetchDashboardStatsUseCase } from "../../application/useCases/provier/providerDashboardStats.useCase";
-import { ProviderFetchDashboardGraphDataUseCase } from "../../application/useCases/provier/providerDashboardGraphData.useCase";
+import { ProviderFetchDashboardStatsUseCase } from "../../application/useCases/provider/providerDashboardStats.useCase";
+import { ProviderFetchDashboardGraphDataUseCase } from "../../application/useCases/provider/providerDashboardGraphData.useCase";
 
 class ProviderDashboardController {
     constructor(
@@ -36,12 +36,12 @@ class ProviderDashboardController {
                 providerId: (req.user as DecodedUser).userOrProviderId
             });
             const result = await this.providerFetchDashboardGraphDataUseCase.execute({
-                providerId, 
+                providerId,
                 subscription: subscription,
                 endDate,
                 startDate,
             });
-            sendResponse(res,result);
+            sendResponse(res, result);
         } catch (error) {
             log.error("getDashboardGraphData failed", error as Error);
             next(error);

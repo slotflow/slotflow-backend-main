@@ -1,8 +1,8 @@
 import { log } from "../../../shared/logger/logger";
-import { Role } from "../../../domain/enums/role.enum";
 import { IServiceAvailabilityQueries } from "../../queries/IServiceAvailability.queries";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { UpdateBookingOnlineTrackRequest, UpdateBookingOnlineTrackResponse } from "../../dtos/common.dto";
+import { Role } from "../../../domain/enums/common.enum";
 
 export class UpdateBookingOnlineTrakingUseCase {
     constructor(
@@ -24,7 +24,7 @@ export class UpdateBookingOnlineTrakingUseCase {
             const serviceAvailability = await this.serviceAvailabilityQueries.findByProviderId(new Date(), booking.serviceProviderId);
             if (!serviceAvailability) throw new Error("No service found");
 
-            if (role === Role.Provider) {
+            if (role === Role.PROVIDER) {
                 if (joined && joinedTime) {
                     if (!booking.onlineTrack.provider.joined && booking.onlineTrack.provider.joinedTime) {
                         booking.onlineTrack.provider.joined = true;
@@ -38,7 +38,7 @@ export class UpdateBookingOnlineTrakingUseCase {
                         };
                     };
                 };
-            } else if (role === Role.User) {
+            } else if (role === Role.USER) {
                 if (joined && joinedTime) {
                     if (!booking.onlineTrack.user.joined && !booking.onlineTrack.user.joinedTime) {
                         booking.onlineTrack.user.joined = true;

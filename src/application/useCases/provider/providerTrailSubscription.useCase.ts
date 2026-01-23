@@ -3,8 +3,7 @@ import { log } from "../../../shared/logger/logger";
 import { ProviderTrialSubscriptionRequest } from "../../dtos/provider.dto";
 import { SendProviderTrialSubscriptionEvent } from "../../dtos/kafka.dtos";
 import { Subscription } from "../../../domain/entities/subscription.entity";
-import { SubscriptionStatus } from "../../../domain/enums/subscriptionStatus.enum";
-import { SubscriptionValidity } from "../../../domain/enums/subscriptionValidity.enum";
+import { SubscriptionStatus, SubscriptionValidity } from "../../../domain/enums/subscription.enum";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/message/IKafkaProducerAdapter";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
@@ -25,30 +24,30 @@ export class ProviderTrialSubscriptionUseCase {
 
             const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");
-            
+
             const providerSubscriptions = provider.subscription;
             if (providerSubscriptions.length > 0) {
                 const providerLastSubscriptionId = providerSubscriptions.pop();
                 const subscription = await this.subscriptionRepository.findById(providerLastSubscriptionId!);
-                if(subscription) {
+                if (subscription) {
                     const isExpired = isSubscriptionExpired(subscription.endDate);
                     if (!isExpired) throw new Error("Your current subscription is on live.");
                 }
             };
-            
+
             const trialPlan = await this.planRepository.findByNameOrPrice("TRIAL", 0);
             if (!trialPlan) throw new Error("No trial plan found.");
-            
+
             const trialPlanId = trialPlan._id;
             const checkTrialIsAlreadyUsed = providerSubscriptions.includes(trialPlanId);
             if (checkTrialIsAlreadyUsed) throw new Error("You have already used the free trial, please go for the paid plan.");
-            
+
             const subscriptionData = Subscription.create({
                 providerId,
                 subscriptionPlanId: trialPlanId,
                 startDate: new Date(),
-                endDate: getDateAfterDays(SubscriptionValidity.SevenDays),
-                subscriptionStatus: SubscriptionStatus.Active,
+                endDate: getDateAfterDays(SubscriptionValidity.SEVEN_DAYS),
+                subscriptionStatus: SubscriptionStatus.ACTIVE,
             });
 
             const subscription = await this.subscriptionRepository.create(subscriptionData);

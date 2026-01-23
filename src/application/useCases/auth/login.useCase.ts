@@ -1,16 +1,16 @@
 import { adminConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
-import { Role } from "../../../domain/enums/role.enum";
-import { PlanName } from "../../../domain/enums/planName.enum";
+import { PlanName } from "../../../domain/enums/plan.enum";
 import { IJWT } from "../../../domain/interfaces/security/IJwt";
 import { LoginRequest, LoginResponse } from "../../dtos/auth.dto";
-import { SubscriptionStatus } from "../../../domain/enums/subscriptionStatus.enum";
+import { SubscriptionStatus } from "../../../domain/enums/subscription.enum";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
 import { IPasswordHasher } from "../../../domain/interfaces/security/IPasswordHasher";
+import { Role } from "../../../domain/enums/common.enum";
 
 export class LoginUseCase {
     constructor(
@@ -29,7 +29,7 @@ export class LoginUseCase {
 
             if (!email || !password || !role) throw new Error("Invalid request.");
 
-            if (role === Role.User) {
+            if (role === Role.USER) {
                 const user = await this.userRepository.findByEmail(email);
                 if (!user) throw new Error("Invalid credentials");
                 if (user.isBlocked) throw new Error("Your account is blocked, please contact us");
@@ -60,7 +60,7 @@ export class LoginUseCase {
                     },
                 };
 
-            } else if (role === Role.Provider) {
+            } else if (role === Role.PROVIDER) {
                 const provider = await this.providerRepository.findByEmail(email);
                 if (!provider) throw new Error("Invalid credentials");
                 if (provider.isBlocked) throw new Error("Your account is blocked, please contact us");
@@ -77,7 +77,7 @@ export class LoginUseCase {
                     signedProfileImageUrl = await this.signedUrlService.save(provider.profileImage);
                 };
 
-                let providerSubscription: string | undefined = PlanName.NoSubscription;
+                let providerSubscription: string | undefined = PlanName.NO_SUBSCRIPTION;
 
                 const subscriptions = provider?.subscription;
 
@@ -90,7 +90,7 @@ export class LoginUseCase {
                     if (subscription) {
                         const now = new Date();
                         const isActive =
-                            subscription.subscriptionStatus === SubscriptionStatus.Active &&
+                            subscription.subscriptionStatus === SubscriptionStatus.ACTIVE &&
                             new Date(subscription.endDate) > now;
 
                         if (isActive) {
@@ -129,7 +129,7 @@ export class LoginUseCase {
                     },
                 };
 
-            } else if (role === Role.Admin) {
+            } else if (role === Role.ADMIN) {
                 if (email !== adminConfig.adminEmail || password !== adminConfig.adminPassword) {
                     throw new Error("Invalid credentials.");
                 };

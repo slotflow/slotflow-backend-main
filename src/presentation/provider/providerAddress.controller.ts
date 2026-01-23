@@ -4,7 +4,7 @@ import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { providerCreateAddressUseCase, providerFetchAddressUseCase, providerUpdateAddressUseCase } from ".";
 import { providerCreateAddressSchema, providerUpdateAddressSchema, validateProviderIdSchema } from "../../shared/zod/provider.zod";
-import { ProviderCreateAddressUseCase, ProviderFetchAddressUseCase, ProviderUpdateAddressUseCase } from "../../application/useCases/provier/providerAddress.useCase";
+import { ProviderCreateAddressUseCase, ProviderFetchAddressUseCase, ProviderUpdateAddressUseCase } from "../../application/useCases/provider/providerAddress.useCase";
 
 class ProviderAddressController {
     constructor(

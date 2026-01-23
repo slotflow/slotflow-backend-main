@@ -1,5 +1,5 @@
-import { Day } from "../enums/day.enum";
-import { ServiceMode } from "../enums/serviceMode.enum";
+import { Day } from "../enums/common.enum";
+import { ServiceMode } from "../enums/service.enum";
 
 export interface TimeSlot {
     time: string,

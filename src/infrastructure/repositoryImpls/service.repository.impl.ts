@@ -1,7 +1,7 @@
 import { ServiceModel } from "../models/service.model";
 import { ServiceMapper } from "../mappers/service.mapper";
 import { Service } from "../../domain/entities/service.entity";
-import { ServiceCategory } from "../../domain/enums/serviceCategories.enum";
+import { ServiceCategory } from "../../domain/enums/service.enum";
 import { IServiceRepository } from "../../domain/interfaces/repositories/IService.repository";
 
 export class ServiceRepositoryImpl implements IServiceRepository {

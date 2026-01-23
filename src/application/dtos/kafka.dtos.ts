@@ -1,12 +1,8 @@
 import { KafkaMessage } from "kafkajs";
-import { Role } from "../../domain/enums/role.enum";
-import { AppConnect } from "../../domain/enums/appConnect.enum";
-import { OtpPurpose } from "../../domain/enums/otpPurpose.enum";
-import { PaymentFor } from "../../domain/enums/paymentFor.enum";
-import { PaymentStatus } from "../../domain/enums/paymentStatus.enum";
-import { PaymentGateway } from "../../domain/enums/paymentGateway.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
+import { AppConnect, OtpPurpose, Role } from "../../domain/enums/common.enum";
+import { PaymentFor, PaymentGateway, PaymentStatus } from "../../domain/enums/payment.enum";
 
 // kafka client adapter props
 export interface KafkaClientAdapterProps {

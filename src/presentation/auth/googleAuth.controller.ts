@@ -1,11 +1,11 @@
 import passport from "passport";
 import { log } from "../../shared/logger/logger";
 import { googleAuthOrchestratorUseCase } from ".";
-import { Role } from "../../domain/enums/role.enum";
 import { NextFunction, Request, Response } from "express";
 import { appConfig, serviceConfig } from "../../config/env";
 import { roleValidationSchema } from "../../shared/zod/common.zod";
 import { GoogleAuthOrchestratorUseCase } from "../../application/useCases/auth/googleAuthOrchestrate.useCase";
+import { Role } from "../../domain/enums/common.enum";
 
 class GoogleAuthController {
     constructor(
@@ -52,7 +52,7 @@ class GoogleAuthController {
                         };
 
                         const redirectData = encodeURIComponent(JSON.stringify(errorPayload));
-                        return res.redirect(`${serviceConfig.frontendUrl}/${info.role === Role.Provider ? "provider" : "user"}/integrations?response=${redirectData}`);
+                        return res.redirect(`${serviceConfig.frontendUrl}/${info.role === Role.PROVIDER ? "provider" : "user"}/integrations?response=${redirectData}`);
                     } else {
                         return res.redirect(`${serviceConfig.frontendUrl}/login?error=google_auth_failed`);
                     }
@@ -80,7 +80,7 @@ class GoogleAuthController {
                         googleConnected: true,
                     };
                     const redirectData = encodeURIComponent(JSON.stringify(successPayload));
-                    return res.redirect(`${serviceConfig.frontendUrl}/${role === Role.Provider ? "provider" : "user"}/integrations?response=${redirectData}`);
+                    return res.redirect(`${serviceConfig.frontendUrl}/${role === Role.PROVIDER ? "provider" : "user"}/integrations?response=${redirectData}`);
                 };
 
                 res.cookie("token", token, {

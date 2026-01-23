@@ -1,13 +1,11 @@
 import { Types } from "mongoose";
 import { PaymentModel } from "../models/payment.model";
 import { TableData } from "../../application/dtos/common.dto";
-import { PaymentFor } from "../../domain/enums/paymentFor.enum";
-import { PaymentStatus } from "../../domain/enums/paymentStatus.enum";
-import { PaymentGateway } from "../../domain/enums/paymentGateway.enum";
 import { IPaymentQueries } from "../../application/queries/IPayment.queries";
 import { endOfDay, startOfDay, startOfMonth, startOfToday, startOfTomorrow } from "date-fns";
 import { ProviderFetchDashboardPaymentStatsDataResponse } from "../../application/dtos/provider.dto";
 import { AdminFetchDashboardRevenueStatsDataResponse, AdminFetchDashboardTodayPaymentStatsDataResponse, AdminFetchRevenueReportRequest, AdminFetchRevenueReportResponse } from "../../application/dtos/admin.dto";
+import { PaymentFor, PaymentGateway, PaymentStatus } from "../../domain/enums/payment.enum";
 
 export class PaymentQueriesImpl implements IPaymentQueries {
 
@@ -15,8 +13,8 @@ export class PaymentQueriesImpl implements IPaymentQueries {
         const { endDate, limit, page, startDate } = payload;
         const skip = (page - 1) * limit;
         const match: Record<string, any> = {
-            paymentStatus: PaymentStatus.Paid,
-            paymentFor: { $in: [PaymentFor.ProviderSubscription, PaymentFor.AppointmentBooking] },
+            paymentStatus: PaymentStatus.PAID,
+            paymentFor: { $in: [PaymentFor.PROVIDER_SUBSCRIPTION, PaymentFor.APPOINTMENT_BOOKING] },
         };
 
         if (startDate || endDate) {
@@ -94,13 +92,13 @@ export class PaymentQueriesImpl implements IPaymentQueries {
         const paymentData = await PaymentModel.aggregate([
             {
                 $match: {
-                    paymentStatus: PaymentStatus.Paid,
+                    paymentStatus: PaymentStatus.PAID,
                 }
             },
             {
                 $facet: {
                     totalRevenue: [
-                        { $match: { paymentFor: { $in: [PaymentFor.ProviderSubscription, PaymentFor.AppointmentBooking] } } },
+                        { $match: { paymentFor: { $in: [PaymentFor.PROVIDER_SUBSCRIPTION, PaymentFor.APPOINTMENT_BOOKING] } } },
                         {
                             $group: {
                                 _id: null,
@@ -109,7 +107,7 @@ export class PaymentQueriesImpl implements IPaymentQueries {
                         }
                     ],
                     totalRevenueViaSubscriptions: [
-                        { $match: { paymentFor: PaymentFor.ProviderSubscription } },
+                        { $match: { paymentFor: PaymentFor.PROVIDER_SUBSCRIPTION } },
                         {
                             $group: {
                                 _id: null,
@@ -118,7 +116,7 @@ export class PaymentQueriesImpl implements IPaymentQueries {
                         }
                     ],
                     totalRevenueViaAppointments: [
-                        { $match: { paymentFor: PaymentFor.AppointmentBooking } },
+                        { $match: { paymentFor: PaymentFor.APPOINTMENT_BOOKING } },
                         {
                             $group: {
                                 _id: null,
@@ -127,7 +125,7 @@ export class PaymentQueriesImpl implements IPaymentQueries {
                         }
                     ],
                     revenueByStripe: [
-                        { $match: { paymentGateway: PaymentGateway.Stripe } },
+                        { $match: { paymentGateway: PaymentGateway.STRIPE } },
                         {
                             $group: {
                                 _id: null,
@@ -136,7 +134,7 @@ export class PaymentQueriesImpl implements IPaymentQueries {
                         }
                     ],
                     revenueByRazorpay: [
-                        { $match: { paymentGateway: PaymentGateway.Razorpay } },
+                        { $match: { paymentGateway: PaymentGateway.RAZORPAY } },
                         {
                             $group: {
                                 _id: null,
@@ -145,7 +143,7 @@ export class PaymentQueriesImpl implements IPaymentQueries {
                         }
                     ],
                     revenueByPaypal: [
-                        { $match: { paymentGateway: PaymentGateway.Razorpay } },
+                        { $match: { paymentGateway: PaymentGateway.PAYPAL } },
                         {
                             $group: {
                                 _id: null,
@@ -154,7 +152,7 @@ export class PaymentQueriesImpl implements IPaymentQueries {
                         }
                     ],
                     totalRefundsIssued: [
-                        { $match: { paymentStatus: PaymentStatus.Refunded } },
+                        { $match: { paymentStatus: PaymentStatus.REFUNDED } },
                         {
                             $group: {
                                 _id: null,
@@ -163,7 +161,7 @@ export class PaymentQueriesImpl implements IPaymentQueries {
                         }
                     ],
                     totalFailedPayments: [
-                        { $match: { paymentStatus: PaymentStatus.Failed } },
+                        { $match: { paymentStatus: PaymentStatus.FAILED } },
                         {
                             $group: {
                                 _id: null,
@@ -172,7 +170,7 @@ export class PaymentQueriesImpl implements IPaymentQueries {
                         }
                     ],
                     totalPayoutsToProviders: [
-                        { $match: { PaymentFor: PaymentFor.ProviderPayout } },
+                        { $match: { PaymentFor: PaymentFor.PROVIDER_PAYOUT } },
                         {
                             $group: {
                                 _id: null,
@@ -212,13 +210,13 @@ export class PaymentQueriesImpl implements IPaymentQueries {
             {
                 $match: {
                     providerId: new Types.ObjectId(providerId),
-                    paymentStatus: PaymentStatus.Paid,
+                    paymentStatus: PaymentStatus.PAID,
                 }
             },
             {
                 $facet: {
                     totalSubscriptionPaidAmount: [
-                        { $match: { paymentFor: PaymentFor.ProviderSubscription } },
+                        { $match: { paymentFor: PaymentFor.PROVIDER_SUBSCRIPTION } },
                         {
                             $group: {
                                 _id: null,
@@ -229,7 +227,7 @@ export class PaymentQueriesImpl implements IPaymentQueries {
                     totalEarnings: [
                         {
                             $match: {
-                                paymentFor: PaymentFor.AppointmentBooking
+                                paymentFor: PaymentFor.APPOINTMENT_BOOKING
                             }
                         },
                         {
@@ -250,7 +248,7 @@ export class PaymentQueriesImpl implements IPaymentQueries {
                     todaysEarnings: [
                         {
                             $match: {
-                                paymentFor: PaymentFor.AppointmentBooking,
+                                paymentFor: PaymentFor.APPOINTMENT_BOOKING,
                                 createdAt: { $gt: today, $lt: tomorrow },
                             }
                         },
@@ -271,7 +269,7 @@ export class PaymentQueriesImpl implements IPaymentQueries {
                     ],
                     totalPayoutsMade: [
                         {
-                            $match: { paymentFor: PaymentFor.ProviderPayout }
+                            $match: { paymentFor: PaymentFor.PROVIDER_PAYOUT }
                         },
                         {
                             $group: {
@@ -283,7 +281,7 @@ export class PaymentQueriesImpl implements IPaymentQueries {
                     pendingPayout: [
                         {
                             $match: {
-                                paymentFor: PaymentFor.AppointmentBooking,
+                                paymentFor: PaymentFor.APPOINTMENT_BOOKING,
                                 createdAt: { $gte: startOfThisMonth, $lte: endOfToday },
                             },
                         },
@@ -333,7 +331,7 @@ export class PaymentQueriesImpl implements IPaymentQueries {
                 $facet: {
                     todaysTotalRevenue: [
                         {
-                            $match: { paymentFor: { $ne: PaymentFor.ProviderPayout } }
+                            $match: { paymentFor: { $ne: PaymentFor.PROVIDER_PAYOUT } }
                         },
                         {
                             $group: {
@@ -359,7 +357,7 @@ export class PaymentQueriesImpl implements IPaymentQueries {
                     ],
                     todaysTotalPayouts: [
                         {
-                            $match: { payoutStatus: "Paid", paymentFor: PaymentFor.ProviderPayout },
+                            $match: { payoutStatus: "Paid", paymentFor: PaymentFor.PROVIDER_PAYOUT },
                         },
                         {
                             $group: {
