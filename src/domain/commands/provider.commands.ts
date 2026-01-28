@@ -20,7 +20,10 @@ export type ChangeProfileInfo = {
 
 export type ChangePassword = {
   password: string;
-  verificationToken?: string;
+};
+
+export type UpdateVerificationToken = {
+  verificationToken: string;
 };
 
 export type SubmitIdentityProof = {
@@ -46,4 +49,8 @@ export type RejectVerification = {
   isServiceDetailsVerified: boolean;
   isAvailabilityVerified: boolean;
   isProofsVerified: boolean;
+};
+
+export type UpdatePushNotification = {
+    allowPushNotification: boolean;
 };

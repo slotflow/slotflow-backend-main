@@ -1,10 +1,5 @@
 import { AppointmentStatus } from "../enums/appointmentStatus.enum";
-import { ParticipantPresence, statusTrack } from "../commands/booking.commands";
-
-export interface OnlineTrack {
-    user: ParticipantPresence;
-    provider: ParticipantPresence;
-};
+import { CalendarData, OnlineTrack, statusTrack } from "../commands/booking.commands";
 
 export interface BookingProps {
     _id: string,
@@ -18,6 +13,7 @@ export interface BookingProps {
     paymentId: string | null,
     videoCallRoomId: string | null,
     googleEventId: string | null,
+    calendarData: CalendarData,
     onlineTrack: OnlineTrack | null,
     statusTrack: statusTrack[],
     createdAt: Date,

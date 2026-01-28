@@ -1,5 +1,5 @@
 import { UserProps } from "../contracts/user.contract";
-import { ChangePassword, ChangeProfileImage, ChangeProfileInfo, CreateGoogleUserProps, CreateLocalUserProps, LinkGoogleAccount } from "../commands/user.commands";
+import { ChangePassword, ChangeProfileImage, ChangeProfileInfo, CreateGoogleUserProps, CreateLocalUserProps, LinkGoogleAccount, UpdatePushNotification, UpdateVerificationToken } from "../commands/user.commands";
 
 export class User {
 
@@ -31,7 +31,7 @@ export class User {
             profileImage: null,
             addressId: null,
             bookingsId: null,
-            verificationToken: null,
+            verificationToken: props.verificationToken,
             googleConnected: false,
             googleId: null,
             allowPushNotification: null,
@@ -164,10 +164,19 @@ export class User {
     changePassword(props: ChangePassword) {
         this.ensureNotBlocked("update password");
 
-        if (props.verificationToken) {
-            this.props.verificationToken = props.verificationToken;
+        if (props.password) {
+            this.props.password = props.password;
         }
-        this.props.password = props.password;
+        this.touch();
+    }
+
+    upcateVerificationToken(props: UpdateVerificationToken) {
+        this.props.verificationToken = props.verificationToken;
+        this.touch();
+    }
+
+    updatePushNotification(props: UpdatePushNotification) {
+        this.props.allowPushNotification = props.allowPushNotification;
         this.touch();
     }
 

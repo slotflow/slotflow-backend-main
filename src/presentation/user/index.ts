@@ -11,7 +11,7 @@ import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/co
 import { bookingQueries, providerServiceQueries, reviewQueries, serviceAvailabilityQueries } from "../../infrastructure/queriesImpls";
 import { UserCreateAddressUseCase, UserFetchAddressUseCase, UserUpdateAddressUseCase } from "../../application/useCases/user/userAddress.useCase";
 import { UserAppointmentBookingViaStripeUseCase, UserSaveBookingAfterStripePaymentUseCase } from "../../application/useCases/user/userStripeBooking.useCase";
-import { UserFetchProfileDetailsUseCase, UserUpdateProfileImageUseCase, UserUpdateProviderInfoUseCase } from "../../application/useCases/user/userProfile.useCase";
+import { UserFetchProfileDetailsUseCase, UserUpdateProfileImageUseCase, UserUpdateProviderInfoUseCase, UserUpdatePushNotificationUseCase } from "../../application/useCases/user/userProfile.useCase";
 import { addressRepository, bookingRepository, paymentRepository, providerRepository, reviewRepository, serviceRepository, userRepository } from "../../infrastructure/repositoryImpls";
 import { UserFetchProvidersForChatSidebarUseCase, UserFetchServiceProviderAddressUseCase, UserFetchServiceProviderProfileDetailsUseCase, UserFetchServiceProviderServiceAvailabilityUseCase, UserFetchServiceProviderServiceDetailsUseCase, UserFetchServiceProvidersUseCase } from "../../application/useCases/user/userProvider.useCase";
 
@@ -40,6 +40,7 @@ export const userFetchAllPaymentsUseCase = new UserFetchAllPaymentsUseCase(userR
 export const userUpdateProviderInfoUseCase = new UserUpdateProviderInfoUseCase(userRepository);
 export const userFetchProfileDetailsUseCase = new UserFetchProfileDetailsUseCase(userRepository);
 export const userUpdateProfileImageUseCase = new UserUpdateProfileImageUseCase(userRepository, signedUrlService);
+export const userUpdatePushNotificationUseCase = new UserUpdatePushNotificationUseCase(userRepository);
 
 // user provider controller dependency injection
 export const userFetchServiceProviderAddressUseCase = new UserFetchServiceProviderAddressUseCase(addressRepository);

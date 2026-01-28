@@ -92,8 +92,8 @@ export class AdminChangePlanBlockStatusUseCase {
 
             return { planId, isBlocked: updatedPlan.isBlocked };
         } catch (error) {
-            console.log("AdminChangePlanBlockStatusUseCase error :", error);
-            throw new Error("Failed to change plan block status");
+            log.error("AdminChangePlanBlockStatusUseCase failed", error as Error);
+            throw error;
         };
     };
 };

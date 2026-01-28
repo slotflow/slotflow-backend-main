@@ -128,7 +128,7 @@ export const providerSaveSubscriptionSchema = saveStripePaymentSchema.merge(vali
 // Validating the page and limit in the request query zod schema
 export const providerChangeAppointmentStatusSchema = z.object({
     appointmentStatus: z.nativeEnum(AppointmentStatus),
-}).merge(validateBookingIdSchema)
+}).merge(validateBookingIdSchema).merge(validateProviderIdSchema);
 
 //
 export const providerCreateAddressSchema = addressSchema.merge(validateProviderIdSchema);
@@ -159,5 +159,10 @@ export const providerValidateUpdateInfoSchema = validateProviderIdSchema.merge(u
 
 //
 export const providerChnageReviewReportSchema = validateReviewIdSchema.merge(validateProviderIdSchema);
+
+//
+export const providerUpdatePushNotificationSchema = z.object({
+    allowPushNotification: z.boolean(),
+}).merge(validateProviderIdSchema);
 
 export { validateProviderIdSchema };

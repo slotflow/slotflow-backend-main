@@ -44,7 +44,7 @@ export class RegisterUseCase {
         if (!otp) throw new Error("Unexpected error, please try again.");
 
         if (user) {
-          user.changePassword({ verificationToken, password: hashedPassword });
+          user.upcateVerificationToken({ verificationToken });
           await this.userRepository.update(user);
         } else {
           const user = User.createLocal({
@@ -86,7 +86,7 @@ export class RegisterUseCase {
         if (!otp) throw new Error("Unexpected error, please try again.");
 
         if (provider) {
-          provider.changePassword({ verificationToken, password: hashedPassword });
+          provider.upcateVerificationToken({ verificationToken });
           await this.providerRepository.update(provider);
         } else {
           const provider = Provider.createLocal({

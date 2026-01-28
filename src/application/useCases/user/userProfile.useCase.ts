@@ -1,7 +1,7 @@
 import { log } from "../../../shared/logger/logger";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
-import { UserFetchProfileDetailsResponse, UserFetchProfileRequest, UserUpdateProfileImageResponse, UserUpdateUserInfoRequest, UserUpdateUserInfoResponse, UsrUpdateProfileImageRequest } from "../../dtos/user.dto";
+import { UserFetchProfileDetailsResponse, UserFetchProfileRequest, UserUpdateProfileImageResponse, UserUpdatePushNotificationRequest, UserUpdateUserInfoRequest, UserUpdateUserInfoResponse, UsrUpdateProfileImageRequest } from "../../dtos/user.dto";
 
 export class UserFetchProfileDetailsUseCase {
     constructor(
@@ -83,6 +83,29 @@ export class UserUpdateProviderInfoUseCase {
             return { username: updatedUser.username, phone: updatedUser.phone };;
         } catch (error) {
             log.error("UserUpdateProviderInfoUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
+
+export class UserUpdatePushNotificationUseCase {
+    constructor(
+        private userRepository: IUserRepository
+    ) { };
+
+    async execute(payload: UserUpdatePushNotificationRequest): Promise<void> {
+        try {
+            const { allowPushNotification, userId } = payload;
+            
+            const user = await this.userRepository.findById(userId);
+            if (!user) throw new Error("No user found");
+            
+            user.updatePushNotification({allowPushNotification});
+            
+            const updatedUser = await this.userRepository.update(user);
+            if (!updatedUser) throw new Error("Info adding failed, please try again");
+        } catch (error) {
+            log.error("UserUpdatePushNotificationUseCase failed", error as Error);
             throw error;
         };
     };

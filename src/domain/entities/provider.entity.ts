@@ -1,6 +1,6 @@
 import { ProviderProps } from "../contracts/provider.contract";
 import { AdminVerificationStatus } from "../enums/adminVerificationStatus.enum";
-import { ChangePassword, ChangeProfileImage, ChangeProfileInfo, CreateGoogleProviderProps, CreateLocalProviderProps, LinkGoogleAccount, RejectVerification, SubmitIdentityProof, SubmitServiceProof } from "../commands/provider.commands";
+import { ChangePassword, ChangeProfileImage, ChangeProfileInfo, CreateGoogleProviderProps, CreateLocalProviderProps, LinkGoogleAccount, RejectVerification, SubmitIdentityProof, SubmitServiceProof, UpdatePushNotification, UpdateVerificationToken } from "../commands/provider.commands";
 
 export class Provider {
   private props: ProviderProps;
@@ -304,11 +304,15 @@ export class Provider {
   changePassword(props: ChangePassword) {
     this.ensureNotBlocked("update password");
 
-    if (props.verificationToken) {
-      this.props.verificationToken = props.verificationToken;
+    if (props.password) {
+      this.props.password = props.password;
     }
 
-    this.props.password = props.password;
+    this.touch();
+  }
+
+  upcateVerificationToken(props: UpdateVerificationToken) {
+    this.props.verificationToken = props.verificationToken;
     this.touch();
   }
 
@@ -369,6 +373,11 @@ export class Provider {
       this.props.username = props.username;
     }
 
+    this.touch();
+  }
+
+  updatePushNotification(props: UpdatePushNotification) {
+    this.props.allowPushNotification = props.allowPushNotification;
     this.touch();
   }
 

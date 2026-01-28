@@ -1,9 +1,11 @@
 import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
-import { User } from "../../../domain/entities/user.entity";
 import { PlanName } from "../../../domain/enums/plan.enum";
+import { User } from "../../../domain/entities/user.entity";
 import { IJWT } from "../../../domain/interfaces/security/IJwt";
+import { notificationContentMap } from "../../../shared/utils/constants";
 import { Provider } from "../../../domain/entities/provider.entity";
+import { AppConnect, Role } from "../../../domain/enums/common.enum";
 import { Credential } from "../../../domain/entities/credential.entity";
 import { SendAppConnectEvent, SendWelcomeEvent } from "../../dtos/kafka.dtos";
 import { SubscriptionStatus } from "../../../domain/enums/subscription.enum";
@@ -15,7 +17,6 @@ import { IProviderRepository } from "../../../domain/interfaces/repositories/IPr
 import { GoogleAuthOrchestrationRequest, GoogleAuthOrchestrationResponse } from "../../dtos/auth.dto";
 import { ICredentialRepository } from "../../../domain/interfaces/repositories/ICredentialRepository";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
-import { AppConnect, Role } from "../../../domain/enums/common.enum";
 
 export class GoogleAuthOrchestratorUseCase {
     constructor(
@@ -177,7 +178,10 @@ export class GoogleAuthOrchestratorUseCase {
                         email: entity.email,
                         name: entity.username,
                         appConnect: AppConnect.GOOGLE,
-                        userOrProviderId: entity._id,
+                        userId: entity._id,
+                        pushNotification: entity.allowPushNotification ?? false,
+                        title: notificationContentMap.appConnect.title,
+                        body: notificationContentMap.appConnect.body(AppConnect.GOOGLE),
                     });
                 } else {
                     await this.kafkaProducer.publish<SendWelcomeEvent>(kafkaConfig.topics.pub.registerSuccess, {

@@ -25,6 +25,7 @@ router.get('/profile/proofs', authMiddleware,providerProfileController.fetchProo
 router.patch('/profile/approval', authMiddleware, providerProfileController.requestAdminApproval);
 router.delete('/profile/identity', authMiddleware, providerProfileController.deleteIdentityProof);
 router.delete('/profile/service', authMiddleware, providerProfileController.deleteServiceProof);
+router.patch('/profile/push-notification', authMiddleware, providerProfileController.updatePushNotification);
 
 router.post('/addresses', authMiddleware, provideAddressController.createAddress);
 router.get('/address', authMiddleware, provideAddressController.getAddress);

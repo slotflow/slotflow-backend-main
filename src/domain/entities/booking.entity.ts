@@ -1,6 +1,7 @@
+import { CalendarStatus, Role } from "../enums/common.enum";
+import { BookingProps } from "../contracts/booking.contract";
 import { AppointmentStatus } from "../enums/appointmentStatus.enum";
-import { BookingProps, OnlineTrack } from "../contracts/booking.contract";
-import { CreateBookingProps, statusTrack, UpdateAppointmentProps, UpdateBookingProps } from "../commands/booking.commands";
+import { CreateBookingProps, statusTrack, UpdateAppointmentProps, CalendarData, OnlineTrack, CreateCalendarProps, FailedCalendarProps } from "../commands/booking.commands";
 
 export class Booking {
 
@@ -28,6 +29,16 @@ export class Booking {
             statusTrack: props.statusTrack,
             userId: props.userId,
             videoCallRoomId: props.videoCallRoomId,
+            calendarData: {
+                user: {
+                    calendarStatus: CalendarStatus.PENDING,
+                    googleEventId: null
+                },
+                provider: {
+                    calendarStatus: CalendarStatus.PENDING,
+                    googleEventId: null
+                },
+            },
             onlineTrack: null,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -45,7 +56,7 @@ export class Booking {
     };
 
     get onlineTrack(): OnlineTrack {
-        if(!this.props.onlineTrack) {
+        if (!this.props.onlineTrack) {
             throw new Error("Onlinetrack not found");
         };
         return this.props.onlineTrack;
@@ -76,45 +87,43 @@ export class Booking {
     };
 
     get videoCallRoomId(): string {
-        if(!this.props.videoCallRoomId) {
+        if (!this.props.videoCallRoomId) {
             throw new Error("Room id not found");
         };
         return this.props.videoCallRoomId;
     };
 
     get googleEventId(): string {
-        if(!this.props.googleEventId) {
+        if (!this.props.googleEventId) {
             throw new Error("googleEventId is not found");
         };
         return this.props.googleEventId;
     };
 
     get paymentId(): string {
-        if(!this.props.paymentId) {
+        if (!this.props.paymentId) {
             throw new Error("No paymentId found");
         };
         return this.props.paymentId;
     };
 
+    get calendarData(): CalendarData {
+        if (!this.props.calendarData) {
+            throw new Error("Calendar data not found");
+        };
+        return this.props.calendarData
+    };
+
     // Business methods
 
     getProps(): Readonly<BookingProps> {
-        return { ...this.props }
-    };
-
-    updateBooking(props: UpdateBookingProps) {
-        this.props = {
-            ...this.props,
-            ...props,
-        };
-
-        this.touch();
+        return { ...this.props };
     };
 
     completeAppointment() {
         if (this.props.appointmentStatus === AppointmentStatus.COMPLETED) {
             return;
-        }
+        };
 
         this.props.appointmentStatus = AppointmentStatus.COMPLETED;
         this.props.statusTrack.push({
@@ -126,7 +135,7 @@ export class Booking {
     };
 
     updateAppointment(props: UpdateAppointmentProps) {
-         if (this.props.appointmentStatus === props.appointmentStatus) {
+        if (this.props.appointmentStatus === props.appointmentStatus) {
             return;
         }
 
@@ -142,7 +151,7 @@ export class Booking {
     cancelAppointment() {
         if (this.props.appointmentStatus === AppointmentStatus.CANCELLED) {
             return;
-        }
+        };
 
         this.props.appointmentStatus = AppointmentStatus.CANCELLED;
         this.props.statusTrack.push({
@@ -151,6 +160,32 @@ export class Booking {
         });
 
         this.touch();
+    };
+
+    createCalendarData(props: CreateCalendarProps) {
+        const { user, provider } = props;
+        if (provider) {
+            this.props.calendarData.provider.googleEventId = provider.googleEventId;
+            this.props.calendarData.provider.calendarStatus = CalendarStatus.CREATED;
+            this.touch();
+        }
+        if (user) {
+            this.props.calendarData.user.googleEventId = user.googleEventId;
+            this.props.calendarData.user.calendarStatus = CalendarStatus.CREATED;
+            this.touch();
+        }
+    };
+
+    failedCalendarData(props: FailedCalendarProps) {
+        const { role } = props;
+        if (role === Role.USER) {
+            this.props.calendarData.user.calendarStatus = CalendarStatus.FAILED;
+            this.touch();
+        }
+        if (role === Role.PROVIDER) {
+            this.props.calendarData.provider.calendarStatus = CalendarStatus.FAILED;
+            this.touch();
+        }
     };
 
 };

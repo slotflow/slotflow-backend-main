@@ -2,23 +2,26 @@ import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
-import { userUpdateFileSchema, userUpdateInfoSchema, validateUserIdSchema } from "../../shared/zod/user.zod";
-import { userFetchProfileDetailsUseCase, userUpdateProfileImageUseCase, userUpdateProviderInfoUseCase } from ".";
-import { UserFetchProfileDetailsUseCase, UserUpdateProfileImageUseCase, UserUpdateProviderInfoUseCase } from "../../application/useCases/user/userProfile.useCase";
+import { userUpdateFileSchema, userUpdateInfoSchema, userUpdatePushNotificationSchema, validateUserIdSchema } from "../../shared/zod/user.zod";
+import { userFetchProfileDetailsUseCase, userUpdateProfileImageUseCase, userUpdateProviderInfoUseCase, userUpdatePushNotificationUseCase } from ".";
+import { UserFetchProfileDetailsUseCase, UserUpdateProfileImageUseCase, UserUpdateProviderInfoUseCase, UserUpdatePushNotificationUseCase } from "../../application/useCases/user/userProfile.useCase";
 
 class UserProfileController {
     constructor(
         private userFetchProfileDetailsUseCase: UserFetchProfileDetailsUseCase,
         private userUpdateProfileImageUseCase: UserUpdateProfileImageUseCase,
         private userUpdateProviderInfoUseCase: UserUpdateProviderInfoUseCase,
+        private userUpdatePushNotificationUseCase: UserUpdatePushNotificationUseCase
     ) {
         this.getProfileDetails = this.getProfileDetails.bind(this);
         this.updateProfileImage = this.updateProfileImage.bind(this);
         this.updateUserInfo = this.updateUserInfo.bind(this);
+        this.updatePushNotification = this.updatePushNotification.bind(this);
     };
 
     async getProfileDetails(req: Request, res: Response, next: NextFunction) {
         try {
+            console.log("req.user : ",req.user);
             const { userId } = validateUserIdSchema.parse({ userId: (req.user as DecodedUser).userOrProviderId });
             const result = await this.userFetchProfileDetailsUseCase.execute({ userId });
             sendResponse(res, result);
@@ -56,10 +59,25 @@ class UserProfileController {
         };
     };
 
+    async updatePushNotification(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { allowPushNotification, userId } = userUpdatePushNotificationSchema.parse({
+                userId: (req.user as DecodedUser).userOrProviderId,
+                ...req.body
+            });
+            const result = await this.userUpdatePushNotificationUseCase.execute({ userId, allowPushNotification });
+            sendResponse(res, result, "Push notification updated successfully");
+        } catch (error) {
+            log.error("updatePushNotification failed", error as Error);
+            next(error);
+        };
+    };
+
 };
 
 export const userProfileController = new UserProfileController(
     userFetchProfileDetailsUseCase,
     userUpdateProfileImageUseCase,
     userUpdateProviderInfoUseCase,
+    userUpdatePushNotificationUseCase
 );

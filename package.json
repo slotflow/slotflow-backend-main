@@ -1,8 +1,11 @@
 {
   "name": "slotflow-main-backend",
-  "version": "1.0.0",
   "description": "slotflow mian backend service",
+  "author": "midhunkalarikkal",
+  "license": "MIT",
+  "version": "1.0.0",
   "main": "src/server.ts",
+  "packageManager": "pnpm@10.28.1",
   "type": "module",
   "scripts": {
     "predev": "npx kill-port 4000",
@@ -12,8 +15,6 @@
     "start": "node dist/server.js",
     "bundle": "tsup src/server.ts --format esm --dts --out-dir dist-bundle"
   },
-  "author": "midhun_kalarikkal",
-  "license": "ISC",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.758.0",
     "@aws-sdk/lib-storage": "^3.758.0",

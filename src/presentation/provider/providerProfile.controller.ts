@@ -3,9 +3,9 @@ import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { FetchProviderProofsUseCase } from "../../application/useCases/common/fetchProviderProofs.useCase";
-import { providerValidateUpdateInfoSchema, providerValidateUpdateFileSchema, validateProviderIdSchema } from "../../shared/zod/provider.zod";
-import { fetchProviderProofsUseCase, provideDeleteIdentityProofUseCase, provideDeleteServiceProofUseCase, providerFetchProfileDetailsUseCase, providerRequestForApprovalUseCase, providerUpdateIdentityProofUseCase, providerUpdateProfileImageUseCase, providerUpdateProviderInfoUseCase, providerUpdateServiceProofUseCase } from ".";
-import { ProvideDeleteIdentityProofUseCase, ProvideDeleteServiceProofUseCase, ProviderFetchProfileDetailsUseCase, ProviderUpdateIdentityProofUseCase, ProviderRequestForApprovalUseCase, ProviderUpdateServiceProofUseCase, ProviderUpdateProfileImageUseCase, ProviderUpdateProviderInfoUseCase } from "../../application/useCases/provider/providerProfile.useCase";
+import { providerValidateUpdateInfoSchema, providerValidateUpdateFileSchema, validateProviderIdSchema, providerUpdatePushNotificationSchema } from "../../shared/zod/provider.zod";
+import { fetchProviderProofsUseCase, provideDeleteIdentityProofUseCase, provideDeleteServiceProofUseCase, providerFetchProfileDetailsUseCase, providerRequestForApprovalUseCase, providerUpdateIdentityProofUseCase, providerUpdateProfileImageUseCase, providerUpdateProviderInfoUseCase, providerUpdatePushNotificationUseCase, providerUpdateServiceProofUseCase } from ".";
+import { ProvideDeleteIdentityProofUseCase, ProvideDeleteServiceProofUseCase, ProviderFetchProfileDetailsUseCase, ProviderUpdateIdentityProofUseCase, ProviderRequestForApprovalUseCase, ProviderUpdateServiceProofUseCase, ProviderUpdateProfileImageUseCase, ProviderUpdateProviderInfoUseCase, ProviderUpdatePushNotificationUseCase } from "../../application/useCases/provider/providerProfile.useCase";
 
 class ProviderProfileController {
     constructor(
@@ -18,6 +18,7 @@ class ProviderProfileController {
         private providerRequestForApprovalUseCase: ProviderRequestForApprovalUseCase,
         private provideDeleteIdentityProofUseCase: ProvideDeleteIdentityProofUseCase,
         private provideDeleteServiceProofUseCase: ProvideDeleteServiceProofUseCase,
+        private providerUpdatePushNotificationUseCase: ProviderUpdatePushNotificationUseCase
     ) {
         this.getProfileDetails = this.getProfileDetails.bind(this);
         this.updateProfileImage = this.updateProfileImage.bind(this);
@@ -28,6 +29,7 @@ class ProviderProfileController {
         this.requestAdminApproval = this.requestAdminApproval.bind(this);
         this.deleteIdentityProof = this.deleteIdentityProof.bind(this);
         this.deleteServiceProof = this.deleteServiceProof.bind(this);
+        this.updatePushNotification = this.updatePushNotification.bind(this);
     };
 
     async getProfileDetails(req: Request, res: Response, next: NextFunction) {
@@ -154,6 +156,20 @@ class ProviderProfileController {
         };
     };
 
+     async updatePushNotification(req: Request, res: Response, next: NextFunction) {
+            try {
+                const { allowPushNotification, providerId } = providerUpdatePushNotificationSchema.parse({
+                    providerId: (req.user as DecodedUser).userOrProviderId,
+                    ...req.body
+                });
+                const result = await this.providerUpdatePushNotificationUseCase.execute({ providerId, allowPushNotification });
+                sendResponse(res, result, "Push notification updated successfully");
+            } catch (error) {
+                log.error("updatePushNotification failed", error as Error);
+                next(error);
+            };
+        };
+
 };
 
 export const providerProfileController = new ProviderProfileController(
@@ -165,5 +181,6 @@ export const providerProfileController = new ProviderProfileController(
     fetchProviderProofsUseCase,
     providerRequestForApprovalUseCase,
     provideDeleteIdentityProofUseCase,
-    provideDeleteServiceProofUseCase
+    provideDeleteServiceProofUseCase,
+    providerUpdatePushNotificationUseCase
 );

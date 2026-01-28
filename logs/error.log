@@ -2598,3 +2598,121 @@
 [31m    at NativeConnection.openUri (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\mongoose\lib\connection.js:1094:11)[39m
 [31m    at async connectDB (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\config\database\mongodb\mongodb.config.ts:7:9)[39m
 [31m    at async start (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\server.ts:11:5)[39m
+[2026-01-24 15:23:32] [[31merror[39m]: [31mMongoDB Connection Error : [39m
+[31mconnect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017[39m
+[31mMongooseServerSelectionError: connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017[39m
+[31m    at _handleConnectionErrors (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\mongoose\lib\connection.js:1163:11)[39m
+[31m    at NativeConnection.openUri (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\mongoose\lib\connection.js:1094:11)[39m
+[31m    at async connectDB (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\config\database\mongodb\mongodb.config.ts:7:9)[39m
+[31m    at async start (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\server.ts:11:5)[39m
+[2026-01-24 15:41:09] [[31merror[39m]: [31mLoginUseCase failed[39m
+[31mInvalid credentials[39m
+[31mError: Invalid credentials[39m
+[31m    at LoginUseCase.execute (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\application\useCases\auth\login.useCase.ts:34:34)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[31m    at async AuthController.login (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\auth\auth.controller.ts:77:22)[39m
+[2026-01-24 15:41:09] [[31merror[39m]: [31mlogin failed[39m
+[31mInvalid credentials[39m
+[31mError: Invalid credentials[39m
+[31m    at LoginUseCase.execute (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\application\useCases\auth\login.useCase.ts:34:34)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[31m    at async AuthController.login (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\auth\auth.controller.ts:77:22)[39m
+[2026-01-24 16:01:10] [[31merror[39m]: [31mRegisterUseCase failed[39m
+[31mconnect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017[39m
+[31mMongoServerSelectionError: connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017[39m
+[31m    at Topology.selectServer (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\mongodb\src\sdam\topology.ts:626:30)[39m
+[31m    at runNextTicks (node:internal/process/task_queues:64:5)[39m
+[31m    at process.processTimers (node:internal/timers:538:9)[39m
+[31m    at async tryOperation (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\mongodb\src\operations\execute_operation.ts:201:16)[39m
+[31m    at async executeOperation (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\mongodb\src\operations\execute_operation.ts:115:12)[39m
+[31m    at async FindCursor._initialize (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\mongodb\src\cursor\find_cursor.ts:92:22)[39m
+[31m    at async FindCursor.cursorInit (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\mongodb\src\cursor\abstract_cursor.ts:942:21)[39m
+[31m    at async FindCursor.fetchBatch (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\mongodb\src\cursor\abstract_cursor.ts:980:7)[39m
+[31m    at async FindCursor.next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\mongodb\src\cursor\abstract_cursor.ts:610:9)[39m
+[31m    at async Collection.findOne (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\mongodb\src\collection.ts:525:17)[39m
+[2026-01-24 16:01:10] [[31merror[39m]: [31mRegisterUseCase failed[39m
+[31mconnect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017[39m
+[31mMongoServerSelectionError: connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017[39m
+[31m    at Topology.selectServer (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\mongodb\src\sdam\topology.ts:626:30)[39m
+[31m    at runNextTicks (node:internal/process/task_queues:64:5)[39m
+[31m    at process.processTimers (node:internal/timers:538:9)[39m
+[31m    at async tryOperation (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\mongodb\src\operations\execute_operation.ts:201:16)[39m
+[31m    at async executeOperation (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\mongodb\src\operations\execute_operation.ts:115:12)[39m
+[31m    at async FindCursor._initialize (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\mongodb\src\cursor\find_cursor.ts:92:22)[39m
+[31m    at async FindCursor.cursorInit (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\mongodb\src\cursor\abstract_cursor.ts:942:21)[39m
+[31m    at async FindCursor.fetchBatch (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\mongodb\src\cursor\abstract_cursor.ts:980:7)[39m
+[31m    at async FindCursor.next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\mongodb\src\cursor\abstract_cursor.ts:610:9)[39m
+[31m    at async Collection.findOne (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\mongodb\src\collection.ts:525:17)[39m
+[2026-01-24 16:02:51] [[31merror[39m]: [31mVerifyOTPUseCase failed[39m
+[31mVerification failed[39m
+[31mError: Verification failed[39m
+[31m    at VerifyOTPUseCase.verifyAndActivateEntity (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\application\useCases\auth\verifyOtp.useCase.ts:65:15)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[31m    at async VerifyOTPUseCase.execute (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\application\useCases\auth\verifyOtp.useCase.ts:38:22)[39m
+[31m    at async AuthController.verifyOTP (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\auth\auth.controller.ts:50:7)[39m
+[2026-01-24 16:02:51] [[31merror[39m]: [31mverifyOTP controller failed[39m
+[31mVerification failed[39m
+[31mError: Verification failed[39m
+[31m    at VerifyOTPUseCase.verifyAndActivateEntity (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\application\useCases\auth\verifyOtp.useCase.ts:65:15)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[31m    at async VerifyOTPUseCase.execute (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\application\useCases\auth\verifyOtp.useCase.ts:38:22)[39m
+[31m    at async AuthController.verifyOTP (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\auth\auth.controller.ts:50:7)[39m
+[2026-01-24 16:16:01] [[31merror[39m]: [31mVerifyOTPUseCase failed[39m
+[31mInvalid or expired OTP[39m
+[31mError: Invalid or expired OTP[39m
+[31m    at VerifyOTPUseCase.execute (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\application\useCases\auth\verifyOtp.useCase.ts:35:15)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[31m    at async AuthController.verifyOTP (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\auth\auth.controller.ts:50:7)[39m
+[2026-01-24 16:16:01] [[31merror[39m]: [31mverifyOTP controller failed[39m
+[31mInvalid or expired OTP[39m
+[31mError: Invalid or expired OTP[39m
+[31m    at VerifyOTPUseCase.execute (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\application\useCases\auth\verifyOtp.useCase.ts:35:15)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[31m    at async AuthController.verifyOTP (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\auth\auth.controller.ts:50:7)[39m
+[2026-01-24 19:24:52] [[31merror[39m]: [31mMongoDB Connection Error : [39m
+[31mconnect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017[39m
+[31mMongooseServerSelectionError: connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017[39m
+[31m    at _handleConnectionErrors (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\mongoose@8.21.1\node_modules\mongoose\lib\connection.js:1169:11)[39m
+[31m    at NativeConnection.openUri (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\mongoose@8.21.1\node_modules\mongoose\lib\connection.js:1100:11)[39m
+[31m    at async connectDB (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\config\database\mongodb\mongodb.config.ts:7:9)[39m
+[31m    at async start (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\server.ts:11:5)[39m
+[2026-01-24 20:15:28] [[31merror[39m]: [31mVerifyOTPUseCase failed[39m
+[31mVerification failed[39m
+[31mError: Verification failed[39m
+[31m    at VerifyOTPUseCase.verifyAndActivateEntity (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\application\useCases\auth\verifyOtp.useCase.ts:69:15)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[31m    at async VerifyOTPUseCase.execute (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\application\useCases\auth\verifyOtp.useCase.ts:38:22)[39m
+[31m    at async AuthController.verifyOTP (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\auth\auth.controller.ts:50:7)[39m
+[2026-01-24 20:15:28] [[31merror[39m]: [31mverifyOTP controller failed[39m
+[31mVerification failed[39m
+[31mError: Verification failed[39m
+[31m    at VerifyOTPUseCase.verifyAndActivateEntity (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\application\useCases\auth\verifyOtp.useCase.ts:69:15)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[31m    at async VerifyOTPUseCase.execute (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\application\useCases\auth\verifyOtp.useCase.ts:38:22)[39m
+[31m    at async AuthController.verifyOTP (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\auth\auth.controller.ts:50:7)[39m
+[2026-01-24 20:18:57] [[31merror[39m]: [31mVerifyOTPUseCase failed[39m
+[31mVerification failed[39m
+[31mError: Verification failed[39m
+[31m    at VerifyOTPUseCase.verifyAndActivateEntity (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\application\useCases\auth\verifyOtp.useCase.ts:67:15)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[31m    at async VerifyOTPUseCase.execute (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\application\useCases\auth\verifyOtp.useCase.ts:38:22)[39m
+[31m    at async AuthController.verifyOTP (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\auth\auth.controller.ts:50:7)[39m
+[2026-01-24 20:18:57] [[31merror[39m]: [31mverifyOTP controller failed[39m
+[31mVerification failed[39m
+[31mError: Verification failed[39m
+[31m    at VerifyOTPUseCase.verifyAndActivateEntity (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\application\useCases\auth\verifyOtp.useCase.ts:67:15)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[31m    at async VerifyOTPUseCase.execute (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\application\useCases\auth\verifyOtp.useCase.ts:38:22)[39m
+[31m    at async AuthController.verifyOTP (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\auth\auth.controller.ts:50:7)[39m
+[2026-01-24 20:19:50] [[31merror[39m]: [31mVerifyOTPUseCase failed[39m
+[31mInvalid or expired OTP[39m
+[31mError: Invalid or expired OTP[39m
+[31m    at VerifyOTPUseCase.execute (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\application\useCases\auth\verifyOtp.useCase.ts:35:15)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[31m    at async AuthController.verifyOTP (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\auth\auth.controller.ts:50:7)[39m
+[2026-01-24 20:19:50] [[31merror[39m]: [31mverifyOTP controller failed[39m
+[31mInvalid or expired OTP[39m
+[31mError: Invalid or expired OTP[39m
+[31m    at VerifyOTPUseCase.execute (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\application\useCases\auth\verifyOtp.useCase.ts:35:15)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[31m    at async AuthController.verifyOTP (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\auth\auth.controller.ts:50:7)[39m

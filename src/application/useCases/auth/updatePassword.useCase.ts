@@ -1,12 +1,12 @@
 import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
-import { SendEmailCommon } from "../../dtos/kafka.dtos";
+import { Role } from "../../../domain/enums/common.enum";
 import { UpdatePasswordRequest } from "../../dtos/auth.dto";
+import { SendResetPasswordEvent } from "../../dtos/kafka.dtos";
 import { IPasswordHasher } from "../../../domain/interfaces/security/IPasswordHasher";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/message/IKafkaProducerAdapter";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-import { Role } from "../../../domain/enums/common.enum";
 
 export class UpdatePasswordUseCase {
     constructor(
@@ -31,9 +31,9 @@ export class UpdatePasswordUseCase {
                 user.changePassword({ password: hashedPassword });
                 await this.userRepository.update(user);
 
-                await this.kafkaProducer.publish<SendEmailCommon>(kafkaConfig.topics.pub.passwordReset, {
+                await this.kafkaProducer.publish<SendResetPasswordEvent>(kafkaConfig.topics.pub.passwordReset, {
                     email: user.email,
-                    name: user.username
+                    name: user.username,
                 });
 
             } else if (role === Role.PROVIDER) {
@@ -43,9 +43,9 @@ export class UpdatePasswordUseCase {
                 provider.changePassword({ password: hashedPassword });
                 await this.providerRepository.update(provider);
 
-                await this.kafkaProducer.publish<SendEmailCommon>(kafkaConfig.topics.pub.passwordReset, {
+                await this.kafkaProducer.publish<SendResetPasswordEvent>(kafkaConfig.topics.pub.passwordReset, {
                     email: provider.email,
-                    name: provider.username
+                    name: provider.username,
                 });
             };
 

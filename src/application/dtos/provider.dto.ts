@@ -97,6 +97,11 @@ export interface ProviderDeleteProofRequest {
     providerId: ProviderDTO["_id"];
 }
 
+//
+export interface ProviderUpdatePushNotificationRequest {
+    providerId: ProviderDTO["_id"];
+    allowPushNotification: boolean;
+}
 
 
 
@@ -240,7 +245,9 @@ export interface ProviderFetchDashboardGraphDataResponse {
 
 // ************ used in providerBooking.use-case  ************ \\
 // Used as the request type for the provider change booking appointment status
-export type ProviderChangeBookingAppoinmentStatusRequest = Pick<BookingDTO, "_id" | "appointmentStatus">;
+export type ProviderChangeBookingAppoinmentStatusRequest = Pick<BookingDTO, "_id" | "appointmentStatus"> & {
+    providerId: ProviderDTO["_id"];
+};
 
 
 

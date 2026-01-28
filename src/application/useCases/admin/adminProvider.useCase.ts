@@ -15,6 +15,7 @@ import { AdminVerificationStatus } from "../../../domain/enums/adminVerification
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/message/IKafkaProducerAdapter";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { SendAccountBlockStatusEvent, SendAccountTrustStatusEvent, SendAdminProviderReviewEvent } from "../../dtos/kafka.dtos";
+import { notificationContentMap } from "../../../shared/utils/constants";
 
 export class AdminProviderListUseCase {
     constructor(
@@ -71,6 +72,10 @@ export class AdminApproveProviderUseCase {
                 email: provider.email,
                 name: provider.username,
                 status: AdminVerificationStatus.APPROVED,
+                userId: provider._id,
+                pushNotification: provider.allowPushNotification ?? false,
+                title: notificationContentMap.adminProviderReview.title,
+                body: notificationContentMap.adminProviderReview.body(AdminVerificationStatus.APPROVED),
             });
 
         } catch (error) {
@@ -108,7 +113,11 @@ export class AdminRejectProviderUseCase {
                 email: provider.email,
                 name: provider.username,
                 status: AdminVerificationStatus.REJECTED,
-                reason: provider.verificationRejectionReason ?? undefined
+                userId: provider._id,
+                reason: provider.verificationRejectionReason ?? undefined,
+                pushNotification: provider.allowPushNotification ?? false,
+                title: notificationContentMap.adminProviderReview.title,
+                body: notificationContentMap.adminProviderReview.body(AdminVerificationStatus.REJECTED),
             });
 
         } catch (error) {
@@ -140,8 +149,8 @@ export class AdminChangeProviderBlockStatusUseCase {
             const updatedProvider = await this.providerRepository.update(provider);
             if (!updatedProvider) throw new Error("Provider not found");
 
-            if(updatedProvider.isBlocked) {   
-                await this.cacheService.setBlockList(providerId,JSON.stringify(isBlocked));
+            if (updatedProvider.isBlocked) {
+                await this.cacheService.setBlockList(providerId, JSON.stringify(isBlocked));
             } else {
                 await this.cacheService.deleteBlockList(providerId);
             };
@@ -150,7 +159,10 @@ export class AdminChangeProviderBlockStatusUseCase {
                 email: provider.email,
                 name: provider.username,
                 blocked: updatedProvider.isBlocked,
-                userId: provider._id
+                userId: provider._id,
+                pushNotification: provider.allowPushNotification ?? false,
+                title: notificationContentMap.accountBlockStatus.title,
+                body: notificationContentMap.accountBlockStatus.body(updatedProvider.isBlocked),
             });
 
             return { providerId, isBlocked: updatedProvider.isBlocked };
@@ -186,7 +198,10 @@ export class AdminChangeProviderTrustTagUseCase {
                 email: provider.email,
                 name: provider.username,
                 trusted: updatedProvider.trustedBySlotflow,
-                providerId: provider._id
+                userId: provider._id,
+                pushNotification: provider.allowPushNotification ?? false,
+                title: notificationContentMap.accountTrustStatus.title,
+                body: notificationContentMap.accountTrustStatus.body(updatedProvider.trustedBySlotflow),
             });
 
             return { providerId, trustedBySlotflow: updatedProvider.trustedBySlotflow };

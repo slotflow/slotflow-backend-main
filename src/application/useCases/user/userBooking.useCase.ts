@@ -43,8 +43,8 @@ export class UserCancelBookingUseCase {
             try {
 
                 booking.cancelAppointment();
-                const updateBooking = await this.bookingRepository.update(booking);
-                if (!updateBooking) throw new Error("Booking status updating error");
+                const updatedBooking = await this.bookingRepository.update(booking);
+                if (!updatedBooking) throw new Error("Booking status updating error");
 
                 if (payment.paymentGateway === PaymentGateway.STRIPE) {
 

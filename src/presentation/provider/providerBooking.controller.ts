@@ -50,11 +50,12 @@ class ProviderBookingController {
 
     async updateBookingAppointmentStatus(req: Request, res: Response, next: NextFunction) {
         try {
-            const { appointmentStatus, bookingId } = providerChangeAppointmentStatusSchema.parse({
+            const { appointmentStatus, bookingId, providerId } = providerChangeAppointmentStatusSchema.parse({
                 ...req.params,
-                ...req.body
+                ...req.body,
+                providerId: (req.user as DecodedUser).userOrProviderId
             });
-            await this.providerChangeBookingAppointmentStatusUseCase.execute({ _id: bookingId, appointmentStatus });
+            await this.providerChangeBookingAppointmentStatusUseCase.execute({ _id: bookingId, appointmentStatus, providerId });
             sendResponse(res, null, "Booking status updated successfully");
         } catch (error) {
             log.error("updateBookingAppointmentStatus failed", error as Error);

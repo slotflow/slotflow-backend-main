@@ -1,8 +1,9 @@
+import { ZodUUID } from "zod/v4";
 import { KafkaMessage } from "kafkajs";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
-import { AppConnect, OtpPurpose, Role } from "../../domain/enums/common.enum";
 import { PaymentFor, PaymentGateway, PaymentStatus } from "../../domain/enums/payment.enum";
+import { AppConnect, NotificationType, OtpPurpose, Role } from "../../domain/enums/common.enum";
 
 // kafka client adapter props
 export interface KafkaClientAdapterProps {
@@ -14,6 +15,15 @@ export interface KafkaClientAdapterProps {
 // kafka client adapter message handler
 export type MessageHandler = (payload: KafkaClientAdapterProps) => Promise<void>;
 
+// event envelope
+export interface EventEnvelope<T> {
+  eventId: ZodUUID;
+  occurredAt: Date;
+  attempt: number;
+  maxAttempts: number;
+  payload: T;
+}
+
 
 // **** KAFKA EVENTS PAYLOAD TYPES ****//
 
@@ -21,6 +31,14 @@ export type MessageHandler = (payload: KafkaClientAdapterProps) => Promise<void>
 export interface SendEmailCommon {
   email: string;
   name: string;
+}
+
+// send notification common
+export interface SendNotificationCommon {
+  body: string;
+  pushNotification: boolean;
+  title: string;
+  data?: Record<string, string>;
 }
 
 // send otp event for registration and password update
@@ -34,39 +52,62 @@ export interface SendWelcomeEvent extends SendEmailCommon {
   role: Role;
 }
 
-// send reset password ( SendEmailCommon )
+// send reset password
+export interface SendResetPasswordEvent extends SendEmailCommon { };
 
-// send admin provider review event
-export interface SendAdminProviderReviewEvent extends SendEmailCommon {
-  status: AdminVerificationStatus;
+// send account block status event
+export interface SendAccountBlockStatusEvent extends SendEmailCommon, SendNotificationCommon {
+  blocked: boolean;
+  userId: string;
   reason?: string;
 }
 
-// send account block status event
-export interface SendAccountBlockStatusEvent extends SendEmailCommon {
-  blocked: boolean;
-  reason?: string;
+// send admin provider review event
+export interface SendAdminProviderReviewEvent extends SendEmailCommon, SendNotificationCommon {
+  status: AdminVerificationStatus;
   userId: string;
+  reason?: string;
 }
 
 // send account trust status event
-export interface SendAccountTrustStatusEvent extends SendEmailCommon {
+export interface SendAccountTrustStatusEvent extends SendEmailCommon, SendNotificationCommon {
   trusted: boolean;
+  userId: string; // providerId ( admin perspective it is user id )
   reason?: string;
-  providerId: string;
 }
 
-// send appointment status change event
-export interface SendAppointmentStatusChangeEvent extends SendEmailCommon {
-  appointmentDate: string;
-  appointmentTime: string;
-  appointmentMode: string;
-  appointmentStatus: AppointmentStatus;
+// send appointment status change event for user
+export interface SendAppointmentStatusChangeForUserEvent extends SendEmailCommon, SendNotificationCommon {
   userId: string;
-  providerId: string;
-  userAccessToken: string;
-  providerAccessToken: string;
+  data: {
+    appointmentDate: string;
+    appointmentTime: string;
+    appointmentMode: string;
+    appointmentStatus: AppointmentStatus;
+    notificationType: NotificationType;
+  };
 }
+
+// send appointment status change event for provider
+export interface SendAppointmentStatusChangeForProviderEvent extends SendNotificationCommon {
+  userId: string;
+  data: {
+    appointmentDate: string;
+    appointmentTime: string;
+    appointmentMode: string;
+    appointmentStatus: AppointmentStatus;
+    notificationType: NotificationType;
+  };
+}
+
+// send provider trial subscription event
+export interface SendProviderTrialSubscriptionEvent extends SendEmailCommon, SendNotificationCommon {
+  startDate: string;
+  endDate: string;
+  userId: string;
+}
+
+// Added till this 
 
 // send user payment event
 export interface SendUserPaymentEvent extends SendEmailCommon {
@@ -97,18 +138,11 @@ export interface SendProviderPayoutEvent extends SendEmailCommon {
 }
 
 // send app connect event
-export interface SendAppConnectEvent extends SendEmailCommon {
+export interface SendAppConnectEvent extends SendEmailCommon, SendNotificationCommon {
   appConnect: AppConnect;
-  userOrProviderId: string;
+  userId: string;
 }
 
-// send provider trial subscription event
-export interface SendProviderTrialSubscriptionEvent extends SendEmailCommon {
-  startDate: string;
-  endDate: string;
-}
-
-// Added till this 
 
 // send payment request event
 export interface SendPaymentRequestEvent {
@@ -124,26 +158,54 @@ export interface SendPaymentRequestEvent {
   userId?: string,
 }
 
+
+
+
+
+
+
+
+// Google Calendar dtos
+
 // create google calendar event
 export interface CreateGoogleCalendarEvent {
-  accessToken: string;
-  appointmentDate: string;
-  appointmentStatus: AppointmentStatus;
-  slotDuration: number;
   bookingId: string;
+
+  user: {
+    userId: string;
+    accessToken: string;
+    existingEventId?: string | null;
+  } | null;
+
+  provider: {
+    providerId: string;
+    accessToken: string;
+    existingEventId?: string | null;
+  } | null;
+
+  appointmentDate: Date;
+  appointmentStatus: AppointmentStatus;
+};
+
+// google calendar create result event
+export interface GoogleCalendarCreateResultEvent {
+  bookingId: string;
+
+  user: {
+    success: boolean;
+    eventId?: string;
+    error?: string;
+  };
+
+  provider: {
+    success: boolean;
+    eventId?: string;
+    error?: string;
+  };
 }
 
-// google calendar event response
-export interface GoogleCalendarEventResponse {
-  eventId: string;
+// google calendar create failed event
+export interface GoogleCalendarCreateFailedEvent {
   bookingId: string;
-}
-
-// update google calendar event
-export interface UpdateGoogleCalendarEvent {
-  accessToken: string;
-  eventId: string;
-  appointmentDate: string;
-  appointmentStatus: AppointmentStatus;
-  bookingId: string;
+  role: Role;
 }

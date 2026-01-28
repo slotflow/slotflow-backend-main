@@ -13,6 +13,7 @@ import {
   ProviderFetchProfileDetailsResponse,
   ProviderUpdateIdentityProofResponse,
   ProviderUpdateprofileImageRequestPayload,
+  ProviderUpdatePushNotificationRequest,
 } from "../../dtos/provider.dto";
 import { log } from "../../../shared/logger/logger";
 import { DeleteObjectCommand, S3Client } from "@aws-sdk/client-s3";
@@ -197,12 +198,10 @@ export class ProviderRequestForApprovalUseCase {
       };
 
       if (provider?.adminVerificationStatus === AdminVerificationStatus.NOT_REQUESTED) {
-        console.log("one")
         provider.submitForAdminVerification();
       };
 
       if (provider?.adminVerificationStatus === AdminVerificationStatus.REJECTED) {
-        console.log("three")
         provider.resubmitForAdminVerification();
       };
 
@@ -288,4 +287,27 @@ export class ProvideDeleteServiceProofUseCase {
       throw error;
     };
   };
+};
+
+export class ProviderUpdatePushNotificationUseCase {
+    constructor(
+        private providerRepository: IProviderRepository
+    ) { };
+
+    async execute(payload: ProviderUpdatePushNotificationRequest): Promise<void> {
+        try {
+            const { allowPushNotification, providerId } = payload;
+            
+            const provider = await this.providerRepository.findById(providerId);
+            if (!provider) throw new Error("No provider found");
+            
+            provider.updatePushNotification({allowPushNotification});
+            
+            const updatedProvider = await this.providerRepository.update(provider);
+            if (!updatedProvider) throw new Error("Info adding failed, please try again");
+        } catch (error) {
+            log.error("ProviderUpdatePushNotificationUseCase failed", error as Error);
+            throw error;
+        };
+    };
 };

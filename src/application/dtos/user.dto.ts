@@ -30,6 +30,11 @@ export interface UserUpdateUserInfoRequest {
 // user update user info use case response interface
 export type UserUpdateUserInfoResponse = Pick<UserDTO, "username" | "phone">
 
+//
+export interface UserUpdatePushNotificationRequest {
+    userId: UserDTO["_id"];
+    allowPushNotification: boolean;
+};
 
 
 

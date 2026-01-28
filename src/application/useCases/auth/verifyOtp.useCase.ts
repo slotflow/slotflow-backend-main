@@ -57,9 +57,7 @@ export class VerifyOTPUseCase {
     const { role, verificationToken } = payload;
 
     if (role === Role.USER) {
-      const user = await this.userRepository.findByVerificationToken(
-        verificationToken
-      );
+      const user = await this.userRepository.findByVerificationToken(verificationToken);
 
       if (!user) {
         throw new Error("Verification failed");
@@ -70,10 +68,7 @@ export class VerifyOTPUseCase {
     };
 
     if (role === Role.PROVIDER) {
-      const provider =
-        await this.providerRepository.findByVerificationToken(
-          verificationToken
-        );
+      const provider = await this.providerRepository.findByVerificationToken(verificationToken);
 
       if (!provider) {
         throw new Error("Verification failed");

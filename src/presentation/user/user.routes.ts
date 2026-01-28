@@ -15,6 +15,7 @@ router.get('/appservices', authMiddleware, userAppServiceController.fetchAllAppS
 router.get('/profile', authMiddleware, userProfileController.getProfileDetails);
 router.post('/profile/image', authMiddleware, userProfileController.updateProfileImage);
 router.patch('/profile', authMiddleware, userProfileController.updateUserInfo);
+router.patch('/profile/push-notification', authMiddleware, userProfileController.updatePushNotification)
 
 router.post('/addresses', authMiddleware, userAddressController.createAddress);
 router.get('/address', authMiddleware, userAddressController.getAddress);

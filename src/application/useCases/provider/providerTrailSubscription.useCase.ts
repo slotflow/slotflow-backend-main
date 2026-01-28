@@ -9,6 +9,7 @@ import { IKafkaProducerAdapter } from "../../../domain/interfaces/message/IKafka
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { getDateAfterDays, getUtcDateRange, isSubscriptionExpired } from "../../../shared/utils/dateTime";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
+import { notificationContentMap } from "../../../shared/utils/constants";
 
 export class ProviderTrialSubscriptionUseCase {
     constructor(
@@ -64,6 +65,10 @@ export class ProviderTrialSubscriptionUseCase {
                 name: provider.username,
                 startDate,
                 endDate,
+                userId: provider._id,
+                pushNotification: false,
+                title: notificationContentMap.providerTrialSubscription.title,
+                body: notificationContentMap.providerTrialSubscription.body(),
             });
 
         } catch (error) {

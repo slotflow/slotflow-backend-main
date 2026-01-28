@@ -87,6 +87,10 @@ export const userFetchAllReviewsSchema = z.object({
     userId: z.string().regex(objectIdRegex, "Invalid userId"),
     providerId: z.string().regex(objectIdRegex, "Invalid providerId"),
     role: z.nativeEnum(Role).optional(),
-}).merge(paginationSchema)
+}).merge(paginationSchema);
+
+export const userUpdatePushNotificationSchema = z.object({
+    allowPushNotification: z.boolean(),
+}).merge(validateUserIdSchema);
 
 export { validateUserIdSchema };

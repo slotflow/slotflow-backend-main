@@ -27,7 +27,6 @@ export class ValidateJoinRoomUsecase {
             };
 
             if (role === Role.USER) {
-                console.log("Checking user authorization...");
                 if (String(booking.userId) !== String(userOrProviderId)) {
                     throw new Error("You are not authorized for this booking");
                 }

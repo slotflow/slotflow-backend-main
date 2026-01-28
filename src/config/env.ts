@@ -86,7 +86,7 @@ export const kafkaConfig = {
     ],
 
     topics: {
-         pub: {
+        pub: {
             // MBS -> NS
             sendOtp: validator.requireEnv("KAFKA_SEND_OTP"),
             registerSuccess: validator.requireEnv("KAFKA_REGISTER_SUCCESS"),
@@ -94,15 +94,16 @@ export const kafkaConfig = {
             adminProviderReview: validator.requireEnv("KAFKA_ADMIN_PROVIDER_REVIEW"),
             accountBlockStatus: validator.requireEnv("KAFKA_ACCOUNT_BLOCK_STATUS"),
             accountTrustStatus: validator.requireEnv("KAFKA_ACCOUNT_TRUST_STATUS"),
-            providerAppointmentStatus: validator.requireEnv("KAFKA_PROVIDER_APPOINTMENT_STATUS"),
+            providerAppointmentStatusForUser: validator.requireEnv("KAFKA_PROVIDER_APPOINTMENT_STATUS_FOR_USER"),
+            providerAppointmentStatusForProvider: validator.requireEnv("KAFKA_PROVIDER_APPOINTMENT_STATUS_FOR_PROVIDER"),
             appConnect: validator.requireEnv("KAFKA_APP_CONNECT"),
             providerTrialSubscription: validator.requireEnv("KAFKA_PROVIDER_TRIAL_SUBSCRIPTION"),
-           
+            createGoogleCalendar: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_CREATE"),
+            updateGoogleCalendar: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_UPDATE"),
         },
         sub: {
-            
-
-           
+            googleCalendarSuccess: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_SUCCESS"),
+            googleCalendarFailed: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_FAILED"),
         },
     },
 };

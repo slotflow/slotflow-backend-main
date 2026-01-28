@@ -14,6 +14,7 @@ import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUr
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/message/IKafkaProducerAdapter";
 import { ICacheService } from "../../../domain/interfaces/services/ICache.service";
+import { notificationContentMap } from "../../../shared/utils/constants";
 
 export class AdminUserListUseCase {
     constructor(
@@ -59,8 +60,8 @@ export class AdminChangeUserBlockStatusUseCase {
             const updatedUser = await this.userRepository.update(user);
             if (!updatedUser) throw new Error("User not found");
 
-            if(updatedUser.isBlocked) {   
-                await this.cacheService.setBlockList(userId,JSON.stringify(isBlocked));
+            if (updatedUser.isBlocked) {
+                await this.cacheService.setBlockList(userId, JSON.stringify(isBlocked));
             } else {
                 await this.cacheService.deleteBlockList(userId);
             };
@@ -69,7 +70,10 @@ export class AdminChangeUserBlockStatusUseCase {
                 userId,
                 blocked: updatedUser.isBlocked,
                 email: user.email,
-                name: user.username
+                name: user.username,
+                pushNotification: user.allowPushNotification ?? false,
+                title: notificationContentMap.accountBlockStatus.title,
+                body: notificationContentMap.accountBlockStatus.body(updatedUser.isBlocked),
             });
 
             return { userId, isBlocked: updatedUser.isBlocked };
