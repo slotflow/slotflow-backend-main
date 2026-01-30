@@ -176,7 +176,7 @@ export class Booking {
         }
     };
 
-    failedCalendarData(props: FailedCalendarProps) {
+    createCalendarDataFailed(props: FailedCalendarProps) {
         const { role } = props;
         if (role === Role.USER) {
             this.props.calendarData.user.calendarStatus = CalendarStatus.FAILED;

@@ -19,7 +19,7 @@ export class GoogleCalendarFailedUseCases {
                 return;
             };
 
-            booking.failedCalendarData({ role });
+            booking.createCalendarDataFailed({ role });
 
             await this.bookingRepository.update(booking);
         } catch (error) {
