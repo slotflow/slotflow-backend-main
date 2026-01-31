@@ -1,6 +1,6 @@
 import { log } from "../../../shared/logger/logger";
-import { CalendarStatus } from "../../../domain/enums/common.enum";
-import { GoogleCalendarCreateResultEvent } from "../../dtos/kafka.dtos";
+import { Role } from "../../../domain/enums/common.enum";
+import { CreateGoogleCalendarEventSuccessResult } from "../../dtos/kafka.dtos";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 
 export class GoogleCalendarSuccessUseCases {
@@ -8,24 +8,24 @@ export class GoogleCalendarSuccessUseCases {
         private readonly bookingRepository: IBookingRepository
     ) { };
 
-    async execute(payload: GoogleCalendarCreateResultEvent): Promise<void> {
+    async execute(payload: CreateGoogleCalendarEventSuccessResult): Promise<void> {
         try {
-            const { bookingId, user, provider } = payload;
+            const { bookingId, role, eventId } = payload;
 
             const booking = await this.bookingRepository.findById(bookingId);
 
-            if (!booking || booking?.googleEventId) {
+            if (!booking) {
                 return;
             } else {
-                booking.createCalendarData({
-                    user: user.eventId ? {
-                        googleEventId: user.eventId,
-                        calendarStatus: CalendarStatus.CREATED,
-                    } : null,
-                    provider: provider.eventId ? {
-                        googleEventId: provider.eventId,
-                        calendarStatus: CalendarStatus.CREATED,
-                    } : null
+                if (role === Role.USER && booking.calendarData.user.googleEventId) {
+                    return;
+                };
+                if (role === Role.PROVIDER && booking.calendarData.provider.googleEventId) {
+                    return;
+                };
+                booking.createCalendarDataSuccess({
+                    eventId: eventId,
+                    role: role,
                 });
                 await this.bookingRepository.update(booking);
             };

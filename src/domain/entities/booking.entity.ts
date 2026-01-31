@@ -93,13 +93,6 @@ export class Booking {
         return this.props.videoCallRoomId;
     };
 
-    get googleEventId(): string {
-        if (!this.props.googleEventId) {
-            throw new Error("googleEventId is not found");
-        };
-        return this.props.googleEventId;
-    };
-
     get paymentId(): string {
         if (!this.props.paymentId) {
             throw new Error("No paymentId found");
@@ -162,18 +155,18 @@ export class Booking {
         this.touch();
     };
 
-    createCalendarData(props: CreateCalendarProps) {
-        const { user, provider } = props;
-        if (provider) {
-            this.props.calendarData.provider.googleEventId = provider.googleEventId;
+    createCalendarDataSuccess(props: CreateCalendarProps) {
+        const { role, eventId } = props;
+        if (role === Role.PROVIDER) {
+            this.props.calendarData.provider.googleEventId = eventId;
             this.props.calendarData.provider.calendarStatus = CalendarStatus.CREATED;
             this.touch();
-        }
-        if (user) {
-            this.props.calendarData.user.googleEventId = user.googleEventId;
+        };
+        if (role === Role.USER) {
+            this.props.calendarData.user.googleEventId = eventId;
             this.props.calendarData.user.calendarStatus = CalendarStatus.CREATED;
             this.touch();
-        }
+        };
     };
 
     createCalendarDataFailed(props: FailedCalendarProps) {
@@ -181,11 +174,11 @@ export class Booking {
         if (role === Role.USER) {
             this.props.calendarData.user.calendarStatus = CalendarStatus.FAILED;
             this.touch();
-        }
+        };
         if (role === Role.PROVIDER) {
             this.props.calendarData.provider.calendarStatus = CalendarStatus.FAILED;
             this.touch();
-        }
+        };
     };
 
 };

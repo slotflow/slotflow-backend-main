@@ -36,14 +36,8 @@ export type UpdateEventIProps = Pick<BookingProps, "googleEventId">;
 export type UpdateAppointmentProps = Pick<BookingProps, "appointmentStatus">;
 
 export interface CreateCalendarProps {
-    user: {
-        googleEventId: string | null;
-        calendarStatus: CalendarStatus; 
-    } | null,
-    provider: {
-        googleEventId: string | null;
-        calendarStatus: CalendarStatus; 
-    } | null,
+    role: Role;
+    eventId: string;
 };
 
 export interface FailedCalendarProps {

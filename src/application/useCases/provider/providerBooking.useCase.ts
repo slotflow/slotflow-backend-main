@@ -68,25 +68,37 @@ export class ProviderChangeBookingAppointmentStatusUseCase {
                 body: notificationContentMap.appointmentStatusChangeForProvider.body(booking.appointmentStatus),
             });
 
-            await this.kafkaProducer.publish<EventEnvelope<CreateGoogleCalendarEvent>>(kafkaConfig.topics.pub.createGoogleCalendar, {
-                eventId: uuidv4(),
-                occurredAt: new Date(),
-                attempt: 1,
-                maxAttempts: 2,
-                payload: {
-                    bookingId: booking._id,
-                    user: userAccessToken ? {
-                        userId: user._id,
-                        accessToken: userAccessToken
-                    } : null,
-                    provider: providerAccessToken ? {
-                        providerId: providerId,
-                        accessToken: providerAccessToken
-                    } : null,
-                    appointmentDate: booking.appointmentDate,
-                    appointmentStatus: booking.appointmentStatus,
-                }
-            });
+            if (userAccessToken) {
+                await this.kafkaProducer.publish<EventEnvelope<CreateGoogleCalendarEvent>>(kafkaConfig.topics.pub.createGoogleCalendar, {
+                    eventId: uuidv4(),
+                    occurredAt: new Date(),
+                    attempt: 1,
+                    maxAttempts: 2,
+                    payload: {
+                        bookingId: booking._id,
+                        role: Role.USER,
+                        accessToken: userAccessToken,
+                        appointmentDate: booking.appointmentDate,
+                        appointmentStatus: booking.appointmentStatus,
+                    }
+                });
+            }
+
+            if (providerAccessToken) {
+                await this.kafkaProducer.publish<EventEnvelope<CreateGoogleCalendarEvent>>(kafkaConfig.topics.pub.createGoogleCalendar, {
+                    eventId: uuidv4(),
+                    occurredAt: new Date(),
+                    attempt: 1,
+                    maxAttempts: 2,
+                    payload: {
+                        bookingId: booking._id,
+                        role: Role.PROVIDER,
+                        accessToken: providerAccessToken,
+                        appointmentDate: booking.appointmentDate,
+                        appointmentStatus: booking.appointmentStatus,
+                    }
+                });
+            }
 
         } catch (error) {
             log.error("ProviderChangeBookingAppointmentStatus failed", error as Error);

@@ -87,18 +87,8 @@ export class UserCancelBookingUseCase {
                     const updatedPayment = await this.paymentRepository.update(payment);
                     if (!updatedPayment) throw new Error("Refund failed");
 
-                    const accessToken = await this.googleTokenService.getAccessToken(userId);
-                    if (booking.googleEventId) {
-                        const eventId = await this.googleCalendarGatewayService.updateEvent({
-                            accessToken: accessToken,
-                            eventId: booking.googleEventId,
-                            appointmentDate: booking.appointmentDate,
-                            appointmentStatus: booking.appointmentStatus,
-                        });
-                        if (!eventId) {
-                            throw new Error("Booking cancel failed");
-                        };
-                    };
+                    // const accessToken = await this.googleTokenService.getAccessToken(userId);
+
 
                 } else {
                     throw new Error(`Refund not supported for payment gateway: ${payment.paymentGateway}`);

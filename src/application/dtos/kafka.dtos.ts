@@ -170,42 +170,22 @@ export interface SendPaymentRequestEvent {
 // create google calendar event
 export interface CreateGoogleCalendarEvent {
   bookingId: string;
-
-  user: {
-    userId: string;
-    accessToken: string;
-    existingEventId?: string | null;
-  } | null;
-
-  provider: {
-    providerId: string;
-    accessToken: string;
-    existingEventId?: string | null;
-  } | null;
-
+  role: Role;
+  accessToken: string;
   appointmentDate: Date;
   appointmentStatus: AppointmentStatus;
 };
 
-// google calendar create result event
-export interface GoogleCalendarCreateResultEvent {
-  bookingId: string;
-
-  user: {
-    success: boolean;
-    eventId?: string;
-    error?: string;
-  };
-
-  provider: {
-    success: boolean;
-    eventId?: string;
-    error?: string;
-  };
+// create google calendar event success result
+export interface CreateGoogleCalendarEventSuccessResult {
+    bookingId: string;
+    role: Role;
+    eventId: string;
 }
 
-// google calendar create failed event
-export interface GoogleCalendarCreateFailedEvent {
-  bookingId: string;
-  role: Role;
+// create google calendar event failed result
+export interface CreateGoogleCalendarEventFailedResult {
+    bookingId: string;
+    role: Role;
+    error: string;
 }
