@@ -1,6 +1,6 @@
 import { Kafka, Producer } from "kafkajs";
 import { log } from "../../shared/logger/logger";
-import { IKafkaProducerAdapter } from "../../domain/interfaces/message/IKafkaProducerAdapter";
+import { IKafkaProducerAdapter } from "../../domain/interfaces/messaging/IKafkaProducerAdapter";
 
 export class KafkaProducerAdapter implements IKafkaProducerAdapter {
     private producer!: Producer;

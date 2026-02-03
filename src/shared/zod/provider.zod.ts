@@ -48,10 +48,7 @@ export const serviceDetailsSchema = z.object({
             return val;
         },
         z
-            .number({
-                required_error: "Service price is required",
-                invalid_type_error: "Service price must be a valid number",
-            })
+            .number()
             .min(1, "Service price must be at least 1")
             .max(1_000_000, "Service price cannot exceed 1,000,000")
     ),

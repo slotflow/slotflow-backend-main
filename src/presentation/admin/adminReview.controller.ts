@@ -1,11 +1,11 @@
 import { log } from "../../shared/logger/logger";
+import { Role } from "../../domain/enums/common.enum";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { adminUpdateReviewBlockStatusUseCase, fetchAllReviewsUseCase } from ".";
 import { FetchAllReviewsUseCase } from "../../application/useCases/common/fetchReviews.useCase";
 import { AdminUpdateReviewBlockStatusUseCase } from "../../application/useCases/admin/adminReview.useCase";
 import { adminChangeReviewBlockStatusSchema, adminFetchAllReviewsSchema } from "../../shared/zod/admin.zod";
-import { Role } from "../../domain/enums/common.enum";
 
 class AdminReviewController {
     constructor(
@@ -18,8 +18,7 @@ class AdminReviewController {
 
     async findAllReviews(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = req.params.userId;
-            const { limit, page, role } = adminFetchAllReviewsSchema.parse({
+            const { limit, page, role, userId } = adminFetchAllReviewsSchema.parse({
                 userId: req.params.userId,
                 ...req.query
             });

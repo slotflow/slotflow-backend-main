@@ -5,7 +5,7 @@ import { UpdatePasswordRequest } from "../../dtos/auth.dto";
 import { SendResetPasswordEvent } from "../../dtos/kafka.dtos";
 import { IPasswordHasher } from "../../../domain/interfaces/security/IPasswordHasher";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { IKafkaProducerAdapter } from "../../../domain/interfaces/message/IKafkaProducerAdapter";
+import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 
 export class UpdatePasswordUseCase {

@@ -354,7 +354,7 @@ export class Provider {
   }
 
 
-  activateSubscription(subscriptionId: string) {
+  pushSubscriptionId(subscriptionId: string) {
     this.ensureNotBlocked("subscribe");
 
     this.props.subscription.push(subscriptionId);

@@ -1,7 +1,8 @@
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
-import { fetchProviderServiceAvailabilitySchema, paginationSchema } from "../../shared/zod/common.zod";
+import { paginationSchema } from "../../shared/zod/base.zod";
+import { fetchProviderServiceAvailabilitySchema } from "../../shared/zod/common.zod";
 import { providerIdWithPaginationSchema, validateProviderIdSchema } from "../../shared/zod/provider.zod";
 import { FetchProviderProofsUseCase } from "../../application/useCases/common/fetchProviderProofs.useCase";
 import { AdminFetchUserOrProviderAddressUseCase } from "../../application/useCases/admin/adminAddress.useCase";

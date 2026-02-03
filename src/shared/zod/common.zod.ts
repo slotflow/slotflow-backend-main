@@ -58,17 +58,3 @@ export const fetchProviderServiceAvailabilitySchema = z.object({
 
 //
 export const validateJoinRoomSchema = JoinOrLeftRoomSchema.merge(validateRoomIdSchema);
-
-export {
-  roleValidationSchema,
-  paginationSchema,
-  dateSchema,
-  addressSchema,
-  updateInfoSchema,
-  saveStripePaymentSchema,
-  s3FileKeySchema,
-  validateRoomIdSchema,
-  validateBookingIdSchema,
-  validateSubscriptionIdSchema,
-  validateReviewIdSchema
-};

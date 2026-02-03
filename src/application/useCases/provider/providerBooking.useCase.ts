@@ -6,7 +6,7 @@ import { ProviderChangeBookingAppoinmentStatusRequest } from "../../dtos/provide
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IGoogleTokenService } from "../../../domain/interfaces/services/IGoogleToken.service";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
-import { IKafkaProducerAdapter } from "../../../domain/interfaces/message/IKafkaProducerAdapter";
+import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 import { notificationContentMap } from "../../../shared/utils/constants";
 import { NotificationType, Role } from "../../../domain/enums/common.enum";
 import { uuidv4 } from "zod/v4";

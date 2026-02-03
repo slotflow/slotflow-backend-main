@@ -2,7 +2,7 @@ import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
-import { validateBookingIdSchema, validateJoinRoomSchema } from "../../shared/zod/common.zod";
+import { validateBookingIdSchema } from "../../shared/zod/base.zod";
 import { ValidateJoinRoomUsecase } from "../../application/useCases/common/validateJoinRoom.useCase";
 import { FetchBookingDetailsUsecase } from "../../application/useCases/common/fetchBookingDetails.useCase";
 import { FetchBookingAppointmentsUseCase } from "../../application/useCases/common/fetchAllBookings.useCase";
@@ -11,6 +11,7 @@ import { ProviderChangeBookingAppointmentStatusUseCase } from "../../application
 import { providerChangeAppointmentStatusSchema, providerFetchAllAppointmentsSchema, providerValidateRoomSchema } from "../../shared/zod/provider.zod";
 import { fetchBookingAppointmentsUseCase, fetchBookingDetailsUsecase, providerChangeBookingAppointmentStatusUseCase, updateBookingOnlineTrakingUseCase, validateJoinRoomUsecase } from ".";
 import { Role } from "../../domain/enums/common.enum";
+import { validateJoinRoomSchema } from "../../shared/zod/common.zod";
 
 class ProviderBookingController {
     constructor(

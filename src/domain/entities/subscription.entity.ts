@@ -1,6 +1,7 @@
-import { SubscriptionProps } from "../contracts/subscription.contract";
-import { CreateSubscriptionProps, UpdateSubscriptionProps } from "../commands/subscription.commands";
+import { PaymentStatus } from "../enums/payment.enum";
 import { SubscriptionStatus } from "../enums/subscription.enum";
+import { SubscriptionProps } from "../contracts/subscription.contract";
+import { CreateSubscriptionProps, SubscriptionPaymentSuccessProps } from "../commands/subscription.commands";
 
 export class Subscription {
     private props: SubscriptionProps;
@@ -17,7 +18,11 @@ export class Subscription {
         return new Subscription({
             _id: "",
             ...props,
-            paymentId: props.paymentId ?? null,
+            paymentId: null,
+            subscriptionStatus: SubscriptionStatus.PENDING,
+            paymentStatus: PaymentStatus.PENDING,
+            startDate: null,
+            endDate: null,
             createdAt: new Date(),
             updatedAt: new Date(),
         })
@@ -33,10 +38,16 @@ export class Subscription {
     };
 
     get endDate(): Date {
+        if(!this.props.endDate) {
+            throw new Error("No endDate found");
+        }
         return this.props.endDate;
     };
 
     get startDate(): Date {
+        if(!this.props.startDate) {
+            throw new Error("No startDate found");
+        }
         return this.props.startDate;
     };
 
@@ -50,11 +61,18 @@ export class Subscription {
         return { ...this.props };
     };
 
-    updateSubscription(props: UpdateSubscriptionProps) {
-        this.props = {
-            ...this.props,
-            ...props,
-        };
+    subscriptionPaymentFailed() {
+        this.props.paymentStatus = PaymentStatus.FAILED;
         this.touch();
-    }
+    };
+
+    subscriptionPaymentSusccess(props: SubscriptionPaymentSuccessProps) {
+        if (this.props.paymentStatus !== PaymentStatus.PENDING) return;
+        this.props.paymentStatus = PaymentStatus.PAID;
+        this.props.subscriptionStatus = SubscriptionStatus.ACTIVE;
+        this.props.startDate = props.startDate;
+        this.props.endDate = props.endDate;
+        this.props.paymentId = props.paymentId;
+        this.touch();
+    };
 }

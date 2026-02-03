@@ -1,7 +1,7 @@
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
-import { paginationSchema } from "../../shared/zod/common.zod";
+import { paginationSchema } from "../../shared/zod/base.zod";
 import { adminChangePlanBlockStatusUseCase, adminCreatePlanUseCase, adminPlanListUseCase } from ".";
 import { adminChangePlanBlockStatusSchema, adminCreateNewPlanSchema } from "../../shared/zod/admin.zod";
 import { AdminChangePlanBlockStatusUseCase, AdminCreatePlanUseCase, AdminPlanListUseCase } from "../../application/useCases/admin/adminPlan.useCase";

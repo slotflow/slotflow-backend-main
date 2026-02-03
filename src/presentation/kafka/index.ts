@@ -1,6 +1,6 @@
 import { bookingRepository } from "../../infrastructure/repositoryImpls";
 import { GoogleCalendarFailedUseCases } from "../../application/useCases/kafkaSubscription/googleCalendarFailed.useCase";
-import { GoogleCalendarSuccessUseCases } from "../../application/useCases/kafkaSubscription/googleCalendarSuccess.useCases";
+import { GoogleCalendarSuccessUseCases } from "../../application/useCases/kafkaSubscription/googleCalendarSuccess.useCase";
 
 export const googleCalendarHandler = {
     googleCalendarSuccess: new GoogleCalendarSuccessUseCases(bookingRepository),

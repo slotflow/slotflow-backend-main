@@ -2,7 +2,7 @@ import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { validateUserIdSchema } from "../../shared/zod/user.zod";
-import { paginationSchema } from "../../shared/zod/common.zod";
+import { paginationSchema } from "../../shared/zod/base.zod";
 import { adminUserBlockStatusSchema } from "../../shared/zod/admin.zod";
 import { AdminFetchUserOrProviderAddressUseCase } from "../../application/useCases/admin/adminAddress.useCase";
 import { adminChangeUserBlockStatusUseCase, adminFetchUserDetailsUseCase, adminFetchUserOrProviderAddressUseCase, adminUserListUseCase } from ".";

@@ -2,24 +2,31 @@ import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
-import { validateSubscriptionIdSchema } from "../../shared/zod/common.zod";
 import { FetchSubscriptionDetailsUseCase } from "../../application/useCases/common/subscription.useCase";
 import { ProviderFetchAllSubscriptionsUseCase } from "../../application/useCases/provider/providerSubscription.useCase";
 import { ProviderTrialSubscriptionUseCase } from "../../application/useCases/provider/providerTrailSubscription.useCase";
 import { providerIdWithPaginationSchema, providerPlanSubscribeSchema, providerSaveSubscriptionSchema, validateProviderIdSchema } from "../../shared/zod/provider.zod";
-import { ProviderSaveSubscriptionUseCase, ProviderStripeSubscriptionCreateSessionIdUseCase } from "../../application/useCases/provider/providerStripeSubscription.useCase";
-import { fetchSubscriptionDetailsUseCase, providerFetchAllSubscriptionsUseCase, providerSaveSubscriptionUseCase, providerStripeSubscriptionCreateSessionIdUseCase, providerTrialSubscriptionUseCase } from ".";
+import {
+    // ProviderSaveSubscriptionUseCase, 
+    ProviderSubscriptionCheckoutUseCase
+} from "../../application/useCases/provider/providerSubscriptionCheckout.useCase";
+import {
+    fetchSubscriptionDetailsUseCase, providerFetchAllSubscriptionsUseCase,
+    // providerSaveSubscriptionUseCase, 
+    providerSubscriptionCheckoutUseCase, providerTrialSubscriptionUseCase
+} from ".";
+import { validateSubscriptionIdSchema } from "../../shared/zod/base.zod";
 
 class ProviderSubscriptionController {
     constructor(
-        private providerStripeSubscriptionCreateSessionIdUseCase: ProviderStripeSubscriptionCreateSessionIdUseCase,
-        private providerSaveSubscriptionUseCase: ProviderSaveSubscriptionUseCase,
+        private providerSubscriptionCheckoutUseCase: ProviderSubscriptionCheckoutUseCase,
+        // private providerSaveSubscriptionUseCase: ProviderSaveSubscriptionUseCase,
         private providerFetchAllSubscriptionsUseCase: ProviderFetchAllSubscriptionsUseCase,
         private providerTrialSubscriptionUseCase: ProviderTrialSubscriptionUseCase,
         private fetchSubscriptionDetailsUseCase: FetchSubscriptionDetailsUseCase,
     ) {
         this.subscribe = this.subscribe.bind(this);
-        this.saveSubscription = this.saveSubscription.bind(this);
+        // this.saveSubscription = this.saveSubscription.bind(this);
         this.fetchProviderSubscriptions = this.fetchProviderSubscriptions.bind(this);
         this.subscribeToTrialPlan = this.subscribeToTrialPlan.bind(this);
         this.getSubscriptionDetails = this.getSubscriptionDetails.bind(this);
@@ -31,7 +38,7 @@ class ProviderSubscriptionController {
                 providerId: (req.user as DecodedUser).userOrProviderId,
                 ...req.body
             });
-            const result = await this.providerStripeSubscriptionCreateSessionIdUseCase.execute({ providerId, planId, duration: planDuration });
+            const result = await this.providerSubscriptionCheckoutUseCase.execute({ providerId, planId, duration: planDuration });
             sendResponse(res, result);
         } catch (error) {
             log.error("subscribe failed", error as Error);
@@ -39,19 +46,19 @@ class ProviderSubscriptionController {
         };
     };
 
-    async saveSubscription(req: Request, res: Response, next: NextFunction) {
-        try {
-            const { providerId, sessionId } = providerSaveSubscriptionSchema.parse({
-                providerId: (req.user as DecodedUser).userOrProviderId,
-                ...req.body
-            });
-            const result = await this.providerSaveSubscriptionUseCase.execute({ providerId, sessionId });
-            sendResponse(res, result, "Your subscription has been activated");
-        } catch (error) {
-            log.error("saveSubscription failed", error as Error);
-            next(error);
-        };
-    }
+    // async saveSubscription(req: Request, res: Response, next: NextFunction) {
+    //     try {
+    //         const { providerId, sessionId } = providerSaveSubscriptionSchema.parse({
+    //             providerId: (req.user as DecodedUser).userOrProviderId,
+    //             ...req.body
+    //         });
+    //         const result = await this.providerSaveSubscriptionUseCase.execute({ providerId, sessionId });
+    //         sendResponse(res, result, "Your subscription has been activated");
+    //     } catch (error) {
+    //         log.error("saveSubscription failed", error as Error);
+    //         next(error);
+    //     };
+    // }
 
     async fetchProviderSubscriptions(req: Request, res: Response, next: NextFunction) {
         try {
@@ -92,8 +99,8 @@ class ProviderSubscriptionController {
 };
 
 export const providerSubscriptionController = new ProviderSubscriptionController(
-    providerStripeSubscriptionCreateSessionIdUseCase,
-    providerSaveSubscriptionUseCase,
+    providerSubscriptionCheckoutUseCase,
+    // providerSaveSubscriptionUseCase,
     providerFetchAllSubscriptionsUseCase,
     providerTrialSubscriptionUseCase,
     fetchSubscriptionDetailsUseCase

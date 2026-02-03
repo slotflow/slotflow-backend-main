@@ -100,6 +100,8 @@ export const kafkaConfig = {
             providerTrialSubscription: validator.requireEnv("KAFKA_PROVIDER_TRIAL_SUBSCRIPTION"),
             createGoogleCalendar: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_CREATE"),
             updateGoogleCalendar: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_UPDATE"),
+
+            // MBS -> PS
         },
         sub: {
             googleCalendarSuccess: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_SUCCESS"),

@@ -5,7 +5,7 @@ import { SendProviderTrialSubscriptionEvent } from "../../dtos/kafka.dtos";
 import { Subscription } from "../../../domain/entities/subscription.entity";
 import { SubscriptionStatus, SubscriptionValidity } from "../../../domain/enums/subscription.enum";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
-import { IKafkaProducerAdapter } from "../../../domain/interfaces/message/IKafkaProducerAdapter";
+import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { getDateAfterDays, getUtcDateRange, isSubscriptionExpired } from "../../../shared/utils/dateTime";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
@@ -54,7 +54,7 @@ export class ProviderTrialSubscriptionUseCase {
             const subscription = await this.subscriptionRepository.create(subscriptionData);
             if (!subscription) throw new Error("Trial plan activating error.");
 
-            provider.activateSubscription(subscription._id);
+            provider.pushSubscriptionId(subscription._id);
             const updatedProvider = await this.providerRepository.update(provider);
             if (!updatedProvider) throw new Error("Trail plan activating error.");
 

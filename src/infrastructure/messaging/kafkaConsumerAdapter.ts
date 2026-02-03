@@ -1,7 +1,7 @@
 import { Kafka, Consumer } from "kafkajs";
 import { log } from "../../shared/logger/logger";
 import { MessageHandler } from "../../application/dtos/kafka.dtos";
-import { IKafkaConsumerAdapter } from "../../domain/interfaces/message/IKafkaConsumerAdapter";
+import { IKafkaConsumerAdapter } from "../../domain/interfaces/messaging/IKafkaConsumerAdapter";
 
 export class KafkaConsumerAdapter implements IKafkaConsumerAdapter {
     private consumer!: Consumer;

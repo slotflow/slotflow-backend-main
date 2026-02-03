@@ -1,7 +1,7 @@
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
-import { paginationSchema } from "../../shared/zod/common.zod";
+import { paginationSchema } from "../../shared/zod/base.zod";
 import { adminFetchRevenuewReposrtSchema } from "../../shared/zod/admin.zod";
 import { adminFetchAllPaymentsUseCase, adminFetchRevenueReportUseCase } from ".";
 import { AdminFetchAllPaymentsUseCase, AdminFetchRevenueReportUseCase } from "../../application/useCases/admin/adminPayment.useCase";

@@ -2,7 +2,7 @@ import { ZodUUID } from "zod/v4";
 import { KafkaMessage } from "kafkajs";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
-import { PaymentFor, PaymentGateway, PaymentStatus } from "../../domain/enums/payment.enum";
+import { PaymentFor, PaymentGateway, PaymentMethod, PaymentStatus } from "../../domain/enums/payment.enum";
 import { AppConnect, NotificationType, OtpPurpose, Role } from "../../domain/enums/common.enum";
 
 // kafka client adapter props
@@ -106,6 +106,33 @@ export interface SendProviderTrialSubscriptionEvent extends SendEmailCommon, Sen
   endDate: string;
   userId: string;
 }
+
+// send provider payment request event
+export interface SendProviderPaymentRequestEvent {
+  transactionId: string,
+  paymentStatus: PaymentStatus,
+  paymentMethod: PaymentMethod,
+  paymentGateway: PaymentGateway,
+  paymentFor: PaymentFor,
+  initialAmount: number,
+  discountAmount: number,
+  totalAmount: number,
+  providerId: string,
+  subscriptionId: string;
+  planDuration: number;
+}
+
+// send provider create payment failed event
+export interface ProviderCreatePaymentFailedEvent {
+    subscriptionId: string;
+};
+
+// send provider create payment success event
+export interface ProviderCreatePaymentSuccessEvent {
+    subscriptionId: string;
+    paymentId: string;
+    planDuration: number;
+};
 
 // Added till this 
 

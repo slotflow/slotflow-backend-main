@@ -2,7 +2,7 @@ import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { adminFetchAllSubscriptionsUseCase, fetchSubscriptionDetailsUseCase } from ".";
-import { paginationSchema } from "../../shared/zod/common.zod";
+import { paginationSchema } from "../../shared/zod/base.zod";
 import { FetchSubscriptionDetailsUseCase } from "../../application/useCases/common/subscription.useCase";
 import { AdminFetchAllSubscriptionsUseCase } from "../../application/useCases/admin/adminSubscription.useCase";
 import { adminGetSubscriptionDetailsSchema } from "../../shared/zod/admin.zod";

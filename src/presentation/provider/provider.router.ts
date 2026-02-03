@@ -48,8 +48,8 @@ router.get('/availability', authMiddleware, providerServiceAvailabilityControlle
 
 router.get('/plans', authMiddleware, providerPlanController.fetchAllPlans);
 
-router.post('/subscriptions/checkout-session', authMiddleware, providerSubscriptionController.subscribe);
-router.post('/subscriptions', authMiddleware, providerSubscriptionController.saveSubscription);
+router.post('/subscriptions/checkout/session', authMiddleware, providerSubscriptionController.subscribe);
+// router.post('/subscriptions', authMiddleware, providerSubscriptionController.saveSubscription);
 router.get('/subscriptions', authMiddleware, providerSubscriptionController.fetchProviderSubscriptions);
 router.post('/subscriptions/trial', authMiddleware, providerSubscriptionController.subscribeToTrialPlan);
 router.get('/subscriptions/:subscriptionId', authMiddleware, providerSubscriptionController.getSubscriptionDetails);

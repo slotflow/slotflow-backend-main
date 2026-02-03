@@ -12,7 +12,7 @@ import { log } from "../../../shared/logger/logger";
 import { ApiPaginationRequest, TableData } from "../../dtos/common.dto";
 import { ICacheService } from "../../../domain/interfaces/services/ICache.service";
 import { AdminVerificationStatus } from "../../../domain/enums/adminVerificationStatus.enum";
-import { IKafkaProducerAdapter } from "../../../domain/interfaces/message/IKafkaProducerAdapter";
+import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { SendAccountBlockStatusEvent, SendAccountTrustStatusEvent, SendAdminProviderReviewEvent } from "../../dtos/kafka.dtos";
 import { notificationContentMap } from "../../../shared/utils/constants";

@@ -139,10 +139,9 @@ export type ProviderStripeSubscriptionCreateSessionIdResponse = string;
 // provider save subscription after stripe payment use case request payload interface
 export interface ProviderSaveSubscriptionRequest {
     providerId: ProviderDTO["_id"];
-    sessionId: string
-}
-export interface ProviderSaveSubscriptionResponse {
-    planName: PlanDTO["planName"]; 
+    subscirpitonId: string;
+    paymentId: string;
+    planDuration: number;
 }
 
 

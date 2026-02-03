@@ -47,10 +47,7 @@ export const dateSchema = z.preprocess(
         }
         return val;
     },
-    z.date({
-        required_error: "Date is required",
-        invalid_type_error: "Date must be a valid Date object",
-    })
+    z.date()
 );
 
 // Address validation

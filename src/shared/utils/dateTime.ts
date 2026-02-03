@@ -24,6 +24,6 @@ export const isSubscriptionExpired = (endDate: string | Date): boolean => {
   return dayjs().isAfter(dayjs(endDate), "day");
 };
 
-export const getDateAfterDays = (days: number,fromDate: string | number | Date = new Date()): Date => {
-  return dayjs(fromDate).add(days, "day").toDate();
+export const getDateAfterDays = (days: number): Date => {
+  return dayjs().add(days, "day").toDate();
 };

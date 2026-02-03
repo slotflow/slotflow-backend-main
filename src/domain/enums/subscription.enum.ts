@@ -2,7 +2,7 @@ export enum SubscriptionStatus {
     ACTIVE = "ACTIVE",
     EXPIRED = "EXPIRED",
     CANCELLED = "CANCELLED",
-    PAYMENT_PENDING = "PAYMENT_PENDING",
+    PENDING = "PENDING",
 };
 
 export enum SubscriptionValidity {

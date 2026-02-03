@@ -2,7 +2,7 @@ import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
-import { validateBookingIdSchema, validateJoinRoomSchema } from "../../shared/zod/common.zod";
+import { validateJoinRoomSchema } from "../../shared/zod/common.zod";
 import { UserCancelBookingUseCase } from "../../application/useCases/user/userBooking.useCase";
 import { ValidateJoinRoomUsecase } from "../../application/useCases/common/validateJoinRoom.useCase";
 import { FetchBookingDetailsUsecase } from "../../application/useCases/common/fetchBookingDetails.useCase";
@@ -12,6 +12,7 @@ import { UserAppointmentBookingViaStripeUseCase, UserSaveBookingAfterStripePayme
 import { userCancelBookingSchema, userCreateSessionIdForbookingViaStripeSchema, userFetchAllAppointmentsSchema, userSaveBookingSchema, userValidateRoomSchema } from "../../shared/zod/user.zod";
 import { fetchBookingAppointmentsUseCase, fetchBookingDetailsUsecase, updateBookingOnlineTrakingUseCase, userAppointmentBookingViaStrpieUseCase, userCancelBookingUseCase, userSaveBookingAfterStripePaymentUseCase, validateJoinRoomUsecase } from ".";
 import { Role } from "../../domain/enums/common.enum";
+import { validateBookingIdSchema } from "../../shared/zod/base.zod";
 
 class UserBookingController {
     constructor(

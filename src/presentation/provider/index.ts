@@ -22,11 +22,12 @@ import { ProviderChangeBookingAppointmentStatusUseCase } from "../../application
 import { ProviderFetchDashboardGraphDataUseCase } from "../../application/useCases/provider/providerDashboardGraphData.useCase";
 import { ProviderCreateAddressUseCase, ProviderFetchAddressUseCase, ProviderUpdateAddressUseCase } from "../../application/useCases/provider/providerAddress.useCase";
 import { bookingQueries, paymentQueries, providerServiceQueries, reviewQueries, serviceAvailabilityQueries, subscriptionQueries } from "../../infrastructure/queriesImpls";
-import { ProviderSaveSubscriptionUseCase, ProviderStripeSubscriptionCreateSessionIdUseCase } from "../../application/useCases/provider/providerStripeSubscription.useCase";
+import { ProviderSubscriptionCheckoutUseCase } from "../../application/useCases/provider/providerSubscriptionCheckout.useCase";
 import { ProviderCreateServiceAvailabilitiesUseCase, ProviderFetchServiceAvailabilityUseCase } from "../../application/useCases/provider/providerServiceAvailability.useCase";
 import { ProviderCreateServiceDetailsUseCase, ProviderFetchServiceDetailsUseCase, ProviderUpdateServiceDetailsUseCase } from "../../application/useCases/provider/providerService.useCase";
 import { addressRepository, bookingRepository, paymentRepository, planRepository, providerRepository, providerServiceRepository, reviewRepository, serviceAvailabilityRepository, serviceRepository, subscriptionRepository, userRepository } from "../../infrastructure/repositoryImpls";
 import { ProvideDeleteIdentityProofUseCase, ProvideDeleteServiceProofUseCase, ProviderFetchProfileDetailsUseCase, ProviderRequestForApprovalUseCase, ProviderUpdateIdentityProofUseCase, ProviderUpdateProfileImageUseCase, ProviderUpdateProviderInfoUseCase, ProviderUpdatePushNotificationUseCase, ProviderUpdateServiceProofUseCase } from "../../application/useCases/provider/providerProfile.useCase";
+import { paymentServiceClient } from "../../infrastructure/clients";
 
 // provider address controller dependency injection
 export const providerFetchAddressUseCase = new ProviderFetchAddressUseCase(addressRepository);
@@ -85,8 +86,8 @@ export const providerStripeConnectUseCase = new ProviderStripeConnectUseCase(pro
 export const fetchSubscriptionDetailsUseCase = new FetchSubscriptionDetailsUseCase(subscriptionQueries);
 export const providerFetchAllSubscriptionsUseCase = new ProviderFetchAllSubscriptionsUseCase(providerRepository, subscriptionQueries);
 export const providerTrialSubscriptionUseCase = new ProviderTrialSubscriptionUseCase(providerRepository, subscriptionRepository, planRepository, kafkaProducer);
-export const providerSaveSubscriptionUseCase = new ProviderSaveSubscriptionUseCase(providerRepository, paymentRepository, subscriptionRepository);
-export const providerStripeSubscriptionCreateSessionIdUseCase = new ProviderStripeSubscriptionCreateSessionIdUseCase(planRepository, providerRepository, subscriptionRepository);
+// export const providerSaveSubscriptionUseCase = new ProviderSaveSubscriptionUseCase(providerRepository, paymentRepository, subscriptionRepository);
+export const providerSubscriptionCheckoutUseCase = new ProviderSubscriptionCheckoutUseCase(planRepository, providerRepository, subscriptionRepository, paymentServiceClient);
 
 // provider user controller dependency injection
 export const providerFetchUserForChatSidebarUseCase = new ProviderFetchUserForChatSidebarUseCase(signedUrlService, bookingQueries);

@@ -12,7 +12,7 @@ import { SendAccountBlockStatusEvent } from "../../dtos/kafka.dtos";
 import { ApiPaginationRequest, TableData } from "../../dtos/common.dto";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { IKafkaProducerAdapter } from "../../../domain/interfaces/message/IKafkaProducerAdapter";
+import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 import { ICacheService } from "../../../domain/interfaces/services/ICache.service";
 import { notificationContentMap } from "../../../shared/utils/constants";
 

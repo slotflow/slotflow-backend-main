@@ -9,7 +9,7 @@ import { RegisterRequest, RegisterResponse } from '../../dtos/auth.dto';
 import { IOTPService } from '../../../domain/interfaces/services/IOtp.service';
 import { IPasswordHasher } from '../../../domain/interfaces/security/IPasswordHasher';
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
-import { IKafkaProducerAdapter } from '../../../domain/interfaces/message/IKafkaProducerAdapter';
+import { IKafkaProducerAdapter } from '../../../domain/interfaces/messaging/IKafkaProducerAdapter';
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
 import { OtpPurpose, Role } from '../../../domain/enums/common.enum';
 

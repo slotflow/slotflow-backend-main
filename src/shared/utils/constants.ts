@@ -12,7 +12,10 @@ export enum EventData {
   eventTimeZone = "Asia/Kolkata",
 };
 
-export const notificationContentMap = {
+export const notificationContentMap: Record<string, {
+  title: string;
+  body: (...args: any[]) => string;
+}> = {
   passwordReset: {
     title: "Password Reset",
     body: () =>

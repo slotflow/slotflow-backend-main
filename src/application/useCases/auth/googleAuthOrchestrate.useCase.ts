@@ -11,7 +11,7 @@ import { SendAppConnectEvent, SendWelcomeEvent } from "../../dtos/kafka.dtos";
 import { SubscriptionStatus } from "../../../domain/enums/subscription.enum";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
-import { IKafkaProducerAdapter } from "../../../domain/interfaces/message/IKafkaProducerAdapter";
+import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 import { IAesEncryptionService } from "../../../domain/interfaces/services/IAesEncryption.service";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { GoogleAuthOrchestrationRequest, GoogleAuthOrchestrationResponse } from "../../dtos/auth.dto";
