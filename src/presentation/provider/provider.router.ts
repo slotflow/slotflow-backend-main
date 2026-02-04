@@ -7,7 +7,6 @@ import { providerStripeController } from './providerStripe.controller';
 import { provideAddressController } from './providerAddress.controller';
 import { providerServiceController } from './providerService.controller';
 import { providerProfileController } from './providerProfile.controller';
-import { providerPaymentController } from './providerPayment.controller';
 import { providerBookingController } from './providerBooking.controller';
 import { providerDashboardController } from './providerDashboard.controller';
 import { providerAppServiceController } from './providerAppService.controller';
@@ -53,8 +52,6 @@ router.get('/subscriptions/subscribed', authMiddleware, providerSubscriptionCont
 router.get('/subscriptions', authMiddleware, providerSubscriptionController.fetchProviderSubscriptions);
 router.post('/subscriptions/trial', authMiddleware, providerSubscriptionController.subscribeToTrialPlan);
 router.get('/subscriptions/:subscriptionId', authMiddleware, providerSubscriptionController.getSubscriptionDetails);
-
-router.get('/payments', authMiddleware, providerPaymentController.getPayments);
 
 router.get('/chat/users', authMiddleware, providerUserController.fetchUsersForChatSideBar);
 

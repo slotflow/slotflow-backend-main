@@ -12,7 +12,6 @@ import { ProviderStripeConnectUseCase } from "../../application/useCases/provide
 import { FetchBookingDetailsUsecase } from "../../application/useCases/common/fetchBookingDetails.useCase";
 import { FetchProviderProofsUseCase } from "../../application/useCases/common/fetchProviderProofs.useCase";
 import { FetchBookingAppointmentsUseCase } from "../../application/useCases/common/fetchAllBookings.useCase";
-import { ProviderFetchAllPaymentsUseCase } from "../../application/useCases/provider/providerPayment.useCase";
 import { ProviderFetchUserForChatSidebarUseCase } from "../../application/useCases/provider/providerUser.useCase";
 import { ProviderChangeReviewRepostStatusUseCase } from "../../application/useCases/provider/providerReview.useCase";
 import { ProviderFetchDashboardStatsUseCase } from "../../application/useCases/provider/providerDashboardStats.useCase";
@@ -26,7 +25,7 @@ import { ProviderCreateAddressUseCase, ProviderFetchAddressUseCase, ProviderUpda
 import { bookingQueries, paymentQueries, providerServiceQueries, reviewQueries, serviceAvailabilityQueries, subscriptionQueries } from "../../infrastructure/queriesImpls";
 import { ProviderCreateServiceAvailabilitiesUseCase, ProviderFetchServiceAvailabilityUseCase } from "../../application/useCases/provider/providerServiceAvailability.useCase";
 import { ProviderCreateServiceDetailsUseCase, ProviderFetchServiceDetailsUseCase, ProviderUpdateServiceDetailsUseCase } from "../../application/useCases/provider/providerService.useCase";
-import { addressRepository, bookingRepository, paymentRepository, planRepository, providerRepository, providerServiceRepository, reviewRepository, serviceAvailabilityRepository, serviceRepository, subscriptionRepository, userRepository } from "../../infrastructure/repositoryImpls";
+import { addressRepository, bookingRepository, planRepository, providerRepository, providerServiceRepository, reviewRepository, serviceAvailabilityRepository, serviceRepository, subscriptionRepository, userRepository } from "../../infrastructure/repositoryImpls";
 import { ProvideDeleteIdentityProofUseCase, ProvideDeleteServiceProofUseCase, ProviderFetchProfileDetailsUseCase, ProviderRequestForApprovalUseCase, ProviderUpdateIdentityProofUseCase, ProviderUpdateProfileImageUseCase, ProviderUpdateProviderInfoUseCase, ProviderUpdatePushNotificationUseCase, ProviderUpdateServiceProofUseCase } from "../../application/useCases/provider/providerProfile.useCase";
 import { ProviderFetchSubscribedPlanUseCase } from "../../application/useCases/provider/providerFetchSubscribedPlan.useCase";
 
@@ -48,9 +47,6 @@ export const updateBookingOnlineTrakingUseCase = new UpdateBookingOnlineTrakingU
 // provider dashboard controller dependency injection
 export const providerFetchDashboardStatsUseCase = new ProviderFetchDashboardStatsUseCase(bookingQueries, paymentQueries);
 export const providerFetchDashboardGraphDataUseCase = new ProviderFetchDashboardGraphDataUseCase(bookingQueries, subscriptionMapping);
-
-// provider payment controller dependency injection
-export const providerFetchAllPaymentsUseCase = new ProviderFetchAllPaymentsUseCase(paymentRepository);
 
 // provider plan controller dependency injection
 export const providerFetchAllPlansUseCase = new ProviderFetchAllPlansUseCase(planRepository);
