@@ -28,6 +28,7 @@ import { ProviderCreateServiceAvailabilitiesUseCase, ProviderFetchServiceAvailab
 import { ProviderCreateServiceDetailsUseCase, ProviderFetchServiceDetailsUseCase, ProviderUpdateServiceDetailsUseCase } from "../../application/useCases/provider/providerService.useCase";
 import { addressRepository, bookingRepository, paymentRepository, planRepository, providerRepository, providerServiceRepository, reviewRepository, serviceAvailabilityRepository, serviceRepository, subscriptionRepository, userRepository } from "../../infrastructure/repositoryImpls";
 import { ProvideDeleteIdentityProofUseCase, ProvideDeleteServiceProofUseCase, ProviderFetchProfileDetailsUseCase, ProviderRequestForApprovalUseCase, ProviderUpdateIdentityProofUseCase, ProviderUpdateProfileImageUseCase, ProviderUpdateProviderInfoUseCase, ProviderUpdatePushNotificationUseCase, ProviderUpdateServiceProofUseCase } from "../../application/useCases/provider/providerProfile.useCase";
+import { ProviderFetchSubscribedPlanUseCase } from "../../application/useCases/provider/providerFetchSubscribedPlan.useCase";
 
 // provider address controller dependency injection
 export const providerFetchAddressUseCase = new ProviderFetchAddressUseCase(addressRepository);
@@ -87,6 +88,7 @@ export const fetchSubscriptionDetailsUseCase = new FetchSubscriptionDetailsUseCa
 export const providerFetchAllSubscriptionsUseCase = new ProviderFetchAllSubscriptionsUseCase(providerRepository, subscriptionQueries);
 export const providerTrialSubscriptionUseCase = new ProviderTrialSubscriptionUseCase(providerRepository, subscriptionRepository, planRepository, kafkaProducer);
 export const providerSubscriptionCheckoutUseCase = new ProviderSubscriptionCheckoutUseCase(planRepository, providerRepository, subscriptionRepository, paymentServiceClient);
+export const providerFetchSubscribedPlanUseCase = new ProviderFetchSubscribedPlanUseCase(providerRepository, subscriptionRepository, planRepository);
 
 // provider user controller dependency injection
 export const providerFetchUserForChatSidebarUseCase = new ProviderFetchUserForChatSidebarUseCase(signedUrlService, bookingQueries);

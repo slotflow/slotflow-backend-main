@@ -6,9 +6,10 @@ import { validateSubscriptionIdSchema } from "../../shared/zod/base.zod";
 import { FetchSubscriptionDetailsUseCase } from "../../application/useCases/common/subscription.useCase";
 import { ProviderFetchAllSubscriptionsUseCase } from "../../application/useCases/provider/providerSubscription.useCase";
 import { ProviderTrialSubscriptionUseCase } from "../../application/useCases/provider/providerTrailSubscription.useCase";
+import { ProviderFetchSubscribedPlanUseCase } from "../../application/useCases/provider/providerFetchSubscribedPlan.useCase";
 import { ProviderSubscriptionCheckoutUseCase } from "../../application/useCases/provider/providerSubscriptionCheckout.useCase";
 import { providerIdWithPaginationSchema, providerPlanSubscribeSchema, validateProviderIdSchema } from "../../shared/zod/provider.zod";
-import { fetchSubscriptionDetailsUseCase, providerFetchAllSubscriptionsUseCase, providerSubscriptionCheckoutUseCase, providerTrialSubscriptionUseCase } from ".";
+import { fetchSubscriptionDetailsUseCase, providerFetchAllSubscriptionsUseCase, providerFetchSubscribedPlanUseCase, providerSubscriptionCheckoutUseCase, providerTrialSubscriptionUseCase } from ".";
 
 class ProviderSubscriptionController {
     constructor(
@@ -16,6 +17,7 @@ class ProviderSubscriptionController {
         private providerFetchAllSubscriptionsUseCase: ProviderFetchAllSubscriptionsUseCase,
         private providerTrialSubscriptionUseCase: ProviderTrialSubscriptionUseCase,
         private fetchSubscriptionDetailsUseCase: FetchSubscriptionDetailsUseCase,
+        private providerFetchSubscribedPlanUseCase: ProviderFetchSubscribedPlanUseCase
     ) {
         this.subscribe = this.subscribe.bind(this);
         this.fetchProviderSubscriptions = this.fetchProviderSubscriptions.bind(this);
@@ -73,11 +75,23 @@ class ProviderSubscriptionController {
         };
     };
 
+    async getSubscribedPlan(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { providerId } = validateProviderIdSchema.parse((req.user as DecodedUser).userOrProviderId);
+            const result = await this.providerFetchSubscribedPlanUseCase.execute({ providerId });
+            sendResponse(res, result);
+        } catch (error) {
+            log.error("getSubscribedPlan failed", error as Error);
+            next(error);
+        };
+    };
+
 };
 
 export const providerSubscriptionController = new ProviderSubscriptionController(
     providerSubscriptionCheckoutUseCase,
     providerFetchAllSubscriptionsUseCase,
     providerTrialSubscriptionUseCase,
-    fetchSubscriptionDetailsUseCase
+    fetchSubscriptionDetailsUseCase,
+    providerFetchSubscribedPlanUseCase
 );

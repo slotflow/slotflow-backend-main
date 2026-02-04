@@ -2,6 +2,7 @@ import Stripe from "stripe";
 import { Review } from "../../domain/entities/review.entity";
 import { AddressDTO, BookingDTO, ProviderDTO, UserDTO, PlanDTO, ProviderServiceDTO, ServiceDTO, FrontendAvailabilityForRequest, FontendAvailabilityForResponse, FindProviderServiceResponse } from "./common.dto";
 import { SubscriptionValidity } from "../../domain/enums/subscription.enum";
+import { PlanName } from "../../domain/enums/plan.enum";
 
 
 // ************ used in providerAddress.use-case ************ \\
@@ -259,3 +260,11 @@ export interface ProviderRepostReviewRequest {
 export type ProviderFetchDashboardGraphRepository = Omit<ProviderFetchDashboardGraphDataRequest, "subscription"> & {
     subscriptionGuard: number;
 }
+
+export type FetchProviderSubscribedPlanRequest = {
+    providerId: ProviderDTO["_id"]
+};
+
+export type FetchProviderSubscribedPlanResponse = {
+    planName: PlanName;
+};
