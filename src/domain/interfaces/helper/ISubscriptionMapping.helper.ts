@@ -1,7 +1,7 @@
-import { SubscriptionPlan } from "../../../application/dtos/common.dto";
+import { PlanName } from "../../enums/plan.enum";
 
 export interface ISubscriptionMapping {
 
-    getLevel(plan?: SubscriptionPlan): number;
-    
+    getLevel(plan?: PlanName): number;
+
 }

@@ -1,14 +1,16 @@
 import { adminConfig } from "../../../config/env";
-import { roleArray } from "../../../shared/utils/constants";
-import { JWTService } from "../../../infrastructure/security/jwt";
-import { PasswordHasher } from "../../../infrastructure/security/password-hashing";
+import { log } from "../../../shared/logger/logger";
+import { PlanName } from "../../../domain/enums/plan.enum";
+import { IJWT } from "../../../domain/interfaces/security/IJwt";
 import { LoginRequest, LoginResponse } from "../../dtos/auth.dto";
+import { SubscriptionStatus } from "../../../domain/enums/subscription.enum";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
-import { Provider, User } from "../../dtos/common.dto";
+import { IPasswordHasher } from "../../../domain/interfaces/security/IPasswordHasher";
+import { Role } from "../../../domain/enums/common.enum";
 
 export class LoginUseCase {
     constructor(
@@ -16,8 +18,10 @@ export class LoginUseCase {
         private providerRepository: IProviderRepository,
         private planRepository: IPlanRepository,
         private subscriptionRepository: ISubscriptionRepository,
-        private signedUrlService: ISignedUrlService
-    ) { }
+        private signedUrlService: ISignedUrlService,
+        private jwtService: IJWT,
+        private passwordHasher: IPasswordHasher
+    ) { };
 
     async execute(payload: LoginRequest): Promise<LoginResponse> {
         try {
@@ -25,104 +29,127 @@ export class LoginUseCase {
 
             if (!email || !password || !role) throw new Error("Invalid request.");
 
-            let userOrProvider: User | Provider | null = null;
+            if (role === Role.USER) {
+                const user = await this.userRepository.findByEmail(email);
+                if (!user) throw new Error("Invalid credentials");
+                if (user.isBlocked) throw new Error("Your account is blocked, please contact us");
+                if (!user.isEmailVerified) throw new Error("Your registration is incomplete, please register again.");
+                if (!user.password) throw new Error("Invalid request");
 
-            if (role === roleArray[1]) {
-                userOrProvider = await this.userRepository.findByEmail(email);
-            } else if (role === roleArray[2]) {
-                userOrProvider = await this.providerRepository.findByEmail(email);
-            } else if (role === roleArray[0]) {
+                const valid = await this.passwordHasher.comparePassword(password, user.password);
+                if (!valid) throw new Error("Invalid credentials.");
+
+                const token = await this.jwtService.generateToken({ userOrProviderId: user._id, role: role });
+
+                let signedProfileImageUrl: string = "";
+                if (user.profileImage) {
+                    signedProfileImageUrl = await this.signedUrlService.save(user.profileImage);
+                };
+
+                return {
+                    authUser: {
+                        uid: user._id,
+                        username: user.username,
+                        phone: user.phone ?? undefined,
+                        profileImage: signedProfileImageUrl,
+                        role: role,
+                        token,
+                        isBlocked: user.isBlocked,
+                        isLoggedIn: true,
+                        googleConnected: user.googleConnected,
+                    },
+                };
+
+            } else if (role === Role.PROVIDER) {
+                const provider = await this.providerRepository.findByEmail(email);
+                if (!provider) throw new Error("Invalid credentials");
+                if (provider.isBlocked) throw new Error("Your account is blocked, please contact us");
+                if (!provider.isEmailVerified) throw new Error("Your registration is incomplete, please register again.");
+                if (!provider.password) throw new Error("Invalid request");
+
+                const valid = await this.passwordHasher.comparePassword(password, provider.password);
+                if (!valid) throw new Error("Invalid credentials.");
+
+                const token = await this.jwtService.generateToken({ userOrProviderId: provider._id, role: role });
+
+                let signedProfileImageUrl: string = "";
+                if (provider.profileImage) {
+                    signedProfileImageUrl = await this.signedUrlService.save(provider.profileImage);
+                };
+
+                let providerSubscription: string | undefined = PlanName.NO_SUBSCRIPTION;
+
+                const subscriptions = provider?.subscription;
+
+                if (Array.isArray(subscriptions) && subscriptions.length > 0) {
+                    const subscriptionId = subscriptions[subscriptions.length - 1];
+
+                    const subscription =
+                        await this.subscriptionRepository.findById(subscriptionId);
+
+                    if (subscription) {
+                        const now = new Date();
+                        const isActive =
+                            subscription.subscriptionStatus === SubscriptionStatus.ACTIVE &&
+                            new Date(subscription.endDate) > now;
+
+                        if (isActive) {
+                            const subscribedPlan =
+                                await this.planRepository.findById(
+                                    subscription.subscriptionPlanId
+                                );
+                            providerSubscription = subscribedPlan?.planName;
+                        };
+                    };
+                };
+
+                return {
+                    authUser: {
+                        uid: provider._id,
+                        username: provider.username,
+                        phone: provider.phone ?? undefined,
+                        profileImage: signedProfileImageUrl,
+                        role: role,
+                        token,
+                        isBlocked: provider.isBlocked,
+                        isLoggedIn: true,
+                        isAddressAdded: !!provider.addressId,
+                        isServiceDetailsAdded: !!provider.serviceId,
+                        isServiceAvailabilityAdded: !!provider.serviceAvailabilityId,
+                        isAdminVerified: provider.isAdminVerified,
+                        isProofSubmitted: !!provider.identityProof && !!provider.serviceProof,
+                        adminVerificationStatus: provider.adminVerificationStatus,
+                        isAddressVerified: provider.isAddressVerified,
+                        isAvailabilityVerified: provider.isAvailabilityVerified,
+                        isProofsVerified: provider.isProofsVerified,
+                        isServiceDetailsVerified: provider.isServiceDetailsVerified,
+                        verificationRejectionReason: provider.verificationRejectionReason,
+                        providerSubscription,
+                        googleConnected: provider.googleConnected,
+                    },
+                };
+
+            } else if (role === Role.ADMIN) {
                 if (email !== adminConfig.adminEmail || password !== adminConfig.adminPassword) {
                     throw new Error("Invalid credentials.");
-                }
-                const token = JWTService.generateToken({ email: email, role: role });
-                return { success: true, message: "Logged In Successfully.", authUser: { username: "Admin", profileImage: "", role: role, token, isLoggedIn: true } };
+                };
+                const token = await this.jwtService.generateToken({ email: email, role: role });
+                return {
+                    authUser: {
+                        username: "Admin",
+                        profileImage: "",
+                        role: role,
+                        token,
+                        isLoggedIn: true
+                    }
+                };
             } else {
                 throw new Error("Invalid request.");
-            }
-
-            if (!userOrProvider) throw new Error("Invalid credentials")
-            if (userOrProvider.isBlocked) throw new Error("Your account is blocked, please contact us.");
-            if (!userOrProvider.isEmailVerified) throw new Error("Your registration was incomplete, please register again.");
-
-            const valid = await PasswordHasher.comparePassword(password, userOrProvider.password);
-            if (!valid) throw new Error("Invalid credentials.");
-
-            const token = JWTService.generateToken({ userOrProviderId: userOrProvider._id, role: role });
-
-            let isAddressAdded;
-            let isServiceDetailsAdded;
-            let isServiceAvailabilityAdded;
-            let isAdminVerified;
-            let isProofSubmitted;
-            let updateProfileImage;
-            let subscriptiondId;
-            let subscription;
-            let subscribedPlanId;
-            let subscribedPlan;
-            let providerSubscription;
-
-            isAddressAdded = userOrProvider.addressId ? true : false;
-
-            if (role === roleArray[2]) {
-                isServiceDetailsAdded = (userOrProvider as Provider).serviceId ? true : false;
-                isServiceAvailabilityAdded = (userOrProvider as Provider).serviceAvailabilityId ? true : false;
-                isAdminVerified = (userOrProvider as Provider).isAdminVerified ? true : false;
-                subscriptiondId = (userOrProvider as Provider).subscription[(userOrProvider as Provider).subscription.length - 1];
-                subscription = await this.subscriptionRepository.findSubscriptionById(subscriptiondId);
-                if (subscription) {
-                    const now = new Date();
-                    const isActive = subscription.subscriptionStatus === "Active" && new Date(subscription.endDate) > now;
-                    if (isActive) {
-                        subscribedPlanId = subscription.subscriptionPlanId;
-                        subscribedPlan = await this.planRepository.findPlanById(subscribedPlanId);
-                        providerSubscription = subscribedPlan?.planName;
-                    } else {
-                        providerSubscription = "NoSubscription"
-                    }
-                }
-                isProofSubmitted = ((userOrProvider as Provider).identityProof && (userOrProvider as Provider).serviceProof) ? true : false;
-            }
-
-            if (userOrProvider.profileImage) {
-                const userOrProviderProfileUrl = userOrProvider.profileImage;
-                if (!userOrProviderProfileUrl) throw new Error("Profile image fetching error.");
-                const signedUrl = await this.signedUrlService.generate(userOrProviderProfileUrl);
-                if (!signedUrl) throw new Error("Image fetching error.");
-                updateProfileImage = signedUrl
-            }
-
-            return {
-                success: true,
-                message: 'Logged In Successfully.',
-                authUser: {
-                    uid: userOrProvider._id,
-                    username: userOrProvider.username,
-                    phone: userOrProvider.phone,
-                    profileImage: updateProfileImage ? updateProfileImage : userOrProvider.profileImage,
-                    role: role,
-                    token,
-                    isBlocked: userOrProvider.isBlocked,
-                    isLoggedIn: true,
-                    isAddressAdded,
-                    isServiceDetailsAdded,
-                    isServiceAvailabilityAdded,
-                    isAdminVerified,
-                    isProofSubmitted,
-                    adminVerificationStatus: (userOrProvider as Provider).adminVerificationStatus,
-                    isAddressVerified: (userOrProvider as Provider).isAddressVerified,
-                    isAvailabilityVerified: (userOrProvider as Provider).isAvailabilityVerified,
-                    isProofsVerified: (userOrProvider as Provider).isProofsVerified,
-                    isServiceDetailsVerified: (userOrProvider as Provider).isServiceDetailsVerified,
-                    verificationRejectionReason: (userOrProvider as Provider).verificationRejectionReason,
-                    providerSubscription,
-                    googleConnected: userOrProvider.googleConnected,
-                    updatedAt: userOrProvider.updatedAt
-                }
             };
+
         } catch (error) {
-            console.log("LoginUseCase error : ", error);
-            throw new Error(`Failed to login : ${error}`);
-        }
-    }
-}
+            log.error("LoginUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};

@@ -1,31 +1,28 @@
+import { log } from "../../shared/logger/logger";
+import { providerFetchAllPlansUseCase } from ".";
 import { NextFunction, Request, Response } from "express";
-import { IPlanRepository } from "../../domain/interfaces/repositories/IPlan.repository";
-import { PlanRepositoryImpl } from "../../infrastructure/database/plan/plan.repository.impl";
-import { ProviderFetchAllPlansUseCase } from "../../application/useCases/provier/providerPlan.useCase";
+import { sendResponse } from "../../shared/utils/response";
+import { ProviderFetchAllPlansUseCase } from "../../application/useCases/provider/providerPlan.useCase";
 
-const planRepository: IPlanRepository = new PlanRepositoryImpl();
-
-const providerFetchAllPlansUseCase = new ProviderFetchAllPlansUseCase(planRepository);
-
-export class ProviderPlanController {
+class ProviderPlanController {
     constructor(
         private providerFetchAllPlansUseCase: ProviderFetchAllPlansUseCase,
     ) {
         this.fetchAllPlans = this.fetchAllPlans.bind(this);
-    }
+    };
 
     async fetchAllPlans(req: Request, res: Response, next: NextFunction) {
         try {
             const result = await this.providerFetchAllPlansUseCase.execute();
-            res.status(200).json(result);
+            sendResponse(res, result);
         } catch (error) {
-            console.log("fetchAllPlans error : ", error);
-            next(error)
-        }
-    }
-}
+            log.error("fetchAllPlans failed", error as Error);
+            next(error);
+        };
+    };
 
-const providerPlanController = new ProviderPlanController(
+};
+
+export const providerPlanController = new ProviderPlanController(
     providerFetchAllPlansUseCase
 );
-export { providerPlanController };

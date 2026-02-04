@@ -6,11 +6,11 @@ export class Credential {
 
     constructor(props: CredentialProps) {
         this.props = props;
-    }
+    };
 
     private touch() {
         this.props.updatedAt = new Date();
-    }
+    };
 
     static create(props: CreateCredentialProps) {
         return new Credential({
@@ -21,19 +21,43 @@ export class Credential {
             userId: props.userId,
             createdAt: new Date(),
             updatedAt: new Date()
-        })
-    }
+        });
+    };
 
     // Getters
     get _id(): string {
         return this.props._id;
-    }
+    };
+
+    get accessToken(): string {
+        return this.props.accessToken;
+    };
+
+    get refreshToken(): string {
+        return this.props.refreshToken;
+    };
+
+    get expiryDate(): Date {
+        return this.props.expiryDate;
+    };
+
+    get userId(): string {
+        return this.props.userId;
+    };
+
+    get createdAt(): Date {
+        return this.props.createdAt;
+    };
+
+    get updatedAt(): Date {
+        return this.props.updatedAt;
+    };
 
     // Business Methods
 
     getProps(): Readonly<CredentialProps> {
         return { ...this.props }
-    }
+    };
 
     updateCredential(props: UpdateCredentialProps) {
         this.props = {
@@ -42,6 +66,6 @@ export class Credential {
         };
 
         this.touch();
-    }
+    };
 
-}
+};

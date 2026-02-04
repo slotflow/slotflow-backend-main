@@ -1,8 +1,8 @@
 export enum AppointmentStatus {
-  Booked = "Booked",
-  Completed = "Completed",
-  Cancelled = "Cancelled",
-  RejectedByProvider = "RejectedByProvider",
-  NotAttended = "NotAttended",
-  Confirmed = "Confirmed",
-}
+  BOOKED = "BOOKED",
+  COMPLETED = "COMPLETED",
+  CANCELLED = "CANCELLED",
+  REJECTED_BY_PROVIDER = "REJECTED_BY_PROVIDER",
+  NOT_ATTENDED = "NOT_ATTENDED",
+  CONFIRMED = "CONFIRMED",
+};

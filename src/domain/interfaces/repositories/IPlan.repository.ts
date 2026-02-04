@@ -8,8 +8,10 @@ export interface IPlanRepository {
 
     update(plan: Plan): Promise<Plan>;
 
-    findByName(name: string): Promise<Plan | null>;
+    findByNameOrPrice(name: string, price: number): Promise<Plan | null>;
 
-    findByPrice(price: number): Promise<Plan | null>;
+    findAll(page?: number, limit?: number): Promise<{ data: Array<Plan>, totalPages: number; currentPage: number; totalCount: number; }>;
 
-}
+    findAllForDisplay(): Promise<Array<Plan>>;
+
+};

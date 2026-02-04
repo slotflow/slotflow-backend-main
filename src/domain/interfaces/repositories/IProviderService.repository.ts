@@ -8,6 +8,4 @@ export interface IProviderServiceRepository {
 
     update(providerService: ProviderService): Promise<ProviderService>;
 
-    findByProviderId(providerId: string): Promise<ProviderService | null>;
-
 }

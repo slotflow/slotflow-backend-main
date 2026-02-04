@@ -10,7 +10,7 @@ export interface IUserRepository {
 
   findByGoogleId(googleId: string): Promise<User | null>;
 
-  update(user: User): Promise<User | null>;
+  update(user: User): Promise<User>;
 
   findById(userId: string): Promise<User | null>;
 

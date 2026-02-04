@@ -1,26 +1,14 @@
-import { Types } from "mongoose";
-import { DecodedUser } from "../../express";
-import { roleArray } from "../../shared/utils/constants";
+import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
-import { UserCreateReviewZodSchema } from "../../shared/zod/user.zod";
-import { RequestQueryFetchAllReviewsZodSchema } from "../../shared/zod/common.zod";
-import { SignedUrlService } from "../../infrastructure/services/signedUrl.service";
-import { ISignedUrlService } from "../../domain/interfaces/services/ISignedUrl.service";
+import { sendResponse } from "../../shared/utils/response";
+import { DecodedUser } from "../../application/dtos/common.dto";
+import { createReviewUseCase, deleteReviewUseCase, fetchAllReviewsUseCase } from ".";
 import { FetchAllReviewsUseCase } from "../../application/useCases/common/fetchReviews.useCase";
-import { ReviewRepositoryImpl } from "../../infrastructure/database/review/review.repository.impl";
 import { CreateReviewUseCase, DeleteReviewUseCase } from "../../application/useCases/user/userReview.useCase";
-import { SignedUrlCacheRepositoryImpl } from "../../infrastructure/database/signedUrl/signedUrlCacheRepository.impl";
+import { userCreateReviewSchema, userDeleteReviewSchema, userFetchAllReviewsSchema } from "../../shared/zod/user.zod";
+import { Role } from "../../domain/enums/common.enum";
 
-const reviewRepositoryImpl = new ReviewRepositoryImpl();
-const signedUrlCacheRepositoryImpl = new SignedUrlCacheRepositoryImpl();
-
-const signedUrlService: ISignedUrlService = new SignedUrlService(signedUrlCacheRepositoryImpl);
-
-const createReviewUseCase = new CreateReviewUseCase(reviewRepositoryImpl);
-const deleteReviewUseCase = new DeleteReviewUseCase(reviewRepositoryImpl);
-const fetchAllReviewsUseCase = new FetchAllReviewsUseCase(reviewRepositoryImpl, signedUrlService);
-
-export class UserReviewController {
+class UserReviewController {
     constructor(
         private createReviewUseCase: CreateReviewUseCase,
         private deleteReviewUseCase: DeleteReviewUseCase,
@@ -29,62 +17,70 @@ export class UserReviewController {
         this.createReview = this.createReview.bind(this);
         this.findAllReviews = this.findAllReviews.bind(this);
         this.deleteReview = this.deleteReview.bind(this);
-    }
+    };
 
     async createReview(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = (req.user as DecodedUser).userOrProviderId;
-            const validateData = UserCreateReviewZodSchema.parse(req.body);
-            const { providerId, bookingId, reviewText, rating } = validateData;
+            const { bookingId, providerId, rating, reviewText, userId } = userCreateReviewSchema.parse({
+                userId: (req.user as DecodedUser).userOrProviderId,
+                ...req.body
+            });
             const result = await this.createReviewUseCase.execute({
-                providerId: new Types.ObjectId(providerId),
-                userId: new Types.ObjectId(userId),
+                providerId,
+                userId,
                 reviewText,
                 rating,
-                bookingId: new Types.ObjectId(bookingId)
-            }); res.status(201).json(result);
+                bookingId
+            });
+            sendResponse(res, result, "Review saved successfully", true, 201);
         } catch (error) {
-            console.log("createReview error : ", error);
-            next(error)
-        }
-    }
-
+            log.error("createReview failed", error as Error);
+            next(error);
+        };
+    };
 
     async deleteReview(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = (req.user as DecodedUser).userOrProviderId;
-            const reviewId = req.params.reviewId;
-            const result = await this.deleteReviewUseCase.execute({
-                reviewId: new Types.ObjectId(reviewId),
-                userId: new Types.ObjectId(userId)
+            const { reviewId, userId } = userDeleteReviewSchema.parse({
+                userId: (req.user as DecodedUser).userOrProviderId,
+                reviewId: req.params.reviewId
             });
-            res.status(200).json(result);
+            await this.deleteReviewUseCase.execute({
+                reviewId,
+                userId
+            });
+            sendResponse(res, null, "Review deleted successfully");
         } catch (error) {
-            console.log("findAllReviews error : ", error);
-            next(error)
-        }
-    }
+            log.error("findAllReviews failed", error as Error);
+            next(error);
+        };
+    };
 
     async findAllReviews(req: Request, res: Response, next: NextFunction) {
         try {
-            const userId = (req.user as DecodedUser).userOrProviderId;
-            const providerId = req.params.providerId;
-            const { limit, page, role } = RequestQueryFetchAllReviewsZodSchema.parse(req.query);
+            const { limit, page, providerId, userId, role } = userFetchAllReviewsSchema.parse({
+                userId: (req.user as DecodedUser).userOrProviderId,
+                providerId:  req.params.providerId,
+                ...req.query
+            });
             const result = await this.fetchAllReviewsUseCase.execute({
                 page,
                 limit,
-                userId: role === roleArray[1] ? new Types.ObjectId(userId) : undefined,
-                providerId: role === roleArray[2] ? new Types.ObjectId(providerId) : undefined,
-                role: roleArray[1]
+                userId: role === Role.USER ? userId : undefined,
+                providerId: role === Role.PROVIDER ? providerId : undefined,
+                role
             });
-            res.status(200).json(result);
+            sendResponse(res, result);
         } catch (error) {
-            console.log("findAllReviews error : ", error);
-            next(error)
-        }
-    }
+            log.error("findAllReviews failed", error as Error);
+            next(error);
+        };
+    };
 
-}
+};
 
-const userReviewController = new UserReviewController(createReviewUseCase, deleteReviewUseCase, fetchAllReviewsUseCase);
-export { userReviewController };
+export const userReviewController = new UserReviewController(
+    createReviewUseCase,
+    deleteReviewUseCase,
+    fetchAllReviewsUseCase
+);

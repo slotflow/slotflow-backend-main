@@ -1,40 +1,63 @@
 import {
     AdiminFetchAllProviders,
-    AdminApproveProviderRequest,
-    AdminChangeProviderStatusRequest,
-    AdminChangeProviderTrustTagRequest,
     AdminRejectProviderRequest,
+    AdminApproveProviderRequest,
+    AdminChangeProviderTrustTagRequest,
+    AdminChangeProviderTrustTagResponse,
+    AdminChangeProviderBlockStatusRequest,
+    AdminChangeProviderBlockStatusResponse,
 } from "../../dtos/admin.dto";
-import { ApiPaginationRequest, ApiResponse } from "../../dtos/common.dto";
-import { IAdminProviderQuery } from "../../queries/IProvider.queries";
+import { v4 as uuidv4 } from 'uuid';
+import { kafkaConfig } from "../../../config/env";
+import { log } from "../../../shared/logger/logger";
+import { ApiPaginationRequest, TableData } from "../../dtos/common.dto";
+import { notificationContentMap } from "../../../shared/utils/constants";
+import { ICacheService } from "../../../domain/interfaces/services/ICache.service";
+import { AdminVerificationStatus } from "../../../domain/enums/adminVerificationStatus.enum";
+import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-
+import { EventEnvelope, SendAccountBlockStatusEvent, SendAccountTrustStatusEvent, SendAdminProviderReviewEvent } from "../../dtos/kafka.dtos";
 
 export class AdminProviderListUseCase {
     constructor(
-        private adminProviderQuery: IAdminProviderQuery
-    ) { }
+        private providerRepository: IProviderRepository
+    ) { };
 
-    async execute(payload: ApiPaginationRequest): Promise<ApiResponse<AdiminFetchAllProviders>> {
+    async execute(payload: ApiPaginationRequest): Promise<TableData<AdiminFetchAllProviders>> {
         try {
-            const result = await this.adminProviderQuery.findAll(payload);
-            if (!result) throw new Error("Providers fetching failed");
-
-            return { data: result.data, totalPages: result.totalPages, currentPage: result.currentPage, totalCount: result.totalCount };
+            const { page, limit } = payload;
+            const result = await this.providerRepository.findAll(page, limit);
+            const { data: providers, currentPage, totalCount, totalPages } = result;
+            return {
+                data: providers.map(provider => ({
+                    _id: provider._id,
+                    adminVerificationStatus: provider.adminVerificationStatus,
+                    email: provider.email,
+                    isAdminVerified: provider.isAdminVerified,
+                    isBlocked: provider.isBlocked,
+                    isEmailVerified: provider.isEmailVerified,
+                    trustedBySlotflow: provider.trustedBySlotflow,
+                    username: provider.username
+                })),
+                totalPages,
+                currentPage,
+                totalCount,
+            };
         } catch (error) {
-            console.log("AdminProviderListUseCase: ", error);
-            throw new Error("Failed to fetch providers list");
-        }
-    }
-}
+            log.error("AdminProviderListUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
 
 
 export class AdminApproveProviderUseCase {
     constructor(
-        private providerRepository: IProviderRepository
-    ) { }
+        private providerRepository: IProviderRepository,
+        private kafkaProducer: IKafkaProducerAdapter
+    ) { };
 
-    async execute(payload: AdminApproveProviderRequest): Promise<ApiResponse> {
+    async execute(payload: AdminApproveProviderRequest): Promise<void> {
         try {
             const { providerId } = payload;
 
@@ -44,115 +67,192 @@ export class AdminApproveProviderUseCase {
 
             provider.approveVerification();
 
-            const updatedProvider = await this.providerRepository.update(provider);
-            if (!updatedProvider) throw new Error("Provider not found");
+            await this.providerRepository.update(provider);
 
-            //TODO SEND EMAIL
+            await this.kafkaProducer.publish<EventEnvelope<SendAdminProviderReviewEvent>>(kafkaConfig.topics.pub.adminProviderReview, {
+                eventId: uuidv4(),
+                attempt: 1,
+                maxAttempts: 1,
+                occurredAt: new Date().toISOString(),
+                payload: {
+                    emailData: {
+                        email: provider.email,
+                        name: provider.username,
+                        status: AdminVerificationStatus.APPROVED,
+                    },
+                    notificationData: {
+                        userId: provider._id,
+                        pushNotification: provider.allowPushNotification ?? false,
+                        title: notificationContentMap.adminProviderReview.title,
+                        body: notificationContentMap.adminProviderReview.body(AdminVerificationStatus.APPROVED),
+                    },
+                },
+            });
 
-            return { success: true, message: "Provider approved successfully." };
         } catch (error) {
-            console.log("AdminApproveProviderUseCase: ", error);
-            throw new Error("Failed to approve provider");
-        }
-    }
-}
+            log.error("AdminApproveProviderUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
 
 
 export class AdminRejectProviderUseCase {
     constructor(
-        private providerRepository: IProviderRepository
-    ) { }
+        private providerRepository: IProviderRepository,
+        private kafkaProducer: IKafkaProducerAdapter
+    ) { };
 
-    async execute(payload: AdminRejectProviderRequest): Promise<ApiResponse> {
+    async execute(payload: AdminRejectProviderRequest): Promise<void> {
         try {
             const { providerId, verificationRejectionReason, isAddressVerified, isAvailabilityVerified, isProofsVerified, isServiceDetailsVerified } = payload;
 
             const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");
 
-           provider.rejectVerification({
-            verificationRejectionReason: verificationRejectionReason ?? "",
-            isAddressVerified,
-            isServiceDetailsVerified,
-            isAvailabilityVerified,
-            isProofsVerified,
+            provider.rejectVerification({
+                verificationRejectionReason: verificationRejectionReason ?? "",
+                isAddressVerified,
+                isServiceDetailsVerified,
+                isAvailabilityVerified,
+                isProofsVerified,
             });
 
-            const updatedProvider = await this.providerRepository.update(provider);
-            if (!updatedProvider) throw new Error("Provider not found");
+            await this.providerRepository.update(provider);
 
-            //TODO SEND EMAIL
+            await this.kafkaProducer.publish<EventEnvelope<SendAdminProviderReviewEvent>>(kafkaConfig.topics.pub.adminProviderReview, {
+                eventId: uuidv4(),
+                attempt: 1,
+                maxAttempts: 1,
+                occurredAt: new Date().toISOString(),
+                payload: {
+                    emailData: {
+                        email: provider.email,
+                        name: provider.username,
+                        status: AdminVerificationStatus.REJECTED,
+                        reason: provider.verificationRejectionReason ?? undefined,
+                    },
+                    notificationData: {
+                        userId: provider._id,
+                        pushNotification: provider.allowPushNotification ?? false,
+                        title: notificationContentMap.adminProviderReview.title,
+                        body: notificationContentMap.adminProviderReview.body(AdminVerificationStatus.REJECTED),
+                    },
+                },
+            });
 
-            return { success: true, message: "Provider rejected successfully." };
         } catch (error) {
-            console.log("AdminRejectProviderUseCase: ", error);
-            throw new Error("Failed to reject provider");
-        }
-    }
-}
+            log.error("AdminRejectProviderUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
 
 
 export class AdminChangeProviderBlockStatusUseCase {
     constructor(
-        private providerRepository: IProviderRepository
-    ) { }
+        private providerRepository: IProviderRepository,
+        private kafkaProducer: IKafkaProducerAdapter,
+        private cacheService: ICacheService
+    ) { };
 
-    async execute(payload: AdminChangeProviderStatusRequest): Promise<ApiResponse> {
+    async execute(payload: AdminChangeProviderBlockStatusRequest): Promise<AdminChangeProviderBlockStatusResponse> {
         try {
-            const { providerId, isBlocked } = payload; // TODO need to update input DTO
+            const { providerId, isBlocked } = payload;
 
             const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");
-            
-            if(provider.isBlocked) {
-                provider.unblock();
-            } else {
-                provider.block();
-            }
+
+            if (provider.isBlocked === isBlocked) {
+                isBlocked ? provider.unblock() : provider.block();
+            };
 
             const updatedProvider = await this.providerRepository.update(provider);
             if (!updatedProvider) throw new Error("Provider not found");
 
-            //TODO SEND EMAIL
+            if (updatedProvider.isBlocked) {
+                await this.cacheService.setBlockList(providerId, JSON.stringify(isBlocked));
+            } else {
+                await this.cacheService.deleteBlockList(providerId);
+            };
 
-            return { success: true, message: `Provider ${updatedProvider.isBlocked ? "blocked" : "Unblocked"} successfully.` };
+            await this.kafkaProducer.publish<EventEnvelope<SendAccountBlockStatusEvent>>(kafkaConfig.topics.pub.accountBlockStatus, {
+                eventId: uuidv4(),
+                attempt: 1,
+                maxAttempts: 1,
+                occurredAt: new Date().toISOString(),
+                payload: {
+                    emailData: {
+                        blocked: updatedProvider.isBlocked,
+                        email: provider.email,
+                        name: provider.username,
+                    },
+                    notificationData: {
+                        userId: provider._id,
+                        pushNotification: provider.allowPushNotification ?? false,
+                        title: notificationContentMap.accountBlockStatus.title,
+                        body: notificationContentMap.accountBlockStatus.body(updatedProvider.isBlocked),
+                    },
+                },
+            });
+
+            return { providerId, isBlocked: updatedProvider.isBlocked };
         } catch (error) {
-            console.log("AdminChangeProviderBlockStatusUseCase: ", error);
-            throw new Error("Failed to change provider block status");
-        }
-    }
-}
+            log.error("AdminChangeProviderBlockStatusUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
 
 
 export class AdminChangeProviderTrustTagUseCase {
     constructor(
-        private providerRepository: IProviderRepository
-    ) { }
+        private providerRepository: IProviderRepository,
+        private kafkaProducer: IKafkaProducerAdapter
+    ) { };
 
-    async execute(payload: AdminChangeProviderTrustTagRequest): Promise<ApiResponse> {
+    async execute(payload: AdminChangeProviderTrustTagRequest): Promise<AdminChangeProviderTrustTagResponse> {
         try {
-            const { providerId, trustedBySlotflow } = payload; // TODO need to update input DTO
+            const { providerId, trustedBySlotflow } = payload;
 
             const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");
 
-            if(provider.trustedBySlotflow) {
-                provider.revokeTrustBadge();
-            } else {
-                provider.grantTrustBadge();
-            }
+            if (provider.trustedBySlotflow === trustedBySlotflow) {
+                trustedBySlotflow ? provider.revokeTrustBadge() : provider.grantTrustBadge();
+            };
 
             const updatedProvider = await this.providerRepository.update(provider);
             if (!updatedProvider) throw new Error("Provider not found");
 
-            //TODO SEND EMAIL
-            
-            return { success: true, message: `Provider trust tag ${updatedProvider.trustedBySlotflow ? "Given" : "Removed"} successfully.` };
+            await this.kafkaProducer.publish<EventEnvelope<SendAccountTrustStatusEvent>>(kafkaConfig.topics.pub.accountTrustStatus, {
+                eventId: uuidv4(),
+                attempt: 1,
+                maxAttempts: 1,
+                occurredAt: new Date().toISOString(),
+                payload: {
+                    emailData: {
+                        email: provider.email,
+                        name: provider.username,
+                        trusted: updatedProvider.trustedBySlotflow,
+                    },
+                    notificationData: {
+                        userId: provider._id,
+                        pushNotification: provider.allowPushNotification ?? false,
+                        title: notificationContentMap.accountTrustStatus.title,
+                        body: notificationContentMap.accountTrustStatus.body(updatedProvider.trustedBySlotflow),
+                    },
+                },
+            });
+
+            return { providerId, trustedBySlotflow: updatedProvider.trustedBySlotflow };
         } catch (error) {
-            console.log("AdminChangeProviderTrustTagUseCase: ", error);
-            throw new Error("Failed to change provider trust tag status");
-        }
-    }
-}
+            log.error("AdminChangeProviderTrustTagUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
+
+// TODO ADMIN PAYOUT WITH EMAIL THROUGH KAFKA
 
 

@@ -1,4 +1,5 @@
 import { ServiceProps } from "../contracts/service.contract";
+import { ServiceCategory } from "../enums/service.enum";
 import { CreateServiceProps, UpdateServiceProps } from "../commands/service.commands";
 
 export class Service {
@@ -16,6 +17,7 @@ export class Service {
         return new Service({
             _id: "",
             ...props,
+            isBlocked: false,
             createdAt: new Date(),
             updatedAt: new Date(),
         })
@@ -25,7 +27,19 @@ export class Service {
 
     get _id(): string {
         return this.props._id;
-    }
+    };
+
+    get isBlocked(): boolean {
+        return this.props.isBlocked;
+    };
+
+    get serviceName(): string {
+        return this.props.serviceName;
+    };
+
+    get serviceCategory(): ServiceCategory {
+        return this.props.serviceCategory;
+    };
 
     // Business Methods
 

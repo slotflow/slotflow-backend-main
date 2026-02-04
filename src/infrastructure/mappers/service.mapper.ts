@@ -1,5 +1,5 @@
+import { IService } from "../models/service.model";
 import { Service } from "../../domain/entities/service.entity";
-import { IService } from "../database/service/service.model";
 
 export class ServiceMapper {
 
@@ -8,7 +8,7 @@ export class ServiceMapper {
             _id: doc._id.toString(),
             isBlocked: doc.isBlocked,
             serviceCategory: doc.serviceCategory,
-            serviceName: doc.serviceCategory,
+            serviceName: doc.serviceName,
             createdAt: doc.createdAt,
             updatedAt: doc.updatedAt,
         });
@@ -20,7 +20,8 @@ export class ServiceMapper {
         return {
             isBlocked: props.isBlocked,
             serviceCategory: props.serviceCategory,
-            serviceName: props.serviceCategory,
+            serviceName: props.serviceName,
+            createdAt: props.createdAt,
             updatedAt: props.updatedAt,
         };
     }

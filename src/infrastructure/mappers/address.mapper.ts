@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { IAddress } from "../database/address/address.model";
+import { IAddress } from "../models/address.model";
 import { Address } from "../../domain/entities/address.entity";
 
 export class AddressMapper {
@@ -38,6 +38,7 @@ export class AddressMapper {
             state: props.state,
             country: props.country,
             location: props.location,
+            createdAt: props.createdAt,
             updatedAt: props.updatedAt
         };
     }

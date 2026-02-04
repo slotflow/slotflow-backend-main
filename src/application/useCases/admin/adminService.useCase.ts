@@ -1,73 +1,91 @@
-import { 
-    AdminAddServiceRequest, 
-    AdminServiceListResponse, 
+import {
+    AdminAddServiceRequest,
+    AdminServiceListResponse,
     AdminChnageServiceIsBlockedStatusRequest,
+    AdminChnageServiceIsBlockedStatusResponse,
 } from "../../dtos/admin.dto";
+import { log } from "../../../shared/logger/logger";
+import { Service } from "../../../domain/entities/service.entity";
 import { ApiPaginationRequest, ApiResponse } from "../../dtos/common.dto";
 import { IServiceRepository } from "../../../domain/interfaces/repositories/IService.repository";
 
 export class AdminServiceListUseCase {
     constructor(
-        private seriveRepository: IServiceRepository
-    ) { }
+        private seriveRepository: IServiceRepository,
+    ) { };
 
     async execute(payload: ApiPaginationRequest): Promise<ApiResponse<AdminServiceListResponse>> {
         try {
-            const result = await this.seriveRepository.findAllServices(payload);
-            if (!result) throw new Error("Services fetching failed");
+            const { page, limit } = payload;
+            const result = await this.seriveRepository.findAll(page, limit);
+            const { data: services, currentPage, totalCount, totalPages } = result;
 
-            return { data: result.data, totalPages: result.totalPages, currentPage: result.currentPage, totalCount: result.totalCount };
+            return {
+                data: services.map(service => ({
+                    _id: service._id,
+                    isBlocked: service.isBlocked,
+                    serviceName: service.serviceName,
+                    serviceCategory: service.serviceCategory
+                })),
+                totalPages,
+                currentPage,
+                totalCount,
+            };
         } catch (error) {
-            console.log("AdminServiceListUseCase error :", error);
-            throw new Error("Failed to fetch services");
-        }
-    }
-}
+            log.error("AdminServiceListUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
 
 export class AdminCreateServiceUseCase {
     constructor(
         private seriveRepository: IServiceRepository
-    ) { }
+    ) { };
 
-    async execute(payload: AdminAddServiceRequest): Promise<ApiResponse> {
+    async execute(payload: AdminAddServiceRequest): Promise<void> {
         try {
-            const { serviceName } = payload;
+            const { serviceName, serviceCategory } = payload;
 
-            const existService = await this.seriveRepository.findServiceByName(serviceName);
+            const existService = await this.seriveRepository.findByName(serviceName);
             if (existService) throw new Error("Service already exist.");
 
-            const service = await this.seriveRepository.createService({ ...payload });
-            if (!service) throw new Error("Service adding error, please try again.");
+            const service = Service.create({
+                serviceCategory,
+                serviceName
+            });
 
-            return { success: true, message: "Service added successfully." };
+            await this.seriveRepository.create(service);
         } catch (error) {
-            console.log("AdminCreateServiceUseCase error :", error);
-            throw new Error("Failed to add service");
-        }
-    }
-}
+            log.error("AdminCreateServiceUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
 
 export class AdminChnageServiceBlockStatusUseCase {
     constructor(
         private seriveRepository: IServiceRepository
-    ) { }
+    ) { };
 
-    async execute(payload: AdminChnageServiceIsBlockedStatusRequest): Promise<ApiResponse> {
+    async execute(payload: AdminChnageServiceIsBlockedStatusRequest): Promise<AdminChnageServiceIsBlockedStatusResponse> {
         try {
             const { serviceId, isBlocked } = payload;
 
-            const existingService = await this.seriveRepository.findServiceById(serviceId);
-            if (!existingService) throw new Error("No service found.");
+            const service = await this.seriveRepository.findById(serviceId);
+            if (!service) throw new Error("No service found.");
 
-            existingService.isBlocked = !isBlocked;
+            if (service.isBlocked !== isBlocked) {
+                isBlocked ? service.block() : service.unblock();
+            };
 
-            const updatedService = await this.seriveRepository.updateService(serviceId, existingService);
+            const updatedService = await this.seriveRepository.update(service);
             if (!updatedService) throw new Error("Service status changing error.");
-            
-            return { success: true, message: `Service ${isBlocked ? "unblocked" : "blocked"} successfully` };
+
+            return { serviceId, isBlocked: updatedService.isBlocked };
         } catch (error) {
-            console.log("AdminChnageServiceBlockStatusUseCase error :", error);
-            throw new Error("Failed to change service block status");
-        }
-    }
-}
+            log.error("AdminChnageServiceBlockStatusUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};

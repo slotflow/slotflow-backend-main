@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { IProvider } from "../database/provider/provider.model";
+import { IProvider } from "../models/provider.model";
 import { Provider } from "../../domain/entities/provider.entity";
 
 export class ProviderMapper {
@@ -32,6 +32,7 @@ export class ProviderMapper {
       trustedBySlotflow: doc.trustedBySlotflow,
       identityProof: doc.identityProof ?? null,
       serviceProof: doc.serviceProof ?? null,
+      allowPushNotification: doc.allowPushNotification,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
     });
@@ -66,6 +67,8 @@ export class ProviderMapper {
       trustedBySlotflow: props.trustedBySlotflow,
       identityProof: props.identityProof,
       serviceProof: props.serviceProof,
+      allowPushNotification: props.allowPushNotification,
+      createdAt: props.createdAt,
       updatedAt: props.updatedAt,
     };
   }

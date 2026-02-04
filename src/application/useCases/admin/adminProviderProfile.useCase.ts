@@ -1,6 +1,5 @@
 import dayjs from "dayjs";
 import {
-    FindProviderServiceResponse,
     AdminFetchProviderServiceRequest,
     AdminFetchProviderDetailsRequest,
     AdminFetchProviderServiceResponse,
@@ -8,82 +7,88 @@ import {
     AdminFetchProviderServiceAvailabilityRequest,
     AdminFetchProviderServiceAvailabilityResponse,
 } from "../../dtos/admin.dto";
+import { log } from "../../../shared/logger/logger";
+import { ISubscriptionQueries } from "../../queries/ISubscription.queries";
+import { IProviderServiceQueries } from "../../queries/IProviderService.queries";
+import { IServiceAvailabilityQueries } from "../../queries/IServiceAvailability.queries";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { IPaymentRepository } from "../../../domain/interfaces/repositories/IPayment.repository";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
-import { IProviderServiceRepository } from "../../../domain/interfaces/repositories/IProviderService.repository";
-import { IServiceAvailabilityRepository } from "../../../domain/interfaces/repositories/IServiceAvailability.repository";
-import { ApiResponse, FetchPaymentResponse, FetchPaymentsRequest, FetchProviderSubscriptionsRequest, FindSubscriptionsByProviderIdResponse } from "../../dtos/common.dto";
+import { FetchPaymentResponse, FetchPaymentsRequest, FetchProviderSubscriptionsRequest, FindSubscriptionsByProviderIdResponse, TableData } from "../../dtos/common.dto";
 
 
 export class AdminFetchProviderDetailsUseCase {
     constructor(
         private providerRepository: IProviderRepository,
         private signedUrlService: ISignedUrlService
-    ) { }
+    ) { };
 
-    async execute(payload: AdminFetchProviderDetailsRequest): Promise<ApiResponse<AdminFetchProviderDetailsResponse>> {
+    async execute(payload: AdminFetchProviderDetailsRequest): Promise<AdminFetchProviderDetailsResponse> {
         try {
             const { providerId } = payload;
 
             const providerData = await this.providerRepository.findById(providerId);
-            if (providerData == null) return { success: true, message: "Provider details fetched", data: {} };
+            if (!providerData) return null;
 
+            let signedProfileImageUrl: string | null = null;
             if (providerData.profileImage) {
-                providerData.profileImage = await this.signedUrlService.generate(providerData.profileImage);
-            }
+                signedProfileImageUrl = await this.signedUrlService.get(providerData.profileImage);
+            };
 
-            const { addressId, subscription, serviceId, serviceAvailabilityId, verificationToken, password, updatedAt, ...provider } = providerData;
-            return { success: true, message: "Provider details fetched", data: provider };
+            return {
+                _id: providerData._id,
+                adminVerificationStatus: providerData.adminVerificationStatus,
+                createdAt: providerData.createdAt,
+                email: providerData.email,
+                isAddressVerified: providerData.isAddressVerified,
+                isAdminVerified: providerData.isAdminVerified,
+                isAvailabilityVerified: providerData.isAvailabilityVerified,
+                isBlocked: providerData.isBlocked,
+                isEmailVerified: providerData.isEmailVerified,
+                isProofsVerified: providerData.isProofsVerified,
+                isServiceDetailsVerified: providerData.isServiceDetailsVerified,
+                phone: providerData.phone,
+                trustedBySlotflow: providerData.trustedBySlotflow,
+                username: providerData.username,
+                profileImage: signedProfileImageUrl,
+            };
+
         } catch (error) {
-            console.log("AdminFetchProviderDetailsUseCase : ", error);
-            throw new Error("Failed to fetch provider details");
-        }
-    }
-}
+            log.error("AdminFetchProviderDetailsUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
 
 
 export class AdminFetchProviderServiceUseCase {
     constructor(
-        private providerRepository: IProviderRepository,
-        private providerServiceRepository: IProviderServiceRepository,
-    ) { }
+        private providerServiceQueries: IProviderServiceQueries,
+    ) { };
 
-    async execute(payload: AdminFetchProviderServiceRequest): Promise<ApiResponse<AdminFetchProviderServiceResponse>> {
+    async execute(payload: AdminFetchProviderServiceRequest): Promise<AdminFetchProviderServiceResponse> {
         try {
             const { providerId } = payload;
 
-            const provider = await this.providerRepository.findById(providerId);
-            if (!provider) throw new Error("No user found.");
+            const service = await this.providerServiceQueries.findByProviderId(providerId);
+            if (!service) return null;
 
-            const serviceData = await this.providerServiceRepository.findProviderServiceByProviderId(providerId);
-            function isServiceData(obj: any): obj is FindProviderServiceResponse {
-                return obj && typeof obj === 'object' && '_id' in obj;
-            }
-
-            if (!isServiceData(serviceData)) {
-                return { success: true, message: "Service fetched successfully.", data: {} };
-            }
-
-            const { _id, createdAt, updatedAt, ...service } = serviceData;
-
-            return { success: true, message: "Service fetched successfully.", data: service };
+            return {...service};
         } catch (error) {
-            console.log("AdminFetchProviderServiceUseCase : ", error);
-            throw new Error("Failed to fetch provider service details");
-        }
-    }
-}
+            log.error("AdminFetchProviderServiceUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
 
 
 export class AdminfetchProviderServiceAvailabilityUseCase {
     constructor(
         private providerRepository: IProviderRepository,
-        private serviceAvailabilityRepository: IServiceAvailabilityRepository,
-    ) { }
+        private serviceAvailabilityQueries: IServiceAvailabilityQueries,
+    ) { };
 
-    async execute(payload: AdminFetchProviderServiceAvailabilityRequest): Promise<ApiResponse<AdminFetchProviderServiceAvailabilityResponse>> {
+    async execute(payload: AdminFetchProviderServiceAvailabilityRequest): Promise<AdminFetchProviderServiceAvailabilityResponse> {
         try {
             const { providerId, date } = payload;
 
@@ -93,78 +98,86 @@ export class AdminfetchProviderServiceAvailabilityUseCase {
             const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("No user found.");
 
-            if(!provider.serviceAvailabilityId)  return { success: true, message: "Servie availability not yet provided.", data: null };
+            if (!provider.serviceAvailabilityId) return null;
 
-            const availability = await this.serviceAvailabilityRepository.findServiceAvailabilityByProviderId(date, provider.serviceAvailabilityId);
-            if(!availability) throw new Error("Failed to fetch availability");
-            
+            const availability = await this.serviceAvailabilityQueries.findByProviderId(date, provider.serviceAvailabilityId);
+            if (!availability) return null;
+
             const updatedSlots = availability.slots.map((slot) => {
                 const slotDateTime = dayjs(`${selectedDate} ${slot.time}`, 'YYYY-MM-DD hh:mm A');
                 const isWithin2Hours = slotDateTime.diff(currentDateTime, 'minute') < 120;
                 return {
                     ...slot,
-                    available: !isWithin2Hours
-                }
+                    available: !isWithin2Hours,
+                };
             });
 
-            console.log("availability : ",availability);
-            console.log("updatedSlots : ",updatedSlots);
-
-            return { success: true, message: "Service availability fetched successfully.", data: { ...availability, slots: updatedSlots } };
+            return { ...availability, slots: updatedSlots };
         } catch (error) {
-            console.log("AdminfetchProviderServiceAvailabilityUseCase : ", error);
-            throw new Error("Failed to fetch provider service availability details");
-        }
-    }
-}
+            log.error("AdminfetchProviderServiceAvailabilityUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
 
 
 export class AdminFetchProviderSubscriptionsUseCase {
     constructor(
-        private providerRepository: IProviderRepository,
-        private subscriptionRepository: ISubscriptionRepository,
-    ) { }
+        private subscriptionQueries: ISubscriptionQueries
+    ) { };
 
-    async execute(payload: FetchProviderSubscriptionsRequest): Promise<ApiResponse<FindSubscriptionsByProviderIdResponse>> {
+    async execute(payload: FetchProviderSubscriptionsRequest): Promise<TableData<FindSubscriptionsByProviderIdResponse>> {
         try {
             const { providerId, page, limit } = payload;
 
-            const provider = await this.providerRepository.findById(providerId);
-            if (!provider) throw new Error("No user found.");
+            const result = await this.subscriptionQueries.findByProviderId({ providerId, page, limit });
+            const { data: subscriptions, currentPage, totalCount, totalPages } = result;
 
-            const result = await this.subscriptionRepository.findSubscriptionsByProviderId({ providerId, page, limit });
-            if (!result) throw new Error("Subscriptions fetching error.");
-
-            return { data: result.data, totalPages: result.totalPages, currentPage: result.currentPage, totalCount: result.totalCount };
+            return {
+                data: subscriptions,
+                totalPages,
+                currentPage,
+                totalCount,
+            };
         } catch (error) {
-            console.log("AdminFetchProviderSubscriptionsUseCase : ", error);
-            throw new Error("Failed to fetch provider subscriptions")
-        }
-
-    }
-}
+            log.error("AdminFetchProviderSubscriptionsUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
 
 
 export class AdminFetchProviderPaymentsUseCase {
     constructor(
-        private providerRepository: IProviderRepository,
         private paymentRepository: IPaymentRepository,
-    ) { }
+    ) { };
 
-    async execute({ providerId, page, limit }: FetchPaymentsRequest): Promise<ApiResponse<FetchPaymentResponse>> {
+    async execute(payload: FetchPaymentsRequest): Promise<TableData<FetchPaymentResponse>> {
         try {
+            const { providerId, page, limit } = payload;
             if (!providerId) throw new Error("Invalid request.");
 
-            const provider = await this.providerRepository.findById(providerId);
-            if (!provider) throw new Error("No user found.");
+            const result = await this.paymentRepository.findAll(page, limit, providerId);
+            const { data: payments, currentPage, totalCount, totalPages } = result;
 
-            const result = await this.paymentRepository.findAllPayments({ page, limit, providerId: providerId });
-            if (!result) throw new Error("Payments fetching error.");
-
-            return { data: result.data, totalPages: result.totalPages, currentPage: result.currentPage, totalCount: result.totalCount };
+            return {
+                data: payments.map(payment => ({
+                    _id: payment._id,
+                    createdAt: payment.createdAt,
+                    discountAmount: payment.discountAmount,
+                    paymentFor: payment.paymentFor,
+                    paymentGateway: payment.paymentGateway,
+                    paymentMethod: payment.paymentMethod,
+                    paymentStatus: payment.paymentStatus,
+                    totalAmount: payment.totalAmount
+                })),
+                totalPages,
+                currentPage,
+                totalCount,
+            };
         } catch (error) {
-            console.log("AdminFetchProviderPaymentsUseCase : ", error);
-            throw new Error("Failed to fetch provider payments");
-        }
-    }
-}
+            log.error("AdminFetchProviderPaymentsUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};

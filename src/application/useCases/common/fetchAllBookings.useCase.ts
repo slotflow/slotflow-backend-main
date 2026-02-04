@@ -1,23 +1,25 @@
-import { roleArray } from "../../../shared/utils/constants";
-import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
-import { ApiResponse, FetchBookingsRequest, FetchBookingsResponse, FetchOnlineBookingsForProviderResponse, FetchOnlineBookingsForUserResponse } from "../../dtos/common.dto";
+import { log } from "../../../shared/logger/logger";
+import { IBookingQueries } from "../../queries/IBooking.queries";
+import { FetchBookingsRequest, FetchBookingsResponse, FetchOnlineBookingsForProviderResponse, FetchOnlineBookingsForUserResponse, TableData } from "../../dtos/common.dto";
+import { Role } from "../../../domain/enums/common.enum";
 
 export class FetchBookingAppointmentsUseCase {
     constructor(
-        private bookingRepository: IBookingRepository,
-    ) { }
+        private bookingQueries: IBookingQueries,
+    ) { };
 
-    async execute(payload: FetchBookingsRequest): Promise<ApiResponse<FetchBookingsResponse | FetchOnlineBookingsForProviderResponse | FetchOnlineBookingsForUserResponse>> {
+    async execute(payload: FetchBookingsRequest): Promise<TableData<FetchBookingsResponse | FetchOnlineBookingsForProviderResponse | FetchOnlineBookingsForUserResponse>> {
         try {
             const { serviceProviderId, userId, page, limit, online, raw, role } = payload;
-            if (role === roleArray[2]) {
+            
+            if (role === Role.PROVIDER) {
                 if (!serviceProviderId) throw new Error("Invalid request");
-            }
-            if (role === roleArray[1]) {
+            };
+            if (role === Role.USER) {
                 if (!userId) throw new Error("Invalid request");
-            }
+            };
 
-            const result = await this.bookingRepository.findAllBookings({
+            const result = await this.bookingQueries.findAll({
                 page,
                 limit,
                 serviceProviderId,
@@ -26,12 +28,18 @@ export class FetchBookingAppointmentsUseCase {
                 raw,
                 role
             });
-            if (!result) throw new Error("Appointments fetching error");
 
-            return { data: result.data, totalPages: result.totalPages, currentPage: result.currentPage, totalCount: result.totalCount };
+            const { data: bookings, currentPage, totalCount, totalPages } = result;
+
+            return {
+                data: bookings,
+                totalPages,
+                currentPage,
+                totalCount,
+            };
         } catch (error) {
-            console.log("FetchBookingAppointmentsUseCase error : ", error);
-            throw new Error("Failed to fetch appointment bookings");
-        }
-    }
-}
+            log.error("FetchBookingAppointmentsUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};

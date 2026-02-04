@@ -1,51 +1,50 @@
 import { isSameDay, startOfDay } from "date-fns";
-import { appointmentStatusArray, roleArray } from "../../../shared/utils/constants";
-import { ApiResponse, ValidateJoinRoomRequest } from "../../dtos/common.dto";
+import { log } from "../../../shared/logger/logger";
+import { ValidateJoinRoomRequest } from "../../dtos/common.dto";
+import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
+import { Role } from "../../../domain/enums/common.enum";
 
 export class ValidateJoinRoomUsecase {
     constructor(
         private bookingRepository: IBookingRepository,
-    ) { }
+    ) { };
 
-    async execute(payload: ValidateJoinRoomRequest): Promise<ApiResponse> {
+    async execute(payload: ValidateJoinRoomRequest): Promise<void> {
         try {
             const { bookingId, roomId, userOrProviderId, role } = payload;
 
-            const booking = await this.bookingRepository.findBookingById(bookingId);
+            const booking = await this.bookingRepository.findById(bookingId);
             if (!booking) if (!booking) throw new Error("No booking found");
             const today = startOfDay(new Date());
 
             if (!isSameDay(booking.appointmentDate, today)) {
                 throw new Error("Booking is not scheduled for today");
-            }
+            };
 
-            if (booking.appointmentStatus !== appointmentStatusArray[5]) {
+            if (booking.appointmentStatus !== AppointmentStatus.CONFIRMED) {
                 throw new Error("Booking is not confirmed");
-            }
+            };
 
-            if (role === roleArray[1]) {
-                console.log("Checking user authorization...");
+            if (role === Role.USER) {
                 if (String(booking.userId) !== String(userOrProviderId)) {
                     throw new Error("You are not authorized for this booking");
                 }
-            }
-            else if (role === roleArray[2]) {
+            } else if (role === Role.PROVIDER) {
                 if (String(booking.serviceProviderId) !== String(userOrProviderId)) {
                     throw new Error("You are not authorized for this booking provider");
                 }
-            }
-            else {
-                throw new Error("Invalid role provided");
-            }
+            } else {
+                throw new Error("Invalid request");
+            };
 
             if (booking.videoCallRoomId !== roomId) {
                 throw new Error("Invalid room ID");
-            }
-            return { success: true, message: "Room validate" };
+            };
+            
         } catch (error) {
-            console.log("ValidateJoinRoomUsecase error : ", error);
-            throw new Error("Failed to calidate join room");
-        }
-    }
-}
+            log.error("ValidateJoinRoomUsecase failed", error as Error);
+            throw error;
+        };
+    };
+};

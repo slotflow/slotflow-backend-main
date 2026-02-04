@@ -1,4 +1,5 @@
 import { Service } from "../../entities/service.entity";
+import { ServiceCategory } from "../../enums/service.enum";
 
 export interface IServiceRepository {
 
@@ -12,7 +13,6 @@ export interface IServiceRepository {
 
     findByName(serviceName: string): Promise<Service | null>;
 
-    findAllByCategory(categoryName: string): Promise<Array<Service> | null>;
+    findAllByCategory(categories: ServiceCategory[]): Promise<Array<Service> | null>;
 
-    findAllServiceNames(): Promise<Array<Service>>;
 }

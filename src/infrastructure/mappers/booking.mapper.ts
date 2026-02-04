@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { IBooking } from "../database/booking/booking.model";
+import { IBooking } from "../models/booking.model";
 import { Booking } from "../../domain/entities/booking.entity";
 
 export class BookingMapper {
@@ -40,6 +40,7 @@ export class BookingMapper {
             googleEventId: props.googleEventId,
             onlineTrack: props.onlineTrack,
             statusTrack: props.statusTrack,
+            createdAt: props.createdAt,
             updatedAt: props.updatedAt,
         };
     }

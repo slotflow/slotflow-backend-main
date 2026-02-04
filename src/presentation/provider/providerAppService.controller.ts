@@ -1,37 +1,30 @@
+import { fetchAllAppServicesUseCase } from ".";
+import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
-import { findServicesByCategoryName } from "../../shared/zod/common.zod";
-import { IServiceRepository } from "../../domain/interfaces/repositories/IService.repository";
-import { ServiceRepositoryImpl } from "../../infrastructure/database/service/service.repository.impl";
-import { ProviderFetchAllAppServicesUseCase } from "../../application/useCases/provier/providerAppServices.useCase";
-
-const serviceRepository: IServiceRepository = new ServiceRepositoryImpl();
-
-const providerFetchAllServicesUseCase = new ProviderFetchAllAppServicesUseCase(serviceRepository);
+import { sendResponse } from "../../shared/utils/response";
+import { fetchAllAppServicesSchema } from "../../shared/zod/common.zod";
+import { FetchAllAppServicesUseCase } from "../../application/useCases/common/fetchAppServices.useCase";
 
 class ProviderAppServiceController {
     constructor(
-        private providerFetchAllServicesUseCase: ProviderFetchAllAppServicesUseCase,
+        private fetchAllAppServicesUseCase: FetchAllAppServicesUseCase,
     ) {
         this.getAllAppServices = this.getAllAppServices.bind(this);
-    }
+    };
 
     async getAllAppServices(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log("req.query : ",req.query);
-            const validatedData = findServicesByCategoryName.parse(req.query);
-            const result = await this.providerFetchAllServicesUseCase.execute({
-                serviceCategory: validatedData.serviceCategory
-            });
-            console.log("result : ",result);
-            res.status(200).json(result);
+            const { categories } = fetchAllAppServicesSchema.parse(req.query);
+            const result = await this.fetchAllAppServicesUseCase.execute({ categories });
+            sendResponse(res, result);
         } catch (error) {
-            console.log("getAllAppServices error : ",error);
-            next(error)
-        }
-    }
-}
+            log.error("getAllAppServices failed",error as Error);
+            next(error);
+        };
+    };
+    
+};
 
-const providerAppServiceController = new ProviderAppServiceController(
-    providerFetchAllServicesUseCase
+export const providerAppServiceController = new ProviderAppServiceController(
+    fetchAllAppServicesUseCase
 );
-export { providerAppServiceController };

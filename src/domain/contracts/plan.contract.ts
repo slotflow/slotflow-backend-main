@@ -1,6 +1,8 @@
+import { PlanName } from "../enums/plan.enum";
+
 export interface PlanProps {
     _id: string,
-    planName: string,
+    planName: PlanName,
     description: string,
     price: number,
     features: string[],

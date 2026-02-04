@@ -27,6 +27,7 @@ export interface ProviderProps {
   trustedBySlotflow: boolean;
   identityProof: string | null;
   serviceProof: string | null;
+  allowPushNotification: boolean | null;
   createdAt: Date;
   updatedAt: Date;
 }

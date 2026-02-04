@@ -1,12 +1,29 @@
 import { z } from "zod";
-import { objectIdField } from "./common.zod";
-import { serviceDescriptionRegex, serviceExperienceRegex, serviceNameRegex } from "./regex";
-import { appointmentStatusArray, daysArray, serviceModeArray, serviceTypeArray, subscriptionMonthArray } from "../utils/constants";
+import { PlanName } from "../../domain/enums/plan.enum";
+import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
+import { objectIdRegex, serviceDescriptionRegex, serviceExperienceRegex, serviceNameRegex, timeRegex } from "../utils/regex";
+import {
+    validateProviderIdSchema,
+    paginationSchema,
+    dateSchema,
+    addressSchema,
+    updateInfoSchema,
+    saveStripePaymentSchema,
+    s3FileKeySchema,
+    validateRoomIdSchema,
+    validateBookingIdSchema,
+    validateReviewIdSchema
+} from "./base.zod";
+import { fetchBookingCommonSchema } from "./common.zod";
+import { Day } from "../../domain/enums/common.enum";
+import { ServiceMode, ServiceType } from "../../domain/enums/service.enum";
+import { SubscriptionValidity } from "../../domain/enums/subscription.enum";
 
+//
+export const providerIdWithPaginationSchema = validateProviderIdSchema.merge(paginationSchema);
 
-// **** Provider Service Controller **** \\
 // Provider add service details controller zod schema
-export const ProviderCreateServiceDetailsZodSchema = z.object({
+export const serviceDetailsSchema = z.object({
     serviceName: z
         .string()
         .min(4, "Service name must be at least 4 characters")
@@ -31,10 +48,7 @@ export const ProviderCreateServiceDetailsZodSchema = z.object({
             return val;
         },
         z
-            .number({
-                required_error: "Service price is required",
-                invalid_type_error: "Service price must be a valid number",
-            })
+            .number()
             .min(1, "Service price must be at least 1")
             .max(1_000_000, "Service price cannot exceed 1,000,000")
     ),
@@ -54,9 +68,9 @@ export const ProviderCreateServiceDetailsZodSchema = z.object({
         .max(100, "Service ID cannot exceed 100 characters"),
 
 
-    serviceType: z.enum(serviceTypeArray),
+    serviceType: z.nativeEnum(ServiceType),
 
-    serviceMode: z.enum(serviceModeArray),
+    serviceMode: z.nativeEnum(ServiceMode),
 
     maxParticipants: z
         .number()
@@ -79,38 +93,71 @@ export const ProviderCreateServiceDetailsZodSchema = z.object({
         .optional(),
 });
 
+//
+export const providerCreateServiceDetailsSchema = serviceDetailsSchema.merge(validateProviderIdSchema);
 
+//
+export const providerUpdateServiceDetailsSchema = z.object({
+    serviceId: z.string().regex(objectIdRegex, "Invalid serviceId"),
+}).merge(serviceDetailsSchema);
 
-
-
-// **** Provider service availability controller **** \\
 // Provider add service availability
-export const ProviderCreateServiceAvailabilityZodSchema = z.array(
+export const providerCreateServiceAvailabilitySchema = z.array(
     z.object({
-        day: z.enum(daysArray),
+        day: z.nativeEnum(Day),
         duration: z.number().min(10).max(480),
-        startTime: z.string().regex(/^(0[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/),
-        endTime: z.string().regex(/^(0[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/),
-        modes: z.array(z.enum(serviceModeArray)).min(1),
-        slots: z.array(z.string().min(1).max(30).regex(/^(0[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/)),
+        startTime: z.string().regex(timeRegex, "Invalid start time"),
+        endTime: z.string().regex(timeRegex, "Invalid end time"),
+        modes: z.array(z.nativeEnum(ServiceMode)).min(1),
+        slots: z.array(z.string().min(1).max(30).regex(timeRegex, "Invalid slot time")),
     })
-)
+);
 
-
-
-
-
-// **** Provider Subscription Controller **** \\
 // Provider plan subscription duration validation
-export const ProviderPlanSubscribeZodSchema = z.object({
-    planId: objectIdField("Plan ID"),
-    planDuration: z.enum(subscriptionMonthArray),
-});
+export const providerPlanSubscribeSchema = z.object({
+    planId: z.string().regex(objectIdRegex, "Invalid planId"),
+    planDuration: z.nativeEnum(SubscriptionValidity),
+}).merge(validateProviderIdSchema);
 
 
-
-// **** Provider Booking Controller **** \\
 // Validating the page and limit in the request query zod schema
-export const ProviderChangeBookingAppointmentStatusZodSchema = z.object({
-    appointmentStatus: z.enum(appointmentStatusArray)
-});
+export const providerChangeAppointmentStatusSchema = z.object({
+    appointmentStatus: z.nativeEnum(AppointmentStatus),
+}).merge(validateBookingIdSchema).merge(validateProviderIdSchema);
+
+//
+export const providerCreateAddressSchema = addressSchema.merge(validateProviderIdSchema);
+
+//
+export const providerUpdateAddressSchema = z.object({
+    addressId: z.string().regex(objectIdRegex, "Invalid addressId"),
+}).merge(addressSchema).merge(validateProviderIdSchema);
+
+//
+export const providerFetchAllAppointmentsSchema = fetchBookingCommonSchema.merge(validateProviderIdSchema);
+
+//
+export const providerValidateRoomSchema = validateBookingIdSchema.merge(validateRoomIdSchema).merge(validateProviderIdSchema);
+
+//
+export const providerValidateDashboardDataSchema = z.object({
+    subscription: z.nativeEnum(PlanName).default(PlanName.TRIAL),
+    endDate: dateSchema.optional(),
+    startDate: dateSchema.optional(),
+}).merge(validateProviderIdSchema);
+
+//
+export const providerValidateUpdateFileSchema = s3FileKeySchema.merge(validateProviderIdSchema);
+
+//
+export const providerValidateUpdateInfoSchema = validateProviderIdSchema.merge(updateInfoSchema);
+
+//
+export const providerChnageReviewReportSchema = validateReviewIdSchema.merge(validateProviderIdSchema);
+
+//
+export const providerUpdatePushNotificationSchema = z.object({
+    allowPushNotification: z.boolean(),
+}).merge(validateProviderIdSchema);
+
+export { validateProviderIdSchema };

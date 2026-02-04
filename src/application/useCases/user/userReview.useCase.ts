@@ -1,53 +1,57 @@
-import { ApiResponse } from "../../dtos/common.dto";
-import { IReviewRepository } from "../../../domain/interfaces/repositories/IReview.repository";
+import { log } from "../../../shared/logger/logger";
+import { Review } from "../../../domain/entities/review.entity";
 import { CreateReviewRequset, UserDeleteReviewRequest } from "../../dtos/user.dto";
+import { IReviewRepository } from "../../../domain/interfaces/repositories/IReview.repository";
 
 export class CreateReviewUseCase {
     constructor(
         private reviewRepository: IReviewRepository,
-    ) { }
+    ) { };
 
-    async execute(payload: CreateReviewRequset): Promise<ApiResponse> {
+    async execute(payload: CreateReviewRequset): Promise<void> {
         try {
             const { providerId, rating, reviewText, userId, bookingId } = payload;
 
             if (!providerId || !userId || !rating || !reviewText) throw new Error("Invalid request");
 
-            const newReview = await this.reviewRepository.createReview({ providerId, userId, reviewText, rating, bookingId });
-            if (!newReview) throw new Error("Review adding failed");
+            const review = Review.create({
+                providerId,
+                rating,
+                reviewText,
+                userId,
+                bookingId,
+            });
 
-            return { success: true, message: "Review added successfully" };
+            await this.reviewRepository.create(review);
         } catch (error) {
-            console.log("CreateReviewUseCase error : ", error);
-            throw new Error("Failed to create review");
-        }
-    }
-}
+            log.error("CreateReviewUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
 
 
 export class DeleteReviewUseCase {
     constructor(
         private reviewRepository: IReviewRepository,
-    ) { }
+    ) { };
 
-    async execute(payload: UserDeleteReviewRequest): Promise<ApiResponse> {
+    async execute(payload: UserDeleteReviewRequest): Promise<void> {
         try {
             const { reviewId, userId } = payload;
 
             if (!reviewId || !userId) throw new Error("Invalid request");
 
-            const booking = await this.reviewRepository.findReviewById(reviewId);
-            if (!booking) throw new Error("Review deleting failed");
+            const review = await this.reviewRepository.findById(reviewId);
+            if (!review) throw new Error("No review found");
 
-            if (booking.userId.toString() !== userId.toString()) throw new Error("Invalid request");
+            if (review.userId !== userId) throw new Error("Invalid request");
 
-            const result = await this.reviewRepository.deleteReview(reviewId);
+            const result = await this.reviewRepository.deleteById(reviewId);
             if (!result) throw new Error("Review deleting failed");
-
-            return { success: true, message: "Review deleted successfully" };
         } catch (error) {
-            console.log("DeleteReviewUseCase error : ", error);
-            throw new Error("Failed to delete review");
-        }
-    }
-}
+            log.error("DeleteReviewUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};

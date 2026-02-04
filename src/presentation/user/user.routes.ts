@@ -1,5 +1,4 @@
 import { Router } from "express";
-import upload from "../../infrastructure/lib/multer";
 import { authMiddleware } from "../middleware/auth.middleware";
 import { userReviewController } from "./userReview.controller";
 import { userProfileController } from "./userProfile.controller";
@@ -11,15 +10,16 @@ import { userAppServiceController } from "./userAppService.controller";
 
 const router = Router();
 
+router.get('/appservices', authMiddleware, userAppServiceController.fetchAllAppService);
+
 router.get('/profile', authMiddleware, userProfileController.getProfileDetails);
-router.post('/profile/image', authMiddleware, upload.single("profileImage"), userProfileController.updateProfileImage);
+router.post('/profile/image', authMiddleware, userProfileController.updateProfileImage);
 router.patch('/profile', authMiddleware, userProfileController.updateUserInfo);
+router.patch('/profile/push-notification', authMiddleware, userProfileController.updatePushNotification)
 
 router.post('/addresses', authMiddleware, userAddressController.createAddress);
 router.get('/address', authMiddleware, userAddressController.getAddress);
 router.patch('/addresses/:addressId', authMiddleware, userAddressController.updateAddress);
-
-router.get('/appservices', authMiddleware, userAppServiceController.fetchAllAppService);
 
 router.get('/providers', authMiddleware, userProviderController.fetchServiceProviders);
 router.get('/providers/:providerId', authMiddleware, userProviderController.fetchServiceProviderProfileDetails);

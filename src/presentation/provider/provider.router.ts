@@ -25,6 +25,7 @@ router.get('/profile/proofs', authMiddleware,providerProfileController.fetchProo
 router.patch('/profile/approval', authMiddleware, providerProfileController.requestAdminApproval);
 router.delete('/profile/identity', authMiddleware, providerProfileController.deleteIdentityProof);
 router.delete('/profile/service', authMiddleware, providerProfileController.deleteServiceProof);
+router.patch('/profile/push-notification', authMiddleware, providerProfileController.updatePushNotification);
 
 router.post('/addresses', authMiddleware, provideAddressController.createAddress);
 router.get('/address', authMiddleware, provideAddressController.getAddress);
@@ -47,8 +48,7 @@ router.get('/availability', authMiddleware, providerServiceAvailabilityControlle
 
 router.get('/plans', authMiddleware, providerPlanController.fetchAllPlans);
 
-router.post('/subscriptions/checkout-session', authMiddleware, providerSubscriptionController.subscribe);
-router.post('/subscriptions', authMiddleware, providerSubscriptionController.saveSubscription);
+router.post('/subscriptions/checkout/session', authMiddleware, providerSubscriptionController.subscribe);
 router.get('/subscriptions', authMiddleware, providerSubscriptionController.fetchProviderSubscriptions);
 router.post('/subscriptions/trial', authMiddleware, providerSubscriptionController.subscribeToTrialPlan);
 router.get('/subscriptions/:subscriptionId', authMiddleware, providerSubscriptionController.getSubscriptionDetails);

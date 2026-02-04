@@ -1,44 +1,87 @@
-import { ApiResponse } from "../../dtos/common.dto";
-import { User } from "../../../domain/entities/user.entity";
-import { roleArray } from "../../../shared/utils/constants";
+import { v4 as uuidv4 } from 'uuid';
+import { kafkaConfig } from "../../../config/env";
+import { log } from "../../../shared/logger/logger";
+import { Role } from "../../../domain/enums/common.enum";
 import { UpdatePasswordRequest } from "../../dtos/auth.dto";
-import { PasswordHasher } from "../../../infrastructure/security/password-hashing";
+import { notificationContentMap } from '../../../shared/utils/constants';
+import { EventEnvelope, SendResetPasswordEvent } from "../../dtos/kafka.dtos";
+import { IPasswordHasher } from "../../../domain/interfaces/security/IPasswordHasher";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
+import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 
 export class UpdatePasswordUseCase {
     constructor(
-        private userRepository: IUserRepository, 
-        private providerRepository: IProviderRepository
-    ) { }
+        private userRepository: IUserRepository,
+        private providerRepository: IProviderRepository,
+        private passwordHasher: IPasswordHasher,
+        private kafkaProducer: IKafkaProducerAdapter
+    ) { };
 
-    async execute(payload: UpdatePasswordRequest): Promise<ApiResponse> {
+    async execute(payload: UpdatePasswordRequest): Promise<void> {
         try {
             const { role, verificationToken, password } = payload;
 
             if (!role || !verificationToken || !password) throw new Error("Invalid Request");
 
-            const hashedPassword = await PasswordHasher.hashPassword(password);
+            const hashedPassword = await this.passwordHasher.hashPassword(password);
 
-            if (role === roleArray[1]) {
+            if (role === Role.USER) {
                 const user = await this.userRepository.findByVerificationToken(verificationToken);
                 if (!user) throw new Error("User not found.");
 
                 user.changePassword({ password: hashedPassword });
-                await this.userRepository.update(user as User);
+                await this.userRepository.update(user);
 
-            } else if (role === roleArray[2]) {
+                await this.kafkaProducer.publish<EventEnvelope<SendResetPasswordEvent>>(kafkaConfig.topics.pub.passwordReset, {
+                    eventId: uuidv4(),
+                    attempt: 1,
+                    maxAttempts: 1,
+                    occurredAt: new Date().toISOString(),
+                    payload: {
+                        emailData: {
+                            email: user.email,
+                            name: user.username,
+                        },
+                        notificationData: {
+                            userId: user._id,
+                            pushNotification: user.allowPushNotification ?? false,
+                            title: notificationContentMap.resetPassword.title,
+                            body: notificationContentMap.resetPassword.body(),
+                        }
+                    }
+                });
+
+            } else if (role === Role.PROVIDER) {
                 const provider = await this.providerRepository.findByVerificationToken(verificationToken);
                 if (!provider) throw new Error("User not found.");
 
                 provider.changePassword({ password: hashedPassword });
                 await this.providerRepository.update(provider);
-            }
 
-            return { success: true, message: "Password updated successfully." };
+                await this.kafkaProducer.publish<EventEnvelope<SendResetPasswordEvent>>(kafkaConfig.topics.pub.passwordReset, {
+                    eventId: uuidv4(),
+                    attempt: 1,
+                    maxAttempts: 1,
+                    occurredAt: new Date().toISOString(),
+                    payload: {
+                        emailData: {
+                            email: provider.email,
+                            name: provider.username,
+                        },
+                        notificationData: {
+                            userId: provider._id,
+                            pushNotification: provider.allowPushNotification ?? false,
+                            title: notificationContentMap.resetPassword.title,
+                            body: notificationContentMap.resetPassword.body(),
+                        }
+                    }
+                });
+            };
+
         } catch (error) {
-            console.log("UpdatePasswordUseCase error : ", error);
-            throw new Error("Failed to update password");
-        }
-    }
-}
+            log.error("UpdatePasswordUseCase failed : ", error as Error);
+            throw error;
+        };
+    };
+};

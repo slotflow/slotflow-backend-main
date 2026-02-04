@@ -1,5 +1,4 @@
-import { ServiceMode } from "../enums/serviceMode.enum";
-import { ServiceType } from "../enums/serviceType.enum";
+import { ServiceMode, ServiceType } from "../enums/service.enum";
 
 export interface ProviderServiceProps {
     _id: string,

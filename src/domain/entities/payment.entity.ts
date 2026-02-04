@@ -1,4 +1,5 @@
 import { PaymentProps } from "../contracts/payment.contract";
+import { PaymentFor, PaymentGateway, PaymentMethod, PaymentStatus } from "../enums/payment.enum";
 import { CreateForBookingProps, CreateForSubscriptionProps, UpdatePaymentProps } from "../commands/payment.commands";
 
 export class Payment {
@@ -7,11 +8,11 @@ export class Payment {
 
     constructor(props: PaymentProps) {
         this.props = props;
-    }
+    };
 
     private touch() {
         this.props.updatedAt = new Date();
-    }
+    };
 
     static createforSubscription(props: CreateForSubscriptionProps) {
         return new Payment({
@@ -35,7 +36,7 @@ export class Payment {
             createdAt: new Date(),
             updatedAt: new Date(),
         })
-    }
+    };
 
     static createForBooking(props: CreateForBookingProps) {
         return new Payment({
@@ -59,26 +60,69 @@ export class Payment {
             createdAt: new Date(),
             updatedAt: new Date(),
         })
-    }
+    };
 
     // Getters
 
     get _id(): string {
         return this.props._id
-    }
+    };
+
+    get createdAt(): Date {
+        return this.props.createdAt;
+    };
+
+    get discountAmount(): number {
+        return this.props.discountAmount;
+    };
+
+    get paymentFor(): PaymentFor {
+        return this.props.paymentFor;
+    };
+
+    get paymentGateway(): PaymentGateway {
+        return this.props.paymentGateway;
+    };
+
+    get paymentMethod(): PaymentMethod {
+        return this.props.paymentMethod;
+    };
+
+    get paymentStatus(): PaymentStatus {
+        return this.props.paymentStatus;
+    };
+
+    get totalAmount(): number {
+        return this.props.totalAmount;
+    };
+
+    get transactionId(): string {
+        return this.props.transactionId;
+    };
+
+    get initialAmount(): number {
+        return this.props.initialAmount;
+    };
+
+    get userId(): string {
+        if(!this.props.userId) {
+            throw new Error("UserId not found");
+        };
+        return this.props.userId;
+    };
 
     // Business Methods
 
     getProps(): Readonly<PaymentProps> {
-        return {...this.props}
-    }
+        return { ...this.props }
+    };
 
-    updatePayment(props: UpdatePaymentProps) {
+    update(props: UpdatePaymentProps) {
         this.props = {
             ...this.props,
             ...props,
         };
 
         this.touch();
-    }
+    };
 }

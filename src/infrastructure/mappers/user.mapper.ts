@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { IUser } from "../database/user/user.model";
+import { IUser } from "../models/user.model";
 import { User } from "../../domain/entities/user.entity";
 
 export class UserMapper {
@@ -19,6 +19,7 @@ export class UserMapper {
             verificationToken: doc.verificationToken ?? null,
             googleConnected: doc.googleConnected,
             googleId: doc.googleId ?? null,
+            allowPushNotification: doc.allowPushNotification,
             createdAt: doc.createdAt,
             updatedAt: doc.updatedAt,
         });
@@ -40,6 +41,8 @@ export class UserMapper {
             verificationToken: props.verificationToken,
             googleConnected: props.googleConnected,
             googleId: props.googleId,
+            allowPushNotification: props.allowPushNotification,
+            createdAt: props.createdAt,
             updatedAt: props.updatedAt,
         };
     }

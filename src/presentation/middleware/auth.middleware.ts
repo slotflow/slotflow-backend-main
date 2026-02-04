@@ -1,52 +1,97 @@
-import { DecodedUser } from "../../express"; 
-import { roleArray } from "../../shared/utils/constants";
+import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
-import { JWTService } from "../../infrastructure/security/jwt";
-import { IUserRepository } from "../../domain/interfaces/repositories/IUser.repository";
-import { UserRepositoryImpl } from "../../infrastructure/database/user/user.repository.impl";
-import { IProviderRepository } from "../../domain/interfaces/repositories/IProvider.repository";
-import { ProviderRepositoryImpl } from "../../infrastructure/database/provider/provider.repository.impl";
-
-const userRepository: IUserRepository = new UserRepositoryImpl();
-const providerRepository: IProviderRepository = new ProviderRepositoryImpl();
+import { cacheService } from "../../infrastructure/services";
+import { DecodedUser } from "../../application/dtos/common.dto";
+import { providerRepository, userRepository } from "../../infrastructure/repositoryImpls";
+import { Role } from "../../domain/enums/common.enum";
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-  const token = req.cookies.token;
-  const currentTime = Date.now();
-
-  if (!token) {
-    res.status(401).json({ success: false, message: "Unauthorized, no token." });
-    return;
-  } 
 
   try {
-    const decoded = JWTService.verifyToken(token);
-    if (decoded && decoded.exp && currentTime > decoded.exp * 1000) {
-      console.log("token expired");
-      res.status(401).json({ success: false, message: "Unauthorized: Token expired." });
+    const userId = req.headers["x-user-id"];
+    const role = req.headers["x-user-role"];
+
+    if (role !== Role.ADMIN && !userId) {
+      res.status(401).json({ success: false, message: "Unauthenticated request" });
       return;
-    }
+    };
 
-    req.user = decoded as DecodedUser;
-    if(req.user.role === roleArray[1]) {
-      const user = await userRepository.findById(req.user.userOrProviderId);
-      if(user?.isBlocked) {
-        res.status(403).json({ success: false, message: "Your account is blocked"} );
-        return;
-      }
-    }
+    const normalizedUserId = Array.isArray(userId) ? userId[0] : userId;
+    const normalizedRole = Array.isArray(role)
+      ? (role[0] as Role)
+      : (role as Role);
 
-    if(req.user.role === roleArray[2]) {
-      const provider = await providerRepository.findById(req.user.userOrProviderId);
-      if(provider?.isBlocked) {
-        console.log("Provider blocked");
-        res.status(403).json({ success: false, message: "Your account is blocked" } );
+    req.user = {
+      userOrProviderId: normalizedUserId,
+      role: normalizedRole,
+    } as DecodedUser;
+
+    // User auth
+    if (req.user.role === Role.USER) {
+      const cacheKey = req.user.userOrProviderId!;
+      const cachedStatus = await cacheService.getBlockList(cacheKey);
+
+      if (cachedStatus !== null) {
+        if (cachedStatus === "true") {
+          res.status(403).json({ success: false, message: "Your account is blocked" });
+          return;
+        };
+        return next();
+      };
+
+      // Cache miss DB fallback
+      const user = await userRepository.findById(cacheKey);
+      if (!user) {
+        res.status(401).json({ success: false, message: "Invalid user" });
         return;
-      }
-    }
+      };
+
+      await cacheService.setBlockList(
+        cacheKey,
+        JSON.stringify(user.isBlocked)
+      );
+
+      if (user.isBlocked) {
+        res.status(403).json({ success: false, message: "Your account is blocked" });
+        return;
+      };
+    };
+
+    // Provider auth
+    if (req.user.role === Role.PROVIDER) {
+      const cacheKey = req.user.userOrProviderId!;
+      const cachedStatus = await cacheService.getBlockList(cacheKey);
+
+      if (cachedStatus !== null) {
+        if (cachedStatus === "true") {
+          res.status(403).json({ success: false, message: "Your account is blocked" });
+          return;
+        };
+        return next();
+      };
+
+      // Cache miss DB fallback
+      const provider = await providerRepository.findById(cacheKey);
+      if (!provider) {
+        res.status(401).json({ success: false, message: "Invalid provider" });
+        return;
+      };
+
+      await cacheService.setBlockList(
+        cacheKey,
+        JSON.stringify(provider.isBlocked)
+      );
+
+      if (provider.isBlocked) {
+        res.status(403).json({ success: false, message: "Your account is blocked" });
+        return;
+      };
+    };
 
     next();
   } catch (error) {
+    log.error("error", error as Error);
     res.status(401).json({ success: false, message: "Unauthorized: Invalid token." });
-  }
+    return;
+  };
 };

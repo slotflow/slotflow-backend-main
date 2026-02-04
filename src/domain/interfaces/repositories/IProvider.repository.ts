@@ -16,4 +16,6 @@ export interface IProviderRepository {
 
   count(today?: boolean): Promise<number>;
 
+  findAll(page: number, limit: number): Promise<{ data: Array<Provider>, totalPages: number; currentPage: number; totalCount: number; }>;
+
 }

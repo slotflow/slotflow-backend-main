@@ -1,0 +1,36 @@
+import { log } from "../../../shared/logger/logger";
+import { ProviderRepostReviewRequest } from "../../dtos/provider.dto";
+import { IReviewRepository } from "../../../domain/interfaces/repositories/IReview.repository";
+
+export class ProviderChangeReviewRepostStatusUseCase {
+    constructor(
+        private reviewRepository: IReviewRepository,
+    ) { };
+
+    async execute(payload: ProviderRepostReviewRequest): Promise<boolean> {
+        try {
+            const { providerId, reviewId } = payload;
+
+            const review = await this.reviewRepository.findById(reviewId);
+            if (!review) throw new Error("No review found");
+
+            if (review.providerId !== providerId) {
+                throw new Error("You are not permitted to report this review");
+            };
+
+            if(review.reported) {
+                review.unreport();
+            } else {
+                review.report()
+            };
+
+            const updatedReview = await this.reviewRepository.update(review);
+
+            return updatedReview.reported;
+
+        } catch (error) {
+            log.error("ProviderReportReviewUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};

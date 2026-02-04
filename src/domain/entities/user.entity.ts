@@ -1,5 +1,5 @@
 import { UserProps } from "../contracts/user.contract";
-import { ChangePassword, ChangeProfileImage, ChangeProfileInfo, CreateGoogleUserProps, CreateLocalUserProps, LinkGoogleAccount } from "../commands/user.commands";
+import { ChangePassword, ChangeProfileImage, ChangeProfileInfo, CreateGoogleUserProps, CreateLocalUserProps, LinkGoogleAccount, UpdatePushNotification, UpdateVerificationToken } from "../commands/user.commands";
 
 export class User {
 
@@ -21,7 +21,7 @@ export class User {
 
     static createLocal(props: CreateLocalUserProps): User {
         return new User({
-            _id: props._id,
+            _id: "",
             username: props.username,
             email: props.email,
             password: props.password,
@@ -31,9 +31,10 @@ export class User {
             profileImage: null,
             addressId: null,
             bookingsId: null,
-            verificationToken: null,
+            verificationToken: props.verificationToken,
             googleConnected: false,
             googleId: null,
+            allowPushNotification: null,
             createdAt: new Date(),
             updatedAt: new Date(),
         })
@@ -41,7 +42,7 @@ export class User {
 
     static createGoogle(props: CreateGoogleUserProps): User {
         return new User({
-            _id: props._id,
+            _id: "",
             username: props.username,
             email: props.email,
             password: null,
@@ -54,6 +55,7 @@ export class User {
             verificationToken: null,
             googleConnected: true,
             googleId: props.googleId,
+            allowPushNotification: null,
             createdAt: new Date(),
             updatedAt: new Date(),
         })
@@ -113,6 +115,10 @@ export class User {
         return this.props.bookingsId;
     }
 
+    get allowPushNotification(): boolean | null {
+        return this.props.allowPushNotification;
+    };
+
     get createdAt(): Date {
         return this.props.createdAt;
     }
@@ -158,10 +164,19 @@ export class User {
     changePassword(props: ChangePassword) {
         this.ensureNotBlocked("update password");
 
-        if (props.verificationToken) {
-            this.props.verificationToken = props.verificationToken;
+        if (props.password) {
+            this.props.password = props.password;
         }
-        this.props.password = props.password;
+        this.touch();
+    }
+
+    upcateVerificationToken(props: UpdateVerificationToken) {
+        this.props.verificationToken = props.verificationToken;
+        this.touch();
+    }
+
+    updatePushNotification(props: UpdatePushNotification) {
+        this.props.allowPushNotification = props.allowPushNotification;
         this.touch();
     }
 

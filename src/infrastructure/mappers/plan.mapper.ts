@@ -1,5 +1,5 @@
-import { IPlan } from "../database/plan/plan.model";
 import { Plan } from "../../domain/entities/plan.entity";
+import { IPlan } from "../models/plan.model";
 
 export class PlanMapper {
 
@@ -29,6 +29,7 @@ export class PlanMapper {
             maxBookingPerMonth: props.maxBookingPerMonth,
             planName: props.planName,
             price: props.price,
+            createdAt: props.createdAt,
             updatedAt: props.updatedAt
         };
     }

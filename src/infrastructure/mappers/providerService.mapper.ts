@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 import { ProviderService } from "../../domain/entities/providerService.entity";
-import { IProviderService } from "../database/providerService/providerService.model";
+import { IProviderService } from "../models/providerService.model";
 
 export class ProviderServiceMapper {
 
@@ -42,6 +42,7 @@ export class ProviderServiceMapper {
             videoUrl: props.videoUrl,
             maxParticipants: props.maxParticipants,
             isGroupService: props.isGroupService,
+            createdAt: props.createdAt,
             updatedAt: props.updatedAt,
         };
     }

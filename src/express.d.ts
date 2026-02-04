@@ -1,18 +1,13 @@
-import { Request } from "express";
-import { RoleType } from "./application/dtos/common.dto";
-
-export interface DecodedUser {
-    userOrProviderId: string;
-    role: RoleType;
-    exp: number;
-    iat: number;
-}
+import { Role } from "./domain/enums/role.enum";
+import { DecodedUser } from "./application/dtos/common.dto";
 
 // Extend the Request interface
 declare global {
     namespace Express {
+        interface User extends DecodedUser { }
         interface Request {
-            user: DecodedUser;
-        }
-    }
-}
+            user: User;
+        };
+    };
+};
+

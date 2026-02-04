@@ -1,6 +1,6 @@
 import { ProviderProps } from "../contracts/provider.contract";
 import { AdminVerificationStatus } from "../enums/adminVerificationStatus.enum";
-import { ChangePassword, ChangeProfileImage, ChangeProfileInfo, CreateGoogleProviderProps, CreateLocalProviderProps, LinkGoogleAccount, RejectVerification, SubmitIdentityProof, SubmitServiceProof } from "../commands/provider.commands";
+import { ChangePassword, ChangeProfileImage, ChangeProfileInfo, CreateGoogleProviderProps, CreateLocalProviderProps, LinkGoogleAccount, RejectVerification, SubmitIdentityProof, SubmitServiceProof, UpdatePushNotification, UpdateVerificationToken } from "../commands/provider.commands";
 
 export class Provider {
   private props: ProviderProps;
@@ -55,6 +55,8 @@ export class Provider {
       identityProof: null,
       serviceProof: null,
 
+      allowPushNotification: null,
+
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -95,6 +97,8 @@ export class Provider {
 
       identityProof: null,
       serviceProof: null,
+
+      allowPushNotification: null,
 
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -207,46 +211,50 @@ export class Provider {
     return this.props.verificationToken;
   }
 
+  get allowPushNotification(): boolean | null {
+    return this.props.allowPushNotification;
+  };
+
   get createdAt(): Date {
     return this.props.createdAt;
-  }
+  };
 
   get updatedAt(): Date {
     return this.props.updatedAt;
-  }
+  };
 
   // Business Methods
 
   getProps(): Readonly<ProviderProps> {
     return { ...this.props }
-  }
+  };
 
   block() {
     this.props.isBlocked = true;
     this.touch();
-  }
+  };
 
   unblock() {
     this.props.isBlocked = false;
     this.touch();
-  }
+  };
 
   markEmailVerified() {
     this.props.isEmailVerified = true;
     this.touch();
-  }
+  };
 
   submitForAdminVerification() {
     this.props.adminVerificationStatus = AdminVerificationStatus.REQUESTED;
     this.props.verificationRejectionReason = null;
     this.touch();
-  }
+  };
 
   resubmitForAdminVerification() {
     this.props.adminVerificationStatus = AdminVerificationStatus.RESUBMITTED;
     this.props.verificationRejectionReason = null;
     this.touch();
-  }
+  };
 
   approveVerification() {
     if (
@@ -254,7 +262,7 @@ export class Provider {
       this.props.adminVerificationStatus !== AdminVerificationStatus.RESUBMITTED
     ) {
       throw new Error("Provider has not requested verification");
-    }
+    };
 
     this.props.isAdminVerified = true;
     this.props.verificationRejectionReason = null;
@@ -266,7 +274,7 @@ export class Provider {
     this.props.isProofsVerified = true;
 
     this.touch();
-  }
+  };
 
   rejectVerification(props: RejectVerification) {
     this.props.isAdminVerified = false;
@@ -279,7 +287,7 @@ export class Provider {
     this.props.isProofsVerified = props.isProofsVerified;
 
     this.touch();
-  }
+  };
 
 
   grantTrustBadge() {
@@ -296,11 +304,15 @@ export class Provider {
   changePassword(props: ChangePassword) {
     this.ensureNotBlocked("update password");
 
-    if (props.verificationToken) {
-      this.props.verificationToken = props.verificationToken;
+    if (props.password) {
+      this.props.password = props.password;
     }
 
-    this.props.password = props.password;
+    this.touch();
+  }
+
+  upcateVerificationToken(props: UpdateVerificationToken) {
+    this.props.verificationToken = props.verificationToken;
     this.touch();
   }
 
@@ -342,7 +354,7 @@ export class Provider {
   }
 
 
-  activateSubscription(subscriptionId: string) {
+  pushSubscriptionId(subscriptionId: string) {
     this.ensureNotBlocked("subscribe");
 
     this.props.subscription.push(subscriptionId);
@@ -361,6 +373,11 @@ export class Provider {
       this.props.username = props.username;
     }
 
+    this.touch();
+  }
+
+  updatePushNotification(props: UpdatePushNotification) {
+    this.props.allowPushNotification = props.allowPushNotification;
     this.touch();
   }
 

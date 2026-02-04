@@ -1,31 +1,30 @@
+import { fetchAllAppServicesUseCase } from ".";
+import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
-import { IServiceRepository } from "../../domain/interfaces/repositories/IService.repository";
-import { UserFetchAllAppServiceUseCase } from "../../application/useCases/user/userAppService.useCase";
-import { ServiceRepositoryImpl } from "../../infrastructure/database/service/service.repository.impl";
+import { sendResponse } from "../../shared/utils/response";
+import { fetchAllAppServicesSchema } from "../../shared/zod/common.zod";
+import { FetchAllAppServicesUseCase } from "../../application/useCases/common/fetchAppServices.useCase";
 
-const serviceRepository: IServiceRepository = new ServiceRepositoryImpl();
-
-const userFetchAllAppServiceUseCase = new UserFetchAllAppServiceUseCase(serviceRepository);
-
-export class UserAppServiceController {
+class UserAppServiceController {
     constructor(
-        private userFetchAllAppServiceUseCase: UserFetchAllAppServiceUseCase
+        private fetchAllAppServicesUseCase: FetchAllAppServicesUseCase
     ) {
         this.fetchAllAppService = this.fetchAllAppService.bind(this);
-    }
+    };
+
     async fetchAllAppService(req: Request, res: Response, next: NextFunction) {
         try {
-            const result = await this.userFetchAllAppServiceUseCase.execute();
-            res.status(200).json(result);
+            const { categories } = fetchAllAppServicesSchema.parse(req.query);
+            const result = await this.fetchAllAppServicesUseCase.execute({ categories });
+            sendResponse(res, result);
         } catch (error) {
-            console.log("fetchAllAppService error : ", error);
+            log.error("fetchAllAppService failed", error as Error);
             next(error);
-        }
-    }
-}
+        };
+    };
 
-const userAppServiceController = new UserAppServiceController(
-    userFetchAllAppServiceUseCase
+};
+
+export const userAppServiceController = new UserAppServiceController(
+    fetchAllAppServicesUseCase
 );
-
-export { userAppServiceController };

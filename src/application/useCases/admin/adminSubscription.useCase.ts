@@ -1,20 +1,26 @@
-import { ApiPaginationRequest, ApiResponse } from "../../dtos/common.dto";
+import { log } from "../../../shared/logger/logger";
+import { ApiPaginationRequest, TableData } from "../../dtos/common.dto";
 import { AdminFetchAllSubscriptionsResponse } from "../../dtos/admin.dto";
-import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
+import { ISubscriptionQueries } from "../../queries/ISubscription.queries";
 
 export class AdminFetchAllSubscriptionsUseCase {
     constructor(
-        private subscriptionRepository: ISubscriptionRepository,
-    ) { }
+        private subscirptionQueries: ISubscriptionQueries
+    ) { };
 
-    async execute(payload: ApiPaginationRequest): Promise<ApiResponse<AdminFetchAllSubscriptionsResponse>> {
+    async execute(payload: ApiPaginationRequest): Promise<TableData<AdminFetchAllSubscriptionsResponse>> {
         try {
-            const result = await this.subscriptionRepository.findAllSubscriptions(payload);
-            if (!result) throw new Error("Subscriptions fetching failed, ");
-            return { data: result.data, totalPages: result.totalPages, currentPage: result.currentPage, totalCount: result.totalCount };
+            const result = await this.subscirptionQueries.findAll(payload);
+            const { data: subscriptions, currentPage, totalCount, totalPages } = result;
+            return {
+                data: subscriptions,
+                totalPages,
+                currentPage,
+                totalCount,
+            };
         } catch (error) {
-            console.log("AdminFetchAllSubscriptionsUseCase error : ", error);
-            throw new Error("Failed to fetch all subscirptions");
-        }
-    }
-}
+            log.error("AdminFetchAllSubscriptionsUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};

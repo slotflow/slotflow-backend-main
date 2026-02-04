@@ -1,16 +1,16 @@
-import { SubscriptionPlan } from "../../application/dtos/common.dto";
+import { PlanName } from "../../domain/enums/plan.enum";
 import { ISubscriptionMapping } from "../../domain/interfaces/helper/ISubscriptionMapping.helper";
 
-export class SubscriptionMapping implements ISubscriptionMapping {
-  getLevel(plan?: SubscriptionPlan): number {
-    if (!plan || plan === "NoSubscription" || plan === "Free") return 0;
+export class SubscriptionMappingImpl implements ISubscriptionMapping {
+  getLevel(plan?: PlanName): number {
+    if (!plan || plan === PlanName.NO_SUBSCRIPTION || plan === PlanName.TRIAL) return 0;
 
     switch (plan) {
-      case "Starter":
+      case PlanName.STARTER:
         return 1;
-      case "Professional":
+      case PlanName.PROFESSIONAL:
         return 2;
-      case "Enterprise":
+      case PlanName.ENTERPRISE:
         return 3;
       default:
         return 0;

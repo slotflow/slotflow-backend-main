@@ -1,56 +1,44 @@
 import passport from "passport";
-import { Types } from "mongoose";
-import { DecodedUser } from "../../express";
+import { fethGoogleCalendarUseCase } from ".";
+import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
-import { AesEncryption } from "../../infrastructure/services/aesEncryption.service";
-import { GoogleTokenService } from "../../infrastructure/services/googleTokenService";
-import { FethGoogleCalendarService } from "../../infrastructure/services/googleCalendar";
-import { IAesEncryption } from "../../domain/interfaces/services/IAesEncryption.service";
-import { GoogleAuthTokenService } from "../../infrastructure/services/googleAuthToken.service";
-import { ICredentialRepository } from "../../domain/interfaces/repositories/ICredentialRepository";
-import { IGoogleAuthTokenService } from "../../domain/interfaces/services/IGoogleAuthToken.service";
-import { CredentialRepositoryImpl } from "../../infrastructure/database/credential/credential.repository.impl";
-import { GetCredentialUseCase, UpdateCredentialUseCase } from "../../application/useCases/common/credential.useCase";
+import { sendResponse } from "../../shared/utils/response";
+import { DecodedUser } from "../../application/dtos/common.dto";
+import { connectGoogleSchema } from "../../shared/zod/auth.zod";
+import { validateUserIdSchema } from "../../shared/zod/user.zod";
+import { FethGoogleCalendarUseCase } from "../../application/useCases/common/fetchGoogleCalendar.useCase";
 
-const aesEncryption: IAesEncryption = new AesEncryption();
-const credentialRepository: ICredentialRepository = new CredentialRepositoryImpl();
-
-const googleAuthTokenService: IGoogleAuthTokenService = new GoogleAuthTokenService();
-
-const getCredentialUseCase = new GetCredentialUseCase(credentialRepository, aesEncryption, googleAuthTokenService);
-const updateCredentialUseCase = new UpdateCredentialUseCase(credentialRepository, aesEncryption);
-
-// TODO need to update with new google auth token service
-const googleTokenService = new GoogleTokenService(getCredentialUseCase, updateCredentialUseCase);
-const fethGoogleCalendarService = new FethGoogleCalendarService(googleTokenService);
-
-export class GoogleController {
+class GoogleController {
     constructor(
-        private fethGoogleCalendarService: FethGoogleCalendarService
+        private fethGoogleCalendarUseCase: FethGoogleCalendarUseCase
     ) {
         this.getUserEvents = this.getUserEvents.bind(this);
         this.connectGoogle = this.connectGoogle.bind(this);
-    }
+    };
 
     async getUserEvents(req: Request, res: Response, next: NextFunction) {
         try {
             console.log("getUserEvents constroller start");
-            const userId = (req.user as DecodedUser).userOrProviderId;
-            const result = await this.fethGoogleCalendarService.execute(new Types.ObjectId(userId));
-            console.log("getUserEvents constroller result : ", result);
-            res.status(200).json(result);
+            const { userId } = validateUserIdSchema.parse((req.user as DecodedUser).userOrProviderId)
+            const result = await this.fethGoogleCalendarUseCase.execute(userId);
+            sendResponse(res, result);
         } catch (error) {
-            console.log("getUserEvents error : ",error);
-            next(error)
-        }
-    }
+            log.error("getUserEvents failed",error as Error);
+            next(error);
+        };
+    };
 
     async connectGoogle(req: Request, res: Response, next: NextFunction) {
         try {
             console.log("connectGoogle controller starting")
             const user = (req.user as DecodedUser);
             if (!user) throw new Error("no user found");
-            const state = JSON.stringify({ connectOnly: true, role: user.role, userId: user.userOrProviderId });
+            const { connectOnly, role, userId } = connectGoogleSchema.parse({
+                connectOnly: true,
+                role: user.role,
+                userId: user.userOrProviderId
+            });
+            const state = JSON.stringify({ connectOnly, role, userId });
             passport.authenticate("google", {
                 scope: [
                     "openid",
@@ -68,14 +56,13 @@ export class GoogleController {
                 state: state,
             })(req, res, next);
         } catch (error) {
-            console.log("connectGoogle error : ", error);
+            log.error("connectGoogle failed",error as Error);
             next(error)
-        }
-    }
+        };
+    };
 
-}
+};
 
-const googleController = new GoogleController(
-    fethGoogleCalendarService
+export const googleController = new GoogleController(
+    fethGoogleCalendarUseCase
 );
-export { googleController }

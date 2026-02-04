@@ -1,5 +1,6 @@
-import { Types } from "mongoose";
-import { AdminVerificationStatusType, ApiResponse, CommonResponse, RoleType } from "./common.dto";
+import { CommonResponse } from "./common.dto";
+import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
+import { Role } from "../../domain/enums/common.enum";
 
 // **** Register usec case
 // user or provider register usecase request payload interface
@@ -7,13 +8,13 @@ export interface RegisterRequest {
     username: string;
     email: string;
     password: string;
-    role: string;
+    role: Role;
 }
 // user or provider register usecase response interface
-export interface RegisterResponse extends CommonResponse {
+export interface RegisterResponse {
     authUser: {
         verificationToken: string,
-        role: string,
+        role: Role,
         token: string
     }
 }
@@ -24,22 +25,27 @@ export interface RegisterResponse extends CommonResponse {
 export interface OTPVerificationRequest {
     otp: string;
     verificationToken: string;
-    role: string;
+    role: Role;
+}
+
+export interface VerifyAndActivateEntityRequest {
+    verificationToken: string;
+    role: Role;
 }
 
 
 // **** Resend OTP use case
 // user or provider Resend use case request payload interface
 export interface ResendOtpRequest {
-    role: string;
+    role: Role;
     verificationToken?: string;
     email?: string;
 }
-export interface ResendOtpResponse extends ApiResponse {
-  authUser: {
-    verificationToken: string,
-    role: string
-  }
+export interface ResendOtpResponse {
+    authUser: {
+        verificationToken: string,
+        role: string
+    }
 }
 
 
@@ -48,16 +54,16 @@ export interface ResendOtpResponse extends ApiResponse {
 export interface LoginRequest {
     email: string;
     password: string;
-    role: string;
+    role: Role;
 }
 // user or provider login use case response interface
-export interface LoginResponse extends CommonResponse {
+export interface LoginResponse {
     authUser: {
-        uid?: Types.ObjectId;
+        uid?: string;
         username: string;
         phone?: string;
-        profileImage: string | null;
-        role: string;
+        profileImage?: string | null;
+        role: Role;
         token: string;
         isBlocked?: boolean;
         isLoggedIn: boolean;
@@ -67,14 +73,14 @@ export interface LoginResponse extends CommonResponse {
         isAdminVerified?: boolean;
         isProofSubmitted?: boolean;
         verificationRejectionReason?: string | null,
-        adminVerificationStatus?: AdminVerificationStatusType,
+        adminVerificationStatus?: AdminVerificationStatus,
         isAddressVerified?: boolean,
         isServiceDetailsVerified?: boolean,
         isAvailabilityVerified?: boolean,
         isProofsVerified?: boolean,
         providerSubscription?: string;
         googleConnected?: boolean;
-        updatedAt?: Date;
+        allowPushNotification?: boolean;
     }
 }
 
@@ -82,7 +88,7 @@ export interface LoginResponse extends CommonResponse {
 // **** Update password use case
 // user or provider update password use case request payload interface
 export interface UpdatePasswordRequest {
-    role: string;
+    role: Role;
     verificationToken: string;
     password: string;
 }
@@ -92,7 +98,7 @@ export interface UpdatePasswordRequest {
 // check user status use case request payload interface
 export interface CheckUserStatusRequest {
     _id: string;
-    role: string;
+    role: Role;
 }
 // check user status use case response interface
 export interface CheckUserStatusResponse extends CommonResponse {
@@ -100,11 +106,35 @@ export interface CheckUserStatusResponse extends CommonResponse {
 }
 
 
-// **** Google Auth
-export interface GoogleAuthRequest {
+export interface GoogleAuthOrchestrationRequest {
     googleId: string;
     email: string;
     name: string;
-    role: RoleType;
-    image: string | null;
+    image?: string | null;
+    role: Role;
+    connectOnly?: boolean;
+    userId?: string;
+    accessToken: string;
+    refreshToken: string;
+    expiryDate: Date;
+}
+
+export interface GoogleAuthOrchestrationResponse {
+    token?: string;
+    user: {
+        _id: string;
+        isAddressAdded?: boolean;
+        isServiceDetailsAdded?: boolean;
+        isServiceAvailabilityAdded?: boolean;
+        isAdminVerified?: boolean;
+        isProofSubmitted?: boolean;
+        verificationRejectionReason?: string | null,
+        adminVerificationStatus?: AdminVerificationStatus,
+        isAddressVerified?: boolean,
+        isServiceDetailsVerified?: boolean,
+        isAvailabilityVerified?: boolean,
+        isProofsVerified?: boolean,
+        providerSubscription?: string;
+        allowPushNotification: boolean | null,
+    }
 }

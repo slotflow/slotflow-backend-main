@@ -1,28 +1,30 @@
-import { ApiResponse } from "../../dtos/common.dto";
-import { AdminUpdateReviewBlockStatusRequest } from "../../dtos/admin.dto";
+import { log } from "../../../shared/logger/logger";
 import { IReviewRepository } from "../../../domain/interfaces/repositories/IReview.repository";
+import { AdminUpdateReviewBlockStatusRequest, AdminUpdateReviewBlockStatusResponse } from "../../dtos/admin.dto";
 
 export class AdminUpdateReviewBlockStatusUseCase {
     constructor(
         private reviewRepository: IReviewRepository,
-    ) { }
+    ) { };
 
-    async execute(payload: AdminUpdateReviewBlockStatusRequest): Promise<ApiResponse> {
+    async execute(payload: AdminUpdateReviewBlockStatusRequest): Promise<AdminUpdateReviewBlockStatusResponse> {
         try {
-            const { reviewId } = payload;
+            const { reviewId, isBlocked } = payload;
 
-            const review = await this.reviewRepository.findReviewById(reviewId);
+            const review = await this.reviewRepository.findById(reviewId);
             if(!review) throw new Error("No review found");
 
-            review.isBlocked = !review.isBlocked;
+            if(review.isBlocked === isBlocked) {
+                isBlocked ? review.unblock() : review.block();;
+            };
 
-            const updatedReview = await this.reviewRepository.updateReview(review);
+            const updatedReview = await this.reviewRepository.update(review);
             if(!updatedReview) throw new Error("Review block status updating failed");
             
-            return { success: true, message: "Review block status updated" };
+            return { reviewId, isBlocked: updatedReview.isBlocked };
         } catch (error) {
-            console.log("AdminUpdateReviewBlockStatusUseCase error :", error);
-            throw new Error("Failed to update review block status");
-        }
-    }
-}
+            log.error("AdminUpdateReviewBlockStatusUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};

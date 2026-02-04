@@ -5,7 +5,7 @@ import { ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardG
 
 export interface IBookingQueries {
 
-    findTodaysBookingForCronjob(): Promise<boolean>;
+    findTodaysBookingsForCronjob(): Promise<boolean>;
 
     findAll({ page, limit, userId, serviceProviderId, online, raw, role }: FetchBookingsRequest): Promise<TableData<FetchBookingsResponse | FetchOnlineBookingsForProviderResponse | FetchOnlineBookingsForUserResponse>>;
 
@@ -19,8 +19,8 @@ export interface IBookingQueries {
 
     findGraphDataForProviderDashboard(payload: ProviderFetchDashboardGraphRepository): Promise<ProviderFetchDashboardGraphDataResponse | null>;
 
-    findTodayStatsForAdminDashboard(): Promise<AdminFetchTodaysBookingStatsForDashboardResponse>;
+    findTodayStatsDataForAdminDashboard(): Promise<AdminFetchTodaysBookingStatsForDashboardResponse>;
 
-    findStatsForAdminDashboard(): Promise<AdminFetchDashboardAppointmentStatsDataResponse>;
+    findStatsDataForAdminDashboard(): Promise<AdminFetchDashboardAppointmentStatsDataResponse>;
 
 };

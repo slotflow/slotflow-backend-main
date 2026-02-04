@@ -1,22 +1,23 @@
-import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
-import { ApiResponse, FetchBookingDetailsRequest, FetchBookingDetailsResponse } from "../../dtos/common.dto";
+import { log } from "../../../shared/logger/logger";
+import { IBookingQueries } from "../../queries/IBooking.queries";
+import { FetchBookingDetailsRequest, FetchBookingDetailsResponse } from "../../dtos/common.dto";
 
 export class FetchBookingDetailsUsecase {
     constructor(
-        private bookingRepository: IBookingRepository,
-    ) { }
+        private bookingQueries: IBookingQueries,
+    ) { };
 
-    async execute(payload: FetchBookingDetailsRequest): Promise<ApiResponse<FetchBookingDetailsResponse>> {
+    async execute(payload: FetchBookingDetailsRequest): Promise<FetchBookingDetailsResponse | null> {
         try {
             const { bookingId } = payload;
 
-            const result = await this.bookingRepository.findBookingDetails(bookingId);
-            if (!result) throw new Error("Booking details fetching failed");
+            const result = await this.bookingQueries.findDetails(bookingId);
+            if(!result) return null;
 
-            return { success: true, message: "Booking details fetched", data: result };
+            return result;
         } catch (error) {
-            console.log("FetchBookingDetailsUsecase error : ", error);
-            throw new Error("Failed to fetch booking details");
-        }
-    }
-}
+            log.error("FetchBookingDetailsUsecase failed", error as Error);
+            throw error;
+        };
+    };
+};

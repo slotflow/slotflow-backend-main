@@ -1,22 +1,22 @@
-import { ApiResponse } from "../../dtos/common.dto";
+import { log } from "../../../shared/logger/logger";
+import { IUserQueries } from "../../queries/IUser.queries";
+import { IPaymentQueries } from "../../queries/IPayment.queries";
+import { IBookingQueries } from "../../queries/IBooking.queries";
+import { IProviderQueries } from "../../queries/IProvider.queries";
+import { ISubscriptionQueries } from "../../queries/ISubscription.queries";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { IPaymentRepository } from "../../../domain/interfaces/repositories/IPayment.repository";
-import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
 import { AdminFetchDashboardAppointmentStatsDataResponse, AdminFetchDashboardProviderStatsDataResponse, AdminFetchDashboardRevenueStatsDataResponse, AdminFetchDashboardSubscriptionStatsDataResponse, AdminFetchDashboardTodayStatsDataResponse, AdminFetchDashboardUserStatsDataResponse } from "../../dtos/admin.dto";
-import { IAdminProviderQuery } from "../../queries/IProvider.queries";
-import { IAdminUserQuery } from "../../queries/admin/IAdminUserQuery";
 
 export class AdminFetchDashboardTodaysDataUseCase {
     constructor(
         private userRepository: IUserRepository,
         private providerRepository: IProviderRepository,
-        private paymentRepository: IPaymentRepository,
-        private bookingRepository: IBookingRepository,
-    ) { }
+        private paymentQueries: IPaymentQueries,
+        private bookingQueries: IBookingQueries,
+    ) { };
 
-    async execute(): Promise<ApiResponse<AdminFetchDashboardTodayStatsDataResponse>> {
+    async execute(): Promise<AdminFetchDashboardTodayStatsDataResponse> {
         try {
             const [
                 usersData,
@@ -26,8 +26,8 @@ export class AdminFetchDashboardTodaysDataUseCase {
             ] = await Promise.all([
                 this.userRepository.count(true),
                 this.providerRepository.count(true),
-                this.paymentRepository.findTodayPaymentStatsForAdminDashboard(),
-                this.bookingRepository.findTodayBookingStatsForAdminDashboard()
+                this.paymentQueries.findTodayStatsDataForAdminDashboard(),
+                this.bookingQueries.findTodayStatsDataForAdminDashboard()
             ]);
 
             const responseData: AdminFetchDashboardTodayStatsDataResponse = {
@@ -40,94 +40,89 @@ export class AdminFetchDashboardTodaysDataUseCase {
                 todaysCompletedAppointments: appointmentData.todaysCompletedAppointments
             };
 
-            return { success: true, message: "Fetched successfully", data: responseData }
+            return responseData;
         } catch (error) {
-            console.log("AdminFetchDashboardTodaysDataUseCase error : ", error);
-            throw new Error("Failed to fetch dashboard todays data");
-        }
-    }
-}
+            log.error("AdminFetchDashboardTodaysDataUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
 
 
 export class AdminFetchDashboardUserStatsDataUseCase {
     constructor(
-        private adminUserQuery: IAdminUserQuery
-    ) { }
+        private useQueries: IUserQueries
+    ) { };
 
-    async execute(): Promise<ApiResponse<AdminFetchDashboardUserStatsDataResponse>> {
+    async execute(): Promise<AdminFetchDashboardUserStatsDataResponse> {
         try {
-            const userData = await this.adminUserQuery.fetchStats();
-            return { success: true, message: "Fetched successfully", data: userData };
+            return await this.useQueries.fetchStats();
         } catch (error) {
-            console.log("AdminFetchDashboardUserStatsDataUseCase error : ", error);
-            throw new Error("Failed to fetch dashboard user stats");
-        }
-    }
-}
+            log.error("AdminFetchDashboardUserStatsDataUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
 
 
 export class AdminFetchDashboardProviderStatsDataUseCase {
     constructor(
-        private adminProviderQuery: IAdminProviderQuery
-    ) { }
+        private providerQuery: IProviderQueries
+    ) { };
 
-    async execute(): Promise<ApiResponse<AdminFetchDashboardProviderStatsDataResponse>> {
+    async execute(): Promise<AdminFetchDashboardProviderStatsDataResponse> {
         try {
-            const providerData = await this.adminProviderQuery.fetchStats();
-            return { success: true, message: "Fetched successfully", data: providerData };
+            return await this.providerQuery.fetchStats();
         } catch (error) {
-            console.log("AdminFetchDashboardProviderStatsDataUseCase error : ", error);
-            throw new Error("Failed to fetch dashboard provider stats");
-        }
-    }
-}
+            log.error("AdminFetchDashboardProviderStatsDataUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
 
 
 export class AdminFetchDashboardSubscriptionStatsDataUseCase {
     constructor(
-        private subscriptionRepository: ISubscriptionRepository
-    ) { }
+        private subscriptionQueries: ISubscriptionQueries
+    ) { };
 
-    async execute(): Promise<ApiResponse<AdminFetchDashboardSubscriptionStatsDataResponse>> {
+    async execute(): Promise<AdminFetchDashboardSubscriptionStatsDataResponse> {
         try {
-            const subscriptionData = await this.subscriptionRepository.findSubscriptionStatsForAdminDashboard();
-            return { success: true, message: "Fetched successfully", data: subscriptionData }
+            return await this.subscriptionQueries.findStatsForAdminDashboard();
         } catch (error) {
-            console.log("AdminFetchDashboardSubscriptionStatsDataUseCase error : ", error);
-            throw new Error("Failed to fetch dashboard subscription stats");
-        }
-    }
-}
+            log.error("AdminFetchDashboardSubscriptionStatsDataUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
 
 
 export class AdminFetchDashboardRevenueStatsDataUseCase {
     constructor(
-        private paymentRepository: IPaymentRepository
-    ) { }
+        private paymentQueries: IPaymentQueries
+    ) { };
 
-    async execute(): Promise<ApiResponse<AdminFetchDashboardRevenueStatsDataResponse>> {
+    async execute(): Promise<AdminFetchDashboardRevenueStatsDataResponse> {
         try {
-            const revenueData = await this.paymentRepository.findPaymentStatsForAdminDashboard();
-            return { success: true, message: "FetchedSuccessfully", data: revenueData }
+            return await this.paymentQueries.findStatsDataForAdminDashboard();
         } catch (error) {
-            console.log("AdminFetchDashboardRevenueStatsDataUseCase error : ", error);
-            throw new Error("Failed to fetch dashboard revenue stats");
-        }
-    }
-}
+            log.error("AdminFetchDashboardRevenueStatsDataUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
 
 export class AdminFetchDashboardAppointmentsStatsDataUseCase {
     constructor(
-        private bookingRepository: IBookingRepository
-    ) { }
+        private bookingQueries: IBookingQueries
+    ) { };
 
-    async execute(): Promise<ApiResponse<AdminFetchDashboardAppointmentStatsDataResponse>> {
+    async execute(): Promise<AdminFetchDashboardAppointmentStatsDataResponse> {
         try {
-            const appointmentData = await this.bookingRepository.findBookingStatsForAdminDashboard();
-            return { success: true, message: "FetchedSuccessfully", data: appointmentData }
+            return await this.bookingQueries.findStatsDataForAdminDashboard();
         } catch (error) {
-            console.log("AdminFetchDashboardAppointmentsStatsDataUseCase error : ", error);
-            throw new Error("Failed to fetch dashboard appointments stats");
-        }
-    }
-}
+            log.error("AdminFetchDashboardAppointmentsStatsDataUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};

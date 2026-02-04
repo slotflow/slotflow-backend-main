@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 import { Credential } from "../../domain/entities/credential.entity";
-import { ICredential } from "../database/credential/credential.model";
+import { ICredential } from "../models/credential.model";
 
 export class CredentialMapper {
 
@@ -24,6 +24,7 @@ export class CredentialMapper {
             expiryDate: props.expiryDate,
             refreshToken: props.refreshToken,
             userId: new Types.ObjectId(props.userId),
+            createdAt: props.createdAt,
             updatedAt: props.updatedAt,
         };
     }

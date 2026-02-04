@@ -1,33 +1,63 @@
+import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
-import { RequestQueryCommonZodSchema } from "../../shared/zod/common.zod";
-import { IPaymentRepository } from "../../domain/interfaces/repositories/IPayment.repository";
-import { AdminFetchAllPaymentsUseCase } from "../../application/useCases/admin/adminPayment.useCase";
-import { PaymentRepositoryImpl } from "../../infrastructure/database/payment/payment.repository.impl";
+import { sendResponse } from "../../shared/utils/response";
+import { paginationSchema } from "../../shared/zod/base.zod";
+import { adminFetchRevenuewReposrtSchema } from "../../shared/zod/admin.zod";
+import { adminFetchAllPaymentsUseCase, adminFetchRevenueReportUseCase } from ".";
+import { AdminFetchAllPaymentsUseCase, AdminFetchRevenueReportUseCase } from "../../application/useCases/admin/adminPayment.useCase";
 
-const paymentRepository: IPaymentRepository = new PaymentRepositoryImpl();
-
-const adminFetchAllPaymentsUseCase = new AdminFetchAllPaymentsUseCase(paymentRepository);
-
-export class AdminPaymentController {
+class AdminPaymentController {
     constructor(
         private adminFetchAllPaymentsUseCase: AdminFetchAllPaymentsUseCase,
+        private adminFetchRevenueReportUseCase: AdminFetchRevenueReportUseCase
     ) {
         this.getAllPayments = this.getAllPayments.bind(this);
-    }
+        this.fetchRevenueReport = this.fetchRevenueReport.bind(this);
+        this.fetchRefundReport = this.fetchRefundReport.bind(this);
+    };
 
     async getAllPayments(req: Request, res: Response, next: NextFunction) {
         try {
-            const { page, limit } = RequestQueryCommonZodSchema.parse(req.query);
+            const { page, limit } = paginationSchema.parse(req.query);
             const result = await this.adminFetchAllPaymentsUseCase.execute({ page, limit });
-            res.status(200).json(result);
+            sendResponse(res, result);
         } catch (error) {
-            console.log("getAllPayments error : ", error);
-            next(error)
-        }
-    }
-}
+            log.error("getAllPayments failed", error as Error);
+            next(error);
+        };
+    };
 
-const adminPaymentController = new AdminPaymentController(
-    adminFetchAllPaymentsUseCase
+    async fetchRevenueReport(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { endDate, limit, page, startDate } = adminFetchRevenuewReposrtSchema.parse({
+                ...req.body,
+                ...req.query
+            });
+            const result = await this.adminFetchRevenueReportUseCase.execute({
+                page,
+                limit,
+                startDate,
+                endDate
+            });
+            sendResponse(res, result);
+        } catch (error) {
+            log.error("fetchRevenueReport failed", error as Error);
+            next(error);
+        };
+    };
+
+    async fetchRefundReport(req: Request, res: Response, next: NextFunction) {
+        try {
+            // TODO
+        } catch (error) {
+            log.error("fetchRefundReport failed", error as Error);
+            next(error);
+        };
+    };
+
+};
+
+export const adminPaymentController = new AdminPaymentController(
+    adminFetchAllPaymentsUseCase,
+    adminFetchRevenueReportUseCase
 );
-export { adminPaymentController };

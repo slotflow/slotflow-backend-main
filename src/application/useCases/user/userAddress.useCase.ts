@@ -1,3 +1,4 @@
+import { log } from "../../../shared/logger/logger";
 import { Address } from "../../../domain/entities/address.entity";
 import { CreateAddressRequest, UpdateAddressRequest } from "../../dtos/common.dto";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
@@ -8,30 +9,14 @@ export class UserCreateAddressUseCase {
     constructor(
         private userRepository: IUserRepository,
         private addressRepository: IAddressRepository,
-    ) { }
+    ) { };
 
     async execute(payload: CreateAddressRequest): Promise<void> {
         try {
-            const { userId, addressLine, landMark, phone, place, city, district, pincode, state, country, location } = payload;
-
-            const user = await this.userRepository.findById(userId);
+            const user = await this.userRepository.findById(payload.userId);
             if (!user) throw new Error("Please logout and try again");
 
-            const now = new Date();
-
-            const address = Address.create({
-                userId,
-                addressLine,
-                landMark,
-                phone,
-                place,
-                city,
-                district,
-                pincode,
-                state,
-                country,
-                location,
-            });
+            const address = Address.create({...payload});
 
             const savedAddress = await this.addressRepository.create(address);
             if (!savedAddress) throw new Error("Failed to save address");
@@ -39,23 +24,21 @@ export class UserCreateAddressUseCase {
             user.updateAddressId(savedAddress._id)
             const updatedUser = await this.userRepository.update(user);
             if (!updatedUser) throw new Error("Failed to update user with address");
-
         } catch (error) {
-            console.log("UserCreateAddressUseCase error : ", error);
-            throw new Error("Failed too create address");
-        }
-    }
-}
+            log.error("UserCreateAddressUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
 
 export class UserFetchAddressUseCase {
     constructor(
         private userRepository: IUserRepository,
         private addressRepository: IAddressRepository,
-    ) { }
+    ) { };
 
     async execute(payload: UserFetchUserAddressRequest): Promise<UserFetchAddressResponse> {
         try {
-
             const { userId } = payload;
             const user = await this.userRepository.findById(userId);
             if (!user) throw new Error("No user found.");
@@ -63,50 +46,60 @@ export class UserFetchAddressUseCase {
             const address = await this.addressRepository.findByUserId(userId);
             if(!address) return null;
 
-            const { userId: uId, createdAt, updatedAt, ...rest } = address;
-            return rest;
-
+            return {
+                _id: address._id,
+                addressLine: address.addressLine,
+                landMark: address.landMark,
+                phone: address.phone,
+                place: address.place,
+                city: address.city,
+                district: address.district,
+                pincode: address.pincode,
+                state: address.state,
+                country: address.country,
+                location: address.location,
+            };
         } catch (error) {
-            console.log("UserFetchAddressUseCase error : ", error);
-            throw new Error("Failed to fetch address");
-        }
-    }
-}
+            log.error("UserFetchAddressUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};
 
 
 export class UserUpdateAddressUseCase {
     constructor(
         private addressRepository: IAddressRepository,
-    ) { }
+    ) { };
 
     async execute(payload: UpdateAddressRequest): Promise<UserFetchAddressResponse> {
         try {
+            const { _id: addressId, ...updateData } = payload;
 
-            const { _id: addressId, addressLine, landMark, phone, place, city, district, pincode, state, country, location } = payload;
+            const address = await this.addressRepository.findById(addressId);
+            if (!address) throw new Error("Address not found");
 
-            const existingAddress = await this.addressRepository.findById(addressId);
-            if (!existingAddress) throw new Error("Address not found");
+            address.updateAddress(updateData);
 
-            existingAddress.addressLine = addressLine || existingAddress.addressLine;
-            existingAddress.landMark = landMark || existingAddress.landMark;
-            existingAddress.phone = phone || existingAddress.phone;
-            existingAddress.place = place || existingAddress.place;
-            existingAddress.city = city || existingAddress.city;
-            existingAddress.district = district || existingAddress.district;
-            existingAddress.pincode = pincode || existingAddress.pincode;
-            existingAddress.state = state || existingAddress.state;
-            existingAddress.country = country || existingAddress.country;
-            existingAddress.location = location || existingAddress.location;
-            existingAddress.updatedAt = new Date();
-
-            const updatedAddress = await this.addressRepository.update(existingAddress);
+            const updatedAddress = await this.addressRepository.update(address);
             if (!updatedAddress) throw new Error("Address updating failed.");
 
-            const { userId: user_Id, createdAt, ...rest } = updatedAddress;
-            return rest;
+            return {
+                _id: updatedAddress._id,
+                addressLine: updatedAddress.addressLine,
+                landMark: updatedAddress.landMark,
+                phone: updatedAddress.phone,
+                place: updatedAddress.place,
+                city: updatedAddress.city,
+                district: updatedAddress.district,
+                pincode: updatedAddress.pincode,
+                state: updatedAddress.state,
+                country: updatedAddress.country,
+                location: updatedAddress.location,
+            };
         } catch (error) {
-            console.log("UserUpdateAddressUseCase error : ", error);
-            throw new Error("Failed to update address");
-        }
-    }
-}
+            log.error("UserUpdateAddressUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};

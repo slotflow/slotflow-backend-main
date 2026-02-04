@@ -1,30 +1,25 @@
 import app from './app';
-import dotenv from 'dotenv';
-
-import './infrastructure/services/passport';
-import './infrastructure/cron-jobs/updateBookingsCron';
-import './infrastructure/cron-jobs/updateSubscriptionStatusCron';
-
-// import { kafkaConfig } from './config/env';
-// import { KafkaService } from './infrastructure/lib/kafka';
-
+import { appConfig } from './config/env';
+import { log } from './shared/logger/logger';
+import { initCronJobs } from './presentation/cron';
+import { InitKafkaControllers } from './kafkaInitiator';
 import connectDB from './config/database/mongodb/mongodb.config';
+import { googlePassportStrategy } from './infrastructure/passport';
 
-dotenv.config();
+const start = async () => {
+  try {
+    await connectDB();
+    initCronJobs();
+    googlePassportStrategy.register();
+    await InitKafkaControllers();
 
-// const kafkaService = new KafkaService(kafkaConfig.clientId!, kafkaConfig.brokers);
+    app.listen(appConfig.port, () =>
+      log.info(`Main Backend Service is running on http://localhost:${appConfig.port}`)
+    );
+  } catch (error) {
+    log.error("Startup failed", error as Error);
+    process.exit(1);
+  }
+};
 
-// await kafkaService.connectAdmin();
-// await kafkaService.createTopics([kafkaConfig.otpSendTopic]);
-// await kafkaService.disconnectAdmin();
-// await kafkaService.connectProducer();
-
-// export const producer = kafkaService.getProducer();
-
-const port = process.env.PORT || 3000;
-
-connectDB();
-
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-})
+start();

@@ -1,3 +1,4 @@
+import { PlanName } from "../enums/plan.enum";
 import { PlanProps } from "../contracts/plan.contract";
 import { CreatePlanProps, UpdatePlanProps } from "../commands/plan.commands";
 
@@ -18,10 +19,10 @@ export class Plan {
             adVisibility: props.adVisibility,
             description: props.description,
             features: props.features,
-            isBlocked: props.isBlocked,
             maxBookingPerMonth: props.maxBookingPerMonth,
             planName: props.planName,
             price: props.price,
+            isBlocked: false,
             createdAt: new Date(),
             updatedAt: new Date(),
         })
@@ -31,30 +32,57 @@ export class Plan {
 
     get _id(): string {
         return this.props._id;
-    }
+    };
+
+    get planName(): PlanName {
+        return this.props.planName;
+    };
+
+    get adVisibility(): boolean {
+        return this.props.adVisibility;
+    };
+
+    get isBlocked(): boolean {
+        return this.props.isBlocked;
+    };
+
+    get maxBookingPerMonth(): number {
+        return this.props.maxBookingPerMonth;
+    };
+
+    get price(): number {
+        return this.props.price;
+    };
+
+    get description(): string {
+        return this.props.description;
+    };
+
+    get features(): string[] {
+        return this.props.features;
+    };
 
     // Business Method
     getProps(): Readonly<PlanProps> {
         return { ...this.props };
-    }
+    };
 
     block() {
         this.props.isBlocked = true;
         this.touch();
-    }
+    };
 
     unblock() {
         this.props.isBlocked = false;
         this.touch();
-    }
+    };
 
-    updatePlan(props: UpdatePlanProps) {
+    update(props: UpdatePlanProps) {
         this.props = {
             ...this.props,
             ...props
         };
         this.touch();
-    }
-
+    };
 
 }

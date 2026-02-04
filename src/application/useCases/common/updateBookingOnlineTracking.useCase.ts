@@ -1,15 +1,16 @@
-import { appointmentStatusArray, roleArray } from "../../../shared/utils/constants";
+import { log } from "../../../shared/logger/logger";
+import { IServiceAvailabilityQueries } from "../../queries/IServiceAvailability.queries";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
-import { IServiceAvailabilityRepository } from "../../../domain/interfaces/repositories/IServiceAvailability.repository";
-import { ApiResponse, UpdateBookingOnlineTrackRequest, UpdateBookingOnlineTrackResponse } from "../../dtos/common.dto";
+import { UpdateBookingOnlineTrackRequest, UpdateBookingOnlineTrackResponse } from "../../dtos/common.dto";
+import { Role } from "../../../domain/enums/common.enum";
 
 export class UpdateBookingOnlineTrakingUseCase {
     constructor(
         private bookingRepository: IBookingRepository,
-        private serviceAvailabilityRepository: IServiceAvailabilityRepository,
-    ) { }
+        private serviceAvailabilityQueries: IServiceAvailabilityQueries
+    ) { };
 
-    async execute(payload: UpdateBookingOnlineTrackRequest): Promise<ApiResponse<UpdateBookingOnlineTrackResponse>> {
+    async execute(payload: UpdateBookingOnlineTrackRequest): Promise<UpdateBookingOnlineTrackResponse> {
         try {
             const { joined, joinedTime, leftCallTime, role, roomId } = payload;
             if (joined === null) throw new Error("Invalid request");
@@ -17,13 +18,13 @@ export class UpdateBookingOnlineTrakingUseCase {
             if (joined && (!joinedTime && !leftCallTime)) throw new Error("Invalid request");
             if (!role || !roomId) throw new Error("role and bookingId are required");
 
-            const booking = await this.bookingRepository.findBookingByroomId(roomId);
+            const booking = await this.bookingRepository.findByroomId(roomId);
             if (!booking) throw new Error("No booking found");
 
-            const serviceAvailability = await this.serviceAvailabilityRepository.findServiceAvailabilityByProviderId(booking.serviceProviderId, new Date());
+            const serviceAvailability = await this.serviceAvailabilityQueries.findByProviderId(new Date(), booking.serviceProviderId);
             if (!serviceAvailability) throw new Error("No service found");
 
-            if (role === roleArray[2]) {
+            if (role === Role.PROVIDER) {
                 if (joined && joinedTime) {
                     if (!booking.onlineTrack.provider.joined && booking.onlineTrack.provider.joinedTime) {
                         booking.onlineTrack.provider.joined = true;
@@ -33,15 +34,11 @@ export class UpdateBookingOnlineTrakingUseCase {
                     booking.onlineTrack.provider.leftCallTime = leftCallTime;
                     if (booking.onlineTrack.user.joined) {
                         if (booking.onlineTrack.user.joinedTime && booking.onlineTrack.user.leftCallTime) {
-                            booking.appointmentStatus = appointmentStatusArray[1];
-                            booking.statusTrack.push({
-                                appointmentStatus: appointmentStatusArray[1],
-                                time: new Date(),
-                            });
-                        }
-                    }
-                }
-            } else if (role === roleArray[1]) {
+                            booking.completeAppointment();
+                        };
+                    };
+                };
+            } else if (role === Role.USER) {
                 if (joined && joinedTime) {
                     if (!booking.onlineTrack.user.joined && !booking.onlineTrack.user.joinedTime) {
                         booking.onlineTrack.user.joined = true;
@@ -51,23 +48,18 @@ export class UpdateBookingOnlineTrakingUseCase {
                     booking.onlineTrack.user.leftCallTime = leftCallTime;
                     if (booking.onlineTrack.provider.joined) {
                         if (booking.onlineTrack.provider.joinedTime && booking.onlineTrack.provider.leftCallTime) {
-                            booking.appointmentStatus = appointmentStatusArray[1];
-                            booking.statusTrack.push({
-                                appointmentStatus: appointmentStatusArray[1],
-                                time: new Date(),
-                            });
-                        }
-                    }
-                }
-            }
+                            booking.completeAppointment();
+                        };
+                    };
+                };
+            };
 
-            const updatedBooking = await this.bookingRepository.updateBooking(booking);
-            if (!updatedBooking) throw new Error("Something went wrong");
+            await this.bookingRepository.update(booking);
 
-            return { success: true, message: "booking onlineTracks updated", data: { duration: serviceAvailability.duration } };
+            return { duration: serviceAvailability.duration };
         } catch (error) {
-            console.log("UpdateBookingOnlineTrakingUseCase error : ", error);
-            throw new Error("Failed to update booking online tracking");
-        }
-    }
-}
+            log.error("UpdateBookingOnlineTrakingUseCase failed", error as Error);
+            throw error;
+        };
+    };
+};

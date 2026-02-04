@@ -1,12 +1,13 @@
 import mongoose from 'mongoose';
-import { mongoConfig } from '../../env';
+import { mongodbConfig } from '../../env';
+import { log } from '../../../shared/logger/logger';
 
 const connectDB = async () => {
-    try{
-        await mongoose.connect(mongoConfig.mongoURL as string);
-        console.log("MngoDB Connected...");
-    }catch(error){
-        console.error("MongoDB Connection Error : ",error);
+    try {
+        await mongoose.connect(mongodbConfig.mongoUri);
+        log.info("MngoDB Connected...");
+    } catch (error) {
+        log.error("MongoDB Connection Error : ", error as Error);
         throw new Error("Databse connection failed");
     }
 }

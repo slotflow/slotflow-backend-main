@@ -1,18 +1,13 @@
-import { Types } from "mongoose";
 import { Review } from "../../entities/review.entity";
-import { CreateReviewRequset } from "../../../application/dtos/user.dto";
-import { ApiResponse, FetchReviesRequest, FetchReviewsResponse } from "../../../application/dtos/common.dto";
 
 export interface IReviewRepository {
 
-    createReview(data: CreateReviewRequset): Promise<Review | null>;
+    create(review: Review): Promise<Review>;
 
-    findAllReviews(data: FetchReviesRequest) : Promise<ApiResponse<FetchReviewsResponse[]>>;
+    update(review: Review): Promise<Review>;
 
-    deleteReview(reviewId: Types.ObjectId): Promise<boolean>;
-
-    findReviewById(reviewId: Types.ObjectId): Promise<Review | null>;
-
-    updateReview(review: Review): Promise<Review | null>;
+    findById(reviewId: string): Promise<Review | null>;
+    
+    deleteById(reviewId: string): Promise<boolean>;
 
 }

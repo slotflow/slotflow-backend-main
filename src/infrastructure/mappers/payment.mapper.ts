@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { IPayment } from "../database/payment/payment.model";
+import { IPayment } from "../models/payment.model";
 import { Payment } from "../../domain/entities/payment.entity";
 
 export class PaymentMapper {
@@ -58,7 +58,7 @@ export class PaymentMapper {
             refundStatus: props.refundStatus ?? null,
             refundAt: props.refundAt ?? null,
             refundReason: props.refundReason ?? null,
-
+            createdAt: props.createdAt,
             updatedAt: props.updatedAt,
         };
     }

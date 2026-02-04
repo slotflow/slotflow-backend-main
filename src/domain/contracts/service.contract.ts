@@ -1,4 +1,4 @@
-import { ServiceCategory } from "../enums/serviceCategories.enum";
+import { ServiceCategory } from "../enums/service.enum";
 
 export interface ServiceProps {
     _id: string,
