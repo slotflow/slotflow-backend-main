@@ -1,5 +1,6 @@
 import { log } from "../../../shared/logger/logger";
-import { ProviderCreatePaymentFailedEvent } from "../../dtos/kafka.dtos";
+import { EventEnvelope } from "../../dtos/kafka.dtos";
+import { ProviderCreatePaymentFailedEventResult } from "../../dtos/common.dto";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
 
 export class UpdateSubscriptionAfterPaymentFailedUseCase {
@@ -7,12 +8,17 @@ export class UpdateSubscriptionAfterPaymentFailedUseCase {
         private readonly subscriptionRepository: ISubscriptionRepository
     ) { };
 
-    async execute(payload: ProviderCreatePaymentFailedEvent) {
+    async execute(payload: EventEnvelope<ProviderCreatePaymentFailedEventResult>) {
         try {
-            const { subscriptionId } = payload;
+            const { payload: { 
+                mbsData: { 
+                    subscriptionId 
+                } 
+            } 
+        } = payload;
 
             const subscription = await this.subscriptionRepository.findById(subscriptionId);
-            if(!subscription) return;
+            if (!subscription) return;
 
             subscription.subscriptionPaymentFailed();
             await this.subscriptionRepository.update(subscription);

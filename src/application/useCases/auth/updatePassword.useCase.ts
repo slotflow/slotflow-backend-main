@@ -1,8 +1,10 @@
+import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/common.enum";
 import { UpdatePasswordRequest } from "../../dtos/auth.dto";
-import { SendResetPasswordEvent } from "../../dtos/kafka.dtos";
+import { notificationContentMap } from '../../../shared/utils/constants';
+import { EventEnvelope, SendResetPasswordEvent } from "../../dtos/kafka.dtos";
 import { IPasswordHasher } from "../../../domain/interfaces/security/IPasswordHasher";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
@@ -31,9 +33,23 @@ export class UpdatePasswordUseCase {
                 user.changePassword({ password: hashedPassword });
                 await this.userRepository.update(user);
 
-                await this.kafkaProducer.publish<SendResetPasswordEvent>(kafkaConfig.topics.pub.passwordReset, {
-                    email: user.email,
-                    name: user.username,
+                await this.kafkaProducer.publish<EventEnvelope<SendResetPasswordEvent>>(kafkaConfig.topics.pub.passwordReset, {
+                    eventId: uuidv4(),
+                    attempt: 1,
+                    maxAttempts: 1,
+                    occurredAt: new Date().toISOString(),
+                    payload: {
+                        emailData: {
+                            email: user.email,
+                            name: user.username,
+                        },
+                        notificationData: {
+                            userId: user._id,
+                            pushNotification: user.allowPushNotification ?? false,
+                            title: notificationContentMap.resetPassword.title,
+                            body: notificationContentMap.resetPassword.body(),
+                        }
+                    }
                 });
 
             } else if (role === Role.PROVIDER) {
@@ -43,9 +59,23 @@ export class UpdatePasswordUseCase {
                 provider.changePassword({ password: hashedPassword });
                 await this.providerRepository.update(provider);
 
-                await this.kafkaProducer.publish<SendResetPasswordEvent>(kafkaConfig.topics.pub.passwordReset, {
-                    email: provider.email,
-                    name: provider.username,
+                await this.kafkaProducer.publish<EventEnvelope<SendResetPasswordEvent>>(kafkaConfig.topics.pub.passwordReset, {
+                    eventId: uuidv4(),
+                    attempt: 1,
+                    maxAttempts: 1,
+                    occurredAt: new Date().toISOString(),
+                    payload: {
+                        emailData: {
+                            email: provider.email,
+                            name: provider.username,
+                        },
+                        notificationData: {
+                            userId: provider._id,
+                            pushNotification: provider.allowPushNotification ?? false,
+                            title: notificationContentMap.resetPassword.title,
+                            body: notificationContentMap.resetPassword.body(),
+                        }
+                    }
                 });
             };
 

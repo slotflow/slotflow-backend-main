@@ -1,6 +1,7 @@
 import Stripe from "stripe";
 import { Review } from "../../domain/entities/review.entity";
 import { AddressDTO, BookingDTO, ProviderDTO, UserDTO, PlanDTO, ProviderServiceDTO, ServiceDTO, FrontendAvailabilityForRequest, FontendAvailabilityForResponse, FindProviderServiceResponse } from "./common.dto";
+import { SubscriptionValidity } from "../../domain/enums/subscription.enum";
 
 
 // ************ used in providerAddress.use-case ************ \\
@@ -130,19 +131,10 @@ export type ProviderFetchServiceAvailabilityResponse = FontendAvailabilityForRes
 export interface ProviderStripeSubscriptionCreateSessionIdRequest {
     providerId: ProviderDTO["_id"];
     planId: PlanDTO["_id"];
-    duration: number;
+    planDuration: SubscriptionValidity;
 }
 // provider stripe subscription create sessionId use case response interface
 export type ProviderStripeSubscriptionCreateSessionIdResponse = string;
-
-
-// provider save subscription after stripe payment use case request payload interface
-export interface ProviderSaveSubscriptionRequest {
-    providerId: ProviderDTO["_id"];
-    subscirpitonId: string;
-    paymentId: string;
-    planDuration: number;
-}
 
 
 

@@ -27,3 +27,11 @@ export const isSubscriptionExpired = (endDate: string | Date): boolean => {
 export const getDateAfterDays = (days: number): Date => {
   return dayjs().add(days, "day").toDate();
 };
+
+export const getNumberOfMonths = (days: number): number => {
+  return days/30;
+};
+
+export const getNumberOfTotalDays = (numberOfMonths: number): number => {
+  return numberOfMonths * 30
+}

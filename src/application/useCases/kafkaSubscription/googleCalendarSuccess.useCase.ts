@@ -1,6 +1,6 @@
 import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/common.enum";
-import { CreateGoogleCalendarEventSuccessResult } from "../../dtos/kafka.dtos";
+import { CreateGoogleCalendarEventSuccessResult, EventEnvelope } from "../../dtos/kafka.dtos";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 
 export class GoogleCalendarSuccessUseCases {
@@ -8,9 +8,9 @@ export class GoogleCalendarSuccessUseCases {
         private readonly bookingRepository: IBookingRepository
     ) { };
 
-    async execute(payload: CreateGoogleCalendarEventSuccessResult): Promise<void> {
+    async execute(payload: EventEnvelope<CreateGoogleCalendarEventSuccessResult>): Promise<void> {
         try {
-            const { bookingId, role, eventId } = payload;
+            const { payload: { mbsData: { bookingId, role, eventId } } } = payload;
 
             const booking = await this.bookingRepository.findById(bookingId);
 

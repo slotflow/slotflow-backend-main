@@ -7,15 +7,16 @@ import {
     AdminChangeProviderBlockStatusRequest,
     AdminChangeProviderBlockStatusResponse,
 } from "../../dtos/admin.dto";
+import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { ApiPaginationRequest, TableData } from "../../dtos/common.dto";
+import { notificationContentMap } from "../../../shared/utils/constants";
 import { ICacheService } from "../../../domain/interfaces/services/ICache.service";
 import { AdminVerificationStatus } from "../../../domain/enums/adminVerificationStatus.enum";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-import { SendAccountBlockStatusEvent, SendAccountTrustStatusEvent, SendAdminProviderReviewEvent } from "../../dtos/kafka.dtos";
-import { notificationContentMap } from "../../../shared/utils/constants";
+import { EventEnvelope, SendAccountBlockStatusEvent, SendAccountTrustStatusEvent, SendAdminProviderReviewEvent } from "../../dtos/kafka.dtos";
 
 export class AdminProviderListUseCase {
     constructor(
@@ -68,14 +69,24 @@ export class AdminApproveProviderUseCase {
 
             await this.providerRepository.update(provider);
 
-            await this.kafkaProducer.publish<SendAdminProviderReviewEvent>(kafkaConfig.topics.pub.adminProviderReview, {
-                email: provider.email,
-                name: provider.username,
-                status: AdminVerificationStatus.APPROVED,
-                userId: provider._id,
-                pushNotification: provider.allowPushNotification ?? false,
-                title: notificationContentMap.adminProviderReview.title,
-                body: notificationContentMap.adminProviderReview.body(AdminVerificationStatus.APPROVED),
+            await this.kafkaProducer.publish<EventEnvelope<SendAdminProviderReviewEvent>>(kafkaConfig.topics.pub.adminProviderReview, {
+                eventId: uuidv4(),
+                attempt: 1,
+                maxAttempts: 1,
+                occurredAt: new Date().toISOString(),
+                payload: {
+                    emailData: {
+                        email: provider.email,
+                        name: provider.username,
+                        status: AdminVerificationStatus.APPROVED,
+                    },
+                    notificationData: {
+                        userId: provider._id,
+                        pushNotification: provider.allowPushNotification ?? false,
+                        title: notificationContentMap.adminProviderReview.title,
+                        body: notificationContentMap.adminProviderReview.body(AdminVerificationStatus.APPROVED),
+                    },
+                },
             });
 
         } catch (error) {
@@ -109,15 +120,25 @@ export class AdminRejectProviderUseCase {
 
             await this.providerRepository.update(provider);
 
-            await this.kafkaProducer.publish<SendAdminProviderReviewEvent>(kafkaConfig.topics.pub.adminProviderReview, {
-                email: provider.email,
-                name: provider.username,
-                status: AdminVerificationStatus.REJECTED,
-                userId: provider._id,
-                reason: provider.verificationRejectionReason ?? undefined,
-                pushNotification: provider.allowPushNotification ?? false,
-                title: notificationContentMap.adminProviderReview.title,
-                body: notificationContentMap.adminProviderReview.body(AdminVerificationStatus.REJECTED),
+            await this.kafkaProducer.publish<EventEnvelope<SendAdminProviderReviewEvent>>(kafkaConfig.topics.pub.adminProviderReview, {
+                eventId: uuidv4(),
+                attempt: 1,
+                maxAttempts: 1,
+                occurredAt: new Date().toISOString(),
+                payload: {
+                    emailData: {
+                        email: provider.email,
+                        name: provider.username,
+                        status: AdminVerificationStatus.REJECTED,
+                        reason: provider.verificationRejectionReason ?? undefined,
+                    },
+                    notificationData: {
+                        userId: provider._id,
+                        pushNotification: provider.allowPushNotification ?? false,
+                        title: notificationContentMap.adminProviderReview.title,
+                        body: notificationContentMap.adminProviderReview.body(AdminVerificationStatus.REJECTED),
+                    },
+                },
             });
 
         } catch (error) {
@@ -155,14 +176,24 @@ export class AdminChangeProviderBlockStatusUseCase {
                 await this.cacheService.deleteBlockList(providerId);
             };
 
-            await this.kafkaProducer.publish<SendAccountBlockStatusEvent>(kafkaConfig.topics.pub.accountBlockStatus, {
-                email: provider.email,
-                name: provider.username,
-                blocked: updatedProvider.isBlocked,
-                userId: provider._id,
-                pushNotification: provider.allowPushNotification ?? false,
-                title: notificationContentMap.accountBlockStatus.title,
-                body: notificationContentMap.accountBlockStatus.body(updatedProvider.isBlocked),
+            await this.kafkaProducer.publish<EventEnvelope<SendAccountBlockStatusEvent>>(kafkaConfig.topics.pub.accountBlockStatus, {
+                eventId: uuidv4(),
+                attempt: 1,
+                maxAttempts: 1,
+                occurredAt: new Date().toISOString(),
+                payload: {
+                    emailData: {
+                        blocked: updatedProvider.isBlocked,
+                        email: provider.email,
+                        name: provider.username,
+                    },
+                    notificationData: {
+                        userId: provider._id,
+                        pushNotification: provider.allowPushNotification ?? false,
+                        title: notificationContentMap.accountBlockStatus.title,
+                        body: notificationContentMap.accountBlockStatus.body(updatedProvider.isBlocked),
+                    },
+                },
             });
 
             return { providerId, isBlocked: updatedProvider.isBlocked };
@@ -194,14 +225,24 @@ export class AdminChangeProviderTrustTagUseCase {
             const updatedProvider = await this.providerRepository.update(provider);
             if (!updatedProvider) throw new Error("Provider not found");
 
-            await this.kafkaProducer.publish<SendAccountTrustStatusEvent>(kafkaConfig.topics.pub.accountTrustStatus, {
-                email: provider.email,
-                name: provider.username,
-                trusted: updatedProvider.trustedBySlotflow,
-                userId: provider._id,
-                pushNotification: provider.allowPushNotification ?? false,
-                title: notificationContentMap.accountTrustStatus.title,
-                body: notificationContentMap.accountTrustStatus.body(updatedProvider.trustedBySlotflow),
+            await this.kafkaProducer.publish<EventEnvelope<SendAccountTrustStatusEvent>>(kafkaConfig.topics.pub.accountTrustStatus, {
+                eventId: uuidv4(),
+                attempt: 1,
+                maxAttempts: 1,
+                occurredAt: new Date().toISOString(),
+                payload: {
+                    emailData: {
+                        email: provider.email,
+                        name: provider.username,
+                        trusted: updatedProvider.trustedBySlotflow,
+                    },
+                    notificationData: {
+                        userId: provider._id,
+                        pushNotification: provider.allowPushNotification ?? false,
+                        title: notificationContentMap.accountTrustStatus.title,
+                        body: notificationContentMap.accountTrustStatus.body(updatedProvider.trustedBySlotflow),
+                    },
+                },
             });
 
             return { providerId, trustedBySlotflow: updatedProvider.trustedBySlotflow };

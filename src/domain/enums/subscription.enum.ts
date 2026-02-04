@@ -10,5 +10,5 @@ export enum SubscriptionValidity {
     ONE_MONTH = 30,
     THREE_MONTHS = 90,
     SIX_MONTHS = 180,
-    TWELVE_MONTHS = 365,
+    TWELVE_MONTHS = 360,
 };

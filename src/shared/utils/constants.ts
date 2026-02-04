@@ -55,5 +55,10 @@ export const notificationContentMap: Record<string, {
     title: "Trial Subscription",
     body: () =>
       `Your trial subscription has been activated.`
+  },
+  resetPassword: {
+    title: "Password Reset",
+    body: () =>
+      `Your password has been reset successfully.`
   }
 };

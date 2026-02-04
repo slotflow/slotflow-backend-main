@@ -1,14 +1,15 @@
+import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from '../../../config/env';
 import { log } from '../../../shared/logger/logger';
-import { SendOtpEvent } from '../../dtos/kafka.dtos';
 import { User } from '../../../domain/entities/user.entity';
+import { EventEnvelope, SendOtpEvent } from '../../dtos/kafka.dtos';
 import { Provider } from '../../../domain/entities/provider.entity';
+import { OtpPurpose, Role } from '../../../domain/enums/common.enum';
 import { ResendOtpRequest, ResendOtpResponse } from '../../dtos/auth.dto';
 import { IOTPService } from '../../../domain/interfaces/services/IOtp.service';
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { IKafkaProducerAdapter } from '../../../domain/interfaces/messaging/IKafkaProducerAdapter';
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
-import { OtpPurpose, Role } from '../../../domain/enums/common.enum';
 
 export class ResendOtpUseCase {
 
@@ -50,11 +51,19 @@ export class ResendOtpUseCase {
       const otp = await this.otpService.setOtp(userOrProvider?.verificationToken);
       if (!otp) throw new Error("Unexpected error, please try again.");
 
-      await this.kafkaProducer.publish<SendOtpEvent>(kafkaConfig.topics.pub.sendOtp, {
-        email: userOrProvider.email,
-        name: userOrProvider.username,
-        otp,
-        purpose: OtpPurpose.REGISTRATION
+      await this.kafkaProducer.publish<EventEnvelope<SendOtpEvent>>(kafkaConfig.topics.pub.sendOtp, {
+        eventId: uuidv4(),
+        attempt: 1,
+        maxAttempts: 1,
+        occurredAt: new Date().toISOString(),
+        payload: {
+          emailData: {
+            email: userOrProvider.email,
+            name: userOrProvider.username,
+            otp,
+            purpose: OtpPurpose.REGISTRATION
+          }
+        }
       });
 
       return { authUser: { verificationToken: userOrProvider.verificationToken, role } };

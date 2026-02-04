@@ -1,16 +1,17 @@
+import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { PlanName } from "../../../domain/enums/plan.enum";
 import { User } from "../../../domain/entities/user.entity";
 import { IJWT } from "../../../domain/interfaces/security/IJwt";
-import { notificationContentMap } from "../../../shared/utils/constants";
 import { Provider } from "../../../domain/entities/provider.entity";
 import { AppConnect, Role } from "../../../domain/enums/common.enum";
 import { Credential } from "../../../domain/entities/credential.entity";
-import { SendAppConnectEvent, SendWelcomeEvent } from "../../dtos/kafka.dtos";
+import { notificationContentMap } from "../../../shared/utils/constants";
 import { SubscriptionStatus } from "../../../domain/enums/subscription.enum";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
+import { EventEnvelope, SendAppConnectEvent, SendWelcomeEvent } from "../../dtos/kafka.dtos";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 import { IAesEncryptionService } from "../../../domain/interfaces/services/IAesEncryption.service";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
@@ -174,20 +175,38 @@ export class GoogleAuthOrchestratorUseCase {
 
             if (!entity.googleConnected) {
                 if (connectOnly) {
-                    await this.kafkaProducer.publish<SendAppConnectEvent>(kafkaConfig.topics.pub.appConnect, {
-                        email: entity.email,
-                        name: entity.username,
-                        appConnect: AppConnect.GOOGLE,
-                        userId: entity._id,
-                        pushNotification: entity.allowPushNotification ?? false,
-                        title: notificationContentMap.appConnect.title,
-                        body: notificationContentMap.appConnect.body(AppConnect.GOOGLE),
+                    await this.kafkaProducer.publish<EventEnvelope<SendAppConnectEvent>>(kafkaConfig.topics.pub.appConnect, {
+                        eventId: uuidv4(),
+                        attempt: 1,
+                        maxAttempts: 1,
+                        occurredAt: new Date().toISOString(),
+                        payload: {
+                            emailData: {
+                                email: entity.email,
+                                name: entity.username,
+                                appConnect: AppConnect.GOOGLE,
+                            },
+                            notificationData: {
+                                userId: entity._id,
+                                pushNotification: entity.allowPushNotification ?? false,
+                                title: notificationContentMap.appConnect.title,
+                                body: notificationContentMap.appConnect.body(AppConnect.GOOGLE),
+                            }
+                        }
                     });
                 } else {
-                    await this.kafkaProducer.publish<SendWelcomeEvent>(kafkaConfig.topics.pub.registerSuccess, {
-                        email: entity.email,
-                        name: entity.username,
-                        role
+                    await this.kafkaProducer.publish<EventEnvelope<SendWelcomeEvent>>(kafkaConfig.topics.pub.registerSuccess, {
+                        eventId: uuidv4(),
+                        attempt: 1,
+                        maxAttempts: 1,
+                        occurredAt: new Date().toISOString(),
+                        payload: {
+                            emailData: {
+                                email: entity.email,
+                                name: entity.username,
+                                role
+                            }
+                        }
                     });
                 };
             }

@@ -1,17 +1,17 @@
 import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from '../../../config/env';
 import { log } from '../../../shared/logger/logger';
-import { SendOtpEvent } from '../../dtos/kafka.dtos';
 import { User } from '../../../domain/entities/user.entity';
 import { IJWT } from '../../../domain/interfaces/security/IJwt';
+import { EventEnvelope, SendOtpEvent } from '../../dtos/kafka.dtos';
 import { Provider } from '../../../domain/entities/provider.entity';
+import { OtpPurpose, Role } from '../../../domain/enums/common.enum';
 import { RegisterRequest, RegisterResponse } from '../../dtos/auth.dto';
 import { IOTPService } from '../../../domain/interfaces/services/IOtp.service';
 import { IPasswordHasher } from '../../../domain/interfaces/security/IPasswordHasher';
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { IKafkaProducerAdapter } from '../../../domain/interfaces/messaging/IKafkaProducerAdapter';
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
-import { OtpPurpose, Role } from '../../../domain/enums/common.enum';
 
 // CAN OPTIMISE ( REDUCE SAME TYPE OF CODE )
 
@@ -58,11 +58,19 @@ export class RegisterUseCase {
 
         const token = await this.jwtService.generateToken({ email, role });
 
-        await this.kafkaProducer.publish<SendOtpEvent>(kafkaConfig.topics.pub.sendOtp, {
-          email,
-          name: username,
-          otp,
-          purpose: OtpPurpose.REGISTRATION
+        await this.kafkaProducer.publish<EventEnvelope<SendOtpEvent>>(kafkaConfig.topics.pub.sendOtp, {
+          eventId: uuidv4(),
+          attempt: 1,
+          maxAttempts: 1,
+          occurredAt: new Date().toISOString(),
+          payload: {
+            emailData: {
+              email,
+              name: username,
+              otp,
+              purpose: OtpPurpose.REGISTRATION
+            },
+          }
         });
 
         return {
@@ -100,11 +108,19 @@ export class RegisterUseCase {
 
         const token = await this.jwtService.generateToken({ email, role });
 
-        await this.kafkaProducer.publish<SendOtpEvent>(kafkaConfig.topics.pub.sendOtp, {
-          email,
-          name: username,
-          otp,
-          purpose: OtpPurpose.REGISTRATION
+        await this.kafkaProducer.publish<EventEnvelope<SendOtpEvent>>(kafkaConfig.topics.pub.sendOtp, {
+          eventId: uuidv4(),
+          attempt: 1,
+          maxAttempts: 1,
+          occurredAt: new Date().toISOString(),
+          payload: {
+            emailData: {
+              email,
+              name: username,
+              otp,
+              purpose: OtpPurpose.REGISTRATION
+            }
+          }
         });
 
         return {

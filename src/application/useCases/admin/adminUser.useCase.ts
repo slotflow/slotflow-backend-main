@@ -5,16 +5,17 @@ import {
     AdminChangeUserIsBlockedStatusRequest,
     AdminChangeUserIsBlockedStatusResponse,
 } from "../../dtos/admin.dto";
+import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { IUserQueries } from "../../queries/IUser.queries";
-import { SendAccountBlockStatusEvent } from "../../dtos/kafka.dtos";
 import { ApiPaginationRequest, TableData } from "../../dtos/common.dto";
+import { notificationContentMap } from "../../../shared/utils/constants";
+import { EventEnvelope, SendAccountBlockStatusEvent } from "../../dtos/kafka.dtos";
+import { ICacheService } from "../../../domain/interfaces/services/ICache.service";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
-import { ICacheService } from "../../../domain/interfaces/services/ICache.service";
-import { notificationContentMap } from "../../../shared/utils/constants";
 
 export class AdminUserListUseCase {
     constructor(
@@ -66,14 +67,24 @@ export class AdminChangeUserBlockStatusUseCase {
                 await this.cacheService.deleteBlockList(userId);
             };
 
-            await this.kafkaProducer.publish<SendAccountBlockStatusEvent>(kafkaConfig.topics.pub.accountBlockStatus, {
-                userId,
-                blocked: updatedUser.isBlocked,
-                email: user.email,
-                name: user.username,
-                pushNotification: user.allowPushNotification ?? false,
-                title: notificationContentMap.accountBlockStatus.title,
-                body: notificationContentMap.accountBlockStatus.body(updatedUser.isBlocked),
+            await this.kafkaProducer.publish<EventEnvelope<SendAccountBlockStatusEvent>>(kafkaConfig.topics.pub.accountBlockStatus, {
+                eventId: uuidv4(),
+                attempt: 1,
+                maxAttempts: 1,
+                occurredAt: new Date().toISOString(),
+                payload: {
+                    emailData: {
+                        email: user.email,
+                        name: user.username,
+                        blocked: updatedUser.isBlocked,
+                    },
+                    notificationData: {
+                        userId: user._id,
+                        pushNotification: user.allowPushNotification ?? false,
+                        title: notificationContentMap.accountBlockStatus.title,
+                        body: notificationContentMap.accountBlockStatus.body(updatedUser.isBlocked),
+                    }
+                }
             });
 
             return { userId, isBlocked: updatedUser.isBlocked };

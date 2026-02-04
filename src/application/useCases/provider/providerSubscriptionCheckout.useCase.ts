@@ -1,11 +1,11 @@
 import dayjs from "dayjs";
 import {
-    ProviderSaveSubscriptionRequest,
     ProviderStripeSubscriptionCreateSessionIdRequest,
     ProviderStripeSubscriptionCreateSessionIdResponse,
 } from "../../dtos/provider.dto";
 import { log } from "../../../shared/logger/logger";
-import { getDateAfterDays } from "../../../shared/utils/dateTime";
+import { PaymentFor } from "../../../domain/enums/payment.enum";
+import { getNumberOfMonths } from "../../../shared/utils/dateTime";
 import { Subscription } from "../../../domain/entities/subscription.entity";
 import { SubscriptionStatus } from "../../../domain/enums/subscription.enum";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
@@ -23,9 +23,7 @@ export class ProviderSubscriptionCheckoutUseCase {
 
     async execute(payload: ProviderStripeSubscriptionCreateSessionIdRequest): Promise<ProviderStripeSubscriptionCreateSessionIdResponse> {
         try {
-            const { providerId, planId, duration } = payload;
-
-            let planDuration: number = duration / 30;
+            const { providerId, planId, planDuration } = payload;
 
             const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("No user found, please logout and try again.");
@@ -42,7 +40,7 @@ export class ProviderSubscriptionCheckoutUseCase {
             };
 
             const subscription = await this.subscriptionRepository.create(
-                Subscription.create({
+                Subscription.createInitialData({
                     providerId,
                     subscriptionPlanId: planId,
                 })
@@ -53,47 +51,21 @@ export class ProviderSubscriptionCheckoutUseCase {
                 providerId,
                 planName: plan.planName,
                 planDescription: plan.description,
-                planDuration,
+                planDuration: getNumberOfMonths(planDuration),
                 unitAmount: plan.price,
+                paymentFor: PaymentFor.PROVIDER_SUBSCRIPTION,
+                paymentDate: new Date(),
+                name: provider.username,
+                email: provider.email,
+                initialAmount: plan.price * planDuration,
+                totalAmount: plan.price * planDuration,
+                discountAmount: 0,
             });
 
             return sessionId;
         } catch (error) {
-            log.error("ProviderStripeSubscriptionCreateSessionIdUseCase failed", error as Error);
+            log.error("ProviderSubscriptionCheckoutUseCase failed", error as Error);
             throw error;
-        };
-    };
-};
-
-export class ProviderSaveSubscriptionUseCase {
-    constructor(
-        private providerRepository: IProviderRepository,
-        private subscriptionRepository: ISubscriptionRepository,
-    ) { };
-
-    async execute(payload: ProviderSaveSubscriptionRequest): Promise<void> {
-        try {
-            const { providerId, subscirpitonId, paymentId, planDuration } = payload;
-
-                const provider = await this.providerRepository.findById(providerId);
-                if (!provider) throw new Error("User not found.");
-
-                const subscription = await this.subscriptionRepository.findById(subscirpitonId);
-                if (!subscription) throw new Error("Subscription not found.");
-
-                provider.pushSubscriptionId(subscription._id);
-                await this.providerRepository.update(provider);
-
-                subscription.subscriptionPaymentSusccess({
-                    startDate: new Date(),
-                    endDate: getDateAfterDays(planDuration),
-                    paymentId,
-                });
-                await this.subscriptionRepository.update(subscription);
-
-        } catch (error) {
-            log.error("ProviderSaveSubscriptionUseCase failed", error as Error);
-            throw error;
-        };
-    };
+        }
+    }
 };

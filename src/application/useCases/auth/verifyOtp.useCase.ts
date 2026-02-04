@@ -1,14 +1,15 @@
+import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
-import { SendWelcomeEvent } from "../../dtos/kafka.dtos";
+import { Role } from "../../../domain/enums/common.enum";
 import { User } from "../../../domain/entities/user.entity";
 import { Provider } from "../../../domain/entities/provider.entity";
+import { EventEnvelope, SendWelcomeEvent } from "../../dtos/kafka.dtos";
 import { IOTPService } from "../../../domain/interfaces/services/IOtp.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { OTPVerificationRequest, VerifyAndActivateEntityRequest } from "../../dtos/auth.dto";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-import { Role } from "../../../domain/enums/common.enum";
 
 export class VerifyOTPUseCase {
   constructor(
@@ -40,10 +41,18 @@ export class VerifyOTPUseCase {
         verificationToken
       });
 
-      await this.kafkaProducer.publish<SendWelcomeEvent>(kafkaConfig.topics.pub.registerSuccess, {
-        email: entity.email,
-        name: entity.username,
-        role
+      await this.kafkaProducer.publish<EventEnvelope<SendWelcomeEvent>>(kafkaConfig.topics.pub.registerSuccess, {
+        eventId: uuidv4(),
+        attempt: 1,
+        maxAttempts: 1,
+        occurredAt: new Date().toISOString(),
+        payload: {
+          emailData: {
+            email: entity.email,
+            name: entity.username,
+            role,
+          },
+        }
       });
 
     } catch (error) {

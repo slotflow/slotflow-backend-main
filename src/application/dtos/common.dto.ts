@@ -606,3 +606,20 @@ export interface DecodedUser {
   iat?: number;
   userId?: string;
 };
+
+// send provider create payment failed event
+export interface ProviderCreatePaymentFailedEventResult {
+  mbsData: {
+    subscriptionId: string;
+  }
+};
+
+// send provider create payment success event
+export interface ProviderCreatePaymentSuccessEventResult {
+  mbsData: {
+        subscriptionId: string;
+        paymentId: string;
+        planDuration: number;
+        providerId: string;
+    };
+};

@@ -119,8 +119,6 @@ export const providerPlanSubscribeSchema = z.object({
     planDuration: z.nativeEnum(SubscriptionValidity),
 }).merge(validateProviderIdSchema);
 
-//
-export const providerSaveSubscriptionSchema = saveStripePaymentSchema.merge(validateProviderIdSchema)
 
 // Validating the page and limit in the request query zod schema
 export const providerChangeAppointmentStatusSchema = z.object({

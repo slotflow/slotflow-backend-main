@@ -1,7 +1,7 @@
 import { PaymentStatus } from "../enums/payment.enum";
 import { SubscriptionStatus } from "../enums/subscription.enum";
 import { SubscriptionProps } from "../contracts/subscription.contract";
-import { CreateSubscriptionProps, SubscriptionPaymentSuccessProps } from "../commands/subscription.commands";
+import { CreateSubscriptionInitialProps, CreateSubscriptionProps, SubscriptionPaymentSuccessProps } from "../commands/subscription.commands";
 
 export class Subscription {
     private props: SubscriptionProps;
@@ -14,15 +14,29 @@ export class Subscription {
         this.props.updatedAt = new Date();
     };
 
+    static createInitialData(props: CreateSubscriptionInitialProps) {
+        return new Subscription({
+            _id: "",
+            ...props,
+            startDate: null,
+            endDate: null,
+            subscriptionStatus: SubscriptionStatus.PENDING,
+            paymentStatus: PaymentStatus.PENDING,
+            paymentId: null,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        })
+    }
+
     static create(props: CreateSubscriptionProps) {
         return new Subscription({
             _id: "",
             ...props,
-            paymentId: null,
-            subscriptionStatus: SubscriptionStatus.PENDING,
+            startDate: props.startDate,
+            endDate: props.endDate,
+            subscriptionStatus: props.subscriptionStatus,
             paymentStatus: PaymentStatus.PENDING,
-            startDate: null,
-            endDate: null,
+            paymentId: null,
             createdAt: new Date(),
             updatedAt: new Date(),
         })
@@ -38,14 +52,14 @@ export class Subscription {
     };
 
     get endDate(): Date {
-        if(!this.props.endDate) {
+        if (!this.props.endDate) {
             throw new Error("No endDate found");
         }
         return this.props.endDate;
     };
 
     get startDate(): Date {
-        if(!this.props.startDate) {
+        if (!this.props.startDate) {
             throw new Error("No startDate found");
         }
         return this.props.startDate;
@@ -66,7 +80,7 @@ export class Subscription {
         this.touch();
     };
 
-    subscriptionPaymentSusccess(props: SubscriptionPaymentSuccessProps) {
+    subscriptionPaymentSuccess(props: SubscriptionPaymentSuccessProps) {
         if (this.props.paymentStatus !== PaymentStatus.PENDING) return;
         this.props.paymentStatus = PaymentStatus.PAID;
         this.props.subscriptionStatus = SubscriptionStatus.ACTIVE;
