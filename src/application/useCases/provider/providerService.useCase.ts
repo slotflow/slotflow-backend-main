@@ -21,10 +21,10 @@ export class ProviderCreateServiceDetailsUseCase {
                 ...payload
             });
 
-            await this.providerServiceRepository.create(providerService);
+            const serivce = await this.providerServiceRepository.create(providerService);
 
-            if (provider && providerService && providerService._id) {
-                provider.attachService(providerService._id);
+            if (provider && serivce) {
+                provider.attachService(serivce._id);
                 const updatedProvider = await this.providerRepository.update(provider);
                 if (!updatedProvider) throw new Error("Failed to update provider with service ID.");
             };

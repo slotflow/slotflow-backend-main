@@ -36,7 +36,9 @@ class ProviderAddressController {
 
     async getAddress(req: Request, res: Response, next: NextFunction) {
         try {
-            const { providerId } = validateProviderIdSchema.parse((req.user as DecodedUser).userOrProviderId);
+            const { providerId } = validateProviderIdSchema.parse({
+                providerId: (req.user as DecodedUser).userOrProviderId
+            });
             const result = await this.providerFetchAddressUseCase.execute({ providerId });
             sendResponse(res, result, `Address ${result ? "fetched successfully" : "not added yet"}`);
         } catch (error) {

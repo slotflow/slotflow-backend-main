@@ -19,6 +19,7 @@ class ProviderServiceController {
 
     async createServiceDetails(req: Request, res: Response, next: NextFunction) {
         try {
+            console.log("createServiceDetails");
             const { providerId, ...serviceData } = providerCreateServiceDetailsSchema.parse({
                 providerId: (req.user as DecodedUser).userOrProviderId,
                 ...req.body

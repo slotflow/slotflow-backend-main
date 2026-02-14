@@ -94,7 +94,7 @@ class UserProviderController {
 
     async fetchProvidersForChatSidebar(req: Request, res: Response, next: NextFunction) {
         try {
-            const { userId } = validateUserIdSchema.parse({ providerId: (req.user as DecodedUser).userOrProviderId });
+            const { userId } = validateUserIdSchema.parse({ userId: (req.user as DecodedUser).userOrProviderId });
             const result = await this.userFetchProvidersForChatSidebar.execute({ userId });
             sendResponse(res, result);
         } catch (error) {

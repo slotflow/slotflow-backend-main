@@ -14,8 +14,10 @@ class ProviderAppServiceController {
 
     async getAllAppServices(req: Request, res: Response, next: NextFunction) {
         try {
-            const { categories } = fetchAllAppServicesSchema.parse(req.query);
-            const result = await this.fetchAllAppServicesUseCase.execute({ categories });
+            console.log("req.query : ",req.query);
+            console.log("req.params : ",req.params);
+            const { serviceCategory } = fetchAllAppServicesSchema.parse(req.query);
+            const result = await this.fetchAllAppServicesUseCase.execute({ categories: serviceCategory });
             sendResponse(res, result);
         } catch (error) {
             log.error("getAllAppServices failed",error as Error);

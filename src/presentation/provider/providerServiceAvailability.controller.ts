@@ -18,7 +18,9 @@ class ProviderServiceAvailabilityController {
 
     async createServiceAvailability(req: Request, res: Response, next: NextFunction) {
         try {
-            const { providerId } = validateProviderIdSchema.parse((req.user as DecodedUser).userOrProviderId);
+            const { providerId } = validateProviderIdSchema.parse({
+                providerId: (req.user as DecodedUser).userOrProviderId
+            });
             const availabilities = providerCreateServiceAvailabilitySchema.parse(req.body);
             if (!availabilities || availabilities.length === 0) throw new Error("Invalid request.");
             await this.providerCreateServiceAvailabilitiesUseCase.execute({ providerId, availabilities });

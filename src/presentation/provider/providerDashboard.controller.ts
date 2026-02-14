@@ -18,7 +18,9 @@ class ProviderDashboardController {
 
     async getDashboardStats(req: Request, res: Response, next: NextFunction) {
         try {
-            const { providerId } = validateProviderIdSchema.parse((req.user as DecodedUser).userOrProviderId);
+            const { providerId } = validateProviderIdSchema.parse({
+                providerId: (req.user as DecodedUser).userOrProviderId
+            });
             const result = await this.providerFetchDashboardStatsUseCase.execute({ providerId });
             sendResponse(res, result);
         } catch (error) {

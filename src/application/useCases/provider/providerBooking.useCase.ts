@@ -84,7 +84,7 @@ export class ProviderChangeBookingAppointmentStatusUseCase {
             });
 
             if (userAccessToken) {
-                await this.kafkaProducer.publish<EventEnvelope<CreateGoogleCalendarEvent>>(kafkaConfig.topics.pub.createGoogleCalendar, {
+                await this.kafkaProducer.publish<EventEnvelope<CreateGoogleCalendarEvent>>(kafkaConfig.topics.pub.createGoogleCalendarEvent, {
                     eventId: uuidv4(),
                     occurredAt: new Date().toString(),
                     attempt: 1,
@@ -102,7 +102,7 @@ export class ProviderChangeBookingAppointmentStatusUseCase {
             };
 
             if (providerAccessToken) {
-                await this.kafkaProducer.publish<EventEnvelope<CreateGoogleCalendarEvent>>(kafkaConfig.topics.pub.createGoogleCalendar, {
+                await this.kafkaProducer.publish<EventEnvelope<CreateGoogleCalendarEvent>>(kafkaConfig.topics.pub.createGoogleCalendarEvent, {
                     eventId: uuidv4(),
                     occurredAt: new Date().toString(),
                     attempt: 1,

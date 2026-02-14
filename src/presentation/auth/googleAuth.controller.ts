@@ -1,11 +1,11 @@
 import passport from "passport";
 import { log } from "../../shared/logger/logger";
 import { googleAuthOrchestratorUseCase } from ".";
+import { Role } from "../../domain/enums/common.enum";
 import { NextFunction, Request, Response } from "express";
 import { appConfig, serviceConfig } from "../../config/env";
-import { roleValidationSchema } from "../../shared/zod/common.zod";
+import { roleValidationSchema } from "../../shared/zod/base.zod";
 import { GoogleAuthOrchestratorUseCase } from "../../application/useCases/auth/googleAuthOrchestrate.useCase";
-import { Role } from "../../domain/enums/common.enum";
 
 class GoogleAuthController {
     constructor(

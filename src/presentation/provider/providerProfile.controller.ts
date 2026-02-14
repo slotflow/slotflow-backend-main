@@ -34,7 +34,9 @@ class ProviderProfileController {
 
     async getProfileDetails(req: Request, res: Response, next: NextFunction) {
         try {
-            const { providerId } = validateProviderIdSchema.parse((req.user as DecodedUser).userOrProviderId)
+            const { providerId } = validateProviderIdSchema.parse({
+                providerId: (req.user as DecodedUser).userOrProviderId
+            });
             const result = await this.providerFetchProfileDetailsUseCase.execute({ providerId });
             sendResponse(res, result);
         } catch (error) {
@@ -125,7 +127,9 @@ class ProviderProfileController {
 
     async requestAdminApproval(req: Request, res: Response, next: NextFunction) {
         try {
-            const { providerId } = validateProviderIdSchema.parse((req.user as DecodedUser).userOrProviderId);
+            const { providerId } = validateProviderIdSchema.parse({
+                providerId: (req.user as DecodedUser).userOrProviderId
+            });
             const result = await this.providerRequestForApprovalUseCase.execute({ providerId });
             sendResponse(res, result, "Requested admin approval");
         } catch (error) {
@@ -156,19 +160,19 @@ class ProviderProfileController {
         };
     };
 
-     async updatePushNotification(req: Request, res: Response, next: NextFunction) {
-            try {
-                const { allowPushNotification, providerId } = providerUpdatePushNotificationSchema.parse({
-                    providerId: (req.user as DecodedUser).userOrProviderId,
-                    ...req.body
-                });
-                const result = await this.providerUpdatePushNotificationUseCase.execute({ providerId, allowPushNotification });
-                sendResponse(res, result, "Push notification updated successfully");
-            } catch (error) {
-                log.error("updatePushNotification failed", error as Error);
-                next(error);
-            };
+    async updatePushNotification(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { allowPushNotification, providerId } = providerUpdatePushNotificationSchema.parse({
+                providerId: (req.user as DecodedUser).userOrProviderId,
+                ...req.body
+            });
+            const result = await this.providerUpdatePushNotificationUseCase.execute({ providerId, allowPushNotification });
+            sendResponse(res, result, "Push notification updated successfully");
+        } catch (error) {
+            log.error("updatePushNotification failed", error as Error);
+            next(error);
         };
+    };
 
 };
 

@@ -6682,3 +6682,1324 @@
 [2026-01-25 17:42:54] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
 [2026-01-25 17:42:54] [[32minfo[39m]: [32mKafka producer connected[39m
 [2026-01-25 17:42:54] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-12 16:48:02] [[31merror[39m]: [31mMongoDB Connection Error : [39m
+[31mconnect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017[39m
+[31mMongooseServerSelectionError: connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017[39m
+[31m    at _handleConnectionErrors (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\mongoose@8.21.1\node_modules\mongoose\lib\connection.js:1169:11)[39m
+[31m    at NativeConnection.openUri (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\mongoose@8.21.1\node_modules\mongoose\lib\connection.js:1100:11)[39m
+[31m    at async connectDB (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\config\database\mongodb\mongodb.config.ts:7:9)[39m
+[31m    at async start (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\server.ts:11:5)[39m
+[2026-02-12 16:48:59] [[31merror[39m]: [31mMongoDB Connection Error : [39m
+[31mconnect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017[39m
+[31mMongooseServerSelectionError: connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017[39m
+[31m    at _handleConnectionErrors (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\mongoose@8.21.1\node_modules\mongoose\lib\connection.js:1169:11)[39m
+[31m    at NativeConnection.openUri (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\mongoose@8.21.1\node_modules\mongoose\lib\connection.js:1100:11)[39m
+[31m    at async connectDB (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\config\database\mongodb\mongodb.config.ts:7:9)[39m
+[31m    at async start (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\server.ts:11:5)[39m
+[2026-02-12 17:03:50] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-12 17:03:50] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-12 17:03:50] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-12 17:03:50] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-12 17:03:50] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-12 17:03:50] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-12 17:03:50] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-12 17:03:50] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-12 17:03:51] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-12 17:03:51] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-12 17:03:57] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-12 17:03:57] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-12 18:07:00] [[32minfo[39m]: [32m[CRON] Running UpdateBookingStatusCron[39m
+[2026-02-12 18:07:01] [[32minfo[39m]: [32m[CRON] Running UpdateSubscriptionStatusCron[39m
+[2026-02-12 18:07:01] [[32minfo[39m]: [32m[CRON] No subscription updates. Will retry later.[39m
+[2026-02-12 18:07:01] [[32minfo[39m]: [32m[CRON] No updates performed. Will retry later[39m
+[2026-02-12 20:52:07] [[32minfo[39m]: [32m[CRON] Running UpdateBookingStatusCron[39m
+[2026-02-12 20:52:07] [[32minfo[39m]: [32m[CRON] Running UpdateSubscriptionStatusCron[39m
+[2026-02-12 20:52:07] [[32minfo[39m]: [32m[CRON] No updates performed. Will retry later[39m
+[2026-02-12 20:52:07] [[32minfo[39m]: [32m[CRON] No subscription updates. Will retry later.[39m
+[2026-02-12 21:36:02] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-12 21:36:02] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-12 21:36:02] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-12 21:36:02] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-12 21:36:02] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-12 21:36:02] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-12 21:36:02] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-12 21:36:02] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-12 21:36:02] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-12 21:36:02] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-12 21:36:08] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-12 21:36:08] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-12 21:49:57] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-12 21:49:57] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-12 21:49:57] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-12 21:49:57] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-12 21:49:57] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-12 21:49:57] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-12 21:49:57] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-12 21:49:57] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-12 21:49:57] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-12 21:49:57] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-12 21:50:00] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-12 21:50:00] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-12 21:57:38] [[31merror[39m]: [31mLoginUseCase failed[39m
+[31mInvalid credentials[39m
+[31mError: Invalid credentials[39m
+[31m    at LoginUseCase.execute (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\application\useCases\auth\login.useCase.ts:34:34)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[31m    at async AuthController.login (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\auth\auth.controller.ts:77:22)[39m
+[2026-02-12 21:57:38] [[31merror[39m]: [31mlogin failed[39m
+[31mInvalid credentials[39m
+[31mError: Invalid credentials[39m
+[31m    at LoginUseCase.execute (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\application\useCases\auth\login.useCase.ts:34:34)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[31m    at async AuthController.login (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\auth\auth.controller.ts:77:22)[39m
+[2026-02-12 23:02:07] [[32minfo[39m]: [32m[CRON] Running UpdateBookingStatusCron[39m
+[2026-02-12 23:02:12] [[32minfo[39m]: [32m[CRON] Running UpdateSubscriptionStatusCron[39m
+[2026-02-12 23:02:12] [[32minfo[39m]: [32m[CRON] No subscription updates. Will retry later.[39m
+[2026-02-12 23:02:12] [[32minfo[39m]: [32m[CRON] No updates performed. Will retry later[39m
+[2026-02-13 18:28:10] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-13 18:28:10] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-13 18:28:10] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-13 18:28:10] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-13 18:28:10] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-13 18:28:10] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-13 18:28:10] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-13 18:28:10] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-13 18:28:10] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-13 18:28:10] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-13 18:28:14] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-13 18:28:14] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-13 18:29:07] [[31merror[39m]: [31msetOtp failed[39m
+[31mfetch failed[39m
+[31mTypeError: fetch failed[39m
+[31m    at node:internal/deps/undici/undici:16416:13[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[31m    at async HttpClient.request (file:///C:/MY%20LOCAL%20DISC/Slotflow/slotflow-backend-main/node_modules/.pnpm/@upstash+redis@1.36.1/node_modules/@upstash/redis/chunk-LLI2WIYN.mjs:171:15)[39m
+[31m    at async Pipeline.exec (file:///C:/MY%20LOCAL%20DISC/Slotflow/slotflow-backend-main/node_modules/.pnpm/@upstash+redis@1.36.1/node_modules/@upstash/redis/chunk-LLI2WIYN.mjs:2528:17)[39m
+[31m    at async AutoPipelineExecutor.withAutoPipeline (file:///C:/MY%20LOCAL%20DISC/Slotflow/slotflow-backend-main/node_modules/.pnpm/@upstash+redis@1.36.1/node_modules/@upstash/redis/chunk-LLI2WIYN.mjs:3443:21)[39m
+[31m    at async OTPServiceImpl.setOtp (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\infrastructure\services\otpService.impl.ts:16:7)[39m
+[31m    at async RegisterUseCase.execute (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\application\useCases\auth\register.useCase.ts:43:21)[39m
+[31m    at async AuthController.register (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\auth\auth.controller.ts:32:22)[39m
+[2026-02-13 18:29:07] [[31merror[39m]: [31mRegisterUseCase failed[39m
+[31mfetch failed[39m
+[31mTypeError: fetch failed[39m
+[31m    at node:internal/deps/undici/undici:16416:13[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[31m    at async HttpClient.request (file:///C:/MY%20LOCAL%20DISC/Slotflow/slotflow-backend-main/node_modules/.pnpm/@upstash+redis@1.36.1/node_modules/@upstash/redis/chunk-LLI2WIYN.mjs:171:15)[39m
+[31m    at async Pipeline.exec (file:///C:/MY%20LOCAL%20DISC/Slotflow/slotflow-backend-main/node_modules/.pnpm/@upstash+redis@1.36.1/node_modules/@upstash/redis/chunk-LLI2WIYN.mjs:2528:17)[39m
+[31m    at async AutoPipelineExecutor.withAutoPipeline (file:///C:/MY%20LOCAL%20DISC/Slotflow/slotflow-backend-main/node_modules/.pnpm/@upstash+redis@1.36.1/node_modules/@upstash/redis/chunk-LLI2WIYN.mjs:3443:21)[39m
+[31m    at async OTPServiceImpl.setOtp (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\infrastructure\services\otpService.impl.ts:16:7)[39m
+[31m    at async RegisterUseCase.execute (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\application\useCases\auth\register.useCase.ts:43:21)[39m
+[31m    at async AuthController.register (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\auth\auth.controller.ts:32:22)[39m
+[2026-02-13 18:29:07] [[31merror[39m]: [31mRegisterUseCase failed[39m
+[31mfetch failed[39m
+[31mTypeError: fetch failed[39m
+[31m    at node:internal/deps/undici/undici:16416:13[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[31m    at async HttpClient.request (file:///C:/MY%20LOCAL%20DISC/Slotflow/slotflow-backend-main/node_modules/.pnpm/@upstash+redis@1.36.1/node_modules/@upstash/redis/chunk-LLI2WIYN.mjs:171:15)[39m
+[31m    at async Pipeline.exec (file:///C:/MY%20LOCAL%20DISC/Slotflow/slotflow-backend-main/node_modules/.pnpm/@upstash+redis@1.36.1/node_modules/@upstash/redis/chunk-LLI2WIYN.mjs:2528:17)[39m
+[31m    at async AutoPipelineExecutor.withAutoPipeline (file:///C:/MY%20LOCAL%20DISC/Slotflow/slotflow-backend-main/node_modules/.pnpm/@upstash+redis@1.36.1/node_modules/@upstash/redis/chunk-LLI2WIYN.mjs:3443:21)[39m
+[31m    at async OTPServiceImpl.setOtp (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\infrastructure\services\otpService.impl.ts:16:7)[39m
+[31m    at async RegisterUseCase.execute (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\application\useCases\auth\register.useCase.ts:43:21)[39m
+[31m    at async AuthController.register (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\auth\auth.controller.ts:32:22)[39m
+[2026-02-13 18:35:53] [[31merror[39m]: [31mMongoDB Connection Error : [39m
+[31mconnect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017[39m
+[31mMongooseServerSelectionError: connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017[39m
+[31m    at _handleConnectionErrors (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\mongoose@8.21.1\node_modules\mongoose\lib\connection.js:1169:11)[39m
+[31m    at NativeConnection.openUri (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\mongoose@8.21.1\node_modules\mongoose\lib\connection.js:1100:11)[39m
+[31m    at async connectDB (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\config\database\mongodb\mongodb.config.ts:7:9)[39m
+[31m    at async start (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\server.ts:11:5)[39m
+[2026-02-13 18:39:14] [[31merror[39m]: [31mMongoDB Connection Error : [39m
+[31mconnect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017[39m
+[31mMongooseServerSelectionError: connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017[39m
+[31m    at _handleConnectionErrors (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\mongoose@8.21.1\node_modules\mongoose\lib\connection.js:1169:11)[39m
+[31m    at NativeConnection.openUri (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\mongoose@8.21.1\node_modules\mongoose\lib\connection.js:1100:11)[39m
+[31m    at async connectDB (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\config\database\mongodb\mongodb.config.ts:7:9)[39m
+[31m    at async start (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\server.ts:11:5)[39m
+[2026-02-13 18:40:21] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-13 18:40:21] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-13 18:40:21] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-13 18:40:21] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-13 18:40:21] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-13 18:40:21] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-13 18:40:21] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-13 18:40:21] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-13 18:40:21] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-13 18:40:21] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-13 18:40:25] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-13 18:40:25] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-13 19:40:21] [[32minfo[39m]: [32m[CRON] Running UpdateBookingStatusCron[39m
+[2026-02-13 19:40:21] [[32minfo[39m]: [32m[CRON] Running UpdateSubscriptionStatusCron[39m
+[2026-02-13 19:40:21] [[32minfo[39m]: [32m[CRON] No updates performed. Will retry later[39m
+[2026-02-13 19:40:21] [[32minfo[39m]: [32m[CRON] No subscription updates. Will retry later.[39m
+[2026-02-13 20:40:21] [[32minfo[39m]: [32m[CRON] Running UpdateBookingStatusCron[39m
+[2026-02-13 20:40:21] [[32minfo[39m]: [32m[CRON] No updates performed. Will retry later[39m
+[2026-02-13 20:40:21] [[32minfo[39m]: [32m[CRON] Running UpdateSubscriptionStatusCron[39m
+[2026-02-13 20:40:21] [[32minfo[39m]: [32m[CRON] No subscription updates. Will retry later.[39m
+[2026-02-13 21:03:23] [[31merror[39m]: [31mgetAddress failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31m    at ProviderAddressController.getAddress (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\provider\providerAddress.controller.ts:39:61)[39m
+[31m    at Layer.handle [as handle_request] (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\middleware\auth.middleware.ts:70:16)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[2026-02-13 21:13:06] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-13 21:13:06] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-13 21:13:06] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-13 21:13:06] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-13 21:13:06] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-13 21:13:06] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-13 21:13:07] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-13 21:13:07] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-13 21:13:07] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-13 21:13:07] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-13 21:13:15] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-13 21:13:15] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-13 21:19:14] [[31merror[39m]: [31mgetAddress failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31m    at ProviderAddressController.getAddress (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\provider\providerAddress.controller.ts:39:61)[39m
+[31m    at Layer.handle [as handle_request] (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\middleware\auth.middleware.ts:70:16)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[2026-02-13 23:11:13] [[32minfo[39m]: [32m[CRON] Running UpdateBookingStatusCron[39m
+[2026-02-13 23:11:15] [[32minfo[39m]: [32m[CRON] Running UpdateSubscriptionStatusCron[39m
+[2026-02-13 23:11:15] [[32minfo[39m]: [32m[CRON] No subscription updates. Will retry later.[39m
+[2026-02-13 23:11:15] [[32minfo[39m]: [32m[CRON] No updates performed. Will retry later[39m
+[2026-02-14 00:01:19] [[31merror[39m]: [31mgetAllAppServices failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "expected": "array",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Invalid input: expected array, received undefined"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "expected": "array",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Invalid input: expected array, received undefined"[39m
+[31m  }[39m
+[31m][39m
+[31m    at ProviderAppServiceController.getAllAppServices (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\provider\providerAppService.controller.ts:17:62)[39m
+[31m    at Layer.handle [as handle_request] (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\middleware\auth.middleware.ts:70:16)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[2026-02-14 00:03:10] [[31merror[39m]: [31mgetAllAppServices failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "expected": "array",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Invalid input: expected array, received undefined"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "expected": "array",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Invalid input: expected array, received undefined"[39m
+[31m  }[39m
+[31m][39m
+[31m    at ProviderAppServiceController.getAllAppServices (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\provider\providerAppService.controller.ts:17:62)[39m
+[31m    at Layer.handle [as handle_request] (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\middleware\auth.middleware.ts:70:16)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[2026-02-14 00:05:48] [[31merror[39m]: [31mgetAllAppServices failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "expected": "array",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Invalid input: expected array, received undefined"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "expected": "array",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Invalid input: expected array, received undefined"[39m
+[31m  }[39m
+[31m][39m
+[31m    at ProviderAppServiceController.getAllAppServices (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\provider\providerAppService.controller.ts:17:62)[39m
+[31m    at Layer.handle [as handle_request] (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\middleware\auth.middleware.ts:70:16)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[2026-02-14 00:07:52] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 00:07:52] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 00:07:52] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 00:07:53] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 00:07:53] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 00:07:53] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 00:07:53] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 00:07:53] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 00:07:53] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 00:07:53] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 00:07:57] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 00:07:57] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 00:09:26] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 00:09:26] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 00:09:26] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 00:09:26] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 00:09:26] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 00:09:26] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 00:09:27] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 00:09:27] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 00:09:27] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 00:09:27] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 00:09:32] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 00:09:32] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 00:09:35] [[31merror[39m]: [31mgetAllAppServices failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "expected": "array",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Invalid input: expected array, received undefined"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "expected": "array",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [[39m
+[31m      "categories"[39m
+[31m    ],[39m
+[31m    "message": "Invalid input: expected array, received undefined"[39m
+[31m  }[39m
+[31m][39m
+[31m    at ProviderAppServiceController.getAllAppServices (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\provider\providerAppService.controller.ts:19:62)[39m
+[31m    at Layer.handle [as handle_request] (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\middleware\auth.middleware.ts:70:16)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[2026-02-14 00:10:22] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 00:10:22] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 00:10:22] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 00:10:22] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 00:10:22] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 00:10:22] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 00:10:22] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 00:10:22] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 00:10:22] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 00:10:22] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 00:10:33] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 00:10:33] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 00:10:42] [[31merror[39m]: [31mgetAllAppServices failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31m    at ProviderAppServiceController.getAllAppServices (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\provider\providerAppService.controller.ts:19:62)[39m
+[31m    at Layer.handle [as handle_request] (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\middleware\auth.middleware.ts:70:16)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[2026-02-14 00:12:03] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 00:12:03] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 00:12:03] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 00:12:03] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 00:12:03] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 00:12:03] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 00:12:03] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 00:12:03] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 00:12:03] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 00:12:03] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 00:12:24] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 00:12:24] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 00:12:24] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 00:12:24] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 00:12:24] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 00:12:24] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 00:12:24] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 00:12:24] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 00:12:24] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 00:12:24] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 00:12:44] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 00:12:44] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 00:12:52] [[31merror[39m]: [31mgetAllAppServices failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31m    at ProviderAppServiceController.getAllAppServices (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\provider\providerAppService.controller.ts:19:79)[39m
+[31m    at Layer.handle [as handle_request] (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\middleware\auth.middleware.ts:70:16)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[2026-02-14 00:13:57] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 00:13:57] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 00:13:57] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 00:13:57] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 00:13:57] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 00:13:57] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 00:13:57] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 00:13:57] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 00:13:57] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 00:13:57] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 00:14:09] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 00:14:09] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 00:18:19] [[31merror[39m]: [31mgetAllAppServices failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "expected": "array",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [[39m
+[31m      "serviceCategory"[39m
+[31m    ],[39m
+[31m    "message": "Invalid input: expected array, received string"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "expected": "array",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [[39m
+[31m      "serviceCategory"[39m
+[31m    ],[39m
+[31m    "message": "Invalid input: expected array, received string"[39m
+[31m  }[39m
+[31m][39m
+[31m    at ProviderAppServiceController.getAllAppServices (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\provider\providerAppService.controller.ts:19:79)[39m
+[31m    at Layer.handle [as handle_request] (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\middleware\auth.middleware.ts:70:16)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[2026-02-14 00:19:43] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 00:19:43] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 00:19:43] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 00:19:43] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 00:19:43] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 00:19:43] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 00:19:43] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 00:19:43] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 00:19:43] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 00:19:43] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 00:19:55] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 00:19:55] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 08:22:18] [[32minfo[39m]: [32m[CRON] Running UpdateBookingStatusCron[39m
+[2026-02-14 08:22:22] [[32minfo[39m]: [32m[CRON] Running UpdateSubscriptionStatusCron[39m
+[2026-02-14 08:22:22] [[32minfo[39m]: [32m[CRON] No updates performed. Will retry later[39m
+[2026-02-14 08:22:23] [[32minfo[39m]: [32m[CRON] No subscription updates. Will retry later.[39m
+[2026-02-14 10:12:17] [[32minfo[39m]: [32m[CRON] Running UpdateBookingStatusCron[39m
+[2026-02-14 10:12:17] [[32minfo[39m]: [32m[CRON] Running UpdateSubscriptionStatusCron[39m
+[2026-02-14 10:12:17] [[31merror[39m]: [31mUpdateBookingStatusUseCase failed[39m
+[31mConnection to localhost:27017 interrupted due to server monitor timeout[39m
+[31mPoolClearedOnNetworkError: Connection to localhost:27017 interrupted due to server monitor timeout[39m
+[31m    at ConnectionPool.interruptInUseConnections (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\mongodb@6.20.0\node_modules\mongodb\src\cmap\connection_pool.ts:487:28)[39m
+[31m    at <anonymous> (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\mongodb@6.20.0\node_modules\mongodb\src\cmap\connection_pool.ts:473:35)[39m
+[31m    at processTicksAndRejections (node:internal/process/task_queues:84:11)[39m
+[31m    at runNextTicks (node:internal/process/task_queues:68:3)[39m
+[31m    at process.processTimers (node:internal/timers:538:9)[39m
+[2026-02-14 10:12:17] [[31merror[39m]: [31mUpdateSubscriptionStatusUseCase failed[39m
+[31mConnection to localhost:27017 interrupted due to server monitor timeout[39m
+[31mPoolClearedOnNetworkError: Connection to localhost:27017 interrupted due to server monitor timeout[39m
+[31m    at ConnectionPool.interruptInUseConnections (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\mongodb@6.20.0\node_modules\mongodb\src\cmap\connection_pool.ts:487:28)[39m
+[31m    at <anonymous> (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\mongodb@6.20.0\node_modules\mongodb\src\cmap\connection_pool.ts:473:35)[39m
+[31m    at processTicksAndRejections (node:internal/process/task_queues:84:11)[39m
+[31m    at runNextTicks (node:internal/process/task_queues:68:3)[39m
+[31m    at process.processTimers (node:internal/timers:538:9)[39m
+[2026-02-14 10:12:17] [[31merror[39m]: [31mUpdateBookingStatusCron failed[39m
+[31mConnection to localhost:27017 interrupted due to server monitor timeout[39m
+[31mPoolClearedOnNetworkError: Connection to localhost:27017 interrupted due to server monitor timeout[39m
+[31m    at ConnectionPool.interruptInUseConnections (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\mongodb@6.20.0\node_modules\mongodb\src\cmap\connection_pool.ts:487:28)[39m
+[31m    at <anonymous> (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\mongodb@6.20.0\node_modules\mongodb\src\cmap\connection_pool.ts:473:35)[39m
+[31m    at processTicksAndRejections (node:internal/process/task_queues:84:11)[39m
+[31m    at runNextTicks (node:internal/process/task_queues:68:3)[39m
+[31m    at process.processTimers (node:internal/timers:538:9)[39m
+[2026-02-14 10:12:17] [[31merror[39m]: [31mUpdateSubscriptionStatusCron failed[39m
+[31mConnection to localhost:27017 interrupted due to server monitor timeout[39m
+[31mPoolClearedOnNetworkError: Connection to localhost:27017 interrupted due to server monitor timeout[39m
+[31m    at ConnectionPool.interruptInUseConnections (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\mongodb@6.20.0\node_modules\mongodb\src\cmap\connection_pool.ts:487:28)[39m
+[31m    at <anonymous> (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\mongodb@6.20.0\node_modules\mongodb\src\cmap\connection_pool.ts:473:35)[39m
+[31m    at processTicksAndRejections (node:internal/process/task_queues:84:11)[39m
+[31m    at runNextTicks (node:internal/process/task_queues:68:3)[39m
+[31m    at process.processTimers (node:internal/timers:538:9)[39m
+[2026-02-14 10:31:13] [[31merror[39m]: [31mgetAllAppServices failed[39m
+[31mcategories is not defined[39m
+[31mReferenceError: categories is not defined[39m
+[31m    at ProviderAppServiceController.getAllAppServices (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\provider\providerAppService.controller.ts:20:76)[39m
+[31m    at Layer.handle [as handle_request] (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\middleware\auth.middleware.ts:70:16)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[2026-02-14 10:35:09] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 10:35:09] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 10:35:09] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 10:35:09] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 10:35:09] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 10:35:09] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 10:35:09] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 10:35:09] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 10:35:09] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 10:35:09] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 10:35:13] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 10:35:13] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 10:35:32] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 10:35:32] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 10:35:32] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 10:35:32] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 10:35:32] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 10:35:32] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 10:35:32] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 10:35:32] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 10:35:32] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 10:35:32] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 10:35:49] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 10:35:49] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 10:37:23] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 10:37:23] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 10:37:23] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 10:37:23] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 10:37:23] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 10:37:23] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 10:37:23] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 10:37:23] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 10:37:23] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 10:37:23] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 10:37:34] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 10:37:34] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 10:37:55] [[31merror[39m]: [31mgetAllAppServices failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "expected": "array",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [[39m
+[31m      "serviceCategory"[39m
+[31m    ],[39m
+[31m    "message": "Invalid input: expected array, received string"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "expected": "array",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [[39m
+[31m      "serviceCategory"[39m
+[31m    ],[39m
+[31m    "message": "Invalid input: expected array, received string"[39m
+[31m  }[39m
+[31m][39m
+[31m    at ProviderAppServiceController.getAllAppServices (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\provider\providerAppService.controller.ts:19:67)[39m
+[31m    at Layer.handle [as handle_request] (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\middleware\auth.middleware.ts:70:16)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[2026-02-14 10:39:57] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 10:39:57] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 10:39:57] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 10:39:57] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 10:39:57] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 10:39:57] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 10:39:57] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 10:39:57] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 10:39:57] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 10:39:57] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 10:40:05] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 10:40:05] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 10:52:31] [[31merror[39m]: [31mcreateServiceDetails failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "code": "invalid_format",[39m
+[31m    "format": "url",[39m
+[31m    "path": [[39m
+[31m      "videoUrl"[39m
+[31m    ],[39m
+[31m    "message": "Invalid video URL"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "code": "invalid_format",[39m
+[31m    "format": "url",[39m
+[31m    "path": [[39m
+[31m      "videoUrl"[39m
+[31m    ],[39m
+[31m    "message": "Invalid video URL"[39m
+[31m  }[39m
+[31m][39m
+[31m    at ProviderServiceController.createServiceDetails (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\provider\providerService.controller.ts:22:87)[39m
+[31m    at Layer.handle [as handle_request] (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\middleware\auth.middleware.ts:70:16)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[2026-02-14 10:53:44] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 10:53:44] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 10:53:44] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 10:53:45] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 10:53:45] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 10:53:45] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 10:53:45] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 10:53:45] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 10:53:45] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 10:53:45] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 10:53:56] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 10:53:57] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 10:56:33] [[31merror[39m]: [31mgetServiceDetails failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31m    at ProviderServiceController.getServiceDetails (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\provider\providerService.controller.ts:41:61)[39m
+[31m    at Layer.handle [as handle_request] (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\middleware\auth.middleware.ts:70:16)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[2026-02-14 11:19:44] [[31merror[39m]: [31mcreateServiceAvailability failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31m    at ProviderServiceAvailabilityController.createServiceAvailability (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\provider\providerServiceAvailability.controller.ts:21:61)[39m
+[31m    at Layer.handle [as handle_request] (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\middleware\auth.middleware.ts:70:16)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[2026-02-14 11:21:16] [[31merror[39m]: [31mcreateServiceAvailability failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31m    at ProviderServiceAvailabilityController.createServiceAvailability (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\provider\providerServiceAvailability.controller.ts:21:61)[39m
+[31m    at Layer.handle [as handle_request] (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\middleware\auth.middleware.ts:70:16)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[2026-02-14 11:26:37] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 11:26:37] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 11:26:37] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 11:26:37] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 11:26:37] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 11:26:37] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 11:26:37] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 11:26:37] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 11:26:37] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 11:26:37] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 11:26:41] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 11:26:41] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 11:28:21] [[31merror[39m]: [31mcreateServiceAvailability failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31m    at ProviderServiceAvailabilityController.createServiceAvailability (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\provider\providerServiceAvailability.controller.ts:21:61)[39m
+[31m    at Layer.handle [as handle_request] (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\middleware\auth.middleware.ts:70:16)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[2026-02-14 11:29:31] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 11:29:31] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 11:29:31] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 11:29:32] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 11:29:32] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 11:29:32] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 11:29:32] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 11:29:32] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 11:29:32] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 11:29:32] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 11:29:37] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 11:29:37] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 11:29:44] [[31merror[39m]: [31mcreateServiceAvailability failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31m    at ProviderServiceAvailabilityController.createServiceAvailability (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\provider\providerServiceAvailability.controller.ts:21:61)[39m
+[31m    at Layer.handle [as handle_request] (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\middleware\auth.middleware.ts:70:16)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[2026-02-14 11:30:51] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 11:30:51] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 11:30:51] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 11:30:51] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 11:30:51] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 11:30:51] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 11:30:51] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 11:30:51] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 11:30:51] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 11:30:51] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 11:30:55] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 11:30:55] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 11:32:35] [[31merror[39m]: [31mcreateServiceAvailability failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31m    at ProviderServiceAvailabilityController.createServiceAvailability (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\provider\providerServiceAvailability.controller.ts:22:61)[39m
+[31m    at Layer.handle [as handle_request] (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\middleware\auth.middleware.ts:70:16)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[2026-02-14 11:36:15] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 11:36:15] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 11:36:15] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 11:36:16] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 11:36:16] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 11:36:16] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 11:36:16] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 11:36:16] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 11:36:16] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 11:36:16] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 11:36:26] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 11:36:26] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 11:37:13] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 11:37:13] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 11:37:13] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 11:37:13] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 11:37:13] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 11:37:13] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 11:37:13] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 11:37:13] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 11:37:13] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 11:37:13] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 11:37:27] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 11:37:27] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 11:54:07] [[31merror[39m]: [31mcreateServiceAvailability failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31m    at ProviderServiceAvailabilityController.createServiceAvailability (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\provider\providerServiceAvailability.controller.ts:22:61)[39m
+[31m    at Layer.handle [as handle_request] (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\middleware\auth.middleware.ts:70:16)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[2026-02-14 11:54:38] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 11:54:38] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 11:54:38] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 11:54:39] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 11:54:39] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 11:54:39] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 11:54:39] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 11:54:39] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 11:54:39] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 11:54:39] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 11:54:53] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 11:54:53] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 13:02:32] [[32minfo[39m]: [32m[CRON] Running UpdateBookingStatusCron[39m
+[2026-02-14 13:02:32] [[32minfo[39m]: [32m[CRON] Running UpdateSubscriptionStatusCron[39m
+[2026-02-14 13:02:33] [[32minfo[39m]: [32m[CRON] No subscription updates. Will retry later.[39m
+[2026-02-14 13:02:33] [[32minfo[39m]: [32m[CRON] No updates performed. Will retry later[39m
+[2026-02-14 14:02:31] [[32minfo[39m]: [32m[CRON] Running UpdateBookingStatusCron[39m
+[2026-02-14 14:02:31] [[32minfo[39m]: [32m[CRON] No updates performed. Will retry later[39m
+[2026-02-14 14:02:32] [[32minfo[39m]: [32m[CRON] Running UpdateSubscriptionStatusCron[39m
+[2026-02-14 14:02:32] [[32minfo[39m]: [32m[CRON] No subscription updates. Will retry later.[39m
+[2026-02-14 15:02:31] [[32minfo[39m]: [32m[CRON] Running UpdateBookingStatusCron[39m
+[2026-02-14 15:02:31] [[32minfo[39m]: [32m[CRON] No updates performed. Will retry later[39m
+[2026-02-14 15:02:32] [[32minfo[39m]: [32m[CRON] Running UpdateSubscriptionStatusCron[39m
+[2026-02-14 15:02:32] [[32minfo[39m]: [32m[CRON] No subscription updates. Will retry later.[39m
+[2026-02-14 15:04:14] [[31merror[39m]: [31mcreateServiceAvailability failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31m    at ProviderServiceAvailabilityController.createServiceAvailability (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\provider\providerServiceAvailability.controller.ts:22:61)[39m
+[31m    at Layer.handle [as handle_request] (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\middleware\auth.middleware.ts:70:16)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[2026-02-14 15:21:15] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 15:21:15] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 15:21:15] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 15:21:15] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 15:21:15] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 15:21:15] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 15:21:15] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 15:21:15] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 15:21:15] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 15:21:15] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 15:21:19] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 15:21:19] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 15:25:01] [[31merror[39m]: [31mcreateServiceAvailability failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31m    at ProviderServiceAvailabilityController.createServiceAvailability (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\provider\providerServiceAvailability.controller.ts:23:61)[39m
+[31m    at Layer.handle [as handle_request] (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\middleware\auth.middleware.ts:70:16)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[2026-02-14 15:28:04] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 15:28:04] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 15:28:04] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 15:28:04] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 15:28:04] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 15:28:04] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 15:28:04] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 15:28:04] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 15:28:04] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 15:28:04] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 15:28:05] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 15:28:05] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 15:28:22] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 15:28:22] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 15:28:22] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 15:28:22] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 15:28:22] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 15:28:22] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 15:28:22] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 15:28:22] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 15:28:22] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 15:28:22] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 15:28:35] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 15:28:35] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 15:29:54] [[31merror[39m]: [31mcreateServiceAvailability failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31m    at ProviderServiceAvailabilityController.createServiceAvailability (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\provider\providerServiceAvailability.controller.ts:23:61)[39m
+[31m    at Layer.handle [as handle_request] (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\middleware\auth.middleware.ts:70:16)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[2026-02-14 15:34:38] [[31merror[39m]: [31mcreateServiceAvailability failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31m    at ProviderServiceAvailabilityController.createServiceAvailability (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\provider\providerServiceAvailability.controller.ts:23:61)[39m
+[31m    at Layer.handle [as handle_request] (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\middleware\auth.middleware.ts:70:16)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[2026-02-14 15:38:41] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 15:38:41] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 15:38:41] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 15:38:42] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 15:38:42] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 15:38:42] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 15:38:42] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 15:38:42] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 15:38:42] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 15:38:42] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 15:38:46] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 15:38:46] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 15:41:08] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 15:41:08] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 15:41:08] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 15:41:08] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 15:41:08] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 15:41:08] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 15:41:08] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 15:41:08] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 15:41:09] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 15:41:09] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 15:41:13] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 15:41:13] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 15:47:56] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 15:47:56] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 15:47:56] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 15:47:57] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 15:47:57] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 15:47:57] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 15:47:57] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 15:47:57] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 15:47:57] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 15:47:57] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 15:48:08] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 15:48:08] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 15:53:41] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 15:53:41] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 15:53:41] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 15:53:41] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 15:53:41] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 15:53:41] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 15:53:41] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 15:53:41] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 15:53:41] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 15:53:41] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 15:53:49] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 15:53:49] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 15:57:16] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 15:57:16] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 15:57:16] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 15:57:16] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 15:57:16] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 15:57:16] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 15:57:16] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 15:57:16] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 15:57:16] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 15:57:16] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 15:57:20] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 15:57:20] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 15:57:48] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 15:57:48] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 15:57:48] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 15:57:48] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 15:57:48] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 15:57:48] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 15:57:48] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 15:57:48] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 15:57:48] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 15:57:48] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 15:57:55] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 15:57:55] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 16:01:27] [[31merror[39m]: [31mcreateServiceAvailability failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31m    at ProviderServiceAvailabilityController.createServiceAvailability (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\provider\providerServiceAvailability.controller.ts:23:61)[39m
+[31m    at Layer.handle [as handle_request] (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\middleware\auth.middleware.ts:70:16)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[2026-02-14 16:01:58] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 16:01:58] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 16:01:58] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 16:01:58] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 16:01:58] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 16:01:58] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 16:01:58] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 16:01:58] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 16:01:58] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 16:01:58] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 16:02:06] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 16:02:06] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 16:04:02] [[31merror[39m]: [31mcreateServiceAvailability failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31m    at ProviderServiceAvailabilityController.createServiceAvailability (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\provider\providerServiceAvailability.controller.ts:23:61)[39m
+[31m    at Layer.handle [as handle_request] (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\middleware\auth.middleware.ts:70:16)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[2026-02-14 16:11:01] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 16:11:01] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 16:11:01] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 16:11:01] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 16:11:01] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 16:11:01] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 16:11:01] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 16:11:01] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 16:11:01] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 16:11:01] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 16:11:05] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 16:11:05] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 16:11:25] [[31merror[39m]: [31mcreateServiceAvailability failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31m    at ProviderServiceAvailabilityController.createServiceAvailability (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\provider\providerServiceAvailability.controller.ts:23:61)[39m
+[31m    at Layer.handle [as handle_request] (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\middleware\auth.middleware.ts:70:16)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[2026-02-14 16:12:30] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 16:12:30] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 16:12:30] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 16:12:30] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 16:12:30] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 16:12:30] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 16:12:30] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 16:12:30] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 16:12:30] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 16:12:30] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 16:12:34] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 16:12:34] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 16:12:54] [[31merror[39m]: [31mcreateServiceAvailability failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31m    at ProviderServiceAvailabilityController.createServiceAvailability (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\provider\providerServiceAvailability.controller.ts:23:61)[39m
+[31m    at Layer.handle [as handle_request] (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\middleware\auth.middleware.ts:70:16)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[2026-02-14 16:16:26] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 16:16:26] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 16:16:26] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 16:16:26] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 16:16:26] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 16:16:26] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 16:16:26] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 16:16:26] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 16:16:26] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 16:16:26] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 16:16:34] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 16:16:34] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 16:18:06] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 16:18:06] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 16:18:06] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 16:18:07] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 16:18:07] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 16:18:07] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 16:18:07] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 16:18:07] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 16:18:07] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 16:18:07] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 16:18:28] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 16:18:28] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 16:18:28] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 16:18:28] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 16:18:28] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 16:18:28] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 16:18:28] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 16:18:28] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 16:18:28] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 16:18:28] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 16:18:58] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 16:18:58] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 16:18:58] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 16:18:58] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 16:18:58] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 16:18:58] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 16:18:58] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 16:18:58] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 16:18:58] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 16:18:58] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 16:19:15] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 16:19:15] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 16:20:38] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 16:20:38] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 16:20:38] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 16:20:38] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 16:20:39] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 16:20:39] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 16:20:39] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 16:20:39] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 16:20:39] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 16:20:39] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 16:20:50] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 16:20:50] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 16:21:34] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 16:21:34] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 16:21:34] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 16:21:35] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 16:21:35] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 16:21:35] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 16:21:35] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 16:21:35] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 16:21:35] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 16:21:35] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 16:21:41] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 16:21:41] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 16:22:31] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 16:22:31] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 16:22:31] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 16:22:31] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 16:22:31] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 16:22:31] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 16:22:31] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 16:22:31] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 16:22:31] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 16:22:31] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 16:23:25] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 16:23:25] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 16:23:25] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 16:23:26] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 16:23:26] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 16:23:26] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 16:23:26] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 16:23:26] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 16:23:26] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 16:23:26] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 16:23:29] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 16:23:29] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 16:25:05] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 16:25:05] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 16:25:05] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 16:25:05] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 16:25:05] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 16:25:05] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 16:25:05] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 16:25:05] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 16:25:05] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 16:25:05] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 16:25:15] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 16:25:15] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m
+[2026-02-14 16:27:12] [[31merror[39m]: [31mupdateAdminVerificationStatus failed[39m
+[31m[[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31mZodError: [[39m
+[31m  {[39m
+[31m    "expected": "object",[39m
+[31m    "code": "invalid_type",[39m
+[31m    "path": [],[39m
+[31m    "message": "Invalid input: expected object, received string"[39m
+[31m  }[39m
+[31m][39m
+[31m    at ProviderProfileController.requestAdminApproval (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\provider\providerProfile.controller.ts:130:61)[39m
+[31m    at Layer.handle [as handle_request] (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\node_modules\.pnpm\express@4.22.1\node_modules\express\lib\router\route.js:149:13)[39m
+[31m    at authMiddleware (C:\MY LOCAL DISC\Slotflow\slotflow-backend-main\src\presentation\middleware\auth.middleware.ts:70:16)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+[2026-02-14 16:28:14] [[32minfo[39m]: [32mMngoDB Connected...[39m
+[2026-02-14 16:28:14] [[32minfo[39m]: [32mUpdateBookingStatusCron started[39m
+[2026-02-14 16:28:14] [[32minfo[39m]: [32mUpdateSubscriptionStatusCron started[39m
+[2026-02-14 16:28:14] [[32minfo[39m]: [32mKafka consumer connected [group=mainbackend-group][39m
+[2026-02-14 16:28:14] [[32minfo[39m]: [32mKafka producer connected[39m
+[2026-02-14 16:28:14] [[32minfo[39m]: [32mstart listening kafka controller[39m
+[2026-02-14 16:28:14] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-success[39m
+[2026-02-14 16:28:14] [[32minfo[39m]: [32mSubscribed to topic: google-calendar-failed[39m
+[2026-02-14 16:28:14] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-success[39m
+[2026-02-14 16:28:14] [[32minfo[39m]: [32mSubscribed to topic: provider-subscription-payment-failed[39m
+[2026-02-14 16:28:20] [[32minfo[39m]: [32mKafka consumer running[39m
+[2026-02-14 16:28:20] [[32minfo[39m]: [32mMain Backend Service is running on http://localhost:4000[39m

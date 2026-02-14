@@ -86,6 +86,12 @@ export const kafkaConfig = {
     ],
 
     topics: {
+        sub: {
+            googleCalendarSuccess: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_SUCCESS"),
+            googleCalendarFailed: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_FAILED"),
+            providerSubscriptionPaymentSuccess: validator.requireEnv("KAFKA_PROVIDER_SUBSCRIPTION_PAYMENT_SUCCESS"),
+            providerSubscriptionPaymentFailed: validator.requireEnv("KAFKA_PROVIDER_SUBSCRIPTION_PAYMENT_FAILED"),
+        },
         pub: {
             // MBS -> NS
             sendOtp: validator.requireEnv("KAFKA_SEND_OTP"),
@@ -98,16 +104,10 @@ export const kafkaConfig = {
             providerAppointmentStatusForProvider: validator.requireEnv("KAFKA_PROVIDER_APPOINTMENT_STATUS_FOR_PROVIDER"),
             appConnect: validator.requireEnv("KAFKA_APP_CONNECT"),
             providerTrialSubscription: validator.requireEnv("KAFKA_PROVIDER_TRIAL_SUBSCRIPTION"),
-            createGoogleCalendar: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_CREATE"),
-            updateGoogleCalendar: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_UPDATE"),
+            createGoogleCalendarEvent: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_EVENT_CREATE"),
+            updateGoogleCalendarEvent: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_EVENT_UPDATE"),
 
             // MBS -> PS
-        },
-        sub: {
-            googleCalendarSuccess: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_SUCCESS"),
-            googleCalendarFailed: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_FAILED"),
-            providerSubscriptionPaymentSuccess: validator.requireEnv("KAFKA_PROVIDER_SUBSCRIPTION_PAYMENT_SUCCESS"),
-            providerSubscriptionPaymentFailed: validator.requireEnv("KAFKA_PROVIDER_SUBSCRIPTION_PAYMENT_FAILED"),
         },
     },
 };

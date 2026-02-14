@@ -55,7 +55,9 @@ class ProviderSubscriptionController {
 
     async subscribeToTrialPlan(req: Request, res: Response, next: NextFunction) {
         try {
-            const { providerId } = validateProviderIdSchema.parse((req.user as DecodedUser).userOrProviderId);
+            const { providerId } = validateProviderIdSchema.parse({
+                providerId: (req.user as DecodedUser).userOrProviderId
+            });
             await this.providerTrialSubscriptionUseCase.execute({ providerId });
             sendResponse(res, null, "Your trial plan is on live");
         } catch (error) {
@@ -77,7 +79,9 @@ class ProviderSubscriptionController {
 
     async getSubscribedPlan(req: Request, res: Response, next: NextFunction) {
         try {
-            const { providerId } = validateProviderIdSchema.parse((req.user as DecodedUser).userOrProviderId);
+            const { providerId } = validateProviderIdSchema.parse({
+                providerId: (req.user as DecodedUser).userOrProviderId
+            });
             const result = await this.providerFetchSubscribedPlanUseCase.execute({ providerId });
             sendResponse(res, result);
         } catch (error) {

@@ -87,10 +87,10 @@ export const serviceDetailsSchema = z.object({
         .max(500, "Requirements cannot exceed 500 characters")
         .optional(),
 
-    videoUrl: z
-        .string()
-        .url("Invalid video URL")
-        .optional(),
+    videoUrl: z.union([
+    z.string().url("Invalid video URL"),
+    z.literal(""),
+  ]).optional(),
 });
 
 //
@@ -104,11 +104,11 @@ export const providerUpdateServiceDetailsSchema = z.object({
 // Provider add service availability
 export const providerCreateServiceAvailabilitySchema = z.array(
     z.object({
-        day: z.nativeEnum(Day),
+        day: z.enum(Day),
         duration: z.number().min(10).max(480),
         startTime: z.string().regex(timeRegex, "Invalid start time"),
         endTime: z.string().regex(timeRegex, "Invalid end time"),
-        modes: z.array(z.nativeEnum(ServiceMode)).min(1),
+        modes: z.array(z.enum(ServiceMode)).min(1),
         slots: z.array(z.string().min(1).max(30).regex(timeRegex, "Invalid slot time")),
     })
 );

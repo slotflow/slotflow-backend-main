@@ -7,13 +7,16 @@ export const errorHandler: ErrorRequestHandler = (
     res,
     next
 ) => {
-    console.log("ERROR:", err);
-
+    
     if (err instanceof ZodError) {
-        const message = err.errors.map(e => e.message).join(", ");
+        console.log("Zod Error : ",err);
+        // const message = err.errors.map(e => e.message).join(", ");
+        const message = err.issues;
         res.status(400).json({ success: false, message });
         return;
     }
+
+    console.log("ERROR:", err);
 
     if (err instanceof Error) {
         const status = (err as any).statusCode || 400;

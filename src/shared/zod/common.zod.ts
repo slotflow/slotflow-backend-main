@@ -1,20 +1,13 @@
-import { z } from "zod";
-import { Boolean, FileType } from "../../domain/enums/common.enum";
-import { ServiceCategory } from "../../domain/enums/service.enum";
 import {
-  roleValidationSchema,
-  paginationSchema,
   dateSchema,
-  addressSchema,
-  updateInfoSchema,
-  saveStripePaymentSchema,
-  s3FileKeySchema,
+  paginationSchema,
+  roleValidationSchema,
   validateRoomIdSchema,
-  validateBookingIdSchema,
   validateProviderIdSchema,
-  validateSubscriptionIdSchema,
-  validateReviewIdSchema
 } from "./base.zod";
+import { z } from "zod";
+import { ServiceCategory } from "../../domain/enums/service.enum";
+import { Boolean, FileType } from "../../domain/enums/common.enum";
 
 // Booking request query validation schema with filters
 export const fetchBookingCommonSchema = z.object({
@@ -43,7 +36,7 @@ export const deleteFileSchema = z.object({
 
 // Fetch all app services validation schema
 export const fetchAllAppServicesSchema = z.object({
-  categories: z.nativeEnum(ServiceCategory).array(),
+  serviceCategory: z.nativeEnum(ServiceCategory).array(),
 });
 
 // Change block status validation schema
