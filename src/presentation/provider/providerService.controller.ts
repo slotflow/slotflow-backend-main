@@ -19,7 +19,6 @@ class ProviderServiceController {
 
     async createServiceDetails(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log("createServiceDetails");
             const { providerId, ...serviceData } = providerCreateServiceDetailsSchema.parse({
                 providerId: (req.user as DecodedUser).userOrProviderId,
                 ...req.body
@@ -39,7 +38,9 @@ class ProviderServiceController {
 
     async getServiceDetails(req: Request, res: Response, next: NextFunction) {
         try {
-            const { providerId } = validateProviderIdSchema.parse((req.user as DecodedUser).userOrProviderId);
+            const { providerId } = validateProviderIdSchema.parse({
+                providerId: (req.user as DecodedUser).userOrProviderId
+            });
             const result = await this.providerFetchServiceDetailsUseCase.execute({ providerId });
             sendResponse(res, result);
         } catch (error) {

@@ -21,7 +21,7 @@ export class ProviderSubscriptionCheckoutUseCase {
         private paymentServiceClient: IPaymentServiceClient,
     ) { };
 
-    async execute(payload: ProviderStripeSubscriptionCreateSessionIdRequest): Promise<ProviderStripeSubscriptionCreateSessionIdResponse> {
+    async execute(payload: ProviderStripeSubscriptionCreateSessionIdRequest): Promise<string> {
         try {
             const { providerId, planId, planDuration } = payload;
 
@@ -46,23 +46,24 @@ export class ProviderSubscriptionCheckoutUseCase {
                 })
             );
 
-            const { sessionId } = await this.paymentServiceClient.createCheckoutSession({
+            const months: number = getNumberOfMonths(planDuration);
+
+            const { data } = await this.paymentServiceClient.createCheckoutSession({
                 subscriptionId: subscription._id.toString(),
                 providerId,
                 planName: plan.planName,
-                planDescription: plan.description,
-                planDuration: getNumberOfMonths(planDuration),
+                description: plan.description,
+                planDuration: months,
                 unitAmount: plan.price,
                 paymentFor: PaymentFor.PROVIDER_SUBSCRIPTION,
                 paymentDate: new Date(),
                 name: provider.username,
                 email: provider.email,
-                initialAmount: plan.price * planDuration,
-                totalAmount: plan.price * planDuration,
-                discountAmount: 0,
+                initialAmount: plan.price * months,
             });
+            console.log("sessionId : ", data);
 
-            return sessionId;
+            return data;
         } catch (error) {
             log.error("ProviderSubscriptionCheckoutUseCase failed", error as Error);
             throw error;

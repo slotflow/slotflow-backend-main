@@ -28,6 +28,10 @@ export const getDateAfterDays = (days: number): Date => {
   return dayjs().add(days, "day").toDate();
 };
 
+export const getDateAfterMonths = (months: number): Date => {
+  return dayjs().add(months, "months").toDate();
+}
+
 export const getNumberOfMonths = (days: number): number => {
   return days/30;
 };

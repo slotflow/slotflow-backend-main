@@ -3,6 +3,8 @@ export enum SubscriptionStatus {
     EXPIRED = "EXPIRED",
     CANCELLED = "CANCELLED",
     PENDING = "PENDING",
+    PAST_DUE = "PAST_DUE",
+    FAILED = "FAILED",
 };
 
 export enum SubscriptionValidity {

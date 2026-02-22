@@ -14,7 +14,7 @@ import { IBookingRepository } from '../../../domain/interfaces/repositories/IBoo
 import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
 import { UserAppointmentBookingViaStripeRequest, UserSaveAppoinmentBookingRequest } from '../../dtos/user.dto';
 import { IGoogleCalendarGatewayService } from '../../../domain/interfaces/services/IGoogleCalendarGateway.service';
-import { PaymentFor, PaymentGateway, PaymentMethod, PaymentStatus } from '../../../domain/enums/payment.enum';
+import { PaymentFor, PaymentGateway, PaymentStatus } from '../../../domain/enums/payment.enum';
 
 export class UserAppointmentBookingViaStripeUseCase {
     constructor(
@@ -120,7 +120,7 @@ export class UserSaveBookingAfterStripePaymentUseCase {
             const initialAmount = session?.metadata?.initialAmount;
             const totalAmount = session?.metadata?.totalAmount;
             const paymentStatus = session?.payment_status === "paid" ? PaymentStatus.PAID : PaymentStatus.PENDING;
-            const paymentMethod = session?.payment_method_types[0] as PaymentMethod;
+            const paymentMethod = session?.payment_method_types[0];
             const dateString = session?.metadata?.appointmentDate;
             const paymentIntent = session?.payment_intent;
             const slotDuration = session?.metadata?.slotDuration;

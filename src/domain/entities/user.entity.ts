@@ -34,6 +34,8 @@ export class User {
             verificationToken: props.verificationToken,
             googleConnected: false,
             googleId: null,
+            stripeConnected: false,
+            stripeAccountId: null,
             allowPushNotification: null,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -55,6 +57,8 @@ export class User {
             verificationToken: null,
             googleConnected: true,
             googleId: props.googleId,
+            stripeConnected: false,
+            stripeAccountId: null,
             allowPushNotification: null,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -105,6 +109,14 @@ export class User {
 
     get googleId(): string | null {
         return this.props.googleId;
+    }
+
+    get stripeConnected(): boolean {
+        return this.props.stripeConnected;
+    }
+
+    get stripeAccountId(): string | null {
+        return this.props.stripeAccountId;
     }
 
     get addressId(): string | null {

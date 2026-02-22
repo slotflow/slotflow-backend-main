@@ -16,6 +16,7 @@ export class ServiceAvailabilityQueriesImpl implements IServiceAvailabilityQueri
 
         const targetDay = daysOfWeek[date.getDay()];
         console.log("targetDay : ", targetDay);
+        console.log("availabilityId : ",availabilityId);
 
         const availability = await ServiceAvailabilityModel.aggregate([
             {
@@ -110,6 +111,7 @@ export class ServiceAvailabilityQueriesImpl implements IServiceAvailabilityQueri
                 $replaceWith: "$availabilityForDay"
             },
         ]);
+        console.log("availability : ",availability);
         const data = availability[0];
         if (!data) return null;
 

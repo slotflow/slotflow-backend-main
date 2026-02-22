@@ -40,7 +40,14 @@ export class ProviderFetchProfileDetailsUseCase {
         isBlocked: provider.isBlocked,
         isEmailVerified: provider.isEmailVerified,
         phone: provider.phone,
-        username: provider.username
+        username: provider.username,
+        trustedBySlotflow: provider.trustedBySlotflow,
+        updatedAt: provider.updatedAt,
+        adminVerificationStatus: provider.adminVerificationStatus,
+        isAddressVerified: provider.isAddressVerified,
+        isAvailabilityVerified: provider.isAvailabilityVerified,
+        isProofsVerified: provider.isProofsVerified,
+        isServiceDetailsVerified: provider.isServiceDetailsVerified,
       };
     } catch (error) {
       log.error("ProviderFetchProfileDetailsUseCase failed", error as Error);

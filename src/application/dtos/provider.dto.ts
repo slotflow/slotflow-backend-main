@@ -52,7 +52,7 @@ export interface ProviderFetchProfileDetailsRequest {
     providerId: ProviderDTO["_id"];
 }
 // provider fetch profile detals use case response interface
-export type ProviderFetchProfileDetailsResponse = Pick<ProviderDTO, "username" | "email" | "isAdminVerified" | "isBlocked" | "isEmailVerified" | "phone" | "createdAt"> | null;
+export type ProviderFetchProfileDetailsResponse = Pick<ProviderDTO, "username" | "email" | "isAdminVerified" | "isBlocked" | "isEmailVerified" | "phone" | "createdAt" | "trustedBySlotflow" | "updatedAt" | "adminVerificationStatus" | "isAddressVerified" | "isAvailabilityVerified" | "isProofsVerified" | "isServiceDetailsVerified"> | null;
 
 
 // provider update profile image use case request payload interface
@@ -265,6 +265,9 @@ export type FetchProviderSubscribedPlanRequest = {
     providerId: ProviderDTO["_id"]
 };
 
-export type FetchProviderSubscribedPlanResponse = {
-    planName: PlanName;
+export interface FetchProviderSubscribedPlanResponse {
+    providerId: string;
+    subscribedPlan: PlanName;
+    startDate: Date;
+    endDate: Date;
 };

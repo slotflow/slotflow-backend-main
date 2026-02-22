@@ -1,5 +1,6 @@
 import { adminConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
+import { Role } from "../../../domain/enums/common.enum";
 import { PlanName } from "../../../domain/enums/plan.enum";
 import { IJWT } from "../../../domain/interfaces/security/IJwt";
 import { LoginRequest, LoginResponse } from "../../dtos/auth.dto";
@@ -10,7 +11,6 @@ import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.r
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
 import { IPasswordHasher } from "../../../domain/interfaces/security/IPasswordHasher";
-import { Role } from "../../../domain/enums/common.enum";
 
 export class LoginUseCase {
     constructor(
@@ -57,6 +57,7 @@ export class LoginUseCase {
                         isBlocked: user.isBlocked,
                         isLoggedIn: true,
                         googleConnected: user.googleConnected,
+                        stripeConnected: user.stripeConnected,
                     },
                 };
 
@@ -83,21 +84,26 @@ export class LoginUseCase {
 
                 if (Array.isArray(subscriptions) && subscriptions.length > 0) {
                     const subscriptionId = subscriptions[subscriptions.length - 1];
+                    console.log("subscriptionId : ", subscriptionId);
 
-                    const subscription =
-                        await this.subscriptionRepository.findById(subscriptionId);
+                    const subscription = await this.subscriptionRepository.findById(subscriptionId);
+                    console.log("subscription : ", subscription);
 
                     if (subscription) {
+                        console.log("subscription is found")
                         const now = new Date();
                         const isActive =
                             subscription.subscriptionStatus === SubscriptionStatus.ACTIVE &&
                             new Date(subscription.endDate) > now;
+
+                        console.log("isActive : ", isActive);
 
                         if (isActive) {
                             const subscribedPlan =
                                 await this.planRepository.findById(
                                     subscription.subscriptionPlanId
                                 );
+                            console.log("subscribedPlan : ", subscribedPlan);
                             providerSubscription = subscribedPlan?.planName;
                         };
                     };
@@ -126,6 +132,7 @@ export class LoginUseCase {
                         verificationRejectionReason: provider.verificationRejectionReason,
                         providerSubscription,
                         googleConnected: provider.googleConnected,
+                        stripeConnected: provider.stripeConnected
                     },
                 };
 

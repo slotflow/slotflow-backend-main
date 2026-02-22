@@ -107,7 +107,11 @@ export const kafkaConfig = {
             createGoogleCalendarEvent: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_EVENT_CREATE"),
             updateGoogleCalendarEvent: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_EVENT_UPDATE"),
 
+            // MBS -> SS
+            providerSubscriptionUpdated: validator.requireEnv("KAFKA_PROVIDER_SUBSCRIPTION_UPDATED"),
+
             // MBS -> PS
+
         },
     },
 };

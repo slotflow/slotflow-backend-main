@@ -1,7 +1,8 @@
 import { KafkaMessage } from "kafkajs";
+import { PlanName } from "../../domain/enums/plan.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
-import { PaymentFor, PaymentGateway, PaymentMethod, PaymentStatus } from "../../domain/enums/payment.enum";
+import { PaymentFor, PaymentGateway, PaymentStatus } from "../../domain/enums/payment.enum";
 import { AppConnect, NotificationType, OtpPurpose, Role } from "../../domain/enums/common.enum";
 
 // **** COMMON DTOS
@@ -134,13 +135,23 @@ export interface SendAppConnectEvent {
   notificationData: SendNotificationCommon
 }
 
+//
+export interface ProviderSubscriptionUpdatedEvent {
+  ssData: {
+    providerId: string;
+    subscriptionPlan: PlanName;
+    startDate: Date;
+    endDate: Date;
+  }
+}
+
 // Added till this 
 
 // send provider payment request event
 export interface SendProviderPaymentRequestEvent {
   transactionId: string,
   paymentStatus: PaymentStatus,
-  paymentMethod: PaymentMethod,
+  paymentMethod: string,
   paymentGateway: PaymentGateway,
   paymentFor: PaymentFor,
   initialAmount: number,

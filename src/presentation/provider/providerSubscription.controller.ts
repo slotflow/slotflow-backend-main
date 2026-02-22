@@ -32,6 +32,7 @@ class ProviderSubscriptionController {
                 ...req.body
             });
             const result = await this.providerSubscriptionCheckoutUseCase.execute({ providerId, planId, planDuration });
+            console.log("result : ",result);
             sendResponse(res, result);
         } catch (error) {
             log.error("subscribe failed", error as Error);

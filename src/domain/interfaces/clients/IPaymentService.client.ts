@@ -4,20 +4,20 @@ export interface CreateCheckoutSessionRequest {
   subscriptionId: string;
   providerId: string;
   planName: string;
-  planDescription: string;
+  description: string;
   planDuration: number;
   unitAmount: number;
-  totalAmount: number;
   paymentFor: PaymentFor;
   paymentDate: Date;
   name: string;
   email: string;
   initialAmount: number;
-  discountAmount: number;
 }
 
 export interface CreateCheckoutSessionResponse {
-  sessionId: string;
+  status: boolean;
+  message: string;
+  data: string;
 }
 
 export interface IPaymentServiceClient {

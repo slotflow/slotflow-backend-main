@@ -5,7 +5,7 @@ import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
 import { Day, Role } from "../../domain/enums/common.enum";
-import { PaymentFor, PaymentGateway, PaymentMethod, PaymentStatus } from "../../domain/enums/payment.enum";
+import { PaymentFor, PaymentGateway, PaymentStatus } from "../../domain/enums/payment.enum";
 
 
 // **** ENTITY INTERFACES FOR APPLICATION LAYER **** \\
@@ -120,7 +120,7 @@ export interface PaymentDTO {
   _id: string,
   transactionId: string,
   paymentStatus: PaymentStatus,
-  paymentMethod: PaymentMethod,
+  paymentMethod: string,
   paymentGateway: PaymentGateway,
   paymentFor: PaymentFor,
   initialAmount: number,

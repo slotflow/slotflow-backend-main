@@ -54,7 +54,7 @@ export class PlanRepositoryImpl implements IPlanRepository {
                 adVisibility: 1,
                 features: 1,
                 description: 1,
-            }).skip(skip).limit(limit).lean(),
+            }).skip(skip).limit(limit),
             PlanModel.countDocuments(),
         ]);
         const totalPages = Math.ceil(totalCount / limit);

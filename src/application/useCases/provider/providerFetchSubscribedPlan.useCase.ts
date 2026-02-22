@@ -26,7 +26,10 @@ export class ProviderFetchSubscribedPlanUseCase {
             if (!plan) throw new Error("No subscription found.");
 
             return {
-                planName: plan.planName,
+                providerId,
+                subscribedPlan: plan.planName,
+                startDate: subscription.startDate,
+                endDate: subscription.endDate,
             };
         } catch (error) {
             log.error("ProviderFetchAllSubscriptionsUseCase failed", error as Error);

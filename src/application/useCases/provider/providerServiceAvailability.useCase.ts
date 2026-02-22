@@ -58,6 +58,7 @@ export class ProviderCreateServiceAvailabilitiesUseCase {
 
 export class ProviderFetchServiceAvailabilityUseCase {
     constructor(
+        private providerRepository: IProviderRepository,
         private serviceAvailabilityQueries: IServiceAvailabilityQueries
     ) { };
 
@@ -69,8 +70,13 @@ export class ProviderFetchServiceAvailabilityUseCase {
             const currentDateTime = dayjs();
             const selectedDate = dayjs(date).format('YYYY-MM-DD');
 
-            const availability = await this.serviceAvailabilityQueries.findByProviderId(date , providerId);
+            const provider = await this.providerRepository.findById(providerId);
+            if(!provider) throw new Error("No user found");
+            if(!provider.serviceAvailabilityId) return null;
+
+            const availability = await this.serviceAvailabilityQueries.findByProviderId(date , provider.serviceAvailabilityId);
             if (!availability) return null;
+            // console.log("availability : ",availability);
 
             const updatedSlots = availability.slots.map((slot) => {
                 const slotDateTime = dayjs(`${selectedDate} ${slot.time}`, 'YYYY-MM-DD hh:mm A');
@@ -80,6 +86,8 @@ export class ProviderFetchServiceAvailabilityUseCase {
                     available: !isWithin2Hours
                 };
             });
+
+            // console.log("updatedSlots : ",updatedSlots);
 
             return { ...availability, slots: updatedSlots };
         } catch (error) {

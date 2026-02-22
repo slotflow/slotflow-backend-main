@@ -12,13 +12,6 @@ export enum PaymentGateway {
     PAYPAL = "PAYPAL"
 };
 
-export enum PaymentMethod {
-    CARD = "CARD",
-    UPI = "UPI",
-    WALLET = "WALLET",
-    NET_BANKING = "NET_BANKING",
-};
-
 export enum PaymentStatus {
     PENDING = "PENDING",
     PAID = "PAID",

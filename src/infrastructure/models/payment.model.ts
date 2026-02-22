@@ -1,11 +1,11 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
-import { PaymentFor, PaymentGateway, PaymentMethod, PaymentStatus } from "../../domain/enums/payment.enum";
+import { PaymentFor, PaymentGateway, PaymentStatus } from "../../domain/enums/payment.enum";
 
 export interface IPayment extends Document {
     _id: Types.ObjectId;
     transactionId: string;
     paymentStatus: PaymentStatus;
-    paymentMethod: PaymentMethod;
+    paymentMethod: string;
     paymentGateway: PaymentGateway;
     paymentFor: PaymentFor;
     initialAmount: number;
@@ -38,7 +38,6 @@ const PaymentSchema = new Schema<IPayment>({
     },
     paymentMethod: {
         type: String,
-        enum: Object.values(PaymentMethod),
         required: [true, "Payment method is required"],
     },
     paymentGateway: {

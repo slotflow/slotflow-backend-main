@@ -24,7 +24,7 @@ export class PaymentServiceClient implements IPaymentServiceClient {
 
       log.info(`data : ${data}`);
 
-      if (!data?.sessionId) {
+      if (!data?.data) {
         log.error("Invalid response from Payment Service");
         throw new Error("Invalid response from Payment Service");
       };

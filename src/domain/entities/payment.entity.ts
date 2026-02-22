@@ -1,5 +1,5 @@
 import { PaymentProps } from "../contracts/payment.contract";
-import { PaymentFor, PaymentGateway, PaymentMethod, PaymentStatus } from "../enums/payment.enum";
+import { PaymentFor, PaymentGateway, PaymentStatus } from "../enums/payment.enum";
 import { CreateForBookingProps, CreateForSubscriptionProps, UpdatePaymentProps } from "../commands/payment.commands";
 
 export class Payment {
@@ -84,7 +84,7 @@ export class Payment {
         return this.props.paymentGateway;
     };
 
-    get paymentMethod(): PaymentMethod {
+    get paymentMethod(): string {
         return this.props.paymentMethod;
     };
 

@@ -49,6 +49,7 @@ export class Provider {
       googleConnected: false,
       googleId: null,
 
+      stripeConnected: false,
       stripeAccountId: null,
       trustedBySlotflow: false,
 
@@ -92,6 +93,7 @@ export class Provider {
       googleConnected: true,
       googleId: props.googleId,
 
+      stripeConnected: false,
       stripeAccountId: null,
       trustedBySlotflow: false,
 
@@ -193,6 +195,10 @@ export class Provider {
 
   get googleId(): string | null {
     return this.props.googleId;
+  }
+
+  get stripeConnected(): boolean {
+    return this.props.stripeConnected;
   }
 
   get stripeAccountId(): string | null {

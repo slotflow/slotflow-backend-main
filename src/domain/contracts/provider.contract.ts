@@ -23,6 +23,7 @@ export interface ProviderProps {
   verificationToken: string | null;
   googleConnected: boolean;
   googleId: string | null;
+  stripeConnected: boolean;
   stripeAccountId: string | null;
   trustedBySlotflow: boolean;
   identityProof: string | null;

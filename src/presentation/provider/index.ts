@@ -73,7 +73,7 @@ export const providerCreateServiceDetailsUseCase = new ProviderCreateServiceDeta
 export const providerUpdateServiceDetailsUseCase = new ProviderUpdateServiceDetailsUseCase(providerServiceRepository);
 
 // provider service availability controller dependency injection
-export const providerFetchServiceAvailabilityUseCase = new ProviderFetchServiceAvailabilityUseCase(serviceAvailabilityQueries);
+export const providerFetchServiceAvailabilityUseCase = new ProviderFetchServiceAvailabilityUseCase(providerRepository, serviceAvailabilityQueries);
 export const providerCreateServiceAvailabilitiesUseCase = new ProviderCreateServiceAvailabilitiesUseCase(providerRepository, serviceAvailabilityRepository);
 
 // provider stripe controller dependency injection

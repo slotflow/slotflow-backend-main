@@ -1,4 +1,3 @@
-import { PaymentStatus } from "../enums/payment.enum";
 import { SubscriptionStatus } from "../enums/subscription.enum";
 import { SubscriptionProps } from "../contracts/subscription.contract";
 import { CreateSubscriptionInitialProps, CreateSubscriptionProps, SubscriptionPaymentSuccessProps } from "../commands/subscription.commands";
@@ -21,7 +20,6 @@ export class Subscription {
             startDate: null,
             endDate: null,
             subscriptionStatus: SubscriptionStatus.PENDING,
-            paymentStatus: PaymentStatus.PENDING,
             paymentId: null,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -35,7 +33,6 @@ export class Subscription {
             startDate: props.startDate,
             endDate: props.endDate,
             subscriptionStatus: props.subscriptionStatus,
-            paymentStatus: PaymentStatus.PENDING,
             paymentId: null,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -76,13 +73,13 @@ export class Subscription {
     };
 
     subscriptionPaymentFailed() {
-        this.props.paymentStatus = PaymentStatus.FAILED;
+        this.props.subscriptionStatus = SubscriptionStatus.FAILED;
         this.touch();
     };
 
     subscriptionPaymentSuccess(props: SubscriptionPaymentSuccessProps) {
-        if (this.props.paymentStatus !== PaymentStatus.PENDING) return;
-        this.props.paymentStatus = PaymentStatus.PAID;
+        console.log("this.props : ",this.props);
+        console.log("props : ",props);
         this.props.subscriptionStatus = SubscriptionStatus.ACTIVE;
         this.props.startDate = props.startDate;
         this.props.endDate = props.endDate;

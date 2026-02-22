@@ -57,7 +57,7 @@ const ProviderSchema = new Schema<IProvider>({
   },
   password: {
     type: String,
-    required: function () {
+    required: function (): boolean {
       return !this.googleId;
     },
     minlength: [8, "Password must be at least 8 characters"],
@@ -150,7 +150,7 @@ const ProviderSchema = new Schema<IProvider>({
   googleId: {
     type: String,
     default: null,
-    required: function () {
+    required: function ():boolean {
       return !this.password;
     }
   },

@@ -54,7 +54,7 @@ class AuthController {
       next(error)
     };
   };
-  
+
   async resendOtp(req: Request, res: Response, next: NextFunction) {
     try {
       const validateData = resendOTPSchema.parse(req.body);
@@ -75,15 +75,15 @@ class AuthController {
       const { email, password, role } = validateData;
       if (!email || !password || !role) throw new Error("Invalid request.");
       const result = await this.loginUseCase.execute({ email, password, role });
-      res.cookie("token", result.authUser.token, {
+      const { token, ...authData } = result.authUser;
+      res.cookie("token", token, {
         maxAge: 2 * 24 * 60 * 60 * 1000,
         httpOnly: true,
         sameSite: appConfig.nodeEnv === 'development' ? 'lax' : 'none',
         secure: appConfig.nodeEnv !== 'development'
       });
-      const { token: token, ...authUserWithoutToken } = result.authUser;
-      console.log("result : ",result);
-      sendResponse(res, authUserWithoutToken, "Login successfully");
+      console.log("authUserWithToken : ", result.authUser);
+      sendResponse(res, authData, "Login successfully");
     } catch (error) {
       log.error("login failed", error as Error);
       next(error)

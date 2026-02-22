@@ -79,7 +79,10 @@ export interface LoginResponse {
         isAvailabilityVerified?: boolean,
         isProofsVerified?: boolean,
         providerSubscription?: string;
+        googleId?: string;
         googleConnected?: boolean;
+        stripeAccountId?: string;
+        stripeConnected?: boolean;
         allowPushNotification?: boolean;
     }
 }

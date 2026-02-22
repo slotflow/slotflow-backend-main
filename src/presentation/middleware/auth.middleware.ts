@@ -1,9 +1,9 @@
 import { log } from "../../shared/logger/logger";
+import { Role } from "../../domain/enums/common.enum";
 import { NextFunction, Request, Response } from "express";
 import { cacheService } from "../../infrastructure/services";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { providerRepository, userRepository } from "../../infrastructure/repositoryImpls";
-import { Role } from "../../domain/enums/common.enum";
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
 
