@@ -565,12 +565,9 @@ export interface FindProviderServiceResponse extends FindProviderServiceProps {
 
 
 type SubscriptionProps = Pick<SubscriptionDTO, "startDate" | "endDate" | "subscriptionStatus" | "createdAt">;
-// type PaymentsProps = Pick<PaymentDTO, "transactionId" | "discountAmount" | "initialAmount" | "paymentFor" | "paymentGateway" | "paymentMethod" | "paymentStatus" | "totalAmount">;
 type PlanProps = Pick<PlanDTO, "planName" | "price" | "adVisibility" | "maxBookingPerMonth">;
 export interface findSubscriptionFullDetailsResProps extends SubscriptionProps {
   subscriptionPlanId: PlanProps,
-  // removing payment data from here and the data will come from payment service to client
-  // paymentId: PaymentsProps | null,
 }
 
 export interface PlanNameOnly {
