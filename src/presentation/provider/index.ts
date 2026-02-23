@@ -7,7 +7,6 @@ import { FetchAllReviewsUseCase } from "../../application/useCases/common/fetchR
 import { ValidateJoinRoomUsecase } from "../../application/useCases/common/validateJoinRoom.useCase";
 import { ProviderFetchAllPlansUseCase } from "../../application/useCases/provider/providerPlan.useCase";
 import { FetchAllAppServicesUseCase } from "../../application/useCases/common/fetchAppServices.useCase";
-import { FetchSubscriptionDetailsUseCase } from "../../application/useCases/common/subscription.useCase";
 import { ProviderStripeConnectUseCase } from "../../application/useCases/provider/providerStripe.useCase";
 import { FetchBookingDetailsUsecase } from "../../application/useCases/common/fetchBookingDetails.useCase";
 import { FetchProviderProofsUseCase } from "../../application/useCases/common/fetchProviderProofs.useCase";
@@ -15,7 +14,6 @@ import { FetchBookingAppointmentsUseCase } from "../../application/useCases/comm
 import { ProviderFetchUserForChatSidebarUseCase } from "../../application/useCases/provider/providerUser.useCase";
 import { ProviderChangeReviewRepostStatusUseCase } from "../../application/useCases/provider/providerReview.useCase";
 import { ProviderFetchDashboardStatsUseCase } from "../../application/useCases/provider/providerDashboardStats.useCase";
-import { ProviderFetchAllSubscriptionsUseCase } from "../../application/useCases/provider/providerSubscription.useCase";
 import { ProviderTrialSubscriptionUseCase } from "../../application/useCases/provider/providerTrailSubscription.useCase";
 import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/common/updateBookingOnlineTracking.useCase";
 import { ProviderChangeBookingAppointmentStatusUseCase } from "../../application/useCases/provider/providerBooking.useCase";
@@ -80,8 +78,6 @@ export const providerCreateServiceAvailabilitiesUseCase = new ProviderCreateServ
 export const providerStripeConnectUseCase = new ProviderStripeConnectUseCase(providerRepository);
 
 // provider subscription controller dependency injection
-export const fetchSubscriptionDetailsUseCase = new FetchSubscriptionDetailsUseCase(subscriptionQueries);
-export const providerFetchAllSubscriptionsUseCase = new ProviderFetchAllSubscriptionsUseCase(providerRepository, subscriptionQueries);
 export const providerTrialSubscriptionUseCase = new ProviderTrialSubscriptionUseCase(providerRepository, subscriptionRepository, planRepository, kafkaProducer);
 export const providerSubscriptionCheckoutUseCase = new ProviderSubscriptionCheckoutUseCase(planRepository, providerRepository, subscriptionRepository, paymentServiceClient);
 export const providerFetchSubscribedPlanUseCase = new ProviderFetchSubscribedPlanUseCase(providerRepository, subscriptionQueries);

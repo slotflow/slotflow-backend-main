@@ -12,7 +12,6 @@ import { Boolean, FileType } from "../../domain/enums/common.enum";
 // Booking request query validation schema with filters
 export const fetchBookingCommonSchema = z.object({
   online: z.nativeEnum(Boolean).optional(),
-  raw: z.nativeEnum(Boolean).optional(),
 }).merge(paginationSchema);
 
 // Join or leave room validation schema

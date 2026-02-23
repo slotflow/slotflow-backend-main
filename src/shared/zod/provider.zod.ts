@@ -20,7 +20,9 @@ import { ServiceMode, ServiceType } from "../../domain/enums/service.enum";
 import { SubscriptionValidity } from "../../domain/enums/subscription.enum";
 
 //
-export const providerIdWithPaginationSchema = validateProviderIdSchema.merge(paginationSchema);
+export const providerIdWithPaginationSchema = z.object({
+    providerId: z.string().regex(objectIdRegex, "Invalid providerId").optional()
+}).merge(paginationSchema);
 
 // Provider add service details controller zod schema
 export const serviceDetailsSchema = z.object({

@@ -1,11 +1,9 @@
 import { kafkaProducer } from "../../infrastructure/messaging";
 import { cacheService, signedUrlService } from "../../infrastructure/services";
 import { FetchAllReviewsUseCase } from "../../application/useCases/common/fetchReviews.useCase";
-import { FetchSubscriptionDetailsUseCase } from "../../application/useCases/common/subscription.useCase";
 import { AdminUpdateReviewBlockStatusUseCase } from "../../application/useCases/admin/adminReview.useCase";
 import { FetchProviderProofsUseCase } from "../../application/useCases/common/fetchProviderProofs.useCase";
 import { AdminFetchUserOrProviderAddressUseCase } from "../../application/useCases/admin/adminAddress.useCase";
-import { AdminFetchAllSubscriptionsUseCase } from "../../application/useCases/admin/adminSubscription.useCase";
 import { AdminFetchAllPaymentsUseCase, AdminFetchRevenueReportUseCase } from "../../application/useCases/admin/adminPayment.useCase";
 import { AdminChangePlanBlockStatusUseCase, AdminCreatePlanUseCase, AdminPlanListUseCase } from "../../application/useCases/admin/adminPlan.useCase";
 import { AdminChangeUserBlockStatusUseCase, AdminFetchUserDetailsUseCase, AdminUserListUseCase } from "../../application/useCases/admin/adminUser.useCase";
@@ -55,10 +53,6 @@ export const adminUpdateReviewBlockStatusUseCase = new AdminUpdateReviewBlockSta
 export const adminServiceListUseCase = new AdminServiceListUseCase(serviceRepository);
 export const adminCreateServiceUseCase = new AdminCreateServiceUseCase(serviceRepository);
 export const adminChnageServiceBlockStatusUseCase = new AdminChnageServiceBlockStatusUseCase(serviceRepository);
-
-// admin subscription controller dependency injection
-export const fetchSubscriptionDetailsUseCase = new FetchSubscriptionDetailsUseCase(subscriptionQueries);
-export const adminFetchAllSubscriptionsUseCase = new AdminFetchAllSubscriptionsUseCase(subscriptionQueries);
 
 // admin user controller dependency injection
 export const adminUserListUseCase = new AdminUserListUseCase(userQueries);

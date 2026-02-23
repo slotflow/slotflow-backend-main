@@ -318,10 +318,6 @@ export type AdminFetchUserProfileDetailsResponse = Pick<UserDTO, "username" | "p
 
 // **** used in adminSubscription.use-case **** \\
 
-// Admin fetch all subscriptions use case response interface 
-// export type AdminFetchAllSubscriptionsResponse = Array<Pick<Subscription, "_id" | "createdAt" | "providerId" | "startDate" | "endDate" | "subscriptionStatus">>;
-export type AdminFetchAllSubscriptionsResponse = Array<Pick<SubscriptionDTO, "_id" | "startDate" | "endDate" | "subscriptionStatus"> & Pick<PlanDTO, "planName">>;
-
 
 
 // Admin Review UseCase

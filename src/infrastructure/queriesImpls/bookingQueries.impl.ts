@@ -12,7 +12,7 @@ import { Role } from "../../domain/enums/common.enum";
 
 export class BookingQueriesImpl implements IBookingQueries {
 
-    async findAll({ page, limit, userId, serviceProviderId, online, raw, role }: FetchBookingsRequest): Promise<
+    async findAll({ page, limit, userId, serviceProviderId, online, role }: FetchBookingsRequest): Promise<
         TableData<FetchBookingsResponse> |
         TableData<FetchOnlineBookingsForProviderResponse> |
         TableData<FetchOnlineBookingsForUserResponse>
@@ -48,7 +48,7 @@ export class BookingQueriesImpl implements IBookingQueries {
             username: 1,
         }
 
-        const project = raw ? rawProject : online ? onlineProject : rawProject;
+        const project = online ? onlineProject : rawProject;
 
         let query = BookingModel.find(filter, project)
             .skip(skip)

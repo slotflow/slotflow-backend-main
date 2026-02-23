@@ -35,7 +35,7 @@ class UserBookingController {
 
     async fetchBookings(req: Request, res: Response, next: NextFunction) {
         try {
-            const { limit, page, userId, online, raw } = userFetchAllAppointmentsSchema.parse({
+            const { limit, page, userId, online } = userFetchAllAppointmentsSchema.parse({
                 providerId: (req.user as DecodedUser).userOrProviderId,
                 ...req.query
             });
@@ -44,7 +44,6 @@ class UserBookingController {
                 page,
                 limit,
                 online: online ? true : false,
-                raw: raw ? true : false,
                 role: Role.USER,
             });
             sendResponse(res, result);

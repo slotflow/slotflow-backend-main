@@ -1,18 +1,26 @@
 import { SubscriptionModel } from "../models/subscription.model";
 import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 import { ISubscriptionQueries } from "../../application/queries/ISubscription.queries";
-import { AdminFetchAllSubscriptionsResponse, AdminFetchDashboardSubscriptionStatsDataResponse } from "../../application/dtos/admin.dto";
-import { ApiPaginationRequest, FetchProviderSubscriptionsRequest, findSubscriptionFullDetailsResProps, FindSubscriptionsByProviderIdResponse, PlanNameOnly, PopulatedSubscription, TableData } from "../../application/dtos/common.dto";
+import { AdminFetchDashboardSubscriptionStatsDataResponse } from "../../application/dtos/admin.dto";
 import { PopulatedPlan, ProviderFetchSubscribedPlanResponse } from "../../application/dtos/provider.dto";
-import { Types } from "mongoose";
+import { GetSubscriptionsRequest, GetSubscriptionsResponse, GetSubscriptionDetailsResponse, PlanNameOnly, TableData } from "../../application/dtos/common.dto";
 
 export class SubscriptionQueriesImpl implements ISubscriptionQueries {
 
-    async findAll(pagination: ApiPaginationRequest): Promise<TableData<AdminFetchAllSubscriptionsResponse>> {
-        const { page, limit } = pagination;
+    async findAll(payload: GetSubscriptionsRequest): Promise<TableData<GetSubscriptionsResponse>> {
+        const { page, limit, providerId } = payload;
         const skip = (page - 1) * limit;
+        
+        const filter: {
+            providerId?: string
+        } = {};
+
+        if(providerId) {
+            filter.providerId = providerId
+        }
+
         const [subscriptions, totalCount] = await Promise.all([
-            SubscriptionModel.find({}, {
+            SubscriptionModel.find(filter, {
                 _id: 1,
                 createdAt: 1,
                 providerId: 1,
@@ -49,13 +57,13 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
         return subscription ? subscription.subscriptionPlanId.planName : false;
     }
 
-    async findDetails(subscriptionId: string): Promise<findSubscriptionFullDetailsResProps | null> {
+    async findDetails(subscriptionId: string): Promise<GetSubscriptionDetailsResponse | null> {
         const data = await SubscriptionModel.findById(subscriptionId)
             .select("startDate endDate subscriptionStatus createdAt -_id")
             .populate([{
                 path: "subscriptionPlanId",
                 select: "-_id planName price adVisibility maxBookingPerMonth"
-            }]).lean<findSubscriptionFullDetailsResProps>();
+            }]).lean<GetSubscriptionDetailsResponse>();
         if (!data) return null;
         return {
             createdAt: data.createdAt,
@@ -134,38 +142,6 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
         };
     }
 
-    async findByProviderId(payload: FetchProviderSubscriptionsRequest): Promise<TableData<FindSubscriptionsByProviderIdResponse>> {
-        const { providerId, page, limit } = payload;
-        const skip = (page - 1) * limit;
-        const [subscriptions, totalCount] = await Promise.all([
-            SubscriptionModel.find({ providerId: providerId }, {
-                _id: 1,
-                startDate: 1,
-                endDate: 1,
-                subscriptionStatus: 1,
-            }).populate<PopulatedSubscription>([{
-                path: "subscriptionPlanId",
-                select: "-_id planName price"
-            }]).sort({ startDate: -1 }).skip(skip).limit(limit).lean(),
-            SubscriptionModel.countDocuments({ providerId: providerId }),
-        ]);
-
-        const totalPages = Math.ceil(totalCount / limit);
-
-        return {
-            data: subscriptions.map(sub => ({
-                _id: sub._id.toString(),
-                startDate: sub.startDate,
-                endDate: sub.endDate,
-                subscriptionStatus: sub.subscriptionStatus,
-                planName: sub.subscriptionPlanId.planName,
-            })),
-            totalPages,
-            currentPage: page,
-            totalCount
-        }
-    }
-
     async findSubscriptionsForUpdatinStatus(): Promise<boolean> {
         const now = new Date();
 
@@ -184,7 +160,7 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
 
     async findMySubscritpion(subscriptionId: string): Promise<ProviderFetchSubscribedPlanResponse | null> {
         const subscription = await SubscriptionModel
-            .findOne({ _id: new Types.ObjectId(subscriptionId) })
+            .findOne({ _id: subscriptionId })
             .sort({ createdAt: -1 })
             .populate<PopulatedPlan>({
                 path: "subscriptionPlanId",

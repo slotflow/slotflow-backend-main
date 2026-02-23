@@ -1,14 +1,13 @@
 import { log } from "../../../shared/logger/logger";
-import { ApiPaginationRequest, TableData } from "../../dtos/common.dto";
-import { AdminFetchAllSubscriptionsResponse } from "../../dtos/admin.dto";
 import { ISubscriptionQueries } from "../../queries/ISubscription.queries";
+import { GetSubscriptionsRequest, GetSubscriptionsResponse, TableData } from "../../dtos/common.dto";
 
-export class AdminFetchAllSubscriptionsUseCase {
+export class GetSubscriptionsUseCase {
     constructor(
         private subscirptionQueries: ISubscriptionQueries
     ) { };
 
-    async execute(payload: ApiPaginationRequest): Promise<TableData<AdminFetchAllSubscriptionsResponse>> {
+    async execute(payload: GetSubscriptionsRequest): Promise<TableData<GetSubscriptionsResponse>> {
         try {
             const result = await this.subscirptionQueries.findAll(payload);
             const { data: subscriptions, currentPage, totalCount, totalPages } = result;
@@ -19,7 +18,7 @@ export class AdminFetchAllSubscriptionsUseCase {
                 totalCount,
             };
         } catch (error) {
-            log.error("AdminFetchAllSubscriptionsUseCase failed", error as Error);
+            log.error("GetSubscriptionsUseCase failed", error as Error);
             throw error;
         };
     };

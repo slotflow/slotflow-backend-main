@@ -295,24 +295,11 @@ export type FetchPaymentResponse = Array<Pick<PaymentDTO, "_id" | "createdAt" | 
 
 
 // Used as the request interface for fetching subscriptions with planName and plan price of a specific provider for the provider side and admin side
-export interface FetchProviderSubscriptionsRequest extends ApiPaginationRequest {
-  providerId: ProviderDTO["_id"];
+export interface GetSubscriptionsRequest extends ApiPaginationRequest {
+  providerId?: ProviderDTO["_id"];
 }
 // Used as the response type for fetching subscriptions with planName and plan price of a specific provider for the provider side and admin side
 // removing payment dependedcy data from here the data will be requested from payment service from client directly
-export type FindSubscriptionsByProviderIdResponse = Array<
-  Pick<SubscriptionDTO, "_id" | "startDate" | "endDate" | "subscriptionStatus"> &
-  Partial<Pick<PlanDTO, "planName">>>
-  // Partial<Pick<PaymentDTO, "totalAmount">>
-  ;
-export type PopulatedSubscription = Omit<SubscriptionDTO, 'subscriptionPlanId' | "paymentId"> & {
-  subscriptionPlanId: {
-    planName: PlanDTO["planName"];
-  },
-  // paymentId: {
-  //   totalAmount: string;
-  // }
-};
 
 
 // Used as the request type for adding address for user or provider
@@ -326,7 +313,6 @@ export interface userIdAndServiceProviderId {
 }
 export interface FetchBookingsRequest extends ApiPaginationRequest, userIdAndServiceProviderId {
   online: boolean;
-  raw: boolean;
   role: Role;
 }
 // Used as the response type for fetching bookings for admin, provider and user side
@@ -380,12 +366,15 @@ export interface ValidateJoinRoomRequest {
 
 
 // fetch subscription details use case request payload interface 
-export interface FetchSubscriptionDetailsRequest {
+export interface GetSubscriptionDetailsRequest {
   subscriptionId: SubscriptionDTO["_id"];
 };
 // admin fetch subscription details use case response interface 
-export type FetchSubscriptionDetailsResponse = findSubscriptionFullDetailsResProps | null;
-
+type SubscriptionProps = Pick<SubscriptionDTO, "startDate" | "endDate" | "subscriptionStatus" | "createdAt">;
+type PlanProps = Pick<PlanDTO, "planName" | "price" | "adVisibility" | "maxBookingPerMonth">;
+export interface GetSubscriptionDetailsResponse extends SubscriptionProps {
+  subscriptionPlanId: PlanProps,
+}
 
 // create credential 
 export type CreateCredentialRequest = Pick<CredentialDTO, "userId" | "accessToken" | "refreshToken" | "expiryDate">;
@@ -563,13 +552,6 @@ export interface FindProviderServiceResponse extends FindProviderServiceProps {
   service: { serviceName: string }
 }
 
-
-type SubscriptionProps = Pick<SubscriptionDTO, "startDate" | "endDate" | "subscriptionStatus" | "createdAt">;
-type PlanProps = Pick<PlanDTO, "planName" | "price" | "adVisibility" | "maxBookingPerMonth">;
-export interface findSubscriptionFullDetailsResProps extends SubscriptionProps {
-  subscriptionPlanId: PlanProps,
-}
-
 export interface PlanNameOnly {
   subscriptionPlanId: {
     planName: PlanDTO["planName"];
@@ -620,3 +602,6 @@ export interface ProviderCreatePaymentSuccessEventResult {
         providerId: string;
     };
 };
+
+// get all subscriptions
+export type GetSubscriptionsResponse = Array<Pick<SubscriptionDTO, "_id" | "startDate" | "endDate" | "subscriptionStatus"> & Pick<PlanDTO, "planName">>;

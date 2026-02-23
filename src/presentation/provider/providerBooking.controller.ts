@@ -30,7 +30,7 @@ class ProviderBookingController {
 
     async fetchBookingAppointments(req: Request, res: Response, next: NextFunction) {
         try {
-            const { limit, page, providerId, online, raw } = providerFetchAllAppointmentsSchema.parse({
+            const { limit, page, providerId, online } = providerFetchAllAppointmentsSchema.parse({
                 providerId: (req.user as DecodedUser).userOrProviderId,
                 ...req.query
             });
@@ -39,7 +39,6 @@ class ProviderBookingController {
                 page,
                 limit,
                 online: online ? true : false,
-                raw: raw ? true : false,
                 role: Role.PROVIDER
             });
             sendResponse(res, result);

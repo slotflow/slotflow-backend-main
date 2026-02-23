@@ -7,7 +7,6 @@ import { adminServiceController } from "./adminService.controller";
 import { adminPaymentController } from "./adminPayment.controller";
 import { adminProviderController } from "./adminProvider.controller";
 import { adminDashboardController } from "./adminDashboard.controller";
-import { adminSubscriptionController } from "./adminSubscription.controller";
 
 const router = Router();
 
@@ -36,9 +35,6 @@ router.patch('/services/:serviceId',authMiddleware, adminServiceController.chang
 router.get('/plans', authMiddleware,adminPlanController.getAllPlans);
 router.post('/plans', authMiddleware, adminPlanController.createNewPlan);
 router.patch('/plans/:planId', authMiddleware, adminPlanController.changePlanBlockStatus);
-
-router.get('/subscriptions', authMiddleware, adminSubscriptionController.getAllSubscriptions);
-router.get('/subscriptions/:subscriptionId', authMiddleware, adminSubscriptionController.getSubscriptionDetails);
 
 router.get('/payments', authMiddleware, adminPaymentController.getAllPayments);
 router.get('/reports/revenue', authMiddleware, adminPaymentController.fetchRevenueReport);

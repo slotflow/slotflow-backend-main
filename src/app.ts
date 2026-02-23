@@ -11,6 +11,7 @@ import adminRoutes from './presentation/admin/admin.routes';
 import googleRouter from './presentation/google/google.router';
 import providerRouter from './presentation/provider/provider.router';
 import { errorHandler } from './presentation/middleware/error.middleware';
+import sunscriptionRouter from './presentation/subscription/subscription.router';
 
 dotenv.config();
 
@@ -43,6 +44,7 @@ app.use('/api/user',userRouter);
 app.use("/api/admin",adminRoutes);
 app.use('/api/google',googleRouter); 
 app.use('/api/provider',providerRouter); 
+app.use('/api/subscriptions',sunscriptionRouter);
 app.use(errorHandler);
 
 export default app;
