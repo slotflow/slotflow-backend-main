@@ -20,8 +20,7 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
 
     async execute(payload: EventEnvelope<ProviderCreatePaymentSuccessEventResult>) {
         try {
-            console.log("kafka event updating the subscription");
-            console.log("payload : ", payload);
+
             const {
                 payload: {
                     mbsData: {
@@ -52,7 +51,7 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
                 startDate: new Date(),
                 endDate,
             });
-            console.log("subscription : ", subscription)
+
             await this.subscriptionRepository.update(subscription);
 
             await this.kafkaProducer.publish<EventEnvelope<ProviderSubscriptionUpdatedEvent>>(kafkaConfig.topics.pub.providerSubscriptionUpdated, {
@@ -63,9 +62,10 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
                 payload: {
                     ssData: {
                         providerId: provider._id,
-                        subscriptionPlan: plan.planName,
+                        subscribedPlan: plan.planName,
                         startDate: subscription.startDate,
                         endDate: subscription.endDate,
+                        subscriptionStatus: subscription.subscriptionStatus
                     }
                 }
             });

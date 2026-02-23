@@ -23,6 +23,7 @@ class ProviderSubscriptionController {
         this.fetchProviderSubscriptions = this.fetchProviderSubscriptions.bind(this);
         this.subscribeToTrialPlan = this.subscribeToTrialPlan.bind(this);
         this.getSubscriptionDetails = this.getSubscriptionDetails.bind(this);
+        this.getSubscribedPlan = this.getSubscribedPlan.bind(this);
     };
 
     async subscribe(req: Request, res: Response, next: NextFunction) {

@@ -3,6 +3,8 @@ import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 import { ISubscriptionQueries } from "../../application/queries/ISubscription.queries";
 import { AdminFetchAllSubscriptionsResponse, AdminFetchDashboardSubscriptionStatsDataResponse } from "../../application/dtos/admin.dto";
 import { ApiPaginationRequest, FetchProviderSubscriptionsRequest, findSubscriptionFullDetailsResProps, FindSubscriptionsByProviderIdResponse, PlanNameOnly, PopulatedSubscription, TableData } from "../../application/dtos/common.dto";
+import { PopulatedPlan, ProviderFetchSubscribedPlanResponse } from "../../application/dtos/provider.dto";
+import { Types } from "mongoose";
 
 export class SubscriptionQueriesImpl implements ISubscriptionQueries {
 
@@ -179,4 +181,24 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
 
         return updated.modifiedCount > 0;
     }
+
+    async findMySubscritpion(subscriptionId: string): Promise<ProviderFetchSubscribedPlanResponse | null> {
+        const subscription = await SubscriptionModel
+            .findOne({ _id: new Types.ObjectId(subscriptionId) })
+            .sort({ createdAt: -1 })
+            .populate<PopulatedPlan>({
+                path: "subscriptionPlanId",
+                select: "planName"
+            })
+            .lean();
+        if (!subscription) return null;
+
+        return {
+            providerId: subscription.providerId.toString(),
+            subscribedPlan: subscription.subscriptionPlanId?.planName,
+            startDate: subscription.startDate,
+            endDate: subscription.endDate,
+            subscriptionStatus: subscription.subscriptionStatus
+        };
+    };
 }

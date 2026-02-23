@@ -84,7 +84,7 @@ export const fetchSubscriptionDetailsUseCase = new FetchSubscriptionDetailsUseCa
 export const providerFetchAllSubscriptionsUseCase = new ProviderFetchAllSubscriptionsUseCase(providerRepository, subscriptionQueries);
 export const providerTrialSubscriptionUseCase = new ProviderTrialSubscriptionUseCase(providerRepository, subscriptionRepository, planRepository, kafkaProducer);
 export const providerSubscriptionCheckoutUseCase = new ProviderSubscriptionCheckoutUseCase(planRepository, providerRepository, subscriptionRepository, paymentServiceClient);
-export const providerFetchSubscribedPlanUseCase = new ProviderFetchSubscribedPlanUseCase(providerRepository, subscriptionRepository, planRepository);
+export const providerFetchSubscribedPlanUseCase = new ProviderFetchSubscribedPlanUseCase(providerRepository, subscriptionQueries);
 
 // provider user controller dependency injection
 export const providerFetchUserForChatSidebarUseCase = new ProviderFetchUserForChatSidebarUseCase(signedUrlService, bookingQueries);

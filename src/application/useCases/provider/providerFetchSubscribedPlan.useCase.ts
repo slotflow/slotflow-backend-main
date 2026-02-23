@@ -1,35 +1,31 @@
 import { log } from "../../../shared/logger/logger";
-import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
+import { ISubscriptionQueries } from "../../queries/ISubscription.queries";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
-import { FetchProviderSubscribedPlanRequest, FetchProviderSubscribedPlanResponse } from "../../dtos/provider.dto";
+import { ProviderFetchSubscribedPlanRequest, ProviderFetchSubscribedPlanResponse } from "../../dtos/provider.dto";
 
 export class ProviderFetchSubscribedPlanUseCase {
     constructor(
-        private providerRepository: IProviderRepository,
-        private subscriptionRepository: ISubscriptionRepository,
-        private planRepository: IPlanRepository
+        private readonly providerRepository: IProviderRepository,
+        private readonly subscriptionQueries: ISubscriptionQueries
     ) { };
 
-    async execute(payload: FetchProviderSubscribedPlanRequest): Promise<FetchProviderSubscribedPlanResponse> {
+    async execute(payload: ProviderFetchSubscribedPlanRequest): Promise<ProviderFetchSubscribedPlanResponse> {
+        console.log("Provider fetching subscription");
+        const { providerId } = payload;
         try {
-            const { providerId } = payload;
-
             const provider = await this.providerRepository.findById(providerId);
             if (!provider) throw new Error("Invalid request.");
             if (!provider.subscription.length) throw new Error("No subscription found.");
 
-            const subscription = await this.subscriptionRepository.findById(provider.subscription.at(-1)!);
-            if (!subscription) throw new Error("No subscription found.");
-
-            const plan = await this.planRepository.findById(subscription.subscriptionPlanId);
-            if (!plan) throw new Error("No subscription found.");
+            const result = await this.subscriptionQueries.findMySubscritpion(provider.subscription.at(-1)!);
+            if (!result) throw new Error("No subscription found.");
 
             return {
                 providerId,
-                subscribedPlan: plan.planName,
-                startDate: subscription.startDate,
-                endDate: subscription.endDate,
+                subscribedPlan: result.subscribedPlan,
+                startDate: result.startDate,
+                endDate: result.endDate,
+                subscriptionStatus: result.subscriptionStatus
             };
         } catch (error) {
             log.error("ProviderFetchAllSubscriptionsUseCase failed", error as Error);

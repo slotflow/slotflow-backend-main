@@ -4,6 +4,7 @@ import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
 import { PaymentFor, PaymentGateway, PaymentStatus } from "../../domain/enums/payment.enum";
 import { AppConnect, NotificationType, OtpPurpose, Role } from "../../domain/enums/common.enum";
+import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 
 // **** COMMON DTOS
 
@@ -139,9 +140,10 @@ export interface SendAppConnectEvent {
 export interface ProviderSubscriptionUpdatedEvent {
   ssData: {
     providerId: string;
-    subscriptionPlan: PlanName;
+    subscribedPlan: PlanName;
     startDate: Date;
     endDate: Date;
+    subscriptionStatus: SubscriptionStatus;
   }
 }
 

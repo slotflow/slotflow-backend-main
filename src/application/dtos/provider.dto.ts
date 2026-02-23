@@ -1,7 +1,7 @@
 import Stripe from "stripe";
 import { Review } from "../../domain/entities/review.entity";
 import { AddressDTO, BookingDTO, ProviderDTO, UserDTO, PlanDTO, ProviderServiceDTO, ServiceDTO, FrontendAvailabilityForRequest, FontendAvailabilityForResponse, FindProviderServiceResponse } from "./common.dto";
-import { SubscriptionValidity } from "../../domain/enums/subscription.enum";
+import { SubscriptionStatus, SubscriptionValidity } from "../../domain/enums/subscription.enum";
 import { PlanName } from "../../domain/enums/plan.enum";
 
 
@@ -261,13 +261,20 @@ export type ProviderFetchDashboardGraphRepository = Omit<ProviderFetchDashboardG
     subscriptionGuard: number;
 }
 
-export type FetchProviderSubscribedPlanRequest = {
+export type ProviderFetchSubscribedPlanRequest = {
     providerId: ProviderDTO["_id"]
 };
 
-export interface FetchProviderSubscribedPlanResponse {
+export interface ProviderFetchSubscribedPlanResponse {
     providerId: string;
     subscribedPlan: PlanName;
     startDate: Date;
     endDate: Date;
+    subscriptionStatus: SubscriptionStatus
 };
+
+export interface PopulatedPlan {
+    subscriptionPlanId: {
+        planName: PlanName;
+    }
+}

@@ -1,3 +1,4 @@
+import { ProviderFetchSubscribedPlanResponse } from "../dtos/provider.dto";
 import { AdminFetchAllSubscriptionsResponse, AdminFetchDashboardSubscriptionStatsDataResponse } from "../dtos/admin.dto";
 import { ApiPaginationRequest, FetchProviderSubscriptionsRequest, findSubscriptionFullDetailsResProps, FindSubscriptionsByProviderIdResponse, TableData } from "../dtos/common.dto";
 
@@ -14,5 +15,7 @@ export interface ISubscriptionQueries {
     findByProviderId(payload: FetchProviderSubscriptionsRequest): Promise<TableData<FindSubscriptionsByProviderIdResponse>>;
     
     findSubscriptionsForUpdatinStatus(): Promise<boolean>;
+
+    findMySubscritpion(subscriptionId: string): Promise<ProviderFetchSubscribedPlanResponse | null>;
 
 };

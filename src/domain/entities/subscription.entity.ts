@@ -78,8 +78,6 @@ export class Subscription {
     };
 
     subscriptionPaymentSuccess(props: SubscriptionPaymentSuccessProps) {
-        console.log("this.props : ",this.props);
-        console.log("props : ",props);
         this.props.subscriptionStatus = SubscriptionStatus.ACTIVE;
         this.props.startDate = props.startDate;
         this.props.endDate = props.endDate;
