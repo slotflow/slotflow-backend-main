@@ -8,8 +8,14 @@ const router = Router();
 
 router.get('/',
     authMiddleware,
-    authorize(Role.ADMIN, Role.PROVIDER),
+    authorize(Role.USER, Role.PROVIDER),
     bookingController.getBookings
+);
+
+router.get('/:bookingId/can-join',
+    authMiddleware,
+    authorize(Role.USER, Role.PROVIDER),
+    bookingController.validateRoomId
 );
 
 export default router;

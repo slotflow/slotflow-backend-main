@@ -2,8 +2,8 @@ import {
   dateSchema,
   paginationSchema,
   roleValidationSchema,
-  validateRoomIdSchema,
   validateProviderIdSchema,
+  validateBookingIdSchema,
 } from "./base.zod";
 import { z } from "zod";
 import { ServiceCategory } from "../../domain/enums/service.enum";
@@ -13,8 +13,6 @@ import { objectIdRegex } from "../utils/regex";
 // Booking request query validation schema with filters
 export const getBookingsSchema = z.object({
   online: z.nativeEnum(Boolean).optional(),
-  providerId: z.string().regex(objectIdRegex,"Invalid providerId").optional(),
-  userId: z.string().regex(objectIdRegex,"Invalid userId").optional(),
 }).merge(paginationSchema);
 
 // Join or leave room validation schema
@@ -52,4 +50,11 @@ export const fetchProviderServiceAvailabilitySchema = z.object({
 }).merge(validateProviderIdSchema);
 
 //
-export const validateJoinRoomSchema = JoinOrLeftRoomSchema.merge(validateRoomIdSchema);
+export const validateJoinRoomSchema = z.object({
+  roomId: z.string(),
+}).merge(JoinOrLeftRoomSchema);
+
+//
+export const validateRoomIdSchema = z.object({
+  roomId: z.string(),
+}).merge(validateBookingIdSchema);

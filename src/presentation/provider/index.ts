@@ -4,7 +4,7 @@ import { subscriptionMapping } from "../../infrastructure/helpers";
 import { paymentServiceClient } from "../../infrastructure/clients";
 import { googleTokenService, signedUrlService } from "../../infrastructure/services";
 import { FetchAllReviewsUseCase } from "../../application/useCases/common/fetchReviews.useCase";
-import { ValidateJoinRoomUsecase } from "../../application/useCases/common/validateJoinRoom.useCase";
+// import { ValidateJoinRoomUsecase } from "../../application/useCases/common/validateJoinRoom.useCase";
 import { ProviderFetchAllPlansUseCase } from "../../application/useCases/provider/providerPlan.useCase";
 import { FetchAllAppServicesUseCase } from "../../application/useCases/common/fetchAppServices.useCase";
 import { ProviderStripeConnectUseCase } from "../../application/useCases/provider/providerStripe.useCase";
@@ -36,7 +36,7 @@ export const providerCreateAddressUseCase = new ProviderCreateAddressUseCase(pro
 export const fetchAllAppServicesUseCase = new FetchAllAppServicesUseCase(serviceRepository);
 
 // provider booking controller
-export const validateJoinRoomUsecase = new ValidateJoinRoomUsecase(bookingRepository);
+// export const validateJoinRoomUsecase = new ValidateJoinRoomUsecase(bookingRepository);
 export const fetchBookingDetailsUsecase = new FetchBookingDetailsUsecase(bookingQueries);
 // export const fetchBookingAppointmentsUseCase = new FetchBookingAppointmentsUseCase(bookingQueries);
 export const providerChangeBookingAppointmentStatusUseCase = new ProviderChangeBookingAppointmentStatusUseCase(bookingRepository, userRepository, googleTokenService, kafkaProducer);

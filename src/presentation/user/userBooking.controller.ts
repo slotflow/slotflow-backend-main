@@ -9,7 +9,7 @@ import { FetchBookingDetailsUsecase } from "../../application/useCases/common/fe
 import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/common/updateBookingOnlineTracking.useCase";
 import { UserAppointmentBookingViaStripeUseCase, UserSaveBookingAfterStripePaymentUseCase } from "../../application/useCases/user/userStripeBooking.useCase";
 import { userCancelBookingSchema, userCreateSessionIdForbookingViaStripeSchema, userSaveBookingSchema, userValidateRoomSchema } from "../../shared/zod/user.zod";
-import { fetchBookingDetailsUsecase, updateBookingOnlineTrakingUseCase, userAppointmentBookingViaStrpieUseCase, userCancelBookingUseCase, userSaveBookingAfterStripePaymentUseCase, validateJoinRoomUsecase } from ".";
+import { fetchBookingDetailsUsecase, updateBookingOnlineTrakingUseCase, userAppointmentBookingViaStrpieUseCase, userCancelBookingUseCase, userSaveBookingAfterStripePaymentUseCase } from ".";
 import { Role } from "../../domain/enums/common.enum";
 import { validateBookingIdSchema } from "../../shared/zod/base.zod";
 
@@ -19,7 +19,7 @@ class UserBookingController {
         private userCancelBookingUseCase: UserCancelBookingUseCase,
         private userAppointmentBookingViaStripeUseCase: UserAppointmentBookingViaStripeUseCase,
         private userSaveBookingAfterStripePaymentUseCase: UserSaveBookingAfterStripePaymentUseCase,
-        private validateJoinRoomUsecase: ValidateJoinRoomUsecase,
+        // private validateJoinRoomUsecase: ValidateJoinRoomUsecase,
         private updateBookingOnlineTrakingUseCase: UpdateBookingOnlineTrakingUseCase,
         private fetchBookingDetailsUsecase: FetchBookingDetailsUsecase
     ) {
@@ -27,7 +27,7 @@ class UserBookingController {
         this.cancelBooking = this.cancelBooking.bind(this);
         this.createSessionIdForbookingViaStripe = this.createSessionIdForbookingViaStripe.bind(this);
         this.saveBookingAfterStripePayment = this.saveBookingAfterStripePayment.bind(this);
-        this.validateRoom = this.validateRoom.bind(this);
+        // this.validateRoom = this.validateRoom.bind(this);
         this.userJoinRoom = this.userJoinRoom.bind(this);
         this.fetchBookingDetails = this.fetchBookingDetails.bind(this);
     };
@@ -106,26 +106,26 @@ class UserBookingController {
         };
     };
 
-    async validateRoom(req: Request, res: Response, next: NextFunction) {
-        try {
-            const { bookingId, roomId, userId } = userValidateRoomSchema.parse({
-                bookingId: req.params.bookingId,
-                roomId: req.query.roomId,
-                userId: (req.user as DecodedUser).userOrProviderId
-            });
-            if (!userId) throw new Error("Invalid request");
-            const result = await this.validateJoinRoomUsecase.execute({
-                bookingId,
-                roomId,
-                role: Role.USER,
-                userOrProviderId: userId
-            });
-            sendResponse(res, result);
-        } catch (error) {
-            log.error("validateRoom failed", error as Error);
-            next(error);
-        };
-    };
+    // async validateRoom(req: Request, res: Response, next: NextFunction) {
+    //     try {
+    //         const { bookingId, roomId, userId } = userValidateRoomSchema.parse({
+    //             bookingId: req.params.bookingId,
+    //             roomId: req.query.roomId,
+    //             userId: (req.user as DecodedUser).userOrProviderId
+    //         });
+    //         if (!userId) throw new Error("Invalid request");
+    //         const result = await this.validateJoinRoomUsecase.execute({
+    //             bookingId,
+    //             roomId,
+    //             role: Role.USER,
+    //             userOrProviderId: userId
+    //         });
+    //         sendResponse(res, result);
+    //     } catch (error) {
+    //         log.error("validateRoom failed", error as Error);
+    //         next(error);
+    //     };
+    // };
 
     async userJoinRoom(req: Request, res: Response, next: NextFunction) {
         try {
@@ -165,7 +165,7 @@ export const userBookingController = new UserBookingController(
     userCancelBookingUseCase,
     userAppointmentBookingViaStrpieUseCase,
     userSaveBookingAfterStripePaymentUseCase,
-    validateJoinRoomUsecase,
+    // validateJoinRoomUsecase,
     updateBookingOnlineTrakingUseCase,
     fetchBookingDetailsUsecase
 );

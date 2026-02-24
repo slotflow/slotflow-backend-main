@@ -8,7 +8,7 @@ import { FetchBookingDetailsUsecase } from "../../application/useCases/common/fe
 import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/common/updateBookingOnlineTracking.useCase";
 import { ProviderChangeBookingAppointmentStatusUseCase } from "../../application/useCases/provider/providerBooking.useCase";
 import { providerChangeAppointmentStatusSchema, providerValidateRoomSchema } from "../../shared/zod/provider.zod";
-import {fetchBookingDetailsUsecase, providerChangeBookingAppointmentStatusUseCase, updateBookingOnlineTrakingUseCase, validateJoinRoomUsecase } from ".";
+import {fetchBookingDetailsUsecase, providerChangeBookingAppointmentStatusUseCase, updateBookingOnlineTrakingUseCase } from ".";
 import { Role } from "../../domain/enums/common.enum";
 import { validateJoinRoomSchema } from "../../shared/zod/common.zod";
 
@@ -16,13 +16,13 @@ class ProviderBookingController {
     constructor(
         // private fetchBookingAppointmentsUseCase: FetchBookingAppointmentsUseCase,
         private providerChangeBookingAppointmentStatusUseCase: ProviderChangeBookingAppointmentStatusUseCase,
-        private validateJoinRoomUsecase: ValidateJoinRoomUsecase,
+        // private validateJoinRoomUsecase: ValidateJoinRoomUsecase,
         private updateBookingOnlineTrakingUseCase: UpdateBookingOnlineTrakingUseCase,
         private fetchBookingDetailsUsecase: FetchBookingDetailsUsecase,
     ) {
         // this.fetchBookingAppointments = this.fetchBookingAppointments.bind(this);
         this.updateBookingAppointmentStatus = this.updateBookingAppointmentStatus.bind(this);
-        this.validateRoom = this.validateRoom.bind(this);
+        // this.validateRoom = this.validateRoom.bind(this);
         this.providerJoinRoom = this.providerJoinRoom.bind(this);
         this.fetchBookingDetails = this.fetchBookingDetails.bind(this);
     };
@@ -62,25 +62,25 @@ class ProviderBookingController {
         };
     };
 
-    async validateRoom(req: Request, res: Response, next: NextFunction) {
-        try {
-            const { bookingId, providerId, roomId } = providerValidateRoomSchema.parse({
-                bookingId: req.params.bookingId,
-                roomId: req.query.roomId,
-                providerId: (req.user as DecodedUser).userOrProviderId
-            });
-            const result = await this.validateJoinRoomUsecase.execute({
-                bookingId,
-                roomId,
-                role: Role.PROVIDER,
-                userOrProviderId: providerId
-            });
-            res.status(200).json(result);
-        } catch (error) {
-            log.error("validateRoom failed", error as Error);
-            next(error);
-        };
-    };
+    // async validateRoom(req: Request, res: Response, next: NextFunction) {
+    //     try {
+    //         const { bookingId, providerId, roomId } = providerValidateRoomSchema.parse({
+    //             bookingId: req.params.bookingId,
+    //             roomId: req.query.roomId,
+    //             providerId: (req.user as DecodedUser).userOrProviderId
+    //         });
+    //         const result = await this.validateJoinRoomUsecase.execute({
+    //             bookingId,
+    //             roomId,
+    //             role: Role.PROVIDER,
+    //             userOrProviderId: providerId
+    //         });
+    //         res.status(200).json(result);
+    //     } catch (error) {
+    //         log.error("validateRoom failed", error as Error);
+    //         next(error);
+    //     };
+    // };
 
     async providerJoinRoom(req: Request, res: Response, next: NextFunction) {
         try {
@@ -118,7 +118,7 @@ class ProviderBookingController {
 export const providerBookingController = new ProviderBookingController(
     // fetchBookingAppointmentsUseCase,
     providerChangeBookingAppointmentStatusUseCase,
-    validateJoinRoomUsecase,
+    // validateJoinRoomUsecase,
     updateBookingOnlineTrakingUseCase,
     fetchBookingDetailsUsecase
 );

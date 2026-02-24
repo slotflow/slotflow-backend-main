@@ -25,7 +25,7 @@ export const userCreateAddressUseCase = new UserCreateAddressUseCase(userReposit
 export const fetchAllAppServicesUseCase = new FetchAllAppServicesUseCase(serviceRepository);
 
 // user booking controller dependency injection
-export const validateJoinRoomUsecase = new ValidateJoinRoomUsecase(bookingRepository)
+// export const validateJoinRoomUsecase = new ValidateJoinRoomUsecase(bookingRepository)
 export const fetchBookingDetailsUsecase = new FetchBookingDetailsUsecase(bookingQueries);
 // export const fetchBookingAppointmentsUseCase = new FetchBookingAppointmentsUseCase(bookingQueries);
 export const updateBookingOnlineTrakingUseCase = new UpdateBookingOnlineTrakingUseCase(bookingRepository, serviceAvailabilityQueries);

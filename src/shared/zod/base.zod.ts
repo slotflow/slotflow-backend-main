@@ -15,10 +15,6 @@ export const validateBookingIdSchema = z.object({
     bookingId: z.string().regex(objectIdRegex, "Invalid bookingId"),
 });
 
-export const validateRoomIdSchema = z.object({
-    roomId: z.string(),
-});
-
 export const validateReviewIdSchema = z.object({
     reviewId: z.string().regex(objectIdRegex, "Invalid reviewId"),
 });
