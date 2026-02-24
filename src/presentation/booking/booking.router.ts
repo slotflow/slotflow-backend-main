@@ -18,4 +18,10 @@ router.get('/:bookingId/can-join',
     bookingController.validateRoomId
 );
 
+router.get('/:bookingId',
+    authMiddleware,
+    authorize(Role.USER, Role.PROVIDER),
+    bookingController.getBookingDetails
+);
+
 export default router;

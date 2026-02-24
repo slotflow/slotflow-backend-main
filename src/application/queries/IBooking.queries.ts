@@ -1,6 +1,6 @@
 import { UserFetchProvidersForChatSidebarResponse } from "../dtos/user.dto";
 import { AdminFetchDashboardAppointmentStatsDataResponse, AdminFetchTodaysBookingStatsForDashboardResponse } from "../dtos/admin.dto";
-import { FetchBookingDetailsResponse, GetBookingsRequest, GetBookingsResponse, GetOnlineBookingsForProviderResponse, GetOnlineBookingsForUserResponse, TableData } from "../dtos/common.dto";
+import { GetBookingDetailsResponse, GetBookingsRequest, GetBookingsResponse, GetOnlineBookingsForProviderResponse, GetOnlineBookingsForUserResponse, TableData } from "../dtos/common.dto";
 import { ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardGraphDataResponse, ProviderFetchDashboardGraphRepository, ProviderFetchUsersForChatSideBarResponse } from "../dtos/provider.dto";
 
 export interface IBookingQueries {
@@ -9,7 +9,7 @@ export interface IBookingQueries {
 
     findAll({ page, limit, userId, serviceProviderId, online, raw, role }: GetBookingsRequest): Promise<TableData<GetBookingsResponse | GetOnlineBookingsForProviderResponse | GetOnlineBookingsForUserResponse>>;
 
-    findDetails(bookingId: string): Promise<FetchBookingDetailsResponse | null>;
+    findDetails(bookingId: string): Promise<GetBookingDetailsResponse | null>;
 
     findUsersforChatSideBar(providerId: string): Promise<ProviderFetchUsersForChatSideBarResponse>;
 

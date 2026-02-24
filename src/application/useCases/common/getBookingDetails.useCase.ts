@@ -1,18 +1,18 @@
 import { log } from "../../../shared/logger/logger";
 import { IBookingQueries } from "../../queries/IBooking.queries";
-import { FetchBookingDetailsRequest, FetchBookingDetailsResponse } from "../../dtos/common.dto";
+import { GetBookingDetailsRequest, GetBookingDetailsResponse } from "../../dtos/common.dto";
 
-export class FetchBookingDetailsUsecase {
+export class GetBookingDetailsUsecase {
     constructor(
         private bookingQueries: IBookingQueries,
     ) { };
 
-    async execute(payload: FetchBookingDetailsRequest): Promise<FetchBookingDetailsResponse | null> {
+    async execute(payload: GetBookingDetailsRequest): Promise<GetBookingDetailsResponse | null> {
         try {
             const { bookingId } = payload;
 
             const result = await this.bookingQueries.findDetails(bookingId);
-            if(!result) return null;
+            if (!result) return null;
 
             return result;
         } catch (error) {

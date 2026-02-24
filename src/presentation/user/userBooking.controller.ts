@@ -4,53 +4,23 @@ import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { validateJoinRoomSchema } from "../../shared/zod/common.zod";
 import { UserCancelBookingUseCase } from "../../application/useCases/user/userBooking.useCase";
-import { ValidateJoinRoomUsecase } from "../../application/useCases/common/validateJoinRoom.useCase";
-import { FetchBookingDetailsUsecase } from "../../application/useCases/common/fetchBookingDetails.useCase";
 import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/common/updateBookingOnlineTracking.useCase";
+import { userCancelBookingSchema, userCreateSessionIdForbookingViaStripeSchema, userSaveBookingSchema } from "../../shared/zod/user.zod";
 import { UserAppointmentBookingViaStripeUseCase, UserSaveBookingAfterStripePaymentUseCase } from "../../application/useCases/user/userStripeBooking.useCase";
-import { userCancelBookingSchema, userCreateSessionIdForbookingViaStripeSchema, userSaveBookingSchema, userValidateRoomSchema } from "../../shared/zod/user.zod";
-import { fetchBookingDetailsUsecase, updateBookingOnlineTrakingUseCase, userAppointmentBookingViaStrpieUseCase, userCancelBookingUseCase, userSaveBookingAfterStripePaymentUseCase } from ".";
-import { Role } from "../../domain/enums/common.enum";
-import { validateBookingIdSchema } from "../../shared/zod/base.zod";
+import { updateBookingOnlineTrakingUseCase, userAppointmentBookingViaStrpieUseCase, userCancelBookingUseCase, userSaveBookingAfterStripePaymentUseCase } from ".";
 
 class UserBookingController {
     constructor(
-        // private fetchBookingAppointmentsUseCase: FetchBookingAppointmentsUseCase,
         private userCancelBookingUseCase: UserCancelBookingUseCase,
         private userAppointmentBookingViaStripeUseCase: UserAppointmentBookingViaStripeUseCase,
         private userSaveBookingAfterStripePaymentUseCase: UserSaveBookingAfterStripePaymentUseCase,
-        // private validateJoinRoomUsecase: ValidateJoinRoomUsecase,
         private updateBookingOnlineTrakingUseCase: UpdateBookingOnlineTrakingUseCase,
-        private fetchBookingDetailsUsecase: FetchBookingDetailsUsecase
     ) {
-        // this.fetchBookings = this.fetchBookings.bind(this);
         this.cancelBooking = this.cancelBooking.bind(this);
         this.createSessionIdForbookingViaStripe = this.createSessionIdForbookingViaStripe.bind(this);
         this.saveBookingAfterStripePayment = this.saveBookingAfterStripePayment.bind(this);
-        // this.validateRoom = this.validateRoom.bind(this);
         this.userJoinRoom = this.userJoinRoom.bind(this);
-        this.fetchBookingDetails = this.fetchBookingDetails.bind(this);
     };
-
-    // async fetchBookings(req: Request, res: Response, next: NextFunction) {
-    //     try {
-    //         const { limit, page, userId, online } = userFetchAllAppointmentsSchema.parse({
-    //             providerId: (req.user as DecodedUser).userOrProviderId,
-    //             ...req.query
-    //         });
-    //         const result = await this.fetchBookingAppointmentsUseCase.execute({
-    //             userId,
-    //             page,
-    //             limit,
-    //             online: online ? true : false,
-    //             role: Role.USER,
-    //         });
-    //         sendResponse(res, result);
-    //     } catch (error) {
-    //         log.error("fetchBookings failed", error as Error);
-    //         next(error);
-    //     };
-    // };
 
     async cancelBooking(req: Request, res: Response, next: NextFunction) {
         try {
@@ -106,27 +76,6 @@ class UserBookingController {
         };
     };
 
-    // async validateRoom(req: Request, res: Response, next: NextFunction) {
-    //     try {
-    //         const { bookingId, roomId, userId } = userValidateRoomSchema.parse({
-    //             bookingId: req.params.bookingId,
-    //             roomId: req.query.roomId,
-    //             userId: (req.user as DecodedUser).userOrProviderId
-    //         });
-    //         if (!userId) throw new Error("Invalid request");
-    //         const result = await this.validateJoinRoomUsecase.execute({
-    //             bookingId,
-    //             roomId,
-    //             role: Role.USER,
-    //             userOrProviderId: userId
-    //         });
-    //         sendResponse(res, result);
-    //     } catch (error) {
-    //         log.error("validateRoom failed", error as Error);
-    //         next(error);
-    //     };
-    // };
-
     async userJoinRoom(req: Request, res: Response, next: NextFunction) {
         try {
             const { joined, role, roomId, joinedTime, leftCallTime } = validateJoinRoomSchema.parse({
@@ -147,25 +96,11 @@ class UserBookingController {
         };
     };
 
-    async fetchBookingDetails(req: Request, res: Response, next: NextFunction) {
-        try {
-            const { bookingId } = validateBookingIdSchema.parse({ bookingId: req.params.bookingId });
-            const result = await this.fetchBookingDetailsUsecase.execute({ bookingId });
-            sendResponse(res, result);
-        } catch (error) {
-            log.error("fetchBookingDetails failed", error as Error);
-            next(error);
-        };
-    };
-
 }
 
 export const userBookingController = new UserBookingController(
-    // fetchBookingAppointmentsUseCase,
     userCancelBookingUseCase,
     userAppointmentBookingViaStrpieUseCase,
     userSaveBookingAfterStripePaymentUseCase,
-    // validateJoinRoomUsecase,
     updateBookingOnlineTrakingUseCase,
-    fetchBookingDetailsUsecase
 );

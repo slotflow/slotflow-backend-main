@@ -6,7 +6,7 @@ import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { endOfDay, startOfDay, startOfToday, startOfTomorrow } from "date-fns";
 import { UserFetchProvidersForChatSidebarResponse } from "../../application/dtos/user.dto";
 import { AdminFetchDashboardAppointmentStatsDataResponse, AdminFetchTodaysBookingStatsForDashboardResponse } from "../../application/dtos/admin.dto";
-import { GetBookingsRequest, TableData, GetBookingsResponse, GetOnlineBookingsForProviderResponse, GetOnlineBookingsForUserResponse, FetchBookingDetailsResponse } from "../../application/dtos/common.dto";
+import { GetBookingsRequest, TableData, GetBookingsResponse, GetOnlineBookingsForProviderResponse, GetOnlineBookingsForUserResponse, GetBookingDetailsResponse } from "../../application/dtos/common.dto";
 import { ProviderFetchDashboardGraphRepository, ProviderFetchDashboardGraphDataResponse, ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchUsersForChatSideBarResponse } from "../../application/dtos/provider.dto";
 import { Role } from "../../domain/enums/common.enum";
 
@@ -109,7 +109,7 @@ export class BookingQueriesImpl implements IBookingQueries {
         }
     }
 
-    async findDetails(bookingId: string): Promise<FetchBookingDetailsResponse | null> {
+    async findDetails(bookingId: string): Promise<GetBookingDetailsResponse | null> {
         const booking = await BookingModel.findById(new Types.ObjectId(bookingId), {
             _id: 0,
             appointmentDate: 1,
@@ -129,7 +129,7 @@ export class BookingQueriesImpl implements IBookingQueries {
                 path: "serviceProviderId",
                 select: "username email",
             })
-            .lean<FetchBookingDetailsResponse>();
+            .lean<GetBookingDetailsResponse>();
 
         if (!booking) return null;
 

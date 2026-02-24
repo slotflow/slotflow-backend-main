@@ -513,10 +513,10 @@ export interface FetchReviewsResponse extends Pick<ReviewDTO, "_id" | "createdAt
 
 
 //// **** Used as the response interface of fetch booking details
-export interface FetchBookingDetailsRequest {
+export interface GetBookingDetailsRequest {
   bookingId: BookingDTO["_id"];
 };
-export interface FetchBookingDetailsResponse extends Pick<BookingDTO, "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "onlineTrack" | "statusTrack" | "videoCallRoomId"> {
+export interface GetBookingDetailsResponse extends Pick<BookingDTO, "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "onlineTrack" | "statusTrack" | "videoCallRoomId"> {
   userId: Pick<UserDTO, "username" | "email">;
   serviceProviderId: Pick<ProviderDTO, "username" | "email">;
 };

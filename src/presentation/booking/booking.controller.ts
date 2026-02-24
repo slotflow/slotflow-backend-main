@@ -2,16 +2,19 @@ import { log } from "../../shared/logger/logger";
 import { Role } from "../../domain/enums/common.enum";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
-import { getBookingsUseCase, validateJoinRoomUsecase } from ".";
+import { getBookingDetailsUsecase, getBookingsUseCase, validateJoinRoomUsecase } from ".";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { getBookingsSchema, validateRoomIdSchema } from "../../shared/zod/common.zod";
 import { GetBookingsUseCase } from "../../application/useCases/common/getBookings.useCase";
 import { ValidateJoinRoomUsecase } from "../../application/useCases/common/validateJoinRoom.useCase";
+import { validateBookingIdSchema } from "../../shared/zod/base.zod";
+import { GetBookingDetailsUsecase } from "../../application/useCases/common/getBookingDetails.useCase";
 
 class BookingController {
     constructor(
         private readonly getBookingsUseCase: GetBookingsUseCase,
-        private readonly validateJoinRoomUsecase: ValidateJoinRoomUsecase
+        private readonly validateJoinRoomUsecase: ValidateJoinRoomUsecase,
+        private readonly getBookingDetailsUsecase: GetBookingDetailsUsecase
     ) {
         this.getBookings = this.getBookings.bind(this);
         this.validateRoomId = this.validateRoomId.bind(this);
@@ -72,9 +75,25 @@ class BookingController {
             next(error);
         };
     };
+
+    async getBookingDetails(req: Request, res: Response, next: NextFunction) {
+        try {
+            const user = req.user as DecodedUser;
+            const { bookingId } = validateBookingIdSchema.parse({ bookingId: req.params.bookingId });
+            const result = await this.getBookingDetailsUsecase.execute({
+                bookingId,
+            });
+            sendResponse(res, result);
+            
+        } catch (error) {
+            log.error("getBookingDetails failed", error as Error);
+            next(error);
+        };
+    };
 }
 
 export const bookingController = new BookingController(
     getBookingsUseCase,
-    validateJoinRoomUsecase
+    validateJoinRoomUsecase,
+    getBookingDetailsUsecase
 )
