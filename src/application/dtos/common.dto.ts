@@ -311,13 +311,13 @@ export interface userIdAndServiceProviderId {
   userId?: UserDTO["_id"];
   serviceProviderId?: ProviderDTO["_id"];
 }
-export interface FetchBookingsRequest extends ApiPaginationRequest, userIdAndServiceProviderId {
+export interface GetBookingsRequest extends ApiPaginationRequest, userIdAndServiceProviderId {
   online: boolean;
   role: Role;
 }
 // Used as the response type for fetching bookings for admin, provider and user side
-export type FetchBookingsResponse = Array<Pick<BookingDTO, "_id" | "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "videoCallRoomId" | "serviceProviderId">>;
-export type FetchOnlineBookingsForProviderResponse = Array<
+export type GetBookingsResponse = Array<Pick<BookingDTO, "_id" | "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "videoCallRoomId" | "serviceProviderId">>;
+export type GetOnlineBookingsForProviderResponse = Array<
   Pick<
     BookingDTO,
     | "_id"
@@ -330,7 +330,7 @@ export type FetchOnlineBookingsForProviderResponse = Array<
     userId: Pick<UserDTO, "username">;
   }
 >;
-export type FetchOnlineBookingsForUserResponse = Array<
+export type GetOnlineBookingsForUserResponse = Array<
   Pick<
     BookingDTO,
     | "_id"
@@ -596,11 +596,11 @@ export interface ProviderCreatePaymentFailedEventResult {
 // send provider create payment success event
 export interface ProviderCreatePaymentSuccessEventResult {
   mbsData: {
-        subscriptionId: string;
-        paymentId: string;
-        planDuration: number;
-        providerId: string;
-    };
+    subscriptionId: string;
+    paymentId: string;
+    planDuration: number;
+    providerId: string;
+  };
 };
 
 // get all subscriptions

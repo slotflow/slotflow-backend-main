@@ -5,48 +5,47 @@ import { DecodedUser } from "../../application/dtos/common.dto";
 import { validateBookingIdSchema } from "../../shared/zod/base.zod";
 import { ValidateJoinRoomUsecase } from "../../application/useCases/common/validateJoinRoom.useCase";
 import { FetchBookingDetailsUsecase } from "../../application/useCases/common/fetchBookingDetails.useCase";
-import { FetchBookingAppointmentsUseCase } from "../../application/useCases/common/fetchAllBookings.useCase";
 import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/common/updateBookingOnlineTracking.useCase";
 import { ProviderChangeBookingAppointmentStatusUseCase } from "../../application/useCases/provider/providerBooking.useCase";
-import { providerChangeAppointmentStatusSchema, providerFetchAllAppointmentsSchema, providerValidateRoomSchema } from "../../shared/zod/provider.zod";
-import { fetchBookingAppointmentsUseCase, fetchBookingDetailsUsecase, providerChangeBookingAppointmentStatusUseCase, updateBookingOnlineTrakingUseCase, validateJoinRoomUsecase } from ".";
+import { providerChangeAppointmentStatusSchema, providerValidateRoomSchema } from "../../shared/zod/provider.zod";
+import {fetchBookingDetailsUsecase, providerChangeBookingAppointmentStatusUseCase, updateBookingOnlineTrakingUseCase, validateJoinRoomUsecase } from ".";
 import { Role } from "../../domain/enums/common.enum";
 import { validateJoinRoomSchema } from "../../shared/zod/common.zod";
 
 class ProviderBookingController {
     constructor(
-        private fetchBookingAppointmentsUseCase: FetchBookingAppointmentsUseCase,
+        // private fetchBookingAppointmentsUseCase: FetchBookingAppointmentsUseCase,
         private providerChangeBookingAppointmentStatusUseCase: ProviderChangeBookingAppointmentStatusUseCase,
         private validateJoinRoomUsecase: ValidateJoinRoomUsecase,
         private updateBookingOnlineTrakingUseCase: UpdateBookingOnlineTrakingUseCase,
         private fetchBookingDetailsUsecase: FetchBookingDetailsUsecase,
     ) {
-        this.fetchBookingAppointments = this.fetchBookingAppointments.bind(this);
+        // this.fetchBookingAppointments = this.fetchBookingAppointments.bind(this);
         this.updateBookingAppointmentStatus = this.updateBookingAppointmentStatus.bind(this);
         this.validateRoom = this.validateRoom.bind(this);
         this.providerJoinRoom = this.providerJoinRoom.bind(this);
         this.fetchBookingDetails = this.fetchBookingDetails.bind(this);
     };
 
-    async fetchBookingAppointments(req: Request, res: Response, next: NextFunction) {
-        try {
-            const { limit, page, providerId, online } = providerFetchAllAppointmentsSchema.parse({
-                providerId: (req.user as DecodedUser).userOrProviderId,
-                ...req.query
-            });
-            const result = await this.fetchBookingAppointmentsUseCase.execute({
-                serviceProviderId: providerId,
-                page,
-                limit,
-                online: online ? true : false,
-                role: Role.PROVIDER
-            });
-            sendResponse(res, result);
-        } catch (error) {
-            log.error("fetchBookingAppointments failed", error as Error);
-            next(error);
-        };
-    };
+    // async fetchBookingAppointments(req: Request, res: Response, next: NextFunction) {
+    //     try {
+    //         const { limit, page, providerId, online } = providerFetchAllAppointmentsSchema.parse({
+    //             providerId: (req.user as DecodedUser).userOrProviderId,
+    //             ...req.query
+    //         });
+    //         const result = await this.fetchBookingAppointmentsUseCase.execute({
+    //             serviceProviderId: providerId,
+    //             page,
+    //             limit,
+    //             online: online ? true : false,
+    //             role: Role.PROVIDER
+    //         });
+    //         sendResponse(res, result);
+    //     } catch (error) {
+    //         log.error("fetchBookingAppointments failed", error as Error);
+    //         next(error);
+    //     };
+    // };
 
     async updateBookingAppointmentStatus(req: Request, res: Response, next: NextFunction) {
         try {
@@ -117,7 +116,7 @@ class ProviderBookingController {
 };
 
 export const providerBookingController = new ProviderBookingController(
-    fetchBookingAppointmentsUseCase,
+    // fetchBookingAppointmentsUseCase,
     providerChangeBookingAppointmentStatusUseCase,
     validateJoinRoomUsecase,
     updateBookingOnlineTrakingUseCase,

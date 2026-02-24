@@ -9,6 +9,7 @@ import authRoutes from './presentation/auth/auth.routes';
 import userRouter from './presentation/user/user.routes';
 import adminRoutes from './presentation/admin/admin.routes';
 import googleRouter from './presentation/google/google.router';
+import bookingRouter from './presentation/booking/booking.router';
 import providerRouter from './presentation/provider/provider.router';
 import { errorHandler } from './presentation/middleware/error.middleware';
 import sunscriptionRouter from './presentation/subscription/subscription.router';
@@ -45,6 +46,7 @@ app.use("/api/admin",adminRoutes);
 app.use('/api/google',googleRouter); 
 app.use('/api/provider',providerRouter); 
 app.use('/api/subscriptions',sunscriptionRouter);
+app.use('/api/bookings',bookingRouter);
 app.use(errorHandler);
 
 export default app;

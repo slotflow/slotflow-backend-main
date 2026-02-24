@@ -14,7 +14,7 @@ import {
     validateProviderIdSchema,
     validateReviewIdSchema
 } from "./base.zod";
-import { fetchBookingCommonSchema } from "./common.zod";
+// import { fetchBookingCommonSchema } from "./common.zod";
 import { Role } from "../../domain/enums/common.enum";
 
 //
@@ -65,7 +65,7 @@ export const userUpdateAddressSchema = z.object({
 }).merge(addressSchema).merge(validateUserIdSchema);
 
 //
-export const userFetchAllAppointmentsSchema = fetchBookingCommonSchema.merge(validateUserIdSchema);
+// export const userFetchAllAppointmentsSchema = fetchBookingCommonSchema.merge(validateUserIdSchema);
 
 //
 export const userCancelBookingSchema = validateBookingIdSchema.merge(validateUserIdSchema);

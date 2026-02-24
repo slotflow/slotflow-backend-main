@@ -14,7 +14,6 @@ import {
     validateBookingIdSchema,
     validateReviewIdSchema
 } from "./base.zod";
-import { fetchBookingCommonSchema } from "./common.zod";
 import { Day } from "../../domain/enums/common.enum";
 import { ServiceMode, ServiceType } from "../../domain/enums/service.enum";
 import { SubscriptionValidity } from "../../domain/enums/subscription.enum";
@@ -136,7 +135,7 @@ export const providerUpdateAddressSchema = z.object({
 }).merge(addressSchema).merge(validateProviderIdSchema);
 
 //
-export const providerFetchAllAppointmentsSchema = fetchBookingCommonSchema.merge(validateProviderIdSchema);
+// export const providerFetchAllAppointmentsSchema = fetchBookingCommonSchema.merge(validateProviderIdSchema);
 
 //
 export const providerValidateRoomSchema = validateBookingIdSchema.merge(validateRoomIdSchema).merge(validateProviderIdSchema);

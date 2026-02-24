@@ -6,17 +6,16 @@ import { validateJoinRoomSchema } from "../../shared/zod/common.zod";
 import { UserCancelBookingUseCase } from "../../application/useCases/user/userBooking.useCase";
 import { ValidateJoinRoomUsecase } from "../../application/useCases/common/validateJoinRoom.useCase";
 import { FetchBookingDetailsUsecase } from "../../application/useCases/common/fetchBookingDetails.useCase";
-import { FetchBookingAppointmentsUseCase } from "../../application/useCases/common/fetchAllBookings.useCase";
 import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/common/updateBookingOnlineTracking.useCase";
 import { UserAppointmentBookingViaStripeUseCase, UserSaveBookingAfterStripePaymentUseCase } from "../../application/useCases/user/userStripeBooking.useCase";
-import { userCancelBookingSchema, userCreateSessionIdForbookingViaStripeSchema, userFetchAllAppointmentsSchema, userSaveBookingSchema, userValidateRoomSchema } from "../../shared/zod/user.zod";
-import { fetchBookingAppointmentsUseCase, fetchBookingDetailsUsecase, updateBookingOnlineTrakingUseCase, userAppointmentBookingViaStrpieUseCase, userCancelBookingUseCase, userSaveBookingAfterStripePaymentUseCase, validateJoinRoomUsecase } from ".";
+import { userCancelBookingSchema, userCreateSessionIdForbookingViaStripeSchema, userSaveBookingSchema, userValidateRoomSchema } from "../../shared/zod/user.zod";
+import { fetchBookingDetailsUsecase, updateBookingOnlineTrakingUseCase, userAppointmentBookingViaStrpieUseCase, userCancelBookingUseCase, userSaveBookingAfterStripePaymentUseCase, validateJoinRoomUsecase } from ".";
 import { Role } from "../../domain/enums/common.enum";
 import { validateBookingIdSchema } from "../../shared/zod/base.zod";
 
 class UserBookingController {
     constructor(
-        private fetchBookingAppointmentsUseCase: FetchBookingAppointmentsUseCase,
+        // private fetchBookingAppointmentsUseCase: FetchBookingAppointmentsUseCase,
         private userCancelBookingUseCase: UserCancelBookingUseCase,
         private userAppointmentBookingViaStripeUseCase: UserAppointmentBookingViaStripeUseCase,
         private userSaveBookingAfterStripePaymentUseCase: UserSaveBookingAfterStripePaymentUseCase,
@@ -24,7 +23,7 @@ class UserBookingController {
         private updateBookingOnlineTrakingUseCase: UpdateBookingOnlineTrakingUseCase,
         private fetchBookingDetailsUsecase: FetchBookingDetailsUsecase
     ) {
-        this.fetchBookings = this.fetchBookings.bind(this);
+        // this.fetchBookings = this.fetchBookings.bind(this);
         this.cancelBooking = this.cancelBooking.bind(this);
         this.createSessionIdForbookingViaStripe = this.createSessionIdForbookingViaStripe.bind(this);
         this.saveBookingAfterStripePayment = this.saveBookingAfterStripePayment.bind(this);
@@ -33,25 +32,25 @@ class UserBookingController {
         this.fetchBookingDetails = this.fetchBookingDetails.bind(this);
     };
 
-    async fetchBookings(req: Request, res: Response, next: NextFunction) {
-        try {
-            const { limit, page, userId, online } = userFetchAllAppointmentsSchema.parse({
-                providerId: (req.user as DecodedUser).userOrProviderId,
-                ...req.query
-            });
-            const result = await this.fetchBookingAppointmentsUseCase.execute({
-                userId,
-                page,
-                limit,
-                online: online ? true : false,
-                role: Role.USER,
-            });
-            sendResponse(res, result);
-        } catch (error) {
-            log.error("fetchBookings failed", error as Error);
-            next(error);
-        };
-    };
+    // async fetchBookings(req: Request, res: Response, next: NextFunction) {
+    //     try {
+    //         const { limit, page, userId, online } = userFetchAllAppointmentsSchema.parse({
+    //             providerId: (req.user as DecodedUser).userOrProviderId,
+    //             ...req.query
+    //         });
+    //         const result = await this.fetchBookingAppointmentsUseCase.execute({
+    //             userId,
+    //             page,
+    //             limit,
+    //             online: online ? true : false,
+    //             role: Role.USER,
+    //         });
+    //         sendResponse(res, result);
+    //     } catch (error) {
+    //         log.error("fetchBookings failed", error as Error);
+    //         next(error);
+    //     };
+    // };
 
     async cancelBooking(req: Request, res: Response, next: NextFunction) {
         try {
@@ -162,7 +161,7 @@ class UserBookingController {
 }
 
 export const userBookingController = new UserBookingController(
-    fetchBookingAppointmentsUseCase,
+    // fetchBookingAppointmentsUseCase,
     userCancelBookingUseCase,
     userAppointmentBookingViaStrpieUseCase,
     userSaveBookingAfterStripePaymentUseCase,

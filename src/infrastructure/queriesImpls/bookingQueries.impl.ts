@@ -6,16 +6,16 @@ import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { endOfDay, startOfDay, startOfToday, startOfTomorrow } from "date-fns";
 import { UserFetchProvidersForChatSidebarResponse } from "../../application/dtos/user.dto";
 import { AdminFetchDashboardAppointmentStatsDataResponse, AdminFetchTodaysBookingStatsForDashboardResponse } from "../../application/dtos/admin.dto";
-import { FetchBookingsRequest, TableData, FetchBookingsResponse, FetchOnlineBookingsForProviderResponse, FetchOnlineBookingsForUserResponse, FetchBookingDetailsResponse } from "../../application/dtos/common.dto";
+import { GetBookingsRequest, TableData, GetBookingsResponse, GetOnlineBookingsForProviderResponse, GetOnlineBookingsForUserResponse, FetchBookingDetailsResponse } from "../../application/dtos/common.dto";
 import { ProviderFetchDashboardGraphRepository, ProviderFetchDashboardGraphDataResponse, ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchUsersForChatSideBarResponse } from "../../application/dtos/provider.dto";
 import { Role } from "../../domain/enums/common.enum";
 
 export class BookingQueriesImpl implements IBookingQueries {
 
-    async findAll({ page, limit, userId, serviceProviderId, online, role }: FetchBookingsRequest): Promise<
-        TableData<FetchBookingsResponse> |
-        TableData<FetchOnlineBookingsForProviderResponse> |
-        TableData<FetchOnlineBookingsForUserResponse>
+    async findAll({ page, limit, userId, serviceProviderId, online, role }: GetBookingsRequest): Promise<
+        TableData<GetBookingsResponse> |
+        TableData<GetOnlineBookingsForProviderResponse> |
+        TableData<GetOnlineBookingsForUserResponse>
     > {
 
         const skip = (page - 1) * limit;
@@ -54,7 +54,7 @@ export class BookingQueriesImpl implements IBookingQueries {
             .skip(skip)
             .limit(limit)
             .sort({ createdAt: -1 })
-            .lean<FetchBookingsResponse | FetchOnlineBookingsForProviderResponse | FetchOnlineBookingsForUserResponse>();
+            .lean<GetBookingsResponse | GetOnlineBookingsForProviderResponse | GetOnlineBookingsForUserResponse>();
 
         if (online && role === Role.USER) {
             query = query.populate("serviceProviderId", "username -_id");
@@ -71,7 +71,7 @@ export class BookingQueriesImpl implements IBookingQueries {
 
         if (online && role === Role.USER) {
             return {
-                data: (bookings as FetchOnlineBookingsForUserResponse).map(booking => ({
+                data: (bookings as GetOnlineBookingsForUserResponse).map(booking => ({
                     ...booking,
                     _id: booking._id.toString(),
                     serviceProviderId: {
@@ -84,7 +84,7 @@ export class BookingQueriesImpl implements IBookingQueries {
             }
         } else if (online && role === Role.PROVIDER) {
             return {
-                data: (bookings as FetchOnlineBookingsForProviderResponse).map(booking => ({
+                data: (bookings as GetOnlineBookingsForProviderResponse).map(booking => ({
                     ...booking,
                     _id: booking._id.toString(),
                     userId: {
@@ -97,7 +97,7 @@ export class BookingQueriesImpl implements IBookingQueries {
             }
         } else {
             return {
-                data: (bookings as FetchBookingsResponse).map(booking => ({
+                data: (bookings as GetBookingsResponse).map(booking => ({
                     ...booking,
                     _id: booking._id.toString(),
                     serviceProviderId: booking.serviceProviderId?.toString(),

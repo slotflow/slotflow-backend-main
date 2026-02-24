@@ -32,7 +32,7 @@ router.patch('/addresses/:addressId', authMiddleware, provideAddressController.u
 
 router.get('/appservices', authMiddleware, providerAppServiceController.getAllAppServices);
 
-router.get('/bookings', authMiddleware, providerBookingController.fetchBookingAppointments);
+// router.get('/bookings', authMiddleware, providerBookingController.fetchBookingAppointments);
 router.patch('/bookings/:bookingId', authMiddleware, providerBookingController.updateBookingAppointmentStatus);
 router.get('/bookings/:bookingId/can-join', authMiddleware, providerBookingController.validateRoom);
 router.patch('/bookings/:roomId/join-left', authMiddleware, providerBookingController.providerJoinRoom);

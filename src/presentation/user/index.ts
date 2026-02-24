@@ -4,7 +4,7 @@ import { UserFetchAllPaymentsUseCase } from "../../application/useCases/user/use
 import { ValidateJoinRoomUsecase } from "../../application/useCases/common/validateJoinRoom.useCase";
 import { FetchAllAppServicesUseCase } from "../../application/useCases/common/fetchAppServices.useCase";
 import { FetchBookingDetailsUsecase } from "../../application/useCases/common/fetchBookingDetails.useCase";
-import { FetchBookingAppointmentsUseCase } from "../../application/useCases/common/fetchAllBookings.useCase";
+// import { FetchBookingAppointmentsUseCase } from "../../application/useCases/common/getBookings.useCase";
 import { CreateReviewUseCase, DeleteReviewUseCase } from "../../application/useCases/user/userReview.useCase";
 import { googleCalendarGatewayService, googleTokenService, signedUrlService } from "../../infrastructure/services";
 import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/common/updateBookingOnlineTracking.useCase";
@@ -27,7 +27,7 @@ export const fetchAllAppServicesUseCase = new FetchAllAppServicesUseCase(service
 // user booking controller dependency injection
 export const validateJoinRoomUsecase = new ValidateJoinRoomUsecase(bookingRepository)
 export const fetchBookingDetailsUsecase = new FetchBookingDetailsUsecase(bookingQueries);
-export const fetchBookingAppointmentsUseCase = new FetchBookingAppointmentsUseCase(bookingQueries);
+// export const fetchBookingAppointmentsUseCase = new FetchBookingAppointmentsUseCase(bookingQueries);
 export const updateBookingOnlineTrakingUseCase = new UpdateBookingOnlineTrakingUseCase(bookingRepository, serviceAvailabilityQueries);
 export const userCancelBookingUseCase = new UserCancelBookingUseCase(userRepository, bookingRepository, paymentRepository, googleCalendarGatewayService, googleTokenService);
 export const userAppointmentBookingViaStrpieUseCase = new UserAppointmentBookingViaStripeUseCase(providerRepository, bookingRepository, providerServiceQueries, serviceAvailabilityQueries);

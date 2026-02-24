@@ -1,17 +1,17 @@
 import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/common.enum";
 import { IBookingQueries } from "../../queries/IBooking.queries";
-import { FetchBookingsRequest, FetchBookingsResponse, FetchOnlineBookingsForProviderResponse, FetchOnlineBookingsForUserResponse, TableData } from "../../dtos/common.dto";
+import { GetBookingsRequest, GetBookingsResponse, GetOnlineBookingsForProviderResponse, GetOnlineBookingsForUserResponse, TableData } from "../../dtos/common.dto";
 
-export class FetchBookingAppointmentsUseCase {
+export class GetBookingsUseCase {
     constructor(
         private bookingQueries: IBookingQueries,
     ) { };
 
-    async execute(payload: FetchBookingsRequest): Promise<TableData<FetchBookingsResponse | FetchOnlineBookingsForProviderResponse | FetchOnlineBookingsForUserResponse>> {
+    async execute(payload: GetBookingsRequest): Promise<TableData<GetBookingsResponse | GetOnlineBookingsForProviderResponse | GetOnlineBookingsForUserResponse>> {
         try {
             const { serviceProviderId, userId, page, limit, online, role } = payload;
-            
+
             if (role === Role.PROVIDER) {
                 if (!serviceProviderId) throw new Error("Invalid request");
             };
@@ -37,7 +37,7 @@ export class FetchBookingAppointmentsUseCase {
                 totalCount,
             };
         } catch (error) {
-            log.error("FetchBookingAppointmentsUseCase failed", error as Error);
+            log.error("GetBookingsUseCase failed", error as Error);
             throw error;
         };
     };
