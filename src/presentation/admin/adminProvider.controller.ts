@@ -3,13 +3,13 @@ import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { paginationSchema } from "../../shared/zod/base.zod";
 import { fetchProviderServiceAvailabilitySchema } from "../../shared/zod/common.zod";
-import { providerIdWithPaginationSchema, validateProviderIdSchema } from "../../shared/zod/provider.zod";
+import { validateProviderIdSchema } from "../../shared/zod/provider.zod";
 import { FetchProviderProofsUseCase } from "../../application/useCases/common/fetchProviderProofs.useCase";
 import { AdminFetchUserOrProviderAddressUseCase } from "../../application/useCases/admin/adminAddress.useCase";
 import { adminChangeProviderBlockStatusSchema, adminChangeProviderTrustTagSchema, adminRejectProviderSchema } from "../../shared/zod/admin.zod";
 import { AdminApproveProviderUseCase, AdminChangeProviderBlockStatusUseCase, AdminChangeProviderTrustTagUseCase, AdminProviderListUseCase, AdminRejectProviderUseCase } from "../../application/useCases/admin/adminProvider.useCase";
-import { AdminFetchProviderDetailsUseCase, AdminFetchProviderPaymentsUseCase, AdminfetchProviderServiceAvailabilityUseCase, AdminFetchProviderServiceUseCase, AdminFetchProviderSubscriptionsUseCase } from "../../application/useCases/admin/adminProviderProfile.useCase";
-import { adminApproveProviderUseCase, adminChangeProviderBlockStatusUseCase, adminChangeProviderTrustTagUseCase, adminFetchProviderDetailsUseCase, adminFetchProviderPaymentsUseCase, adminFetchProviderServiceAvailabilityUseCase, adminFetchProviderServiceUseCase, adminFetchProviderSubscriptionsUseCase, adminFetchUserOrProviderAddressUseCase, adminProviderListUseCase, adminRejectProviderUseCase, fetchProviderProofsUseCase } from ".";
+import { AdminFetchProviderDetailsUseCase, AdminfetchProviderServiceAvailabilityUseCase, AdminFetchProviderServiceUseCase } from "../../application/useCases/admin/adminProviderProfile.useCase";
+import { adminApproveProviderUseCase, adminChangeProviderBlockStatusUseCase, adminChangeProviderTrustTagUseCase, adminFetchProviderDetailsUseCase, adminFetchProviderServiceAvailabilityUseCase, adminFetchProviderServiceUseCase, adminFetchUserOrProviderAddressUseCase, adminProviderListUseCase, adminRejectProviderUseCase, fetchProviderProofsUseCase } from ".";
 
 class AdminProviderController {
     constructor(
@@ -22,8 +22,6 @@ class AdminProviderController {
         private adminFetchUserOrProviderAddressUseCase: AdminFetchUserOrProviderAddressUseCase,
         private adminFetchProviderServiceUseCase: AdminFetchProviderServiceUseCase,
         private adminFetchProviderServiceAvailabilityUseCase: AdminfetchProviderServiceAvailabilityUseCase,
-        private adminFetchProviderSubscriptionsUseCase: AdminFetchProviderSubscriptionsUseCase,
-        private adminFetchProviderPaymentsUseCase: AdminFetchProviderPaymentsUseCase,
         private fetchProviderProofsUseCase: FetchProviderProofsUseCase,
     ) {
         this.getAllProviders = this.getAllProviders.bind(this);
@@ -35,8 +33,6 @@ class AdminProviderController {
         this.fetchProviderService = this.fetchProviderService.bind(this);
         this.fetchProviderServiceAvailability = this.fetchProviderServiceAvailability.bind(this);
         this.changeProviderTrustedTag = this.changeProviderTrustedTag.bind(this);
-        this.fetchProviderSubscriptions = this.fetchProviderSubscriptions.bind(this);
-        this.fetchProviderPayments = this.fetchProviderPayments.bind(this);
         this.fetchProviderProofs = this.fetchProviderProofs.bind(this);
     };
 
@@ -159,34 +155,6 @@ class AdminProviderController {
         };
     };
 
-    async fetchProviderSubscriptions(req: Request, res: Response, next: NextFunction) {
-        try {
-            const { limit, page, providerId } = providerIdWithPaginationSchema.parse({
-                providerId: req.params.providerId,
-                ...req.query
-            });
-            const result = await this.adminFetchProviderSubscriptionsUseCase.execute({ providerId, page, limit });
-            sendResponse(res,result);
-        } catch (error) {
-            log.error("fetchProviderSubscriptions failed", error as Error);
-            next(error);
-        };
-    };
-
-    async fetchProviderPayments(req: Request, res: Response, next: NextFunction) {
-        try {
-           const { limit, page, providerId } = providerIdWithPaginationSchema.parse({
-                providerId: req.params.providerId,
-                ...req.query
-            });
-            const result = await this.adminFetchProviderPaymentsUseCase.execute({ providerId, page, limit });
-            sendResponse(res,result);
-        } catch (error) {
-            log.error("fetchProviderPayments failed", error as Error);
-            next(error);
-        };
-    };
-
     async fetchProviderProofs(req: Request, res: Response, next: NextFunction) {
         try {
             const { providerId } = validateProviderIdSchema.parse({ providerId: req.params.providerId });
@@ -210,7 +178,5 @@ export const adminProviderController = new AdminProviderController(
     adminFetchUserOrProviderAddressUseCase,
     adminFetchProviderServiceUseCase,
     adminFetchProviderServiceAvailabilityUseCase,
-    adminFetchProviderSubscriptionsUseCase,
-    adminFetchProviderPaymentsUseCase,
     fetchProviderProofsUseCase
 );

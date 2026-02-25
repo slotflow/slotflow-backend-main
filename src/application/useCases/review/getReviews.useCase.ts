@@ -1,15 +1,15 @@
 import { log } from "../../../shared/logger/logger";
 import { IReviewQueries } from "../../queries/IReview.queries";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
-import { FetchReviesRequest, FetchReviewsResponse, TableData } from "../../dtos/common.dto";
+import { GetReviesRequest, GetReviewsResponse, TableData } from "../../dtos/common.dto";
 
-export class FetchAllReviewsUseCase {
+export class GetReviewsUseCase {
     constructor(
         private reviewQueries: IReviewQueries,
         private signedUrlService: ISignedUrlService
     ) { };
 
-    async execute(payload: FetchReviesRequest): Promise<TableData<Array<FetchReviewsResponse>>> {
+    async execute(payload: GetReviesRequest): Promise<TableData<Array<GetReviewsResponse>>> {
         try {
             const { limit, page, providerId, role, userId } = payload;
 
@@ -34,10 +34,10 @@ export class FetchAllReviewsUseCase {
                 }),
             );
 
-            return { 
-                data: updatedData, 
-                totalPages, 
-                currentPage, 
+            return {
+                data: updatedData,
+                totalPages,
+                currentPage,
                 totalCount
             };
         } catch (error) {

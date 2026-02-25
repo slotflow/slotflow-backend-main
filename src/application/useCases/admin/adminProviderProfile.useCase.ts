@@ -8,13 +8,10 @@ import {
     AdminFetchProviderServiceAvailabilityResponse,
 } from "../../dtos/admin.dto";
 import { log } from "../../../shared/logger/logger";
-import { ISubscriptionQueries } from "../../queries/ISubscription.queries";
-import { IProviderServiceQueries } from "../../queries/IProviderService.queries";
 import { IServiceAvailabilityQueries } from "../../queries/IServiceAvailability.queries";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
-import { IPaymentRepository } from "../../../domain/interfaces/repositories/IPayment.repository";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-import { FetchPaymentResponse, FetchPaymentsRequest, FetchProviderSubscriptionsRequest, FindSubscriptionsByProviderIdResponse, TableData } from "../../dtos/common.dto";
+import { IProviderServiceQueries } from "../../queries/IProviderService.queries";
 
 
 export class AdminFetchProviderDetailsUseCase {
@@ -115,68 +112,6 @@ export class AdminfetchProviderServiceAvailabilityUseCase {
             return { ...availability, slots: updatedSlots };
         } catch (error) {
             log.error("AdminfetchProviderServiceAvailabilityUseCase failed", error as Error);
-            throw error;
-        };
-    };
-};
-
-
-export class AdminFetchProviderSubscriptionsUseCase {
-    constructor(
-        private subscriptionQueries: ISubscriptionQueries
-    ) { };
-
-    async execute(payload: FetchProviderSubscriptionsRequest): Promise<TableData<FindSubscriptionsByProviderIdResponse>> {
-        try {
-            const { providerId, page, limit } = payload;
-
-            const result = await this.subscriptionQueries.findByProviderId({ providerId, page, limit });
-            const { data: subscriptions, currentPage, totalCount, totalPages } = result;
-
-            return {
-                data: subscriptions,
-                totalPages,
-                currentPage,
-                totalCount,
-            };
-        } catch (error) {
-            log.error("AdminFetchProviderSubscriptionsUseCase failed", error as Error);
-            throw error;
-        };
-    };
-};
-
-
-export class AdminFetchProviderPaymentsUseCase {
-    constructor(
-        private paymentRepository: IPaymentRepository,
-    ) { };
-
-    async execute(payload: FetchPaymentsRequest): Promise<TableData<FetchPaymentResponse>> {
-        try {
-            const { providerId, page, limit } = payload;
-            if (!providerId) throw new Error("Invalid request.");
-
-            const result = await this.paymentRepository.findAll(page, limit, providerId);
-            const { data: payments, currentPage, totalCount, totalPages } = result;
-
-            return {
-                data: payments.map(payment => ({
-                    _id: payment._id,
-                    createdAt: payment.createdAt,
-                    discountAmount: payment.discountAmount,
-                    paymentFor: payment.paymentFor,
-                    paymentGateway: payment.paymentGateway,
-                    paymentMethod: payment.paymentMethod,
-                    paymentStatus: payment.paymentStatus,
-                    totalAmount: payment.totalAmount
-                })),
-                totalPages,
-                currentPage,
-                totalCount,
-            };
-        } catch (error) {
-            log.error("AdminFetchProviderPaymentsUseCase failed", error as Error);
             throw error;
         };
     };

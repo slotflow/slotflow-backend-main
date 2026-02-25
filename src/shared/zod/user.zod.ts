@@ -10,7 +10,6 @@ import {
     saveStripePaymentSchema,
     s3FileKeySchema,
     validateBookingIdSchema,
-    validateRoomIdSchema,
     validateProviderIdSchema,
     validateReviewIdSchema
 } from "./base.zod";
@@ -48,10 +47,7 @@ export const userCreateSessionIdForbookingViaStripeSchema = z.object({
 }).merge(validateUserIdSchema).merge(validateProviderIdSchema);
 
 // user crea review
-export const userCreateReviewSchema = z.object({
-    reviewText: z.string().min(5).max(1000),
-    rating: z.number().min(1).max(5),
-}).merge(validateUserIdSchema).merge(validateProviderIdSchema).merge(validateBookingIdSchema);
+
 
 // user delete review
 export const userDeleteReviewSchema = validateUserIdSchema.merge(validateReviewIdSchema);
@@ -73,8 +69,6 @@ export const userCancelBookingSchema = validateBookingIdSchema.merge(validateUse
 //
 export const userSaveBookingSchema = saveStripePaymentSchema.merge(validateUserIdSchema);
 
-//
-export const userValidateRoomSchema = validateBookingIdSchema.merge(validateRoomIdSchema).merge(validateUserIdSchema);
 
 //
 export const userUpdateFileSchema = s3FileKeySchema.merge(validateUserIdSchema);

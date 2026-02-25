@@ -504,9 +504,9 @@ export interface userIdAndProviderIdFilterForFetchReviews {
   providerId?: ProviderDTO["_id"];
   role?: Role;
 }
-export interface FetchReviesRequest extends ApiPaginationRequest, userIdAndProviderIdFilterForFetchReviews { }
+export interface GetReviesRequest extends ApiPaginationRequest, userIdAndProviderIdFilterForFetchReviews { }
 //// **** Used as the response type fetching payments for admin, provider and user side
-export interface FetchReviewsResponse extends Pick<ReviewDTO, "_id" | "createdAt" | "reviewText" | "rating" | "reported" | "isBlocked"> {
+export interface GetReviewsResponse extends Pick<ReviewDTO, "_id" | "createdAt" | "reviewText" | "rating" | "reported" | "isBlocked"> {
   userId: Pick<UserDTO, "username" | "profileImage">;
   providerId: Pick<ProviderDTO, "username" | "profileImage">;
 };

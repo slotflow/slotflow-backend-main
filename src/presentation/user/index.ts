@@ -1,15 +1,13 @@
 import { UserCancelBookingUseCase } from "../../application/useCases/user/userBooking.useCase";
-import { FetchAllReviewsUseCase } from "../../application/useCases/common/fetchReviews.useCase";
 import { UserFetchAllPaymentsUseCase } from "../../application/useCases/user/userPayment.useCase";
 import { FetchAllAppServicesUseCase } from "../../application/useCases/common/fetchAppServices.useCase";
-import { CreateReviewUseCase, DeleteReviewUseCase } from "../../application/useCases/user/userReview.useCase";
 import { googleCalendarGatewayService, googleTokenService, signedUrlService } from "../../infrastructure/services";
 import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/common/updateBookingOnlineTracking.useCase";
 import { bookingQueries, providerServiceQueries, reviewQueries, serviceAvailabilityQueries } from "../../infrastructure/queriesImpls";
 import { UserCreateAddressUseCase, UserFetchAddressUseCase, UserUpdateAddressUseCase } from "../../application/useCases/user/userAddress.useCase";
 import { UserAppointmentBookingViaStripeUseCase, UserSaveBookingAfterStripePaymentUseCase } from "../../application/useCases/user/userStripeBooking.useCase";
-import { UserFetchProfileDetailsUseCase, UserUpdateProfileImageUseCase, UserUpdateProviderInfoUseCase, UserUpdatePushNotificationUseCase } from "../../application/useCases/user/userProfile.useCase";
 import { addressRepository, bookingRepository, paymentRepository, providerRepository, reviewRepository, serviceRepository, userRepository } from "../../infrastructure/repositoryImpls";
+import { UserFetchProfileDetailsUseCase, UserUpdateProfileImageUseCase, UserUpdateProviderInfoUseCase, UserUpdatePushNotificationUseCase } from "../../application/useCases/user/userProfile.useCase";
 import { UserFetchProvidersForChatSidebarUseCase, UserFetchServiceProviderAddressUseCase, UserFetchServiceProviderProfileDetailsUseCase, UserFetchServiceProviderServiceAvailabilityUseCase, UserFetchServiceProviderServiceDetailsUseCase, UserFetchServiceProvidersUseCase } from "../../application/useCases/user/userProvider.useCase";
 
 
@@ -43,9 +41,3 @@ export const userFetchProvidersForChatSidebarUseCase = new UserFetchProvidersFor
 export const userFetchServiceProviderServiceDetailsUseCase = new UserFetchServiceProviderServiceDetailsUseCase(providerServiceQueries);
 export const userFetchServiceProviderProfileDetailsUseCase = new UserFetchServiceProviderProfileDetailsUseCase(providerRepository, signedUrlService);
 export const userFetchServiceProviderServiceAvailabilityUseCase = new UserFetchServiceProviderServiceAvailabilityUseCase(providerRepository, serviceAvailabilityQueries);
-
-// user review controller dependency injection
-export const createReviewUseCase = new CreateReviewUseCase(reviewRepository);
-export const deleteReviewUseCase = new DeleteReviewUseCase(reviewRepository);
-export const fetchAllReviewsUseCase = new FetchAllReviewsUseCase(reviewQueries, signedUrlService);
-

@@ -251,7 +251,7 @@ export type ProviderStripeConnectResponse = Stripe.Response<Stripe.AccountLink>;
 
 
 // Provider Report UseCase
-export interface ProviderRepostReviewRequest {
+export interface RepostReviewRequest {
     reviewId: Review["_id"];
     providerId: ProviderDTO["_id"];
 }

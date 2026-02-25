@@ -3,16 +3,11 @@ import { kafkaProducer } from "../../infrastructure/messaging";
 import { subscriptionMapping } from "../../infrastructure/helpers";
 import { paymentServiceClient } from "../../infrastructure/clients";
 import { googleTokenService, signedUrlService } from "../../infrastructure/services";
-import { FetchAllReviewsUseCase } from "../../application/useCases/common/fetchReviews.useCase";
-// import { ValidateJoinRoomUsecase } from "../../application/useCases/common/validateJoinRoom.useCase";
 import { ProviderFetchAllPlansUseCase } from "../../application/useCases/provider/providerPlan.useCase";
 import { FetchAllAppServicesUseCase } from "../../application/useCases/common/fetchAppServices.useCase";
 import { ProviderStripeConnectUseCase } from "../../application/useCases/provider/providerStripe.useCase";
-// import { FetchBookingDetailsUsecase } from "../../application/useCases/common/getBookingDetails.useCase";
 import { FetchProviderProofsUseCase } from "../../application/useCases/common/fetchProviderProofs.useCase";
-// import { FetchBookingAppointmentsUseCase } from "../../application/useCases/common/getBookings.useCase";
 import { ProviderFetchUserForChatSidebarUseCase } from "../../application/useCases/provider/providerUser.useCase";
-import { ProviderChangeReviewRepostStatusUseCase } from "../../application/useCases/provider/providerReview.useCase";
 import { ProviderFetchDashboardStatsUseCase } from "../../application/useCases/provider/providerDashboardStats.useCase";
 import { ProviderTrialSubscriptionUseCase } from "../../application/useCases/provider/providerTrailSubscription.useCase";
 import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/common/updateBookingOnlineTracking.useCase";
@@ -36,9 +31,6 @@ export const providerCreateAddressUseCase = new ProviderCreateAddressUseCase(pro
 export const fetchAllAppServicesUseCase = new FetchAllAppServicesUseCase(serviceRepository);
 
 // provider booking controller
-// export const validateJoinRoomUsecase = new ValidateJoinRoomUsecase(bookingRepository);
-// export const fetchBookingDetailsUsecase = new FetchBookingDetailsUsecase(bookingQueries);
-// export const fetchBookingAppointmentsUseCase = new FetchBookingAppointmentsUseCase(bookingQueries);
 export const providerChangeBookingAppointmentStatusUseCase = new ProviderChangeBookingAppointmentStatusUseCase(bookingRepository, userRepository, googleTokenService, kafkaProducer);
 export const updateBookingOnlineTrakingUseCase = new UpdateBookingOnlineTrakingUseCase(bookingRepository, serviceAvailabilityQueries);
 
@@ -60,10 +52,6 @@ export const providerUpdateIdentityProofUseCase = new ProviderUpdateIdentityProo
 export const provideDeleteServiceProofUseCase = new ProvideDeleteServiceProofUseCase(s3Client, providerRepository, signedUrlService);
 export const provideDeleteIdentityProofUseCase = new ProvideDeleteIdentityProofUseCase(s3Client, providerRepository, signedUrlService);
 export const providerUpdatePushNotificationUseCase = new ProviderUpdatePushNotificationUseCase(providerRepository);
-
-// provider review constroller dependency injection
-export const fetchAllReviewsUseCase = new FetchAllReviewsUseCase(reviewQueries, signedUrlService);
-export const providerChangeReviewRepostStatusUseCase = new ProviderChangeReviewRepostStatusUseCase(reviewRepository);
 
 // provider service controller dependency injection
 export const providerFetchServiceDetailsUseCase = new ProviderFetchServiceDetailsUseCase(providerServiceQueries);

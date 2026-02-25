@@ -8,9 +8,7 @@ import {
     dateSchema,
     addressSchema,
     updateInfoSchema,
-    saveStripePaymentSchema,
     s3FileKeySchema,
-    validateRoomIdSchema,
     validateBookingIdSchema,
     validateReviewIdSchema
 } from "./base.zod";
@@ -136,9 +134,6 @@ export const providerUpdateAddressSchema = z.object({
 
 //
 // export const providerFetchAllAppointmentsSchema = fetchBookingCommonSchema.merge(validateProviderIdSchema);
-
-//
-export const providerValidateRoomSchema = validateBookingIdSchema.merge(validateRoomIdSchema).merge(validateProviderIdSchema);
 
 //
 export const providerValidateDashboardDataSchema = z.object({

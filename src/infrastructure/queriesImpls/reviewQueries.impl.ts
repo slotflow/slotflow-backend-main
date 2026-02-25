@@ -2,12 +2,12 @@ import { FilterQuery } from "mongoose";
 import { Review } from "../../domain/entities/review.entity";
 import { ReviewModel } from "../models/review.model";
 import { IReviewQueries } from "../../application/queries/IReview.queries";
-import { FetchReviesRequest, TableData, FetchReviewsResponse } from "../../application/dtos/common.dto";
+import { GetReviesRequest, TableData, GetReviewsResponse } from "../../application/dtos/common.dto";
 import { Role } from "../../domain/enums/common.enum";
 
 export class ReviewQueriesImpl implements IReviewQueries {
 
-    async findAll(payload: FetchReviesRequest): Promise<TableData<Array<FetchReviewsResponse>>> {
+    async findAll(payload: GetReviesRequest): Promise<TableData<Array<GetReviewsResponse>>> {
         const { limit, page, providerId, userId, role } = payload;
 
         const skip = (page - 1) * limit;
@@ -21,6 +21,10 @@ export class ReviewQueriesImpl implements IReviewQueries {
         } else if (role === Role.USER && providerId) {
             filter.providerId = providerId;
             filter.isBlocked = false;
+        } else if(role === Role.ADMIN && userId) {
+            filter.userId = userId;
+        } else if(role === Role.ADMIN && providerId) {
+            filter.providerId = providerId;
         }
 
         const [reviews, totalCount] = await Promise.all([
@@ -42,7 +46,7 @@ export class ReviewQueriesImpl implements IReviewQueries {
                     path: "providerId",
                     select: "username profileImage",
                 })
-                .skip(skip).limit(limit).sort({ createdAt: 1 }).lean<FetchReviewsResponse[]>(),
+                .skip(skip).limit(limit).sort({ createdAt: 1 }).lean<GetReviewsResponse[]>(),
             ReviewModel.countDocuments(filter),
         ]);
 

@@ -13,15 +13,15 @@ export type AdminFetchUserOrProviderAddressResponse = Pick<AddressDTO, "userId" 
 
 // used as the return type of the admin fetch dashboard todays stats data
 export interface AdminFetchDashboardTodayStatsDataResponse {
-  newUsers: number;
-  newProviders: number;
+    newUsers: number;
+    newProviders: number;
 
-  todaysTotalRevenue: number;
-  todaysTotalPayouts: number;
+    todaysTotalRevenue: number;
+    todaysTotalPayouts: number;
 
-  todaysAppointments: number;
-  todaysCancelledAppointments: number;
-  todaysCompletedAppointments: number;
+    todaysAppointments: number;
+    todaysCancelledAppointments: number;
+    todaysCompletedAppointments: number;
 };
 
 // used as the return type of the admin fetch dashboard user stats data
@@ -89,19 +89,19 @@ export interface AdminFetchRevenueReportRequest extends ApiPaginationRequest {
 
 // Admin fetch revenue report response
 export type AdminFetchRevenueReportRow = Pick<
-  PaymentDTO,
-  | "createdAt"
-  | "discountAmount"
-  | "initialAmount"
-  | "totalAmount"
-  | "paymentGateway"
-  | "paymentFor"
+    PaymentDTO,
+    | "createdAt"
+    | "discountAmount"
+    | "initialAmount"
+    | "totalAmount"
+    | "paymentGateway"
+    | "paymentFor"
 >;
 export interface AdminFetchRevenueReportResponse {
-  rows: AdminFetchRevenueReportRow[];
-  grandTotal: number;
-  grandDiscount: number;
-  grandInitalAmount: number;
+    rows: AdminFetchRevenueReportRow[];
+    grandTotal: number;
+    grandDiscount: number;
+    grandInitalAmount: number;
 };
 
 
@@ -135,7 +135,7 @@ export type AdminChangePlanIsBlockedStatusRequest = AdminChangeBlockStatusRespon
 export type AdiminFetchAllProviders = Array<Pick<ProviderDTO, "_id" | "username" | "email" | "isBlocked" | "isAdminVerified" | "isEmailVerified" | "trustedBySlotflow" | "adminVerificationStatus">>;
 
 // Used as the request interface of admin approve provider
-export interface AdminApproveProviderRequest  {
+export interface AdminApproveProviderRequest {
     providerId: ProviderDTO["_id"];
 };
 // Used as the request interface of admin reject provider
@@ -152,7 +152,7 @@ export interface AdminChangeProviderBlockStatusRequest {
 export type AdminChangeProviderBlockStatusResponse = AdminChangeProviderBlockStatusRequest;
 
 // Used as the request interface of admin change provider trust tag 
-export interface AdminChangeProviderTrustTagRequest  {
+export interface AdminChangeProviderTrustTagRequest {
     providerId: ProviderDTO["_id"];
     trustedBySlotflow: ProviderDTO["trustedBySlotflow"];
 };
@@ -194,12 +194,12 @@ export type AdminFetchProviderServiceAvailabilityResponse = FontendAvailabilityF
 // **** adminReview.usecase
 
 // Used as the request interface of admin chage review block status
-export interface AdminUpdateReviewBlockStatusRequest {
+export interface ToggleReviewBlockStatusRequest {
     reviewId: ReviewDTO["_id"];
     isBlocked: ReviewDTO["isBlocked"];
 };
 // Used as the response interface of admin chage review block status
-export type AdminUpdateReviewBlockStatusResponse = AdminUpdateReviewBlockStatusRequest;
+export type ToggleReviewBlockStatusResponse = ToggleReviewBlockStatusRequest;
 
 
 
@@ -211,7 +211,7 @@ export type AdminUpdateReviewBlockStatusResponse = AdminUpdateReviewBlockStatusR
 export type AdminServiceListResponse = Array<Pick<ServiceDTO, "_id" | "serviceName" | "isBlocked" | "serviceCategory">>;
 
 // admin add new service use case request payload interface
-export type AdminAddServiceRequest = Pick<ServiceDTO, "serviceName" | "serviceCategory">; 
+export type AdminAddServiceRequest = Pick<ServiceDTO, "serviceName" | "serviceCategory">;
 
 // Used as the request interface of admin change service block status
 export interface AdminChnageServiceIsBlockedStatusRequest {

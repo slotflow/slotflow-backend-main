@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { authMiddleware } from "../middleware/auth.middleware";
-import { userReviewController } from "./userReview.controller";
 import { userProfileController } from "./userProfile.controller";
 import { userAddressController } from './userAddress.controller';
 import { userPaymentController } from "./userPayment.controller";
@@ -35,9 +34,5 @@ router.patch('/bookings/:roomId/join-left', authMiddleware, userBookingControlle
 router.get('/payments', authMiddleware, userPaymentController.fetchPayments);
 
 router.get('/chat/providers', authMiddleware, userProviderController.fetchProvidersForChatSidebar);
-
-router.post('/reviews', authMiddleware, userReviewController.createReview);
-router.get('/reviews/:providerId?', authMiddleware, userReviewController.findAllReviews);
-router.delete('/reviews/:reviewId', authMiddleware, userReviewController.deleteReview);
 
 export default router;

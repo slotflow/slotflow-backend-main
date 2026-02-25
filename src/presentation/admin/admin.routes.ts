@@ -2,7 +2,6 @@ import { Router } from "express";
 import { adminPlanController } from "./adminPlan.controller";
 import { adminUserController } from "./adminUser.controller";
 import { authMiddleware } from "../middleware/auth.middleware";
-import { adminReviewController } from "./adminReview.controller";
 import { adminServiceController } from "./adminService.controller";
 import { adminPaymentController } from "./adminPayment.controller";
 import { adminProviderController } from "./adminProvider.controller";
@@ -19,8 +18,6 @@ router.get('/providers/:providerId/profile', authMiddleware, adminProviderContro
 router.get('/providers/:providerId/address', authMiddleware, adminProviderController.fetchProviderAddress);
 router.get('/providers/:providerId/service', authMiddleware, adminProviderController.fetchProviderService);
 router.get('/providers/:providerId/availability', authMiddleware, adminProviderController.fetchProviderServiceAvailability);
-router.get('/providers/:providerId/subscriptions', authMiddleware, adminProviderController.fetchProviderSubscriptions);
-router.get('/providers/:providerId/payments', authMiddleware,adminProviderController.fetchProviderPayments);
 router.get('/providers/:providerId/proofs', authMiddleware,adminProviderController.fetchProviderProofs);
 
 router.get('/users',authMiddleware, adminUserController.getAllUsers);
@@ -46,8 +43,5 @@ router.get('/dashboard/subscriptions', authMiddleware, adminDashboardController.
 router.get('/dashboard/revenue', authMiddleware, adminDashboardController.fetchRevenueStats);
 router.get('/dashboard/appointments', authMiddleware, adminDashboardController.fetchAppointmentsStats);
 router.get('/dashboard/graph', authMiddleware, adminDashboardController.fetchAppointmentsStats); // TODO
-
-router.get('/reviews/:userId', authMiddleware, adminReviewController.findAllReviews);
-router.patch("/reviews/:reviewId", authMiddleware, adminReviewController.updateReviewBlockStatus);
 
 export default router;

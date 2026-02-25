@@ -2,7 +2,6 @@ import { Router } from 'express';
 import { authMiddleware } from '../middleware/auth.middleware';
 import { providerPlanController } from './providerPlan.controller';
 import { providerUserController } from './providerUser.controller';
-import { providerReviewController } from './providerReview.controller';
 import { providerStripeController } from './providerStripe.controller';
 import { provideAddressController } from './providerAddress.controller';
 import { providerServiceController } from './providerService.controller';
@@ -52,9 +51,6 @@ router.get('/chat/users', authMiddleware, providerUserController.fetchUsersForCh
 
 router.get('/dashboard/stats', authMiddleware, providerDashboardController.getDashboardStats);
 router.get('/dashboard/graph-data', authMiddleware, providerDashboardController.getDashboardGraphData);
-
-router.get('/reviews', authMiddleware, providerReviewController.findAllReviews);
-router.patch('/reviews/:reviewId', authMiddleware, providerReviewController.chnageReportReview);
 
 router.post("/stripe/connect", authMiddleware, providerStripeController.connectStripe);
 

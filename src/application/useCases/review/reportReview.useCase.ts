@@ -1,13 +1,13 @@
 import { log } from "../../../shared/logger/logger";
-import { ProviderRepostReviewRequest } from "../../dtos/provider.dto";
+import { RepostReviewRequest } from "../../dtos/provider.dto";
 import { IReviewRepository } from "../../../domain/interfaces/repositories/IReview.repository";
 
-export class ProviderChangeReviewRepostStatusUseCase {
+export class ReportReviewUseCase {
     constructor(
         private reviewRepository: IReviewRepository,
     ) { };
 
-    async execute(payload: ProviderRepostReviewRequest): Promise<boolean> {
+    async execute(payload: RepostReviewRequest): Promise<boolean> {
         try {
             const { providerId, reviewId } = payload;
 
@@ -18,7 +18,7 @@ export class ProviderChangeReviewRepostStatusUseCase {
                 throw new Error("You are not permitted to report this review");
             };
 
-            if(review.reported) {
+            if (review.reported) {
                 review.unreport();
             } else {
                 review.report()
