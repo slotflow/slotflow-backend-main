@@ -134,8 +134,6 @@ export interface ProviderStripeSubscriptionCreateSessionIdRequest {
     planId: PlanDTO["_id"];
     planDuration: SubscriptionValidity;
 }
-// provider stripe subscription create sessionId use case response interface
-export type ProviderStripeSubscriptionCreateSessionIdResponse = string;
 
 
 

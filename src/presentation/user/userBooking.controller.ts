@@ -4,21 +4,19 @@ import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { validateJoinRoomSchema } from "../../shared/zod/common.zod";
 import { UserCancelBookingUseCase } from "../../application/useCases/user/userBooking.useCase";
-import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/common/updateBookingOnlineTracking.useCase";
-import { userCancelBookingSchema, userCreateSessionIdForbookingViaStripeSchema, userSaveBookingSchema } from "../../shared/zod/user.zod";
-import { UserAppointmentBookingViaStripeUseCase, UserSaveBookingAfterStripePaymentUseCase } from "../../application/useCases/user/userStripeBooking.useCase";
-import { updateBookingOnlineTrakingUseCase, userAppointmentBookingViaStrpieUseCase, userCancelBookingUseCase, userSaveBookingAfterStripePaymentUseCase } from ".";
+import { UserBookingCheckoutUseCase } from "../../application/useCases/user/userBookingCheckout.useCase";
+import { updateBookingOnlineTrakingUseCase, userBookingCheckoutUseCase, userCancelBookingUseCase } from ".";
+import { userCancelBookingSchema, userCreateSessionIdForbookingViaStripeSchema } from "../../shared/zod/user.zod";
+import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/subscription/updateBookingOnlineTracking.useCase";
 
 class UserBookingController {
     constructor(
         private userCancelBookingUseCase: UserCancelBookingUseCase,
-        private userAppointmentBookingViaStripeUseCase: UserAppointmentBookingViaStripeUseCase,
-        private userSaveBookingAfterStripePaymentUseCase: UserSaveBookingAfterStripePaymentUseCase,
         private updateBookingOnlineTrakingUseCase: UpdateBookingOnlineTrakingUseCase,
+        private userBookingCheckoutUseCase: UserBookingCheckoutUseCase
     ) {
         this.cancelBooking = this.cancelBooking.bind(this);
-        this.createSessionIdForbookingViaStripe = this.createSessionIdForbookingViaStripe.bind(this);
-        this.saveBookingAfterStripePayment = this.saveBookingAfterStripePayment.bind(this);
+        this.bookingCheckout = this.bookingCheckout.bind(this);
         this.userJoinRoom = this.userJoinRoom.bind(this);
     };
 
@@ -39,13 +37,13 @@ class UserBookingController {
         };
     };
 
-    async createSessionIdForbookingViaStripe(req: Request, res: Response, next: NextFunction) {
+    async bookingCheckout(req: Request, res: Response, next: NextFunction) {
         try {
             const { date, providerId, selectedServiceMode, slotId, userId } = userCreateSessionIdForbookingViaStripeSchema.parse({
                 userId: (req.user as DecodedUser).userOrProviderId,
                 ...req.body
             });
-            const result = await this.userAppointmentBookingViaStripeUseCase.execute({
+            const result = await this.userBookingCheckoutUseCase.execute({
                 userId,
                 providerId,
                 slotId,
@@ -55,23 +53,6 @@ class UserBookingController {
             sendResponse(res, result);
         } catch (error) {
             log.error("createSessionIdForbookingViaStripe failed", error as Error);
-            next(error);
-        };
-    };
-
-    async saveBookingAfterStripePayment(req: Request, res: Response, next: NextFunction) {
-        try {
-            const { sessionId, userId } = userSaveBookingSchema.parse({
-                userId: (req.user as DecodedUser).userOrProviderId,
-                ...req.body,
-            });
-            await this.userSaveBookingAfterStripePaymentUseCase.execute({
-                userId,
-                sessionId
-            });
-            sendResponse(res, null, "Booking saved successfully");
-        } catch (error) {
-            log.error("saveBookingAfterStripePayment failed", error as Error);
             next(error);
         };
     };
@@ -100,7 +81,6 @@ class UserBookingController {
 
 export const userBookingController = new UserBookingController(
     userCancelBookingUseCase,
-    userAppointmentBookingViaStrpieUseCase,
-    userSaveBookingAfterStripePaymentUseCase,
     updateBookingOnlineTrakingUseCase,
+    userBookingCheckoutUseCase
 );

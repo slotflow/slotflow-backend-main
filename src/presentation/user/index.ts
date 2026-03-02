@@ -2,13 +2,15 @@ import { UserCancelBookingUseCase } from "../../application/useCases/user/userBo
 import { UserFetchAllPaymentsUseCase } from "../../application/useCases/user/userPayment.useCase";
 import { FetchAllAppServicesUseCase } from "../../application/useCases/common/fetchAppServices.useCase";
 import { googleCalendarGatewayService, googleTokenService, signedUrlService } from "../../infrastructure/services";
-import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/common/updateBookingOnlineTracking.useCase";
+import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/subscription/updateBookingOnlineTracking.useCase";
 import { bookingQueries, providerServiceQueries, reviewQueries, serviceAvailabilityQueries } from "../../infrastructure/queriesImpls";
 import { UserCreateAddressUseCase, UserFetchAddressUseCase, UserUpdateAddressUseCase } from "../../application/useCases/user/userAddress.useCase";
-import { UserAppointmentBookingViaStripeUseCase, UserSaveBookingAfterStripePaymentUseCase } from "../../application/useCases/user/userStripeBooking.useCase";
+// import { UserAppointmentBookingViaStripeUseCase, UserSaveBookingAfterStripePaymentUseCase } from "../../application/useCases/user/userStripeBooking.useCase";
 import { addressRepository, bookingRepository, paymentRepository, providerRepository, reviewRepository, serviceRepository, userRepository } from "../../infrastructure/repositoryImpls";
 import { UserFetchProfileDetailsUseCase, UserUpdateProfileImageUseCase, UserUpdateProviderInfoUseCase, UserUpdatePushNotificationUseCase } from "../../application/useCases/user/userProfile.useCase";
 import { UserFetchProvidersForChatSidebarUseCase, UserFetchServiceProviderAddressUseCase, UserFetchServiceProviderProfileDetailsUseCase, UserFetchServiceProviderServiceAvailabilityUseCase, UserFetchServiceProviderServiceDetailsUseCase, UserFetchServiceProvidersUseCase } from "../../application/useCases/user/userProvider.useCase";
+import { UserBookingCheckoutUseCase } from "../../application/useCases/user/userBookingCheckout.useCase";
+import { paymentServiceClient } from "../../infrastructure/clients";
 
 
 // user address controller dependency injection
@@ -22,8 +24,7 @@ export const fetchAllAppServicesUseCase = new FetchAllAppServicesUseCase(service
 // user booking controller dependency injection
 export const updateBookingOnlineTrakingUseCase = new UpdateBookingOnlineTrakingUseCase(bookingRepository, serviceAvailabilityQueries);
 export const userCancelBookingUseCase = new UserCancelBookingUseCase(userRepository, bookingRepository, paymentRepository, googleCalendarGatewayService, googleTokenService);
-export const userAppointmentBookingViaStrpieUseCase = new UserAppointmentBookingViaStripeUseCase(providerRepository, bookingRepository, providerServiceQueries, serviceAvailabilityQueries);
-export const userSaveBookingAfterStripePaymentUseCase = new UserSaveBookingAfterStripePaymentUseCase(userRepository, paymentRepository, bookingRepository, serviceAvailabilityQueries, providerRepository, googleCalendarGatewayService, googleTokenService);
+export const userBookingCheckoutUseCase = new UserBookingCheckoutUseCase(providerRepository, bookingRepository, providerServiceQueries, serviceAvailabilityQueries, userRepository, paymentServiceClient);
 
 // user payment controller dependency injection
 export const userFetchAllPaymentsUseCase = new UserFetchAllPaymentsUseCase(userRepository, paymentRepository);

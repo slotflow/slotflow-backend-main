@@ -14,6 +14,7 @@ export interface UserProps {
     googleId: string | null;
     stripeConnected: boolean;
     stripeAccountId: string | null;
+    stripeCustomerId: string | null;
     allowPushNotification: boolean | null;
     createdAt: Date,
     updatedAt: Date

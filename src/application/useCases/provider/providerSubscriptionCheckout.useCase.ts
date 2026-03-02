@@ -1,7 +1,6 @@
 import dayjs from "dayjs";
 import {
     ProviderStripeSubscriptionCreateSessionIdRequest,
-    ProviderStripeSubscriptionCreateSessionIdResponse,
 } from "../../dtos/provider.dto";
 import { log } from "../../../shared/logger/logger";
 import { PaymentFor } from "../../../domain/enums/payment.enum";
@@ -48,7 +47,7 @@ export class ProviderSubscriptionCheckoutUseCase {
 
             const months: number = getNumberOfMonths(planDuration);
 
-            const { data } = await this.paymentServiceClient.createCheckoutSession({
+            const { data } = await this.paymentServiceClient.createSubsciptionCheckoutSession({
                 subscriptionId: subscription._id.toString(),
                 providerId,
                 planName: plan.planName,
@@ -61,7 +60,6 @@ export class ProviderSubscriptionCheckoutUseCase {
                 email: provider.email,
                 initialAmount: plan.price * months,
             });
-            console.log("sessionId : ", data);
 
             return data;
         } catch (error) {

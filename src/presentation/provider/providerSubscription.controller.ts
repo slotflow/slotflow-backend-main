@@ -14,19 +14,19 @@ class ProviderSubscriptionController {
         private providerTrialSubscriptionUseCase: ProviderTrialSubscriptionUseCase,
         private providerFetchSubscribedPlanUseCase: ProviderFetchSubscribedPlanUseCase
     ) {
-        this.subscribscriptionCheckout = this.subscribscriptionCheckout.bind(this);
+        this.subscriptionCheckout = this.subscriptionCheckout.bind(this);
         this.subscribeToTrialPlan = this.subscribeToTrialPlan.bind(this);
         this.getSubscribedPlan = this.getSubscribedPlan.bind(this);
     };
 
-    async subscribscriptionCheckout(req: Request, res: Response, next: NextFunction) {
+    async subscriptionCheckout(req: Request, res: Response, next: NextFunction) {
         try {
             const { planId, planDuration, providerId } = providerPlanSubscribeSchema.parse({
                 providerId: (req.user as DecodedUser).userOrProviderId,
                 ...req.body
             });
             const result = await this.providerSubscriptionCheckoutUseCase.execute({ providerId, planId, planDuration });
-            console.log("result : ",result);
+            console.log("result : ", result);
             sendResponse(res, result);
         } catch (error) {
             log.error("subscribe failed", error as Error);

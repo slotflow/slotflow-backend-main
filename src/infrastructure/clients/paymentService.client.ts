@@ -2,7 +2,7 @@ import { AxiosInstance } from "axios";
 import { axiosInstance } from "../lib/axios";
 import { serviceConfig } from "../../config/env";
 import { log } from "../../shared/logger/logger";
-import { CreateCheckoutSessionRequest, CreateCheckoutSessionResponse, IPaymentServiceClient } from "../../domain/interfaces/clients/IPaymentService.client";
+import { CreateBookingCheckoutSessionRequest, CreateBookingCheckoutSessionResponse, CreateSubscriptionCheckoutSessionRequest, CreateSubscriptonCheckoutSessionResponse, IPaymentServiceClient } from "../../domain/interfaces/clients/IPaymentService.client";
 
 export class PaymentServiceClient implements IPaymentServiceClient {
 
@@ -15,9 +15,9 @@ export class PaymentServiceClient implements IPaymentServiceClient {
     });
   };
 
-  async createCheckoutSession(payload: CreateCheckoutSessionRequest): Promise<CreateCheckoutSessionResponse> {
+  async createSubsciptionCheckoutSession(payload: CreateSubscriptionCheckoutSessionRequest): Promise<CreateSubscriptonCheckoutSessionResponse> {
     try {
-      const { data } = await this.http.post<CreateCheckoutSessionResponse>(
+      const { data } = await this.http.post<CreateSubscriptonCheckoutSessionResponse>(
         "/subscription/checkout/session",
         payload
       );
@@ -31,8 +31,29 @@ export class PaymentServiceClient implements IPaymentServiceClient {
 
       return data;
     } catch (error) {
-      log.error("Payment Service unavailable", error as Error);
+      log.error("createSubsciptionCheckoutSession, Payment Service unavailable", error as Error);
       throw new Error("Payment Service unavailable");
     };
   };
+
+  async createBookingCheckoutSession(payload: CreateBookingCheckoutSessionRequest): Promise<CreateBookingCheckoutSessionResponse> {
+    try {
+      const { data } = await this.http.post<CreateBookingCheckoutSessionResponse>(
+        "/booking/checkout/session",
+        payload
+      );
+
+      log.info(`data : ${data}`);
+
+      if (!data?.data) {
+        log.error("Invalid response from Payment Service");
+        throw new Error("Invalid response from Payment Service");
+      };
+
+      return data;
+    } catch (error) {
+      log.error("createBookingCheckoutSession, Payment Service unavailable", error as Error);
+      throw new Error("Payment Service unavailable");
+    }
+  }
 };

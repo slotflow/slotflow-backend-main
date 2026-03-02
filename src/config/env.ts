@@ -91,6 +91,8 @@ export const kafkaConfig = {
             googleCalendarFailed: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_FAILED"),
             providerSubscriptionPaymentSuccess: validator.requireEnv("KAFKA_PROVIDER_SUBSCRIPTION_PAYMENT_SUCCESS"),
             providerSubscriptionPaymentFailed: validator.requireEnv("KAFKA_PROVIDER_SUBSCRIPTION_PAYMENT_FAILED"),
+            userBookingPaymentSuccess: validator.requireEnv("KAFKA_USER_BOOKING_PAYMENT_SUCCESS"),
+            userBookingPaymentFailed: validator.requireEnv("KAFKA_USER_BOOKING_PAYMENT_FAILED")
         },
         pub: {
             // MBS -> NS
@@ -106,11 +108,11 @@ export const kafkaConfig = {
             providerTrialSubscription: validator.requireEnv("KAFKA_PROVIDER_TRIAL_SUBSCRIPTION"),
             createGoogleCalendarEvent: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_EVENT_CREATE"),
             updateGoogleCalendarEvent: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_EVENT_UPDATE"),
+            
+            // MBS -> NS, SS
+            bookingCompleted: validator.requireEnv("KAFKA_BOOKING_COMPLETED"),
+            subscriptionCompleted: validator.requireEnv("KAFKA_SUBSCRIPTION_COMPLETED"),
 
-            // MBS -> SS
-            providerSubscriptionUpdated: validator.requireEnv("KAFKA_PROVIDER_SUBSCRIPTION_UPDATED"),
-
-            // MBS -> PS
 
         },
     },

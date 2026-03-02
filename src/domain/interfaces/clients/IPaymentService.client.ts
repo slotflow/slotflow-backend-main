@@ -1,6 +1,6 @@
 import { PaymentFor } from "../../enums/payment.enum";
 
-export interface CreateCheckoutSessionRequest {
+export interface CreateSubscriptionCheckoutSessionRequest {
   subscriptionId: string;
   providerId: string;
   planName: string;
@@ -14,14 +14,41 @@ export interface CreateCheckoutSessionRequest {
   initialAmount: number;
 }
 
-export interface CreateCheckoutSessionResponse {
+export interface CreateSubscriptonCheckoutSessionResponse {
+  status: boolean;
+  message: string;
+  data: string;
+}
+
+export interface CreateBookingCheckoutSessionRequest {
+  serviceName: string;
+  description: string;
+  unitAmount: number;
+  providerId: string;
+  slotDuration: number;
+  appointmentDate: Date;
+  selectedServiceMode: string;
+  bookingId: string;
+  userId: string;
+  paymentFor: PaymentFor;
+  userEmail: string;
+  userName: string;
+  initialAmount: number;
+  pushNotification: boolean;
+}
+
+export interface CreateBookingCheckoutSessionResponse {
   status: boolean;
   message: string;
   data: string;
 }
 
 export interface IPaymentServiceClient {
-  createCheckoutSession(
-    payload: CreateCheckoutSessionRequest
-  ): Promise<CreateCheckoutSessionResponse>;
+  createSubsciptionCheckoutSession(
+    payload: CreateSubscriptionCheckoutSessionRequest
+  ): Promise<CreateSubscriptonCheckoutSessionResponse>;
+
+  createBookingCheckoutSession(
+    payload: CreateBookingCheckoutSessionRequest
+  ): Promise<CreateBookingCheckoutSessionResponse>;
 }

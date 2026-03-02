@@ -26,8 +26,8 @@ router.get('/providers/:providerId/address', authMiddleware, userProviderControl
 router.get('/providers/:providerId/service', authMiddleware, userProviderController.fetchServiceProviderServiceDetails);
 router.get('/providers/:providerId/availability', authMiddleware, userProviderController.fetchServiceProviderServiceAvailability);
 
-router.post('/bookings/checkout-session', authMiddleware, userBookingController.createSessionIdForbookingViaStripe);
-router.post('/bookings', authMiddleware, userBookingController.saveBookingAfterStripePayment);
+router.post('/bookings/checkout/session', authMiddleware, userBookingController.bookingCheckout);
+// router.post('/bookings', authMiddleware, userBookingController.saveBookingAfterStripePayment);
 router.patch('/bookings/:bookingId', authMiddleware, userBookingController.cancelBooking);
 router.patch('/bookings/:roomId/join-left', authMiddleware, userBookingController.userJoinRoom);
 

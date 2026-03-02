@@ -8,6 +8,7 @@ import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKaf
 import { kafkaConfig } from "../../../config/env";
 import { v4 as uuidv4 } from 'uuid';
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
+import { notificationContentMap } from "../../../shared/utils/constants";
 
 
 export class UpdateSubscriptionAfterPaymentSuccessUseCase {
@@ -54,7 +55,8 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
 
             await this.subscriptionRepository.update(subscription);
 
-            await this.kafkaProducer.publish<EventEnvelope<ProviderSubscriptionUpdatedEvent>>(kafkaConfig.topics.pub.providerSubscriptionUpdated, {
+            await this.kafkaProducer.publish<EventEnvelope<ProviderSubscriptionUpdatedEvent>>(
+                kafkaConfig.topics.pub.subscriptionCompleted, {
                 eventId: uuidv4(),
                 attempt: 1,
                 maxAttempts: 1,
@@ -66,6 +68,19 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
                         startDate: subscription.startDate,
                         endDate: subscription.endDate,
                         subscriptionStatus: subscription.subscriptionStatus
+                    },
+                    emailData: {
+                        email: provider.email,
+                        name: provider.username,
+                        subscribedPlan: plan.planName,
+                        startDate: subscription.startDate,
+                        endDate: subscription.endDate
+                    },
+                    notificationData: {
+                        userId: provider._id,
+                        pushNotification: provider.allowPushNotification ?? false,
+                        title: notificationContentMap.subscriprionCompleted.title,
+                        body: notificationContentMap.subscriptionCompleted.body()
                     }
                 }
             });

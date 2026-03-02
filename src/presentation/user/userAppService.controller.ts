@@ -14,8 +14,8 @@ class UserAppServiceController {
 
     async fetchAllAppService(req: Request, res: Response, next: NextFunction) {
         try {
-            const { serviceCategory } = fetchAllAppServicesSchema.parse(req.query);
-            const result = await this.fetchAllAppServicesUseCase.execute({ categories: serviceCategory });
+            const { categories } = fetchAllAppServicesSchema.parse(req.query);
+            const result = await this.fetchAllAppServicesUseCase.execute({ categories });
             sendResponse(res, result);
         } catch (error) {
             log.error("fetchAllAppService failed", error as Error);

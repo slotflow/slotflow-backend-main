@@ -25,6 +25,7 @@ export interface ProviderProps {
   googleId: string | null;
   stripeConnected: boolean;
   stripeAccountId: string | null;
+  stripeCustomerId: string | null;
   trustedBySlotflow: boolean;
   identityProof: string | null;
   serviceProof: string | null;

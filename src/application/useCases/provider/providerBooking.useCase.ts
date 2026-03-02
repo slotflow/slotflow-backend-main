@@ -32,7 +32,7 @@ export class ProviderChangeBookingAppointmentStatusUseCase {
             const userAccessToken = await this.googleTokenService.getAccessToken(user._id);
             const providerAccessToken = await this.googleTokenService.getAccessToken(providerId);
 
-            booking.updateAppointment({ appointmentStatus });
+            booking.updateAppointmentStatus({ appointmentStatus });
 
             await this.bookingRepository.update(booking);
 

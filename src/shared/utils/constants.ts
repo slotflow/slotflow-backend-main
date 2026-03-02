@@ -60,5 +60,15 @@ export const notificationContentMap: Record<string, {
     title: "Password Reset",
     body: () =>
       `Your password has been reset successfully.`
+  },
+  bookingCompleted: {
+    title: "Booking Confirmed",
+    body: (appointmentDate: string) =>
+      `Your booking for ${appointmentDate} has been confirmed.`
+  },
+  subscriptionCompleted: {
+    title: "Subscription Completed",
+    body: () =>
+      `Your subscription has been Confirmed.`
   }
 };

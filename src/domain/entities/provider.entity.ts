@@ -51,6 +51,7 @@ export class Provider {
 
       stripeConnected: false,
       stripeAccountId: null,
+      stripeCustomerId: null,
       trustedBySlotflow: false,
 
       identityProof: null,
@@ -95,6 +96,7 @@ export class Provider {
 
       stripeConnected: false,
       stripeAccountId: null,
+      stripeCustomerId: null,
       trustedBySlotflow: false,
 
       identityProof: null,
@@ -406,6 +408,13 @@ export class Provider {
     this.ensureNotBlocked("update service proof");
 
     this.props.serviceProof = props.serviceProof;
+    this.touch();
+  }
+
+  linkStripeCustomer(stripeCustomerId: string) {
+    this.ensureNotBlocked("update stripe customer");
+
+    this.props.stripeCustomerId = stripeCustomerId;
     this.touch();
   }
 

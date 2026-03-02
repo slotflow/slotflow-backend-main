@@ -3,7 +3,6 @@ import {
   paginationSchema,
   roleValidationSchema,
   validateProviderIdSchema,
-  validateBookingIdSchema,
 } from "./base.zod";
 import { z } from "zod";
 import { objectIdRegex } from "../utils/regex";
@@ -43,7 +42,7 @@ export const deleteFileSchema = z.object({
 
 // Fetch all app services validation schema
 export const fetchAllAppServicesSchema = z.object({
-  serviceCategory: z.nativeEnum(ServiceCategory).array(),
+  categories: z.nativeEnum(ServiceCategory).array(),
 });
 
 // Change block status validation schema

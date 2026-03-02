@@ -144,7 +144,15 @@ export interface ProviderSubscriptionUpdatedEvent {
     startDate: Date;
     endDate: Date;
     subscriptionStatus: SubscriptionStatus;
-  }
+  },
+  emailData: {
+    email: string;
+    name: string;
+    subscribedPlan: PlanName;
+    startDate: Date;
+    endDate: Date;
+  },
+  notificationData: SendNotificationCommon;
 }
 
 // Added till this 
@@ -206,6 +214,16 @@ export interface SendPaymentRequestEvent {
   userId?: string,
 }
 
+export interface BookingSavedEvent {
+  emailData: {
+    email: string;
+    name: string;
+    appointmentDate: Date;
+    appointmentMode: string;
+    appointmentStatus: AppointmentStatus
+  },
+  notificationData: SendNotificationCommon;
+}
 
 
 

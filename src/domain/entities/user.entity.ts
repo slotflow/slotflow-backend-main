@@ -36,6 +36,7 @@ export class User {
             googleId: null,
             stripeConnected: false,
             stripeAccountId: null,
+            stripeCustomerId: null,
             allowPushNotification: null,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -59,6 +60,7 @@ export class User {
             googleId: props.googleId,
             stripeConnected: false,
             stripeAccountId: null,
+            stripeCustomerId: null,
             allowPushNotification: null,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -214,6 +216,13 @@ export class User {
 
     updateBookingsId(bookingsId: string | null) {
         this.props.bookingsId = bookingsId;
+        this.touch();
+    }
+
+    linkStripeCustomer(stripeCustomerId: string) {
+        this.ensureNotBlocked("update stripe customer");
+
+        this.props.stripeCustomerId = stripeCustomerId;
         this.touch();
     }
 

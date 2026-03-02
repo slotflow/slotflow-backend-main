@@ -1,6 +1,6 @@
 import { subscriptionQueries } from "../../infrastructure/queriesImpls";
-import { GetSubscriptionDetailsUseCase } from "../../application/useCases/common/getSubscriptionDetails.useCase";
-import { GetSubscriptionsUseCase } from "../../application/useCases/common/getSubscriptions.useCase";
+import { GetSubscriptionDetailsUseCase } from "../../application/useCases/subscription/getSubscriptionDetails.useCase";
+import { GetSubscriptionsUseCase } from "../../application/useCases/subscription/getSubscriptions.useCase";
 
 //
 export const getSubscriptionsUseCase = new GetSubscriptionsUseCase(subscriptionQueries);

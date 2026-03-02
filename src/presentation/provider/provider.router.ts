@@ -15,11 +15,11 @@ import { providerServiceAvailabilityController } from './providerServiceAvailabi
 const router = Router();
 
 router.get('/', authMiddleware, providerProfileController.getProfileDetails);
-router.patch('/profile/image', authMiddleware,providerProfileController.updateProfileImage);
+router.patch('/profile/image', authMiddleware, providerProfileController.updateProfileImage);
 router.patch('/profile/info', authMiddleware, providerProfileController.updateInfo);
 router.patch('/profile/identity', authMiddleware, providerProfileController.updateIdentityProof);
 router.patch('/profile/service', authMiddleware, providerProfileController.updateServiceProof);
-router.get('/profile/proofs', authMiddleware,providerProfileController.fetchProofs);
+router.get('/profile/proofs', authMiddleware, providerProfileController.fetchProofs);
 router.patch('/profile/approval', authMiddleware, providerProfileController.requestAdminApproval);
 router.delete('/profile/identity', authMiddleware, providerProfileController.deleteIdentityProof);
 router.delete('/profile/service', authMiddleware, providerProfileController.deleteServiceProof);
@@ -34,7 +34,7 @@ router.get('/appservices', authMiddleware, providerAppServiceController.getAllAp
 router.patch('/bookings/:bookingId', authMiddleware, providerBookingController.updateBookingAppointmentStatus);
 router.patch('/bookings/:roomId/join-left', authMiddleware, providerBookingController.providerJoinRoom);
 
-router.post('/service', authMiddleware,providerServiceController.createServiceDetails);
+router.post('/service', authMiddleware, providerServiceController.createServiceDetails);
 router.get('/service', authMiddleware, providerServiceController.getServiceDetails);
 router.patch('/service/:serviceId', authMiddleware, providerServiceController.updateServiceDetails);
 
@@ -43,7 +43,7 @@ router.get('/availability', authMiddleware, providerServiceAvailabilityControlle
 
 router.get('/plans', authMiddleware, providerPlanController.fetchAllPlans);
 
-router.post('/subscriptions/checkout/session', authMiddleware, providerSubscriptionController.subscribscriptionCheckout);
+router.post('/subscriptions/checkout/session', authMiddleware, providerSubscriptionController.subscriptionCheckout);
 router.get('/subscriptions/me', authMiddleware, providerSubscriptionController.getSubscribedPlan);
 router.post('/subscriptions/trial', authMiddleware, providerSubscriptionController.subscribeToTrialPlan);
 

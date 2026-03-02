@@ -6,8 +6,8 @@ import { DecodedUser } from "../../application/dtos/common.dto";
 import { validateSubscriptionIdSchema } from "../../shared/zod/base.zod";
 import { getSubscriptionDetailsUseCase, getSubscriptionsUseCase } from ".";
 import { providerIdWithPaginationSchema } from "../../shared/zod/provider.zod";
-import { GetSubscriptionsUseCase } from "../../application/useCases/common/getSubscriptions.useCase";
-import { GetSubscriptionDetailsUseCase } from "../../application/useCases/common/getSubscriptionDetails.useCase";
+import { GetSubscriptionsUseCase } from "../../application/useCases/subscription/getSubscriptions.useCase";
+import { GetSubscriptionDetailsUseCase } from "../../application/useCases/subscription/getSubscriptionDetails.useCase";
 
 class SubscriptionController {
     constructor(

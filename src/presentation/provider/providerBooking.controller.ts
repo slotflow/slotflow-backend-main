@@ -5,7 +5,7 @@ import { DecodedUser } from "../../application/dtos/common.dto";
 import { validateJoinRoomSchema } from "../../shared/zod/common.zod";
 import { providerChangeAppointmentStatusSchema } from "../../shared/zod/provider.zod";
 import { providerChangeBookingAppointmentStatusUseCase, updateBookingOnlineTrakingUseCase } from ".";
-import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/common/updateBookingOnlineTracking.useCase";
+import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/subscription/updateBookingOnlineTracking.useCase";
 import { ProviderChangeBookingAppointmentStatusUseCase } from "../../application/useCases/provider/providerBooking.useCase";
 
 class ProviderBookingController {

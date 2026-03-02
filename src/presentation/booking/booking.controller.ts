@@ -5,10 +5,10 @@ import { sendResponse } from "../../shared/utils/response";
 import { getBookingDetailsUsecase, getBookingsUseCase, validateJoinRoomUsecase } from ".";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { getBookingsSchema, validateRoomIdSchema } from "../../shared/zod/common.zod";
-import { GetBookingsUseCase } from "../../application/useCases/common/getBookings.useCase";
-import { ValidateJoinRoomUsecase } from "../../application/useCases/common/validateJoinRoom.useCase";
+import { GetBookingsUseCase } from "../../application/useCases/booking/getBookings.useCase";
+import { ValidateJoinRoomUsecase } from "../../application/useCases/subscription/validateJoinRoom.useCase";
 import { validateBookingIdSchema } from "../../shared/zod/base.zod";
-import { GetBookingDetailsUsecase } from "../../application/useCases/common/getBookingDetails.useCase";
+import { GetBookingDetailsUsecase } from "../../application/useCases/booking/getBookingDetails.useCase";
 
 class BookingController {
     constructor(
@@ -84,7 +84,7 @@ class BookingController {
                 bookingId,
             });
             sendResponse(res, result);
-            
+
         } catch (error) {
             log.error("getBookingDetails failed", error as Error);
             next(error);

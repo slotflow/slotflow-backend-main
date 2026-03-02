@@ -605,3 +605,22 @@ export interface ProviderCreatePaymentSuccessEventResult {
 
 // get all subscriptions
 export type GetSubscriptionsResponse = Array<Pick<SubscriptionDTO, "_id" | "startDate" | "endDate" | "subscriptionStatus"> & Pick<PlanDTO, "planName">>;
+
+export interface UpdateBookingAfterPaymentSuccessEventResult {
+  mbsData: {
+    bookingId: string;
+    paymentId: string;
+  }
+}
+
+export interface UpdateBookingAfterPaymentFailedEventResult {
+  mbsData: {
+    bookingId: string;
+  }
+}
+
+export interface LinkStripeCustomerRequest {
+  userId: string;
+  role: Role;
+  stripeCustomerId: string;
+}
