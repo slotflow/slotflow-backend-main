@@ -98,6 +98,10 @@ export class Booking {
         return this.props.calendarData
     };
 
+    get createdAt(): Date {
+        return this.props.createdAt;
+    };
+
     // Business methods
 
     getProps(): Readonly<BookingProps> {

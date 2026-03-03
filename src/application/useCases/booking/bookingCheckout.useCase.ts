@@ -12,7 +12,7 @@ import { IProviderServiceQueries } from "../../queries/IProviderService.queries"
 import { IServiceAvailabilityQueries } from "../../queries/IServiceAvailability.queries";
 import { v4 as uuid } from 'uuid';
 
-export class UserBookingCheckoutUseCase {
+export class BookingCheckoutUseCase {
     constructor(
         private providerRepository: IProviderRepository,
         private bookingRepository: IBookingRepository,
@@ -53,7 +53,7 @@ export class UserBookingCheckoutUseCase {
 
             if (!selectedSlot[0].available) throw new Error("This slot is not available for today");
 
-            const existBooking = await this.bookingRepository.findByUserId(userId, providerServiceAvailability.day, date, selectedSlot[0].time);
+            const existBooking = await this.bookingRepository.findByUserId(userId, date, selectedSlot[0].time);
             if (existBooking && existBooking.length > 0) throw new Error("You have already an appointment on the same time");
 
             const booking = Booking.create({
@@ -94,7 +94,7 @@ export class UserBookingCheckoutUseCase {
 
             return data;
         } catch (error) {
-            log.error("UserBookingCheckoutUseCase failed", error as Error);
+            log.error("BookingCheckoutUseCase failed", error as Error);
             throw error;
         }
     }

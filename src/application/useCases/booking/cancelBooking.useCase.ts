@@ -5,17 +5,13 @@ import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum"
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { IPaymentRepository } from "../../../domain/interfaces/repositories/IPayment.repository";
-import { IGoogleCalendarGatewayService } from "../../../domain/interfaces/services/IGoogleCalendarGateway.service";
-import { IGoogleTokenService } from "../../../domain/interfaces/services/IGoogleToken.service";
 import { PaymentGateway, PaymentStatus } from "../../../domain/enums/payment.enum";
 
-export class UserCancelBookingUseCase {
+export class CancelBookingUseCase {
     constructor(
         private userRepository: IUserRepository,
         private bookingRepository: IBookingRepository,
         private paymentRepository: IPaymentRepository,
-        private googleCalendarGatewayService: IGoogleCalendarGatewayService,
-        private googleTokenService: IGoogleTokenService
     ) { };
 
     async execute(payload: UserCancelBookingRequest): Promise<void> {
@@ -95,11 +91,11 @@ export class UserCancelBookingUseCase {
                 };
 
             } catch (error) {
-                log.error("UserCancelBookingUseCase failed", error as Error);
+                log.error("CancelBookingUseCase failed", error as Error);
                 throw error;
             };
         } catch (error) {
-            log.error("UserCancelBookingUseCase failed", error as Error);
+            log.error("CancelBookingUseCase failed", error as Error);
             throw error;
         };
     };

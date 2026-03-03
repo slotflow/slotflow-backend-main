@@ -2,22 +2,31 @@ import { log } from "../../shared/logger/logger";
 import { Role } from "../../domain/enums/common.enum";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
-import { getBookingDetailsUsecase, getBookingsUseCase, validateJoinRoomUsecase } from ".";
 import { DecodedUser } from "../../application/dtos/common.dto";
-import { getBookingsSchema, validateRoomIdSchema } from "../../shared/zod/common.zod";
 import { GetBookingsUseCase } from "../../application/useCases/booking/getBookings.useCase";
-import { ValidateJoinRoomUsecase } from "../../application/useCases/subscription/validateJoinRoom.useCase";
-import { validateBookingIdSchema } from "../../shared/zod/base.zod";
+import { CheckBookingUseCase } from "../../application/useCases/booking/checkBooking.useCase";
+import { BookingCheckoutUseCase } from "../../application/useCases/booking/bookingCheckout.useCase";
 import { GetBookingDetailsUsecase } from "../../application/useCases/booking/getBookingDetails.useCase";
+import { ValidateJoinRoomUsecase } from "../../application/useCases/subscription/validateJoinRoom.useCase";
+import { checkBookingUseCase, getBookingDetailsUsecase, getBookingsUseCase, bookingCheckoutUseCase, validateJoinRoomUsecase, cancelBookingUseCase } from ".";
+import { bookingCheckoutViaStripeSchema, cancelBookingSchema, getBookingsSchema, validateBookingIdSchema, validateRoomIdSchema } from "../../shared/zod/booking.zod";
+import { CancelBookingUseCase } from "../../application/useCases/booking/cancelBooking.useCase";
 
 class BookingController {
     constructor(
         private readonly getBookingsUseCase: GetBookingsUseCase,
         private readonly validateJoinRoomUsecase: ValidateJoinRoomUsecase,
-        private readonly getBookingDetailsUsecase: GetBookingDetailsUsecase
+        private readonly getBookingDetailsUsecase: GetBookingDetailsUsecase,
+        private readonly checkBookingUseCase: CheckBookingUseCase,
+        private readonly bookingCheckoutUseCase: BookingCheckoutUseCase,
+        private readonly cancelBookingUseCase: CancelBookingUseCase
     ) {
         this.getBookings = this.getBookings.bind(this);
         this.validateRoomId = this.validateRoomId.bind(this);
+        this.getBookingDetails = this.getBookingDetails.bind(this);
+        this.checkBooking = this.checkBooking.bind(this);
+        this.bookingCheckout = this.bookingCheckout.bind(this);
+        this.cancelBooking = this.cancelBooking.bind(this);
     }
 
     async getBookings(req: Request, res: Response, next: NextFunction) {
@@ -90,10 +99,64 @@ class BookingController {
             next(error);
         };
     };
+
+    async checkBooking(req: Request, res: Response, next: NextFunction) {
+        try {
+            const user = req.user as DecodedUser;
+            const result = await this.checkBookingUseCase.execute({
+                userId: user.userOrProviderId,
+            });
+            sendResponse(res, result);
+        } catch (error) {
+            log.error("checkBooking failed : ", error as Error);
+            next(error);
+        }
+    }
+
+    async bookingCheckout(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { date, providerId, selectedServiceMode, slotId, userId } = bookingCheckoutViaStripeSchema.parse({
+                userId: (req.user as DecodedUser).userOrProviderId,
+                ...req.body
+            });
+            const result = await this.bookingCheckoutUseCase.execute({
+                userId,
+                providerId,
+                slotId,
+                selectedServiceMode,
+                date: new Date(date),
+            });
+            sendResponse(res, result);
+        } catch (error) {
+            log.error("createSessionIdForbookingViaStripe failed", error as Error);
+            next(error);
+        };
+    };
+
+    async cancelBooking(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { bookingId, userId } = cancelBookingSchema.parse({
+                userId: (req.user as DecodedUser).userOrProviderId,
+                bookingId: req.params.bookingId
+            });
+            await this.cancelBookingUseCase.execute({
+                userId,
+                bookingId,
+            });
+            sendResponse(res, null, "Booking cancelled");
+        } catch (error) {
+            log.error("cancelBooking failed", error as Error);
+            next(error);
+        };
+    };
+
 }
 
 export const bookingController = new BookingController(
     getBookingsUseCase,
     validateJoinRoomUsecase,
-    getBookingDetailsUsecase
+    getBookingDetailsUsecase,
+    checkBookingUseCase,
+    bookingCheckoutUseCase,
+    cancelBookingUseCase
 )

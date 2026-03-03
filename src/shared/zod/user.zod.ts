@@ -9,12 +9,11 @@ import {
     updateInfoSchema,
     saveStripePaymentSchema,
     s3FileKeySchema,
-    validateBookingIdSchema,
-    validateProviderIdSchema,
     validateReviewIdSchema
 } from "./base.zod";
 // import { fetchBookingCommonSchema } from "./common.zod";
 import { Role } from "../../domain/enums/common.enum";
+import { validateBookingIdSchema } from "./booking.zod";
 
 //
 export const userIdWithPaginationSchema = validateUserIdSchema.merge(paginationSchema);
@@ -39,13 +38,6 @@ export const userFetchAllProvidersSchema = z.object({
     limit: z.coerce.number().optional(),
 });
 
-// user create a session for appointment booking using stripe zod validation
-export const userCreateSessionIdForbookingViaStripeSchema = z.object({
-    slotId: z.string().regex(objectIdRegex, "Invalid slot id"),
-    date: dateSchema,
-    selectedServiceMode: z.nativeEnum(ServiceMode),
-}).merge(validateUserIdSchema).merge(validateProviderIdSchema);
-
 // user crea review
 
 
@@ -64,7 +56,6 @@ export const userUpdateAddressSchema = z.object({
 // export const userFetchAllAppointmentsSchema = fetchBookingCommonSchema.merge(validateUserIdSchema);
 
 //
-export const userCancelBookingSchema = validateBookingIdSchema.merge(validateUserIdSchema);
 
 //
 export const userSaveBookingSchema = saveStripePaymentSchema.merge(validateUserIdSchema);

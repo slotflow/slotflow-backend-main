@@ -24,4 +24,24 @@ router.get('/:bookingId',
     bookingController.getBookingDetails
 );
 
+router.get('/check',
+    authMiddleware,
+    authorize(Role.USER),
+    bookingController.checkBooking
+);
+
+// user
+router.post('/checkout/session', 
+    authMiddleware, 
+    authorize(Role.USER),
+    bookingController.bookingCheckout
+);
+
+// router.patch('/bookings/:bookingId', authMiddleware, userBookingController.cancelBooking);
+// router.patch('/bookings/:roomId/join-left', authMiddleware, userBookingController.userJoinRoom);
+
+// provider
+// router.patch('/bookings/:bookingId', authMiddleware, providerBookingController.updateBookingAppointmentStatus);
+// router.patch('/bookings/:roomId/join-left', authMiddleware, providerBookingController.providerJoinRoom);
+
 export default router;

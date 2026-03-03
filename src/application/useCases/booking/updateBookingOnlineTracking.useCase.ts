@@ -18,7 +18,7 @@ export class UpdateBookingOnlineTrakingUseCase {
             if (joined && (!joinedTime && !leftCallTime)) throw new Error("Invalid request");
             if (!role || !roomId) throw new Error("role and bookingId are required");
 
-            const booking = await this.bookingRepository.findByroomId(roomId);
+            const booking = await this.bookingRepository.findByRoomId(roomId);
             if (!booking) throw new Error("No booking found");
 
             const serviceAvailability = await this.serviceAvailabilityQueries.findByProviderId(new Date(), booking.serviceProviderId);
