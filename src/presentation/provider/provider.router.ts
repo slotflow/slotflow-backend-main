@@ -6,7 +6,6 @@ import { providerStripeController } from './providerStripe.controller';
 import { provideAddressController } from './providerAddress.controller';
 import { providerServiceController } from './providerService.controller';
 import { providerProfileController } from './providerProfile.controller';
-import { providerBookingController } from './providerBooking.controller';
 import { providerDashboardController } from './providerDashboard.controller';
 import { providerAppServiceController } from './providerAppService.controller';
 import { providerSubscriptionController } from './providerSubscription.controller';
@@ -30,9 +29,6 @@ router.get('/address', authMiddleware, provideAddressController.getAddress);
 router.patch('/addresses/:addressId', authMiddleware, provideAddressController.updateAddress);
 
 router.get('/appservices', authMiddleware, providerAppServiceController.getAllAppServices);
-
-router.patch('/bookings/:bookingId', authMiddleware, providerBookingController.updateBookingAppointmentStatus);
-router.patch('/bookings/:roomId/join-left', authMiddleware, providerBookingController.providerJoinRoom);
 
 router.post('/service', authMiddleware, providerServiceController.createServiceDetails);
 router.get('/service', authMiddleware, providerServiceController.getServiceDetails);

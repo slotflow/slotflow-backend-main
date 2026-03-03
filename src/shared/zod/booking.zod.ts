@@ -2,6 +2,7 @@ import z from "zod";
 import { objectIdRegex } from "../utils/regex";
 import { Boolean } from "../../domain/enums/common.enum";
 import { ServiceMode } from "../../domain/enums/service.enum";
+import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { dateSchema, paginationSchema, validateProviderIdSchema, validateUserIdSchema } from "./base.zod";
 
 // Booking validation schemas
@@ -36,4 +37,9 @@ export const validateJoinRoomSchema = z.object({
   joined: z.boolean(),
   joinedTime: z.string().optional(),
   leftCallTime: z.string().optional(),
-})
+});
+
+// Change booking status validation schemas
+export const changeBookingStatusSchema = z.object({
+    appointmentStatus: z.nativeEnum(AppointmentStatus),
+}).merge(validateBookingIdSchema).merge(validateProviderIdSchema);

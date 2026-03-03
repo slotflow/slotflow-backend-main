@@ -9,7 +9,6 @@ import {
     addressSchema,
     updateInfoSchema,
     s3FileKeySchema,
-    validateBookingIdSchema,
     validateReviewIdSchema
 } from "./base.zod";
 import { Day } from "../../domain/enums/common.enum";
@@ -120,9 +119,7 @@ export const providerPlanSubscribeSchema = z.object({
 
 
 // Validating the page and limit in the request query zod schema
-export const providerChangeAppointmentStatusSchema = z.object({
-    appointmentStatus: z.nativeEnum(AppointmentStatus),
-}).merge(validateBookingIdSchema).merge(validateProviderIdSchema);
+
 
 //
 export const providerCreateAddressSchema = addressSchema.merge(validateProviderIdSchema);

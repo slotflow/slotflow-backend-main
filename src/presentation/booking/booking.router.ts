@@ -12,35 +12,16 @@ router.get('/',
     bookingController.getBookings
 );
 
-router.get('/:bookingId/can-join',
-    authMiddleware,
-    authorize(Role.USER, Role.PROVIDER),
-    bookingController.validateRoomId
-);
-
 router.get('/:bookingId',
     authMiddleware,
     authorize(Role.USER, Role.PROVIDER),
     bookingController.getBookingDetails
 );
 
-router.get('/check',
+router.get('/:bookingId/access',
     authMiddleware,
-    authorize(Role.USER),
-    bookingController.checkBooking
-);
-
-// user
-router.post('/checkout/session', 
-    authMiddleware, 
-    authorize(Role.USER),
-    bookingController.bookingCheckout
-);
-
-router.patch('/:bookingId', 
-    authMiddleware, 
-    authorize(Role.USER),
-    bookingController.cancelBooking
+    authorize(Role.USER, Role.PROVIDER),
+    bookingController.validateRoomId
 );
 
 router.patch('/:roomId/join-left', 
@@ -49,8 +30,28 @@ router.patch('/:roomId/join-left',
     bookingController.joinOrLeftRoom
 );
 
-// provider
-// router.patch('/bookings/:bookingId', authMiddleware, providerBookingController.updateBookingAppointmentStatus);
-// router.patch('/bookings/:roomId/join-left', authMiddleware, providerBookingController.providerJoinRoom);
+router.post('/', 
+    authMiddleware, 
+    authorize(Role.USER),
+    bookingController.bookingCheckout
+);
+
+router.get('/check',
+    authMiddleware,
+    authorize(Role.USER),
+    bookingController.checkBooking
+);
+
+router.patch('/:bookingId', 
+    authMiddleware, 
+    authorize(Role.USER),
+    bookingController.cancelBooking
+);
+
+router.patch('/:bookingId/change-status', 
+    authMiddleware, 
+    authorize(Role.PROVIDER),
+    bookingController.updateBookingAppointmentStatus
+);
 
 export default router;

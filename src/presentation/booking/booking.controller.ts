@@ -8,10 +8,11 @@ import { CheckBookingUseCase } from "../../application/useCases/booking/checkBoo
 import { BookingCheckoutUseCase } from "../../application/useCases/booking/bookingCheckout.useCase";
 import { GetBookingDetailsUsecase } from "../../application/useCases/booking/getBookingDetails.useCase";
 import { ValidateJoinRoomUsecase } from "../../application/useCases/subscription/validateJoinRoom.useCase";
-import { checkBookingUseCase, getBookingDetailsUsecase, getBookingsUseCase, bookingCheckoutUseCase, validateJoinRoomUsecase, cancelBookingUseCase, updateBookingOnlineTrakingUseCase } from ".";
-import { bookingCheckoutViaStripeSchema, cancelBookingSchema, getBookingsSchema, validateBookingIdSchema, validateJoinRoomSchema, validateRoomIdSchema } from "../../shared/zod/booking.zod";
+import { checkBookingUseCase, getBookingDetailsUsecase, getBookingsUseCase, bookingCheckoutUseCase, validateJoinRoomUsecase, cancelBookingUseCase, updateBookingOnlineTrakingUseCase, changeBookingStatusUseCase } from ".";
+import { bookingCheckoutViaStripeSchema, cancelBookingSchema, changeBookingStatusSchema, getBookingsSchema, validateBookingIdSchema, validateJoinRoomSchema, validateRoomIdSchema } from "../../shared/zod/booking.zod";
 import { CancelBookingUseCase } from "../../application/useCases/booking/cancelBooking.useCase";
 import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/booking/updateBookingOnlineTracking.useCase";
+import { ChangeBookingStatusUseCase } from "../../application/useCases/booking/changeBookingStatus.useCase";
 
 class BookingController {
     constructor(
@@ -21,7 +22,8 @@ class BookingController {
         private readonly checkBookingUseCase: CheckBookingUseCase,
         private readonly bookingCheckoutUseCase: BookingCheckoutUseCase,
         private readonly cancelBookingUseCase: CancelBookingUseCase,
-        private readonly updateBookingOnlineTrakingUseCase: UpdateBookingOnlineTrakingUseCase
+        private readonly updateBookingOnlineTrakingUseCase: UpdateBookingOnlineTrakingUseCase,
+        private readonly changeBookingStatusUseCase: ChangeBookingStatusUseCase
     ) {
         this.getBookings = this.getBookings.bind(this);
         this.validateRoomId = this.validateRoomId.bind(this);
@@ -29,6 +31,8 @@ class BookingController {
         this.checkBooking = this.checkBooking.bind(this);
         this.bookingCheckout = this.bookingCheckout.bind(this);
         this.cancelBooking = this.cancelBooking.bind(this);
+        this.joinOrLeftRoom = this.joinOrLeftRoom.bind(this);
+        this.updateBookingAppointmentStatus = this.updateBookingAppointmentStatus.bind(this);
     }
 
     async getBookings(req: Request, res: Response, next: NextFunction) {
@@ -172,6 +176,21 @@ class BookingController {
             next(error);
         };
     };
+
+    async updateBookingAppointmentStatus(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { appointmentStatus, bookingId, providerId } = changeBookingStatusSchema.parse({
+                ...req.params,
+                ...req.body,
+                providerId: (req.user as DecodedUser).userOrProviderId
+            });
+            await this.changeBookingStatusUseCase.execute({ _id: bookingId, appointmentStatus, providerId });
+            sendResponse(res, null, "Booking status updated successfully");
+        } catch (error) {
+            log.error("updateBookingAppointmentStatus failed", error as Error);
+            next(error);
+        };
+    };
 }
 
 export const bookingController = new BookingController(
@@ -181,5 +200,6 @@ export const bookingController = new BookingController(
     checkBookingUseCase,
     bookingCheckoutUseCase,
     cancelBookingUseCase,
-    updateBookingOnlineTrakingUseCase
+    updateBookingOnlineTrakingUseCase,
+    changeBookingStatusUseCase
 )

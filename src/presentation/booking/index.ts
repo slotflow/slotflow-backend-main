@@ -8,6 +8,9 @@ import { BookingCheckoutUseCase } from "../../application/useCases/booking/booki
 import { paymentServiceClient } from "../../infrastructure/clients";
 import { CancelBookingUseCase } from "../../application/useCases/booking/cancelBooking.useCase";
 import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/booking/updateBookingOnlineTracking.useCase";
+import { ChangeBookingStatusUseCase } from "../../application/useCases/booking/changeBookingStatus.useCase";
+import { googleTokenService } from "../../infrastructure/services";
+import { kafkaProducer } from "../../infrastructure/messaging";
 
 export const getBookingsUseCase = new GetBookingsUseCase(bookingQueries);
 
@@ -22,3 +25,5 @@ export const bookingCheckoutUseCase = new BookingCheckoutUseCase(providerReposit
 export const cancelBookingUseCase = new CancelBookingUseCase(userRepository, bookingRepository, paymentRepository)
 
 export const updateBookingOnlineTrakingUseCase = new UpdateBookingOnlineTrakingUseCase(bookingRepository, serviceAvailabilityQueries);
+
+export const changeBookingStatusUseCase = new ChangeBookingStatusUseCase(bookingRepository, userRepository, googleTokenService, kafkaProducer);

@@ -11,7 +11,7 @@ import { IBookingRepository } from "../../../domain/interfaces/repositories/IBoo
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 import { EventEnvelope, CreateGoogleCalendarEvent, SendAppointmentStatusChangeForProviderEvent, SendAppointmentStatusChangeForUserEvent } from "../../dtos/kafka.dtos";
 
-export class ProviderChangeBookingAppointmentStatusUseCase {
+export class ChangeBookingStatusUseCase {
     constructor(
         private bookingRepository: IBookingRepository,
         private userRepository: IUserRepository,
@@ -120,7 +120,7 @@ export class ProviderChangeBookingAppointmentStatusUseCase {
             };
 
         } catch (error) {
-            log.error("ProviderChangeBookingAppointmentStatus failed", error as Error);
+            log.error("ProviderChangeBookingStatusUseCase failed", error as Error);
             throw error;
         };
     };
