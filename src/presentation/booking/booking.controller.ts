@@ -8,9 +8,10 @@ import { CheckBookingUseCase } from "../../application/useCases/booking/checkBoo
 import { BookingCheckoutUseCase } from "../../application/useCases/booking/bookingCheckout.useCase";
 import { GetBookingDetailsUsecase } from "../../application/useCases/booking/getBookingDetails.useCase";
 import { ValidateJoinRoomUsecase } from "../../application/useCases/subscription/validateJoinRoom.useCase";
-import { checkBookingUseCase, getBookingDetailsUsecase, getBookingsUseCase, bookingCheckoutUseCase, validateJoinRoomUsecase, cancelBookingUseCase } from ".";
-import { bookingCheckoutViaStripeSchema, cancelBookingSchema, getBookingsSchema, validateBookingIdSchema, validateRoomIdSchema } from "../../shared/zod/booking.zod";
+import { checkBookingUseCase, getBookingDetailsUsecase, getBookingsUseCase, bookingCheckoutUseCase, validateJoinRoomUsecase, cancelBookingUseCase, updateBookingOnlineTrakingUseCase } from ".";
+import { bookingCheckoutViaStripeSchema, cancelBookingSchema, getBookingsSchema, validateBookingIdSchema, validateJoinRoomSchema, validateRoomIdSchema } from "../../shared/zod/booking.zod";
 import { CancelBookingUseCase } from "../../application/useCases/booking/cancelBooking.useCase";
+import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/booking/updateBookingOnlineTracking.useCase";
 
 class BookingController {
     constructor(
@@ -19,7 +20,8 @@ class BookingController {
         private readonly getBookingDetailsUsecase: GetBookingDetailsUsecase,
         private readonly checkBookingUseCase: CheckBookingUseCase,
         private readonly bookingCheckoutUseCase: BookingCheckoutUseCase,
-        private readonly cancelBookingUseCase: CancelBookingUseCase
+        private readonly cancelBookingUseCase: CancelBookingUseCase,
+        private readonly updateBookingOnlineTrakingUseCase: UpdateBookingOnlineTrakingUseCase
     ) {
         this.getBookings = this.getBookings.bind(this);
         this.validateRoomId = this.validateRoomId.bind(this);
@@ -150,6 +152,26 @@ class BookingController {
         };
     };
 
+    async joinOrLeftRoom(req: Request, res: Response, next: NextFunction) {
+        try {
+            const user = req.user as DecodedUser;
+            const { joined, roomId, joinedTime, leftCallTime } = validateJoinRoomSchema.parse({
+                roomId: req.params.roomId,
+                ...req.body,
+            });
+            const result = await this.updateBookingOnlineTrakingUseCase.execute({
+                roomId,
+                joined,
+                joinedTime: joinedTime ? new Date(joinedTime) : null,
+                leftCallTime: leftCallTime ? new Date(leftCallTime) : null,
+                role: user.role
+            });
+            sendResponse(res, result);
+        } catch (error) {
+            log.error("userJoinRoom failed", error as Error);
+            next(error);
+        };
+    };
 }
 
 export const bookingController = new BookingController(
@@ -158,5 +180,6 @@ export const bookingController = new BookingController(
     getBookingDetailsUsecase,
     checkBookingUseCase,
     bookingCheckoutUseCase,
-    cancelBookingUseCase
+    cancelBookingUseCase,
+    updateBookingOnlineTrakingUseCase
 )

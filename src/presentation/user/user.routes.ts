@@ -3,7 +3,6 @@ import { authMiddleware } from "../middleware/auth.middleware";
 import { userProfileController } from "./userProfile.controller";
 import { userAddressController } from './userAddress.controller';
 import { userPaymentController } from "./userPayment.controller";
-import { userBookingController } from "./userBooking.controller";
 import { userProviderController } from "./userProvider.controller";
 import { userAppServiceController } from "./userAppService.controller";
 
@@ -25,10 +24,6 @@ router.get('/providers/:providerId', authMiddleware, userProviderController.fetc
 router.get('/providers/:providerId/address', authMiddleware, userProviderController.fetchServiceProviderAddress);
 router.get('/providers/:providerId/service', authMiddleware, userProviderController.fetchServiceProviderServiceDetails);
 router.get('/providers/:providerId/availability', authMiddleware, userProviderController.fetchServiceProviderServiceAvailability);
-
-// router.post('/bookings/checkout/session', authMiddleware, userBookingController.bookingCheckout);
-router.patch('/bookings/:bookingId', authMiddleware, userBookingController.cancelBooking);
-router.patch('/bookings/:roomId/join-left', authMiddleware, userBookingController.userJoinRoom);
 
 router.get('/payments', authMiddleware, userPaymentController.fetchPayments);
 

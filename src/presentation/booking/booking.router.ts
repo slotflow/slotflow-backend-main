@@ -37,8 +37,17 @@ router.post('/checkout/session',
     bookingController.bookingCheckout
 );
 
-// router.patch('/bookings/:bookingId', authMiddleware, userBookingController.cancelBooking);
-// router.patch('/bookings/:roomId/join-left', authMiddleware, userBookingController.userJoinRoom);
+router.patch('/:bookingId', 
+    authMiddleware, 
+    authorize(Role.USER),
+    bookingController.cancelBooking
+);
+
+router.patch('/:roomId/join-left', 
+    authMiddleware, 
+    authorize(Role.USER, Role.PROVIDER),
+    bookingController.joinOrLeftRoom
+);
 
 // provider
 // router.patch('/bookings/:bookingId', authMiddleware, providerBookingController.updateBookingAppointmentStatus);

@@ -7,6 +7,7 @@ import { CheckBookingUseCase } from "../../application/useCases/booking/checkBoo
 import { BookingCheckoutUseCase } from "../../application/useCases/booking/bookingCheckout.useCase";
 import { paymentServiceClient } from "../../infrastructure/clients";
 import { CancelBookingUseCase } from "../../application/useCases/booking/cancelBooking.useCase";
+import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/booking/updateBookingOnlineTracking.useCase";
 
 export const getBookingsUseCase = new GetBookingsUseCase(bookingQueries);
 
@@ -19,3 +20,5 @@ export const checkBookingUseCase = new CheckBookingUseCase(bookingRepository);
 export const bookingCheckoutUseCase = new BookingCheckoutUseCase(providerRepository, bookingRepository, providerServiceQueries, serviceAvailabilityQueries, userRepository, paymentServiceClient);
 
 export const cancelBookingUseCase = new CancelBookingUseCase(userRepository, bookingRepository, paymentRepository)
+
+export const updateBookingOnlineTrakingUseCase = new UpdateBookingOnlineTrakingUseCase(bookingRepository, serviceAvailabilityQueries);

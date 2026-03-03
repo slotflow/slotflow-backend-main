@@ -10,13 +10,6 @@ import { ServiceCategory } from "../../domain/enums/service.enum";
 import { Boolean, FileType } from "../../domain/enums/common.enum";
 
 
-// Join or leave room validation schema
-export const JoinOrLeftRoomSchema = z.object({
-  joined: z.boolean(),
-  joinedTime: z.string().optional(),
-  leftCallTime: z.string().optional(),
-}).merge(roleValidationSchema);
-
 // S3 presigned URL generation validation schema
 export const presignedUrlSchema = z.object({
   folderName: z.string().min(1).max(50, "Folder name too long"),
@@ -45,6 +38,3 @@ export const fetchProviderServiceAvailabilitySchema = z.object({
 }).merge(validateProviderIdSchema);
 
 //
-export const validateJoinRoomSchema = z.object({
-  roomId: z.string(),
-}).merge(JoinOrLeftRoomSchema);
