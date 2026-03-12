@@ -56,7 +56,7 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
             await this.subscriptionRepository.update(subscription);
 
             await this.kafkaProducer.publish<EventEnvelope<ProviderSubscriptionUpdatedEvent>>(
-                kafkaConfig.topics.pub.subscriptionCompleted, {
+                kafkaConfig.topics.pub.planSubscribed, {
                 eventId: uuidv4(),
                 attempt: 1,
                 maxAttempts: 1,
@@ -79,8 +79,8 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
                     notificationData: {
                         userId: provider._id,
                         pushNotification: provider.allowPushNotification ?? false,
-                        title: notificationContentMap.subscriprionCompleted.title,
-                        body: notificationContentMap.subscriptionCompleted.body()
+                        title: notificationContentMap.planSubscribed.title,
+                        body: notificationContentMap.planSubscribed.body()
                     }
                 }
             });

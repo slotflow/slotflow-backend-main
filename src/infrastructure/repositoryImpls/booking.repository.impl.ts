@@ -18,20 +18,29 @@ export class BookingRepositoryImpl implements IBookingRepository {
     };
 
     async findByUserId(userId: string, date: Date, time: string): Promise<Array<Booking> | null> {
-            const docs = await BookingModel.find(
-                {
-                    userId,
-                    createdAt: date,
-                    appointmentTime: time,
-                    appointmentStatus: AppointmentStatus.BOOKED,
-                }
-            );
+        const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
+        const docs = await BookingModel.find(
+            {
+                userId,
+                appointmentDate: date,
+                appointmentTime: time,
+                $or: [
+                    { appointmentStatus: { $in: [AppointmentStatus.BOOKED, AppointmentStatus.CONFIRMED, AppointmentStatus.COMPLETED] } },
+                    {
+                        $and: [
+                            { appointmentStatus: AppointmentStatus.PENDING },
+                            { createdAt: { $gte: fifteenMinutesAgo } }
+                        ]
+                    }
+                ]
+            }
+        );
 
-            return docs ? docs.map(doc => BookingMapper.toDomain(doc)) : null;
+        return docs ? docs.map(doc => BookingMapper.toDomain(doc)) : null;
     };
 
     async findOneByUserId(userId: string): Promise<Booking | null> {
-        const doc = await BookingModel.findOne({ userId });
+        const doc = await BookingModel.findOne({ userId }).sort({ createdAt: -1 });
         return doc ? BookingMapper.toDomain(doc) : null;
     }
 

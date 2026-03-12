@@ -56,7 +56,7 @@ export class BookingCheckoutUseCase {
             const existBooking = await this.bookingRepository.findByUserId(userId, date, selectedSlot[0].time);
             if (existBooking && existBooking.length > 0) throw new Error("You have already an appointment on the same time");
 
-            const booking = Booking.create({
+           const booking = await this.bookingRepository.create(Booking.create({
                 appointmentDate: date,
                 appointmentMode: selectedServiceMode,
                 appointmentStatus: AppointmentStatus.PENDING,
@@ -71,12 +71,9 @@ export class BookingCheckoutUseCase {
                     }
                 ],
                 videoCallRoomId: uuid(),
-            });
-
-            await this.bookingRepository.create(booking);
+            }));
 
             const { data } = await this.paymentServiceClient.createBookingCheckoutSession({
-                appointmentDate: date,
                 serviceName: providerService.service.serviceName,
                 bookingId: booking._id,
                 description: providerService.serviceDescription,
@@ -84,7 +81,7 @@ export class BookingCheckoutUseCase {
                 paymentFor: PaymentFor.APPOINTMENT_BOOKING,
                 providerId,
                 selectedServiceMode,
-                slotDuration: providerServiceAvailability.duration,
+                slotDuration: Number(providerServiceAvailability.duration),
                 unitAmount: providerService.servicePrice,
                 userId,
                 userEmail: user.email,

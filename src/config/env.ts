@@ -108,10 +108,13 @@ export const kafkaConfig = {
             providerTrialSubscription: validator.requireEnv("KAFKA_PROVIDER_TRIAL_SUBSCRIPTION"),
             createGoogleCalendarEvent: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_EVENT_CREATE"),
             updateGoogleCalendarEvent: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_EVENT_UPDATE"),
+
+            // MBS -> NS
+            gotAnAppointment: validator.requireEnv("KAFKA_GOT_AN_APPOINTMENT"),
             
             // MBS -> NS, SS
-            bookingCompleted: validator.requireEnv("KAFKA_BOOKING_COMPLETED"),
-            subscriptionCompleted: validator.requireEnv("KAFKA_SUBSCRIPTION_COMPLETED"),
+            slotBooked: validator.requireEnv("KAFKA_SLOT_BOOKED"),
+            planSubscribed: validator.requireEnv("KAFKA_PLAN_SUBSCRIBED"),
 
 
         },

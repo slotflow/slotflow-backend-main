@@ -38,6 +38,7 @@ export class PaymentServiceClient implements IPaymentServiceClient {
 
   async createBookingCheckoutSession(payload: CreateBookingCheckoutSessionRequest): Promise<CreateBookingCheckoutSessionResponse> {
     try {
+      console.log("payload : ",payload);
       const { data } = await this.http.post<CreateBookingCheckoutSessionResponse>(
         "/booking/checkout/session",
         payload

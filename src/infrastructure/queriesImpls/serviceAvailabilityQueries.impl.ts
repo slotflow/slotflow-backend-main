@@ -1,4 +1,5 @@
 import { Types } from "mongoose";
+import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { ServiceAvailabilityModel } from "../models/serviceAvailability.model";
 import { IServiceAvailabilityQueries } from "../../application/queries/IServiceAvailability.queries";
 import { FontendAvailabilityForResponse, TimeSlotForFrontendResponse } from "../../application/dtos/common.dto";
@@ -16,7 +17,7 @@ export class ServiceAvailabilityQueriesImpl implements IServiceAvailabilityQueri
 
         const targetDay = daysOfWeek[date.getDay()];
         console.log("targetDay : ", targetDay);
-        console.log("availabilityId : ",availabilityId);
+        const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
 
         const availability = await ServiceAvailabilityModel.aggregate([
             {
@@ -62,6 +63,17 @@ export class ServiceAvailabilityQueriesImpl implements IServiceAvailabilityQueri
                                         { $eq: ["$serviceProviderId", "$$providerId"] },
                                         { $gte: ["$appointmentDate", "$$startOfDay"] },
                                         { $lte: ["$appointmentDate", "$$endOfDay"] },
+                                        {
+                                            $or: [
+                                                { $in: ["$appointmentStatus", [AppointmentStatus.BOOKED, AppointmentStatus.CONFIRMED, AppointmentStatus.COMPLETED]] },
+                                                {
+                                                    $and: [
+                                                        { $eq: ["$appointmentStatus", AppointmentStatus.PENDING] },
+                                                        { $gte: ["$createdAt", fifteenMinutesAgo] }
+                                                    ]
+                                                }
+                                            ]
+                                        }
                                     ]
                                 }
                             }

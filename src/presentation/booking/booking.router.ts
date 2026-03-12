@@ -12,6 +12,12 @@ router.get('/',
     bookingController.getBookings
 );
 
+router.get('/recent',
+    authMiddleware,
+    authorize(Role.USER),
+    bookingController.checkBooking
+);
+
 router.get('/:bookingId',
     authMiddleware,
     authorize(Role.USER, Role.PROVIDER),
@@ -34,12 +40,6 @@ router.post('/',
     authMiddleware, 
     authorize(Role.USER),
     bookingController.bookingCheckout
-);
-
-router.get('/check',
-    authMiddleware,
-    authorize(Role.USER),
-    bookingController.checkBooking
 );
 
 router.patch('/:bookingId', 

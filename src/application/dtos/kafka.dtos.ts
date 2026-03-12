@@ -225,6 +225,16 @@ export interface BookingSavedEvent {
   notificationData: SendNotificationCommon;
 }
 
+export interface GotAnAppointment {
+  emailData: {
+    email: string;
+    name: string;
+    appointmentDate: Date;
+    appointmentMode: string;
+    appointmentStatus: AppointmentStatus
+  },
+  notificationData: SendNotificationCommon
+}
 
 
 

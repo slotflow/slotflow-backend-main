@@ -61,14 +61,19 @@ export const notificationContentMap: Record<string, {
     body: () =>
       `Your password has been reset successfully.`
   },
-  bookingCompleted: {
-    title: "Booking Confirmed",
+  slotBooked: {
+    title: "Slot Booked",
     body: (appointmentDate: string) =>
-      `Your booking for ${appointmentDate} has been confirmed.`
+      `Your slot has been booked for ${appointmentDate}.`
   },
-  subscriptionCompleted: {
-    title: "Subscription Completed",
+  planSubscribed: {
+    title: "Plan Subscribed",
     body: () =>
       `Your subscription has been Confirmed.`
+  },
+  gotAnAppointment: {
+    title: "Got an Appointment",
+    body: (appointmentDate: string) =>
+      `You have got an appointment for ${appointmentDate}.`
   }
 };
