@@ -30,7 +30,6 @@ export class User {
             phone: null,
             profileImage: null,
             addressId: null,
-            bookingsId: null,
             verificationToken: props.verificationToken,
             googleConnected: false,
             googleId: null,
@@ -54,7 +53,6 @@ export class User {
             phone: null,
             profileImage: props.profileImage,
             addressId: null,
-            bookingsId: null,
             verificationToken: null,
             googleConnected: true,
             googleId: props.googleId,
@@ -123,10 +121,6 @@ export class User {
 
     get addressId(): string | null {
         return this.props.addressId;
-    }
-
-    get bookingsId(): string | null {
-        return this.props.bookingsId;
     }
 
     get allowPushNotification(): boolean | null {
@@ -211,11 +205,6 @@ export class User {
 
     attachAddress(addressId: string | null) {
         this.props.addressId = addressId;
-        this.touch();
-    }
-
-    updateBookingsId(bookingsId: string | null) {
-        this.props.bookingsId = bookingsId;
         this.touch();
     }
 

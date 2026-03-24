@@ -10,10 +10,12 @@ export interface IUser extends Document {
   phone: string;
   profileImage: string;
   addressId: Types.ObjectId;
-  bookingsId: Types.ObjectId;
   verificationToken: string;
   googleConnected: boolean;
   googleId: string;
+  stripeConnected: boolean;
+  stripeAccountId: string | null;
+  stripeCustomerId: string | null;
   allowPushNotification: boolean | null;
   createdAt: Date;
   updatedAt: Date;
@@ -38,7 +40,7 @@ const UserSchema = new Schema<IUser>({
   },
   password: {
     type: String,
-    required: function () {
+    required: function (): boolean {
       return !this.googleId;
     },
     minlength: [8, "Password must be at least 8 characters"],
@@ -69,10 +71,6 @@ const UserSchema = new Schema<IUser>({
     ref: "Address",
     default: null
   },
-  bookingsId: {
-    type: Schema.Types.ObjectId,
-    ref: "Booking", default: null
-  },
   verificationToken: {
     type: String,
     default: null
@@ -84,9 +82,21 @@ const UserSchema = new Schema<IUser>({
   googleId: {
     type: String,
     default: null,
-    required: function () {
+    required: function (): boolean {
       return !this.password;
     }
+  },
+  stripeConnected: {
+    type: Boolean,
+    default: false
+  },
+  stripeAccountId: {
+    type: String,
+    default: null
+  },
+  stripeCustomerId: {
+    type: String,
+    default: null
   },
   allowPushNotification: {
     type: Boolean,

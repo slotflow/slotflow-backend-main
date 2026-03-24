@@ -12,13 +12,16 @@ router.get("/me",
     addressController.getMyAddress
 );
 
-// router.post('/addresses', authMiddleware, provideAddressController.createAddress);
-// router.get('/address', authMiddleware, provideAddressController.getAddress); // replaced with /me
-// router.patch('/addresses/:addressId', authMiddleware, provideAddressController.updateAddress);
+router.post('/',
+    authMiddleware,
+    authorize(Role.PROVIDER, Role.USER),
+    addressController.createAddress
+);
 
-// router.post('/addresses', authMiddleware, userAddressController.createAddress);
-// router.get('/address', authMiddleware, userAddressController.getAddress); // replaced with /me
-// router.patch('/addresses/:addressId', authMiddleware, userAddressController.updateAddress);
-
+router.patch('/:addressId',
+    authMiddleware,
+    authorize(Role.PROVIDER, Role.USER),
+    addressController.updateAddress
+);
 
 export default router;

@@ -36,5 +36,3 @@ export const changeBlockStatusSchema = z.object({
 export const fetchProviderServiceAvailabilitySchema = z.object({
   date: dateSchema,
 }).merge(validateProviderIdSchema);
-
-//

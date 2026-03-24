@@ -7,11 +7,8 @@ import { PlanName } from "../../domain/enums/plan.enum";
 
 // ************ used in providerAddress.use-case ************ \\
 // provider fetch address use case request payload interface
-export interface ProviderFetchAddressRequest {
-    providerId: ProviderDTO["_id"];
-}
+
 // provider fetch address use case response interface
-export type ProviderFetchAddressResponse = Pick<AddressDTO, "_id" | "addressLine" | "landMark" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location"> | null;
 
 
 

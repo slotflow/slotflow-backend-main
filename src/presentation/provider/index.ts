@@ -12,7 +12,6 @@ import { ProviderFetchDashboardStatsUseCase } from "../../application/useCases/p
 import { ProviderTrialSubscriptionUseCase } from "../../application/useCases/provider/providerTrailSubscription.useCase";
 import { ProviderSubscriptionCheckoutUseCase } from "../../application/useCases/provider/providerSubscriptionCheckout.useCase";
 import { ProviderFetchDashboardGraphDataUseCase } from "../../application/useCases/provider/providerDashboardGraphData.useCase";
-import { ProviderCreateAddressUseCase, ProviderUpdateAddressUseCase } from "../../application/useCases/provider/providerAddress.useCase";
 import { bookingQueries, paymentQueries, providerServiceQueries, serviceAvailabilityQueries, subscriptionQueries } from "../../infrastructure/queriesImpls";
 import { ProviderCreateServiceAvailabilitiesUseCase, ProviderFetchServiceAvailabilityUseCase } from "../../application/useCases/provider/providerServiceAvailability.useCase";
 import { ProviderCreateServiceDetailsUseCase, ProviderFetchServiceDetailsUseCase, ProviderUpdateServiceDetailsUseCase } from "../../application/useCases/provider/providerService.useCase";
@@ -22,9 +21,6 @@ import { ProviderFetchSubscribedPlanUseCase } from "../../application/useCases/p
 import { AdminFetchProviderDetailsUseCase } from "../../application/useCases/provider/adminFetchProviderDetails.useCase";
 import { UserFetchProviderDetailsUseCase } from "../../application/useCases/provider/userFetchProviderDetails.useCase";
 
-// provider address controller dependency injection
-export const providerUpdateAddressUseCase = new ProviderUpdateAddressUseCase(addressRepository);
-export const providerCreateAddressUseCase = new ProviderCreateAddressUseCase(providerRepository, addressRepository);
 
 // provider app service controller dependency injection
 export const fetchAllAppServicesUseCase = new FetchAllAppServicesUseCase(serviceRepository);

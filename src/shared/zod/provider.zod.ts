@@ -118,20 +118,6 @@ export const providerPlanSubscribeSchema = z.object({
 }).merge(validateProviderIdSchema);
 
 
-// Validating the page and limit in the request query zod schema
-
-
-//
-export const providerCreateAddressSchema = addressSchema.merge(validateProviderIdSchema);
-
-//
-export const providerUpdateAddressSchema = z.object({
-    addressId: z.string().regex(objectIdRegex, "Invalid addressId"),
-}).merge(addressSchema).merge(validateProviderIdSchema);
-
-//
-// export const providerFetchAllAppointmentsSchema = fetchBookingCommonSchema.merge(validateProviderIdSchema);
-
 //
 export const providerValidateDashboardDataSchema = z.object({
     subscription: z.nativeEnum(PlanName).default(PlanName.TRIAL),

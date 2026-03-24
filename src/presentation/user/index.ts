@@ -2,14 +2,9 @@ import { signedUrlService } from "../../infrastructure/services";
 import { UserFetchAllPaymentsUseCase } from "../../application/useCases/user/userPayment.useCase";
 import { FetchAllAppServicesUseCase } from "../../application/useCases/common/fetchAppServices.useCase";
 import { bookingQueries, providerServiceQueries, serviceAvailabilityQueries } from "../../infrastructure/queriesImpls";
-import { UserCreateAddressUseCase, UserUpdateAddressUseCase } from "../../application/useCases/user/userAddress.useCase";
-import { addressRepository, paymentRepository, providerRepository, serviceRepository, userRepository } from "../../infrastructure/repositoryImpls";
+import { paymentRepository, providerRepository, serviceRepository, userRepository } from "../../infrastructure/repositoryImpls";
 import { UserFetchProfileDetailsUseCase, UserUpdateProfileImageUseCase, UserUpdateProviderInfoUseCase, UserUpdatePushNotificationUseCase } from "../../application/useCases/user/userProfile.useCase";
 import { UserFetchProvidersForChatSidebarUseCase, UserFetchServiceProviderServiceAvailabilityUseCase, UserFetchServiceProviderServiceDetailsUseCase, UserFetchServiceProvidersUseCase } from "../../application/useCases/user/userProvider.useCase";
-
-// user address controller dependency injection
-export const userUpdateAddressUseCase = new UserUpdateAddressUseCase(addressRepository);
-export const userCreateAddressUseCase = new UserCreateAddressUseCase(userRepository, addressRepository);
 
 // user app service controller dependency injection
 export const fetchAllAppServicesUseCase = new FetchAllAppServicesUseCase(serviceRepository);

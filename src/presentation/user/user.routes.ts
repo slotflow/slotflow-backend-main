@@ -17,9 +17,6 @@ router.post('/profile/image', authMiddleware, userProfileController.updateProfil
 router.patch('/profile', authMiddleware, userProfileController.updateUserInfo);
 router.patch('/profile/push-notification', authMiddleware, userProfileController.updatePushNotification)
 
-router.post('/addresses', authMiddleware, userAddressController.createAddress);
-router.patch('/addresses/:addressId', authMiddleware, userAddressController.updateAddress);
-
 router.get('/:userId/address', 
     authMiddleware,
     authorize(Role.ADMIN), 

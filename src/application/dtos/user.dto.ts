@@ -42,11 +42,8 @@ export interface UserUpdatePushNotificationRequest {
 // ************ used in userAddress.use-case ************ \\
 
 // user fetch user address use case request payload interface
-export interface UserFetchUserAddressRequest {
-    userId: UserDTO["_id"];
-}
+
 // user fetch user address use case response interface
-export type UserFetchAddressResponse = Pick<AddressDTO, "_id" | "addressLine" | "landMark" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location"> | null;
 
 
 

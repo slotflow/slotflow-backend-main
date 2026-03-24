@@ -28,16 +28,11 @@ router.delete('/profile/identity', authMiddleware, providerProfileController.del
 router.delete('/profile/service', authMiddleware, providerProfileController.deleteServiceProof);
 router.patch('/profile/push-notification', authMiddleware, providerProfileController.updatePushNotification);
 
-router.post('/addresses', authMiddleware, provideAddressController.createAddress);
-router.patch('/addresses/:addressId', authMiddleware, provideAddressController.updateAddress);
-
-
 router.get('/:providerId/address', 
     authMiddleware,
     authorize(Role.ADMIN, Role.USER), 
     provideAddressController.getProviderAddress
 );
-
 
 router.get('/appservices', authMiddleware, providerAppServiceController.getAllAppServices);
 

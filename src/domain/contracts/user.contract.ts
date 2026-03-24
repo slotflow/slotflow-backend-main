@@ -8,7 +8,6 @@ export interface UserProps {
     phone: string | null;
     profileImage: string | null;
     addressId: string | null;
-    bookingsId: string | null;
     verificationToken: string | null;
     googleConnected: boolean;
     googleId: string | null;

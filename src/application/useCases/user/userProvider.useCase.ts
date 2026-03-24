@@ -4,7 +4,6 @@ import { IBookingQueries } from "../../queries/IBooking.queries";
 import { IProviderServiceQueries } from "../../queries/IProviderService.queries";
 import { IServiceAvailabilityQueries } from "../../queries/IServiceAvailability.queries";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
-import { IAddressRepository } from "../../../domain/interfaces/repositories/IAddress.repository";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { UserFetchProviderServiceAvailabilityRequest, UserFetchProviderServiceAvailabilityResponse, UserFetchProviderServiceResponse, UserFetchProvidersForChatSidebarRequest, UserFetchProvidersForChatSidebarResponse, UserFetchServiceProviderAddressRequest, UserFetchServiceProviderAddressResponse, UserFetchServiceProviderDetailsRequest, UserFetchServiceProviderDetailsResponse, UserFetchServiceproviderServiceRequest, UserFetchServiceProvidersRequest, UserFetchServiceProvidersResponse } from "../../dtos/user.dto";
 
@@ -50,38 +49,6 @@ export class UserFetchServiceProvidersUseCase {
     };
   };
 };
-
-
-// export class UserFetchServiceProviderAddressUseCase {
-//   constructor(
-//     private addressRepository: IAddressRepository,
-//   ) { };
-
-//   async execute(payload: UserFetchServiceProviderAddressRequest): Promise<UserFetchServiceProviderAddressResponse> {
-//     try {
-//       const { providerId } = payload;
-//       if (!providerId) throw new Error("Invalid request");
-
-//       const address = await this.addressRepository.findByUserId(providerId);
-//       if (!address) throw new Error("No address found");
-
-//       return {
-//         addressLine: address.addressLine,
-//         city: address.city,
-//         country: address.country,
-//         district: address.district,
-//         location: address.location,
-//         phone: address.phone,
-//         pincode: address.pincode,
-//         place: address.place,
-//         state: address.state,
-//       };
-//     } catch (error) {
-//       log.error("UserFetchServiceProviderAddressUseCase failed", error as Error);
-//       throw error;
-//     };
-//   };
-// };
 
 
 export class UserFetchServiceProviderServiceDetailsUseCase {

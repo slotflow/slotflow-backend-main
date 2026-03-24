@@ -38,24 +38,9 @@ export const userFetchAllProvidersSchema = z.object({
     limit: z.coerce.number().optional(),
 });
 
-// user crea review
-
 
 // user delete review
 export const userDeleteReviewSchema = validateUserIdSchema.merge(validateReviewIdSchema);
-
-//
-export const userCreateAddressSchema = addressSchema.merge(validateUserIdSchema);
-
-//
-export const userUpdateAddressSchema = z.object({
-    addressId: z.string().regex(objectIdRegex, "Invalid addressId"),
-}).merge(addressSchema).merge(validateUserIdSchema);
-
-//
-// export const userFetchAllAppointmentsSchema = fetchBookingCommonSchema.merge(validateUserIdSchema);
-
-//
 
 //
 export const userSaveBookingSchema = saveStripePaymentSchema.merge(validateUserIdSchema);

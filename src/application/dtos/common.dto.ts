@@ -72,7 +72,6 @@ export interface UserDTO {
   phone: string | null;
   profileImage: string | null;
   addressId: string | null;
-  bookingsId: string | null;
   verificationToken: string | null;
   googleConnected: boolean;
   googleId: string | null;
@@ -303,7 +302,6 @@ export interface GetSubscriptionsRequest extends ApiPaginationRequest {
 
 
 // Used as the request type for adding address for user or provider
-export type CreateAddressRequest = Pick<AddressDTO, "userId" | "addressLine" | "landMark" | "place" | "phone" | "city" | "country" | "district" | "pincode" | "state" | "location">;
 
 
 // Used as the request interface for fetching bookings for admin, provider and user side
@@ -353,7 +351,6 @@ export type FetchAllAppServicesResponse = Array<Pick<ServiceDTO, "_id" | "servic
 
 
 // Used as the request type for updating address for provider and user side
-export type UpdateAddressRequest = Pick<AddressDTO, "_id" | "userId" | "addressLine" | "landMark" | "place" | "phone" | "city" | "country" | "district" | "pincode" | "state" | "location">;
 
 
 // Used as the interface for the validate join room
