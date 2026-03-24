@@ -1,13 +1,13 @@
 import { log } from "../../../shared/logger/logger";
-import { ProviderFetchAllPlansResponse } from "../../dtos/provider.dto";
+import { ProviderGetPlansResponse } from "../../dtos/plan.dto";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 
-export class ProviderFetchAllPlansUseCase {
+export class ProviderGetPlansUseCase {
     constructor(
         private planRepository: IPlanRepository
     ) { };
 
-    async execute(): Promise<ProviderFetchAllPlansResponse> {
+    async execute(): Promise<ProviderGetPlansResponse> {
         try {
             const planData = await this.planRepository.findAll();
             if (!planData) throw new Error("Plans Fetching error");

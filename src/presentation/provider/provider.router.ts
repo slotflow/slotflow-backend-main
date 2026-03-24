@@ -2,7 +2,6 @@ import { Router } from 'express';
 import { Role } from '../../domain/enums/common.enum';
 import { authorize } from '../middleware/authRole.middleware';
 import { authMiddleware } from '../middleware/auth.middleware';
-import { providerPlanController } from './providerPlan.controller';
 import { providerUserController } from './providerUser.controller';
 import { providerStripeController } from './providerStripe.controller';
 import { provideAddressController } from './providerAddress.controller';
@@ -42,8 +41,6 @@ router.patch('/service/:serviceId', authMiddleware, providerServiceController.up
 
 router.post('/availabilities', authMiddleware, providerServiceAvailabilityController.createServiceAvailability);
 router.get('/availability', authMiddleware, providerServiceAvailabilityController.getServiceAvailability);
-
-router.get('/plans', authMiddleware, providerPlanController.fetchAllPlans);
 
 router.post('/subscriptions/checkout/session', authMiddleware, providerSubscriptionController.subscriptionCheckout);
 router.get('/subscriptions/me', authMiddleware, providerSubscriptionController.getSubscribedPlan);

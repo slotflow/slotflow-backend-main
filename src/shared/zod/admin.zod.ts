@@ -12,26 +12,7 @@ import {
 import { changeBlockStatusSchema } from "./common.zod";
 import { descriptionRegex, objectIdRegex, serviceNameRegex, verificationRejectionReasonRegex } from "../utils/regex";
 
-//Admin add new plan controller zod validation
-export const adminCreateNewPlanSchema = z.object({
-    planName: z.nativeEnum(PlanName),
-    description: z.string()
-        .min(10, "Plan description must be at least 10 characters")
-        .max(200, "Plan description must be at most 200 characters")
-        .regex(descriptionRegex, "Invalid description. Contains unsupported characters."),
-    price: z.number()
-        .min(0, "Plan price must be at least 0")
-        .max(100000, "Plan price must be at most 100000"),
-    features: z.array(z.string()
-        .min(1, "Feature must be at least 1 character")
-        .max(100, "Feature must be at most 100 characters"))
-        .min(1, "At least one feature is required")
-        .max(10, "Maximum 10 features allowed"),
-    maxBookingPerMonth: z.number()
-        .min(0, "Plan maximum booking must be at least 0")
-        .max(10000, "Plan maximum booking must be at most 10000"),
-    adVisibility: z.coerce.boolean(),
-});
+
 
 // Admin change user block status
 export const adminUserBlockStatusSchema = validateUserIdSchema.merge(changeBlockStatusSchema);
@@ -73,9 +54,6 @@ export const adminRejectProviderSchema = z.object({
 }).merge(validateProviderIdSchema);
 
 //
-export const adminChangePlanBlockStatusSchema = z.object({
-    planId: z.string().regex(objectIdRegex, "Invalid planId"),
-}).merge(changeBlockStatusSchema);
 
 //
 export const adminFetchRevenuewReposrtSchema = z.object({

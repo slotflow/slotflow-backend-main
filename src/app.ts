@@ -5,6 +5,7 @@ import express from 'express';
 // import client from 'prom-client';
 import cookieParser from 'cookie-parser';
 import s3Routes from './presentation/s3/s3.routes';
+import planRouter from './presentation/plan/router';
 import authRoutes from './presentation/auth/auth.routes';
 import userRouter from './presentation/user/user.routes';
 import addressRouter from './presentation/address/router';
@@ -51,6 +52,7 @@ app.use('/api/subscriptions',sunscriptionRouter);
 app.use('/api/bookings',bookingRouter);
 app.use('/api/reviews',reviewRouter);
 app.use('/api/addresses',addressRouter);
+app.use('/api/plans',planRouter);
 app.use(errorHandler);
 
 export default app;

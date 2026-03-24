@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { adminPlanController } from "./adminPlan.controller";
 import { adminUserController } from "./adminUser.controller";
 import { authMiddleware } from "../middleware/auth.middleware";
 import { adminServiceController } from "./adminService.controller";
@@ -27,10 +26,6 @@ router.patch('/users/:userId',authMiddleware,adminUserController.changeUserBlock
 router.get('/services',authMiddleware, adminServiceController.getAllServices);
 router.post('/services',authMiddleware,adminServiceController.createService);
 router.patch('/services/:serviceId',authMiddleware, adminServiceController.changeServiceBlockStatus);
-
-router.get('/plans', authMiddleware,adminPlanController.getAllPlans);
-router.post('/plans', authMiddleware, adminPlanController.createNewPlan);
-router.patch('/plans/:planId', authMiddleware, adminPlanController.changePlanBlockStatus);
 
 router.get('/payments', authMiddleware, adminPaymentController.getAllPayments);
 router.get('/reports/revenue', authMiddleware, adminPaymentController.fetchRevenueReport);

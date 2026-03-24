@@ -108,27 +108,6 @@ export interface AdminFetchRevenueReportResponse {
 
 
 
-// **** adminPlan.usecase
-
-// Used as the return type of fetch all plans
-export type AdminPlanListResponse = Array<Pick<PlanDTO, "_id" | "planName" | "isBlocked" | "price" | "maxBookingPerMonth" | "adVisibility">>;
-
-// admin create new plan request payload type 
-export type AdminCreatePlanRequest = Pick<PlanDTO, "planName" | "description" | "price" | "features" | "maxBookingPerMonth" | "adVisibility">;
-
-// Used as the return type of admin change plan block status
-export type AdminChangeBlockStatusResponse = {
-    planId: PlanDTO["_id"];
-    isBlocked: PlanDTO["isBlocked"];
-};
-
-// admin change plan block status request payload type
-export type AdminChangePlanIsBlockedStatusRequest = AdminChangeBlockStatusResponse;
-
-
-
-
-
 // **** adminProvider.usecase
 
 // Used as the response type of admin fetch all providers
