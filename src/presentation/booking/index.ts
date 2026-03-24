@@ -1,16 +1,16 @@
-import { bookingQueries, providerServiceQueries, serviceAvailabilityQueries } from "../../infrastructure/queriesImpls";
-import { GetBookingsUseCase } from "../../application/useCases/booking/getBookings.useCase";
-import { ValidateJoinRoomUsecase } from "../../application/useCases/subscription/validateJoinRoom.useCase";
-import { bookingRepository, paymentRepository, providerRepository, userRepository } from "../../infrastructure/repositoryImpls";
-import { GetBookingDetailsUsecase } from "../../application/useCases/booking/getBookingDetails.useCase";
-import { CheckBookingUseCase } from "../../application/useCases/booking/checkBooking.useCase";
-import { BookingCheckoutUseCase } from "../../application/useCases/booking/bookingCheckout.useCase";
-import { paymentServiceClient } from "../../infrastructure/clients";
-import { CancelBookingUseCase } from "../../application/useCases/booking/cancelBooking.useCase";
-import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/booking/updateBookingOnlineTracking.useCase";
-import { ChangeBookingStatusUseCase } from "../../application/useCases/booking/changeBookingStatus.useCase";
-import { googleTokenService } from "../../infrastructure/services";
 import { kafkaProducer } from "../../infrastructure/messaging";
+import { googleTokenService } from "../../infrastructure/services";
+import { paymentServiceClient } from "../../infrastructure/clients";
+import { GetBookingsUseCase } from "../../application/useCases/booking/getBookings.useCase";
+import { CheckBookingUseCase } from "../../application/useCases/booking/checkBooking.useCase";
+import { CancelBookingUseCase } from "../../application/useCases/booking/cancelBooking.useCase";
+import { BookingCheckoutUseCase } from "../../application/useCases/booking/bookingCheckout.useCase";
+import { GetBookingDetailsUsecase } from "../../application/useCases/booking/getBookingDetails.useCase";
+import { ValidateJoinRoomUsecase } from "../../application/useCases/booking/validateJoinRoom.useCase";
+import { ChangeBookingStatusUseCase } from "../../application/useCases/booking/changeBookingStatus.useCase";
+import { bookingQueries, providerServiceQueries, serviceAvailabilityQueries } from "../../infrastructure/queriesImpls";
+import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/booking/updateBookingOnlineTracking.useCase";
+import { bookingRepository, paymentRepository, providerRepository, userRepository } from "../../infrastructure/repositoryImpls";
 
 export const getBookingsUseCase = new GetBookingsUseCase(bookingQueries);
 
@@ -26,4 +26,4 @@ export const cancelBookingUseCase = new CancelBookingUseCase(userRepository, boo
 
 export const updateBookingOnlineTrakingUseCase = new UpdateBookingOnlineTrakingUseCase(bookingRepository, serviceAvailabilityQueries);
 
-export const changeBookingStatusUseCase = new ChangeBookingStatusUseCase(bookingRepository, userRepository, googleTokenService, kafkaProducer);
+export const changeBookingStatusUseCase = new ChangeBookingStatusUseCase(bookingRepository, userRepository, googleTokenService, kafkaProducer, providerRepository);

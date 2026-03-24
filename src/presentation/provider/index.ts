@@ -12,16 +12,17 @@ import { ProviderFetchDashboardStatsUseCase } from "../../application/useCases/p
 import { ProviderTrialSubscriptionUseCase } from "../../application/useCases/provider/providerTrailSubscription.useCase";
 import { ProviderSubscriptionCheckoutUseCase } from "../../application/useCases/provider/providerSubscriptionCheckout.useCase";
 import { ProviderFetchDashboardGraphDataUseCase } from "../../application/useCases/provider/providerDashboardGraphData.useCase";
-import { ProviderCreateAddressUseCase, ProviderFetchAddressUseCase, ProviderUpdateAddressUseCase } from "../../application/useCases/provider/providerAddress.useCase";
+import { ProviderCreateAddressUseCase, ProviderUpdateAddressUseCase } from "../../application/useCases/provider/providerAddress.useCase";
 import { bookingQueries, paymentQueries, providerServiceQueries, serviceAvailabilityQueries, subscriptionQueries } from "../../infrastructure/queriesImpls";
 import { ProviderCreateServiceAvailabilitiesUseCase, ProviderFetchServiceAvailabilityUseCase } from "../../application/useCases/provider/providerServiceAvailability.useCase";
 import { ProviderCreateServiceDetailsUseCase, ProviderFetchServiceDetailsUseCase, ProviderUpdateServiceDetailsUseCase } from "../../application/useCases/provider/providerService.useCase";
 import { addressRepository, planRepository, providerRepository, providerServiceRepository, serviceAvailabilityRepository, serviceRepository, subscriptionRepository } from "../../infrastructure/repositoryImpls";
 import { ProvideDeleteIdentityProofUseCase, ProvideDeleteServiceProofUseCase, ProviderFetchProfileDetailsUseCase, ProviderRequestForApprovalUseCase, ProviderUpdateIdentityProofUseCase, ProviderUpdateProfileImageUseCase, ProviderUpdateProviderInfoUseCase, ProviderUpdatePushNotificationUseCase, ProviderUpdateServiceProofUseCase } from "../../application/useCases/provider/providerProfile.useCase";
 import { ProviderFetchSubscribedPlanUseCase } from "../../application/useCases/provider/providerFetchSubscribedPlan.useCase";
+import { AdminFetchProviderDetailsUseCase } from "../../application/useCases/provider/adminFetchProviderDetails.useCase";
+import { UserFetchProviderDetailsUseCase } from "../../application/useCases/provider/userFetchProviderDetails.useCase";
 
 // provider address controller dependency injection
-export const providerFetchAddressUseCase = new ProviderFetchAddressUseCase(addressRepository);
 export const providerUpdateAddressUseCase = new ProviderUpdateAddressUseCase(addressRepository);
 export const providerCreateAddressUseCase = new ProviderCreateAddressUseCase(providerRepository, addressRepository);
 
@@ -39,6 +40,8 @@ export const providerFetchAllPlansUseCase = new ProviderFetchAllPlansUseCase(pla
 export const providerUpdateProviderInfoUseCase = new ProviderUpdateProviderInfoUseCase(providerRepository);
 export const providerRequestForApprovalUseCase = new ProviderRequestForApprovalUseCase(providerRepository);
 export const providerFetchProfileDetailsUseCase = new ProviderFetchProfileDetailsUseCase(providerRepository);
+export const adminFetchProviderDetailsUseCase = new AdminFetchProviderDetailsUseCase(providerRepository, signedUrlService);
+export const userFetchProviderDetailsUseCase = new UserFetchProviderDetailsUseCase(providerRepository, signedUrlService);
 export const fetchProviderProofsUseCase = new FetchProviderProofsUseCase(signedUrlService, providerRepository);
 export const providerUpdateProfileImageUseCase = new ProviderUpdateProfileImageUseCase(providerRepository, signedUrlService);
 export const providerUpdateServiceProofUseCase = new ProviderUpdateServiceProofUseCase(providerRepository, signedUrlService);

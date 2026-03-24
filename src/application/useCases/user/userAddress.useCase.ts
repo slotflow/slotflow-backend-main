@@ -21,7 +21,7 @@ export class UserCreateAddressUseCase {
             const savedAddress = await this.addressRepository.create(address);
             if (!savedAddress) throw new Error("Failed to save address");
 
-            user.updateAddressId(savedAddress._id)
+            user.attachAddress(savedAddress._id)
             const updatedUser = await this.userRepository.update(user);
             if (!updatedUser) throw new Error("Failed to update user with address");
         } catch (error) {
@@ -31,40 +31,40 @@ export class UserCreateAddressUseCase {
     };
 };
 
-export class UserFetchAddressUseCase {
-    constructor(
-        private userRepository: IUserRepository,
-        private addressRepository: IAddressRepository,
-    ) { };
+// export class UserFetchAddressUseCase {
+//     constructor(
+//         private userRepository: IUserRepository,
+//         private addressRepository: IAddressRepository,
+//     ) { };
 
-    async execute(payload: UserFetchUserAddressRequest): Promise<UserFetchAddressResponse> {
-        try {
-            const { userId } = payload;
-            const user = await this.userRepository.findById(userId);
-            if (!user) throw new Error("No user found.");
+//     async execute(payload: UserFetchUserAddressRequest): Promise<UserFetchAddressResponse> {
+//         try {
+//             const { userId } = payload;
+//             const user = await this.userRepository.findById(userId);
+//             if (!user) throw new Error("No user found.");
 
-            const address = await this.addressRepository.findByUserId(userId);
-            if(!address) return null;
+//             const address = await this.addressRepository.findByUserId(userId);
+//             if(!address) return null;
 
-            return {
-                _id: address._id,
-                addressLine: address.addressLine,
-                landMark: address.landMark,
-                phone: address.phone,
-                place: address.place,
-                city: address.city,
-                district: address.district,
-                pincode: address.pincode,
-                state: address.state,
-                country: address.country,
-                location: address.location,
-            };
-        } catch (error) {
-            log.error("UserFetchAddressUseCase failed", error as Error);
-            throw error;
-        };
-    };
-};
+//             return {
+//                 _id: address._id,
+//                 addressLine: address.addressLine,
+//                 landMark: address.landMark,
+//                 phone: address.phone,
+//                 place: address.place,
+//                 city: address.city,
+//                 district: address.district,
+//                 pincode: address.pincode,
+//                 state: address.state,
+//                 country: address.country,
+//                 location: address.location,
+//             };
+//         } catch (error) {
+//             log.error("UserFetchAddressUseCase failed", error as Error);
+//             throw error;
+//         };
+//     };
+// };
 
 
 export class UserUpdateAddressUseCase {

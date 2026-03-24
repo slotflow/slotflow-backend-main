@@ -1,4 +1,6 @@
 import { Router } from 'express';
+import { Role } from '../../domain/enums/common.enum';
+import { authorize } from '../middleware/authRole.middleware';
 import { authMiddleware } from '../middleware/auth.middleware';
 import { providerPlanController } from './providerPlan.controller';
 import { providerUserController } from './providerUser.controller';
@@ -13,7 +15,9 @@ import { providerServiceAvailabilityController } from './providerServiceAvailabi
 
 const router = Router();
 
-router.get('/', authMiddleware, providerProfileController.getProfileDetails);
+router.get('/me', authMiddleware, providerProfileController.getProfileDetails);
+router.get('/:providerId', authMiddleware, providerProfileController.getProfileDetails);
+
 router.patch('/profile/image', authMiddleware, providerProfileController.updateProfileImage);
 router.patch('/profile/info', authMiddleware, providerProfileController.updateInfo);
 router.patch('/profile/identity', authMiddleware, providerProfileController.updateIdentityProof);
@@ -25,8 +29,15 @@ router.delete('/profile/service', authMiddleware, providerProfileController.dele
 router.patch('/profile/push-notification', authMiddleware, providerProfileController.updatePushNotification);
 
 router.post('/addresses', authMiddleware, provideAddressController.createAddress);
-router.get('/address', authMiddleware, provideAddressController.getAddress);
 router.patch('/addresses/:addressId', authMiddleware, provideAddressController.updateAddress);
+
+
+router.get('/:providerId/address', 
+    authMiddleware,
+    authorize(Role.ADMIN, Role.USER), 
+    provideAddressController.getProviderAddress
+);
+
 
 router.get('/appservices', authMiddleware, providerAppServiceController.getAllAppServices);
 

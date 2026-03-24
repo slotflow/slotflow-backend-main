@@ -22,8 +22,6 @@ export class PaymentServiceClient implements IPaymentServiceClient {
         payload
       );
 
-      log.info(`data : ${data}`);
-
       if (!data?.data) {
         log.error("Invalid response from Payment Service");
         throw new Error("Invalid response from Payment Service");
@@ -38,13 +36,10 @@ export class PaymentServiceClient implements IPaymentServiceClient {
 
   async createBookingCheckoutSession(payload: CreateBookingCheckoutSessionRequest): Promise<CreateBookingCheckoutSessionResponse> {
     try {
-      console.log("payload : ",payload);
       const { data } = await this.http.post<CreateBookingCheckoutSessionResponse>(
         "/booking/checkout/session",
         payload
       );
-
-      log.info(`data : ${data}`);
 
       if (!data?.data) {
         log.error("Invalid response from Payment Service");

@@ -10,13 +10,15 @@ import { IGoogleTokenService } from "../../../domain/interfaces/services/IGoogle
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 import { EventEnvelope, CreateGoogleCalendarEvent, SendAppointmentStatusChangeForProviderEvent, SendAppointmentStatusChangeForUserEvent } from "../../dtos/kafka.dtos";
+import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
 
 export class ChangeBookingStatusUseCase {
     constructor(
-        private bookingRepository: IBookingRepository,
-        private userRepository: IUserRepository,
-        private googleTokenService: IGoogleTokenService,
-        private kafkaProducer: IKafkaProducerAdapter
+        private readonly bookingRepository: IBookingRepository,
+        private readonly userRepository: IUserRepository,
+        private readonly googleTokenService: IGoogleTokenService,
+        private readonly kafkaProducer: IKafkaProducerAdapter,
+        private readonly providerRepository: IProviderRepository
     ) { };
 
     async execute(payload: ProviderChangeBookingAppoinmentStatusRequest): Promise<void> {
@@ -29,8 +31,18 @@ export class ChangeBookingStatusUseCase {
             const user = await this.userRepository.findById(booking.userId);
             if (!user) throw new Error("No user found");
 
-            const userAccessToken = await this.googleTokenService.getAccessToken(user._id);
-            const providerAccessToken = await this.googleTokenService.getAccessToken(providerId);
+            const provider = await this.providerRepository.findById(providerId);
+            if (!provider) throw new Error("No provider found");
+
+            let userAccessToken: string | null = null;
+            if(user.googleConnected) {   
+                userAccessToken = await this.googleTokenService.getAccessToken(user._id);
+            }
+            
+            let providerAccessToken: string | null = null;
+            if(provider.googleConnected) {
+                providerAccessToken = await this.googleTokenService.getAccessToken(providerId);
+            }
 
             booking.updateAppointmentStatus({ appointmentStatus });
 
@@ -120,7 +132,7 @@ export class ChangeBookingStatusUseCase {
             };
 
         } catch (error) {
-            log.error("ProviderChangeBookingStatusUseCase failed", error as Error);
+            log.error("ChangeBookingStatusUseCase failed", error as Error);
             throw error;
         };
     };

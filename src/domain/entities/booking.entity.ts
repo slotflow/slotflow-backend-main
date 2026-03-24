@@ -48,8 +48,18 @@ export class Booking {
 
     get onlineTrack(): OnlineTrack {
         if (!this.props.onlineTrack) {
-            throw new Error("Onlinetrack not found");
-        };
+            this.props.onlineTrack = {
+                user: { joined: false, joinedTime: null, leftCallTime: null },
+                provider: { joined: false, joinedTime: null, leftCallTime: null }
+            };
+        } else {
+            if (!this.props.onlineTrack.user) {
+                this.props.onlineTrack.user = { joined: false, joinedTime: null, leftCallTime: null };
+            }
+            if (!this.props.onlineTrack.provider) {
+                this.props.onlineTrack.provider = { joined: false, joinedTime: null, leftCallTime: null };
+            }
+        }
         return this.props.onlineTrack;
     };
 

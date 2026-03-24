@@ -16,6 +16,7 @@ export class ValidateJoinRoomUsecase {
 
             const booking = await this.bookingRepository.findById(bookingId);
             if (!booking) if (!booking) throw new Error("No booking found");
+
             const today = startOfDay(new Date());
 
             if (!isSameDay(booking.appointmentDate, today)) {

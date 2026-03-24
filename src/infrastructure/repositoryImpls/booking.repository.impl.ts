@@ -3,6 +3,7 @@ import { BookingMapper } from "../mappers/booking.mapper";
 import { Booking } from "../../domain/entities/booking.entity";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { IBookingRepository } from "../../domain/interfaces/repositories/IBooking.repository";
+import { endOfDay, startOfDay } from "date-fns";
 
 export class BookingRepositoryImpl implements IBookingRepository {
 
@@ -18,21 +19,22 @@ export class BookingRepositoryImpl implements IBookingRepository {
     };
 
     async findByUserId(userId: string, date: Date, time: string): Promise<Array<Booking> | null> {
-        const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
+        const startOfDay = new Date(date);
+        startOfDay.setHours(0, 0, 0, 0);
+
+        const endOfDay = new Date(date);
+        endOfDay.setHours(23, 59, 59, 999);
         const docs = await BookingModel.find(
             {
                 userId,
-                appointmentDate: date,
+                createdAt: {
+                    $gte: startOfDay,
+                    $lte: endOfDay,
+                },
                 appointmentTime: time,
-                $or: [
-                    { appointmentStatus: { $in: [AppointmentStatus.BOOKED, AppointmentStatus.CONFIRMED, AppointmentStatus.COMPLETED] } },
-                    {
-                        $and: [
-                            { appointmentStatus: AppointmentStatus.PENDING },
-                            { createdAt: { $gte: fifteenMinutesAgo } }
-                        ]
-                    }
-                ]
+                appointmentStatus: {
+                    $in: [AppointmentStatus.BOOKED, AppointmentStatus.CONFIRMED],
+                },
             }
         );
 
@@ -45,7 +47,7 @@ export class BookingRepositoryImpl implements IBookingRepository {
     }
 
     async findByRoomId(roomId: string): Promise<Booking | null> {
-        const doc = await BookingModel.findById({ roomId });
+        const doc = await BookingModel.findOne({ videoCallRoomId:roomId });
         return doc ? BookingMapper.toDomain(doc) : null;
     };
 

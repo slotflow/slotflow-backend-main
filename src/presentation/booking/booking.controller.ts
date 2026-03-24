@@ -8,7 +8,7 @@ import { CheckBookingUseCase } from "../../application/useCases/booking/checkBoo
 import { CancelBookingUseCase } from "../../application/useCases/booking/cancelBooking.useCase";
 import { BookingCheckoutUseCase } from "../../application/useCases/booking/bookingCheckout.useCase";
 import { GetBookingDetailsUsecase } from "../../application/useCases/booking/getBookingDetails.useCase";
-import { ValidateJoinRoomUsecase } from "../../application/useCases/subscription/validateJoinRoom.useCase";
+import { ValidateJoinRoomUsecase } from "../../application/useCases/booking/validateJoinRoom.useCase";
 import { ChangeBookingStatusUseCase } from "../../application/useCases/booking/changeBookingStatus.useCase";
 import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/booking/updateBookingOnlineTracking.useCase";
 import { bookingCheckoutViaStripeSchema, cancelBookingSchema, changeBookingStatusSchema, getBookingsSchema, validateBookingIdSchema, validateJoinRoomSchema, validateRoomIdSchema } from "../../shared/zod/booking.zod";
@@ -94,7 +94,7 @@ class BookingController {
     async getBookingDetails(req: Request, res: Response, next: NextFunction) {
         try {
             console.log("getBookingDetails")
-            console.log("req.params : ",req.params)
+            console.log("req.params : ", req.params)
             const { bookingId } = validateBookingIdSchema.parse({ bookingId: req.params.bookingId });
             const result = await this.getBookingDetailsUsecase.execute({
                 bookingId,
@@ -110,12 +110,12 @@ class BookingController {
     async checkBooking(req: Request, res: Response, next: NextFunction) {
         try {
             console.log("checkBooking")
-            console.log("req.user : ",req.user)
+            console.log("req.user : ", req.user)
             const user = req.user as DecodedUser;
             const result = await this.checkBookingUseCase.execute({
                 userId: user.userOrProviderId,
             });
-            console.log("result : ",result)
+            console.log("result : ", result)
             sendResponse(res, result);
         } catch (error) {
             log.error("checkBooking failed : ", error as Error);
@@ -176,7 +176,7 @@ class BookingController {
             });
             sendResponse(res, result);
         } catch (error) {
-            log.error("userJoinRoom failed", error as Error);
+            log.error("joinOrLeftRoom failed", error as Error);
             next(error);
         };
     };

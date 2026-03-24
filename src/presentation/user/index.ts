@@ -2,14 +2,13 @@ import { signedUrlService } from "../../infrastructure/services";
 import { UserFetchAllPaymentsUseCase } from "../../application/useCases/user/userPayment.useCase";
 import { FetchAllAppServicesUseCase } from "../../application/useCases/common/fetchAppServices.useCase";
 import { bookingQueries, providerServiceQueries, serviceAvailabilityQueries } from "../../infrastructure/queriesImpls";
-import { UserCreateAddressUseCase, UserFetchAddressUseCase, UserUpdateAddressUseCase } from "../../application/useCases/user/userAddress.useCase";
+import { UserCreateAddressUseCase, UserUpdateAddressUseCase } from "../../application/useCases/user/userAddress.useCase";
 import { addressRepository, paymentRepository, providerRepository, serviceRepository, userRepository } from "../../infrastructure/repositoryImpls";
 import { UserFetchProfileDetailsUseCase, UserUpdateProfileImageUseCase, UserUpdateProviderInfoUseCase, UserUpdatePushNotificationUseCase } from "../../application/useCases/user/userProfile.useCase";
-import { UserFetchProvidersForChatSidebarUseCase, UserFetchServiceProviderAddressUseCase, UserFetchServiceProviderProfileDetailsUseCase, UserFetchServiceProviderServiceAvailabilityUseCase, UserFetchServiceProviderServiceDetailsUseCase, UserFetchServiceProvidersUseCase } from "../../application/useCases/user/userProvider.useCase";
+import { UserFetchProvidersForChatSidebarUseCase, UserFetchServiceProviderServiceAvailabilityUseCase, UserFetchServiceProviderServiceDetailsUseCase, UserFetchServiceProvidersUseCase } from "../../application/useCases/user/userProvider.useCase";
 
 // user address controller dependency injection
 export const userUpdateAddressUseCase = new UserUpdateAddressUseCase(addressRepository);
-export const userFetchAddressUseCase = new UserFetchAddressUseCase(userRepository, addressRepository);
 export const userCreateAddressUseCase = new UserCreateAddressUseCase(userRepository, addressRepository);
 
 // user app service controller dependency injection
@@ -25,9 +24,7 @@ export const userUpdateProfileImageUseCase = new UserUpdateProfileImageUseCase(u
 export const userUpdatePushNotificationUseCase = new UserUpdatePushNotificationUseCase(userRepository);
 
 // user provider controller dependency injection
-export const userFetchServiceProviderAddressUseCase = new UserFetchServiceProviderAddressUseCase(addressRepository);
 export const userFetchServiceProvidersUseCase = new UserFetchServiceProvidersUseCase(signedUrlService, providerServiceQueries);
 export const userFetchProvidersForChatSidebarUseCase = new UserFetchProvidersForChatSidebarUseCase(signedUrlService, bookingQueries);
 export const userFetchServiceProviderServiceDetailsUseCase = new UserFetchServiceProviderServiceDetailsUseCase(providerServiceQueries);
-export const userFetchServiceProviderProfileDetailsUseCase = new UserFetchServiceProviderProfileDetailsUseCase(providerRepository, signedUrlService);
 export const userFetchServiceProviderServiceAvailabilityUseCase = new UserFetchServiceProviderServiceAvailabilityUseCase(providerRepository, serviceAvailabilityQueries);

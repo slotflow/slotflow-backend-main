@@ -52,40 +52,40 @@ export class ProviderCreateAddressUseCase {
 };
 
 
-export class ProviderFetchAddressUseCase {
-    constructor(
-        private addressRepository: IAddressRepository
-    ) { };
+// export class ProviderFetchAddressUseCase {
+//     constructor(
+//         private addressRepository: IAddressRepository
+//     ) { };
 
-    async execute(payload: ProviderFetchAddressRequest): Promise<ProviderFetchAddressResponse> {
-        try {
+//     async execute(payload: ProviderFetchAddressRequest): Promise<ProviderFetchAddressResponse> {
+//         try {
 
-            const { providerId } = payload;
-            if (!providerId) throw new Error("Invalid request.");
+//             const { providerId } = payload;
+//             if (!providerId) throw new Error("Invalid request.");
 
-            const address = await this.addressRepository.findByUserId(providerId);
-            if (!address) return null;
+//             const address = await this.addressRepository.findByUserId(providerId);
+//             if (!address) return null;
 
-            return {
-                _id: address._id,
-                addressLine: address.addressLine,
-                landMark: address.landMark,
-                phone: address.phone,
-                place: address.place,
-                city: address.city,
-                district: address.district,
-                pincode: address.pincode,
-                state: address.state,
-                country: address.country,
-                location: address.location,
-            };
+//             return {
+//                 _id: address._id,
+//                 addressLine: address.addressLine,
+//                 landMark: address.landMark,
+//                 phone: address.phone,
+//                 place: address.place,
+//                 city: address.city,
+//                 district: address.district,
+//                 pincode: address.pincode,
+//                 state: address.state,
+//                 country: address.country,
+//                 location: address.location,
+//             };
 
-        } catch (error) {
-            log.error("ProviderFetchAddressUseCase failed", error as Error);
-            throw error;
-        };
-    };
-};
+//         } catch (error) {
+//             log.error("ProviderFetchAddressUseCase failed", error as Error);
+//             throw error;
+//         };
+//     };
+// };
 
 
 export class ProviderUpdateAddressUseCase {

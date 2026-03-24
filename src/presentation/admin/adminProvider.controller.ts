@@ -8,8 +8,8 @@ import { FetchProviderProofsUseCase } from "../../application/useCases/common/fe
 import { AdminFetchUserOrProviderAddressUseCase } from "../../application/useCases/admin/adminAddress.useCase";
 import { adminChangeProviderBlockStatusSchema, adminChangeProviderTrustTagSchema, adminRejectProviderSchema } from "../../shared/zod/admin.zod";
 import { AdminApproveProviderUseCase, AdminChangeProviderBlockStatusUseCase, AdminChangeProviderTrustTagUseCase, AdminProviderListUseCase, AdminRejectProviderUseCase } from "../../application/useCases/admin/adminProvider.useCase";
-import { AdminFetchProviderDetailsUseCase, AdminfetchProviderServiceAvailabilityUseCase, AdminFetchProviderServiceUseCase } from "../../application/useCases/admin/adminProviderProfile.useCase";
-import { adminApproveProviderUseCase, adminChangeProviderBlockStatusUseCase, adminChangeProviderTrustTagUseCase, adminFetchProviderDetailsUseCase, adminFetchProviderServiceAvailabilityUseCase, adminFetchProviderServiceUseCase, adminFetchUserOrProviderAddressUseCase, adminProviderListUseCase, adminRejectProviderUseCase, fetchProviderProofsUseCase } from ".";
+import { AdminfetchProviderServiceAvailabilityUseCase, AdminFetchProviderServiceUseCase } from "../../application/useCases/admin/adminProviderProfile.useCase";
+import { adminApproveProviderUseCase, adminChangeProviderBlockStatusUseCase, adminChangeProviderTrustTagUseCase, adminFetchProviderServiceAvailabilityUseCase, adminFetchProviderServiceUseCase, adminFetchUserOrProviderAddressUseCase, adminProviderListUseCase, adminRejectProviderUseCase, fetchProviderProofsUseCase } from ".";
 
 class AdminProviderController {
     constructor(
@@ -18,7 +18,6 @@ class AdminProviderController {
         private adminRejectProviderUseCase: AdminRejectProviderUseCase,
         private adminChangeProviderBlockStatusUseCase: AdminChangeProviderBlockStatusUseCase,
         private adminChangeProviderTrustTagUseCase: AdminChangeProviderTrustTagUseCase,
-        private adminFetchProviderDetailsUseCase: AdminFetchProviderDetailsUseCase,
         private adminFetchUserOrProviderAddressUseCase: AdminFetchUserOrProviderAddressUseCase,
         private adminFetchProviderServiceUseCase: AdminFetchProviderServiceUseCase,
         private adminFetchProviderServiceAvailabilityUseCase: AdminfetchProviderServiceAvailabilityUseCase,
@@ -28,7 +27,6 @@ class AdminProviderController {
         this.approveProvider = this.approveProvider.bind(this);
         this.rejectProvider = this.rejectProvider.bind(this);
         this.changeProviderBlockStatus = this.changeProviderBlockStatus.bind(this);
-        this.fetchProviderDetails = this.fetchProviderDetails.bind(this);
         this.fetchProviderAddress = this.fetchProviderAddress.bind(this);
         this.fetchProviderService = this.fetchProviderService.bind(this);
         this.fetchProviderServiceAvailability = this.fetchProviderServiceAvailability.bind(this);
@@ -102,17 +100,6 @@ class AdminProviderController {
         };
     };
 
-    async fetchProviderDetails(req: Request, res: Response, next: NextFunction) {
-        try {
-            const { providerId } = validateProviderIdSchema.parse({ providerId: req.params.providerId });
-            const result = await this.adminFetchProviderDetailsUseCase.execute({ providerId });
-            sendResponse(res,result)
-        } catch (error) {
-            log.error("fetchProviderDetails failed", error as Error);
-            next(error);
-        };
-    };
-
     async fetchProviderAddress(req: Request, res: Response, next: NextFunction) {
         try {
             const { providerId } = validateProviderIdSchema.parse({ providerId: req.params.providerId });
@@ -174,7 +161,6 @@ export const adminProviderController = new AdminProviderController(
     adminRejectProviderUseCase,
     adminChangeProviderBlockStatusUseCase,
     adminChangeProviderTrustTagUseCase,
-    adminFetchProviderDetailsUseCase,
     adminFetchUserOrProviderAddressUseCase,
     adminFetchProviderServiceUseCase,
     adminFetchProviderServiceAvailabilityUseCase,

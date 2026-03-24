@@ -52,70 +52,36 @@ export class UserFetchServiceProvidersUseCase {
 };
 
 
-export class UserFetchServiceProviderProfileDetailsUseCase {
-  constructor(
-    private providerRepository: IProviderRepository,
-    private signedUrlService: ISignedUrlService
-  ) { };
+// export class UserFetchServiceProviderAddressUseCase {
+//   constructor(
+//     private addressRepository: IAddressRepository,
+//   ) { };
 
-  async execute(payload: UserFetchServiceProviderDetailsRequest): Promise<UserFetchServiceProviderDetailsResponse> {
-    try {
-      const { providerId } = payload;
-      if (!providerId) throw new Error("Invalid request");
+//   async execute(payload: UserFetchServiceProviderAddressRequest): Promise<UserFetchServiceProviderAddressResponse> {
+//     try {
+//       const { providerId } = payload;
+//       if (!providerId) throw new Error("Invalid request");
 
-      const provider = await this.providerRepository.findById(providerId);
-      if (!provider) throw new Error("No provider found");
+//       const address = await this.addressRepository.findByUserId(providerId);
+//       if (!address) throw new Error("No address found");
 
-      let signedProfileImageUrl: string | null = null;
-      if (provider.profileImage) {
-        signedProfileImageUrl = await this.signedUrlService.get(provider.profileImage);
-      };
-
-      return {
-        username: provider.username,
-        email: provider.email,
-        phone: provider.phone,
-        profileImage: signedProfileImageUrl,
-        trustedBySlotflow: provider.trustedBySlotflow,
-      };
-    } catch (error) {
-      log.error("UserFetchServiceProviderProfileDetailsUseCase failed", error as Error);
-      throw error;
-    };
-  };
-};
-
-
-export class UserFetchServiceProviderAddressUseCase {
-  constructor(
-    private addressRepository: IAddressRepository,
-  ) { };
-
-  async execute(payload: UserFetchServiceProviderAddressRequest): Promise<UserFetchServiceProviderAddressResponse> {
-    try {
-      const { providerId } = payload;
-      if (!providerId) throw new Error("Invalid request");
-
-      const address = await this.addressRepository.findByUserId(providerId);
-      if (!address) throw new Error("No address found");
-
-      return {
-        addressLine: address.addressLine,
-        city: address.city,
-        country: address.country,
-        district: address.district,
-        location: address.location,
-        phone: address.phone,
-        pincode: address.pincode,
-        place: address.place,
-        state: address.state,
-      };
-    } catch (error) {
-      log.error("UserFetchServiceProviderAddressUseCase failed", error as Error);
-      throw error;
-    };
-  };
-};
+//       return {
+//         addressLine: address.addressLine,
+//         city: address.city,
+//         country: address.country,
+//         district: address.district,
+//         location: address.location,
+//         phone: address.phone,
+//         pincode: address.pincode,
+//         place: address.place,
+//         state: address.state,
+//       };
+//     } catch (error) {
+//       log.error("UserFetchServiceProviderAddressUseCase failed", error as Error);
+//       throw error;
+//     };
+//   };
+// };
 
 
 export class UserFetchServiceProviderServiceDetailsUseCase {

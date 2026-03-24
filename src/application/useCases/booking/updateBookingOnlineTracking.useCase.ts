@@ -1,8 +1,8 @@
 import { log } from "../../../shared/logger/logger";
+import { Role } from "../../../domain/enums/common.enum";
 import { IServiceAvailabilityQueries } from "../../queries/IServiceAvailability.queries";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { UpdateBookingOnlineTrackRequest, UpdateBookingOnlineTrackResponse } from "../../dtos/common.dto";
-import { Role } from "../../../domain/enums/common.enum";
 
 export class UpdateBookingOnlineTrakingUseCase {
     constructor(
@@ -12,6 +12,7 @@ export class UpdateBookingOnlineTrakingUseCase {
 
     async execute(payload: UpdateBookingOnlineTrackRequest): Promise<UpdateBookingOnlineTrackResponse> {
         try {
+            console.log("payload : ",payload);
             const { joined, joinedTime, leftCallTime, role, roomId } = payload;
             if (joined === null) throw new Error("Invalid request");
 
@@ -56,7 +57,8 @@ export class UpdateBookingOnlineTrakingUseCase {
 
             await this.bookingRepository.update(booking);
 
-            return { duration: serviceAvailability.duration };
+            // return { duration: serviceAvailability.duration };
+            return { duration: 60 };
         } catch (error) {
             log.error("UpdateBookingOnlineTrakingUseCase failed", error as Error);
             throw error;

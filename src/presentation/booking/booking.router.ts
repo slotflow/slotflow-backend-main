@@ -6,11 +6,6 @@ import { authMiddleware } from "../middleware/auth.middleware";
 
 const router = Router();
 
-router.get('/',
-    authMiddleware,
-    authorize(Role.USER, Role.PROVIDER),
-    bookingController.getBookings
-);
 
 router.get('/recent',
     authMiddleware,
@@ -18,10 +13,10 @@ router.get('/recent',
     bookingController.checkBooking
 );
 
-router.get('/:bookingId',
+router.get('/',
     authMiddleware,
     authorize(Role.USER, Role.PROVIDER),
-    bookingController.getBookingDetails
+    bookingController.getBookings
 );
 
 router.get('/:bookingId/access',
@@ -30,28 +25,34 @@ router.get('/:bookingId/access',
     bookingController.validateRoomId
 );
 
-router.patch('/:roomId/join-left', 
-    authMiddleware, 
+router.patch('/:roomId/join-left',
+    authMiddleware,
     authorize(Role.USER, Role.PROVIDER),
     bookingController.joinOrLeftRoom
 );
 
-router.post('/', 
-    authMiddleware, 
-    authorize(Role.USER),
-    bookingController.bookingCheckout
+router.patch('/:bookingId/change-status',
+    authMiddleware,
+    authorize(Role.PROVIDER),
+    bookingController.updateBookingAppointmentStatus
 );
 
-router.patch('/:bookingId', 
-    authMiddleware, 
+router.get('/:bookingId',
+    authMiddleware,
+    authorize(Role.USER, Role.PROVIDER),
+    bookingController.getBookingDetails
+);
+
+router.patch('/:bookingId',
+    authMiddleware,
     authorize(Role.USER),
     bookingController.cancelBooking
 );
 
-router.patch('/:bookingId/change-status', 
-    authMiddleware, 
-    authorize(Role.PROVIDER),
-    bookingController.updateBookingAppointmentStatus
+router.post('/',
+    authMiddleware,
+    authorize(Role.USER),
+    bookingController.bookingCheckout
 );
 
 export default router;

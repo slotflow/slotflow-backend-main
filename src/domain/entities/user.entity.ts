@@ -209,7 +209,7 @@ export class User {
         this.touch();
     }
 
-    updateAddressId(addressId: string | null) {
+    attachAddress(addressId: string | null) {
         this.props.addressId = addressId;
         this.touch();
     }

@@ -14,7 +14,6 @@ router.patch('/providers/:providerId/approve',authMiddleware,adminProviderContro
 router.patch('/providers/:providerId/reject',authMiddleware,adminProviderController.rejectProvider);
 router.patch('/providers/:providerId/block',authMiddleware,adminProviderController.changeProviderBlockStatus);
 router.patch('/providers/:providerId/trust-tag', authMiddleware, adminProviderController.changeProviderTrustedTag);
-router.get('/providers/:providerId/profile', authMiddleware, adminProviderController.fetchProviderDetails);
 router.get('/providers/:providerId/address', authMiddleware, adminProviderController.fetchProviderAddress);
 router.get('/providers/:providerId/service', authMiddleware, adminProviderController.fetchProviderService);
 router.get('/providers/:providerId/availability', authMiddleware, adminProviderController.fetchProviderServiceAvailability);

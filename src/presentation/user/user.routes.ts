@@ -5,6 +5,8 @@ import { userAddressController } from './userAddress.controller';
 import { userPaymentController } from "./userPayment.controller";
 import { userProviderController } from "./userProvider.controller";
 import { userAppServiceController } from "./userAppService.controller";
+import { authorize } from "../middleware/authRole.middleware";
+import { Role } from "../../domain/enums/common.enum";
 
 const router = Router();
 
@@ -16,12 +18,15 @@ router.patch('/profile', authMiddleware, userProfileController.updateUserInfo);
 router.patch('/profile/push-notification', authMiddleware, userProfileController.updatePushNotification)
 
 router.post('/addresses', authMiddleware, userAddressController.createAddress);
-router.get('/address', authMiddleware, userAddressController.getAddress);
 router.patch('/addresses/:addressId', authMiddleware, userAddressController.updateAddress);
 
+router.get('/:userId/address', 
+    authMiddleware,
+    authorize(Role.ADMIN), 
+    userAddressController.getUserAddress
+);
+
 router.get('/providers', authMiddleware, userProviderController.fetchServiceProviders);
-router.get('/providers/:providerId', authMiddleware, userProviderController.fetchServiceProviderProfileDetails);
-router.get('/providers/:providerId/address', authMiddleware, userProviderController.fetchServiceProviderAddress);
 router.get('/providers/:providerId/service', authMiddleware, userProviderController.fetchServiceProviderServiceDetails);
 router.get('/providers/:providerId/availability', authMiddleware, userProviderController.fetchServiceProviderServiceAvailability);
 

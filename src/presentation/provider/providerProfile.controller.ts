@@ -4,8 +4,11 @@ import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { FetchProviderProofsUseCase } from "../../application/useCases/common/fetchProviderProofs.useCase";
 import { providerValidateUpdateInfoSchema, providerValidateUpdateFileSchema, validateProviderIdSchema, providerUpdatePushNotificationSchema } from "../../shared/zod/provider.zod";
-import { fetchProviderProofsUseCase, provideDeleteIdentityProofUseCase, provideDeleteServiceProofUseCase, providerFetchProfileDetailsUseCase, providerRequestForApprovalUseCase, providerUpdateIdentityProofUseCase, providerUpdateProfileImageUseCase, providerUpdateProviderInfoUseCase, providerUpdatePushNotificationUseCase, providerUpdateServiceProofUseCase } from ".";
+import { adminFetchProviderDetailsUseCase, fetchProviderProofsUseCase, provideDeleteIdentityProofUseCase, provideDeleteServiceProofUseCase, providerFetchProfileDetailsUseCase, providerRequestForApprovalUseCase, providerUpdateIdentityProofUseCase, providerUpdateProfileImageUseCase, providerUpdateProviderInfoUseCase, providerUpdatePushNotificationUseCase, providerUpdateServiceProofUseCase, userFetchProviderDetailsUseCase } from ".";
 import { ProvideDeleteIdentityProofUseCase, ProvideDeleteServiceProofUseCase, ProviderFetchProfileDetailsUseCase, ProviderUpdateIdentityProofUseCase, ProviderRequestForApprovalUseCase, ProviderUpdateServiceProofUseCase, ProviderUpdateProfileImageUseCase, ProviderUpdateProviderInfoUseCase, ProviderUpdatePushNotificationUseCase } from "../../application/useCases/provider/providerProfile.useCase";
+import { Role } from "../../domain/enums/common.enum";
+import { UserFetchProviderDetailsUseCase } from "../../application/useCases/provider/userFetchProviderDetails.useCase";
+import { AdminFetchProviderDetailsUseCase } from "../../application/useCases/provider/adminFetchProviderDetails.useCase";
 
 class ProviderProfileController {
     constructor(
@@ -18,7 +21,9 @@ class ProviderProfileController {
         private providerRequestForApprovalUseCase: ProviderRequestForApprovalUseCase,
         private provideDeleteIdentityProofUseCase: ProvideDeleteIdentityProofUseCase,
         private provideDeleteServiceProofUseCase: ProvideDeleteServiceProofUseCase,
-        private providerUpdatePushNotificationUseCase: ProviderUpdatePushNotificationUseCase
+        private providerUpdatePushNotificationUseCase: ProviderUpdatePushNotificationUseCase,
+        private adminFetchProviderDetailsUseCase: AdminFetchProviderDetailsUseCase,
+        private userFetchProviderDetailsUseCase: UserFetchProviderDetailsUseCase
     ) {
         this.getProfileDetails = this.getProfileDetails.bind(this);
         this.updateProfileImage = this.updateProfileImage.bind(this);
@@ -34,11 +39,33 @@ class ProviderProfileController {
 
     async getProfileDetails(req: Request, res: Response, next: NextFunction) {
         try {
-            const { providerId } = validateProviderIdSchema.parse({
-                providerId: (req.user as DecodedUser).userOrProviderId
-            });
-            const result = await this.providerFetchProfileDetailsUseCase.execute({ providerId });
-            sendResponse(res, result);
+            const user = req.user as DecodedUser;
+            let providerId: string;
+
+            if (user.role === Role.PROVIDER) {
+                providerId = user.userOrProviderId;
+            } else {
+                providerId = req.params.providerId as string;
+                if (!providerId) {
+                    throw new Error("Provider ID is required");
+                }
+            }
+
+            if (user.role === Role.ADMIN) {
+                const result = await this.adminFetchProviderDetailsUseCase.execute({ providerId });
+                return sendResponse(res, result);
+            }
+
+            if (user.role === Role.USER) {
+                const result = await this.userFetchProviderDetailsUseCase.execute({ providerId });
+                return sendResponse(res, result);
+            }
+
+            if (user.role === Role.PROVIDER) {
+                const result = await this.providerFetchProfileDetailsUseCase.execute({ providerId });
+                return sendResponse(res, result);
+            }
+
         } catch (error) {
             log.error("getProfileDetails failed", error as Error);
             next(error);
@@ -186,5 +213,7 @@ export const providerProfileController = new ProviderProfileController(
     providerRequestForApprovalUseCase,
     provideDeleteIdentityProofUseCase,
     provideDeleteServiceProofUseCase,
-    providerUpdatePushNotificationUseCase
+    providerUpdatePushNotificationUseCase,
+    adminFetchProviderDetailsUseCase,
+    userFetchProviderDetailsUseCase
 );

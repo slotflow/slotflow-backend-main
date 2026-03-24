@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import { Types } from "mongoose";
+import { Role } from "../../domain/enums/common.enum";
 import { BookingModel } from "../models/booking.model";
 import { IBookingQueries } from "../../application/queries/IBooking.queries";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
@@ -8,7 +9,6 @@ import { UserFetchProvidersForChatSidebarResponse } from "../../application/dtos
 import { AdminFetchDashboardAppointmentStatsDataResponse, AdminFetchTodaysBookingStatsForDashboardResponse } from "../../application/dtos/admin.dto";
 import { GetBookingsRequest, TableData, GetBookingsResponse, GetOnlineBookingsForProviderResponse, GetOnlineBookingsForUserResponse, GetBookingDetailsResponse } from "../../application/dtos/common.dto";
 import { ProviderFetchDashboardGraphRepository, ProviderFetchDashboardGraphDataResponse, ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchUsersForChatSideBarResponse } from "../../application/dtos/provider.dto";
-import { Role } from "../../domain/enums/common.enum";
 
 export class BookingQueriesImpl implements IBookingQueries {
 
@@ -507,7 +507,7 @@ export class BookingQueriesImpl implements IBookingQueries {
 
         const bookings = await BookingModel.updateMany(
             {
-                appointmentStatus: AppointmentStatus.BOOKED,
+                appointmentStatus: AppointmentStatus.CONFIRMED,
                 appointmentDate: {
                     $gte: todayStart,
                     $lt: todayEnd

@@ -44,12 +44,12 @@ export const notificationContentMap: Record<string, {
   appointmentStatusChangeForUser: {
     title: "Booking Status Updated",
     body: (appointmentStatus: AppointmentStatus) =>
-      `Your booking has been ${appointmentStatus}.`
+      `Your booking has been ${appointmentStatus.toLowerCase()}.`
   },
   appointmentStatusChangeForProvider: {
     title: "Appointment Status Updated",
     body: (appointmentStatus: AppointmentStatus) =>
-      `Your appointment has been ${appointmentStatus}.`
+      `Your appointment has been ${appointmentStatus.toLowerCase()}.`
   },
   providerTrialSubscription: {
     title: "Trial Subscription",

@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import s3Routes from './presentation/s3/s3.routes';
 import authRoutes from './presentation/auth/auth.routes';
 import userRouter from './presentation/user/user.routes';
+import addressRouter from './presentation/address/router';
 import adminRoutes from './presentation/admin/admin.routes';
 import googleRouter from './presentation/google/google.router';
 import reviewRouter from './presentation/review/review.router';
@@ -49,6 +50,7 @@ app.use('/api/provider',providerRouter);
 app.use('/api/subscriptions',sunscriptionRouter);
 app.use('/api/bookings',bookingRouter);
 app.use('/api/reviews',reviewRouter);
+app.use('/api/addresses',addressRouter);
 app.use(errorHandler);
 
 export default app;

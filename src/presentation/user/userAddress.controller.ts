@@ -1,31 +1,21 @@
+import { getAddressUseCase } from "../address";
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
-import { userCreateAddressUseCase, userFetchAddressUseCase, userUpdateAddressUseCase } from ".";
+import { userCreateAddressUseCase, userUpdateAddressUseCase } from ".";
 import { userCreateAddressSchema, userUpdateAddressSchema, validateUserIdSchema } from "../../shared/zod/user.zod";
-import { UserCreateAddressUseCase, UserFetchAddressUseCase, UserUpdateAddressUseCase } from "../../application/useCases/user/userAddress.useCase";
+import { UserCreateAddressUseCase, UserUpdateAddressUseCase } from "../../application/useCases/user/userAddress.useCase";
+import { GetAddressUseCase } from "../../application/useCases/address/getAddress.useCase";
 
 class UserAddressController {
     constructor(
-        private userFetchAddressUseCase: UserFetchAddressUseCase,
         private userCreateAddressUseCase: UserCreateAddressUseCase,
         private userUpdateAddressUseCase: UserUpdateAddressUseCase,
+        private readonly getAddressUseCase: GetAddressUseCase,
     ) {
-        this.getAddress = this.getAddress.bind(this);
         this.createAddress = this.createAddress.bind(this);
         this.updateAddress = this.updateAddress.bind(this);
-    };
-
-    async getAddress(req: Request, res: Response, next: NextFunction) {
-        try {
-            const { userId } = validateUserIdSchema.parse((req.user as DecodedUser).userOrProviderId);
-            const result = await this.userFetchAddressUseCase.execute({ userId });
-            sendResponse(res, result, `Address ${result ? "fetched successfully" : "not added yet"}`);
-        } catch (error) {
-            log.error("getAddress failed", error as Error);
-            next(error);
-        };
     };
 
     async createAddress(req: Request, res: Response, next: NextFunction) {
@@ -56,10 +46,21 @@ class UserAddressController {
             next(error);
         };
     };
+
+    async getUserAddress(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { userId } = validateUserIdSchema.parse({ userId: req.params.userId });
+            const result = await this.getAddressUseCase.execute({ userId });
+            sendResponse(res, result, `Address ${result ? "fetched successfully" : "not added yet"}`);
+        } catch (error) {
+            log.error("getAddress failed", error as Error);
+            next(error);
+        };
+    };
 }
 
 export const userAddressController = new UserAddressController(
-    userFetchAddressUseCase,
     userCreateAddressUseCase,
-    userUpdateAddressUseCase
+    userUpdateAddressUseCase,
+    getAddressUseCase
 );
