@@ -2,7 +2,6 @@ import { Router } from "express";
 import { adminUserController } from "./adminUser.controller";
 import { authMiddleware } from "../middleware/auth.middleware";
 import { adminServiceController } from "./adminService.controller";
-import { adminPaymentController } from "./adminPayment.controller";
 import { adminProviderController } from "./adminProvider.controller";
 
 const router = Router();
@@ -25,8 +24,5 @@ router.patch('/users/:userId', authMiddleware, adminUserController.changeUserBlo
 router.get('/services', authMiddleware, adminServiceController.getAllServices);
 router.post('/services', authMiddleware, adminServiceController.createService);
 router.patch('/services/:serviceId', authMiddleware, adminServiceController.changeServiceBlockStatus);
-
-router.get('/payments', authMiddleware, adminPaymentController.getAllPayments);
-router.get('/reports/revenue', authMiddleware, adminPaymentController.fetchRevenueReport);
 
 export default router;

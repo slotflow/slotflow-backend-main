@@ -212,10 +212,10 @@ export type ProviderChangeBookingAppoinmentStatusRequest = Pick<BookingDTO, "_id
 
 
 // Provider Stripe UseCase
-export interface ProviderStripeConnectRequest {
-    providerId: ProviderDTO["_id"];
-}
-export type ProviderStripeConnectResponse = Stripe.Response<Stripe.AccountLink>;
+// export interface ProviderStripeConnectRequest {
+//     providerId: ProviderDTO["_id"];
+// }
+// export type ProviderStripeConnectResponse = Stripe.Response<Stripe.AccountLink>;
 
 
 // Provider Report UseCase

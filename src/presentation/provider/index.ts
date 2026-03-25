@@ -4,7 +4,6 @@ import { subscriptionMapping } from "../../infrastructure/helpers";
 import { paymentServiceClient } from "../../infrastructure/clients";
 import { signedUrlService } from "../../infrastructure/services";
 import { FetchAllAppServicesUseCase } from "../../application/useCases/common/fetchAppServices.useCase";
-import { ProviderStripeConnectUseCase } from "../../application/useCases/provider/providerStripe.useCase";
 import { FetchProviderProofsUseCase } from "../../application/useCases/common/fetchProviderProofs.useCase";
 import { ProviderFetchUserForChatSidebarUseCase } from "../../application/useCases/provider/providerUser.useCase";
 import { ProviderFetchDashboardStatsUseCase } from "../../application/useCases/provider/providerDashboardStats.useCase";
@@ -49,9 +48,6 @@ export const providerUpdateServiceDetailsUseCase = new ProviderUpdateServiceDeta
 
 // provider service availability controller dependency injection
 export const getServiceAvailabilityUseCase = new GetServiceAvailabilityUseCase(providerRepository, serviceAvailabilityQueries);
-
-// provider stripe controller dependency injection
-export const providerStripeConnectUseCase = new ProviderStripeConnectUseCase(providerRepository);
 
 // provider subscription controller dependency injection
 export const trialSubscriptionUseCase = new TrialSubscriptionUseCase(providerRepository, subscriptionRepository, planRepository, kafkaProducer);
