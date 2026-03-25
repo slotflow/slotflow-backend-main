@@ -6,7 +6,7 @@ import { authMiddleware } from '../middleware/auth.middleware';
 import { providerUserController } from './providerUser.controller';
 import { providerServiceController } from './providerService.controller';
 import { providerProfileController } from './providerProfile.controller';
-import { providerDashboardController } from './providerDashboard.controller';
+import { providerDashboardController } from './dashboard/controller';
 import { serviceAvailabilityController } from '../serviceAvailability/controller';
 
 const router = Router();
@@ -25,9 +25,9 @@ router.delete('/profile/service', authMiddleware, providerProfileController.dele
 router.patch('/profile/push-notification', authMiddleware, providerProfileController.updatePushNotification);
 
 // admin or user fetch providers address
-router.get('/:providerId/address', 
+router.get('/:providerId/address',
     authMiddleware,
-    authorize(Role.ADMIN, Role.USER), 
+    authorize(Role.ADMIN, Role.USER),
     addressController.getAddress
 );
 
@@ -36,9 +36,9 @@ router.get('/service', authMiddleware, providerServiceController.getServiceDetai
 router.patch('/service/:serviceId', authMiddleware, providerServiceController.updateServiceDetails);
 
 // admin or user fetch providers service availability
-router.get('/:providerId/service-availability', 
-    authMiddleware, 
-    authorize(Role.ADMIN, Role.USER), 
+router.get('/:providerId/service-availability',
+    authMiddleware,
+    authorize(Role.ADMIN, Role.USER),
     serviceAvailabilityController.getServiceAvailability
 );
 

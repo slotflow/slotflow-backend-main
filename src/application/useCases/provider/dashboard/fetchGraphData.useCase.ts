@@ -1,15 +1,16 @@
-import { log } from "../../../shared/logger/logger";
-import { IBookingQueries } from "../../queries/IBooking.queries";
-import { ISubscriptionMapping } from "../../../domain/interfaces/helper/ISubscriptionMapping.helper";
-import { ProviderFetchDashboardGraphDataRequest, ProviderFetchDashboardGraphDataResponse } from "../../dtos/provider.dto";
+import { log } from "../../../../shared/logger/logger";
+import { IBookingQueries } from "../../../queries/IBooking.queries";
+import { ISubscriptionMapping } from "../../../../domain/interfaces/helper/ISubscriptionMapping.helper";
+import { FetchGraphDataRequest, FetchGraphDataResponse } from "../../../dtos/provider.dto";
 
-export class ProviderFetchDashboardGraphDataUseCase {
+
+export class FetchGraphDataUseCase {
     constructor(
         private bookingQueries: IBookingQueries,
         private subscriptionHelper: ISubscriptionMapping,
     ) { };
 
-    async execute(payload: ProviderFetchDashboardGraphDataRequest): Promise<ProviderFetchDashboardGraphDataResponse> {
+    async execute(payload: FetchGraphDataRequest): Promise<FetchGraphDataResponse> {
         try {
             const { providerId, subscription, endDate, startDate } = payload;
 
@@ -23,7 +24,7 @@ export class ProviderFetchDashboardGraphDataUseCase {
                 startDate
             });
 
-            const dashboardGraphData: ProviderFetchDashboardGraphDataResponse = {
+            const dashboardGraphData: FetchGraphDataResponse = {
                 appointmentsOvertimeChartData: resultArray?.appointmentsOvertimeChartData ?? [],
                 peakBookingHoursChartData: resultArray?.peakBookingHoursChartData ?? [],
                 appointmentModeChartData: resultArray?.appointmentModeChartData ?? [],
@@ -34,7 +35,7 @@ export class ProviderFetchDashboardGraphDataUseCase {
 
             return dashboardGraphData;
         } catch (error) {
-            log.error("ProviderFetchDashboardGraphDataUseCase failed", error as Error);
+            log.error("FetchGraphDataUseCase failed", error as Error);
             throw error;
         };
     };

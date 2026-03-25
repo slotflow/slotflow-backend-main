@@ -1,15 +1,15 @@
-import { log } from "../../../shared/logger/logger";
-import { IBookingQueries } from "../../queries/IBooking.queries";
-import { IPaymentQueries } from "../../queries/IPayment.queries";
-import { ProviderFetchDashboardStatsDataRequest, ProviderFetchDashboardStatsDataResponse } from "../../dtos/provider.dto";
+import { log } from "../../../../shared/logger/logger";
+import { IBookingQueries } from "../../../queries/IBooking.queries";
+import { IPaymentQueries } from "../../../queries/IPayment.queries";
+import { FetchStatsDataRequest, FetchStatsDataResponse } from "../../../dtos/provider.dto";
 
-export class ProviderFetchDashboardStatsUseCase {
+export class FetchStatsUseCase {
     constructor(
         private bookingQueries: IBookingQueries,
         private paymentQueries: IPaymentQueries
     ) { };
 
-    async execute(payload: ProviderFetchDashboardStatsDataRequest): Promise<ProviderFetchDashboardStatsDataResponse> {
+    async execute(payload: FetchStatsDataRequest): Promise<FetchStatsDataResponse> {
         try {
             const { providerId } = payload;
 

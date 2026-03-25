@@ -1,16 +1,16 @@
-import { log } from "../../shared/logger/logger";
+import { log } from "../../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
-import { sendResponse } from "../../shared/utils/response";
-import { DecodedUser } from "../../application/dtos/common.dto";
-import { providerFetchDashboardGraphDataUseCase, providerFetchDashboardStatsUseCase } from ".";
-import { providerValidateDashboardDataSchema, validateProviderIdSchema } from "../../shared/zod/provider.zod";
-import { ProviderFetchDashboardStatsUseCase } from "../../application/useCases/provider/providerDashboardStats.useCase";
-import { ProviderFetchDashboardGraphDataUseCase } from "../../application/useCases/provider/providerDashboardGraphData.useCase";
+import { sendResponse } from "../../../shared/utils/response";
+import { DecodedUser } from "../../../application/dtos/common.dto";
+import { providerValidateDashboardDataSchema, validateProviderIdSchema } from "../../../shared/zod/provider.zod";
+import { FetchStatsUseCase } from "../../../application/useCases/provider/dashboard/fetchStats.useCase";
+import { FetchGraphDataUseCase } from "../../../application/useCases/provider/dashboard/fetchGraphData.useCase";
+import { fetchGraphDataUseCase, fetchStatsUseCase } from "..";
 
 class ProviderDashboardController {
     constructor(
-        private providerFetchDashboardStatsUseCase: ProviderFetchDashboardStatsUseCase,
-        private providerFetchDashboardGraphDataUseCase: ProviderFetchDashboardGraphDataUseCase,
+        private fetchStatsUseCase: FetchStatsUseCase,
+        private fetchGraphDataUseCase: FetchGraphDataUseCase,
     ) {
         this.getDashboardStats = this.getDashboardStats.bind(this);
         this.getDashboardGraphData = this.getDashboardGraphData.bind(this);
@@ -21,7 +21,7 @@ class ProviderDashboardController {
             const { providerId } = validateProviderIdSchema.parse({
                 providerId: (req.user as DecodedUser).userOrProviderId
             });
-            const result = await this.providerFetchDashboardStatsUseCase.execute({ providerId });
+            const result = await this.fetchStatsUseCase.execute({ providerId });
             sendResponse(res, result);
         } catch (error) {
             log.error("getDashboardStats failed", error as Error);
@@ -37,7 +37,7 @@ class ProviderDashboardController {
                 endDate: req.query.end,
                 providerId: (req.user as DecodedUser).userOrProviderId
             });
-            const result = await this.providerFetchDashboardGraphDataUseCase.execute({
+            const result = await this.fetchGraphDataUseCase.execute({
                 providerId,
                 subscription: subscription,
                 endDate,
@@ -53,6 +53,6 @@ class ProviderDashboardController {
 };
 
 export const providerDashboardController = new ProviderDashboardController(
-    providerFetchDashboardStatsUseCase,
-    providerFetchDashboardGraphDataUseCase
+    fetchStatsUseCase,
+    fetchGraphDataUseCase
 );

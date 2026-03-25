@@ -8,7 +8,7 @@ import { endOfDay, startOfDay, startOfToday, startOfTomorrow } from "date-fns";
 import { UserFetchProvidersForChatSidebarResponse } from "../../application/dtos/user.dto";
 import { FetchBookingsDataResponse, AdminFetchTodaysBookingStatsForDashboardResponse } from "../../application/dtos/admin.dto";
 import { GetBookingsRequest, TableData, GetBookingsResponse, GetOnlineBookingsForProviderResponse, GetOnlineBookingsForUserResponse, GetBookingDetailsResponse } from "../../application/dtos/common.dto";
-import { ProviderFetchDashboardGraphRepository, ProviderFetchDashboardGraphDataResponse, ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchUsersForChatSideBarResponse } from "../../application/dtos/provider.dto";
+import { ProviderFetchDashboardGraphRepository, FetchGraphDataResponse, ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchUsersForChatSideBarResponse } from "../../application/dtos/provider.dto";
 
 export class BookingQueriesImpl implements IBookingQueries {
 
@@ -153,7 +153,7 @@ export class BookingQueriesImpl implements IBookingQueries {
         };
     }
 
-    async findGraphDataForProviderDashboard(payload: ProviderFetchDashboardGraphRepository): Promise<ProviderFetchDashboardGraphDataResponse | null> {
+    async findGraphDataForProviderDashboard(payload: ProviderFetchDashboardGraphRepository): Promise<FetchGraphDataResponse | null> {
         const { providerId, subscriptionGuard, endDate, startDate } = payload
 
         console.log("providerId,  : ", providerId)

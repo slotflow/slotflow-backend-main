@@ -131,11 +131,11 @@ export type ProviderFetchUsersForChatSideBarResponse = Array<Pick<UserDTO, "_id"
 
 
 // ************ used in providerDashboard.use-case  ************ \\
-export interface ProviderFetchDashboardStatsDataRequest {
+export interface FetchStatsDataRequest {
     providerId: ProviderDTO["_id"];
 }
 // Used as the response interface for the provider fetch dashboard data
-export interface ProviderFetchDashboardStatsDataResponse extends ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardPaymentStatsDataResponse { }
+export interface FetchStatsDataResponse extends ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardPaymentStatsDataResponse { }
 export interface ProviderFetchDashboardBookingStatsDataResponse {
     totalAppointments: number;
     completedAppointments: number;
@@ -154,15 +154,16 @@ export interface ProviderFetchDashboardPaymentStatsDataResponse {
 
 
 // ************ used in providerDashboard.use-case  ************ \\
+
 // Used as the request interface for the provider fetch dashboard graph data
-export interface ProviderFetchDashboardGraphDataRequest {
+export interface FetchGraphDataRequest {
     providerId: ProviderDTO["_id"],
     subscription: PlanDTO["planName"],
     startDate?: Date,
     endDate?: Date,
 }
 // Used as the return interface for the provider fetch dashboard graph data
-export interface ProviderFetchDashboardGraphDataResponse {
+export interface FetchGraphDataResponse {
     appointmentsOvertimeChartData: Array<{
         date: string;
         completed: number;
@@ -225,7 +226,7 @@ export interface RepostReviewRequest {
 }
 
 
-export type ProviderFetchDashboardGraphRepository = Omit<ProviderFetchDashboardGraphDataRequest, "subscription"> & {
+export type ProviderFetchDashboardGraphRepository = Omit<FetchGraphDataRequest, "subscription"> & {
     subscriptionGuard: number;
 }
 

@@ -15,9 +15,10 @@ import addressRouter from './presentation/address/router';
 import servicesRouter from './presentation/service/router';
 import adminRoutes from './presentation/admin/admin.routes';
 import sunscriptionRouter from './presentation/subscription/router';
-import dashboardRouter from './presentation/admin/dashboard/router';
 import providerRouter from './presentation/provider/provider.router';
+import adminDashboardRouter from './presentation/admin/dashboard/router';
 import { errorHandler } from './presentation/middleware/error.middleware';
+import providerDashboardRouter from './presentation/provider/dashboard/router';
 import serviceAvailabilityRouter from './presentation/serviceAvailability/router';
 
 dotenv.config();
@@ -56,9 +57,10 @@ app.use('/api/bookings',bookingRouter);
 app.use('/api/services',servicesRouter);
 app.use('/api/addresses',addressRouter);
 app.use('/api/provider',providerRouter); 
-app.use('/api/dashboard',dashboardRouter);
 app.use('/api/subscriptions',sunscriptionRouter);
+app.use('/api/admin-dashboard',adminDashboardRouter);
 app.use('/api/service-availability',serviceAvailabilityRouter);
+app.use('/api/provider-dashboard',providerDashboardRouter);
 
 app.use(errorHandler);
 

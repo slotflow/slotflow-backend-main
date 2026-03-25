@@ -5,10 +5,9 @@ import { paymentServiceClient } from "../../infrastructure/clients";
 import { signedUrlService } from "../../infrastructure/services";
 import { FetchProviderProofsUseCase } from "../../application/useCases/common/fetchProviderProofs.useCase";
 import { ProviderFetchUserForChatSidebarUseCase } from "../../application/useCases/provider/providerUser.useCase";
-import { ProviderFetchDashboardStatsUseCase } from "../../application/useCases/provider/providerDashboardStats.useCase";
+import { FetchStatsUseCase } from "../../application/useCases/provider/dashboard/fetchStats.useCase";
 import { TrialSubscriptionUseCase } from "../../application/useCases/subscription/trailSubscription.useCase";
 import { SubscriptionCheckoutUseCase } from "../../application/useCases/subscription/subscriptionCheckout.useCase";
-import { ProviderFetchDashboardGraphDataUseCase } from "../../application/useCases/provider/providerDashboardGraphData.useCase";
 import { bookingQueries, paymentQueries, providerServiceQueries, serviceAvailabilityQueries, subscriptionQueries } from "../../infrastructure/queriesImpls";
 import { ProviderCreateServiceDetailsUseCase, ProviderFetchServiceDetailsUseCase, ProviderUpdateServiceDetailsUseCase } from "../../application/useCases/provider/providerService.useCase";
 import { planRepository, providerRepository, providerServiceRepository, subscriptionRepository } from "../../infrastructure/repositoryImpls";
@@ -17,11 +16,12 @@ import { GetSubscribedPlanUseCase } from "../../application/useCases/subscriptio
 import { AdminFetchProviderDetailsUseCase } from "../../application/useCases/provider/adminFetchProviderDetails.useCase";
 import { UserFetchProviderDetailsUseCase } from "../../application/useCases/provider/userFetchProviderDetails.useCase";
 import { GetServiceAvailabilityUseCase } from "../../application/useCases/serviceAvailability/getServiceAvailability";
+import { FetchGraphDataUseCase } from "../../application/useCases/provider/dashboard/fetchGraphData.useCase";
 
 
 // provider dashboard controller dependency injection
-export const providerFetchDashboardStatsUseCase = new ProviderFetchDashboardStatsUseCase(bookingQueries, paymentQueries);
-export const providerFetchDashboardGraphDataUseCase = new ProviderFetchDashboardGraphDataUseCase(bookingQueries, subscriptionMapping);
+export const fetchStatsUseCase = new FetchStatsUseCase(bookingQueries, paymentQueries);
+export const fetchGraphDataUseCase = new FetchGraphDataUseCase(bookingQueries, subscriptionMapping);
 
 // provider profile constroller dependency injection
 export const providerUpdateProviderInfoUseCase = new ProviderUpdateProviderInfoUseCase(providerRepository);
