@@ -3,7 +3,6 @@ import { kafkaProducer } from "../../infrastructure/messaging";
 import { subscriptionMapping } from "../../infrastructure/helpers";
 import { paymentServiceClient } from "../../infrastructure/clients";
 import { signedUrlService } from "../../infrastructure/services";
-import { FetchAllAppServicesUseCase } from "../../application/useCases/common/fetchAppServices.useCase";
 import { FetchProviderProofsUseCase } from "../../application/useCases/common/fetchProviderProofs.useCase";
 import { ProviderFetchUserForChatSidebarUseCase } from "../../application/useCases/provider/providerUser.useCase";
 import { ProviderFetchDashboardStatsUseCase } from "../../application/useCases/provider/providerDashboardStats.useCase";
@@ -12,16 +11,13 @@ import { SubscriptionCheckoutUseCase } from "../../application/useCases/subscrip
 import { ProviderFetchDashboardGraphDataUseCase } from "../../application/useCases/provider/providerDashboardGraphData.useCase";
 import { bookingQueries, paymentQueries, providerServiceQueries, serviceAvailabilityQueries, subscriptionQueries } from "../../infrastructure/queriesImpls";
 import { ProviderCreateServiceDetailsUseCase, ProviderFetchServiceDetailsUseCase, ProviderUpdateServiceDetailsUseCase } from "../../application/useCases/provider/providerService.useCase";
-import { planRepository, providerRepository, providerServiceRepository, serviceAvailabilityRepository, serviceRepository, subscriptionRepository } from "../../infrastructure/repositoryImpls";
+import { planRepository, providerRepository, providerServiceRepository, subscriptionRepository } from "../../infrastructure/repositoryImpls";
 import { ProvideDeleteIdentityProofUseCase, ProvideDeleteServiceProofUseCase, ProviderFetchProfileDetailsUseCase, ProviderRequestForApprovalUseCase, ProviderUpdateIdentityProofUseCase, ProviderUpdateProfileImageUseCase, ProviderUpdateProviderInfoUseCase, ProviderUpdatePushNotificationUseCase, ProviderUpdateServiceProofUseCase } from "../../application/useCases/provider/providerProfile.useCase";
 import { GetSubscribedPlanUseCase } from "../../application/useCases/subscription/getSubscribedPlan.useCase";
 import { AdminFetchProviderDetailsUseCase } from "../../application/useCases/provider/adminFetchProviderDetails.useCase";
 import { UserFetchProviderDetailsUseCase } from "../../application/useCases/provider/userFetchProviderDetails.useCase";
 import { GetServiceAvailabilityUseCase } from "../../application/useCases/serviceAvailability/getServiceAvailability";
 
-
-// provider app service controller dependency injection
-export const fetchAllAppServicesUseCase = new FetchAllAppServicesUseCase(serviceRepository);
 
 // provider dashboard controller dependency injection
 export const providerFetchDashboardStatsUseCase = new ProviderFetchDashboardStatsUseCase(bookingQueries, paymentQueries);

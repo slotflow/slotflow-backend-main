@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { adminUserController } from "./adminUser.controller";
 import { authMiddleware } from "../middleware/auth.middleware";
-import { adminServiceController } from "./adminService.controller";
 import { adminProviderController } from "./adminProvider.controller";
 
 const router = Router();
@@ -20,9 +19,5 @@ router.get('/users', authMiddleware, adminUserController.getAllUsers);
 router.get('/users/:userId/profile', authMiddleware, adminUserController.fetchUserDetails);
 router.get('/users/:userId/address', authMiddleware, adminUserController.fetchUserAddress);
 router.patch('/users/:userId', authMiddleware, adminUserController.changeUserBlockStatus);
-
-router.get('/services', authMiddleware, adminServiceController.getAllServices);
-router.post('/services', authMiddleware, adminServiceController.createService);
-router.patch('/services/:serviceId', authMiddleware, adminServiceController.changeServiceBlockStatus);
 
 export default router;

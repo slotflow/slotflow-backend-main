@@ -1,14 +1,8 @@
 import { signedUrlService } from "../../infrastructure/services";
-import { FetchAllAppServicesUseCase } from "../../application/useCases/common/fetchAppServices.useCase";
-import { bookingQueries, providerServiceQueries, serviceAvailabilityQueries } from "../../infrastructure/queriesImpls";
-import { paymentRepository, providerRepository, serviceRepository, userRepository } from "../../infrastructure/repositoryImpls";
-import { UserFetchProfileDetailsUseCase, UserUpdateProfileImageUseCase, UserUpdateProviderInfoUseCase, UserUpdatePushNotificationUseCase } from "../../application/useCases/user/userProfile.useCase";
+import { userRepository } from "../../infrastructure/repositoryImpls";
+import { bookingQueries, providerServiceQueries } from "../../infrastructure/queriesImpls";
 import { UserFetchProvidersForChatSidebarUseCase, UserFetchServiceProviderServiceDetailsUseCase, UserFetchServiceProvidersUseCase } from "../../application/useCases/user/userProvider.useCase";
-
-// user app service controller dependency injection
-export const fetchAllAppServicesUseCase = new FetchAllAppServicesUseCase(serviceRepository);
-
-// user payment controller dependency injection
+import { UserFetchProfileDetailsUseCase, UserUpdateProfileImageUseCase, UserUpdateProviderInfoUseCase, UserUpdatePushNotificationUseCase } from "../../application/useCases/user/userProfile.useCase";
 
 // user profile controller dependency injection
 export const userUpdateProviderInfoUseCase = new UserUpdateProviderInfoUseCase(userRepository);

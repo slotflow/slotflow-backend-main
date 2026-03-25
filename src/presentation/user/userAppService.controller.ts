@@ -3,7 +3,7 @@ import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { fetchAllAppServicesSchema } from "../../shared/zod/common.zod";
-import { FetchAllAppServicesUseCase } from "../../application/useCases/common/fetchAppServices.useCase";
+import { FetchAllAppServicesUseCase } from "../../application/useCases/service/getServicesByCategory.useCase";
 
 class UserAppServiceController {
     constructor(

@@ -175,13 +175,6 @@ export type AdminServiceListResponse = Array<Pick<ServiceDTO, "_id" | "serviceNa
 // admin add new service use case request payload interface
 export type AdminAddServiceRequest = Pick<ServiceDTO, "serviceName" | "serviceCategory">;
 
-// Used as the request interface of admin change service block status
-export interface AdminChnageServiceIsBlockedStatusRequest {
-    serviceId: ServiceDTO["_id"];
-    isBlocked: ServiceDTO["isBlocked"];
-};
-// Used as the response interface of admin change service block status
-export type AdminChnageServiceIsBlockedStatusResponse = AdminChnageServiceIsBlockedStatusRequest;
 
 
 

@@ -1,14 +1,14 @@
 import { log } from "../../../shared/logger/logger";
-import { FetchAllAppServiceRequest, FetchAllAppServicesResponse } from "../../dtos/common.dto";
 import { IServiceRepository } from "../../../domain/interfaces/repositories/IService.repository";
+import { GetServicesByCategoryRequest, GetServicesByCategoryResponse } from "../../dtos/service.dto";
 
-export class FetchAllAppServicesUseCase {
+export class GetServicesByCategoryUseCase {
 
     constructor(
         private serviceRepository: IServiceRepository
     ) { };
 
-    async execute(payload: FetchAllAppServiceRequest): Promise<FetchAllAppServicesResponse> {
+    async execute(payload: GetServicesByCategoryRequest): Promise<GetServicesByCategoryResponse> {
         try {
             const { categories } = payload;
             const services = await this.serviceRepository.findAllByCategory(categories);
@@ -19,7 +19,7 @@ export class FetchAllAppServicesUseCase {
                 serviceName: service.serviceName,
             }));
         } catch (error) {
-            log.error("FetchAllAppServicesUseCase failed", error as Error);
+            log.error("GetServicesByCategoryUseCase failed", error as Error);
             throw error;
         };
     };

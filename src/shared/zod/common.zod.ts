@@ -24,7 +24,7 @@ export const deleteFileSchema = z.object({
 
 // Fetch all app services validation schema
 export const fetchAllAppServicesSchema = z.object({
-  categories: z.nativeEnum(ServiceCategory).array(),
+  serviceCategory: z.nativeEnum(ServiceCategory).array(),
 });
 
 // Change block status validation schema

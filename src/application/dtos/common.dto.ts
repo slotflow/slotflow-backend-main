@@ -342,14 +342,6 @@ export type GetOnlineBookingsForUserResponse = Array<
   }
 >;
 
-
-// Used as the response type for fetching AppServices for provider and user side
-export interface FetchAllAppServiceRequest {
-  categories: Array<ServiceDTO["serviceCategory"]>;
-};
-export type FetchAllAppServicesResponse = Array<Pick<ServiceDTO, "_id" | "serviceName">> | null;
-
-
 // Used as the request type for updating address for provider and user side
 
 

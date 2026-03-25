@@ -9,8 +9,6 @@ import { userAppServiceController } from "./userAppService.controller";
 
 const router = Router();
 
-router.get('/appservices', authMiddleware, userAppServiceController.fetchAllAppService);
-
 router.get('/profile', authMiddleware, userProfileController.getProfileDetails);
 router.post('/profile/image', authMiddleware, userProfileController.updateProfileImage);
 router.patch('/profile', authMiddleware, userProfileController.updateUserInfo);

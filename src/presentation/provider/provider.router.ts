@@ -1,15 +1,13 @@
 import { Router } from 'express';
 import { Role } from '../../domain/enums/common.enum';
+import { addressController } from '../address/controller';
 import { authorize } from '../middleware/authRole.middleware';
 import { authMiddleware } from '../middleware/auth.middleware';
 import { providerUserController } from './providerUser.controller';
-import { providerStripeController } from './providerStripe.controller';
 import { providerServiceController } from './providerService.controller';
 import { providerProfileController } from './providerProfile.controller';
 import { providerDashboardController } from './providerDashboard.controller';
-import { providerAppServiceController } from './providerAppService.controller';
 import { serviceAvailabilityController } from '../serviceAvailability/controller';
-import { addressController } from '../address/controller';
 
 const router = Router();
 
@@ -33,8 +31,6 @@ router.get('/:providerId/address',
     addressController.getAddress
 );
 
-router.get('/appservices', authMiddleware, providerAppServiceController.getAllAppServices);
-
 router.post('/service', authMiddleware, providerServiceController.createServiceDetails);
 router.get('/service', authMiddleware, providerServiceController.getServiceDetails);
 router.patch('/service/:serviceId', authMiddleware, providerServiceController.updateServiceDetails);
@@ -50,7 +46,5 @@ router.get('/chat/users', authMiddleware, providerUserController.fetchUsersForCh
 
 router.get('/dashboard/stats', authMiddleware, providerDashboardController.getDashboardStats);
 router.get('/dashboard/graph-data', authMiddleware, providerDashboardController.getDashboardGraphData);
-
-router.post("/stripe/connect", authMiddleware, providerStripeController.connectStripe);
 
 export default router;  
