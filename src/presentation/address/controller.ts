@@ -17,16 +17,28 @@ class AddressController {
         private readonly providerCreateAddressUseCase: ProviderCreateAddressUseCase,
         private readonly updateAddressUseCase: UpdateAddressUseCase,
     ) {
-        this.getMyAddress = this.getMyAddress.bind(this);
+        this.getAddress = this.getAddress.bind(this);
+        this.createAddress = this.createAddress.bind(this);
+        this.updateAddress = this.updateAddress.bind(this);
     }
 
-    async getMyAddress(req: Request, res: Response, next: NextFunction) {
+    async getAddress(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-            const result = await this.getAddressUseCase.execute({ userId: user.userOrProviderId, isMyAddress: true });
+            const { providerId, userId } = req.params;
+
+            const isMyAddress = !providerId && !userId;
+            const targetId = providerId || userId || user.userOrProviderId;
+
+            if (!targetId) throw new Error("ID is required");
+
+            const result = await this.getAddressUseCase.execute({ 
+                userId: targetId as string, 
+                isMyAddress 
+            });
             sendResponse(res, result);
         } catch (error) {
-            log.error("getMyAddress failed : ", error as Error);
+            log.error("getAddress failed", error as Error);
             next(error);
         }
     }

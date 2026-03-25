@@ -6,7 +6,7 @@ import { IBookingQueries } from "../../application/queries/IBooking.queries";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { endOfDay, startOfDay, startOfToday, startOfTomorrow } from "date-fns";
 import { UserFetchProvidersForChatSidebarResponse } from "../../application/dtos/user.dto";
-import { AdminFetchDashboardAppointmentStatsDataResponse, AdminFetchTodaysBookingStatsForDashboardResponse } from "../../application/dtos/admin.dto";
+import { FetchBookingsDataResponse, AdminFetchTodaysBookingStatsForDashboardResponse } from "../../application/dtos/admin.dto";
 import { GetBookingsRequest, TableData, GetBookingsResponse, GetOnlineBookingsForProviderResponse, GetOnlineBookingsForUserResponse, GetBookingDetailsResponse } from "../../application/dtos/common.dto";
 import { ProviderFetchDashboardGraphRepository, ProviderFetchDashboardGraphDataResponse, ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchUsersForChatSideBarResponse } from "../../application/dtos/provider.dto";
 
@@ -405,7 +405,7 @@ export class BookingQueriesImpl implements IBookingQueries {
         };
     }
 
-    async findStatsDataForAdminDashboard(): Promise<AdminFetchDashboardAppointmentStatsDataResponse> {
+    async findStatsDataForAdminDashboard(): Promise<FetchBookingsDataResponse> {
         const result = await BookingModel.aggregate([
             {
                 $group: {

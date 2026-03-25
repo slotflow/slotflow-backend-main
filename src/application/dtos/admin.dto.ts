@@ -12,7 +12,7 @@ export type AdminFetchUserOrProviderAddressResponse = Pick<AddressDTO, "userId" 
 // **** adminDashboard.usecase
 
 // used as the return type of the admin fetch dashboard todays stats data
-export interface AdminFetchDashboardTodayStatsDataResponse {
+export interface FetchDashboardTodayDataResponse {
     newUsers: number;
     newProviders: number;
 
@@ -25,14 +25,14 @@ export interface AdminFetchDashboardTodayStatsDataResponse {
 };
 
 // used as the return type of the admin fetch dashboard user stats data
-export interface AdminFetchDashboardUserStatsDataResponse {
+export interface FetchUserDataResponse {
     totalUsers: number;
     emailVerifiedUsers: number;
     blockedUsers: number;
 };
 
 // used as the return type of the admin fetch dashboard provider stats data
-export interface AdminFetchDashboardProviderStatsDataResponse {
+export interface FetchProviderDataResponse {
     totalProviders: number;
     emailVerifiedProviders: number;
     adminVerifiedProviders: number;
@@ -44,7 +44,7 @@ export interface AdminFetchDashboardProviderStatsDataResponse {
 };
 
 // used as the return type of the admin fetch dashboard subscription stats data
-export interface AdminFetchDashboardSubscriptionStatsDataResponse {
+export interface FetchSubscriptionDataResponse {
     activeSubscriptions: number;
     expiredSubscriptions: number;
     subscriptionsByFreePlan: number;
@@ -54,7 +54,7 @@ export interface AdminFetchDashboardSubscriptionStatsDataResponse {
 };
 
 // used as the return type of the admin fetch dashboard revenue stats data
-export interface AdminFetchDashboardRevenueStatsDataResponse {
+export interface FetchRevenueDataResponse {
     totalRevenue: number;
     totalRevenueViaSubscriptions: number;
     revenueByStripe: number;
@@ -67,7 +67,7 @@ export interface AdminFetchDashboardRevenueStatsDataResponse {
 };
 
 // used as the return type of the admin fetch dashboard appointments stats data
-export interface AdminFetchDashboardAppointmentStatsDataResponse {
+export interface FetchBookingsDataResponse {
     totalAppointments: number;
     completedAppointments: number;
     cancelledAppointments: number;
@@ -144,12 +144,6 @@ export type AdminChangeProviderTrustTagResponse = AdminChangeProviderTrustTagReq
 
 // **** adminProviderProfile.usecase
 
-// Used as the request interface of admin fetch provider profile details
-export interface AdminFetchProviderDetailsRequest {
-    providerId: ProviderDTO["_id"];
-}
-// Used as the return type of admin fetch provider profile details
-export type AdminFetchProviderDetailsResponse = Pick<ProviderDTO, "_id" | "username" | "email" | "isBlocked" | "isEmailVerified" | "isAdminVerified" | "phone" | "profileImage" | "trustedBySlotflow" | "createdAt" | "isServiceDetailsVerified" | "isProofsVerified" | "isAddressVerified" | "isAvailabilityVerified" | "adminVerificationStatus"> | null;
 
 // Used as the request interface of admin fetch provider service
 export type AdminFetchProviderServiceRequest = {
@@ -157,17 +151,6 @@ export type AdminFetchProviderServiceRequest = {
 };
 // Used as the request interface of admin fetch provider service
 export type AdminFetchProviderServiceResponse = FindProviderServiceResponse | null;
-
-// Used as the request interface of admin fetch provider service availability
-export interface AdminFetchProviderServiceAvailabilityRequest {
-    providerId: ProviderDTO["_id"];
-    date: Date
-}
-// Used as the return interface of admin fetch provider service availability
-export type AdminFetchProviderServiceAvailabilityResponse = FontendAvailabilityForResponse | null;
-
-
-
 
 
 // **** adminReview.usecase
@@ -330,6 +313,6 @@ export type AdminFetchUserProfileDetailsResponse = Pick<UserDTO, "username" | "p
 
 
 
-export type AdminFetchTodaysBookingStatsForDashboardResponse = Pick<AdminFetchDashboardTodayStatsDataResponse, "todaysAppointments" | "todaysCancelledAppointments" | "todaysCompletedAppointments">;
+export type AdminFetchTodaysBookingStatsForDashboardResponse = Pick<FetchDashboardTodayDataResponse, "todaysAppointments" | "todaysCancelledAppointments" | "todaysCompletedAppointments">;
 
-export type AdminFetchDashboardTodayPaymentStatsDataResponse = Pick<AdminFetchDashboardTodayStatsDataResponse, "todaysTotalPayouts" | "todaysTotalRevenue">;
+export type AdminFetchDashboardTodayPaymentStatsDataResponse = Pick<FetchDashboardTodayDataResponse, "todaysTotalPayouts" | "todaysTotalRevenue">;

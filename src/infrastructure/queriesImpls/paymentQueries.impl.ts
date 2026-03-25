@@ -4,7 +4,7 @@ import { TableData } from "../../application/dtos/common.dto";
 import { IPaymentQueries } from "../../application/queries/IPayment.queries";
 import { endOfDay, startOfDay, startOfMonth, startOfToday, startOfTomorrow } from "date-fns";
 import { ProviderFetchDashboardPaymentStatsDataResponse } from "../../application/dtos/provider.dto";
-import { AdminFetchDashboardRevenueStatsDataResponse, AdminFetchDashboardTodayPaymentStatsDataResponse, AdminFetchRevenueReportRequest, AdminFetchRevenueReportResponse } from "../../application/dtos/admin.dto";
+import { FetchRevenueDataResponse, AdminFetchDashboardTodayPaymentStatsDataResponse, AdminFetchRevenueReportRequest, AdminFetchRevenueReportResponse } from "../../application/dtos/admin.dto";
 import { PaymentFor, PaymentGateway, PaymentStatus } from "../../domain/enums/payment.enum";
 
 export class PaymentQueriesImpl implements IPaymentQueries {
@@ -88,7 +88,7 @@ export class PaymentQueriesImpl implements IPaymentQueries {
         };
     };
 
-    async findStatsDataForAdminDashboard(): Promise<AdminFetchDashboardRevenueStatsDataResponse> {
+    async findStatsDataForAdminDashboard(): Promise<FetchRevenueDataResponse> {
         const paymentData = await PaymentModel.aggregate([
             {
                 $match: {

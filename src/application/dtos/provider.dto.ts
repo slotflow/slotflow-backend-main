@@ -104,33 +104,9 @@ export interface ProviderUpdatePushNotificationRequest {
 
 
 
-// ************ used in providerServiceAvailability ************ \\
-// provider add service availability use case reques tpayload
-export interface ProviderAddServiceAvailabilityRewuest {
-    providerId: ProviderDTO["_id"];
-    availabilities: FrontendAvailabilityForRequest[]
-}
-
-
-//  provider fetch service availability use case response interface 
-export interface ProviderFetchServiceAvailabilityRequest {
-    providerId: ProviderDTO["_id"];
-    date: Date
-}
-//  provider fetch service availability use case response interface 
-export type ProviderFetchServiceAvailabilityResponse = FontendAvailabilityForResponse | null;
-
-
-
-
 
 // ************ used in providerStripeSubscription.use-case ************ \\
 // provider stripe subscription create sessionId use case  request payload interface
-export interface ProviderStripeSubscriptionCreateSessionIdRequest {
-    providerId: ProviderDTO["_id"];
-    planId: PlanDTO["_id"];
-    planDuration: SubscriptionValidity;
-}
 
 
 
@@ -138,9 +114,6 @@ export interface ProviderStripeSubscriptionCreateSessionIdRequest {
 
 // ************ used in providerSubscription.use-case  ************ \\
 // provider trial subscription use case reuest payload
-export interface ProviderTrialSubscriptionRequest {
-    providerId: ProviderDTO["_id"];
-}
 
 
 
@@ -255,18 +228,6 @@ export interface RepostReviewRequest {
 export type ProviderFetchDashboardGraphRepository = Omit<ProviderFetchDashboardGraphDataRequest, "subscription"> & {
     subscriptionGuard: number;
 }
-
-export type ProviderFetchSubscribedPlanRequest = {
-    providerId: ProviderDTO["_id"]
-};
-
-export interface ProviderFetchSubscribedPlanResponse {
-    providerId: string;
-    subscribedPlan: PlanName;
-    startDate: Date;
-    endDate: Date;
-    subscriptionStatus: SubscriptionStatus
-};
 
 export interface PopulatedPlan {
     subscriptionPlanId: {

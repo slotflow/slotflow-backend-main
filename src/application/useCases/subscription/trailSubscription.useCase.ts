@@ -2,7 +2,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { notificationContentMap } from "../../../shared/utils/constants";
-import { ProviderTrialSubscriptionRequest } from "../../dtos/provider.dto";
 import { Subscription } from "../../../domain/entities/subscription.entity";
 import { EventEnvelope, SendProviderTrialSubscriptionEvent } from "../../dtos/kafka.dtos";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
@@ -11,8 +10,9 @@ import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKaf
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { getDateAfterDays, getUtcDateRange, isSubscriptionExpired } from "../../../shared/utils/dateTime";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
+import { TrialSubscriptionRequest } from '../../dtos/subscription';
 
-export class ProviderTrialSubscriptionUseCase {
+export class TrialSubscriptionUseCase {
     constructor(
         private providerRepository: IProviderRepository,
         private subscriptionRepository: ISubscriptionRepository,
@@ -20,7 +20,7 @@ export class ProviderTrialSubscriptionUseCase {
         private kafkaProducer: IKafkaProducerAdapter
     ) { };
 
-    async execute(payload: ProviderTrialSubscriptionRequest): Promise<void> {
+    async execute(payload: TrialSubscriptionRequest): Promise<void> {
         try {
             const { providerId } = payload;
 
@@ -83,7 +83,7 @@ export class ProviderTrialSubscriptionUseCase {
             });
 
         } catch (error) {
-            log.error("ProviderTrialSubscriptionUseCase failed", error as Error);
+            log.error("TrialSubscriptionUseCase failed", error as Error);
             throw error;
         };
     };

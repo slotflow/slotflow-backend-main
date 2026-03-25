@@ -1,11 +1,11 @@
 import { UserModel } from "../models/user.model";
 import { IUserQueries } from "../../application/queries/IUser.queries";
 import { ApiPaginationRequest, TableData } from "../../application/dtos/common.dto";
-import { AdminFetchAllUsers, AdminFetchDashboardUserStatsDataResponse } from "../../application/dtos/admin.dto";
+import { AdminFetchAllUsers, FetchUserDataResponse } from "../../application/dtos/admin.dto";
 
 export class UserQueriesImpl implements IUserQueries {
 
-    async fetchStats(): Promise<AdminFetchDashboardUserStatsDataResponse> {
+    async fetchStats(): Promise<FetchUserDataResponse> {
         const [
             totalUsers,
             emailVerifiedUsers,

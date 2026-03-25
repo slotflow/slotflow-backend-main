@@ -1,10 +1,10 @@
 import { ProviderModel } from "../models/provider.model";
 import { IProviderQueries } from "../../application/queries/IProvider.queries";
-import { AdminFetchDashboardProviderStatsDataResponse } from "../../application/dtos/admin.dto";
+import { FetchProviderDataResponse } from "../../application/dtos/admin.dto";
 
 export class ProviderQueriesImpl implements IProviderQueries {
 
-  async fetchStats(): Promise<AdminFetchDashboardProviderStatsDataResponse> {
+  async fetchStats(): Promise<FetchProviderDataResponse> {
     const [
       totalProviders,
       emailVerifiedProviders,

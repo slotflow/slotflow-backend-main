@@ -4,18 +4,20 @@ import dotenv from 'dotenv';
 import express from 'express';
 // import client from 'prom-client';
 import cookieParser from 'cookie-parser';
-import s3Routes from './presentation/s3/s3.routes';
+import s3Routes from './presentation/s3/routes';
 import planRouter from './presentation/plan/router';
-import authRoutes from './presentation/auth/auth.routes';
+import authRoutes from './presentation/auth/routes';
 import userRouter from './presentation/user/user.routes';
 import addressRouter from './presentation/address/router';
 import adminRoutes from './presentation/admin/admin.routes';
-import googleRouter from './presentation/google/google.router';
-import reviewRouter from './presentation/review/review.router';
-import bookingRouter from './presentation/booking/booking.router';
+import googleRouter from './presentation/google/router';
+import reviewRouter from './presentation/review/router';
+import bookingRouter from './presentation/booking/router';
+import dashboardRouter from './presentation/admin/dashboard/router';
 import providerRouter from './presentation/provider/provider.router';
 import { errorHandler } from './presentation/middleware/error.middleware';
-import sunscriptionRouter from './presentation/subscription/subscription.router';
+import sunscriptionRouter from './presentation/subscription/router';
+import serviceAvailabilityRouter from './presentation/serviceAvailability/router';
 
 dotenv.config();
 
@@ -53,6 +55,8 @@ app.use('/api/bookings',bookingRouter);
 app.use('/api/reviews',reviewRouter);
 app.use('/api/addresses',addressRouter);
 app.use('/api/plans',planRouter);
+app.use('/api/dashboard',dashboardRouter);
+app.use('/api/service-availability',serviceAvailabilityRouter);
 app.use(errorHandler);
 
 export default app;

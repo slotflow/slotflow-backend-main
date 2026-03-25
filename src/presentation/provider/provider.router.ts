@@ -4,13 +4,12 @@ import { authorize } from '../middleware/authRole.middleware';
 import { authMiddleware } from '../middleware/auth.middleware';
 import { providerUserController } from './providerUser.controller';
 import { providerStripeController } from './providerStripe.controller';
-import { provideAddressController } from './providerAddress.controller';
 import { providerServiceController } from './providerService.controller';
 import { providerProfileController } from './providerProfile.controller';
 import { providerDashboardController } from './providerDashboard.controller';
 import { providerAppServiceController } from './providerAppService.controller';
-import { providerSubscriptionController } from './providerSubscription.controller';
-import { providerServiceAvailabilityController } from './providerServiceAvailability.controller';
+import { serviceAvailabilityController } from '../serviceAvailability/controller';
+import { addressController } from '../address/controller';
 
 const router = Router();
 
@@ -27,10 +26,11 @@ router.delete('/profile/identity', authMiddleware, providerProfileController.del
 router.delete('/profile/service', authMiddleware, providerProfileController.deleteServiceProof);
 router.patch('/profile/push-notification', authMiddleware, providerProfileController.updatePushNotification);
 
+// admin or user fetch providers address
 router.get('/:providerId/address', 
     authMiddleware,
     authorize(Role.ADMIN, Role.USER), 
-    provideAddressController.getProviderAddress
+    addressController.getAddress
 );
 
 router.get('/appservices', authMiddleware, providerAppServiceController.getAllAppServices);
@@ -39,12 +39,12 @@ router.post('/service', authMiddleware, providerServiceController.createServiceD
 router.get('/service', authMiddleware, providerServiceController.getServiceDetails);
 router.patch('/service/:serviceId', authMiddleware, providerServiceController.updateServiceDetails);
 
-router.post('/availabilities', authMiddleware, providerServiceAvailabilityController.createServiceAvailability);
-router.get('/availability', authMiddleware, providerServiceAvailabilityController.getServiceAvailability);
-
-router.post('/subscriptions/checkout/session', authMiddleware, providerSubscriptionController.subscriptionCheckout);
-router.get('/subscriptions/me', authMiddleware, providerSubscriptionController.getSubscribedPlan);
-router.post('/subscriptions/trial', authMiddleware, providerSubscriptionController.subscribeToTrialPlan);
+// admin or user fetch providers service availability
+router.get('/:providerId/service-availability', 
+    authMiddleware, 
+    authorize(Role.ADMIN, Role.USER), 
+    serviceAvailabilityController.getServiceAvailability
+);
 
 router.get('/chat/users', authMiddleware, providerUserController.fetchUsersForChatSideBar);
 

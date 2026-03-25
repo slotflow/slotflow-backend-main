@@ -3,23 +3,22 @@ import { kafkaProducer } from "../../infrastructure/messaging";
 import { subscriptionMapping } from "../../infrastructure/helpers";
 import { paymentServiceClient } from "../../infrastructure/clients";
 import { signedUrlService } from "../../infrastructure/services";
-import { ProviderFetchAllPlansUseCase } from "../../application/useCases/provider/providerPlan.useCase";
 import { FetchAllAppServicesUseCase } from "../../application/useCases/common/fetchAppServices.useCase";
 import { ProviderStripeConnectUseCase } from "../../application/useCases/provider/providerStripe.useCase";
 import { FetchProviderProofsUseCase } from "../../application/useCases/common/fetchProviderProofs.useCase";
 import { ProviderFetchUserForChatSidebarUseCase } from "../../application/useCases/provider/providerUser.useCase";
 import { ProviderFetchDashboardStatsUseCase } from "../../application/useCases/provider/providerDashboardStats.useCase";
-import { ProviderTrialSubscriptionUseCase } from "../../application/useCases/provider/providerTrailSubscription.useCase";
-import { ProviderSubscriptionCheckoutUseCase } from "../../application/useCases/provider/providerSubscriptionCheckout.useCase";
+import { TrialSubscriptionUseCase } from "../../application/useCases/subscription/trailSubscription.useCase";
+import { SubscriptionCheckoutUseCase } from "../../application/useCases/subscription/subscriptionCheckout.useCase";
 import { ProviderFetchDashboardGraphDataUseCase } from "../../application/useCases/provider/providerDashboardGraphData.useCase";
 import { bookingQueries, paymentQueries, providerServiceQueries, serviceAvailabilityQueries, subscriptionQueries } from "../../infrastructure/queriesImpls";
-import { ProviderCreateServiceAvailabilitiesUseCase, ProviderFetchServiceAvailabilityUseCase } from "../../application/useCases/provider/providerServiceAvailability.useCase";
 import { ProviderCreateServiceDetailsUseCase, ProviderFetchServiceDetailsUseCase, ProviderUpdateServiceDetailsUseCase } from "../../application/useCases/provider/providerService.useCase";
-import { addressRepository, planRepository, providerRepository, providerServiceRepository, serviceAvailabilityRepository, serviceRepository, subscriptionRepository } from "../../infrastructure/repositoryImpls";
+import { planRepository, providerRepository, providerServiceRepository, serviceAvailabilityRepository, serviceRepository, subscriptionRepository } from "../../infrastructure/repositoryImpls";
 import { ProvideDeleteIdentityProofUseCase, ProvideDeleteServiceProofUseCase, ProviderFetchProfileDetailsUseCase, ProviderRequestForApprovalUseCase, ProviderUpdateIdentityProofUseCase, ProviderUpdateProfileImageUseCase, ProviderUpdateProviderInfoUseCase, ProviderUpdatePushNotificationUseCase, ProviderUpdateServiceProofUseCase } from "../../application/useCases/provider/providerProfile.useCase";
-import { ProviderFetchSubscribedPlanUseCase } from "../../application/useCases/provider/providerFetchSubscribedPlan.useCase";
+import { GetSubscribedPlanUseCase } from "../../application/useCases/subscription/getSubscribedPlan.useCase";
 import { AdminFetchProviderDetailsUseCase } from "../../application/useCases/provider/adminFetchProviderDetails.useCase";
 import { UserFetchProviderDetailsUseCase } from "../../application/useCases/provider/userFetchProviderDetails.useCase";
+import { GetServiceAvailabilityUseCase } from "../../application/useCases/serviceAvailability/getServiceAvailability";
 
 
 // provider app service controller dependency injection
@@ -28,9 +27,6 @@ export const fetchAllAppServicesUseCase = new FetchAllAppServicesUseCase(service
 // provider dashboard controller dependency injection
 export const providerFetchDashboardStatsUseCase = new ProviderFetchDashboardStatsUseCase(bookingQueries, paymentQueries);
 export const providerFetchDashboardGraphDataUseCase = new ProviderFetchDashboardGraphDataUseCase(bookingQueries, subscriptionMapping);
-
-// provider plan controller dependency injection
-export const providerFetchAllPlansUseCase = new ProviderFetchAllPlansUseCase(planRepository);
 
 // provider profile constroller dependency injection
 export const providerUpdateProviderInfoUseCase = new ProviderUpdateProviderInfoUseCase(providerRepository);
@@ -52,16 +48,15 @@ export const providerCreateServiceDetailsUseCase = new ProviderCreateServiceDeta
 export const providerUpdateServiceDetailsUseCase = new ProviderUpdateServiceDetailsUseCase(providerServiceRepository);
 
 // provider service availability controller dependency injection
-export const providerFetchServiceAvailabilityUseCase = new ProviderFetchServiceAvailabilityUseCase(providerRepository, serviceAvailabilityQueries);
-export const providerCreateServiceAvailabilitiesUseCase = new ProviderCreateServiceAvailabilitiesUseCase(providerRepository, serviceAvailabilityRepository);
+export const getServiceAvailabilityUseCase = new GetServiceAvailabilityUseCase(providerRepository, serviceAvailabilityQueries);
 
 // provider stripe controller dependency injection
 export const providerStripeConnectUseCase = new ProviderStripeConnectUseCase(providerRepository);
 
 // provider subscription controller dependency injection
-export const providerTrialSubscriptionUseCase = new ProviderTrialSubscriptionUseCase(providerRepository, subscriptionRepository, planRepository, kafkaProducer);
-export const providerSubscriptionCheckoutUseCase = new ProviderSubscriptionCheckoutUseCase(planRepository, providerRepository, subscriptionRepository, paymentServiceClient);
-export const providerFetchSubscribedPlanUseCase = new ProviderFetchSubscribedPlanUseCase(providerRepository, subscriptionQueries);
+export const trialSubscriptionUseCase = new TrialSubscriptionUseCase(providerRepository, subscriptionRepository, planRepository, kafkaProducer);
+export const subscriptionCheckoutUseCase = new SubscriptionCheckoutUseCase(planRepository, providerRepository, subscriptionRepository, paymentServiceClient);
+export const getSubscribedPlanUseCase = new GetSubscribedPlanUseCase(providerRepository, subscriptionQueries);
 
 // provider user controller dependency injection
 export const providerFetchUserForChatSidebarUseCase = new ProviderFetchUserForChatSidebarUseCase(signedUrlService, bookingQueries);

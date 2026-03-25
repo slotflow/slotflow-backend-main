@@ -289,8 +289,8 @@ export interface userIdAndProviderIdFilterForFetchPayments {
   userId?: UserDTO["_id"];
   providerId?: ProviderDTO["_id"];
 }
-export interface FetchPaymentsRequest extends ApiPaginationRequest, userIdAndProviderIdFilterForFetchPayments { };
-export type FetchPaymentResponse = Array<Pick<PaymentDTO, "_id" | "createdAt" | "totalAmount" | "paymentFor" | "paymentGateway" | "paymentStatus" | "paymentMethod" | "discountAmount">> | null;
+// export interface FetchPaymentsRequest extends ApiPaginationRequest, userIdAndProviderIdFilterForFetchPayments { };
+// export type FetchPaymentResponse = Array<Pick<PaymentDTO, "_id" | "createdAt" | "totalAmount" | "paymentFor" | "paymentGateway" | "paymentStatus" | "paymentMethod" | "discountAmount">> | null;
 
 
 // Used as the request interface for fetching subscriptions with planName and plan price of a specific provider for the provider side and admin side

@@ -1,7 +1,4 @@
 import dayjs from "dayjs";
-import {
-    ProviderStripeSubscriptionCreateSessionIdRequest,
-} from "../../dtos/provider.dto";
 import { log } from "../../../shared/logger/logger";
 import { PaymentFor } from "../../../domain/enums/payment.enum";
 import { getNumberOfMonths } from "../../../shared/utils/dateTime";
@@ -11,8 +8,9 @@ import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.r
 import { IPaymentServiceClient } from "../../../domain/interfaces/clients/IPaymentService.client";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
+import { SubscriptionCreateSessionIdRequest } from "../../dtos/subscription";
 
-export class ProviderSubscriptionCheckoutUseCase {
+export class SubscriptionCheckoutUseCase {
     constructor(
         private planRepository: IPlanRepository,
         private providerRepository: IProviderRepository,
@@ -20,7 +18,7 @@ export class ProviderSubscriptionCheckoutUseCase {
         private paymentServiceClient: IPaymentServiceClient,
     ) { };
 
-    async execute(payload: ProviderStripeSubscriptionCreateSessionIdRequest): Promise<string> {
+    async execute(payload: SubscriptionCreateSessionIdRequest): Promise<string> {
         try {
             const { providerId, planId, planDuration } = payload;
 
@@ -63,7 +61,7 @@ export class ProviderSubscriptionCheckoutUseCase {
 
             return data;
         } catch (error) {
-            log.error("ProviderSubscriptionCheckoutUseCase failed", error as Error);
+            log.error("SubscriptionCheckoutUseCase failed", error as Error);
             throw error;
         }
     }

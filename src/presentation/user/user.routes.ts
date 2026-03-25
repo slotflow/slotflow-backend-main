@@ -1,12 +1,11 @@
 import { Router } from "express";
+import { Role } from "../../domain/enums/common.enum";
+import { addressController } from "../address/controller";
+import { authorize } from "../middleware/authRole.middleware";
 import { authMiddleware } from "../middleware/auth.middleware";
 import { userProfileController } from "./userProfile.controller";
-import { userAddressController } from './userAddress.controller';
-import { userPaymentController } from "./userPayment.controller";
 import { userProviderController } from "./userProvider.controller";
 import { userAppServiceController } from "./userAppService.controller";
-import { authorize } from "../middleware/authRole.middleware";
-import { Role } from "../../domain/enums/common.enum";
 
 const router = Router();
 
@@ -17,17 +16,17 @@ router.post('/profile/image', authMiddleware, userProfileController.updateProfil
 router.patch('/profile', authMiddleware, userProfileController.updateUserInfo);
 router.patch('/profile/push-notification', authMiddleware, userProfileController.updatePushNotification)
 
-router.get('/:userId/address', 
+// admin fetch user address
+router.get('/:userId/address',
     authMiddleware,
-    authorize(Role.ADMIN), 
-    userAddressController.getUserAddress
+    authorize(Role.ADMIN),
+    addressController.getAddress
 );
 
 router.get('/providers', authMiddleware, userProviderController.fetchServiceProviders);
 router.get('/providers/:providerId/service', authMiddleware, userProviderController.fetchServiceProviderServiceDetails);
 router.get('/providers/:providerId/availability', authMiddleware, userProviderController.fetchServiceProviderServiceAvailability);
 
-router.get('/payments', authMiddleware, userPaymentController.fetchPayments);
 
 router.get('/chat/providers', authMiddleware, userProviderController.fetchProvidersForChatSidebar);
 

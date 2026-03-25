@@ -1,5 +1,5 @@
 import express from "express";
-import { s3Controller } from "./s3.controller";
+import { s3Controller } from "./controller";
 import { authMiddleware } from "../middleware/auth.middleware";
 
 const router = express.Router();

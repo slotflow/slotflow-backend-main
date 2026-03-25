@@ -1,7 +1,7 @@
 import { SubscriptionModel } from "../models/subscription.model";
 import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 import { ISubscriptionQueries } from "../../application/queries/ISubscription.queries";
-import { AdminFetchDashboardSubscriptionStatsDataResponse } from "../../application/dtos/admin.dto";
+import { FetchSubscriptionDataResponse } from "../../application/dtos/admin.dto";
 import { PopulatedPlan, ProviderFetchSubscribedPlanResponse } from "../../application/dtos/provider.dto";
 import { GetSubscriptionsRequest, GetSubscriptionsResponse, GetSubscriptionDetailsResponse, PlanNameOnly, TableData } from "../../application/dtos/common.dto";
 
@@ -10,12 +10,12 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
     async findAll(payload: GetSubscriptionsRequest): Promise<TableData<GetSubscriptionsResponse>> {
         const { page, limit, providerId } = payload;
         const skip = (page - 1) * limit;
-        
+
         const filter: {
             providerId?: string
         } = {};
 
-        if(providerId) {
+        if (providerId) {
             filter.providerId = providerId
         }
 
@@ -80,7 +80,7 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
         };
     }
 
-    async findStatsForAdminDashboard(): Promise<AdminFetchDashboardSubscriptionStatsDataResponse> {
+    async findStatsForAdminDashboard(): Promise<FetchSubscriptionDataResponse> {
         const subscriptionStatsData = await SubscriptionModel.aggregate([
             {
                 $lookup: {

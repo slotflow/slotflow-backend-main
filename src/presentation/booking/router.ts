@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { Role } from "../../domain/enums/common.enum";
-import { bookingController } from "./booking.controller";
+import { bookingController } from "./controller";
 import { authorize } from "../middleware/authRole.middleware";
 import { authMiddleware } from "../middleware/auth.middleware";
 

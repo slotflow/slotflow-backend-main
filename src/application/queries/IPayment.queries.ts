@@ -1,6 +1,6 @@
 import { TableData } from "../dtos/common.dto";
 import { ProviderFetchDashboardPaymentStatsDataResponse } from "../dtos/provider.dto";
-import { AdminFetchDashboardRevenueStatsDataResponse, AdminFetchDashboardTodayPaymentStatsDataResponse, AdminFetchRevenueReportRequest, AdminFetchRevenueReportResponse } from "../dtos/admin.dto";
+import { FetchRevenueDataResponse, AdminFetchDashboardTodayPaymentStatsDataResponse, AdminFetchRevenueReportRequest, AdminFetchRevenueReportResponse } from "../dtos/admin.dto";
 
 export interface IPaymentQueries {
 
@@ -8,8 +8,8 @@ export interface IPaymentQueries {
 
     findTodayStatsDataForAdminDashboard(): Promise<AdminFetchDashboardTodayPaymentStatsDataResponse>;
 
-    findStatsDataForAdminDashboard(): Promise<AdminFetchDashboardRevenueStatsDataResponse>;
+    findStatsDataForAdminDashboard(): Promise<FetchRevenueDataResponse>;
 
     findAdminRevenueReport(payload: AdminFetchRevenueReportRequest): Promise<TableData<AdminFetchRevenueReportResponse>>;
-    
+
 }

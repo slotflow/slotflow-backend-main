@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { reviewController } from "./review.controller";
+import { reviewController } from "./controller";
 import { authMiddleware } from "../middleware/auth.middleware";
 import { authorize } from "../middleware/authRole.middleware";
 import { Role } from "../../domain/enums/common.enum";

@@ -1,15 +1,15 @@
 import { log } from "../../../shared/logger/logger";
 import { ISubscriptionQueries } from "../../queries/ISubscription.queries";
+import { GetSubscribedPlanRequest, GetSubscribedPlanResponse } from "../../dtos/subscription";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-import { ProviderFetchSubscribedPlanRequest, ProviderFetchSubscribedPlanResponse } from "../../dtos/provider.dto";
 
-export class ProviderFetchSubscribedPlanUseCase {
+export class GetSubscribedPlanUseCase {
     constructor(
         private readonly providerRepository: IProviderRepository,
         private readonly subscriptionQueries: ISubscriptionQueries
     ) { };
 
-    async execute(payload: ProviderFetchSubscribedPlanRequest): Promise<ProviderFetchSubscribedPlanResponse> {
+    async execute(payload: GetSubscribedPlanRequest): Promise<GetSubscribedPlanResponse> {
         console.log("Provider fetching subscription");
         const { providerId } = payload;
         try {
@@ -28,7 +28,7 @@ export class ProviderFetchSubscribedPlanUseCase {
                 subscriptionStatus: result.subscriptionStatus
             };
         } catch (error) {
-            log.error("ProviderFetchAllSubscriptionsUseCase failed", error as Error);
+            log.error("GetSubscribedPlanUseCase failed", error as Error);
             throw error;
         };
     };

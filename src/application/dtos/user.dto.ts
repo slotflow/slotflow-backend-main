@@ -82,20 +82,6 @@ export interface FindProvidersUsingServiceIdsResponse {
 export type UserFetchServiceProvidersResponse = FindProvidersUsingServiceIdsResponse
 
 
-// user fetch provider details use case request payload interface
-export interface UserFetchServiceProviderDetailsRequest {
-    providerId: ProviderDTO["_id"];
-}
-// user fetch provider details use case response interface
-export type UserFetchServiceProviderDetailsResponse = Pick<ProviderDTO, "username" | "email" | "profileImage" | "trustedBySlotflow" | "phone">;
-
-
-// user fetch provider address use case request payload interface
-export interface UserFetchServiceProviderAddressRequest {
-    providerId: ProviderDTO["_id"];
-}
-// user fetch provider address use case response interface
-export type UserFetchServiceProviderAddressResponse = Pick<AddressDTO, "addressLine" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location">
 
 
 // user fetch provider service use case request payload interface
@@ -110,13 +96,6 @@ export interface FindProviderServiceResponse extends FindProviderServiceProps {
 export type UserFetchProviderServiceResponse = FindProviderServiceResponse | null;
 
 
-// user fetch provider service availability use case request payload interface
-export interface UserFetchProviderServiceAvailabilityRequest {
-    providerId: ProviderDTO["_id"];
-    date: Date
-}
-// user fetch provider servide availability use case response interface
-export type UserFetchProviderServiceAvailabilityResponse = FontendAvailabilityForResponse | null;
 
 
 // user fetch providers for chat side bar
