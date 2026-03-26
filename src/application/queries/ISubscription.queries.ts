@@ -1,4 +1,4 @@
-import { ProviderFetchSubscribedPlanResponse } from "../dtos/provider.dto";
+import { GetSubscribedPlanResponse } from "../dtos/subscription";
 import { FetchSubscriptionDataResponse } from "../dtos/admin.dto";
 import { GetSubscriptionsRequest, GetSubscriptionsResponse, GetSubscriptionDetailsResponse, TableData } from "../dtos/common.dto";
 
@@ -14,6 +14,6 @@ export interface ISubscriptionQueries {
 
     findSubscriptionsForUpdatinStatus(): Promise<boolean>;
 
-    findMySubscritpion(subscriptionId: string): Promise<ProviderFetchSubscribedPlanResponse | null>;
+    findMySubscritpion(subscriptionId: string): Promise<GetSubscribedPlanResponse | null>;
 
 };

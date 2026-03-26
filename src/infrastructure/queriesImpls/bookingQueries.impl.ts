@@ -5,10 +5,9 @@ import { BookingModel } from "../models/booking.model";
 import { IBookingQueries } from "../../application/queries/IBooking.queries";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { endOfDay, startOfDay, startOfToday, startOfTomorrow } from "date-fns";
-import { UserFetchProvidersForChatSidebarResponse } from "../../application/dtos/user.dto";
 import { FetchBookingsDataResponse, AdminFetchTodaysBookingStatsForDashboardResponse } from "../../application/dtos/admin.dto";
 import { GetBookingsRequest, TableData, GetBookingsResponse, GetOnlineBookingsForProviderResponse, GetOnlineBookingsForUserResponse, GetBookingDetailsResponse } from "../../application/dtos/common.dto";
-import { ProviderFetchDashboardGraphRepository, FetchGraphDataResponse, ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchUsersForChatSideBarResponse } from "../../application/dtos/provider.dto";
+import { ProviderFetchDashboardGraphRepository, FetchGraphDataResponse, ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchUsersForChatSideBarResponse, GetProvidersForChatResponse } from "../../application/dtos/provider.dto";
 
 export class BookingQueriesImpl implements IBookingQueries {
 
@@ -427,7 +426,7 @@ export class BookingQueriesImpl implements IBookingQueries {
         };
     }
 
-    async findProvidersforChatSideBar(userId: string): Promise<UserFetchProvidersForChatSidebarResponse> {
+    async findProvidersforChatSideBar(userId: string): Promise<GetProvidersForChatResponse> {
         const providers = await BookingModel.aggregate([
             {
                 $match: {

@@ -1,18 +1,39 @@
 import { Router } from "express";
+import { userController } from "./user.controller";
 import { Role } from "../../domain/enums/common.enum";
-import { addressController } from "../address/controller";
 import { authorize } from "../middleware/authRole.middleware";
 import { authMiddleware } from "../middleware/auth.middleware";
-import { userProfileController } from "./userProfile.controller";
-import { userProviderController } from "./userProvider.controller";
-import { userAppServiceController } from "./userAppService.controller";
+import { addressController } from "../address/address.controller";
 
 const router = Router();
 
-router.get('/profile', authMiddleware, userProfileController.getProfileDetails);
-router.post('/profile/image', authMiddleware, userProfileController.updateProfileImage);
-router.patch('/profile', authMiddleware, userProfileController.updateUserInfo);
-router.patch('/profile/push-notification', authMiddleware, userProfileController.updatePushNotification)
+// user fetch profile details
+router.get('/me',
+    authMiddleware,
+    authorize(Role.USER),
+    userController.getProfileDetails
+);
+
+// user update profile image
+router.patch('/me/image',
+    authMiddleware,
+    authorize(Role.USER),
+    userController.updateProfileImage
+);
+
+// user update user info
+router.patch('/me',
+    authMiddleware,
+    authorize(Role.USER),
+    userController.updateUserInfo
+);
+
+// user update push notification
+router.patch('/me/notification-settings',
+    authMiddleware,
+    authorize(Role.USER),
+    userController.updatePushNotification
+)
 
 // admin fetch user address
 router.get('/:userId/address',
@@ -21,11 +42,25 @@ router.get('/:userId/address',
     addressController.getAddress
 );
 
-router.get('/providers', authMiddleware, userProviderController.fetchServiceProviders);
-router.get('/providers/:providerId/service', authMiddleware, userProviderController.fetchServiceProviderServiceDetails);
-router.get('/providers/:providerId/availability', authMiddleware, userProviderController.fetchServiceProviderServiceAvailability);
+// admin block user
+router.patch('/:userId/block',
+    authMiddleware,
+    authorize(Role.ADMIN),
+    userController.changeUserBlockStatus
+);
 
+// admin fetch users
+router.get('/',
+    authMiddleware,
+    authorize(Role.ADMIN, Role.PROVIDER),
+    userController.getUsers
+);
 
-router.get('/chat/providers', authMiddleware, userProviderController.fetchProvidersForChatSidebar);
+// admin fetch user details
+router.get('/:userId',
+    authMiddleware,
+    authorize(Role.ADMIN),
+    userController.getProfileDetails
+);
 
 export default router;

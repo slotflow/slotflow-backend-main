@@ -1,49 +1,8 @@
-import Stripe from "stripe";
-import { Review } from "../../domain/entities/review.entity";
-import { AddressDTO, BookingDTO, ProviderDTO, UserDTO, PlanDTO, ProviderServiceDTO, ServiceDTO, FrontendAvailabilityForRequest, FontendAvailabilityForResponse, FindProviderServiceResponse } from "./common.dto";
-import { SubscriptionStatus, SubscriptionValidity } from "../../domain/enums/subscription.enum";
 import { PlanName } from "../../domain/enums/plan.enum";
+import { Review } from "../../domain/entities/review.entity";
+import { ServiceCategory } from "../../domain/enums/service.enum";
+import { BookingDTO, ProviderDTO, UserDTO, PlanDTO, AddressDTO, ServiceDTO, ProviderServiceDTO } from "./common.dto";
 
-
-// ************ used in providerAddress.use-case ************ \\
-// provider fetch address use case request payload interface
-
-// provider fetch address use case response interface
-
-
-
-
-
-// ************ used in providerService.use-case ************ \\
-
-// proivder create providerservice request type 
-export type CreateProviderServiceRequest = Pick<ProviderServiceDTO, "isGroupService" | "maxParticipants" | "providerId" | "requirements" | "service" | "serviceDescription" | "serviceExperience" | "serviceMode" | "serviceName" | "servicePrice" | "serviceType" | "tags" | "videoUrl">;
-
-// provider fetch service details use case request payload
-export interface ProviderFetchProviderServiceRequest {
-    providerId: ProviderDTO["_id"];
-}
-// provider fetch service details use case respomse interface
-export type ProviderFetchProviderServiceResponse = FindProviderServiceResponse | null;
-
-
-// provider update service details use case request type
-export type ProviderUpdateProviderServiceRequest = Pick<ProviderServiceDTO, "_id" | "service" | "serviceName" | "serviceDescription" | "servicePrice" | "isGroupService" | "maxParticipants" | "serviceExperience" | "serviceMode" | "serviceType" | "tags"> & Partial<Pick<ProviderServiceDTO, "videoUrl" | "requirements">>;
-export type ProviderUpdateProviderServiceResponse = FindProviderServiceResponse | null;
-
-
-
-
-
-// ************ used in providerPlan.use-case ************ \\
-// provider fetch all plans use case response interface 
-export type ProviderFetchAllPlansResponse = Array<Pick<PlanDTO, "_id" | "planName" | "price" | "features" | "description">> | [];
-
-
-
-
-
-// ************ used in providerProfile.use-case ************ \\
 // provider fetch profile detals use case request payload interface
 export interface ProviderFetchProfileDetailsRequest {
     providerId: ProviderDTO["_id"];
@@ -51,14 +10,13 @@ export interface ProviderFetchProfileDetailsRequest {
 // provider fetch profile detals use case response interface
 export type ProviderFetchProfileDetailsResponse = Pick<ProviderDTO, "username" | "email" | "isAdminVerified" | "isBlocked" | "isEmailVerified" | "phone" | "createdAt" | "trustedBySlotflow" | "updatedAt" | "adminVerificationStatus" | "isAddressVerified" | "isAvailabilityVerified" | "isProofsVerified" | "isServiceDetailsVerified"> | null;
 
-
 // provider update profile image use case request payload interface
 export type ProviderUpdateprofileImageRequestPayload = Pick<ProviderDTO, "profileImage"> & {
     providerId: ProviderDTO["_id"];
 }
+
 // provider update profile image use case response interface 
 export type ProviderUpdateprofileImageResponse = ProviderDTO["profileImage"];
-
 
 // provider update providerInfo request payload interface
 export interface ProviderUpdateProviderInfoRequest {
@@ -66,6 +24,7 @@ export interface ProviderUpdateProviderInfoRequest {
     username?: ProviderDTO["username"];
     phone?: ProviderDTO["phone"];
 }
+
 // provider update provider info use case response interface
 export type ProviderUpdateProviderInfoResponse = Pick<ProviderDTO, "username" | "phone">;
 
@@ -83,12 +42,15 @@ export type ProviderUpdateServiceProofRequest = Pick<ProviderDTO, "serviceProof"
 // provider update service proof use case response interface
 export type ProviderUpdateServiceProofResponse = ProviderDTO["serviceProof"];
 
+// provider update profile request payload interface
 export type ProviderUpdateProfileRequest = Pick<ProviderDTO, "_id"> & Partial<Pick<ProviderDTO, "username" | "profileImage" | "phone" | "identityProof" | "serviceProof" | "googleConnected" | "addressId" | "googleId" | "isAdminVerified" | "isEmailVerified" | "isBlocked" | "serviceAvailabilityId" | "serviceId" | "stripeAccountId" | "verificationToken" | "trustedBySlotflow" | "subscription" | "password">>
 
 // provider admin approval
 export interface ProviderAdminApprovalRequest {
     providerId: ProviderDTO["_id"];
 }
+
+// provider admin approval response interface
 export type ProviderAdminApprovalResponse = Pick<ProviderDTO, "adminVerificationStatus">;
 
 // provider delete proof request
@@ -96,46 +58,25 @@ export interface ProviderDeleteProofRequest {
     providerId: ProviderDTO["_id"];
 }
 
-//
+// provider update push notification request payload interface
 export interface ProviderUpdatePushNotificationRequest {
     providerId: ProviderDTO["_id"];
     allowPushNotification: boolean;
 }
 
-
-
-
-// ************ used in providerStripeSubscription.use-case ************ \\
-// provider stripe subscription create sessionId use case  request payload interface
-
-
-
-
-
-// ************ used in providerSubscription.use-case  ************ \\
-// provider trial subscription use case reuest payload
-
-
-
-
-
-// ************ used in providerUser.use-case  ************ \\
 // provider fetch users for the chat sidebar
 export interface ProviderFetchUsersForChatSideBarRequest {
     providerId: ProviderDTO["_id"];
 }
+// provider fetch users for the chat sidebar response interface
 export type ProviderFetchUsersForChatSideBarResponse = Array<Pick<UserDTO, "_id" | "username" | "profileImage">>
 
-
-
-
-
-// ************ used in providerDashboard.use-case  ************ \\
+// provider fetch dashboard stats data request payload interface
 export interface FetchStatsDataRequest {
     providerId: ProviderDTO["_id"];
 }
-// Used as the response interface for the provider fetch dashboard data
-export interface FetchStatsDataResponse extends ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchDashboardPaymentStatsDataResponse { }
+// provider fetch dashboard stats data response interface
+export interface FetchStatsDataResponse extends ProviderFetchDashboardBookingStatsDataResponse { }
 export interface ProviderFetchDashboardBookingStatsDataResponse {
     totalAppointments: number;
     completedAppointments: number;
@@ -144,16 +85,6 @@ export interface ProviderFetchDashboardBookingStatsDataResponse {
     rejectedAppointmentsByProvider: number;
     todaysAppointments: number;
 }
-export interface ProviderFetchDashboardPaymentStatsDataResponse {
-    totalSubscriptionPaidAmount: number;
-    totalEarnings: number;
-    todaysEarnings: number;
-    totalPayoutsMade: number;
-    pendingPayout: number;
-};
-
-
-// ************ used in providerDashboard.use-case  ************ \\
 
 // Used as the request interface for the provider fetch dashboard graph data
 export interface FetchGraphDataRequest {
@@ -162,6 +93,7 @@ export interface FetchGraphDataRequest {
     startDate?: Date,
     endDate?: Date,
 }
+
 // Used as the return interface for the provider fetch dashboard graph data
 export interface FetchGraphDataResponse {
     appointmentsOvertimeChartData: Array<{
@@ -200,24 +132,10 @@ export interface FetchGraphDataResponse {
     }>;
 }
 
-
-
-
-
-// ************ used in providerBooking.use-case  ************ \\
 // Used as the request type for the provider change booking appointment status
 export type ProviderChangeBookingAppoinmentStatusRequest = Pick<BookingDTO, "_id" | "appointmentStatus"> & {
     providerId: ProviderDTO["_id"];
 };
-
-
-
-// Provider Stripe UseCase
-// export interface ProviderStripeConnectRequest {
-//     providerId: ProviderDTO["_id"];
-// }
-// export type ProviderStripeConnectResponse = Stripe.Response<Stripe.AccountLink>;
-
 
 // Provider Report UseCase
 export interface RepostReviewRequest {
@@ -225,13 +143,66 @@ export interface RepostReviewRequest {
     providerId: ProviderDTO["_id"];
 }
 
-
+// provider fetch dashboard graph repository interface
 export type ProviderFetchDashboardGraphRepository = Omit<FetchGraphDataRequest, "subscription"> & {
     subscriptionGuard: number;
 }
 
+// populated plan interface
 export interface PopulatedPlan {
     subscriptionPlanId: {
         planName: PlanName;
     }
 }
+
+// user fetch service provider details request payload interface
+export interface UserFetchServiceProviderDetailsRequest {
+    providerId: string;
+}
+
+// user fetch service provider details response interface
+export type UserFetchServiceProviderDetailsResponse = Pick<ProviderDTO, "username" | "email" | "phone" | "profileImage" | "trustedBySlotflow">;
+
+// get providers by filter request payload interface
+export interface GetProvidersByFilterRequest {
+    serviceIds?: string[];
+    categories?: ServiceCategory[];
+    location?: AddressDTO["location"];
+    maxPrice?: number;
+    minPrice?: number;
+    slotflowTrusted?: boolean;
+    radius?: number;
+    skip?: number;
+    limit?: number;
+};
+
+// find providers using service ids response interface
+export interface FindProvidersUsingServiceIdsResponse {
+    _id: string;
+    provider: {
+        _id: string;
+        username: string;
+        profileImage: string | null;
+        trustedBySlotflow: boolean;
+    },
+    serviceDetails: {
+        serviceId: string;
+        service: ServiceDTO["serviceName"];
+        serviceCategory: ServiceDTO["serviceCategory"];
+        serviceName: ProviderServiceDTO["serviceName"];
+        servicePrice: ProviderServiceDTO["servicePrice"];
+    }
+}
+
+// get providers by filter response interface
+export type GetProvidersByFilterResponse = FindProvidersUsingServiceIdsResponse
+
+// get providers for chat request payload interface
+export interface GetProvidersForChatRequest {
+    userId: string
+}
+
+// get providers for chat response interface
+export type GetProvidersForChatResponse = Array<Pick<ProviderDTO, "_id" | "username" | "profileImage">>;
+
+

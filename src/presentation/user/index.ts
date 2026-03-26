@@ -1,16 +1,25 @@
-import { signedUrlService } from "../../infrastructure/services";
+import { kafkaProducer } from "../../infrastructure/messaging";
 import { userRepository } from "../../infrastructure/repositoryImpls";
-import { bookingQueries, providerServiceQueries } from "../../infrastructure/queriesImpls";
-import { UserFetchProvidersForChatSidebarUseCase, UserFetchServiceProviderServiceDetailsUseCase, UserFetchServiceProvidersUseCase } from "../../application/useCases/user/userProvider.useCase";
-import { UserFetchProfileDetailsUseCase, UserUpdateProfileImageUseCase, UserUpdateProviderInfoUseCase, UserUpdatePushNotificationUseCase } from "../../application/useCases/user/userProfile.useCase";
+import { cacheService, signedUrlService } from "../../infrastructure/services";
+import { bookingQueries, userQueries } from "../../infrastructure/queriesImpls";
+import { GetUsersUseCase } from "../../application/useCases/user/getUsers.useCase";
+import { GetUserProfileDetailsUseCase } from "../../application/useCases/user/getUserProfile.useCase";
+import { ChangeUserBlockStatusUseCase } from "../../application/useCases/user/changeUserBlockStatus.useCase";
+import { UpdateUserProfileInfoUseCase } from "../../application/useCases/user/updateUserProfileInfo.useCase";
+import { ChangePushNotificationUseCase } from "../../application/useCases/user/changePushNotification.useCase";
+import { UpdateUserProfileImageUseCase } from "../../application/useCases/user/updateUserProfileImage.useCase";
+import { ProviderFetchUserForChatSidebarUseCase } from "../../application/useCases/provider/providerUser.useCase";
 
-// user profile controller dependency injection
-export const userUpdateProviderInfoUseCase = new UserUpdateProviderInfoUseCase(userRepository);
-export const userFetchProfileDetailsUseCase = new UserFetchProfileDetailsUseCase(userRepository);
-export const userUpdateProfileImageUseCase = new UserUpdateProfileImageUseCase(userRepository, signedUrlService);
-export const userUpdatePushNotificationUseCase = new UserUpdatePushNotificationUseCase(userRepository);
+export const updateUserProfileInfoUseCase = new UpdateUserProfileInfoUseCase(userRepository);
 
-// user provider controller dependency injection
-export const userFetchServiceProvidersUseCase = new UserFetchServiceProvidersUseCase(signedUrlService, providerServiceQueries);
-export const userFetchProvidersForChatSidebarUseCase = new UserFetchProvidersForChatSidebarUseCase(signedUrlService, bookingQueries);
-export const userFetchServiceProviderServiceDetailsUseCase = new UserFetchServiceProviderServiceDetailsUseCase(providerServiceQueries);
+export const updateUserProfileImageUseCase = new UpdateUserProfileImageUseCase(userRepository, signedUrlService);
+
+export const changePushNotificationUseCase = new ChangePushNotificationUseCase(userRepository);
+
+export const changeUserBlockStatusUseCase = new ChangeUserBlockStatusUseCase(userRepository, kafkaProducer, cacheService);
+
+export const getUserProfileDetailsUseCase = new GetUserProfileDetailsUseCase(userRepository, signedUrlService);
+
+export const providerFetchUserForChatSidebarUseCase = new ProviderFetchUserForChatSidebarUseCase(signedUrlService, bookingQueries);
+
+export const getUsersUseCase = new GetUsersUseCase(userQueries);

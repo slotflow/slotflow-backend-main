@@ -1,8 +1,9 @@
 import { SubscriptionModel } from "../models/subscription.model";
+import { PopulatedPlan } from "../../application/dtos/provider.dto";
 import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
-import { ISubscriptionQueries } from "../../application/queries/ISubscription.queries";
 import { FetchSubscriptionDataResponse } from "../../application/dtos/admin.dto";
-import { PopulatedPlan, ProviderFetchSubscribedPlanResponse } from "../../application/dtos/provider.dto";
+import { GetSubscribedPlanResponse } from "../../application/dtos/subscription";
+import { ISubscriptionQueries } from "../../application/queries/ISubscription.queries";
 import { GetSubscriptionsRequest, GetSubscriptionsResponse, GetSubscriptionDetailsResponse, PlanNameOnly, TableData } from "../../application/dtos/common.dto";
 
 export class SubscriptionQueriesImpl implements ISubscriptionQueries {
@@ -158,7 +159,7 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
         return updated.modifiedCount > 0;
     }
 
-    async findMySubscritpion(subscriptionId: string): Promise<ProviderFetchSubscribedPlanResponse | null> {
+    async findMySubscritpion(subscriptionId: string): Promise<GetSubscribedPlanResponse | null> {
         const subscription = await SubscriptionModel
             .findOne({ _id: subscriptionId })
             .sort({ createdAt: -1 })

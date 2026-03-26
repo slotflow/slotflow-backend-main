@@ -1,9 +1,9 @@
 import { FilterQuery } from "mongoose";
-import { Review } from "../../domain/entities/review.entity";
 import { ReviewModel } from "../models/review.model";
+import { Role } from "../../domain/enums/common.enum";
+import { Review } from "../../domain/entities/review.entity";
 import { IReviewQueries } from "../../application/queries/IReview.queries";
 import { GetReviesRequest, TableData, GetReviewsResponse } from "../../application/dtos/common.dto";
-import { Role } from "../../domain/enums/common.enum";
 
 export class ReviewQueriesImpl implements IReviewQueries {
 

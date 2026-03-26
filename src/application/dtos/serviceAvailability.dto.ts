@@ -9,6 +9,7 @@ export interface FetchServiceAvailabilityRequest {
 // fetch provider service availability use case response interface
 export type FetchServiceAvailabilityResponse = FontendAvailabilityForResponse | null;
 
+// create service availability request payload interface
 export interface CreateServiceAvailabilityRewuest {
     providerId: string;
     availabilities: FrontendAvailabilityForRequest[]

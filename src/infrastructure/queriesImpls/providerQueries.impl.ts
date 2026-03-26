@@ -1,6 +1,6 @@
 import { ProviderModel } from "../models/provider.model";
-import { IProviderQueries } from "../../application/queries/IProvider.queries";
 import { FetchProviderDataResponse } from "../../application/dtos/admin.dto";
+import { IProviderQueries } from "../../application/queries/IProvider.queries";
 
 export class ProviderQueriesImpl implements IProviderQueries {
 

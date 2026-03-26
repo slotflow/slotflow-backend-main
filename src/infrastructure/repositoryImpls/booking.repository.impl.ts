@@ -3,7 +3,6 @@ import { BookingMapper } from "../mappers/booking.mapper";
 import { Booking } from "../../domain/entities/booking.entity";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { IBookingRepository } from "../../domain/interfaces/repositories/IBooking.repository";
-import { endOfDay, startOfDay } from "date-fns";
 
 export class BookingRepositoryImpl implements IBookingRepository {
 

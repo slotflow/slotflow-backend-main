@@ -1,8 +1,7 @@
 import { CommonResponse } from "./common.dto";
-import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
 import { Role } from "../../domain/enums/common.enum";
+import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
 
-// **** Register usec case
 // user or provider register usecase request payload interface
 export interface RegisterRequest {
     username: string;
@@ -20,7 +19,6 @@ export interface RegisterResponse {
 }
 
 
-// **** OTP Verification use case
 // user or provider OTP Verification usecase request payload interface
 export interface OTPVerificationRequest {
     otp: string;
@@ -34,7 +32,6 @@ export interface VerifyAndActivateEntityRequest {
 }
 
 
-// **** Resend OTP use case
 // user or provider Resend use case request payload interface
 export interface ResendOtpRequest {
     role: Role;
@@ -49,7 +46,6 @@ export interface ResendOtpResponse {
 }
 
 
-// **** Login use case
 // user or provider login use case request payload interface
 export interface LoginRequest {
     email: string;
@@ -88,7 +84,6 @@ export interface LoginResponse {
 }
 
 
-// **** Update password use case
 // user or provider update password use case request payload interface
 export interface UpdatePasswordRequest {
     role: Role;
@@ -97,7 +92,6 @@ export interface UpdatePasswordRequest {
 }
 
 
-// **** Check status
 // check user status use case request payload interface
 export interface CheckUserStatusRequest {
     _id: string;
@@ -109,6 +103,7 @@ export interface CheckUserStatusResponse extends CommonResponse {
 }
 
 
+// google auth orchestration use case request payload interface
 export interface GoogleAuthOrchestrationRequest {
     googleId: string;
     email: string;
@@ -122,6 +117,7 @@ export interface GoogleAuthOrchestrationRequest {
     expiryDate: Date;
 }
 
+// google auth orchestration use case response interface
 export interface GoogleAuthOrchestrationResponse {
     token?: string;
     user: {

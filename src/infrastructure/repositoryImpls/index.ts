@@ -5,7 +5,6 @@ import { UserRepositoryImpl } from "./user.repository.impl";
 import { ReviewRepositoryImpl } from "./review.repository.impl";
 import { AddressRepositoryImpl } from "./address.repository.impl";
 import { BookingRepositoryImpl } from "./booking.repository.impl";
-import { PaymentRepositoryImpl } from "./payment.repository.impl";
 import { ServiceRepositoryImpl } from "./service.repository.impl";
 import { ProviderRepositoryImpl } from "./provider.repository.impl";
 import { CredentialRepositoryImpl } from "./credential.repository.impl";
@@ -17,7 +16,6 @@ import { IPlanRepository } from "../../domain/interfaces/repositories/IPlan.repo
 import { IUserRepository } from "../../domain/interfaces/repositories/IUser.repository";
 import { IReviewRepository } from "../../domain/interfaces/repositories/IReview.repository";
 import { IBookingRepository } from "../../domain/interfaces/repositories/IBooking.repository";
-import { IPaymentRepository } from "../../domain/interfaces/repositories/IPayment.repository";
 import { IAddressRepository } from "../../domain/interfaces/repositories/IAddress.repository";
 import { IServiceRepository } from "../../domain/interfaces/repositories/IService.repository";
 import { IProviderRepository } from "../../domain/interfaces/repositories/IProvider.repository";
@@ -36,7 +34,6 @@ export const bookingRepository: IBookingRepository = new BookingRepositoryImpl()
 export const credentialRepository: ICredentialRepository = new CredentialRepositoryImpl();
 
 // payment repository instance
-export const paymentRepository: IPaymentRepository = new PaymentRepositoryImpl();
 
 // plan repository instance
 export const planRepository: IPlanRepository = new PlanRepositoryImpl();

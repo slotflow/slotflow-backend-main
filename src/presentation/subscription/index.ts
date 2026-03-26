@@ -8,17 +8,12 @@ import { planRepository, providerRepository, subscriptionRepository } from "../.
 import { kafkaProducer } from "../../infrastructure/messaging";
 import { paymentServiceClient } from "../../infrastructure/clients";
 
-// 
 export const getSubscriptionsUseCase = new GetSubscriptionsUseCase(subscriptionQueries);
 
-// provider subscription controller dependency injection
 export const getSubscriptionDetailsUseCase = new GetSubscriptionDetailsUseCase(subscriptionQueries);
 
-// 
 export const trialSubscriptionUseCase = new TrialSubscriptionUseCase(providerRepository, subscriptionRepository, planRepository, kafkaProducer);
 
-// 
 export const subscriptionCheckoutUseCase = new SubscriptionCheckoutUseCase(planRepository, providerRepository, subscriptionRepository, paymentServiceClient);
 
-// 
 export const getSubscribedPlanUseCase = new GetSubscribedPlanUseCase(providerRepository, subscriptionQueries);

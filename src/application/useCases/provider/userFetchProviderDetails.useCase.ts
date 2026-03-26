@@ -1,7 +1,7 @@
 import { log } from "../../../shared/logger/logger";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-import { UserFetchServiceProviderDetailsRequest, UserFetchServiceProviderDetailsResponse } from "../../dtos/user.dto";
+import { UserFetchServiceProviderDetailsRequest, UserFetchServiceProviderDetailsResponse } from "../../dtos/provider.dto";
 
 export class UserFetchProviderDetailsUseCase {
   constructor(

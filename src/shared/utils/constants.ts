@@ -77,3 +77,5 @@ export const notificationContentMap: Record<string, {
       `You have got an appointment for ${appointmentDate}.`
   }
 };
+
+export const daysOfWeek: string[] = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];

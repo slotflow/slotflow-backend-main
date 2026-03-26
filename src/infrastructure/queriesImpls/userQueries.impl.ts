@@ -1,7 +1,8 @@
 import { UserModel } from "../models/user.model";
+import { GetUsersResponse } from "../../application/dtos/user.dto";
 import { IUserQueries } from "../../application/queries/IUser.queries";
+import { FetchUserDataResponse } from "../../application/dtos/admin.dto";
 import { ApiPaginationRequest, TableData } from "../../application/dtos/common.dto";
-import { AdminFetchAllUsers, FetchUserDataResponse } from "../../application/dtos/admin.dto";
 
 export class UserQueriesImpl implements IUserQueries {
 
@@ -23,7 +24,7 @@ export class UserQueriesImpl implements IUserQueries {
         };
     };
 
-    async findAll({ page, limit }: ApiPaginationRequest): Promise<TableData<AdminFetchAllUsers>> {
+    async findAll({ page, limit }: ApiPaginationRequest): Promise<TableData<GetUsersResponse>> {
         const skip = (page - 1) * limit;
         const [users, totalCount] = await Promise.all([
             UserModel.find({}, {
@@ -32,7 +33,7 @@ export class UserQueriesImpl implements IUserQueries {
                 email: 1,
                 isBlocked: 1,
                 isEmailVerified: 1
-            }).skip(skip).limit(limit).lean<AdminFetchAllUsers>(),
+            }).skip(skip).limit(limit).lean<GetUsersResponse>(),
             UserModel.countDocuments(),
 
         ])

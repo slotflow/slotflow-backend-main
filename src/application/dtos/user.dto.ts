@@ -1,114 +1,44 @@
 import { Review } from "../../domain/entities/review.entity";
-import { ServiceCategory, ServiceMode } from "../../domain/enums/service.enum";
-import { ProviderService } from "../../domain/entities/providerService.entity";
-import { AddressDTO, UserDTO, ProviderDTO, BookingDTO, ServiceDTO, ProviderServiceDTO, FontendAvailabilityForResponse, TimeSlotForFrontendResponse, ReviewDTO } from "./common.dto";
-
-
-// ************ used in userProfile.use-case ************ \\
-// user fetch profile use case request payload interface
-export interface UserFetchProfileRequest {
-    userId: UserDTO["_id"];
-}
-// user fetch profile details use case response interface
-export type UserFetchProfileDetailsResponse = Pick<UserDTO, "username" | "email" | "isBlocked" | "isEmailVerified" | "phone" | "createdAt"> | {};
-
+import { ServiceMode } from "../../domain/enums/service.enum";
+import { UserDTO, ProviderDTO, BookingDTO, ServiceDTO, ProviderServiceDTO, TimeSlotForFrontendResponse, ReviewDTO } from "./common.dto";
 
 // user update profile image use case request payload interface 
-export type UsrUpdateProfileImageRequest = Pick<UserDTO, "profileImage"> & {
+export type UpdateUserProfileImageRequest = Pick<UserDTO, "profileImage"> & {
     userId: UserDTO["_id"],
 }
-// user update profile image use case response interface
-export type UserUpdateProfileImageResponse = UserDTO["profileImage"];
 
+// user update profile image use case response interface
+export type UpdateUserProfileImageResponse = UserDTO["profileImage"];
 
 // user update user info request payload interface
-export interface UserUpdateUserInfoRequest {
+export interface UpdateUserProfileInfoRequest {
     userId: UserDTO["_id"];
     username: UserDTO["username"];
     phone: UserDTO["phone"];
 }
-// user update user info use case response interface
-export type UserUpdateUserInfoResponse = Pick<UserDTO, "username" | "phone">
 
-//
-export interface UserUpdatePushNotificationRequest {
+// user update user info use case response interface
+export type UpdateUserProfileInfoResponse = Pick<UserDTO, "username" | "phone">
+
+// change push notification request
+export interface ChangePushNotificationRequest {
     userId: UserDTO["_id"];
     allowPushNotification: boolean;
 };
-
-
-
-
-// ************ used in userAddress.use-case ************ \\
-
-// user fetch user address use case request payload interface
-
-// user fetch user address use case response interface
-
-
-
-
-// ************ used in userProvider.use-case ************ \\
-
-// user fetch service providers use case request payload interface
-export interface UserFetchServiceProvidersRequest {
-    serviceIds?: ProviderService["_id"][];
-    categories?: ServiceCategory[];
-    location?: AddressDTO["location"];
-    maxPrice?: number;
-    minPrice?: number;
-    slotflowTrusted?: boolean;
-    radius?: number;
-    skip?: number;
-    limit?: number;
-};
-// user fetch service providers use case response interface
-export interface FindProvidersUsingServiceIdsResponse {
-    _id: string;
-    provider: {
-        _id: string;
-        username: string;
-        profileImage: string | null;
-        trustedBySlotflow: boolean;
-    },
-    serviceDetails: {
-        serviceId: string;
-        service: ServiceDTO["serviceName"];
-        serviceCategory: ServiceDTO["serviceCategory"];
-        serviceName: ProviderServiceDTO["serviceName"];
-        servicePrice: ProviderServiceDTO["servicePrice"];
-    }
-}
-export type UserFetchServiceProvidersResponse = FindProvidersUsingServiceIdsResponse
-
-
-
 
 // user fetch provider service use case request payload interface
 export interface UserFetchServiceproviderServiceRequest {
     providerId: ProviderDTO["_id"];
 }
+
 // user fetch provider service use case response interface
 type FindProviderServiceProps = Pick<ProviderServiceDTO, "serviceName" | "serviceDescription" | "servicePrice" | "serviceExperience" | "videoUrl" | "serviceType" | "serviceMode" | "requirements" | "maxParticipants" | "isGroupService">;
 export interface FindProviderServiceResponse extends FindProviderServiceProps {
     service: Pick<ServiceDTO, "serviceName">
 }
+
+// user fetch provider service use case response interface
 export type UserFetchProviderServiceResponse = FindProviderServiceResponse | null;
-
-
-
-
-// user fetch providers for chat side bar
-export interface UserFetchProvidersForChatSidebarRequest {
-    userId: UserDTO["_id"]
-}
-export type UserFetchProvidersForChatSidebarResponse = Array<Pick<ProviderDTO, "_id" | "username" | "profileImage">>;
-
-
-
-
-
-// ************ used in userBooking.use-case ************ \\
 
 // user appointment booking via stripe creating session id use case request payload
 export interface UserAppointmentBookingViaStripeRequest {
@@ -119,21 +49,17 @@ export interface UserAppointmentBookingViaStripeRequest {
     date: Date
 }
 
-
 // use save appointment booking after stripe payment use case request payload
 export interface UserSaveAppoinmentBookingRequest {
     userId: UserDTO["_id"];
     sessionId: string;
 }
 
-
 // user can cel booking use case request payload interface
 export interface UserCancelBookingRequest {
     userId: UserDTO["_id"];
     bookingId: BookingDTO["_id"];
 }
-
-
 
 // user create review request
 export type CreateReviewRequset = Pick<ReviewDTO, "reviewText" | "rating" | "userId" | "providerId" | "bookingId">;
@@ -143,3 +69,22 @@ export interface UserDeleteReviewRequest {
     reviewId: Review["_id"];
     userId: UserDTO["_id"];
 }
+
+// Used as the request interface of admin fetch user profile details
+export interface GetUserProfileDetailsRequest {
+    userId: UserDTO["_id"];
+    isAdmin: boolean;
+}
+// Used as the response type of admin fetch user profile details
+export type GetUserProfileDetailsResponse = Pick<UserDTO, "username" | "phone" | "isEmailVerified" | "isBlocked" | "email" | "createdAt"> & Partial<Pick<UserDTO, "profileImage">> | null;
+
+// Used as the request interface of admin change block status of user  
+export interface ChangeUserIsBlockedStatusRequest {
+    userId: UserDTO["_id"];
+    isBlocked: UserDTO["isBlocked"];
+};
+// Used as the response type of admin change user block status
+export type ChangeUserIsBlockedStatusResponse = ChangeUserIsBlockedStatusRequest;
+
+// admin fetch users response interface
+export type GetUsersResponse = Array<Pick<UserDTO, "_id" | "username" | "email" | "isBlocked" | "isEmailVerified">>;

@@ -20,7 +20,7 @@ export class ServiceRepositoryImpl implements IServiceRepository {
                 serviceName: 1,
                 serviceCategory: 1,
                 isBlocked: 1,
-            }).skip(skip).limit(limit).lean(),
+            }).skip(skip).limit(limit),
             ServiceModel.countDocuments(),
         ])
         const totalPages = Math.ceil(totalCount / limit);

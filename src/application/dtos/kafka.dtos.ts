@@ -2,7 +2,6 @@ import { KafkaMessage } from "kafkajs";
 import { PlanName } from "../../domain/enums/plan.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
-import { PaymentFor, PaymentGateway, PaymentStatus } from "../../domain/enums/payment.enum";
 import { AppConnect, NotificationType, OtpPurpose, Role } from "../../domain/enums/common.enum";
 import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 
@@ -159,15 +158,15 @@ export interface ProviderSubscriptionUpdatedEvent {
 
 // send provider payment request event
 export interface SendProviderPaymentRequestEvent {
-  transactionId: string,
-  paymentStatus: PaymentStatus,
-  paymentMethod: string,
-  paymentGateway: PaymentGateway,
-  paymentFor: PaymentFor,
-  initialAmount: number,
-  discountAmount: number,
-  totalAmount: number,
-  providerId: string,
+  transactionId: string;
+  paymentStatus: String;
+  paymentMethod: string;
+  paymentGateway: string;
+  paymentFor: string;
+  initialAmount: number;
+  discountAmount: number;
+  totalAmount: number;
+  providerId: string;
   subscriptionId: string;
   planDuration: number;
 }
@@ -178,8 +177,8 @@ export interface SendUserPaymentEvent extends SendEmailCommon {
   transactionId: string;
   paymentDate: string;
   appointmentDate: string;
-  paymentStatus: PaymentStatus;
-  paymentFor: PaymentFor;
+  paymentStatus: string;
+  paymentFor: string;
 }
 
 // send provider payment event
@@ -189,8 +188,8 @@ export interface SendProviderPaymentEvent extends SendEmailCommon {
   paymentDate: string;
   subscriptionStartDate: string;
   subscriptionEndDate: string;
-  paymentStatus: PaymentStatus;
-  paymentFor: PaymentFor;
+  paymentStatus: string;
+  paymentFor: string;
 }
 
 // send provider payout event
@@ -202,16 +201,16 @@ export interface SendProviderPayoutEvent extends SendEmailCommon {
 
 // send payment request event
 export interface SendPaymentRequestEvent {
-  transactionId: string,
-  paymentStatus: string,
-  paymentMethod: string,
-  paymentGateway: PaymentGateway,
-  paymentFor: PaymentFor,
-  initialAmount: number,
-  discountAmount: number,
-  totalAmount: number,
-  providerId?: string,
-  userId?: string,
+  transactionId: string;
+  paymentStatus: string;
+  paymentMethod: string;
+  paymentGateway: string;
+  paymentFor: string;
+  initialAmount: number;
+  discountAmount: number;
+  totalAmount: number;
+  providerId?: string;
+  userId?: string;
 }
 
 export interface BookingSavedEvent {

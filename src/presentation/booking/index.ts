@@ -8,9 +8,9 @@ import { BookingCheckoutUseCase } from "../../application/useCases/booking/booki
 import { GetBookingDetailsUsecase } from "../../application/useCases/booking/getBookingDetails.useCase";
 import { ValidateJoinRoomUsecase } from "../../application/useCases/booking/validateJoinRoom.useCase";
 import { ChangeBookingStatusUseCase } from "../../application/useCases/booking/changeBookingStatus.useCase";
+import { bookingRepository, providerRepository, userRepository } from "../../infrastructure/repositoryImpls";
 import { bookingQueries, providerServiceQueries, serviceAvailabilityQueries } from "../../infrastructure/queriesImpls";
 import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/booking/updateBookingOnlineTracking.useCase";
-import { bookingRepository, paymentRepository, providerRepository, userRepository } from "../../infrastructure/repositoryImpls";
 
 export const getBookingsUseCase = new GetBookingsUseCase(bookingQueries);
 
@@ -22,7 +22,7 @@ export const checkBookingUseCase = new CheckBookingUseCase(bookingRepository);
 
 export const bookingCheckoutUseCase = new BookingCheckoutUseCase(providerRepository, bookingRepository, providerServiceQueries, serviceAvailabilityQueries, userRepository, paymentServiceClient);
 
-export const cancelBookingUseCase = new CancelBookingUseCase(userRepository, bookingRepository, paymentRepository)
+export const cancelBookingUseCase = new CancelBookingUseCase(userRepository, bookingRepository);
 
 export const updateBookingOnlineTrakingUseCase = new UpdateBookingOnlineTrakingUseCase(bookingRepository, serviceAvailabilityQueries);
 

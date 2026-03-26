@@ -3,9 +3,9 @@ import { PipelineStage } from "mongoose";
 import { ProviderServiceModel } from "../models/providerService.model";
 import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 import { FindProviderServiceResponse } from "../../application/dtos/common.dto";
-import { UserFetchServiceProvidersRequest, UserFetchServiceProvidersResponse } from "../../application/dtos/user.dto";
 import { IProviderServiceQueries } from "../../application/queries/IProviderService.queries";
-import { ProviderUpdateProviderServiceRequest, ProviderUpdateProviderServiceResponse } from "../../application/dtos/provider.dto";
+import { GetProvidersByFilterRequest, GetProvidersByFilterResponse } from "../../application/dtos/provider.dto";
+import { UpdateProviderServiceRequest, UpdateProviderServiceResponse } from "../../application/dtos/providerService";
 
 export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
 
@@ -27,7 +27,7 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
         };
     };
 
-    async findProvidersUsingServiceIds(payload: UserFetchServiceProvidersRequest): Promise<UserFetchServiceProvidersResponse[]> {
+    async findProvidersUsingServiceIds(payload: GetProvidersByFilterRequest): Promise<GetProvidersByFilterResponse[]> {
 
         const pipeline: PipelineStage[] = [];
         const now = new Date();
@@ -242,7 +242,7 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
     };
 
 
-    async updateProviderService(payload: ProviderUpdateProviderServiceRequest): Promise<ProviderUpdateProviderServiceResponse | null> {
+    async updateProviderService(payload: UpdateProviderServiceRequest): Promise<UpdateProviderServiceResponse | null> {
         const { _id, ...data } = payload;
         const service = await ProviderServiceModel.findOneAndUpdate(
             { _id: new Types.ObjectId(_id) },
@@ -253,7 +253,7 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
                 path: "service",
                 select: "-_id serviceName",
             })
-            .lean<ProviderUpdateProviderServiceResponse>();
+            .lean<UpdateProviderServiceResponse>();
 
         if (!service) return null;
         return {

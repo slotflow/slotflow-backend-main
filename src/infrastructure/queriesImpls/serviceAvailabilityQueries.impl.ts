@@ -1,10 +1,9 @@
 import { Types } from "mongoose";
+import { daysOfWeek } from "../../shared/utils/constants";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { ServiceAvailabilityModel } from "../models/serviceAvailability.model";
 import { IServiceAvailabilityQueries } from "../../application/queries/IServiceAvailability.queries";
 import { FontendAvailabilityForResponse, TimeSlotForFrontendResponse } from "../../application/dtos/common.dto";
-
-const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 export class ServiceAvailabilityQueriesImpl implements IServiceAvailabilityQueries {
 
@@ -16,7 +15,6 @@ export class ServiceAvailabilityQueriesImpl implements IServiceAvailabilityQueri
         endOfDay.setHours(23, 59, 59, 999);
 
         const targetDay = daysOfWeek[date.getDay()];
-        console.log("targetDay : ", targetDay);
         const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
 
         const availability = await ServiceAvailabilityModel.aggregate([

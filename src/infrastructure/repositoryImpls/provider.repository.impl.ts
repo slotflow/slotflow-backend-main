@@ -75,7 +75,7 @@ export class ProviderRepositoryImpl implements IProviderRepository {
                 adminVerificationStatus: 1,
                 isEmailVerified: 1,
                 trustedBySlotflow: 1
-            }).skip(skip).limit(limit).lean(),
+            }).skip(skip).limit(limit),
             ProviderModel.countDocuments(),
         ]);
         const totalPages = Math.ceil(totalCount / limit);

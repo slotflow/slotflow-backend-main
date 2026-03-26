@@ -1,11 +1,10 @@
 import { PlanName } from "../../domain/enums/plan.enum";
-import { GeoLocation } from "../../domain/contracts/address.contract";
-import { ServiceCategory, ServiceMode, ServiceType } from "../../domain/enums/service.enum";
-import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
-import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
-import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
 import { Day, Role } from "../../domain/enums/common.enum";
-import { PaymentFor, PaymentGateway, PaymentStatus } from "../../domain/enums/payment.enum";
+import { GeoLocation } from "../../domain/contracts/address.contract";
+import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
+import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
+import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
+import { ServiceCategory, ServiceMode, ServiceType } from "../../domain/enums/service.enum";
 
 
 // **** ENTITY INTERFACES FOR APPLICATION LAYER **** \\
@@ -111,30 +110,6 @@ export interface ParticipantPresence {
 export interface statusTrack {
   appointmentStatus: AppointmentStatus;
   time: Date;
-}
-
-
-// **** PAYMENT INTERFACE
-export interface PaymentDTO {
-  _id: string,
-  transactionId: string,
-  paymentStatus: PaymentStatus,
-  paymentMethod: string,
-  paymentGateway: PaymentGateway,
-  paymentFor: PaymentFor,
-  initialAmount: number,
-  discountAmount: number,
-  totalAmount: number,
-  userId?: string | null,
-  providerId?: string | null,
-  refundId?: string | null,
-  refundAmount?: number | null,
-  refundStatus?: string | null,
-  refundAt?: Date | null,
-  refundReason?: string | null,
-  chargeId?: string | null,
-  createdAt: Date,
-  updatedAt: Date,
 }
 
 // **** CREDENTIAL INTERFACE
@@ -289,19 +264,12 @@ export interface userIdAndProviderIdFilterForFetchPayments {
   userId?: UserDTO["_id"];
   providerId?: ProviderDTO["_id"];
 }
-// export interface FetchPaymentsRequest extends ApiPaginationRequest, userIdAndProviderIdFilterForFetchPayments { };
-// export type FetchPaymentResponse = Array<Pick<PaymentDTO, "_id" | "createdAt" | "totalAmount" | "paymentFor" | "paymentGateway" | "paymentStatus" | "paymentMethod" | "discountAmount">> | null;
 
 
 // Used as the request interface for fetching subscriptions with planName and plan price of a specific provider for the provider side and admin side
 export interface GetSubscriptionsRequest extends ApiPaginationRequest {
   providerId?: ProviderDTO["_id"];
 }
-// Used as the response type for fetching subscriptions with planName and plan price of a specific provider for the provider side and admin side
-// removing payment dependedcy data from here the data will be requested from payment service from client directly
-
-
-// Used as the request type for adding address for user or provider
 
 
 // Used as the request interface for fetching bookings for admin, provider and user side

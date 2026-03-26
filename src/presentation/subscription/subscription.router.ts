@@ -1,0 +1,44 @@
+import { Router } from "express";
+import { Role } from "../../domain/enums/common.enum";
+import { authorize } from "../middleware/authRole.middleware";
+import { authMiddleware } from "../middleware/auth.middleware";
+import { subscriptionController } from "./subscription.controller";
+
+const router = Router();
+
+// admin or provider fetch subscriptions
+router.get('/', 
+    authMiddleware, 
+    authorize(Role.ADMIN, Role.PROVIDER), 
+    subscriptionController.getSubscriptions
+);
+
+// admin or provider fetch subscription details
+router.get('/:subscriptionId', 
+    authMiddleware, 
+    authorize(Role.ADMIN, Role.PROVIDER), 
+    subscriptionController.getSubscriptionDetails
+);
+
+// provider create subscription checkout session
+router.post('/checkout/session', 
+    authMiddleware, 
+    authorize(Role.PROVIDER),
+    subscriptionController.subscriptionCheckout
+);
+
+// provider fetch subscribed plan
+router.get('/me', 
+    authMiddleware, 
+    authorize(Role.PROVIDER),
+    subscriptionController.getSubscribedPlan
+);
+
+// provider subscribe to trial plan
+router.post('/trial', 
+    authMiddleware, 
+    authorize(Role.PROVIDER),
+    subscriptionController.subscribeToTrialPlan
+);
+
+export default router;
