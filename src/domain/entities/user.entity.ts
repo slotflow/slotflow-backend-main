@@ -119,6 +119,10 @@ export class User {
         return this.props.stripeAccountId;
     }
 
+    get stripeCustomerId(): string | null {
+        return this.props.stripeCustomerId;
+    }
+
     get addressId(): string | null {
         return this.props.addressId;
     }
@@ -205,6 +209,14 @@ export class User {
 
     attachAddress(addressId: string | null) {
         this.props.addressId = addressId;
+        this.touch();
+    }
+
+    linkStripeAccount(stripeAccountId: string) {
+        this.ensureNotBlocked("update stripe account");
+
+        this.props.stripeAccountId = stripeAccountId;
+        this.props.stripeConnected = true;
         this.touch();
     }
 

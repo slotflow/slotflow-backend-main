@@ -1,15 +1,15 @@
 import { log } from "../../../../shared/logger/logger";
-import { FetchProviderDataResponse } from "../../../dtos/admin.dto";
 import { IProviderQueries } from "../../../queries/IProvider.queries";
+import { FetchProviderDataRequest, FetchProviderDataResponse } from "../../../dtos/admin.dto";
 
 export class FetchProviderDataUseCase {
     constructor(
         private providerQuery: IProviderQueries
     ) { };
 
-    async execute(): Promise<FetchProviderDataResponse> {
+    async execute(payload: FetchProviderDataRequest): Promise<FetchProviderDataResponse> {
         try {
-            return await this.providerQuery.fetchStats();
+            return await this.providerQuery.fetchStats(payload);
         } catch (error) {
             log.error("FetchProviderDataUseCase failed", error as Error);
             throw error;

@@ -1,5 +1,23 @@
 import { AddressDTO, ProviderDTO, ReviewDTO, ServiceDTO } from "./common.dto";
 
+// Used as the request type of admin fetch dashboard stats data
+export interface GetStatsDataCommonRequest {
+    startDate: Date;
+    endDate: Date;
+}
+
+// Used as the request type of admin fetch dashboard user stats data
+export interface FetchUserDataRequest extends GetStatsDataCommonRequest {}
+
+// Used as the request type of admin fetch dashboard provider stats data
+export interface FetchProviderDataRequest extends GetStatsDataCommonRequest {}
+
+// Used as the request type of admin fetch dashboard subscription stats data
+export interface FetchSubscriptionDataRequest extends GetStatsDataCommonRequest {}
+
+// Used as the request type of admin fetch dashboard appointments stats data
+export interface FetchBookingsDataRequest extends GetStatsDataCommonRequest {}
+
 // Used as the request type of admin fetch provider address
 export type AdminFetchUserOrProviderAddressResponse = Pick<AddressDTO, "userId" | "addressLine" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location"> | null;
 
@@ -40,19 +58,6 @@ export interface FetchSubscriptionDataResponse {
     subscriptionsByStarterPlan: number;
     subscriptionsByProfessionalPlan: number;
     subscriptionsByEnterprisePlan: number;
-};
-
-// used as the return type of the admin fetch dashboard revenue stats data
-export interface FetchRevenueDataResponse {
-    totalRevenue: number;
-    totalRevenueViaSubscriptions: number;
-    revenueByStripe: number;
-    revenueByRazorpay: number;
-    revenueByPaypal: number;
-    totalRevenueViaAppointments: number;
-    totalRefundsIssued: number;
-    totalFailedPayments: number;
-    totalPayoutsToProviders: number;
 };
 
 // used as the return type of the admin fetch dashboard appointments stats data
@@ -105,6 +110,3 @@ export type AdminServiceListResponse = Array<Pick<ServiceDTO, "_id" | "serviceNa
 
 // admin add new service use case request payload interface
 export type AdminAddServiceRequest = Pick<ServiceDTO, "serviceName" | "serviceCategory">;
-
-
-export type AdminFetchTodaysBookingStatsForDashboardResponse = Pick<FetchDashboardTodayDataResponse, "todaysAppointments" | "todaysCancelledAppointments" | "todaysCompletedAppointments">;

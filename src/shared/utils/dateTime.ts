@@ -39,3 +39,12 @@ export const getNumberOfMonths = (days: number): number => {
 export const getNumberOfTotalDays = (numberOfMonths: number): number => {
   return numberOfMonths * 30
 }
+
+export const getStartAndEndDate = (startDate: Date, endDate: Date): { startDate: Date; endDate: Date } => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    start.setHours(0, 0, 0, 0);
+    end.setHours(23, 59, 59, 999);
+    return { startDate: start, endDate: end };
+}

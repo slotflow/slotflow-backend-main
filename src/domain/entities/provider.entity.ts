@@ -207,6 +207,10 @@ export class Provider {
     return this.props.stripeAccountId;
   }
 
+  get stripeCustomerId(): string | null {
+    return this.props.stripeCustomerId;
+  }
+
   get identityProof(): string | null {
     return this.props.identityProof;
   }
@@ -346,10 +350,18 @@ export class Provider {
     this.touch();
   }
 
-  linkStripeAccount(stripeId: string) {
+  linkStripeAccount(stripeAccountId: string) {
     this.ensureNotBlocked("update stripe");
 
-    this.props.stripeAccountId = stripeId;
+    this.props.stripeAccountId = stripeAccountId;
+    this.props.stripeConnected = true;
+    this.touch();
+  }
+
+  linkStripeCustomer(stripeCustomerId: string) {
+    this.ensureNotBlocked("update stripe customer");
+
+    this.props.stripeCustomerId = stripeCustomerId;
     this.touch();
   }
 
@@ -408,13 +420,6 @@ export class Provider {
     this.ensureNotBlocked("update service proof");
 
     this.props.serviceProof = props.serviceProof;
-    this.touch();
-  }
-
-  linkStripeCustomer(stripeCustomerId: string) {
-    this.ensureNotBlocked("update stripe customer");
-
-    this.props.stripeCustomerId = stripeCustomerId;
     this.touch();
   }
 

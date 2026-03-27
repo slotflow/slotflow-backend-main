@@ -1,14 +1,6 @@
-import {
-  dateSchema,
-  paginationSchema,
-  roleValidationSchema,
-  validateProviderIdSchema,
-} from "./base.zod";
 import { z } from "zod";
-import { objectIdRegex } from "../utils/regex";
+import { FileType } from "../../domain/enums/common.enum";
 import { ServiceCategory } from "../../domain/enums/service.enum";
-import { Boolean, FileType } from "../../domain/enums/common.enum";
-
 
 // S3 presigned URL generation validation schema
 export const presignedUrlSchema = z.object({
@@ -32,4 +24,8 @@ export const changeBlockStatusSchema = z.object({
   blockStatus: z.boolean(),
 });
 
-//
+// Start and end date validation schema
+export const startAndEndDateSchema = z.object({
+    startDate: z.coerce.date(),
+    endDate: z.coerce.date(),
+});

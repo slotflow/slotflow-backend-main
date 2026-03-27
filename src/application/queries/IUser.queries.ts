@@ -1,10 +1,11 @@
+import { GetUsersResponse } from "../dtos/user.dto";
 import { ApiPaginationRequest, TableData } from "../dtos/common.dto";
-import { AdminFetchAllUsers, FetchUserDataResponse } from "../dtos/admin.dto";
+import { FetchUserDataRequest, FetchUserDataResponse } from "../dtos/admin.dto";
 
 export interface IUserQueries {
 
-    fetchStats(): Promise<FetchUserDataResponse>;
+    fetchStats(payload: FetchUserDataRequest): Promise<FetchUserDataResponse>;
 
-    findAll({ page, limit }: ApiPaginationRequest): Promise<TableData<AdminFetchAllUsers>>;
+    findAll({ page, limit }: ApiPaginationRequest): Promise<TableData<GetUsersResponse>>;
 
 }

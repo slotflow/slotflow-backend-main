@@ -1,13 +1,10 @@
 import { providerRepository, userRepository } from "../../infrastructure/repositoryImpls";
 import { FetchUserDataUseCase } from "../../application/useCases/admin/dashboard/fetchUsersData.useCase";
 import { FetchGraphDataUseCase } from "../../application/useCases/admin/dashboard/fetchGraphData.useCase";
-import { FetchTodaysDataUseCase } from "../../application/useCases/admin/dashboard/fetchTodaysData.useCase";
 import { FetchBookingsDataUseCase } from "../../application/useCases/admin/dashboard/fetchBookingsData.useCase";
 import { FetchProviderDataUseCase } from "../../application/useCases/admin/dashboard/fetchProvidersData.useCase";
 import { bookingQueries, providerQueries, subscriptionQueries, userQueries } from "../../infrastructure/queriesImpls";
 import { FetchSubscriptionDataUseCase } from "../../application/useCases/admin/dashboard/fetchSubscriptionData.useCase";
-
-export const fetchTodaysDataUseCase = new FetchTodaysDataUseCase(userRepository, providerRepository, bookingQueries);
 
 export const fetchUserDataUseCase = new FetchUserDataUseCase(userQueries);
 

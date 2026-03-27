@@ -3,11 +3,12 @@ import { Types } from "mongoose";
 import { Role } from "../../domain/enums/common.enum";
 import { BookingModel } from "../models/booking.model";
 import { IBookingQueries } from "../../application/queries/IBooking.queries";
+import { FetchBookingsDataRequest, FetchBookingsDataResponse } from "../../application/dtos/admin.dto";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { endOfDay, startOfDay, startOfToday, startOfTomorrow } from "date-fns";
-import { FetchBookingsDataResponse, AdminFetchTodaysBookingStatsForDashboardResponse } from "../../application/dtos/admin.dto";
 import { GetBookingsRequest, TableData, GetBookingsResponse, GetOnlineBookingsForProviderResponse, GetOnlineBookingsForUserResponse, GetBookingDetailsResponse } from "../../application/dtos/common.dto";
 import { ProviderFetchDashboardGraphRepository, FetchGraphDataResponse, ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchUsersForChatSideBarResponse, GetProvidersForChatResponse } from "../../application/dtos/provider.dto";
+import { getStartAndEndDate } from "../../shared/utils/dateTime";
 
 export class BookingQueriesImpl implements IBookingQueries {
 
@@ -404,8 +405,17 @@ export class BookingQueriesImpl implements IBookingQueries {
         };
     }
 
-    async findStatsDataForAdminDashboard(): Promise<FetchBookingsDataResponse> {
+    async findStatsDataForAdminDashboard(payload: FetchBookingsDataRequest): Promise<FetchBookingsDataResponse> {
+        const { startDate, endDate } = getStartAndEndDate(payload.startDate, payload.endDate);
         const result = await BookingModel.aggregate([
+            {
+                $match: {
+                    appointmentDate: {
+                        $gte: startDate,
+                        $lte: endDate,
+                    },
+                },
+            },
             {
                 $group: {
                     _id: null,
@@ -465,38 +475,6 @@ export class BookingQueriesImpl implements IBookingQueries {
             ...provider,
             _id: provider._id.toString(),
         }));
-    }
-
-    async findTodayStatsDataForAdminDashboard(): Promise<AdminFetchTodaysBookingStatsForDashboardResponse> {
-        const startOfToday = startOfDay(new Date());
-        const endOfToday = endOfDay(new Date());
-
-        const result = await BookingModel.aggregate([
-            {
-                $match: {
-                    createdAt: { $gte: startOfToday, $lte: endOfToday },
-                },
-            },
-            {
-                $group: {
-                    _id: null,
-                    todaysBookedAppointments: {
-                        $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.BOOKED] }, 1, 0] }
-                    },
-                    todaysCancelledAppointments: {
-                        $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.CANCELLED] }, 1, 0] }
-                    },
-                    todaysCompletedAppointments: {
-                        $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.COMPLETED] }, 1, 0] }
-                    }
-                }
-            },
-        ])
-        return result[0] || {
-            todaysBookedAppointments: 0,
-            todaysCancelledAppointments: 0,
-            todaysCompletedAppointments: 0
-        };
     }
 
     async findTodaysBookingsForCronjob(): Promise<boolean> {

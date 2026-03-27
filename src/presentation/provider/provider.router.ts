@@ -79,11 +79,10 @@ router.patch('/me/notification-settings',
     providerProfileController.updatePushNotification
 );
 
-// admin or user fetch provider details
-router.get('/:providerId',
+router.get('/chat',
     authMiddleware,
-    authorize(Role.ADMIN, Role.USER),
-    providerProfileController.getProfileDetails
+    authorize(Role.USER),
+    providerProfileController.getProvidersForChat
 );
 
 // admin or user fetch providers address
@@ -105,19 +104,6 @@ router.get('/:providerId/provider-service',
     authorize(Role.ADMIN, Role.USER),
     providerServiceController.getServiceDetails
 );
-
-router.get('/chat',
-    authMiddleware,
-    authorize(Role.USER),
-    providerProfileController.getProvidersForChat
-);
-
-router.get('/',
-    authMiddleware,
-    authorize(Role.ADMIN, Role.USER),
-    providerProfileController.getProviders
-);
-
 
 router.patch('/:providerId/approve',
     authMiddleware,
@@ -141,6 +127,19 @@ router.patch('/:providerId/trust-tag',
     authMiddleware,
     authorize(Role.ADMIN),
     providerProfileController.changeProviderTrustedTag
+);
+
+// admin or user fetch provider details
+router.get('/:providerId',
+    authMiddleware,
+    authorize(Role.ADMIN, Role.USER),
+    providerProfileController.getProfileDetails
+);
+
+router.get('/',
+    authMiddleware,
+    authorize(Role.ADMIN, Role.USER),
+    providerProfileController.getProviders
 );
 
 export default router;  

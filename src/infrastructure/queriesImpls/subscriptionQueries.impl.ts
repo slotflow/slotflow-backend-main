@@ -1,10 +1,11 @@
 import { SubscriptionModel } from "../models/subscription.model";
 import { PopulatedPlan } from "../../application/dtos/provider.dto";
 import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
-import { FetchSubscriptionDataResponse } from "../../application/dtos/admin.dto";
+import { FetchSubscriptionDataRequest, FetchSubscriptionDataResponse } from "../../application/dtos/admin.dto";
 import { GetSubscribedPlanResponse } from "../../application/dtos/subscription";
 import { ISubscriptionQueries } from "../../application/queries/ISubscription.queries";
 import { GetSubscriptionsRequest, GetSubscriptionsResponse, GetSubscriptionDetailsResponse, PlanNameOnly, TableData } from "../../application/dtos/common.dto";
+import { getStartAndEndDate } from "../../shared/utils/dateTime";
 
 export class SubscriptionQueriesImpl implements ISubscriptionQueries {
 
@@ -81,7 +82,9 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
         };
     }
 
-    async findStatsForAdminDashboard(): Promise<FetchSubscriptionDataResponse> {
+    async findStatsForAdminDashboard(payload: FetchSubscriptionDataRequest): Promise<FetchSubscriptionDataResponse> {
+        const { startDate, endDate } = getStartAndEndDate(payload.startDate, payload.endDate);
+        const dateFilter = { createdAt: { $gte: startDate, $lte: endDate } };
         const subscriptionStatsData = await SubscriptionModel.aggregate([
             {
                 $lookup: {
@@ -95,27 +98,27 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
             {
                 $facet: {
                     activeSubscriptions: [
-                        { $match: { subscriptionStatus: SubscriptionStatus.ACTIVE } },
+                        { $match: { subscriptionStatus: SubscriptionStatus.ACTIVE, ...dateFilter } },
                         { $count: "count" }
                     ],
                     expiredSubscriptions: [
-                        { $match: { subscriptionStatus: SubscriptionStatus.CANCELLED } },
+                        { $match: { subscriptionStatus: SubscriptionStatus.CANCELLED, ...dateFilter } },
                         { $count: "count" }
                     ],
                     subscriptionsByFreePlan: [
-                        { $match: { "plan.planName": "Free" } },
+                        { $match: { "plan.planName": "Free", ...dateFilter } },
                         { $count: "count" }
                     ],
                     subscriptionsByStarterPlan: [
-                        { $match: { "plan.planName": "Starter" } },
+                        { $match: { "plan.planName": "Starter", ...dateFilter } },
                         { $count: "count" }
                     ],
                     subscriptionsByProfessionalPlan: [
-                        { $match: { "plan.planName": "Professional" } },
+                        { $match: { "plan.planName": "Professional", ...dateFilter } },
                         { $count: "count" }
                     ],
                     subscriptionsByEnterprisePlan: [
-                        { $match: { "plan.planName": "Enterprise" } },
+                        { $match: { "plan.planName": "Enterprise", ...dateFilter } },
                         { $count: "count" }
                     ]
                 }

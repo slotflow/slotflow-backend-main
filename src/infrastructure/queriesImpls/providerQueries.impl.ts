@@ -1,10 +1,13 @@
 import { ProviderModel } from "../models/provider.model";
-import { FetchProviderDataResponse } from "../../application/dtos/admin.dto";
+import { getStartAndEndDate } from "../../shared/utils/dateTime";
 import { IProviderQueries } from "../../application/queries/IProvider.queries";
+import { FetchProviderDataRequest, FetchProviderDataResponse } from "../../application/dtos/admin.dto";
 
 export class ProviderQueriesImpl implements IProviderQueries {
 
-  async fetchStats(): Promise<FetchProviderDataResponse> {
+  async fetchStats(payload: FetchProviderDataRequest): Promise<FetchProviderDataResponse> {
+    const { startDate, endDate } = getStartAndEndDate(payload.startDate, payload.endDate);
+    const dateFilter = { createdAt: { $gte: startDate, $lte: endDate } };
     const [
       totalProviders,
       emailVerifiedProviders,
@@ -15,14 +18,14 @@ export class ProviderQueriesImpl implements IProviderQueries {
       availabilityAddedProviders,
       slotflowTrustedProviders,
     ] = await Promise.all([
-      ProviderModel.countDocuments({}),
-      ProviderModel.countDocuments({ isEmailVerified: true }),
-      ProviderModel.countDocuments({ isAdminVerified: true }),
-      ProviderModel.countDocuments({ isBlocked: true }),
-      ProviderModel.countDocuments({ addressId: { $ne: null } }),
-      ProviderModel.countDocuments({ serviceId: { $ne: null } }),
-      ProviderModel.countDocuments({ serviceAvailabilityId: { $ne: null } }),
-      ProviderModel.countDocuments({ trustedBySlotflow: true }),
+      ProviderModel.countDocuments(dateFilter),
+      ProviderModel.countDocuments({ isEmailVerified: true, ...dateFilter }),
+      ProviderModel.countDocuments({ isAdminVerified: true, ...dateFilter }),
+      ProviderModel.countDocuments({ isBlocked: true, ...dateFilter }),
+      ProviderModel.countDocuments({ addressId: { $ne: null }, ...dateFilter }),
+      ProviderModel.countDocuments({ serviceId: { $ne: null }, ...dateFilter }),
+      ProviderModel.countDocuments({ serviceAvailabilityId: { $ne: null }, ...dateFilter }),
+      ProviderModel.countDocuments({ trustedBySlotflow: true, ...dateFilter }),
     ]);
 
     return {

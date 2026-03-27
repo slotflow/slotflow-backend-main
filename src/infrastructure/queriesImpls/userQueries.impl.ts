@@ -1,20 +1,20 @@
 import { UserModel } from "../models/user.model";
+import { getStartAndEndDate } from "../../shared/utils/dateTime";
 import { GetUsersResponse } from "../../application/dtos/user.dto";
 import { IUserQueries } from "../../application/queries/IUser.queries";
-import { FetchUserDataResponse } from "../../application/dtos/admin.dto";
 import { ApiPaginationRequest, TableData } from "../../application/dtos/common.dto";
+import { FetchUserDataRequest, FetchUserDataResponse } from "../../application/dtos/admin.dto";
 
 export class UserQueriesImpl implements IUserQueries {
 
-    async fetchStats(): Promise<FetchUserDataResponse> {
-        const [
-            totalUsers,
-            emailVerifiedUsers,
-            blockedUsers,
-        ] = await Promise.all([
-            UserModel.countDocuments({}),
-            UserModel.countDocuments({ isEmailVerified: true }),
-            UserModel.countDocuments({ isBlocked: true }),
+    async fetchStats(payload: FetchUserDataRequest): Promise<FetchUserDataResponse> {
+        const { startDate, endDate } = getStartAndEndDate(payload.startDate, payload.endDate);
+        const dateFilter = { createdAt: { $gte: startDate, $lte: endDate } };
+
+        const [totalUsers, emailVerifiedUsers, blockedUsers] = await Promise.all([
+            UserModel.countDocuments(dateFilter),
+            UserModel.countDocuments({ isEmailVerified: true, ...dateFilter }),
+            UserModel.countDocuments({ isBlocked: true, ...dateFilter }),
         ]);
 
         return {

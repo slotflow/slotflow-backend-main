@@ -135,7 +135,7 @@ export interface SendAppConnectEvent {
   notificationData: SendNotificationCommon
 }
 
-//
+// send provider subscription updated event
 export interface ProviderSubscriptionUpdatedEvent {
   ssData: {
     providerId: string;
@@ -152,6 +152,13 @@ export interface ProviderSubscriptionUpdatedEvent {
     endDate: Date;
   },
   notificationData: SendNotificationCommon;
+}
+
+// consume stripe account created event
+export interface StripeAccountCreatedEvent {
+  role: Role;
+  userId: string;
+  stripeAccountId: string;
 }
 
 // Added till this 
@@ -269,4 +276,13 @@ export interface CreateGoogleCalendarEventFailedResult {
     role: Role;
     error: string;
   }
+}
+
+
+
+// Consumer Events
+export interface UpdateStripeCustomerCreatedConsumeEvent {
+  userId: string;
+  role: Role;
+  stripeCustomerId: string;
 }
