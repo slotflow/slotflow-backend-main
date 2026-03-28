@@ -114,7 +114,7 @@ export const providerValidateDashboardDataSchema = z.object({
     subscription: z.nativeEnum(PlanName).default(PlanName.TRIAL),
     endDate: dateSchema.optional(),
     startDate: dateSchema.optional(),
-}).merge(validateProviderIdSchema);
+});
 
 //
 export const providerValidateUpdateFileSchema = s3FileKeySchema.merge(validateProviderIdSchema);

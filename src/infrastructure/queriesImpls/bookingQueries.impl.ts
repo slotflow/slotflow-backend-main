@@ -7,7 +7,7 @@ import { FetchBookingsDataRequest, FetchBookingsDataResponse } from "../../appli
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { endOfDay, startOfDay, startOfToday, startOfTomorrow } from "date-fns";
 import { GetBookingsRequest, TableData, GetBookingsResponse, GetOnlineBookingsForProviderResponse, GetOnlineBookingsForUserResponse, GetBookingDetailsResponse } from "../../application/dtos/common.dto";
-import { ProviderFetchDashboardGraphRepository, FetchGraphDataResponse, ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchUsersForChatSideBarResponse, GetProvidersForChatResponse } from "../../application/dtos/provider.dto";
+import { ProviderFetchDashboardGraphRepository, FetchGraphDataResponse, ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchUsersForChatSideBarResponse, GetProvidersForChatResponse, ProviderFetchDashboardBookingStatsDataRequest } from "../../application/dtos/provider.dto";
 import { getStartAndEndDate } from "../../shared/utils/dateTime";
 
 export class BookingQueriesImpl implements IBookingQueries {
@@ -344,56 +344,132 @@ export class BookingQueriesImpl implements IBookingQueries {
         }
     }
 
-    async findStatsDataForProviderDashboard(providerId: string): Promise<ProviderFetchDashboardBookingStatsDataResponse> {
-        const today = startOfToday();
-        const tomorrow = startOfTomorrow();
+    async findStatsDataForProviderDashboard(payload: ProviderFetchDashboardBookingStatsDataRequest): Promise<ProviderFetchDashboardBookingStatsDataResponse> {
+
+        const providerObjectId = new Types.ObjectId(payload.providerId);
+        const { startDate, endDate } = getStartAndEndDate(
+            payload.startDate,
+            payload.endDate
+        );
+
+        const today = new Date();
+        today.setUTCHours(0, 0, 0, 0);
+
+        const tomorrow = new Date(today);
+        tomorrow.setUTCDate(today.getUTCDate() + 1);
 
         const result = await BookingModel.aggregate([
-            { $match: { serviceProviderId: new Types.ObjectId(providerId) } },
             {
-                $group: {
-                    _id: null,
-                    totalAppointments: { $sum: 1 },
-                    completedAppointments: {
-                        $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.COMPLETED] }, 1, 0] }
-                    },
-                    missedAppointments: {
-                        $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.NOT_ATTENDED] }, 1, 0] }
-                    },
-                    cancelledAppointmentsByUser: {
-                        $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.CANCELLED] }, 1, 0] }
-                    },
-                    rejectedAppointmentsByProvider: {
-                        $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.REJECTED_BY_PROVIDER] }, 1, 0] }
-                    },
-                    todaysAppointments: {
-                        $sum: {
-                            $cond: [
-                                {
-                                    $and: [
-                                        { $gte: ["$appointmentDate", today] },
-                                        { $lt: ["$appointmentDate", tomorrow] },
-                                        { $eq: ["$appointmentStatus", AppointmentStatus.BOOKED] }
-                                    ]
-                                }, 1, 0
-                            ]
-                        }
-                    }
-                }
+                $match: {
+                    serviceProviderId: providerObjectId,
+                },
             },
+
+            {
+                $facet: {
+
+                    rangeStats: [
+                        {
+                            $match: {
+                                ...(startDate && endDate && {
+                                    appointmentDate: { $gte: startDate, $lte: endDate },
+                                }),
+                            },
+                        },
+                        {
+                            $group: {
+                                _id: null,
+                                totalAppointments: { $sum: 1 },
+
+                                completedAppointments: {
+                                    $sum: {
+                                        $cond: [
+                                            { $eq: ["$appointmentStatus", AppointmentStatus.COMPLETED] },
+                                            1,
+                                            0,
+                                        ],
+                                    },
+                                },
+
+                                missedAppointments: {
+                                    $sum: {
+                                        $cond: [
+                                            { $eq: ["$appointmentStatus", AppointmentStatus.NOT_ATTENDED] },
+                                            1,
+                                            0,
+                                        ],
+                                    },
+                                },
+
+                                cancelledAppointmentsByUser: {
+                                    $sum: {
+                                        $cond: [
+                                            { $eq: ["$appointmentStatus", AppointmentStatus.CANCELLED] },
+                                            1,
+                                            0,
+                                        ],
+                                    },
+                                },
+
+                                rejectedAppointmentsByProvider: {
+                                    $sum: {
+                                        $cond: [
+                                            {
+                                                $eq: [
+                                                    "$appointmentStatus",
+                                                    AppointmentStatus.REJECTED_BY_PROVIDER,
+                                                ],
+                                            },
+                                            1,
+                                            0,
+                                        ],
+                                    },
+                                },
+                            },
+                        },
+                    ],
+
+                    todayStats: [
+                        {
+                            $match: {
+                                appointmentDate: {
+                                    $gte: today,
+                                    $lt: tomorrow,
+                                },
+                                appointmentStatus: AppointmentStatus.BOOKED,
+                            },
+                        },
+                        {
+                            $count: "todaysAppointments",
+                        },
+                    ],
+                },
+            },
+
             {
                 $project: {
-                    _id: 0,
-                    totalAppointments: 1,
-                    completedAppointments: 1,
-                    missedAppointments: 1,
-                    cancelledAppointmentsByUser: 1,
-                    rejectedAppointmentsByProvider: 1,
-                    todaysAppointments: 1,
+                    range: { $arrayElemAt: ["$rangeStats", 0] },
+                    today: { $arrayElemAt: ["$todayStats", 0] },
+                },
+            },
+
+            {
+                $project: {
+                    totalAppointments: { $ifNull: ["$range.totalAppointments", 0] },
+                    completedAppointments: { $ifNull: ["$range.completedAppointments", 0] },
+                    missedAppointments: { $ifNull: ["$range.missedAppointments", 0] },
+                    cancelledAppointmentsByUser: {
+                        $ifNull: ["$range.cancelledAppointmentsByUser", 0],
+                    },
+                    rejectedAppointmentsByProvider: {
+                        $ifNull: ["$range.rejectedAppointmentsByProvider", 0],
+                    },
+                    todaysAppointments: {
+                        $ifNull: ["$today.todaysAppointments", 0],
+                    },
                 },
             },
         ]);
-
 
         return result[0] || {
             totalAppointments: 0,
@@ -401,7 +477,7 @@ export class BookingQueriesImpl implements IBookingQueries {
             missedAppointments: 0,
             cancelledAppointmentsByUser: 0,
             rejectedAppointmentsByProvider: 0,
-            todaysAppointments: 0
+            todaysAppointments: 0,
         };
     }
 

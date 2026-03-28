@@ -1,20 +1,19 @@
 import { log } from "../../../../shared/logger/logger";
 import { IBookingQueries } from "../../../queries/IBooking.queries";
-import { FetchStatsDataRequest, FetchStatsDataResponse } from "../../../dtos/provider.dto";
+import { ProviderFetchDashboardBookingStatsDataRequest, ProviderFetchDashboardBookingStatsDataResponse } from "../../../dtos/provider.dto";
 
 export class FetchStatsUseCase {
     constructor(
         private bookingQueries: IBookingQueries,
     ) { };
 
-    async execute(payload: FetchStatsDataRequest): Promise<FetchStatsDataResponse> {
+    async execute(payload: ProviderFetchDashboardBookingStatsDataRequest): Promise<ProviderFetchDashboardBookingStatsDataResponse> {
         try {
-            const { providerId } = payload;
 
             const [
                 bookingStatsArray,
             ] = await Promise.all([
-                this.bookingQueries.findStatsDataForProviderDashboard(providerId),
+                this.bookingQueries.findStatsDataForProviderDashboard(payload),
             ]);
 
             return { ...bookingStatsArray };

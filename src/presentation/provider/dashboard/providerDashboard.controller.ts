@@ -3,9 +3,10 @@ import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../../shared/utils/response";
 import { fetchGraphDataUseCase, fetchStatsUseCase } from "..";
 import { DecodedUser } from "../../../application/dtos/common.dto";
+import { startAndEndDateSchema } from "../../../shared/zod/common.zod";
 import { FetchStatsUseCase } from "../../../application/useCases/provider/dashboard/fetchStats.useCase";
 import { FetchGraphDataUseCase } from "../../../application/useCases/provider/dashboard/fetchGraphData.useCase";
-import { providerValidateDashboardDataSchema, validateProviderIdSchema } from "../../../shared/zod/provider.zod";
+import { providerValidateDashboardDataSchema } from "../../../shared/zod/provider.zod";
 
 class ProviderDashboardController {
     constructor(
@@ -18,10 +19,12 @@ class ProviderDashboardController {
 
     async getDashboardStats(req: Request, res: Response, next: NextFunction) {
         try {
-            const { providerId } = validateProviderIdSchema.parse({
-                providerId: (req.user as DecodedUser).userOrProviderId
+            const user = req.user as DecodedUser;
+            const validatedData = startAndEndDateSchema.parse(req.query);
+            const result = await this.fetchStatsUseCase.execute({
+                providerId: user.userOrProviderId,
+                ...validatedData,
             });
-            const result = await this.fetchStatsUseCase.execute({ providerId });
             sendResponse(res, result);
         } catch (error) {
             log.error("getDashboardStats failed", error as Error);
@@ -31,15 +34,11 @@ class ProviderDashboardController {
 
     async getDashboardGraphData(req: Request, res: Response, next: NextFunction) {
         try {
-            const { providerId, subscription, endDate, startDate } = providerValidateDashboardDataSchema.parse({
-                subscription: req.query.subscription,
-                startDate: req.query.start,
-                endDate: req.query.end,
-                providerId: (req.user as DecodedUser).userOrProviderId
-            });
+            const user = req.user as DecodedUser;
+            const { subscription, endDate, startDate } = providerValidateDashboardDataSchema.parse(req.query);
             const result = await this.fetchGraphDataUseCase.execute({
-                providerId,
-                subscription: subscription,
+                providerId: user.userOrProviderId,
+                subscription,
                 endDate,
                 startDate,
             });

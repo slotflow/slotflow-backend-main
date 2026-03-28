@@ -56,6 +56,7 @@ class BookingController {
                 ...filter,
                 ...req.query
             });
+            
             const result = await this.getBookingsUseCase.execute({
                 serviceProviderId: filter.providerId,
                 userId: filter.userId,

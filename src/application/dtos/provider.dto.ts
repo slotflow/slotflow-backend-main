@@ -72,11 +72,12 @@ export interface ProviderFetchUsersForChatSideBarRequest {
 export type ProviderFetchUsersForChatSideBarResponse = Array<Pick<UserDTO, "_id" | "username" | "profileImage">>
 
 // provider fetch dashboard stats data request payload interface
-export interface FetchStatsDataRequest {
+export interface ProviderFetchDashboardBookingStatsDataRequest {
     providerId: ProviderDTO["_id"];
+    startDate: Date;
+    endDate: Date;
 }
 // provider fetch dashboard stats data response interface
-export interface FetchStatsDataResponse extends ProviderFetchDashboardBookingStatsDataResponse { }
 export interface ProviderFetchDashboardBookingStatsDataResponse {
     totalAppointments: number;
     completedAppointments: number;
