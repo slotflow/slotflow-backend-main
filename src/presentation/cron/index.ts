@@ -4,18 +4,10 @@ import { bookingQueries, subscriptionQueries } from "../../infrastructure/querie
 import { UpdateBookingStatusUseCase } from "../../application/useCases/cronJob/updateBookingStatus.useCase";
 import { UpdateSubscriptionStatusUseCase } from "../../application/useCases/cronJob/updateSubscriptionStatus.useCase";
 
-export const initCronJobs = (): void => {
+export const updateBookingStatusUseCase = new UpdateBookingStatusUseCase(bookingQueries);
 
-  const updateBookingStatusUseCase = new UpdateBookingStatusUseCase(bookingQueries);
+export const updateBookingStatusCron = new UpdateBookingStatusCron(updateBookingStatusUseCase, 1);
 
-  const updateBookingStatusCron = new UpdateBookingStatusCron(updateBookingStatusUseCase, 1);
+export const updateSubscriptionStatusUseCase = new UpdateSubscriptionStatusUseCase(subscriptionQueries);
 
-  updateBookingStatusCron.start();
-
-  const updateSubscriptionStatusUseCase = new UpdateSubscriptionStatusUseCase(subscriptionQueries);
-
-  const updateSubscriptionStatusCron = new UpdateSubscriptionStatusCron(updateSubscriptionStatusUseCase, 1);
-
-  updateSubscriptionStatusCron.start();
-
-};
+export const updateSubscriptionStatusCron = new UpdateSubscriptionStatusCron(updateSubscriptionStatusUseCase, 1);

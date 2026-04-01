@@ -1,4 +1,4 @@
-import { kafkaClient } from "../lib/kafka";
+import { kafkaClient } from "./kafka";
 import { kafkaConfig } from "../../config/env";
 import { KafkaConsumerAdapter } from "./kafkaConsumerAdapter";
 import { KafkaProducerAdapter } from "./kafkaProducerAdapter";

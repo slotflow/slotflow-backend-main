@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-import { axiosInstance } from "../lib/axios";
+import { axiosInstance } from "../http/axios/axios";
 import { serviceConfig } from "../../config/env";
 import { log } from "../../shared/logger/logger";
 import { CreateBookingCheckoutSessionRequest, CreateBookingCheckoutSessionResponse, CreateSubscriptionCheckoutSessionRequest, CreateSubscriptonCheckoutSessionResponse, IPaymentServiceClient } from "../../domain/interfaces/clients/IPaymentService.client";

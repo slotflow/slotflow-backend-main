@@ -1,4 +1,4 @@
-import app from "../../app";
+import app from "../../app/app";
 import { Router } from 'express';
 import s3Routes from '../s3/s3.routes';
 import planRouter from '../plan/plan.router';

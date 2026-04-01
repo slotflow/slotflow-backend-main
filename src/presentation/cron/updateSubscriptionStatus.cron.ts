@@ -6,21 +6,31 @@ export class UpdateSubscriptionStatusCron {
 
   private lastRunDate: string | null = null;
   private readonly intervalMs: number;
+  private intervalId: NodeJS.Timeout | null = null;
 
   constructor(
     private readonly updateSubscriptionStatusUseCase: UpdateSubscriptionStatusUseCase,
     intervalHours = 1
   ) {
     this.intervalMs = intervalHours * 60 * 60 * 1000;
+    this.intervalId = null;
   };
 
   start(): void {
     log.info("UpdateSubscriptionStatusCron started");
 
-    setInterval(async () => {
+    this.intervalId = setInterval(async () => {
       await this.run();
     }, this.intervalMs);
   };
+
+  stop(): void {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+    log.info("UpdateSubscriptionStatusCron stopped");
+  }
 
   private async run(): Promise<void> {
     const today = dayjs().format("YYYY-MM-DD");

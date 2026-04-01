@@ -8,4 +8,6 @@ export interface IKafkaConsumerAdapter {
 
   startConsumer(): Promise<void>;
 
+  disconnectConsumer(): Promise<void>;
+
 };

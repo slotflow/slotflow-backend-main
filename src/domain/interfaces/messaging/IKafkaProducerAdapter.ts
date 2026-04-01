@@ -4,4 +4,6 @@ export interface IKafkaProducerAdapter {
 
   publish<T>(topic: string, payload: T): Promise<void>;
 
+  disconnectProducer(): Promise<void>;
+
 };
