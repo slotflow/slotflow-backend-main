@@ -1,9 +1,10 @@
 import { handler } from ".";
 import { kafkaConfig } from "../../config/env";
 import { log } from "../../shared/logger/logger";
+import { kafkaConsumer } from "../../infrastructure/messaging";
 import { IKafkaConsumerAdapter } from "../../domain/interfaces/messaging/IKafkaConsumerAdapter";
 
-export class KafkaController {
+class KafkaController {
 
     constructor(
         private readonly kafkaConsumer: IKafkaConsumerAdapter
@@ -30,3 +31,5 @@ export class KafkaController {
         };
     };
 };
+
+export const kafkaController = new KafkaController(kafkaConsumer)

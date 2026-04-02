@@ -2,18 +2,17 @@ import app from './app/app';
 import { appConfig } from './config/env';
 import { initDB } from './app/init/db.init';
 import { log } from './shared/logger/logger';
-import './infrastructure/observability/otel';
+import { initOtel } from './app/init/otel.init';
 import { initKafka } from './app/init/kafka.init';
 import { initCronJobs } from './app/init/cron.init';
 import { printText } from './shared/utils/printText';
 import { initPassport } from './app/init/passport.init';
 import { setupGracefulShutdown } from './app/init/shutdown';
 
-
-
 const start = async () => {
   try {
 
+    await initOtel();
     await initDB();
     initCronJobs();
     initPassport();

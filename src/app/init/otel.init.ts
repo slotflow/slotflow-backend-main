@@ -1,9 +1,9 @@
 import { otelSDK } from '../../infrastructure/observability/otel';
 
-export const initOtel = () => {
-  otelSDK.start();
+export const initOtel = async () => {
+  await otelSDK.start();
 };
 
-export const stopOtel = () => {
-  otelSDK.shutdown();
+export const stopOtel = async () => {
+  await otelSDK.shutdown();
 };

@@ -76,7 +76,7 @@ export const stripeConfig = {
 
 export const otelConfig = {
     otelExporterOtlpEndpoint: appConfig.isDev ? validator.requireEnv("OTEL_EXPORTER_OTLP_ENDPOINT_DEV") : validator.requireEnv("OTEL_EXPORTER_OTLP_ENDPOINT"),
-}
+};
 
 export const kafkaConfig = {
     clientId: validator.requireEnv("KAFKA_CLIENT_ID"),
