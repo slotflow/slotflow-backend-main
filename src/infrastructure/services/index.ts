@@ -1,16 +1,14 @@
-// Services instance
-
-import { s3Client } from "../lib/aws_s3";
-import { redisClient } from "../lib/redis";
+import { s3Client } from "../cloud/aws/aws_s3";
+import { redisClient } from "../cache/redis/redis";
 import { OTPServiceImpl } from "./otpService.impl";
 import { CacheServiceImpl } from "./cacheService.impl";
 import { credentialRepository } from "../repositoryImpls";
 import { SignedUrlServiceImpl } from "./signedUrlService.impl";
 import { GoogleTokenServiceImpl } from "./googleTokenService.impl";
 import { AesEncryptionServiceImpl } from "./aesEncryptionService.impl";
+import { IOTPService } from "../../domain/interfaces/services/IOtp.service";
 import { ICacheService } from "../../domain/interfaces/services/ICache.service";
 import { GoogleRefreshTokenServiceImpl } from "./googleRefreshTokenService.impl";
-import { IOTPService } from "../../domain/interfaces/services/IOtp.service";
 import { GoogleCalendarGatewayServiceImpl } from "./googleCalendarGatewayService.impl";
 import { ISignedUrlService } from "../../domain/interfaces/services/ISignedUrl.service";
 import { IGoogleTokenService } from "../../domain/interfaces/services/IGoogleToken.service";

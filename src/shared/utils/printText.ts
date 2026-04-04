@@ -5,7 +5,7 @@ import { appConfig } from "../../config/env";
 export const printText = () => {
     try {
         console.log(figlet.textSync("SLOTFLOW"));
-        console.log(chalk.white("SERVICE : "), chalk.hex("#635bff").bold(appConfig.serviceName.toLowerCase));
+        console.log(chalk.white("SERVICE : "), chalk.hex("#635bff").bold(appConfig.serviceName.toUpperCase()));
     } catch (err) {
         console.log("Something went wrong...");
         console.error(err);

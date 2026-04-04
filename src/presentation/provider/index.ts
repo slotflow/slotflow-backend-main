@@ -1,5 +1,5 @@
-import { s3Client } from "../../infrastructure/lib/aws_s3";
 import { kafkaProducer } from "../../infrastructure/messaging";
+import { s3Client } from "../../infrastructure/cloud/aws/aws_s3";
 import { subscriptionMapping } from "../../infrastructure/helpers";
 import { paymentServiceClient } from "../../infrastructure/clients";
 import { cacheService, signedUrlService } from "../../infrastructure/services";
