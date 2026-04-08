@@ -1,46 +1,47 @@
 import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
-import { Role } from "../../../domain/enums/common.enum";
 import { User } from "../../../domain/entities/user.entity";
-import { Provider } from "../../../domain/entities/provider.entity";
+import { OTPVerificationRequest } from "../../dtos/auth.dto";
+import { IJWT } from '../../../domain/interfaces/security/IJwt';
 import { EventEnvelope, SendWelcomeEvent } from "../../dtos/kafka.dtos";
 import { IOTPService } from "../../../domain/interfaces/services/IOtp.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { OTPVerificationRequest, VerifyAndActivateEntityRequest } from "../../dtos/auth.dto";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
-import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 
 export class VerifyOTPUseCase {
   constructor(
     private readonly userRepository: IUserRepository,
-    private readonly providerRepository: IProviderRepository,
     private readonly otpService: IOTPService,
-    private readonly kafkaProducer: IKafkaProducerAdapter
+    private readonly kafkaProducer: IKafkaProducerAdapter,
+    private readonly jwtService: IJWT
   ) { };
 
   async execute(payload: OTPVerificationRequest): Promise<void> {
     try {
-      const { otp, verificationToken, role } = payload;
+      const { token, otp } = payload;
 
-      if (!otp || !verificationToken || !role) {
+      if (!token) {
         throw new Error("Invalid request");
       };
 
-      const isValidOTP = await this.otpService.verifyOtp(
-        verificationToken,
-        otp
-      );
+      const { email, username, password } = await this.jwtService.verifyToken(token);
 
-      if (!isValidOTP) {
-        throw new Error("Invalid or expired OTP");
-      };
+      if (!email || !username || !password) throw new Error("Invalid request, please try again");
 
-      const entity = await this.verifyAndActivateEntity({
-        role,
-        verificationToken
-      });
+      const existingUser = await this.userRepository.findByEmail(email);
+      if (existingUser) throw new Error("User already exists");
 
+      const isValidOTP = await this.otpService.verifyOtp(email, otp);
+      if (!isValidOTP) throw new Error("Invalid or expired OTP");
+
+      if(!existingUser) {
+        const newUser = await this.userRepository.create(User.createLocal({
+          email,
+          username,
+          password,
+        }));
+        
       await this.kafkaProducer.publish<EventEnvelope<SendWelcomeEvent>>(kafkaConfig.topics.pub.registerSuccess, {
         eventId: uuidv4(),
         attempt: 1,
@@ -48,44 +49,17 @@ export class VerifyOTPUseCase {
         occurredAt: new Date().toISOString(),
         payload: {
           emailData: {
-            email: entity.email,
-            name: entity.username,
-            role,
+            email: newUser.email,
+            name: newUser.username,
+            role: newUser.role,
           },
         }
       });
+    }
 
     } catch (error) {
       log.error("VerifyOTPUseCase failed", error as Error);
       throw error;
     };
   };
-
-  private async verifyAndActivateEntity(payload: VerifyAndActivateEntityRequest): Promise<User | Provider> {
-
-    const { role, verificationToken } = payload;
-
-    if (role === Role.USER) {
-      const user = await this.userRepository.findByVerificationToken(verificationToken);
-
-      if (!user) {
-        throw new Error("Verification failed");
-      };
-
-      user.markEmailVerified();
-      return this.userRepository.update(user);
-    };
-
-    if (role === Role.PROVIDER) {
-      const provider = await this.providerRepository.findByVerificationToken(verificationToken);
-
-      if (!provider) {
-        throw new Error("Verification failed");
-      };
-
-      provider.markEmailVerified();
-      return this.providerRepository.update(provider);
-    };
-    throw new Error("Unsupported role");
-  };
-};
+}

@@ -28,15 +28,6 @@ export const otpVerificationSchema = z.object({
   otp: z
     .string()
     .length(6, "OTP must be exactly 6 digits"),
-  verificationToken: z.string().length(36).regex(verificationTokenRegex, "Invalid token"),
-  role: z.nativeEnum(Role),
-});
-
-// Resend otp controller zod validation
-export const resendOTPSchema = z.object({
-  role: z.nativeEnum(Role),
-  verificationToken: z.string().length(36).regex(verificationTokenRegex, "Invalid token").optional(),
-  email: z.string().email("Invalid email address").optional(),
 });
 
 // Login controller zod validation
@@ -47,13 +38,16 @@ export const loginSchema = z.object({
     .min(8, "Password must be at least 8 characters")
     .max(50, "Password cannot exceed 50 characters")
     .regex(strongPasswordRegex, "Password must contain uppercase, lowercase, number & symbol"),
-  role: z.nativeEnum(Role)
+  role: z.nativeEnum(Role),
+});
+
+// Verify email zod validation
+export const verifyEmailSchema = z.object({
+  email: z.string().email("Invalid email address"),
 });
 
 // Update password zod validation
 export const updatePasswordSchema = z.object({
-  role: z.nativeEnum(Role),
-  verificationToken: z.string().length(36).regex(verificationTokenRegex, "Invalid token").optional(),
   password: z
     .string()
     .min(8, "Password must be at least 8 characters")

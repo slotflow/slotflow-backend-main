@@ -2,7 +2,6 @@ export type CreateLocalUserProps = {
   username: string;
   email: string;
   password: string;
-  verificationToken: string;
 };
 
 export type CreateGoogleUserProps = {
@@ -26,14 +25,6 @@ export type UpdateVerificationToken = {
   verificationToken: string;
 };
 
-export type SubmitIdentityProof = {
-  identityProof: string | null;
-};
-
-export type SubmitServiceProof = {
-  serviceProof: string | null;
-};
-
 export type LinkGoogleAccount = {
   googleId: string;
   googleConnected: boolean;
@@ -41,14 +32,6 @@ export type LinkGoogleAccount = {
 
 export type ChangeProfileImage = {
   profileImage: string | null;
-};
-
-export type RejectVerification = {
-  verificationRejectionReason: string;
-  isAddressVerified: boolean;
-  isServiceDetailsVerified: boolean;
-  isAvailabilityVerified: boolean;
-  isProofsVerified: boolean;
 };
 
 export type UpdatePushNotification = {

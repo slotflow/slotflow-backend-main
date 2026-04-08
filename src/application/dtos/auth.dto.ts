@@ -7,50 +7,38 @@ export interface RegisterRequest {
     username: string;
     email: string;
     password: string;
-    role: Role;
 }
 // user or provider register usecase response interface
 export interface RegisterResponse {
-    authUser: {
-        verificationToken: string,
-        role: Role,
-        token: string
-    }
+    token: string
 }
 
 
 // user or provider OTP Verification usecase request payload interface
 export interface OTPVerificationRequest {
+    token: string;
     otp: string;
-    verificationToken: string;
-    role: Role;
-}
-
-export interface VerifyAndActivateEntityRequest {
-    verificationToken: string;
-    role: Role;
 }
 
 
 // user or provider Resend use case request payload interface
 export interface ResendOtpRequest {
-    role: Role;
-    verificationToken?: string;
-    email?: string;
-}
-export interface ResendOtpResponse {
-    authUser: {
-        verificationToken: string,
-        role: string
-    }
+    token: string;
 }
 
+// user or provider verify email use case request payload interface
+export interface VerifyEmailRequest {
+    email: string;
+}
+
+export interface VerifyEmailResponse {
+    token: string;
+}
 
 // user or provider login use case request payload interface
 export interface LoginRequest {
     email: string;
     password: string;
-    role: Role;
 }
 // user or provider login use case response interface
 export interface LoginResponse {
@@ -86,8 +74,7 @@ export interface LoginResponse {
 
 // user or provider update password use case request payload interface
 export interface UpdatePasswordRequest {
-    role: Role;
-    verificationToken: string;
+    token: string;
     password: string;
 }
 

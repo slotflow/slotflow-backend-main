@@ -16,6 +16,10 @@ router.post('/resendOtp',
     authController.resendOtp
 );
 
+router.post('/verify-email', 
+    authController.verifyEmail
+);
+
 router.post("/signin", 
     authController.login
 );

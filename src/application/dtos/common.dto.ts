@@ -6,7 +6,6 @@ import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
 import { ServiceCategory, ServiceMode, ServiceType } from "../../domain/enums/service.enum";
 
-
 // **** ENTITY INTERFACES FOR APPLICATION LAYER **** \\
 
 // **** ADDRESS INTERFACE
@@ -66,17 +65,46 @@ export interface UserDTO {
   username: string;
   email: string;
   password: string | null;
+  role: Role;
   isBlocked: boolean;
-  isEmailVerified: boolean;
+  // Remove
+  // isEmailVerified: boolean;
   phone: string | null;
   profileImage: string | null;
-  addressId: string | null;
-  verificationToken: string | null;
+  // addressId: string | null;
+  // verificationToken: string | null;
+
   googleConnected: boolean;
   googleId: string | null;
+  stripeConnected: boolean;
+  stripeAccountId: string | null;
+  stripeCustomerId: string | null;
+
   allowPushNotification: boolean | null;
   createdAt: Date,
   updatedAt: Date
+}
+
+// **** PROVIDER PROFILE INTERFACE
+export interface ProviderProfileDTO {
+  _id: string;
+  userId: string;
+  isAdminVerified: boolean;
+  verificationRejectionReason: string | null;
+  adminVerificationStatus: AdminVerificationStatus;
+  isAddressVerified: boolean;
+  isServiceDetailsVerified: boolean;
+  isAvailabilityVerified: boolean;
+  isProofsVerified: boolean;
+  addressId: string | null;
+  serviceId: string | null;
+  serviceAvailabilityId: string | null;
+  subscription: string[];
+  trustedBySlotflow: boolean;
+  identityProof: string | null;
+  serviceProof: string | null;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 // **** BOOKING INTERFACE

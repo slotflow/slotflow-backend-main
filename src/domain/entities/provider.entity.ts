@@ -312,7 +312,6 @@ export class Provider {
     this.touch();
   }
 
-
   changePassword(props: ChangePassword) {
     this.ensureNotBlocked("update password");
 

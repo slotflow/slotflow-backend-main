@@ -1,3 +1,4 @@
+import { Role } from "../enums/common.enum";
 import { UserProps } from "../contracts/user.contract";
 import { ChangePassword, ChangeProfileImage, ChangeProfileInfo, CreateGoogleUserProps, CreateLocalUserProps, LinkGoogleAccount, UpdatePushNotification, UpdateVerificationToken } from "../commands/user.commands";
 
@@ -25,12 +26,14 @@ export class User {
             username: props.username,
             email: props.email,
             password: props.password,
+            role: Role.USER,
             isBlocked: false,
-            isEmailVerified: false,
+            //Remove
+            // isEmailVerified: false,
             phone: null,
             profileImage: null,
-            addressId: null,
-            verificationToken: props.verificationToken,
+            // Remove
+            // addressId: null,
             googleConnected: false,
             googleId: null,
             stripeConnected: false,
@@ -48,12 +51,15 @@ export class User {
             username: props.username,
             email: props.email,
             password: null,
+            role: Role.USER,
             isBlocked: false,
-            isEmailVerified: props.isEmailVerified,
+            // Remove
+            // isEmailVerified: props.isEmailVerified,
             phone: null,
             profileImage: props.profileImage,
-            addressId: null,
-            verificationToken: null,
+            // Remove
+            // addressId: null,
+            // verificationToken: null,
             googleConnected: true,
             googleId: props.googleId,
             stripeConnected: false,
@@ -79,6 +85,10 @@ export class User {
         return this.props.email;
     }
 
+    get role(): Role {
+        return this.props.role;
+    }
+
     get phone(): string | null {
         return this.props.phone;
     }
@@ -91,13 +101,15 @@ export class User {
         return this.props.password;
     }
 
-    get verificationToken(): string | null {
-        return this.props.verificationToken;
-    }
+    // Remove
+    // get verificationToken(): string | null {
+    //     return this.props.verificationToken;
+    // }
 
-    get isEmailVerified(): boolean {
-        return this.props.isEmailVerified;
-    }
+    // Remove
+    // get isEmailVerified(): boolean {
+    //     return this.props.isEmailVerified;
+    // }
 
     get isBlocked(): boolean {
         return this.props.isBlocked;
@@ -122,10 +134,11 @@ export class User {
     get stripeCustomerId(): string | null {
         return this.props.stripeCustomerId;
     }
-
-    get addressId(): string | null {
-        return this.props.addressId;
-    }
+    
+    // Remove
+    // get addressId(): string | null {
+    //     return this.props.addressId;
+    // }
 
     get allowPushNotification(): boolean | null {
         return this.props.allowPushNotification;
@@ -155,10 +168,11 @@ export class User {
         this.touch();
     }
 
-    markEmailVerified() {
-        this.props.isEmailVerified = true;
-        this.touch();
-    }
+    // Remove
+    // markEmailVerified() {
+    //     this.props.isEmailVerified = true;
+    //     this.touch();
+    // }
 
     updateProfileInfo(props: ChangeProfileInfo) {
         this.ensureNotBlocked("update info");
@@ -182,10 +196,11 @@ export class User {
         this.touch();
     }
 
-    upcateVerificationToken(props: UpdateVerificationToken) {
-        this.props.verificationToken = props.verificationToken;
-        this.touch();
-    }
+    
+    // upcateVerificationToken(props: UpdateVerificationToken) {
+    //     this.props.verificationToken = props.verificationToken;
+    //     this.touch();
+    // }
 
     updatePushNotification(props: UpdatePushNotification) {
         this.props.allowPushNotification = props.allowPushNotification;
@@ -207,10 +222,11 @@ export class User {
         this.touch();
     }
 
-    attachAddress(addressId: string | null) {
-        this.props.addressId = addressId;
-        this.touch();
-    }
+    // Remove
+    // attachAddress(addressId: string | null) {
+    //     this.props.addressId = addressId;
+    //     this.touch();
+    // }
 
     linkStripeAccount(stripeAccountId: string) {
         this.ensureNotBlocked("update stripe account");

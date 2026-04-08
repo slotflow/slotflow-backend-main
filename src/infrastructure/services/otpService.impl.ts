@@ -10,10 +10,10 @@ export class OTPServiceImpl implements IOTPService {
     private readonly redisClient: Redis
   ) { };
 
-  async setOtp(verificationToken: string): Promise<string> {
+  async setOtp(email: string): Promise<string> {
     try {
       const otp = generateOTP({ length: 6 });
-      await this.redisClient.set(verificationToken, otp, { ex: redisConfig.redisOtpTtl });
+      await this.redisClient.set(email, otp, { ex: redisConfig.redisOtpTtl });
       return otp;
     } catch (error) {
       log.error("setOtp failed", error as Error);
@@ -21,9 +21,9 @@ export class OTPServiceImpl implements IOTPService {
     };
   };
 
-  async verifyOtp(verificationToken: string, otp: string): Promise<boolean> {
+  async verifyOtp(email: string, otp: string): Promise<boolean> {
     try {
-      const storedOtp = await this.redisClient.get(verificationToken);
+      const storedOtp = await this.redisClient.get(email);
       return storedOtp == otp;
     } catch (error) {
       log.error("verifyOtp failed", error as Error);
@@ -31,9 +31,9 @@ export class OTPServiceImpl implements IOTPService {
     }
   };
 
-  async deleteOtp(verificationToken: string): Promise<void> {
+  async deleteOtp(email: string): Promise<void> {
     try {
-      await this.redisClient.del(verificationToken);
+      await this.redisClient.del(email);
     } catch (error) {
       log.error("deleteOtp failed : ", error as Error);
       throw new Error;

@@ -1,31 +1,31 @@
-import { log } from "../../../shared/logger/logger";
-import { CreateAddressRequest } from "../../dtos/address.dto";
-import { Address } from "../../../domain/entities/address.entity";
-import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { IAddressRepository } from "../../../domain/interfaces/repositories/IAddress.repository";
+// import { log } from "../../../shared/logger/logger";
+// import { CreateAddressRequest } from "../../dtos/address.dto";
+// import { Address } from "../../../domain/entities/address.entity";
+// import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
+// import { IAddressRepository } from "../../../domain/interfaces/repositories/IAddress.repository";
 
-export class UserCreateAddressUseCase {
-    constructor(
-        private userRepository: IUserRepository,
-        private addressRepository: IAddressRepository,
-    ) { };
+// export class UserCreateAddressUseCase {
+//     constructor(
+//         private userRepository: IUserRepository,
+//         private addressRepository: IAddressRepository,
+//     ) { };
 
-    async execute(payload: CreateAddressRequest): Promise<void> {
-        try {
-            const user = await this.userRepository.findById(payload.userId);
-            if (!user) throw new Error("Please logout and try again");
+//     async execute(payload: CreateAddressRequest): Promise<void> {
+//         try {
+//             const user = await this.userRepository.findById(payload.userId);
+//             if (!user) throw new Error("Please logout and try again");
 
-            const address = Address.create({...payload});
+//             const address = Address.create({...payload});
 
-            const savedAddress = await this.addressRepository.create(address);
-            if (!savedAddress) throw new Error("Failed to save address");
+//             const savedAddress = await this.addressRepository.create(address);
+//             if (!savedAddress) throw new Error("Failed to save address");
 
-            user.attachAddress(savedAddress._id)
-            const updatedUser = await this.userRepository.update(user);
-            if (!updatedUser) throw new Error("Failed to update user with address");
-        } catch (error) {
-            log.error("UserCreateAddressUseCase failed", error as Error);
-            throw error;
-        };
-    };
-};
+//             user.attachAddress(savedAddress._id)
+//             const updatedUser = await this.userRepository.update(user);
+//             if (!updatedUser) throw new Error("Failed to update user with address");
+//         } catch (error) {
+//             log.error("UserCreateAddressUseCase failed", error as Error);
+//             throw error;
+//         };
+//     };
+// };

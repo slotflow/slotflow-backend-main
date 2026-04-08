@@ -23,6 +23,8 @@ import { ICredentialRepository } from "../../domain/interfaces/repositories/ICre
 import { ISubscriptionRepository } from "../../domain/interfaces/repositories/ISubscription.repository";
 import { IProviderServiceRepository } from "../../domain/interfaces/repositories/IProviderService.repository";
 import { IServiceAvailabilityRepository } from "../../domain/interfaces/repositories/IServiceAvailability.repository";
+import { IProviderProfileRepository } from "../../domain/interfaces/repositories/IProviderProfile.repository";
+import { ProviderProfileRepositoryImpl } from "./providerProfile.repository.impl";
 
 // address repository instance
 export const addressRepository: IAddressRepository = new AddressRepositoryImpl();
@@ -32,8 +34,6 @@ export const bookingRepository: IBookingRepository = new BookingRepositoryImpl()
 
 // credential repository instance
 export const credentialRepository: ICredentialRepository = new CredentialRepositoryImpl();
-
-// payment repository instance
 
 // plan repository instance
 export const planRepository: IPlanRepository = new PlanRepositoryImpl();
@@ -58,3 +58,6 @@ export const subscriptionRepository: ISubscriptionRepository = new SubscriptionR
 
 // user repository instance
 export const userRepository: IUserRepository = new UserRepositoryImpl();
+
+// provider profile repository instance
+export const providerProfileRepository: IProviderProfileRepository = new ProviderProfileRepositoryImpl();
