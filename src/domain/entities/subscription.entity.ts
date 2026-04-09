@@ -13,7 +13,7 @@ export class Subscription {
         this.props.updatedAt = new Date();
     };
 
-    static createInitialData(props: CreateSubscriptionInitialProps) {
+    static createInitialData(props: CreateSubscriptionInitialProps): Subscription {
         return new Subscription({
             _id: "",
             ...props,

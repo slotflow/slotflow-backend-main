@@ -67,6 +67,7 @@ export interface LoginResponse {
         googleConnected?: boolean;
         stripeAccountId?: string;
         stripeConnected?: boolean;
+        hasSelectedRole?: boolean;
         allowPushNotification?: boolean;
     }
 }

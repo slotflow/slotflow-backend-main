@@ -15,7 +15,7 @@ export class Booking {
         this.props.updatedAt = new Date();
     };
 
-    static create(props: CreateBookingProps) {
+    static create(props: CreateBookingProps): Booking {
         return new Booking({
             _id: "",
             appointmentDate: props.appointmentDate,

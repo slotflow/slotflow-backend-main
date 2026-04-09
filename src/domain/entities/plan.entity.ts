@@ -13,7 +13,7 @@ export class Plan {
         this.props.updatedAt = new Date();
     }
 
-    static create(props: CreatePlanProps) {
+    static create(props: CreatePlanProps): Plan {
         return new Plan({
             _id: "",
             adVisibility: props.adVisibility,

@@ -1,8 +1,7 @@
 import { z } from 'zod';
 import { validateUserIdSchema } from './user.zod';
 import { roleValidationSchema } from './base.zod';
-import { Role } from '../../domain/enums/common.enum';
-import { strongPasswordRegex, usernameRegex, verificationTokenRegex } from '../utils/regex';
+import { strongPasswordRegex, usernameRegex } from '../utils/regex';
 
 // Regist controller zod validation
 export const registerSchema = z
@@ -20,7 +19,6 @@ export const registerSchema = z
       .min(8, "Password must be at least 8 characters")
       .max(50, "Password cannot exceed 50 characters")
       .regex(strongPasswordRegex, "Password must contain uppercase, lowercase, number & symbol"),
-    role: z.nativeEnum(Role),
   });
 
 // OTP Verification controller zod validation
@@ -38,7 +36,6 @@ export const loginSchema = z.object({
     .min(8, "Password must be at least 8 characters")
     .max(50, "Password cannot exceed 50 characters")
     .regex(strongPasswordRegex, "Password must contain uppercase, lowercase, number & symbol"),
-  role: z.nativeEnum(Role),
 });
 
 // Verify email zod validation

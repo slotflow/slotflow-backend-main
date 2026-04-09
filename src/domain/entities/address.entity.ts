@@ -12,7 +12,7 @@ export class Address {
         this.props.updatedAt = new Date();
     };
 
-    static create(props: CreateAddressProps) {
+    static create(props: CreateAddressProps): Address {
         return new Address({
             _id: "",
             addressLine: props.addressLine,

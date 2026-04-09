@@ -1,3 +1,4 @@
+import { Role } from '../../domain/enums/common.enum';
 import mongoose, { Schema, Document, Types } from 'mongoose';
 
 export interface IUser extends Document {
@@ -5,10 +6,12 @@ export interface IUser extends Document {
   username: string;
   email: string;
   password: string;
+  role: Role;
+  hasSelectedRole: boolean;
   isBlocked: boolean;
   isEmailVerified: boolean;
   phone: string;
-  profileImage: string;
+  profileImage: string | null;
   addressId: Types.ObjectId;
   verificationToken: string;
   googleConnected: boolean;
@@ -46,6 +49,15 @@ const UserSchema = new Schema<IUser>({
     minlength: [8, "Password must be at least 8 characters"],
     maxlength: [100, "Password must be at most 100 characters"],
     match: [/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,100}$/, "Invalid password"]
+  },
+  role: {
+    type: String,
+    enum: Object.values(Role),
+    default: Role.USER
+  },
+  hasSelectedRole: {
+    type: Boolean,
+    default: false
   },
   isBlocked: {
     type: Boolean,

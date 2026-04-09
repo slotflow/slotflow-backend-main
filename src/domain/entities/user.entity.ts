@@ -27,13 +27,13 @@ export class User {
             email: props.email,
             password: props.password,
             role: Role.USER,
+            hasSelectedRole: false,
             isBlocked: false,
             //Remove
             // isEmailVerified: false,
             phone: null,
             profileImage: null,
-            // Remove
-            // addressId: null,
+            addressId: null,
             googleConnected: false,
             googleId: null,
             stripeConnected: false,
@@ -52,14 +52,11 @@ export class User {
             email: props.email,
             password: null,
             role: Role.USER,
+            hasSelectedRole: false,
             isBlocked: false,
-            // Remove
-            // isEmailVerified: props.isEmailVerified,
             phone: null,
             profileImage: props.profileImage,
-            // Remove
-            // addressId: null,
-            // verificationToken: null,
+            addressId: null,
             googleConnected: true,
             googleId: props.googleId,
             stripeConnected: false,
@@ -89,6 +86,10 @@ export class User {
         return this.props.role;
     }
 
+    get hasSelectedRole(): boolean {
+        return this.props.hasSelectedRole;
+    }
+
     get phone(): string | null {
         return this.props.phone;
     }
@@ -100,16 +101,6 @@ export class User {
     get password(): string | null {
         return this.props.password;
     }
-
-    // Remove
-    // get verificationToken(): string | null {
-    //     return this.props.verificationToken;
-    // }
-
-    // Remove
-    // get isEmailVerified(): boolean {
-    //     return this.props.isEmailVerified;
-    // }
 
     get isBlocked(): boolean {
         return this.props.isBlocked;
@@ -135,10 +126,9 @@ export class User {
         return this.props.stripeCustomerId;
     }
     
-    // Remove
-    // get addressId(): string | null {
-    //     return this.props.addressId;
-    // }
+    get addressId(): string | null {
+        return this.props.addressId;
+    }
 
     get allowPushNotification(): boolean | null {
         return this.props.allowPushNotification;
@@ -168,12 +158,6 @@ export class User {
         this.touch();
     }
 
-    // Remove
-    // markEmailVerified() {
-    //     this.props.isEmailVerified = true;
-    //     this.touch();
-    // }
-
     updateProfileInfo(props: ChangeProfileInfo) {
         this.ensureNotBlocked("update info");
 
@@ -196,12 +180,6 @@ export class User {
         this.touch();
     }
 
-    
-    // upcateVerificationToken(props: UpdateVerificationToken) {
-    //     this.props.verificationToken = props.verificationToken;
-    //     this.touch();
-    // }
-
     updatePushNotification(props: UpdatePushNotification) {
         this.props.allowPushNotification = props.allowPushNotification;
         this.touch();
@@ -222,11 +200,10 @@ export class User {
         this.touch();
     }
 
-    // Remove
-    // attachAddress(addressId: string | null) {
-    //     this.props.addressId = addressId;
-    //     this.touch();
-    // }
+    attachAddress(addressId: string | null) {
+        this.props.addressId = addressId;
+        this.touch();
+    }
 
     linkStripeAccount(stripeAccountId: string) {
         this.ensureNotBlocked("update stripe account");
@@ -240,6 +217,11 @@ export class User {
         this.ensureNotBlocked("update stripe customer");
 
         this.props.stripeCustomerId = stripeCustomerId;
+        this.touch();
+    }
+
+    chnageHasSelectedRole(value: boolean) {
+        this.props.hasSelectedRole = value;
         this.touch();
     }
 

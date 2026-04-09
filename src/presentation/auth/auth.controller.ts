@@ -47,6 +47,7 @@ class AuthController {
 
   async verifyOTP(req: Request, res: Response, next: NextFunction) {
     try {
+      console.log("req.cookies : ",req.cookies);
       const { token } = req.cookies;
       if (!token) throw new Error("Invalid request.");
       const validateData = otpVerificationSchema.parse(req.body);
@@ -60,6 +61,7 @@ class AuthController {
 
   async resendOtp(req: Request, res: Response, next: NextFunction) {
     try {
+      console.log("req.cookies : ",req.cookies);
       const { token } = req.cookies;
       if (!token) throw new Error("Invalid request.");
       await this.resendOtpUseCase.execute({ token });
@@ -69,7 +71,7 @@ class AuthController {
       next(error)
     };
   };
-
+  
   async verifyEmail(req: Request, res: Response, next: NextFunction) {
     try {
       const validateData = verifyEmailSchema.parse(req.body);
@@ -86,7 +88,7 @@ class AuthController {
       next(error)
     };
   };
-
+  
   async login(req: Request, res: Response, next: NextFunction) {
     try {
       console.log("login controller");
@@ -119,6 +121,7 @@ class AuthController {
 
   async updatePassword(req: Request, res: Response, next: NextFunction) {
     try {
+      console.log("req.cookies : ",req.cookies);
       const validateData = updatePasswordSchema.parse(req.body);
       const { password } = validateData;
       const { token } = req.cookies;

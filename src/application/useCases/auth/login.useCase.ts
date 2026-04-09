@@ -1,4 +1,3 @@
-import { adminConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/common.enum";
 import { PlanName } from "../../../domain/enums/plan.enum";
@@ -38,13 +37,12 @@ export class LoginUseCase {
 
             const token = await this.jwtService.generateToken({ email: email, role: user.role })
 
-            let signedProfileImageUrl: string = "";
+            let signedProfileImageUrl: string | null = null;
             if (user.profileImage) {
                 signedProfileImageUrl = await this.signedUrlService.save(user.profileImage);
             };
 
             if (user.role === Role.USER) {
-
                 return {
                     authUser: {
                         uid: user._id,
@@ -57,9 +55,9 @@ export class LoginUseCase {
                         isLoggedIn: true,
                         googleConnected: user.googleConnected,
                         stripeConnected: user.stripeConnected,
+                        hasSelectedRole: user.hasSelectedRole
                     },
                 };
-
             } else if (user.role === Role.PROVIDER) {
                 const providerProfile = await this.providerProfileRepository.findById(user._id);
                 if (!providerProfile) throw new Error("Invalid request");
@@ -105,7 +103,7 @@ export class LoginUseCase {
                         token,
                         isBlocked: user.isBlocked,
                         isLoggedIn: true,
-                        isAddressAdded: !!providerProfile.addressId,
+                        isAddressAdded: !!user.addressId,
                         isServiceDetailsAdded: !!providerProfile.serviceId,
                         isServiceAvailabilityAdded: !!providerProfile.serviceAvailabilityId,
                         isAdminVerified: providerProfile.isAdminVerified,
@@ -118,9 +116,12 @@ export class LoginUseCase {
                         verificationRejectionReason: providerProfile.verificationRejectionReason,
                         providerSubscription,
                         googleConnected: user.googleConnected,
-                        stripeConnected: user.stripeConnected
+                        stripeConnected: user.stripeConnected,
+                        hasSelectedRole: user.hasSelectedRole
                     },
                 };
+            } else if (user.role === Role.ADMIN) {
+
             }
             throw new Error("Invalid request");
         } catch (error) {

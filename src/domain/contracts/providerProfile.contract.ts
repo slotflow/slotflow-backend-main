@@ -10,7 +10,6 @@ export interface ProviderProfileProps {
   isServiceDetailsVerified: boolean;
   isAvailabilityVerified: boolean;
   isProofsVerified: boolean;
-  addressId: string | null;
   serviceId: string | null;
   serviceAvailabilityId: string | null;
   subscription: string[];

@@ -12,7 +12,7 @@ export class Credential {
         this.props.updatedAt = new Date();
     };
 
-    static create(props: CreateCredentialProps) {
+    static create(props: CreateCredentialProps): Credential {
         return new Credential({
             _id: "",
             accessToken: props.accessToken,

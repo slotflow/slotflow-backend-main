@@ -24,7 +24,6 @@ export class ProviderProfile {
             isServiceDetailsVerified: false,
             isAvailabilityVerified: false,
             isProofsVerified: false,
-            addressId: props.addressId,
             serviceId: null,
             serviceAvailabilityId: null,
             subscription: [],
@@ -74,10 +73,6 @@ export class ProviderProfile {
 
     get isProofsVerified(): boolean {
         return this.props.isProofsVerified;
-    }
-
-    get addressId(): string | null {
-        return this.props.addressId;
     }
 
     get serviceId(): string | null {
@@ -176,13 +171,13 @@ export class ProviderProfile {
         this.touch();
     }
 
-    submitIdentityProof(props: SubmitIdentityProof) {    
+    submitIdentityProof(props: SubmitIdentityProof) {
         this.props.identityProof = props.identityProof;
         this.touch();
-      }
-    
-      submitServiceProof(props: SubmitServiceProof) {    
+    }
+
+    submitServiceProof(props: SubmitServiceProof) {
         this.props.serviceProof = props.serviceProof;
         this.touch();
-      }
+    }
 }

@@ -13,6 +13,8 @@ export class OTPServiceImpl implements IOTPService {
   async setOtp(email: string): Promise<string> {
     try {
       const otp = generateOTP({ length: 6 });
+      // Remove
+      console.log("otp : ",otp);
       await this.redisClient.set(email, otp, { ex: redisConfig.redisOtpTtl });
       return otp;
     } catch (error) {
