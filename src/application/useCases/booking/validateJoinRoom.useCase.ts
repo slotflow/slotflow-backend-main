@@ -1,18 +1,18 @@
 import { isSameDay, startOfDay } from "date-fns";
 import { log } from "../../../shared/logger/logger";
-import { ValidateJoinRoomRequest } from "../../dtos/common.dto";
+import { Role } from "../../../domain/enums/common.enum";
+import { ValidateJoinRoomInput } from "../../dtos/booking.dtos";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
-import { Role } from "../../../domain/enums/common.enum";
 
 export class ValidateJoinRoomUsecase {
     constructor(
-        private bookingRepository: IBookingRepository,
+        private readonly bookingRepository: IBookingRepository,
     ) { };
 
-    async execute(payload: ValidateJoinRoomRequest): Promise<void> {
+    async execute(input: ValidateJoinRoomInput): Promise<void> {
         try {
-            const { bookingId, roomId, userOrProviderId, role } = payload;
+            const { bookingId, roomId, userId, role } = input;
 
             const booking = await this.bookingRepository.findById(bookingId);
             if (!booking) if (!booking) throw new Error("No booking found");
@@ -28,11 +28,11 @@ export class ValidateJoinRoomUsecase {
             };
 
             if (role === Role.USER) {
-                if (String(booking.userId) !== String(userOrProviderId)) {
+                if (String(booking.userId) !== String(userId)) {
                     throw new Error("You are not authorized for this booking");
                 }
             } else if (role === Role.PROVIDER) {
-                if (String(booking.serviceProviderId) !== String(userOrProviderId)) {
+                if (String(booking.serviceProviderId) !== String(userId)) {
                     throw new Error("You are not authorized for this booking provider");
                 }
             } else {

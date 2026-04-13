@@ -1,7 +1,7 @@
 import dayjs from "../../../shared/config/dayjs";
 import { log } from "../../../shared/logger/logger";
+import { CheckBookingInput } from "../../dtos/booking.dtos";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
-import { CheckBookingRequest } from "../../dtos/booking.dtos";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
 
 export class CheckBookingUseCase {
@@ -9,9 +9,9 @@ export class CheckBookingUseCase {
         private readonly bookingRepository: IBookingRepository
     ) { }
 
-    async execute(payload: CheckBookingRequest): Promise<boolean> {
+    async execute(input: CheckBookingInput): Promise<boolean> {
         try {
-            const { userId } = payload;
+            const { userId } = input;
 
             const booking = await this.bookingRepository.findOneByUserId(userId);
             console.log("booking : ",booking)

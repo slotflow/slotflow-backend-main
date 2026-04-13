@@ -2,18 +2,17 @@ import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/common.enum";
 import { IServiceAvailabilityQueries } from "../../queries/IServiceAvailability.queries";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
-import { UpdateBookingOnlineTrackRequest, UpdateBookingOnlineTrackResponse } from "../../dtos/common.dto";
+import { UpdateBookingOnlineTrackInput, UpdateBookingOnlineTrackOutput } from "../../dtos/booking.dtos";
 
 export class UpdateBookingOnlineTrakingUseCase {
     constructor(
-        private bookingRepository: IBookingRepository,
-        private serviceAvailabilityQueries: IServiceAvailabilityQueries
+        private readonly bookingRepository: IBookingRepository,
+        private readonly serviceAvailabilityQueries: IServiceAvailabilityQueries
     ) { };
 
-    async execute(payload: UpdateBookingOnlineTrackRequest): Promise<UpdateBookingOnlineTrackResponse> {
+    async execute(input: UpdateBookingOnlineTrackInput): Promise<UpdateBookingOnlineTrackOutput> {
         try {
-            console.log("payload : ",payload);
-            const { joined, joinedTime, leftCallTime, role, roomId } = payload;
+            const { joined, joinedTime, leftCallTime, role, roomId } = input;
             if (joined === null) throw new Error("Invalid request");
 
             if (joined && (!joinedTime && !leftCallTime)) throw new Error("Invalid request");

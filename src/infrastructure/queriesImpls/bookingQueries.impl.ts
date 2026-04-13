@@ -1,21 +1,18 @@
 import dayjs from "dayjs";
-import { Types } from "mongoose";
+import { FilterQuery, Types } from "mongoose";
 import { Role } from "../../domain/enums/common.enum";
 import { BookingModel } from "../models/booking.model";
-import { IBookingQueries } from "../../application/queries/IBooking.queries";
-import { GetBookingsDataRequest, GetBookingsDataResponse } from "../../application/dtos/admin.dto";
-import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
-import { GetBookingsRequest, TableData, GetBookingsResponse, GetOnlineBookingsForProviderResponse, GetOnlineBookingsForUserResponse, GetBookingDetailsResponse } from "../../application/dtos/common.dto";
-import { ProviderGetDashboardGraphRepository, GetGraphDataResponse, ProviderGetDashboardBookingStatsDataResponse, ProviderGetUsersForChatSideBarResponse, GetProvidersForChatResponse, ProviderGetDashboardBookingStatsDataRequest } from "../../application/dtos/provider.dto";
 import { getStartAndEndDate } from "../../shared/utils/dateTime";
+import { IBookingQueries } from "../../application/queries/IBooking.queries";
+import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
+import { TableData, BookingDTO } from "../../application/dtos/common.dto";
+import { BookingDetailsQuery, BookingDetailsView, BookingGraphStatsForProviderQuery, BookingGraphStatsForProviderView, BookingsBaseView, BookingsQuery, BookingsStatsForAdminQuery, BookingsStatsForAdminView, BookingStatsForProviderQuery, BookingStatsForProviderView, BookingsView, BookingUsersForChatQuery, BookingUsersForChatView, OnlineBookingsViewForProvider, OnlineBookingsViewForUser } from "../../application/dtos/booking.dtos";
 
 export class BookingQueriesImpl implements IBookingQueries {
 
-    async findAll({ page, limit, userId, serviceProviderId, online, role }: GetBookingsRequest): Promise<
-        TableData<GetBookingsResponse> |
-        TableData<GetOnlineBookingsForProviderResponse> |
-        TableData<GetOnlineBookingsForUserResponse>
-    > {
+    async findAll(query: BookingsQuery): Promise<TableData<BookingsView>> {
+
+        const { page, limit, userId, serviceProviderId, online, role } = query;
 
         const skip = (page - 1) * limit;
 
@@ -49,20 +46,20 @@ export class BookingQueriesImpl implements IBookingQueries {
 
         const project = online ? onlineProject : rawProject;
 
-        let query = BookingModel.find(filter, project)
+        let dbquery = BookingModel.find(filter, project)
             .skip(skip)
             .limit(limit)
             .sort({ createdAt: -1 })
-            .lean<GetBookingsResponse | GetOnlineBookingsForProviderResponse | GetOnlineBookingsForUserResponse>();
+            .lean<BookingsView>();
 
         if (online && role === Role.USER) {
-            query = query.populate("serviceProviderId", "username -_id");
+            dbquery = dbquery.populate("serviceProviderId", "username -_id");
         } else if (online && role === Role.PROVIDER) {
-            query = query.populate("userId", "username -_id");
+            dbquery = dbquery.populate("userId", "username -_id");
         }
 
         const [bookings, totalCount] = await Promise.all([
-            query.exec(),
+            dbquery.exec(),
             BookingModel.countDocuments(filter)
         ]);
 
@@ -70,7 +67,7 @@ export class BookingQueriesImpl implements IBookingQueries {
 
         if (online && role === Role.USER) {
             return {
-                data: (bookings as GetOnlineBookingsForUserResponse).map(booking => ({
+                data: (bookings as OnlineBookingsViewForUser).map(booking => ({
                     ...booking,
                     _id: booking._id.toString(),
                     serviceProviderId: {
@@ -83,7 +80,7 @@ export class BookingQueriesImpl implements IBookingQueries {
             }
         } else if (online && role === Role.PROVIDER) {
             return {
-                data: (bookings as GetOnlineBookingsForProviderResponse).map(booking => ({
+                data: (bookings as OnlineBookingsViewForProvider).map(booking => ({
                     ...booking,
                     _id: booking._id.toString(),
                     userId: {
@@ -96,7 +93,7 @@ export class BookingQueriesImpl implements IBookingQueries {
             }
         } else {
             return {
-                data: (bookings as GetBookingsResponse).map(booking => ({
+                data: (bookings as BookingsBaseView).map(booking => ({
                     ...booking,
                     _id: booking._id.toString(),
                     serviceProviderId: booking.serviceProviderId?.toString(),
@@ -108,7 +105,8 @@ export class BookingQueriesImpl implements IBookingQueries {
         }
     }
 
-    async findDetails(bookingId: string): Promise<GetBookingDetailsResponse | null> {
+    async findDetails(query: BookingDetailsQuery): Promise<BookingDetailsView | null> {
+        const { bookingId } = query;
         const booking = await BookingModel.findById(new Types.ObjectId(bookingId), {
             _id: 0,
             appointmentDate: 1,
@@ -128,7 +126,7 @@ export class BookingQueriesImpl implements IBookingQueries {
                 path: "serviceProviderId",
                 select: "username email",
             })
-            .lean<GetBookingDetailsResponse>();
+            .lean<BookingDetailsView>();
 
         if (!booking) return null;
 
@@ -152,23 +150,16 @@ export class BookingQueriesImpl implements IBookingQueries {
         };
     }
 
-    async findGraphDataForProviderDashboard(payload: ProviderGetDashboardGraphRepository): Promise<GetGraphDataResponse | null> {
-        const { providerId, subscriptionGuard, endDate, startDate } = payload
+    async findGraphDataForProviderDashboard(query: BookingGraphStatsForProviderQuery): Promise<BookingGraphStatsForProviderView | null> {
+        const { providerId, subscriptionGuard, endDate, startDate } = query;
 
-        console.log("providerId,  : ", providerId)
-        console.log("subscriptionGuard,  : ", subscriptionGuard)
-        console.log("endDate : ", endDate)
-        console.log("startDate : ", startDate)
-
-        const matchFilter: Record<string, any> = {
+        const matchFilter: FilterQuery<BookingDTO> = {
             serviceProviderId: new Types.ObjectId(providerId),
         };
 
         if (startDate && endDate) {
             matchFilter.createdAt = { $gte: startDate, $lte: endDate };
         }
-
-        console.log("matchFilter : ", matchFilter);
 
         const facet: Record<string, any> = {};
 
@@ -343,12 +334,16 @@ export class BookingQueriesImpl implements IBookingQueries {
         }
     }
 
-    async findStatsDataForProviderDashboard(payload: ProviderGetDashboardBookingStatsDataRequest): Promise<ProviderGetDashboardBookingStatsDataResponse> {
+    async findStatsDataForProviderDashboard(query: BookingStatsForProviderQuery): Promise<BookingStatsForProviderView> {
+        const { providerId } = query;
 
-        const providerObjectId = new Types.ObjectId(payload.providerId);
+        const matchFilter: FilterQuery<BookingDTO> = {
+            serviceProviderId: new Types.ObjectId(providerId),
+        };
+
         const { startDate, endDate } = getStartAndEndDate(
-            payload.startDate,
-            payload.endDate
+            query.startDate,
+            query.endDate
         );
 
         const today = new Date();
@@ -359,9 +354,7 @@ export class BookingQueriesImpl implements IBookingQueries {
 
         const result = await BookingModel.aggregate([
             {
-                $match: {
-                    serviceProviderId: providerObjectId,
-                },
+                $match: matchFilter,
             },
 
             {
@@ -480,8 +473,8 @@ export class BookingQueriesImpl implements IBookingQueries {
         };
     }
 
-    async findStatsDataForAdminDashboard(payload: GetBookingsDataRequest): Promise<GetBookingsDataResponse> {
-        const { startDate, endDate } = getStartAndEndDate(payload.startDate, payload.endDate);
+    async findStatsDataForAdminDashboard(query: BookingsStatsForAdminQuery): Promise<BookingsStatsForAdminView> {
+        const { startDate, endDate } = getStartAndEndDate(query.startDate, query.endDate);
         const result = await BookingModel.aggregate([
             {
                 $match: {
@@ -511,47 +504,6 @@ export class BookingQueriesImpl implements IBookingQueries {
         };
     }
 
-    async findProvidersforChatSideBar(userId: string): Promise<GetProvidersForChatResponse> {
-        const providers = await BookingModel.aggregate([
-            {
-                $match: {
-                    userId: new Types.ObjectId(userId),
-                    appointmentDate: {
-                        $gte: dayjs().subtract(1, 'day').startOf('day').toDate(),
-                        $lte: dayjs().add(1, 'day').startOf('day').toDate(),
-                    },
-                }
-            },
-            {
-                $lookup: {
-                    from: "providers",
-                    localField: "serviceProviderId",
-                    foreignField: "_id",
-                    as: "provider"
-                }
-            },
-            { $unwind: "$provider" },
-            {
-                $group: {
-                    _id: "$provider._id",
-                    username: { $first: "$provider.username" },
-                    profileImage: { $first: "$provider.profileImage" }
-                }
-            },
-            {
-                $project: {
-                    _id: 1,
-                    username: 1,
-                    profileImage: 1
-                }
-            }
-        ]);
-        return providers.map(provider => ({
-            ...provider,
-            _id: provider._id.toString(),
-        }));
-    }
-
     async findTodaysBookingsForCronjob(): Promise<boolean> {
         const now = new Date();
         const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -578,11 +530,21 @@ export class BookingQueriesImpl implements IBookingQueries {
         return bookings.modifiedCount > 0;
     }
 
-    async findUsersforChatSideBar(providerId: string): Promise<ProviderGetUsersForChatSideBarResponse> {
+    async findUsersforChatSideBar(query: BookingUsersForChatQuery): Promise<BookingUsersForChatView> {
+        const { userId, role } = query;
+
+        const matchFilter: FilterQuery<BookingDTO> = {};
+
+        if (role === Role.USER) {
+            matchFilter.userId = new Types.ObjectId(userId);
+        } else {
+            matchFilter.serviceProviderId = new Types.ObjectId(userId);
+        }
+
         const users = await BookingModel.aggregate([
             {
                 $match: {
-                    serviceProviderId: new Types.ObjectId(providerId),
+                    ...matchFilter,
                     appointmentDate: {
                         $gte: dayjs().subtract(1, 'day').startOf('day').toDate(),
                         $lte: dayjs().add(1, 'day').startOf('day').toDate(),
@@ -592,8 +554,25 @@ export class BookingQueriesImpl implements IBookingQueries {
             {
                 $lookup: {
                     from: "users",
-                    localField: "userId",
-                    foreignField: "_id",
+                    let: { userId: "$userId" },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ["$_id", "$$userId"] },
+                                        { $eq: ["$role", role] }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            $project: {
+                                username: 1,
+                                profileImage: 1
+                            }
+                        }
+                    ],
                     as: "user"
                 }
             },

@@ -1,23 +1,20 @@
-import { GetBookingsDataRequest, GetBookingsDataResponse } from "../dtos/admin.dto";
-import { GetBookingDetailsResponse, GetBookingsRequest, GetBookingsResponse, GetOnlineBookingsForProviderResponse, GetOnlineBookingsForUserResponse, TableData } from "../dtos/common.dto";
-import { ProviderGetDashboardBookingStatsDataResponse, GetGraphDataResponse, ProviderGetDashboardGraphRepository, ProviderGetUsersForChatSideBarResponse, GetProvidersForChatResponse, ProviderGetDashboardBookingStatsDataRequest } from "../dtos/provider.dto";
+import { TableData } from "../dtos/common.dto";
+import { BookingDetailsQuery, BookingDetailsView, BookingGraphStatsForProviderQuery, BookingGraphStatsForProviderView, BookingsQuery, BookingsStatsForAdminQuery, BookingsStatsForAdminView, BookingStatsForProviderQuery, BookingStatsForProviderView, BookingsView, BookingUsersForChatQuery, BookingUsersForChatView } from "../dtos/booking.dtos";
 
 export interface IBookingQueries {
 
     findTodaysBookingsForCronjob(): Promise<boolean>;
 
-    findAll({ page, limit, userId, serviceProviderId, online, role }: GetBookingsRequest): Promise<TableData<GetBookingsResponse | GetOnlineBookingsForProviderResponse | GetOnlineBookingsForUserResponse>>;
+    findAll(query: BookingsQuery): Promise<TableData<BookingsView>>;
 
-    findDetails(bookingId: string): Promise<GetBookingDetailsResponse | null>;
+    findDetails(query: BookingDetailsQuery): Promise<BookingDetailsView | null>;
 
-    findUsersforChatSideBar(providerId: string): Promise<ProviderGetUsersForChatSideBarResponse>;
+    findUsersforChatSideBar(query: BookingUsersForChatQuery): Promise<BookingUsersForChatView>;
 
-    findProvidersforChatSideBar(userId: string): Promise<GetProvidersForChatResponse>;
+    findStatsDataForProviderDashboard(query: BookingStatsForProviderQuery): Promise<BookingStatsForProviderView>;
 
-    findStatsDataForProviderDashboard(payload: ProviderGetDashboardBookingStatsDataRequest): Promise<ProviderGetDashboardBookingStatsDataResponse>;
+    findGraphDataForProviderDashboard(query: BookingGraphStatsForProviderQuery): Promise<BookingGraphStatsForProviderView | null>;
 
-    findGraphDataForProviderDashboard(payload: ProviderGetDashboardGraphRepository): Promise<GetGraphDataResponse | null>;
-
-    findStatsDataForAdminDashboard(payload: GetBookingsDataRequest): Promise<GetBookingsDataResponse>;
+    findStatsDataForAdminDashboard(query: BookingsStatsForAdminQuery): Promise<BookingsStatsForAdminView>;
 
 };

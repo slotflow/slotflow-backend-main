@@ -58,7 +58,7 @@ router.patch('/:userId/block',
 // admin get users
 router.get('/',
     authMiddleware,
-    authorize(Role.ADMIN, Role.PROVIDER),
+    authorize(Role.ADMIN, Role.PROVIDER, Role.USER),
     userController.getUsers
 );
 

@@ -7,7 +7,6 @@ import { DecodedUser } from "../../application/dtos/common.dto";
 import { userGetProvidersSchema } from "../../shared/zod/user.zod";
 import { AdminProviderListUseCase } from "../../application/useCases/provider/getProviders.useCase";
 import { GetProviderProofsUseCase } from "../../application/useCases/common/getProviderProofs.useCase";
-import { GetProvidersForChatUseCase } from "../../application/useCases/provider/getProvidersForChat.useCase";
 import { AdminRejectProviderUseCase } from "../../application/useCases/provider/adminRejectProvider.useCase";
 import { GetProvidersByFilterUseCase } from "../../application/useCases/provider/getProvidersByFilter.useCase";
 import { AdminApproveProviderUseCase } from "../../application/useCases/provider/adminApproveProvider.useCase";
@@ -18,7 +17,7 @@ import { ChangeProviderBlockStatusUseCase } from "../../application/useCases/pro
 import { adminChangeProviderBlockStatusSchema, adminChangeProviderTrustTagSchema, adminRejectProviderSchema } from "../../shared/zod/admin.zod";
 import { providerValidateUpdateFileSchema, validateProviderIdSchema } from "../../shared/zod/provider.zod";
 import { ProvideDeleteIdentityProofUseCase, ProvideDeleteServiceProofUseCase, ProviderGetProfileDetailsUseCase, ProviderUpdateIdentityProofUseCase, ProviderRequestForApprovalUseCase, ProviderUpdateServiceProofUseCase } from "../../application/useCases/provider/providerProfile.useCase";
-import { adminApproveProviderUseCase, changeProviderBlockStatusUseCase, changeProviderTrustTagUseCase, adminGetProviderDetailsUseCase, adminProviderListUseCase, adminRejectProviderUseCase, getProviderProofsUseCase, provideDeleteIdentityProofUseCase, provideDeleteServiceProofUseCase, providerGetProfileDetailsUseCase, providerRequestForApprovalUseCase, providerUpdateIdentityProofUseCase, providerUpdateServiceProofUseCase, userGetProviderDetailsUseCase, getProvidersByFilterUseCase, getProvidersForChatUseCase } from ".";
+import { adminApproveProviderUseCase, changeProviderBlockStatusUseCase, changeProviderTrustTagUseCase, adminGetProviderDetailsUseCase, adminProviderListUseCase, adminRejectProviderUseCase, getProviderProofsUseCase, provideDeleteIdentityProofUseCase, provideDeleteServiceProofUseCase, providerGetProfileDetailsUseCase, providerRequestForApprovalUseCase, providerUpdateIdentityProofUseCase, providerUpdateServiceProofUseCase, userGetProviderDetailsUseCase, getProvidersByFilterUseCase } from ".";
 
 class ProviderProfileController {
     constructor(
@@ -33,7 +32,6 @@ class ProviderProfileController {
         private provideDeleteServiceProofUseCase: ProvideDeleteServiceProofUseCase,
         private adminProviderListUseCase: AdminProviderListUseCase,
         private getProvidersByFilterUseCase: GetProvidersByFilterUseCase,
-        private getProvidersForChatUseCase: GetProvidersForChatUseCase,
         private adminApproveProviderUseCase: AdminApproveProviderUseCase,
         private adminRejectProviderUseCase: AdminRejectProviderUseCase,
         private changeProviderBlockStatusUseCase: ChangeProviderBlockStatusUseCase,
@@ -48,7 +46,6 @@ class ProviderProfileController {
         this.deleteServiceProof = this.deleteServiceProof.bind(this);
 
         this.getProviders = this.getProviders.bind(this);
-        this.getProvidersForChat = this.getProvidersForChat.bind(this);
 
         this.approveProvider = this.approveProvider.bind(this);
         this.rejectProvider = this.rejectProvider.bind(this);
@@ -211,17 +208,6 @@ class ProviderProfileController {
         };
     };
 
-    async getProvidersForChat(req: Request, res: Response, next: NextFunction) {
-        try {
-            const user = req.user as DecodedUser
-            const result = await this.getProvidersForChatUseCase.execute({ userId: user.userOrProviderId });
-            sendResponse(res, result);
-        } catch (error) {
-            log.error("getProvidersForChat failed", error as Error);
-            next(error);
-        };
-    };
-
     async approveProvider(req: Request, res: Response, next: NextFunction) {
         try {
             const { providerId } = validateProviderIdSchema.parse({ providerId: req.params.providerId });
@@ -291,7 +277,6 @@ export const providerProfileController = new ProviderProfileController(
     provideDeleteServiceProofUseCase,
     adminProviderListUseCase,
     getProvidersByFilterUseCase,
-    getProvidersForChatUseCase,
     adminApproveProviderUseCase,
     adminRejectProviderUseCase,
     changeProviderBlockStatusUseCase,

@@ -57,12 +57,6 @@ router.patch('/me/approval',
     providerProfileController.requestAdminApproval
 );
 
-router.get('/chat',
-    authMiddleware,
-    authorize(Role.USER),
-    providerProfileController.getProvidersForChat
-);
-
 // admin or user get providers service availability
 router.get('/:providerId/service-availability',
     authMiddleware,

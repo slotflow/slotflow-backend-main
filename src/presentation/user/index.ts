@@ -9,7 +9,7 @@ import { ChangeUserBlockStatusUseCase } from "../../application/useCases/user/ch
 import { UpdateUserProfileInfoUseCase } from "../../application/useCases/user/updateUserProfileInfo.useCase";
 import { ChangePushNotificationUseCase } from "../../application/useCases/user/changePushNotification.useCase";
 import { UpdateUserProfileImageUseCase } from "../../application/useCases/user/updateUserProfileImage.useCase";
-import { ProviderGetUserForChatSidebarUseCase } from "../../application/useCases/provider/providerUser.useCase";
+import { GetUserForChatSidebarUseCase } from "../../application/useCases/user/getUserFroChat.useCase";
 
 export const updateUserProfileInfoUseCase = new UpdateUserProfileInfoUseCase(userRepository);
 
@@ -21,7 +21,7 @@ export const changeUserBlockStatusUseCase = new ChangeUserBlockStatusUseCase(use
 
 export const getUserProfileDetailsUseCase = new GetUserProfileDetailsUseCase(userRepository, signedUrlService);
 
-export const providerGetUserForChatSidebarUseCase = new ProviderGetUserForChatSidebarUseCase(signedUrlService, bookingQueries);
+export const getUserForChatSidebarUseCase = new GetUserForChatSidebarUseCase(signedUrlService, bookingQueries);
 
 export const getUsersUseCase = new GetUsersUseCase(userQueries);
 

@@ -262,55 +262,11 @@ export interface GetSubscriptionsRequest extends ApiPaginationRequest {
   providerId?: UserDTO["_id"];
 }
 
-
-// Used as the request interface for get bookings for admin, provider and user side
-export interface userIdAndServiceProviderId {
-  userId?: UserDTO["_id"];
-  serviceProviderId?: UserDTO["_id"];
-}
-export interface GetBookingsRequest extends ApiPaginationRequest, userIdAndServiceProviderId {
-  online: boolean;
-  role: Role;
-}
-// Used as the response type for get bookings for admin, provider and user side
-export type GetBookingsResponse = Array<Pick<BookingDTO, "_id" | "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "videoCallRoomId" | "serviceProviderId">>;
-export type GetOnlineBookingsForProviderResponse = Array<
-  Pick<
-    BookingDTO,
-    | "_id"
-    | "appointmentDate"
-    | "appointmentStatus"
-    | "appointmentTime"
-    | "videoCallRoomId"
-    | "createdAt"
-  > & {
-    userId: Pick<UserDTO, "username">;
-  }
->;
-export type GetOnlineBookingsForUserResponse = Array<
-  Pick<
-    BookingDTO,
-    | "_id"
-    | "appointmentDate"
-    | "appointmentStatus"
-    | "appointmentTime"
-    | "videoCallRoomId"
-    | "createdAt"
-  > & {
-    serviceProviderId: Pick<UserDTO, "username">;
-  }
->;
-
 // Used as the request type for updating address for provider and user side
 
 
 // Used as the interface for the validate join room
-export interface ValidateJoinRoomRequest {
-  role: Role;
-  bookingId: string;
-  roomId: string;
-  userOrProviderId: string;
-};
+
 
 
 // get subscription details use case request payload interface 
@@ -438,12 +394,7 @@ export interface CreateGoogleCalendarEventRequest {
   accessToken: CredentialDTO["accessToken"];
 }
 
-export interface UpdateBookingOnlineTrackRequest extends ParticipantPresence {
-  role: Role,
-  roomId: string,
-}
 
-export type UpdateBookingOnlineTrackResponse = Pick<Availability, "duration">;
 
 
 //// **** Used as the request interface get reviews for admin, provider and user side
@@ -461,13 +412,7 @@ export interface GetReviewsResponse extends Pick<ReviewDTO, "_id" | "createdAt" 
 
 
 //// **** Used as the response interface of get booking details
-export interface GetBookingDetailsRequest {
-  bookingId: BookingDTO["_id"];
-};
-export interface GetBookingDetailsResponse extends Pick<BookingDTO, "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "onlineTrack" | "statusTrack" | "videoCallRoomId"> {
-  userId: Pick<UserDTO, "username" | "email">;
-  serviceProviderId: Pick<UserDTO, "username" | "email">;
-};
+
 
 //// **** Used in s3 controller
 export type CreareFileUploadPresignedUrlRequest = {

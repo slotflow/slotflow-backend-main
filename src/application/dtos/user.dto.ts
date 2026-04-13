@@ -41,26 +41,16 @@ export interface FindProviderServiceResponse extends FindProviderServiceProps {
 // user get provider service use case response interface
 export type UserGetProviderServiceResponse = FindProviderServiceResponse | null;
 
-// user appointment booking via stripe creating session id use case request payload
-export interface UserAppointmentBookingViaStripeRequest {
-    userId: UserDTO["_id"];
-    providerId: UserDTO["_id"];
-    slotId: TimeSlotForFrontendResponse["_id"];
-    selectedServiceMode: ServiceMode;
-    date: Date
-}
+
 
 // use save appointment booking after stripe payment use case request payload
-export interface UserSaveAppoinmentBookingRequest {
+export interface UserSaveAppointmentBookingRequest {
     userId: UserDTO["_id"];
     sessionId: string;
 }
 
 // user can cel booking use case request payload interface
-export interface UserCancelBookingRequest {
-    userId: UserDTO["_id"];
-    bookingId: BookingDTO["_id"];
-}
+
 
 // user create review request
 export type CreateReviewRequset = Pick<ReviewDTO, "reviewText" | "rating" | "userId" | "providerId" | "bookingId">;

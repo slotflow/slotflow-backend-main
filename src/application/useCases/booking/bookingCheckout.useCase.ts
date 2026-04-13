@@ -3,7 +3,7 @@ import { log } from "../../../shared/logger/logger";
 import { PaymentFor } from "../../../domain/enums/payment.enum";
 import { Booking } from "../../../domain/entities/booking.entity";
 import { FindProviderServiceResponse } from "../../dtos/common.dto";
-import { UserAppointmentBookingViaStripeRequest } from "../../dtos/user.dto";
+import { UserAppointmentBookingViaStripeInput } from '../../dtos/booking.dtos';
 import { IProviderServiceQueries } from "../../queries/IProviderService.queries";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
 import { IServiceAvailabilityQueries } from "../../queries/IServiceAvailability.queries";
@@ -22,9 +22,9 @@ export class BookingCheckoutUseCase {
         private readonly paymentServiceClient: IPaymentServiceClient
     ) { };
 
-    async execute(payload: UserAppointmentBookingViaStripeRequest): Promise<string> {
+    async execute(input: UserAppointmentBookingViaStripeInput): Promise<string> {
         try {
-            const { userId, providerId, slotId, selectedServiceMode, date } = payload;
+            const { userId, providerId, slotId, selectedServiceMode, date } = input;
             if (!userId || !providerId || !slotId || !selectedServiceMode || !date) throw new Error("Invalid request");
 
             const user = await this.userRepository.findById(userId);

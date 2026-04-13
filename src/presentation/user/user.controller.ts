@@ -12,9 +12,9 @@ import { UpdateUserProfileInfoUseCase } from "../../application/useCases/user/up
 import { ChangeUserBlockStatusUseCase } from "../../application/useCases/user/changeUserBlockStatus.useCase";
 import { ChangePushNotificationUseCase } from "../../application/useCases/user/changePushNotification.useCase";
 import { UpdateUserProfileImageUseCase } from "../../application/useCases/user/updateUserProfileImage.useCase";
-import { ProviderGetUserForChatSidebarUseCase } from "../../application/useCases/provider/providerUser.useCase";
+import { GetUserForChatSidebarUseCase } from "../../application/useCases/user/getUserFroChat.useCase";
 import { userUpdateFileSchema, userUpdateInfoSchema, userUpdatePushNotificationSchema, validateUserIdSchema } from "../../shared/zod/user.zod";
-import { changePushNotificationUseCase, changeUserBlockStatusUseCase, getUserProfileDetailsUseCase, getUsersUseCase, providerGetUserForChatSidebarUseCase, setRoleUseCase, updateUserProfileImageUseCase, updateUserProfileInfoUseCase } from ".";
+import { changePushNotificationUseCase, changeUserBlockStatusUseCase, getUserProfileDetailsUseCase, getUsersUseCase, getUserForChatSidebarUseCase, setRoleUseCase, updateUserProfileImageUseCase, updateUserProfileInfoUseCase } from ".";
 
 class UserController {
     constructor(
@@ -24,7 +24,7 @@ class UserController {
         private readonly getUsersUseCase: GetUsersUseCase,
         private readonly changeUserBlockStatusUseCase: ChangeUserBlockStatusUseCase,
         private readonly getUserProfileDetailsUseCase: GetUserProfileDetailsUseCase,
-        private readonly providerGetUserForChatSidebarUseCase: ProviderGetUserForChatSidebarUseCase,
+        private readonly getUserForChatSidebarUseCase: GetUserForChatSidebarUseCase,
         private readonly setRoleUseCase: SetRoleUseCase
     ) {
         this.getProfileDetails = this.getProfileDetails.bind(this);
@@ -106,10 +106,8 @@ class UserController {
                 const { page, limit } = paginationSchema.parse(req.query);
                 const result = await this.getUsersUseCase.execute({ page, limit });
                 sendResponse(res, result);
-            }
-
-            if (user.role === Role.PROVIDER) {
-                const result = await this.providerGetUserForChatSidebarUseCase.execute({ providerId: user.userOrProviderId });
+            } else {
+                const result = await this.getUserForChatSidebarUseCase.execute({ userId: user.userOrProviderId, role: user.role });
                 sendResponse(res, result);
             }
         } catch (error) {
@@ -157,6 +155,6 @@ export const userController = new UserController(
     getUsersUseCase,
     changeUserBlockStatusUseCase,
     getUserProfileDetailsUseCase,
-    providerGetUserForChatSidebarUseCase,
+    getUserForChatSidebarUseCase,
     setRoleUseCase
 );

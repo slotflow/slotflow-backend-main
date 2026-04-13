@@ -1,17 +1,17 @@
 import { log } from "../../../shared/logger/logger";
 import { IBookingQueries } from "../../queries/IBooking.queries";
-import { GetBookingDetailsRequest, GetBookingDetailsResponse } from "../../dtos/common.dto";
+import { GetBookingDetailsInput, GetBookingDetailsOutput } from "../../dtos/booking.dtos";
 
 export class GetBookingDetailsUsecase {
     constructor(
-        private bookingQueries: IBookingQueries,
+        private readonly bookingQueries: IBookingQueries,
     ) { };
 
-    async execute(payload: GetBookingDetailsRequest): Promise<GetBookingDetailsResponse | null> {
+    async execute(input: GetBookingDetailsInput): Promise<GetBookingDetailsOutput | null> {
         try {
-            const { bookingId } = payload;
+            const { bookingId } = input;
 
-            const result = await this.bookingQueries.findDetails(bookingId);
+            const result = await this.bookingQueries.findDetails({bookingId});
             if (!result) return null;
 
             return result;

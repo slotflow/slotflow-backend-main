@@ -1,5 +1,5 @@
 import { log } from "../../../shared/logger/logger";
-import { UserCancelBookingRequest } from "../../dtos/user.dto";
+import { UserCancelBookingInput } from "../../dtos/booking.dtos";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
@@ -8,13 +8,13 @@ import { IBookingRepository } from "../../../domain/interfaces/repositories/IBoo
 
 export class CancelBookingUseCase {
     constructor(
-        private userRepository: IUserRepository,
-        private bookingRepository: IBookingRepository,
+        private readonly userRepository: IUserRepository,
+        private readonly bookingRepository: IBookingRepository,
     ) { };
 
-    async execute(payload: UserCancelBookingRequest): Promise<void> {
+    async execute(input: UserCancelBookingInput): Promise<void> {
         try {
-            const { userId, bookingId } = payload;
+            const { userId, bookingId } = input;
 
             const user = await this.userRepository.findById(userId);
             if (!user) throw new Error("No user found");

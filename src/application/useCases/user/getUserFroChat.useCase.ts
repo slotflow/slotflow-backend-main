@@ -2,8 +2,9 @@ import { log } from "../../../shared/logger/logger";
 import { IBookingQueries } from "../../queries/IBooking.queries";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { ProviderGetUsersForChatSideBarResponse, ProviderGetUsersForChatSideBarRequest } from "../../dtos/provider.dto";
+import { Role } from "../../../domain/enums/common.enum";
 
-export class ProviderGetUserForChatSidebarUseCase {
+export class GetUserForChatSidebarUseCase {
     constructor(
         private signedUrlService: ISignedUrlService,
         private bookingQueries: IBookingQueries,
@@ -11,8 +12,11 @@ export class ProviderGetUserForChatSidebarUseCase {
 
     async execute(payload: ProviderGetUsersForChatSideBarRequest): Promise<ProviderGetUsersForChatSideBarResponse> {
         try {
-            const { providerId } = payload;
-            const result = await this.bookingQueries.findUsersforChatSideBar(providerId);
+            const { userId, role } = payload;
+            const result = await this.bookingQueries.findUsersforChatSideBar({
+                userId,
+                role: role === Role.PROVIDER ? Role.USER : Role.PROVIDER
+            });
 
             const updatedResult = await Promise.all(
                 (result as ProviderGetUsersForChatSideBarResponse).map(async (user) => {
@@ -29,7 +33,7 @@ export class ProviderGetUserForChatSidebarUseCase {
 
             return updatedResult;
         } catch (error) {
-            log.error("ProviderGetUserForChatSidebarUseCase failed", error as Error);
+            log.error("GetUserForChatSidebarUseCase failed", error as Error);
             throw error;
         };
     };

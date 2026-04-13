@@ -1,16 +1,17 @@
+import { TableData } from "../../dtos/common.dto";
 import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/common.enum";
 import { IBookingQueries } from "../../queries/IBooking.queries";
-import { GetBookingsRequest, GetBookingsResponse, GetOnlineBookingsForProviderResponse, GetOnlineBookingsForUserResponse, TableData } from "../../dtos/common.dto";
+import { GetBookingsInput, GetBookingsOutput } from "../../dtos/booking.dtos";
 
 export class GetBookingsUseCase {
     constructor(
-        private bookingQueries: IBookingQueries,
+        private readonly bookingQueries: IBookingQueries,
     ) { };
 
-    async execute(payload: GetBookingsRequest): Promise<TableData<GetBookingsResponse | GetOnlineBookingsForProviderResponse | GetOnlineBookingsForUserResponse>> {
+    async execute(input: GetBookingsInput): Promise<TableData<GetBookingsOutput>> {
         try {
-            const { serviceProviderId, userId, page, limit, online, role } = payload;
+            const { serviceProviderId, userId, page, limit, online, role } = input;
 
             if (role === Role.PROVIDER) {
                 if (!serviceProviderId) throw new Error("Invalid request");

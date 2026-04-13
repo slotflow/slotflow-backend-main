@@ -2,6 +2,7 @@ import { PlanName } from "../../domain/enums/plan.enum";
 import { Review } from "../../domain/entities/review.entity";
 import { ServiceCategory } from "../../domain/enums/service.enum";
 import { BookingDTO, UserDTO, PlanDTO, AddressDTO, ServiceDTO, ProviderServiceDTO, ProviderProfileDTO } from "./common.dto";
+import { Role } from "../../domain/enums/common.enum";
 
 // provider update profile request payload interface
 export type ProviderUpdateProfileRequest = Pick<UserDTO, "_id" | "username" | "profileImage" | "phone" | "addressId" | "googleConnected" | "googleId" | "isBlocked" | "stripeAccountId" > & Partial<Pick<ProviderProfileDTO, "identityProof" | "serviceProof" | "isAdminVerified" | "serviceAvailabilityId" | "serviceId" | "trustedBySlotflow" | "subscription">>
@@ -9,7 +10,8 @@ export type ProviderUpdateProfileRequest = Pick<UserDTO, "_id" | "username" | "p
 
 // provider get users for the chat sidebar
 export interface ProviderGetUsersForChatSideBarRequest {
-    providerId: UserDTO["_id"];
+    userId: UserDTO["_id"];
+    role: Role;
 }
 // provider get users for the chat sidebar response interface
 export type ProviderGetUsersForChatSideBarResponse = Array<Pick<UserDTO, "_id" | "username" | "profileImage">>
@@ -28,14 +30,6 @@ export interface ProviderGetDashboardBookingStatsDataResponse {
     cancelledAppointmentsByUser: number;
     rejectedAppointmentsByProvider: number;
     todaysAppointments: number;
-}
-
-// Used as the request interface for the provider get dashboard graph data
-export interface GetGraphDataRequest {
-    providerId: UserDTO["_id"],
-    subscription: PlanDTO["planName"],
-    startDate?: Date,
-    endDate?: Date,
 }
 
 // Used as the return interface for the provider get dashboard graph data
@@ -76,20 +70,12 @@ export interface GetGraphDataResponse {
     }>;
 }
 
-// Used as the request type for the provider change booking appointment status
-export type ProviderChangeBookingAppoinmentStatusRequest = Pick<BookingDTO, "_id" | "appointmentStatus"> & {
-    providerId: UserDTO["_id"];
-};
+
 
 // Provider Report UseCase
 export interface RepostReviewRequest {
     reviewId: Review["_id"];
     providerId: UserDTO["_id"];
-}
-
-// provider get dashboard graph repository interface
-export type ProviderGetDashboardGraphRepository = Omit<GetGraphDataRequest, "subscription"> & {
-    subscriptionGuard: number;
 }
 
 // populated plan interface
@@ -141,13 +127,8 @@ export interface FindProvidersUsingServiceIdsResponse {
 // get providers by filter response interface
 export type GetProvidersByFilterResponse = FindProvidersUsingServiceIdsResponse
 
-// get providers for chat request payload interface
-export interface GetProvidersForChatRequest {
-    userId: string
-}
 
-// get providers for chat response interface
-export type GetProvidersForChatResponse = Array<Pick<UserDTO, "_id" | "username" | "profileImage">>;
+
 
 // admin get provider details request payload interface
 export interface AdminGetProviderDetailsRequest {

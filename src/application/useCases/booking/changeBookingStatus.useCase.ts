@@ -4,7 +4,7 @@ import { log } from "../../../shared/logger/logger";
 import { formatUtcDateTime } from "../../../shared/utils/dateTime";
 import { notificationContentMap } from "../../../shared/utils/constants";
 import { NotificationType, Role } from "../../../domain/enums/common.enum";
-import { ProviderChangeBookingAppoinmentStatusRequest } from "../../dtos/provider.dto";
+import { ProviderChangeBookingAppointmentStatusInput } from '../../dtos/booking.dtos';
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IGoogleTokenService } from "../../../domain/interfaces/services/IGoogleToken.service";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
@@ -19,9 +19,9 @@ export class ChangeBookingStatusUseCase {
         private readonly kafkaProducer: IKafkaProducerAdapter,
     ) { };
 
-    async execute(payload: ProviderChangeBookingAppoinmentStatusRequest): Promise<void> {
+    async execute(input: ProviderChangeBookingAppointmentStatusInput): Promise<void> {
         try {
-            const { _id, appointmentStatus, providerId } = payload;
+            const { _id, appointmentStatus, providerId } = input;
 
             const booking = await this.bookingRepository.findById(_id);
             if (!booking) throw new Error("No booking found");
