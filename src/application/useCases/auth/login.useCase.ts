@@ -3,126 +3,106 @@ import { Role } from "../../../domain/enums/common.enum";
 import { PlanName } from "../../../domain/enums/plan.enum";
 import { IJWT } from "../../../domain/interfaces/security/IJwt";
 import { LoginRequest, LoginResponse } from "../../dtos/auth.dto";
-import { SubscriptionStatus } from "../../../domain/enums/subscription.enum";
+import { AuthResponseBuilder } from "../../services/AuthResponseBuilder";
+import { ProviderProfile } from "../../../domain/entities/providerProfile.entity";
 import { IPasswordHasher } from "../../../domain/interfaces/security/IPasswordHasher";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
-import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 
 export class LoginUseCase {
     constructor(
-        private userRepository: IUserRepository,
-        private providerProfileRepository: IProviderProfileRepository,
-        private planRepository: IPlanRepository,
-        private subscriptionRepository: ISubscriptionRepository,
-        private signedUrlService: ISignedUrlService,
-        private jwtService: IJWT,
-        private passwordHasher: IPasswordHasher
+        private readonly userRepository: IUserRepository,
+        private readonly providerProfileRepository: IProviderProfileRepository,
+        private readonly signedUrlService: ISignedUrlService,
+        private readonly jwtService: IJWT,
+        private readonly passwordHasher: IPasswordHasher,
+        private readonly authResponseBuilder: AuthResponseBuilder
     ) { };
 
     async execute(payload: LoginRequest): Promise<LoginResponse> {
         try {
             const { email, password } = payload;
+
             if (!email || !password) throw new Error("Invalid request.");
 
             const user = await this.userRepository.findByEmail(email);
             if (!user) throw new Error("Invalid credentials");
-            if (user.isBlocked) throw new Error("Your account is blocked, please contact us");
+            if (user.isBlocked)
+                throw new Error("Your account is blocked, please contact us");
             if (!user.password) throw new Error("Invalid request");
 
-            const valid = await this.passwordHasher.comparePassword(password, user.password);
+            const valid = await this.passwordHasher.comparePassword(
+                password,
+                user.password
+            );
             if (!valid) throw new Error("Invalid credentials.");
 
-            const token = await this.jwtService.generateToken({ email: email, role: user.role })
+            const token = await this.jwtService.generateToken({
+                email: email,
+                role: user.role,
+                userId: user._id,
+            });
 
-            let signedProfileImageUrl: string | null = null;
             if (user.profileImage) {
-                signedProfileImageUrl = await this.signedUrlService.save(user.profileImage);
-            };
+                await this.signedUrlService.save(user.profileImage);
+            }
+
+            let providerProfile: ProviderProfile | null = null;
+            let providerSubscription: PlanName = PlanName.NO_SUBSCRIPTION;
+
+            if (user.hasSelectedRole && !user.isOnboardingCompleted) {
+                providerProfile = await this.providerProfileRepository.findById(user._id);
+
+                if (providerProfile) {
+                    providerSubscription = await this.authResponseBuilder.resolveSubscription(
+                        providerProfile
+                    );
+                }
+            }
+
+            const baseUser = this.authResponseBuilder.buildBaseUser(user);
 
             if (user.role === Role.USER) {
-                return {
-                    authUser: {
-                        uid: user._id,
-                        username: user.username,
-                        phone: user.phone ?? undefined,
-                        profileImage: signedProfileImageUrl,
-                        role: user.role,
+                if (providerProfile) {
+                    return {
                         token,
-                        isBlocked: user.isBlocked,
-                        isLoggedIn: true,
-                        googleConnected: user.googleConnected,
-                        stripeConnected: user.stripeConnected,
-                        hasSelectedRole: user.hasSelectedRole
-                    },
-                };
-            } else if (user.role === Role.PROVIDER) {
-                const providerProfile = await this.providerProfileRepository.findById(user._id);
-                if (!providerProfile) throw new Error("Invalid request");
-
-                let providerSubscription: string | undefined = PlanName.NO_SUBSCRIPTION;
-
-                const subscriptions = providerProfile?.subscription;
-
-                if (Array.isArray(subscriptions) && subscriptions.length > 0) {
-                    const subscriptionId = subscriptions[subscriptions.length - 1];
-                    console.log("subscriptionId : ", subscriptionId);
-
-                    const subscription = await this.subscriptionRepository.findById(subscriptionId);
-                    console.log("subscription : ", subscription);
-
-                    if (subscription) {
-                        console.log("subscription is found")
-                        const now = new Date();
-                        const isActive =
-                            subscription.subscriptionStatus === SubscriptionStatus.ACTIVE &&
-                            new Date(subscription.endDate) > now;
-
-                        console.log("isActive : ", isActive);
-
-                        if (isActive) {
-                            const subscribedPlan =
-                                await this.planRepository.findById(
-                                    subscription.subscriptionPlanId
-                                );
-                            console.log("subscribedPlan : ", subscribedPlan);
-                            providerSubscription = subscribedPlan?.planName;
-                        };
+                        user: {
+                            ...baseUser,
+                            ...this.authResponseBuilder.buildProviderFields(
+                                providerProfile,
+                                providerSubscription
+                            ),
+                        },
                     };
-                };
+                }
 
                 return {
-                    authUser: {
-                        uid: user._id,
-                        username: user.username,
-                        phone: user.phone ?? undefined,
-                        profileImage: signedProfileImageUrl,
-                        role: user.role,
-                        token,
-                        isBlocked: user.isBlocked,
-                        isLoggedIn: true,
-                        isAddressAdded: !!user.addressId,
-                        isServiceDetailsAdded: !!providerProfile.serviceId,
-                        isServiceAvailabilityAdded: !!providerProfile.serviceAvailabilityId,
-                        isAdminVerified: providerProfile.isAdminVerified,
-                        isProofSubmitted: !!providerProfile.identityProof && !!providerProfile.serviceProof,
-                        adminVerificationStatus: providerProfile.adminVerificationStatus,
-                        isAddressVerified: providerProfile.isAddressVerified,
-                        isAvailabilityVerified: providerProfile.isAvailabilityVerified,
-                        isProofsVerified: providerProfile.isProofsVerified,
-                        isServiceDetailsVerified: providerProfile.isServiceDetailsVerified,
-                        verificationRejectionReason: providerProfile.verificationRejectionReason,
-                        providerSubscription,
-                        googleConnected: user.googleConnected,
-                        stripeConnected: user.stripeConnected,
-                        hasSelectedRole: user.hasSelectedRole
+                    token,
+                    user: baseUser,
+                };
+            }
+
+            if (user.role === Role.PROVIDER) {
+                return {
+                    token,
+                    user: {
+                        ...baseUser,
+                        ...this.authResponseBuilder.buildProviderFields(
+                            providerProfile,
+                            providerSubscription
+                        ),
                     },
                 };
-            } else if (user.role === Role.ADMIN) {
-
             }
+
+            if (user.role === Role.ADMIN) {
+                return {
+                    token,
+                    user: baseUser,
+                };
+            }
+
             throw new Error("Invalid request");
         } catch (error) {
             log.error("LoginUseCase failed", error as Error);

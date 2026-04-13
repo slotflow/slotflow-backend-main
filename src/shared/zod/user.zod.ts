@@ -1,25 +1,21 @@
 import { z } from "zod";
 import { objectIdRegex } from "../utils/regex";
-import { ServiceCategory, ServiceMode } from "../../domain/enums/service.enum";
+import { ServiceCategory } from "../../domain/enums/service.enum";
 import {
     validateUserIdSchema,
     paginationSchema,
-    dateSchema,
-    addressSchema,
     updateInfoSchema,
     saveStripePaymentSchema,
     s3FileKeySchema,
     validateReviewIdSchema
 } from "./base.zod";
-// import { fetchBookingCommonSchema } from "./common.zod";
 import { Role } from "../../domain/enums/common.enum";
-import { validateBookingIdSchema } from "./booking.zod";
 
-//
+// 
 export const userIdWithPaginationSchema = validateUserIdSchema.merge(paginationSchema);
 
-// User fetch providers for the dashboard provider listing
-export const userFetchAllProvidersSchema = z.object({
+// User get providers for the dashboard provider listing
+export const userGetProvidersSchema = z.object({
     appServiceIds: z.union([z.string(), z.array(z.string())]).optional(),
     maxPrice: z.coerce.number().optional(),
     minPrice: z.coerce.number().optional(),
@@ -53,7 +49,7 @@ export const userUpdateFileSchema = s3FileKeySchema.merge(validateUserIdSchema);
 export const userUpdateInfoSchema = validateUserIdSchema.merge(updateInfoSchema);
 
 //
-export const userFetchAllReviewsSchema = z.object({
+export const userGetReviewsSchema = z.object({
     userId: z.string().regex(objectIdRegex, "Invalid userId"),
     providerId: z.string().regex(objectIdRegex, "Invalid providerId"),
     role: z.nativeEnum(Role).optional(),

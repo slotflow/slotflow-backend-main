@@ -18,7 +18,7 @@ export class GoogleTokenServiceImpl implements IGoogleTokenService {
             const credentials = await this.credentialRepository.findByUserId(userId);
             console.log("after credentials ");
 
-            if (!credentials) throw new Error("Credentials fetchinga failed");
+            if (!credentials) throw new Error("Failed to find credentials");
             const now = new Date();
 
             if (

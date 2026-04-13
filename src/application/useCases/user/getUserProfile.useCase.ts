@@ -25,7 +25,6 @@ export class GetUserProfileDetailsUseCase {
             return {
                 email: user.email,
                 isBlocked: user.isBlocked,
-                isEmailVerified: user.isEmailVerified,
                 phone: user.phone,
                 username: user.username,
                 profileImage: isAdmin ? signedProfileImage : undefined,

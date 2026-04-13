@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { PlanName } from "../../domain/enums/plan.enum";
 import { ServiceCategory } from "../../domain/enums/service.enum";
 import {
     validateUserIdSchema,
@@ -10,7 +9,7 @@ import {
     roleValidationSchema
 } from "./base.zod";
 import { changeBlockStatusSchema } from "./common.zod";
-import { descriptionRegex, objectIdRegex, serviceNameRegex, verificationRejectionReasonRegex } from "../utils/regex";
+import { objectIdRegex, serviceNameRegex, verificationRejectionReasonRegex } from "../utils/regex";
 
 
 
@@ -56,13 +55,13 @@ export const adminRejectProviderSchema = z.object({
 //
 
 //
-export const adminFetchRevenuewReposrtSchema = z.object({
+export const adminGetRevenueReposrtSchema = z.object({
     startDate: dateSchema,
     endDate: dateSchema
 }).merge(paginationSchema);
 
 //
-export const adminFetchAllReviewsSchema = z.object({
+export const adminGetReviewsSchema = z.object({
     userId: z.string().regex(objectIdRegex, "Invalid planId").optional(),
     providerId: z.string().regex(objectIdRegex, "Invalid planId").optional(),
 }).merge(roleValidationSchema).merge(paginationSchema);

@@ -4,16 +4,18 @@ import { PaymentFor } from "../../../domain/enums/payment.enum";
 import { getNumberOfMonths } from "../../../shared/utils/dateTime";
 import { Subscription } from "../../../domain/entities/subscription.entity";
 import { SubscriptionStatus } from "../../../domain/enums/subscription.enum";
-import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
-import { IPaymentServiceClient } from "../../../domain/interfaces/clients/IPaymentService.client";
-import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
 import { SubscriptionCreateSessionIdRequest } from "../../dtos/subscription";
+import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
+import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
+import { IPaymentServiceClient } from "../../../domain/interfaces/clients/IPaymentService.client";
+import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
+import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 
 export class SubscriptionCheckoutUseCase {
     constructor(
         private planRepository: IPlanRepository,
-        private providerRepository: IProviderRepository,
+        private userRepository: IUserRepository,
+        private providerProfileRepository: IProviderProfileRepository,
         private subscriptionRepository: ISubscriptionRepository,
         private paymentServiceClient: IPaymentServiceClient,
     ) { };
@@ -22,13 +24,16 @@ export class SubscriptionCheckoutUseCase {
         try {
             const { providerId, planId, planDuration } = payload;
 
-            const provider = await this.providerRepository.findById(providerId);
+            const provider = await this.userRepository.findById(providerId);
             if (!provider) throw new Error("No user found, please logout and try again.");
+
+            const providerProfile = await this.providerProfileRepository.findById(providerId);
+            if (!providerProfile) throw new Error("Profile not found.");
 
             const plan = await this.planRepository.findById(planId);
             if (!plan) throw new Error("Unexpected error, please try again after sometimes.");
 
-            const providerLastSubscriptionsId = provider.subscription.at(-1);
+            const providerLastSubscriptionsId = providerProfile.subscription.at(-1);
             if (providerLastSubscriptionsId) {
                 const subscription = await this.subscriptionRepository.findById(providerLastSubscriptionsId!);
                 if (subscription?.subscriptionStatus === SubscriptionStatus.ACTIVE) throw new Error("Your subscription is already active.");

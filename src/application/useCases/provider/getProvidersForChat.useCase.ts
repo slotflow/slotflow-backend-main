@@ -1,5 +1,4 @@
 import { log } from "../../../shared/logger/logger";
-import { ProviderDTO } from "../../dtos/common.dto";
 import { IBookingQueries } from "../../queries/IBooking.queries";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { GetProvidersForChatRequest, GetProvidersForChatResponse } from "../../dtos/provider.dto";

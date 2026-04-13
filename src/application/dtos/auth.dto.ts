@@ -42,33 +42,38 @@ export interface LoginRequest {
 }
 // user or provider login use case response interface
 export interface LoginResponse {
-    authUser: {
-        uid?: string;
+    token: string;
+    user: {
+        uid: string;
         username: string;
-        phone?: string;
-        profileImage?: string | null;
+        email: string;
         role: Role;
-        token: string;
-        isBlocked?: boolean;
+        hasSelectedRole: boolean;
+        isOnboardingCompleted: boolean;
+        isBlocked: boolean;
         isLoggedIn: boolean;
-        isAddressAdded?: boolean;
+        phone: string | null;
+        profileImage: string | null;
+        isAddressAdded: boolean;
+
         isServiceDetailsAdded?: boolean;
         isServiceAvailabilityAdded?: boolean;
-        isAdminVerified?: boolean;
         isProofSubmitted?: boolean;
-        verificationRejectionReason?: string | null,
-        adminVerificationStatus?: AdminVerificationStatus,
         isAddressVerified?: boolean,
         isServiceDetailsVerified?: boolean,
         isAvailabilityVerified?: boolean,
         isProofsVerified?: boolean,
+        isAdminVerified?: boolean;
         providerSubscription?: string;
-        googleId?: string;
-        googleConnected?: boolean;
-        stripeAccountId?: string;
-        stripeConnected?: boolean;
-        hasSelectedRole?: boolean;
-        allowPushNotification?: boolean;
+        verificationRejectionReason?: string | null,
+        adminVerificationStatus?: AdminVerificationStatus,
+
+        googleId: string | null;
+        googleConnected: boolean;
+        stripeConnected: boolean;
+        stripeAccountId: string | null;
+        stripeCustomerId: string | null;
+        allowPushNotification: boolean;
     }
 }
 
@@ -96,10 +101,10 @@ export interface GoogleAuthOrchestrationRequest {
     googleId: string;
     email: string;
     name: string;
-    image?: string | null;
+    image: string | null;
     role: Role;
-    connectOnly?: boolean;
-    userId?: string;
+    connectOnly: boolean;
+    userId: string | null;
     accessToken: string;
     refreshToken: string;
     expiryDate: Date;
@@ -109,19 +114,38 @@ export interface GoogleAuthOrchestrationRequest {
 export interface GoogleAuthOrchestrationResponse {
     token?: string;
     user: {
-        _id: string;
-        isAddressAdded?: boolean;
-        isServiceDetailsAdded?: boolean;
-        isServiceAvailabilityAdded?: boolean;
-        isAdminVerified?: boolean;
-        isProofSubmitted?: boolean;
-        verificationRejectionReason?: string | null,
-        adminVerificationStatus?: AdminVerificationStatus,
-        isAddressVerified?: boolean,
-        isServiceDetailsVerified?: boolean,
-        isAvailabilityVerified?: boolean,
-        isProofsVerified?: boolean,
-        providerSubscription?: string;
-        allowPushNotification: boolean | null,
+        googleId: string;
+        googleConnected: boolean;
+    } | {
+        uid: string;
+        username: string;
+        email: string;
+        role: Role;
+        hasSelectedRole: boolean;
+        isOnboardingCompleted: boolean;
+        isBlocked: boolean;
+        isLoggedIn: boolean;
+        phone: string | null;
+        profileImage: string | null;
+        isAddressAdded: boolean;
+
+        isServiceDetailsAdded: boolean;
+        isServiceAvailabilityAdded: boolean;
+        isProofSubmitted: boolean;
+        isAddressVerified: boolean,
+        isServiceDetailsVerified: boolean,
+        isAvailabilityVerified: boolean,
+        isProofsVerified: boolean,
+        isAdminVerified: boolean;
+        providerSubscription: string;
+        verificationRejectionReason: string | null,
+        adminVerificationStatus: AdminVerificationStatus,
+        
+        googleId: string;
+        googleConnected: boolean;
+        stripeConnected: boolean;
+        stripeAccountId: string | null;
+        stripeCustomerId: string | null;
+        allowPushNotification: boolean;
     }
 }

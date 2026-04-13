@@ -77,7 +77,7 @@ class GoogleAuthController {
                 if (user.connectOnly) {
                     const successPayload = {
                         success: true,
-                        googleConnected: true,
+                        ...updatedUser,
                     };
                     const redirectData = encodeURIComponent(JSON.stringify(successPayload));
                     return res.redirect(`${serviceConfig.frontendUrl}/${role === Role.PROVIDER ? "provider" : "user"}/integrations?response=${redirectData}`);
@@ -90,17 +90,7 @@ class GoogleAuthController {
                     secure: appConfig.nodeEnv !== "development",
                 });
 
-                const authUserWithoutToken = {
-                    email: user.email,
-                    name: user.name,
-                    role,
-                    googleConnected: !!user.googleAccessToken,
-                    image: user.image,
-                    googleId: user.googleId,
-                    ...updatedUser
-                };
-
-                const authUserWithoutTokenJson = JSON.stringify(authUserWithoutToken);
+                const authUserWithoutTokenJson = JSON.stringify(updatedUser);
                 const frontendUrl = serviceConfig.frontendUrl;
                 return res.redirect(`${frontendUrl}?authUser=${encodeURIComponent(authUserWithoutTokenJson)}`);
             })(req, res);

@@ -4,8 +4,6 @@ export interface IUserRepository {
 
   create(user: User): Promise<User>;
 
-  findByVerificationToken(token: string): Promise<User | null>;
-
   findByEmail(email: string): Promise<User | null>;
 
   findByGoogleId(googleId: string): Promise<User | null>;
@@ -15,4 +13,5 @@ export interface IUserRepository {
   findById(userId: string): Promise<User | null>;
 
   count(today?: boolean): Promise<number>;
+
 }

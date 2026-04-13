@@ -13,7 +13,7 @@ export class ProviderProfile {
         this.props.updatedAt = new Date();
     }
 
-    static createLocal(props: CreateProviderProfile): ProviderProfile {
+    static create(props: CreateProviderProfile): ProviderProfile {
         return new ProviderProfile({
             _id: "",
             userId: props.userId,
@@ -178,6 +178,11 @@ export class ProviderProfile {
 
     submitServiceProof(props: SubmitServiceProof) {
         this.props.serviceProof = props.serviceProof;
+        this.touch();
+    }
+
+    pushSubscriptionId(subscriptionId: string) {
+        this.props.subscription.push(subscriptionId);
         this.touch();
     }
 }

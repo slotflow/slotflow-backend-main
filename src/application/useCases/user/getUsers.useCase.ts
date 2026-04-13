@@ -10,15 +10,7 @@ export class GetUsersUseCase {
 
     async execute(payload: ApiPaginationRequest): Promise<TableData<GetUsersResponse>> {
         try {
-            const result = await this.userQueries.findAll(payload);
-            const { data: users, currentPage, totalCount, totalPages } = result;
-
-            return {
-                data: users,
-                totalPages,
-                currentPage,
-                totalCount,
-            };
+            return await this.userQueries.findUsers(payload);
         } catch (error) {
             log.error("GetUsersUseCase failed", error as Error);
             throw error;

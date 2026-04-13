@@ -1,20 +1,22 @@
-import { log } from "../../../shared/logger/logger";
-import { EventEnvelope, ProviderSubscriptionUpdatedEvent } from "../../dtos/kafka.dtos";
-import { ProviderCreatePaymentSuccessEventResult } from "../../dtos/common.dto";
-import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
-import { getDateAfterMonths } from "../../../shared/utils/dateTime";
-import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
-import { kafkaConfig } from "../../../config/env";
 import { v4 as uuidv4 } from 'uuid';
-import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
+import { kafkaConfig } from "../../../config/env";
+import { log } from "../../../shared/logger/logger";
+import { getDateAfterMonths } from "../../../shared/utils/dateTime";
 import { notificationContentMap } from "../../../shared/utils/constants";
+import { ProviderCreatePaymentSuccessEventResult } from "../../dtos/common.dto";
+import { EventEnvelope, ProviderSubscriptionUpdatedEvent } from "../../dtos/kafka.dtos";
+import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
+import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
+import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
+import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
+import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 
 
 export class UpdateSubscriptionAfterPaymentSuccessUseCase {
     constructor(
         private readonly subscriptionRepository: ISubscriptionRepository,
-        private readonly providerRepository: IProviderRepository,
+        private readonly userRepository: IUserRepository,
+        private readonly providerProfileRepository: IProviderProfileRepository,
         private readonly kafkaProducer: IKafkaProducerAdapter,
         private readonly planRepository: IPlanRepository
     ) { };
@@ -33,11 +35,14 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
                 }
             } = payload;
 
-            const provider = await this.providerRepository.findById(providerId);
+            const provider = await this.userRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");
 
-            provider.pushSubscriptionId(subscriptionId);
-            await this.providerRepository.update(provider);
+            const providerProfile = await this.providerProfileRepository.findByUserId(providerId);
+            if (!providerProfile) throw new Error("Provider profile not found.");
+
+            providerProfile.pushSubscriptionId(subscriptionId);
+            await this.providerProfileRepository.update(providerProfile);
 
             const subscription = await this.subscriptionRepository.findById(subscriptionId);
             if (!subscription) throw new Error("Subscription not found.");

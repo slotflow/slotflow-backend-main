@@ -1,17 +1,16 @@
-import { providerRepository, userRepository } from "../../infrastructure/repositoryImpls";
-import { FetchUserDataUseCase } from "../../application/useCases/admin/dashboard/fetchUsersData.useCase";
-import { FetchGraphDataUseCase } from "../../application/useCases/admin/dashboard/fetchGraphData.useCase";
-import { FetchBookingsDataUseCase } from "../../application/useCases/admin/dashboard/fetchBookingsData.useCase";
-import { FetchProviderDataUseCase } from "../../application/useCases/admin/dashboard/fetchProvidersData.useCase";
-import { bookingQueries, providerQueries, subscriptionQueries, userQueries } from "../../infrastructure/queriesImpls";
-import { FetchSubscriptionDataUseCase } from "../../application/useCases/admin/dashboard/fetchSubscriptionData.useCase";
+import { bookingQueries, subscriptionQueries, userQueries } from "../../infrastructure/queriesImpls";
+import { GetUserDataUseCase } from "../../application/useCases/admin/dashboard/getUsersData.useCase";
+import { GetGraphDataUseCase } from "../../application/useCases/admin/dashboard/getGraphData.useCase";
+import { GetBookingsDataUseCase } from "../../application/useCases/admin/dashboard/getBookingsData.useCase";
+import { GetProviderDataUseCase } from "../../application/useCases/admin/dashboard/getProvidersData.useCase";
+import { GetSubscriptionDataUseCase } from "../../application/useCases/admin/dashboard/getSubscriptionData.useCase";
 
-export const fetchUserDataUseCase = new FetchUserDataUseCase(userQueries);
+export const getUserDataUseCase = new GetUserDataUseCase(userQueries);
 
-export const fetchProviderDataUseCase = new FetchProviderDataUseCase(providerQueries);
+export const getProviderDataUseCase = new GetProviderDataUseCase(userQueries);
 
-export const fetchSubscriptionDataUseCase = new FetchSubscriptionDataUseCase(subscriptionQueries);
+export const getSubscriptionDataUseCase = new GetSubscriptionDataUseCase(subscriptionQueries);
 
-export const fetchBookingsDataUseCase = new FetchBookingsDataUseCase(bookingQueries);
+export const getBookingsDataUseCase = new GetBookingsDataUseCase(bookingQueries);
 
-export const fetchGraphDataUseCase = new FetchGraphDataUseCase();
+export const getGraphDataUseCase = new GetGraphDataUseCase();

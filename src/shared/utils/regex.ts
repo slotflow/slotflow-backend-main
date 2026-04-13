@@ -40,6 +40,4 @@ export const verificationRejectionReasonRegex = /^[A-Za-z0-9\s.,\-_'()@#!?&/:]+$
 
 export const sessionIdRegex=/^cs_test_[a-zA-Z0-9]{5,200}$/;
 
-export const verificationTokenRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
-
 export const timeRegex = /^(0[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/;

@@ -1,7 +1,7 @@
 import { SubscriptionModel } from "../models/subscription.model";
 import { PopulatedPlan } from "../../application/dtos/provider.dto";
 import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
-import { FetchSubscriptionDataRequest, FetchSubscriptionDataResponse } from "../../application/dtos/admin.dto";
+import { GetSubscriptionDataRequest, GetSubscriptionDataResponse } from "../../application/dtos/admin.dto";
 import { GetSubscribedPlanResponse } from "../../application/dtos/subscription";
 import { ISubscriptionQueries } from "../../application/queries/ISubscription.queries";
 import { GetSubscriptionsRequest, GetSubscriptionsResponse, GetSubscriptionDetailsResponse, PlanNameOnly, TableData } from "../../application/dtos/common.dto";
@@ -82,7 +82,7 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
         };
     }
 
-    async findStatsForAdminDashboard(payload: FetchSubscriptionDataRequest): Promise<FetchSubscriptionDataResponse> {
+    async findStatsForAdminDashboard(payload: GetSubscriptionDataRequest): Promise<GetSubscriptionDataResponse> {
         const { startDate, endDate } = getStartAndEndDate(payload.startDate, payload.endDate);
         const dateFilter = { createdAt: { $gte: startDate, $lte: endDate } };
         const subscriptionStatsData = await SubscriptionModel.aggregate([

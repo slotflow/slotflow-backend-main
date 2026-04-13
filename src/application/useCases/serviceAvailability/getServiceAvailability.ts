@@ -1,26 +1,26 @@
 import dayjs from '../../../shared/config/dayjs';
 import { log } from "../../../shared/logger/logger";
 import { IServiceAvailabilityQueries } from "../../queries/IServiceAvailability.queries";
-import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-import { FetchServiceAvailabilityRequest, FetchServiceAvailabilityResponse } from "../../dtos/serviceAvailability.dto";
+import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
+import { GetServiceAvailabilityRequest, GetServiceAvailabilityResponse } from "../../dtos/serviceAvailability.dto";
 
 export class GetServiceAvailabilityUseCase {
   constructor(
-    private providerRepository: IProviderRepository,
+    private providerProfileRepository: IProviderProfileRepository,
     private serviceAvailabilityQueries: IServiceAvailabilityQueries
   ) { };
 
-  async execute(payload: FetchServiceAvailabilityRequest): Promise<FetchServiceAvailabilityResponse> {
+  async execute(payload: GetServiceAvailabilityRequest): Promise<GetServiceAvailabilityResponse> {
     try {
       const { providerId, date } = payload;
       const currentDateTime = dayjs();
       const selectedDate = dayjs(date).format('YYYY-MM-DD');
 
-      const provider = await this.providerRepository.findById(providerId);
-      if (!provider) throw new Error("nNo provider found");
-      if (!provider.serviceAvailabilityId) return null;
+      const providerProfile = await this.providerProfileRepository.findById(providerId);
+      if (!providerProfile) throw new Error("Profile not found");
+      if (!providerProfile.serviceAvailabilityId) return null;
 
-      const availability = await this.serviceAvailabilityQueries.findByProviderId(date, provider.serviceAvailabilityId);
+      const availability = await this.serviceAvailabilityQueries.findByProviderId(date, providerProfile.serviceAvailabilityId);
       if (!availability) return null;
 
       const updatedSlots = availability.slots.map((slot) => {

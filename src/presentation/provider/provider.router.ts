@@ -2,32 +2,17 @@ import { Router } from 'express';
 import { Role } from '../../domain/enums/common.enum';
 import { authorize } from '../middleware/authRole.middleware';
 import { authMiddleware } from '../middleware/auth.middleware';
-import { addressController } from '../address/address.controller';
 import { providerProfileController } from './provider.controller';
 import { providerServiceController } from '../providerService/providerService.controller';
 import { serviceAvailabilityController } from '../serviceAvailability/serviceAvailability.controller';
 
 const router = Router();
 
-// provider fetch profile details
+// provider get profile details
 router.get('/me',
     authMiddleware,
     authorize(Role.PROVIDER),
     providerProfileController.getProfileDetails
-);
-
-// provider update profile image
-router.patch('/me/image',
-    authMiddleware,
-    authorize(Role.PROVIDER),
-    providerProfileController.updateProfileImage
-);
-
-// provider update info
-router.patch('/me',
-    authMiddleware,
-    authorize(Role.PROVIDER),
-    providerProfileController.updateInfo
 );
 
 // provider update identity proof
@@ -44,7 +29,7 @@ router.patch('/me/service',
     providerProfileController.updateServiceProof
 );
 
-// provider fetch proofs
+// provider get proofs
 router.get('/me/proofs',
     authMiddleware,
     authorize(Role.PROVIDER),
@@ -72,27 +57,13 @@ router.patch('/me/approval',
     providerProfileController.requestAdminApproval
 );
 
-// provider update push notification settings
-router.patch('/me/notification-settings',
-    authMiddleware,
-    authorize(Role.PROVIDER),
-    providerProfileController.updatePushNotification
-);
-
 router.get('/chat',
     authMiddleware,
     authorize(Role.USER),
     providerProfileController.getProvidersForChat
 );
 
-// admin or user fetch providers address
-router.get('/:providerId/address',
-    authMiddleware,
-    authorize(Role.ADMIN, Role.USER),
-    addressController.getAddress
-);
-
-// admin or user fetch providers service availability
+// admin or user get providers service availability
 router.get('/:providerId/service-availability',
     authMiddleware,
     authorize(Role.ADMIN, Role.USER),
@@ -129,7 +100,7 @@ router.patch('/:providerId/trust-tag',
     providerProfileController.changeProviderTrustedTag
 );
 
-// admin or user fetch provider details
+// admin or user get provider details
 router.get('/:providerId',
     authMiddleware,
     authorize(Role.ADMIN, Role.USER),

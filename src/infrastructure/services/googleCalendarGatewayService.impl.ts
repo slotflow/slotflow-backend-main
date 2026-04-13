@@ -1,7 +1,7 @@
 import { google } from "googleapis";
 import { EventData } from "../../shared/utils/constants";
 import { IGoogleCalendarGatewayService } from "../../domain/interfaces/services/IGoogleCalendarGateway.service";
-import { CreateGoogleCalendarEventRequest, UpdateGoogleCalendarEventRequest, AddEventToCalendarProps, FetchEventsFromCalendarProps } from "../../application/dtos/common.dto";
+import { CreateGoogleCalendarEventRequest, UpdateGoogleCalendarEventRequest, AddEventToCalendarProps, GetEventsFromCalendarProps } from "../../application/dtos/common.dto";
 
 export class GoogleCalendarGatewayServiceImpl implements IGoogleCalendarGatewayService {
 
@@ -95,7 +95,7 @@ export class GoogleCalendarGatewayServiceImpl implements IGoogleCalendarGatewayS
         return response.data.id;
     };
 
-    async fetchEvents(accessToken: string): Promise<Array<FetchEventsFromCalendarProps>> {
+    async findEvents(accessToken: string): Promise<Array<GetEventsFromCalendarProps>> {
 
         const auth = new google.auth.OAuth2();
         auth.setCredentials({ access_token: accessToken });
@@ -106,7 +106,7 @@ export class GoogleCalendarGatewayServiceImpl implements IGoogleCalendarGatewayS
             calendarId: "primary",
         });
 
-        return (response.data.items ?? []) as Array<FetchEventsFromCalendarProps>;
+        return (response.data.items ?? []) as Array<GetEventsFromCalendarProps>;
     };
 
 };

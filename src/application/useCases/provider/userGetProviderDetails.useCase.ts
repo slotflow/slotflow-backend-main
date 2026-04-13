@@ -1,21 +1,21 @@
 import { log } from "../../../shared/logger/logger";
+import { IUserQueries } from "../../queries/IUser.queries";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
-import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-import { UserFetchServiceProviderDetailsRequest, UserFetchServiceProviderDetailsResponse } from "../../dtos/provider.dto";
+import { UserGetServiceProviderDetailsRequest, UserGetServiceProviderDetailsResponse } from "../../dtos/provider.dto";
 
-export class UserFetchProviderDetailsUseCase {
+export class UserGetProviderDetailsUseCase {
   constructor(
-    private providerRepository: IProviderRepository,
+    private userQueries: IUserQueries,
     private signedUrlService: ISignedUrlService
   ) { };
 
-  async execute(payload: UserFetchServiceProviderDetailsRequest): Promise<UserFetchServiceProviderDetailsResponse> {
+  async execute(payload: UserGetServiceProviderDetailsRequest): Promise<UserGetServiceProviderDetailsResponse> {
     try {
       const { providerId } = payload;
       if (!providerId) throw new Error("Invalid request");
 
-      const provider = await this.providerRepository.findById(providerId);
-      if (!provider) throw new Error("No provider found");
+      const provider = await this.userQueries.findProviderById(providerId);
+      if (!provider) throw new Error("Profile not found");
 
       let signedProfileImageUrl: string | null = null;
       if (provider.profileImage) {
@@ -30,7 +30,7 @@ export class UserFetchProviderDetailsUseCase {
         trustedBySlotflow: provider.trustedBySlotflow,
       };
     } catch (error) {
-      log.error("UserFetchProviderDetailsUseCase failed", error as Error);
+      log.error("UserGetProviderDetailsUseCase failed", error as Error);
       throw error;
     };
   };

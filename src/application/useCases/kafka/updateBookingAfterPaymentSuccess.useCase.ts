@@ -1,21 +1,19 @@
+import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
-import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
-import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
-import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
-import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { log } from "../../../shared/logger/logger";
 import { notificationContentMap } from "../../../shared/utils/constants";
+import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
 import { UpdateBookingAfterPaymentSuccessEventResult } from "../../dtos/common.dto";
+import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { BookingSavedEvent, EventEnvelope, GotAnAppointment } from "../../dtos/kafka.dtos";
-import { v4 as uuidv4 } from 'uuid';
+import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
+import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 
 export class UpdateBookingAfterPaymentSuccessUseCase {
     constructor(
         private readonly bookingRepository: IBookingRepository,
         private readonly kafkaProducer: IKafkaProducerAdapter,
         private readonly userRepository: IUserRepository,
-        private readonly providerRepository: IProviderRepository
     ) { }
 
     async execute(Payload: EventEnvelope<UpdateBookingAfterPaymentSuccessEventResult>): Promise<void> {
@@ -40,8 +38,7 @@ export class UpdateBookingAfterPaymentSuccessUseCase {
             await this.bookingRepository.update(booking);
 
             const user = await this.userRepository.findById(booking.userId);
-
-            const provider = await this.providerRepository.findById(booking.providerId);
+            const provider = await this.userRepository.findById(booking.providerId);
 
             if (user) {
 

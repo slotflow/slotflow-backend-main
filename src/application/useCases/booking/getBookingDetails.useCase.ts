@@ -16,7 +16,7 @@ export class GetBookingDetailsUsecase {
 
             return result;
         } catch (error) {
-            log.error("FetchBookingDetailsUsecase failed", error as Error);
+            log.error("GetBookingDetailsUsecase failed", error as Error);
             throw error;
         };
     };

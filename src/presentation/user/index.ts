@@ -1,14 +1,15 @@
 import { kafkaProducer } from "../../infrastructure/messaging";
-import { userRepository } from "../../infrastructure/repositoryImpls";
+import { providerProfileRepository, userRepository } from "../../infrastructure/repositoryImpls";
 import { cacheService, signedUrlService } from "../../infrastructure/services";
 import { bookingQueries, userQueries } from "../../infrastructure/queriesImpls";
+import { SetRoleUseCase } from "../../application/useCases/user/setRole.useCase";
 import { GetUsersUseCase } from "../../application/useCases/user/getUsers.useCase";
 import { GetUserProfileDetailsUseCase } from "../../application/useCases/user/getUserProfile.useCase";
 import { ChangeUserBlockStatusUseCase } from "../../application/useCases/user/changeUserBlockStatus.useCase";
 import { UpdateUserProfileInfoUseCase } from "../../application/useCases/user/updateUserProfileInfo.useCase";
 import { ChangePushNotificationUseCase } from "../../application/useCases/user/changePushNotification.useCase";
 import { UpdateUserProfileImageUseCase } from "../../application/useCases/user/updateUserProfileImage.useCase";
-import { ProviderFetchUserForChatSidebarUseCase } from "../../application/useCases/provider/providerUser.useCase";
+import { ProviderGetUserForChatSidebarUseCase } from "../../application/useCases/provider/providerUser.useCase";
 
 export const updateUserProfileInfoUseCase = new UpdateUserProfileInfoUseCase(userRepository);
 
@@ -20,6 +21,8 @@ export const changeUserBlockStatusUseCase = new ChangeUserBlockStatusUseCase(use
 
 export const getUserProfileDetailsUseCase = new GetUserProfileDetailsUseCase(userRepository, signedUrlService);
 
-export const providerFetchUserForChatSidebarUseCase = new ProviderFetchUserForChatSidebarUseCase(signedUrlService, bookingQueries);
+export const providerGetUserForChatSidebarUseCase = new ProviderGetUserForChatSidebarUseCase(signedUrlService, bookingQueries);
 
 export const getUsersUseCase = new GetUsersUseCase(userQueries);
+
+export const setRoleUseCase = new SetRoleUseCase(userRepository, providerProfileRepository);

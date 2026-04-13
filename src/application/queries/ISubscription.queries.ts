@@ -1,5 +1,5 @@
 import { GetSubscribedPlanResponse } from "../dtos/subscription";
-import { FetchSubscriptionDataRequest, FetchSubscriptionDataResponse } from "../dtos/admin.dto";
+import { GetSubscriptionDataRequest, GetSubscriptionDataResponse } from "../dtos/admin.dto";
 import { GetSubscriptionsRequest, GetSubscriptionsResponse, GetSubscriptionDetailsResponse, TableData } from "../dtos/common.dto";
 
 export interface ISubscriptionQueries {
@@ -10,7 +10,7 @@ export interface ISubscriptionQueries {
 
     findDetails(subscriptionId: string): Promise<GetSubscriptionDetailsResponse | null>;
 
-    findStatsForAdminDashboard(payload: FetchSubscriptionDataRequest): Promise<FetchSubscriptionDataResponse>;
+    findStatsForAdminDashboard(payload: GetSubscriptionDataRequest): Promise<GetSubscriptionDataResponse>;
 
     findSubscriptionsForUpdatinStatus(): Promise<boolean>;
 

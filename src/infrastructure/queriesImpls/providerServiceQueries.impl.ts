@@ -71,7 +71,6 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
                                     { $eq: ["$_id", "$$providerId"] },
                                     { $eq: ["$isAdminVerified", true] },
                                     { $eq: ["$isBlocked", false] },
-                                    { $eq: ["$isEmailVerified", true] },
                                     ...(slotflowTrusted === true
                                         ? [{ $eq: ["$trustedBySlotflow", true] }]
                                         : [])

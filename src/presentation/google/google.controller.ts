@@ -1,16 +1,16 @@
 import passport from "passport";
-import { fethGoogleCalendarUseCase } from ".";
+import { getGoogleCalendarUseCase } from ".";
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { connectGoogleSchema } from "../../shared/zod/auth.zod";
 import { validateUserIdSchema } from "../../shared/zod/user.zod";
-import { FethGoogleCalendarUseCase } from "../../application/useCases/common/fetchGoogleCalendar.useCase";
+import { GetGoogleCalendarUseCase } from "../../application/useCases/common/getGoogleCalendar.useCase";
 
 class GoogleController {
     constructor(
-        private fethGoogleCalendarUseCase: FethGoogleCalendarUseCase
+        private getGoogleCalendarUseCase: GetGoogleCalendarUseCase
     ) {
         this.getUserEvents = this.getUserEvents.bind(this);
         this.connectGoogle = this.connectGoogle.bind(this);
@@ -20,10 +20,10 @@ class GoogleController {
         try {
             console.log("getUserEvents constroller start");
             const { userId } = validateUserIdSchema.parse((req.user as DecodedUser).userOrProviderId)
-            const result = await this.fethGoogleCalendarUseCase.execute(userId);
+            const result = await this.getGoogleCalendarUseCase.execute(userId);
             sendResponse(res, result);
         } catch (error) {
-            log.error("getUserEvents failed",error as Error);
+            log.error("getUserEvents failed", error as Error);
             next(error);
         };
     };
@@ -56,7 +56,7 @@ class GoogleController {
                 state: state,
             })(req, res, next);
         } catch (error) {
-            log.error("connectGoogle failed",error as Error);
+            log.error("connectGoogle failed", error as Error);
             next(error)
         };
     };
@@ -64,5 +64,5 @@ class GoogleController {
 };
 
 export const googleController = new GoogleController(
-    fethGoogleCalendarUseCase
+    getGoogleCalendarUseCase
 );

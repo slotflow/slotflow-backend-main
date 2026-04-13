@@ -5,7 +5,7 @@ import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { createServiceAvailabilitiesUseCase, getServiceAvailabilityUseCase } from ".";
 import { GetServiceAvailabilityUseCase } from "../../application/useCases/serviceAvailability/getServiceAvailability";
-import { createServiceAvailabilitySchema, fetchServiceAvailabilitySchema } from "../../shared/zod/serviceAvailability.zod";
+import { createServiceAvailabilitySchema, getServiceAvailabilitySchema } from "../../shared/zod/serviceAvailability.zod";
 import { CreateServiceAvailabilitiesUseCase } from "../../application/useCases/serviceAvailability/createServiceAvailability";
 
 class ServiceAvailabilityController {
@@ -42,7 +42,7 @@ class ServiceAvailabilityController {
                     providerId = req.params.providerId as string;
                 }
                 
-                const validatedData = fetchServiceAvailabilitySchema.parse({
+                const validatedData = getServiceAvailabilitySchema.parse({
                     providerId,
                     date: req.query.date
                 });

@@ -9,31 +9,31 @@ const router = Router();
 router.get('/users', 
     authMiddleware, 
     authorize(Role.ADMIN),
-    dashboardController.fetchUserStats
+    dashboardController.getUserStats
 );
 
 router.get('/providers', 
     authMiddleware, 
     authorize(Role.ADMIN),
-    dashboardController.fetchProviderStats
+    dashboardController.getProviderStats
 );
 
 router.get('/subscriptions', 
     authMiddleware, 
     authorize(Role.ADMIN),
-    dashboardController.fetchSubscriptionStats
+    dashboardController.getSubscriptionStats
 );
 
 router.get('/bookings', 
     authMiddleware, 
     authorize(Role.ADMIN),
-    dashboardController.fetchBookingssStats
+    dashboardController.getBookingssStats
 );
 
 router.get('/graph', 
     authMiddleware, 
     authorize(Role.ADMIN),
-    dashboardController.fetchGraphData
+    dashboardController.getGraphData
 );
 
 export default router;

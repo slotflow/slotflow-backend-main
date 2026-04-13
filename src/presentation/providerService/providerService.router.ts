@@ -13,7 +13,7 @@ router.post('/',
     providerServiceController.createServiceDetails
 );
 
-// provider fetch service details
+// provider get service details
 router.get('/',
     authMiddleware,
     authorize(Role.PROVIDER),

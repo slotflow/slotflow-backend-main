@@ -2,28 +2,30 @@ import { log } from "../../shared/logger/logger";
 import { Role } from "../../domain/enums/common.enum";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
-import { paginationSchema } from "../../shared/zod/base.zod";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { adminUserBlockStatusSchema } from "../../shared/zod/admin.zod";
+import { SetRoleUseCase } from "../../application/useCases/user/setRole.useCase";
 import { GetUsersUseCase } from "../../application/useCases/user/getUsers.useCase";
+import { paginationSchema, roleValidationSchema } from "../../shared/zod/base.zod";
 import { GetUserProfileDetailsUseCase } from "../../application/useCases/user/getUserProfile.useCase";
 import { UpdateUserProfileInfoUseCase } from "../../application/useCases/user/updateUserProfileInfo.useCase";
 import { ChangeUserBlockStatusUseCase } from "../../application/useCases/user/changeUserBlockStatus.useCase";
 import { ChangePushNotificationUseCase } from "../../application/useCases/user/changePushNotification.useCase";
 import { UpdateUserProfileImageUseCase } from "../../application/useCases/user/updateUserProfileImage.useCase";
-import { ProviderFetchUserForChatSidebarUseCase } from "../../application/useCases/provider/providerUser.useCase";
+import { ProviderGetUserForChatSidebarUseCase } from "../../application/useCases/provider/providerUser.useCase";
 import { userUpdateFileSchema, userUpdateInfoSchema, userUpdatePushNotificationSchema, validateUserIdSchema } from "../../shared/zod/user.zod";
-import { changePushNotificationUseCase, changeUserBlockStatusUseCase, getUserProfileDetailsUseCase, getUsersUseCase, providerFetchUserForChatSidebarUseCase, updateUserProfileImageUseCase, updateUserProfileInfoUseCase } from ".";
+import { changePushNotificationUseCase, changeUserBlockStatusUseCase, getUserProfileDetailsUseCase, getUsersUseCase, providerGetUserForChatSidebarUseCase, setRoleUseCase, updateUserProfileImageUseCase, updateUserProfileInfoUseCase } from ".";
 
 class UserController {
     constructor(
-        private updateUserProfileImageUseCase: UpdateUserProfileImageUseCase,
-        private updateUserProfileInfoUseCase: UpdateUserProfileInfoUseCase,
-        private changePushNotificationUseCase: ChangePushNotificationUseCase,
-        private getUsersUseCase: GetUsersUseCase,
-        private changeUserBlockStatusUseCase: ChangeUserBlockStatusUseCase,
-        private getUserProfileDetailsUseCase: GetUserProfileDetailsUseCase,
-        private providerFetchUserForChatSidebarUseCase: ProviderFetchUserForChatSidebarUseCase,
+        private readonly updateUserProfileImageUseCase: UpdateUserProfileImageUseCase,
+        private readonly updateUserProfileInfoUseCase: UpdateUserProfileInfoUseCase,
+        private readonly changePushNotificationUseCase: ChangePushNotificationUseCase,
+        private readonly getUsersUseCase: GetUsersUseCase,
+        private readonly changeUserBlockStatusUseCase: ChangeUserBlockStatusUseCase,
+        private readonly getUserProfileDetailsUseCase: GetUserProfileDetailsUseCase,
+        private readonly providerGetUserForChatSidebarUseCase: ProviderGetUserForChatSidebarUseCase,
+        private readonly setRoleUseCase: SetRoleUseCase
     ) {
         this.getProfileDetails = this.getProfileDetails.bind(this);
         this.updateProfileImage = this.updateProfileImage.bind(this);
@@ -31,6 +33,7 @@ class UserController {
         this.updatePushNotification = this.updatePushNotification.bind(this);
         this.getUsers = this.getUsers.bind(this);
         this.changeUserBlockStatus = this.changeUserBlockStatus.bind(this);
+        this.setRole = this.setRole.bind(this);
     };
 
     async getProfileDetails(req: Request, res: Response, next: NextFunction) {
@@ -106,7 +109,7 @@ class UserController {
             }
 
             if (user.role === Role.PROVIDER) {
-                const result = await this.providerFetchUserForChatSidebarUseCase.execute({ providerId: user.userOrProviderId });
+                const result = await this.providerGetUserForChatSidebarUseCase.execute({ providerId: user.userOrProviderId });
                 sendResponse(res, result);
             }
         } catch (error) {
@@ -132,6 +135,19 @@ class UserController {
         };
     };
 
+    async setRole(req: Request, res: Response, next: NextFunction) {
+        try {
+            console.log("setRole");
+            const user = req.user as DecodedUser;
+            const { role } = roleValidationSchema.parse(req.body);
+            const result = await this.setRoleUseCase.execute({ _id: user.userOrProviderId, role });
+            sendResponse(res, result, "Role set successfully");
+        } catch (error) {
+            log.error("setRole failed", error as Error);
+            next(error);
+        };
+    };
+
 };
 
 export const userController = new UserController(
@@ -141,5 +157,6 @@ export const userController = new UserController(
     getUsersUseCase,
     changeUserBlockStatusUseCase,
     getUserProfileDetailsUseCase,
-    providerFetchUserForChatSidebarUseCase
+    providerGetUserForChatSidebarUseCase,
+    setRoleUseCase
 );

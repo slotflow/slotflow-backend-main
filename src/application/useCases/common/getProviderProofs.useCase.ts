@@ -1,19 +1,19 @@
 import { log } from "../../../shared/logger/logger";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
-import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-import { ApiResponse, FetchProviderProofsRequest, FetchProviderProofsResponse } from "../../dtos/common.dto";
+import { ApiResponse, GetProviderProofsRequest, GetProviderProofsResponse } from "../../dtos/common.dto";
+import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 
-export class FetchProviderProofsUseCase {
+export class GetProviderProofsUseCase {
     constructor(
-        private signedUrlService: ISignedUrlService,
-        private providerRepository: IProviderRepository,
+        private readonly  signedUrlService: ISignedUrlService,
+        private readonly  providerProfileRepository: IProviderProfileRepository
     ) { };
 
-    async execute(payload: FetchProviderProofsRequest): Promise<ApiResponse<FetchProviderProofsResponse>> {
+    async execute(payload: GetProviderProofsRequest): Promise<ApiResponse<GetProviderProofsResponse>> {
         try {
             const { providerId } = payload;
 
-            const provider = await this.providerRepository.findById(providerId);
+            const provider = await this.providerProfileRepository.findById(providerId);
             if (!provider) throw new Error("Failed to find provider");
 
             let signedIdentityProofUrl: string | null = null;
@@ -36,7 +36,7 @@ export class FetchProviderProofsUseCase {
                 },
             };
         } catch (error) {
-            log.error("FetchProviderProofsUseCase failed", error as Error);
+            log.error("GetProviderProofsUseCase failed", error as Error);
             throw error;
         };
     };

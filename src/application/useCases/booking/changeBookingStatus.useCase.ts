@@ -10,7 +10,6 @@ import { IGoogleTokenService } from "../../../domain/interfaces/services/IGoogle
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 import { EventEnvelope, CreateGoogleCalendarEvent, SendAppointmentStatusChangeForProviderEvent, SendAppointmentStatusChangeForUserEvent } from "../../dtos/kafka.dtos";
-import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
 
 export class ChangeBookingStatusUseCase {
     constructor(
@@ -18,7 +17,6 @@ export class ChangeBookingStatusUseCase {
         private readonly userRepository: IUserRepository,
         private readonly googleTokenService: IGoogleTokenService,
         private readonly kafkaProducer: IKafkaProducerAdapter,
-        private readonly providerRepository: IProviderRepository
     ) { };
 
     async execute(payload: ProviderChangeBookingAppoinmentStatusRequest): Promise<void> {
@@ -31,7 +29,7 @@ export class ChangeBookingStatusUseCase {
             const user = await this.userRepository.findById(booking.userId);
             if (!user) throw new Error("No user found");
 
-            const provider = await this.providerRepository.findById(providerId);
+            const provider = await this.userRepository.findById(providerId);
             if (!provider) throw new Error("No provider found");
 
             let userAccessToken: string | null = null;
@@ -80,8 +78,8 @@ export class ChangeBookingStatusUseCase {
                 occurredAt: new Date().toISOString(),
                 payload: {
                     notificationData: {
-                        userId: user._id,
-                        pushNotification: user.allowPushNotification ?? false,
+                        userId: provider._id,
+                        pushNotification: provider.allowPushNotification ?? false,
                         title: notificationContentMap.appointmentStatusChangeForProvider.title,
                         body: notificationContentMap.appointmentStatusChangeForProvider.body(booking.appointmentStatus),
                         data: {

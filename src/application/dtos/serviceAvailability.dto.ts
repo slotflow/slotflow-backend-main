@@ -1,13 +1,13 @@
 import { FontendAvailabilityForResponse, FrontendAvailabilityForRequest } from "./common.dto";
 
-// fetch provider service availability use case request payload interface
-export interface FetchServiceAvailabilityRequest {
+// get provider service availability use case request payload interface
+export interface GetServiceAvailabilityRequest {
     providerId: string;
     date: Date;
 }
 
-// fetch provider service availability use case response interface
-export type FetchServiceAvailabilityResponse = FontendAvailabilityForResponse | null;
+// get provider service availability use case response interface
+export type GetServiceAvailabilityResponse = FontendAvailabilityForResponse | null;
 
 // create service availability request payload interface
 export interface CreateServiceAvailabilityRewuest {

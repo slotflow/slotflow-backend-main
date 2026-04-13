@@ -1,20 +1,22 @@
 import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
+import { TrialSubscriptionRequest } from '../../dtos/subscription';
 import { notificationContentMap } from "../../../shared/utils/constants";
 import { Subscription } from "../../../domain/entities/subscription.entity";
 import { EventEnvelope, SendProviderTrialSubscriptionEvent } from "../../dtos/kafka.dtos";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
+import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { SubscriptionStatus, SubscriptionValidity } from "../../../domain/enums/subscription.enum";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
-import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 import { getDateAfterDays, getUtcDateRange, isSubscriptionExpired } from "../../../shared/utils/dateTime";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
-import { TrialSubscriptionRequest } from '../../dtos/subscription';
+import { IProviderProfileRepository } from '../../../domain/interfaces/repositories/IProviderProfile.repository';
 
 export class TrialSubscriptionUseCase {
     constructor(
-        private providerRepository: IProviderRepository,
+        private userRepository: IUserRepository,
+        private providerProfileRepository: IProviderProfileRepository,
         private subscriptionRepository: ISubscriptionRepository,
         private planRepository: IPlanRepository,
         private kafkaProducer: IKafkaProducerAdapter
@@ -24,10 +26,13 @@ export class TrialSubscriptionUseCase {
         try {
             const { providerId } = payload;
 
-            const provider = await this.providerRepository.findById(providerId);
+            const provider = await this.userRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");
 
-            const providerSubscriptions = provider.subscription;
+            const providerProfile = await this.providerProfileRepository.findByUserId(providerId);
+            if (!providerProfile) throw new Error("Profile not found.");
+
+            const providerSubscriptions = providerProfile.subscription;
             if (providerSubscriptions.length > 0) {
                 const providerLastSubscriptionId = providerSubscriptions.pop();
                 const subscription = await this.subscriptionRepository.findById(providerLastSubscriptionId!);
@@ -55,9 +60,9 @@ export class TrialSubscriptionUseCase {
             const subscription = await this.subscriptionRepository.create(subscriptionData);
             if (!subscription) throw new Error("Trial plan activating error.");
 
-            provider.pushSubscriptionId(subscription._id);
-            const updatedProvider = await this.providerRepository.update(provider);
-            if (!updatedProvider) throw new Error("Trail plan activating error.");
+            providerProfile.pushSubscriptionId(subscription._id);
+            const updatedProviderProfile = await this.providerProfileRepository.update(providerProfile);
+            if (!updatedProviderProfile) throw new Error("Trail plan activating failed.");
 
             const { startDate, endDate } = getUtcDateRange(subscription.startDate, subscription.endDate);
 

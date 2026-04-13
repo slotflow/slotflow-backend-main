@@ -11,7 +11,6 @@ export interface IProviderProfile extends Document {
     isServiceDetailsVerified: boolean,
     isAvailabilityVerified: boolean,
     isProofsVerified: boolean,
-    addressId: Types.ObjectId;
     serviceId: Types.ObjectId;
     serviceAvailabilityId: Types.ObjectId;
     subscription: Types.ObjectId[];
@@ -63,11 +62,6 @@ const ProviderProfileSchema = new Schema<IProviderProfile>({
     isProofsVerified: {
         type: Boolean,
         default: false
-    },
-    addressId: {
-        type: Schema.Types.ObjectId,
-        ref: "Address",
-        default: null
     },
     serviceId: {
         type: Schema.Types.ObjectId,

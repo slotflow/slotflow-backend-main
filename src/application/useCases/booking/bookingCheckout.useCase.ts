@@ -1,25 +1,25 @@
-import { Booking } from "../../../domain/entities/booking.entity";
-import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
-import { PaymentFor } from "../../../domain/enums/payment.enum";
-import { IPaymentServiceClient } from "../../../domain/interfaces/clients/IPaymentService.client";
-import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
-import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
+import { v4 as uuid } from 'uuid';
 import { log } from "../../../shared/logger/logger";
+import { PaymentFor } from "../../../domain/enums/payment.enum";
+import { Booking } from "../../../domain/entities/booking.entity";
 import { FindProviderServiceResponse } from "../../dtos/common.dto";
 import { UserAppointmentBookingViaStripeRequest } from "../../dtos/user.dto";
 import { IProviderServiceQueries } from "../../queries/IProviderService.queries";
+import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
 import { IServiceAvailabilityQueries } from "../../queries/IServiceAvailability.queries";
-import { v4 as uuid } from 'uuid';
+import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
+import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
+import { IPaymentServiceClient } from "../../../domain/interfaces/clients/IPaymentService.client";
+import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 
 export class BookingCheckoutUseCase {
     constructor(
-        private providerRepository: IProviderRepository,
-        private bookingRepository: IBookingRepository,
-        private providerServiceQueries: IProviderServiceQueries,
-        private serviceAvailabilityQueries: IServiceAvailabilityQueries,
-        private userRepository: IUserRepository,
-        private paymentServiceClient: IPaymentServiceClient
+        private readonly bookingRepository: IBookingRepository,
+        private readonly providerProfileRepository: IProviderProfileRepository,
+        private readonly providerServiceQueries: IProviderServiceQueries,
+        private readonly serviceAvailabilityQueries: IServiceAvailabilityQueries,
+        private readonly userRepository: IUserRepository,
+        private readonly paymentServiceClient: IPaymentServiceClient
     ) { };
 
     async execute(payload: UserAppointmentBookingViaStripeRequest): Promise<string> {
@@ -27,11 +27,11 @@ export class BookingCheckoutUseCase {
             const { userId, providerId, slotId, selectedServiceMode, date } = payload;
             if (!userId || !providerId || !slotId || !selectedServiceMode || !date) throw new Error("Invalid request");
 
-            const provider = await this.providerRepository.findById(providerId);
-            if (!provider) throw new Error("No provider found");
-
             const user = await this.userRepository.findById(userId);
             if (!user) throw new Error("No user found");
+
+            const providerProfile = await this.providerProfileRepository.findById(providerId);
+            if (!providerProfile) throw new Error("No provider found");
 
             const providerService = await this.providerServiceQueries.findByProviderId(providerId);
             if (!providerService) throw new Error("No service found");
@@ -41,9 +41,9 @@ export class BookingCheckoutUseCase {
             }
 
             if (!isServiceData(providerService)) throw new Error("No service data found");
-            if (!provider.serviceAvailabilityId) throw new Error("No service availability found");
+            if (!providerProfile.serviceAvailabilityId) throw new Error("No service availability found");
 
-            const providerServiceAvailability = await this.serviceAvailabilityQueries.findByProviderId(date, provider.serviceAvailabilityId);
+            const providerServiceAvailability = await this.serviceAvailabilityQueries.findByProviderId(date, providerProfile.serviceAvailabilityId);
             if (!providerServiceAvailability) throw new Error("No availability found");
 
             console.dir(providerServiceAvailability, { depth: null, colors: true });

@@ -1,16 +1,19 @@
-import { AdminVerificationStatus } from "../../../domain/enums/adminVerificationStatus.enum";
-import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
-import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-import { notificationContentMap } from "../../../shared/utils/constants";
-import { AdminApproveProviderRequest } from "../../dtos/admin.dto";
-import { EventEnvelope, SendAdminProviderReviewEvent } from "../../dtos/kafka.dtos";
+import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
-import { v4 as uuidv4 } from 'uuid';
+import { Role } from "../../../domain/enums/common.enum";
+import { AdminApproveProviderRequest } from "../../dtos/admin.dto";
+import { notificationContentMap } from "../../../shared/utils/constants";
+import { EventEnvelope, SendAdminProviderReviewEvent } from "../../dtos/kafka.dtos";
+import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
+import { AdminVerificationStatus } from "../../../domain/enums/adminVerificationStatus.enum";
+import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
+import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 
 export class AdminApproveProviderUseCase {
     constructor(
-        private providerRepository: IProviderRepository,
+        private userRepository: IUserRepository,
+        private providerProfileRepository: IProviderProfileRepository,
         private kafkaProducer: IKafkaProducerAdapter
     ) { };
 
@@ -18,13 +21,18 @@ export class AdminApproveProviderUseCase {
         try {
             const { providerId } = payload;
 
-            const provider = await this.providerRepository.findById(providerId);
+            const provider = await this.userRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");
-            if (provider.isAdminVerified) throw new Error("Provider is already verified.");
 
-            provider.approveVerification();
+            const providerProfile = await this.providerProfileRepository.findByUserId(providerId);
+            if (!providerProfile) throw new Error("Provider profile not found.");
+            if (providerProfile.isAdminVerified) throw new Error("Provider is already verified.");
 
-            await this.providerRepository.update(provider);
+            provider.completeOnboarding(Role.PROVIDER);
+            await this.userRepository.update(provider);
+
+            providerProfile.approveVerification();
+            await this.providerProfileRepository.update(providerProfile);
 
             await this.kafkaProducer.publish<EventEnvelope<SendAdminProviderReviewEvent>>(kafkaConfig.topics.pub.adminProviderReview, {
                 eventId: uuidv4(),

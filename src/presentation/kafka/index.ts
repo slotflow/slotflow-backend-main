@@ -7,15 +7,15 @@ import { UpdateBookingAfterPaymentFailedUseCase } from "../../application/useCas
 import { UpdateBookingAfterPaymentSuccessUseCase } from "../../application/useCases/kafka/updateBookingAfterPaymentSuccess.useCase";
 import { UpdateSubscriptionAfterPaymentFailedUseCase } from "../../application/useCases/kafka/updateSubscriptionAfterPaymentFailed";
 import { UpdateSubscriptionAfterPaymentSuccessUseCase } from "../../application/useCases/kafka/updateSubscriptionAfterPaymentSuccess";
-import { bookingRepository, planRepository, providerRepository, subscriptionRepository, userRepository } from "../../infrastructure/repositoryImpls";
+import { bookingRepository, planRepository, providerProfileRepository, subscriptionRepository, userRepository } from "../../infrastructure/repositoryImpls";
 
 export const handler = {
     googleCalendarSuccess: new GoogleCalendarSuccessUseCases(bookingRepository),
     googleCalendarFailed: new GoogleCalendarFailedUseCases(bookingRepository),
-    providerSubscriptionPaymentSuccess: new UpdateSubscriptionAfterPaymentSuccessUseCase(subscriptionRepository, providerRepository, kafkaProducer, planRepository),
+    providerSubscriptionPaymentSuccess: new UpdateSubscriptionAfterPaymentSuccessUseCase(subscriptionRepository, userRepository, providerProfileRepository, kafkaProducer, planRepository),
     providerSubscriptionPaymentFailed: new UpdateSubscriptionAfterPaymentFailedUseCase(subscriptionRepository),
-    userBookingPaymentSuccess: new UpdateBookingAfterPaymentSuccessUseCase(bookingRepository, kafkaProducer, userRepository, providerRepository),
+    userBookingPaymentSuccess: new UpdateBookingAfterPaymentSuccessUseCase(bookingRepository, kafkaProducer, userRepository),
     userBookingPaymentFailed: new UpdateBookingAfterPaymentFailedUseCase(bookingRepository),
-    stripeAccountCreated: new UpdateStripeAccountDataUseCase(userRepository, providerRepository),
-    stripeCustomerCreated: new UpdateStripeCustomerCreatedUseCase(userRepository, providerRepository)
+    stripeAccountCreated: new UpdateStripeAccountDataUseCase(userRepository),
+    stripeCustomerCreated: new UpdateStripeCustomerCreatedUseCase(userRepository)
 };

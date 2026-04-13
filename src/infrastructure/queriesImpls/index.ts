@@ -3,13 +3,11 @@
 import { UserQueriesImpl } from "./userQueries.impl";
 import { ReviewQueriesImpl } from "./reviewQueries.impl";
 import { BookingQueriesImpl } from "./bookingQueries.impl";
-import { ProviderQueriesImpl } from "./providerQueries.impl";
 import { SubscriptionQueriesImpl } from "./subscriptionQueries.impl";
 import { IUserQueries } from "../../application/queries/IUser.queries";
 import { IReviewQueries } from "../../application/queries/IReview.queries";
 import { ProviderServiceQueriesImpl } from "./providerServiceQueries.impl";
 import { IBookingQueries } from "../../application/queries/IBooking.queries";
-import { IProviderQueries } from "../../application/queries/IProvider.queries";
 import { ServiceAvailabilityQueriesImpl } from "./serviceAvailabilityQueries.impl";
 import { ISubscriptionQueries } from "../../application/queries/ISubscription.queries";
 import { IProviderServiceQueries } from "../../application/queries/IProviderService.queries";
@@ -17,9 +15,6 @@ import { IServiceAvailabilityQueries } from "../../application/queries/IServiceA
 
 // booking queries instance
 export const bookingQueries: IBookingQueries = new BookingQueriesImpl();
-
-// provider queries instance
-export const providerQueries: IProviderQueries = new ProviderQueriesImpl();
 
 // provider service querues instance
 export const providerServiceQueries: IProviderServiceQueries = new ProviderServiceQueriesImpl();

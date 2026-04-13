@@ -94,15 +94,14 @@ class AuthController {
       console.log("login controller");
       const validateData = loginSchema.parse(req.body);
       const result = await this.loginUseCase.execute({ ...validateData });
-      const { token, ...authData } = result.authUser;
+      const { token, ...user } = result;
       res.cookie("token", token, {
         maxAge: 2 * 24 * 60 * 60 * 1000,
         httpOnly: true,
         sameSite: appConfig.nodeEnv === 'development' ? 'lax' : 'none',
         secure: appConfig.nodeEnv !== 'development'
       });
-      console.log("authUserWithToken : ", result.authUser);
-      sendResponse(res, authData, "Login successfully");
+      sendResponse(res, user, "Login successfully");
     } catch (error) {
       log.error("login failed", error as Error);
       next(error)

@@ -3,11 +3,10 @@ import { Types } from "mongoose";
 import { Role } from "../../domain/enums/common.enum";
 import { BookingModel } from "../models/booking.model";
 import { IBookingQueries } from "../../application/queries/IBooking.queries";
-import { FetchBookingsDataRequest, FetchBookingsDataResponse } from "../../application/dtos/admin.dto";
+import { GetBookingsDataRequest, GetBookingsDataResponse } from "../../application/dtos/admin.dto";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
-import { endOfDay, startOfDay, startOfToday, startOfTomorrow } from "date-fns";
 import { GetBookingsRequest, TableData, GetBookingsResponse, GetOnlineBookingsForProviderResponse, GetOnlineBookingsForUserResponse, GetBookingDetailsResponse } from "../../application/dtos/common.dto";
-import { ProviderFetchDashboardGraphRepository, FetchGraphDataResponse, ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchUsersForChatSideBarResponse, GetProvidersForChatResponse, ProviderFetchDashboardBookingStatsDataRequest } from "../../application/dtos/provider.dto";
+import { ProviderGetDashboardGraphRepository, GetGraphDataResponse, ProviderGetDashboardBookingStatsDataResponse, ProviderGetUsersForChatSideBarResponse, GetProvidersForChatResponse, ProviderGetDashboardBookingStatsDataRequest } from "../../application/dtos/provider.dto";
 import { getStartAndEndDate } from "../../shared/utils/dateTime";
 
 export class BookingQueriesImpl implements IBookingQueries {
@@ -153,7 +152,7 @@ export class BookingQueriesImpl implements IBookingQueries {
         };
     }
 
-    async findGraphDataForProviderDashboard(payload: ProviderFetchDashboardGraphRepository): Promise<FetchGraphDataResponse | null> {
+    async findGraphDataForProviderDashboard(payload: ProviderGetDashboardGraphRepository): Promise<GetGraphDataResponse | null> {
         const { providerId, subscriptionGuard, endDate, startDate } = payload
 
         console.log("providerId,  : ", providerId)
@@ -344,7 +343,7 @@ export class BookingQueriesImpl implements IBookingQueries {
         }
     }
 
-    async findStatsDataForProviderDashboard(payload: ProviderFetchDashboardBookingStatsDataRequest): Promise<ProviderFetchDashboardBookingStatsDataResponse> {
+    async findStatsDataForProviderDashboard(payload: ProviderGetDashboardBookingStatsDataRequest): Promise<ProviderGetDashboardBookingStatsDataResponse> {
 
         const providerObjectId = new Types.ObjectId(payload.providerId);
         const { startDate, endDate } = getStartAndEndDate(
@@ -481,7 +480,7 @@ export class BookingQueriesImpl implements IBookingQueries {
         };
     }
 
-    async findStatsDataForAdminDashboard(payload: FetchBookingsDataRequest): Promise<FetchBookingsDataResponse> {
+    async findStatsDataForAdminDashboard(payload: GetBookingsDataRequest): Promise<GetBookingsDataResponse> {
         const { startDate, endDate } = getStartAndEndDate(payload.startDate, payload.endDate);
         const result = await BookingModel.aggregate([
             {
@@ -579,7 +578,7 @@ export class BookingQueriesImpl implements IBookingQueries {
         return bookings.modifiedCount > 0;
     }
 
-    async findUsersforChatSideBar(providerId: string): Promise<ProviderFetchUsersForChatSideBarResponse> {
+    async findUsersforChatSideBar(providerId: string): Promise<ProviderGetUsersForChatSideBarResponse> {
         const users = await BookingModel.aggregate([
             {
                 $match: {

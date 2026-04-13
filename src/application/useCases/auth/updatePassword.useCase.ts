@@ -8,12 +8,10 @@ import { EventEnvelope, SendResetPasswordEvent } from "../../dtos/kafka.dtos";
 import { IPasswordHasher } from "../../../domain/interfaces/security/IPasswordHasher";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
-import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
 
 export class UpdatePasswordUseCase {
     constructor(
         public readonly userRepository: IUserRepository,
-        public readonly providerRepository: IProviderRepository,
         public readonly passwordHasher: IPasswordHasher,
         public readonly kafkaProducer: IKafkaProducerAdapter,
         public readonly jwtService: IJWT,

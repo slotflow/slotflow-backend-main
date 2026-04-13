@@ -26,39 +26,6 @@ export interface AddressDTO {
   updatedAt: Date,
 }
 
-// **** PROVIDER INTERFACE
-export interface ProviderDTO {
-  _id: string;
-  username: string;
-  email: string;
-  password: string;
-  isBlocked: boolean;
-  isEmailVerified: boolean;
-  isAdminVerified: boolean;
-  verificationRejectionReason: string | null;
-  adminVerificationStatus: AdminVerificationStatus;
-  isAddressVerified: boolean;
-  isServiceDetailsVerified: boolean;
-  isAvailabilityVerified: boolean;
-  isProofsVerified: boolean;
-  phone: string | null;
-  profileImage: string | null;
-  addressId: string | null;
-  serviceId: string | null;
-  serviceAvailabilityId: string | null;
-  subscription: string[];
-  verificationToken: string | null;
-  googleConnected: boolean;
-  googleId: string | null;
-  stripeAccountId: string | null;
-  trustedBySlotflow: boolean;
-  identityProof: string | null;
-  serviceProof: string | null;
-  allowPushNotification: boolean | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
 // **** USER INTERFACE
 export interface UserDTO {
   _id: string;
@@ -66,22 +33,19 @@ export interface UserDTO {
   email: string;
   password: string | null;
   role: Role;
+  hasSelectedRole: boolean;
+  isOnboardingCompleted: boolean;
   isBlocked: boolean;
-  // Remove
-  // isEmailVerified: boolean;
   phone: string | null;
   profileImage: string | null;
-  // addressId: string | null;
-  // verificationToken: string | null;
-
+  addressId: string | null;
   googleConnected: boolean;
   googleId: string | null;
   stripeConnected: boolean;
   stripeAccountId: string | null;
   stripeCustomerId: string | null;
-
   allowPushNotification: boolean | null;
-  createdAt: Date,
+  createdAt: Date;
   updatedAt: Date
 }
 
@@ -96,7 +60,6 @@ export interface ProviderProfileDTO {
   isServiceDetailsVerified: boolean;
   isAvailabilityVerified: boolean;
   isProofsVerified: boolean;
-  addressId: string | null;
   serviceId: string | null;
   serviceAvailabilityId: string | null;
   subscription: string[];
@@ -287,29 +250,29 @@ export interface TableData<T> {
 
 // **** Common DTOS used in usecases **** \\
 
-// Used as the payments fetching request and response dto
-export interface userIdAndProviderIdFilterForFetchPayments {
+// Used as the payments get request and response dto
+export interface userIdAndProviderIdFilterForGetPayments {
   userId?: UserDTO["_id"];
-  providerId?: ProviderDTO["_id"];
+  providerId?: UserDTO["_id"];
 }
 
 
-// Used as the request interface for fetching subscriptions with planName and plan price of a specific provider for the provider side and admin side
+// Used as the request interface for get subscriptions with planName and plan price of a specific provider for the provider side and admin side
 export interface GetSubscriptionsRequest extends ApiPaginationRequest {
-  providerId?: ProviderDTO["_id"];
+  providerId?: UserDTO["_id"];
 }
 
 
-// Used as the request interface for fetching bookings for admin, provider and user side
+// Used as the request interface for get bookings for admin, provider and user side
 export interface userIdAndServiceProviderId {
   userId?: UserDTO["_id"];
-  serviceProviderId?: ProviderDTO["_id"];
+  serviceProviderId?: UserDTO["_id"];
 }
 export interface GetBookingsRequest extends ApiPaginationRequest, userIdAndServiceProviderId {
   online: boolean;
   role: Role;
 }
-// Used as the response type for fetching bookings for admin, provider and user side
+// Used as the response type for get bookings for admin, provider and user side
 export type GetBookingsResponse = Array<Pick<BookingDTO, "_id" | "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "videoCallRoomId" | "serviceProviderId">>;
 export type GetOnlineBookingsForProviderResponse = Array<
   Pick<
@@ -334,7 +297,7 @@ export type GetOnlineBookingsForUserResponse = Array<
     | "videoCallRoomId"
     | "createdAt"
   > & {
-    serviceProviderId: Pick<ProviderDTO, "username">;
+    serviceProviderId: Pick<UserDTO, "username">;
   }
 >;
 
@@ -350,11 +313,11 @@ export interface ValidateJoinRoomRequest {
 };
 
 
-// fetch subscription details use case request payload interface 
+// get subscription details use case request payload interface 
 export interface GetSubscriptionDetailsRequest {
   subscriptionId: SubscriptionDTO["_id"];
 };
-// admin fetch subscription details use case response interface 
+// admin get subscription details use case response interface 
 type SubscriptionProps = Pick<SubscriptionDTO, "startDate" | "endDate" | "subscriptionStatus" | "createdAt">;
 type PlanProps = Pick<PlanDTO, "planName" | "price" | "adVisibility" | "maxBookingPerMonth">;
 export interface GetSubscriptionDetailsResponse extends SubscriptionProps {
@@ -365,8 +328,8 @@ export interface GetSubscriptionDetailsResponse extends SubscriptionProps {
 export type CreateCredentialRequest = Pick<CredentialDTO, "userId" | "accessToken" | "refreshToken" | "expiryDate">;
 // update credential 
 export type UpdateCredentialRequest = Pick<CredentialDTO, "_id" | "accessToken" | "refreshToken" | "expiryDate">;
-// fetch credentials credential 
-export type FetchCredentialsResponse = Pick<CredentialDTO, "accessToken" | "refreshToken" | "expiryDate" | "userId">;
+// get credentials credential 
+export type GetCredentialsResponse = Pick<CredentialDTO, "accessToken" | "refreshToken" | "expiryDate" | "userId">;
 
 
 // Google Event
@@ -459,7 +422,7 @@ export interface GoogleCalendarEvent extends Partial<BookingDTO> {
 
 export type AddEventToCalendarProps = Pick<GoogleCalendarEvent, "summary" | "description" | "extendedProperties"> & GoogleCalendarEventsPropsForBackend;
 
-export type FetchEventsFromCalendarProps = Pick<GoogleCalendarEvent, "id" | "summary" | "description" | "creator" | "organizer" | "iCalUID" | "reminders" | "eventType" | "extendedProperties"> & CombinedStartAndEndProps;
+export type GetEventsFromCalendarProps = Pick<GoogleCalendarEvent, "id" | "summary" | "description" | "creator" | "organizer" | "iCalUID" | "reminders" | "eventType" | "extendedProperties"> & CombinedStartAndEndProps;
 
 export interface UpdateGoogleCalendarEventRequest {
   eventId: string,
@@ -483,27 +446,27 @@ export interface UpdateBookingOnlineTrackRequest extends ParticipantPresence {
 export type UpdateBookingOnlineTrackResponse = Pick<Availability, "duration">;
 
 
-//// **** Used as the request interface fetching reviews for admin, provider and user side
-export interface userIdAndProviderIdFilterForFetchReviews {
+//// **** Used as the request interface get reviews for admin, provider and user side
+export interface userIdAndProviderIdFilterForGetReviews {
   userId?: UserDTO["_id"];
-  providerId?: ProviderDTO["_id"];
+  providerId?: UserDTO["_id"];
   role?: Role;
 }
-export interface GetReviesRequest extends ApiPaginationRequest, userIdAndProviderIdFilterForFetchReviews { }
-//// **** Used as the response type fetching payments for admin, provider and user side
+export interface GetReviewsRequest extends ApiPaginationRequest, userIdAndProviderIdFilterForGetReviews { }
+//// **** Used as the response type get reviews for admin, provider and user side
 export interface GetReviewsResponse extends Pick<ReviewDTO, "_id" | "createdAt" | "reviewText" | "rating" | "reported" | "isBlocked"> {
   userId: Pick<UserDTO, "username" | "profileImage">;
-  providerId: Pick<ProviderDTO, "username" | "profileImage">;
+  providerId: Pick<UserDTO, "username" | "profileImage">;
 };
 
 
-//// **** Used as the response interface of fetch booking details
+//// **** Used as the response interface of get booking details
 export interface GetBookingDetailsRequest {
   bookingId: BookingDTO["_id"];
 };
 export interface GetBookingDetailsResponse extends Pick<BookingDTO, "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "onlineTrack" | "statusTrack" | "videoCallRoomId"> {
   userId: Pick<UserDTO, "username" | "email">;
-  serviceProviderId: Pick<ProviderDTO, "username" | "email">;
+  serviceProviderId: Pick<UserDTO, "username" | "email">;
 };
 
 //// **** Used in s3 controller
@@ -523,12 +486,12 @@ export interface CreateFileSignedUrlRequest {
 };
 
 
-// **** Used in fetch provider proofs usecase
-export interface FetchProviderProofsRequest {
-  providerId: ProviderDTO["_id"];
+// **** Used in get provider proofs usecase
+export interface GetProviderProofsRequest {
+  providerId: UserDTO["_id"];
 };
 
-export type FetchProviderProofsResponse = Pick<ProviderDTO, "identityProof" | "serviceProof">;
+export type GetProviderProofsResponse = Pick<ProviderProfileDTO, "identityProof" | "serviceProof">;
 
 export type findAllPlansForDisplayResProps = Pick<PlanDTO, "_id" | "planName" | "price" | "features" | "description">
 
@@ -606,6 +569,8 @@ export interface UpdateBookingAfterPaymentFailedEventResult {
 
 export interface LinkStripeCustomerRequest {
   userId: string;
-  role: Role;
   stripeCustomerId: string;
 }
+
+
+export type CountResult = { count: number };

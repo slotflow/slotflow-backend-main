@@ -1,16 +1,16 @@
 import { log } from "../../../../shared/logger/logger";
 import { IBookingQueries } from "../../../queries/IBooking.queries";
 import { ISubscriptionMapping } from "../../../../domain/interfaces/helper/ISubscriptionMapping.helper";
-import { FetchGraphDataRequest, FetchGraphDataResponse } from "../../../dtos/provider.dto";
+import { GetGraphDataRequest, GetGraphDataResponse } from "../../../dtos/provider.dto";
 
 
-export class FetchGraphDataUseCase {
+export class GetGraphDataUseCase {
     constructor(
         private bookingQueries: IBookingQueries,
         private subscriptionHelper: ISubscriptionMapping,
     ) { };
 
-    async execute(payload: FetchGraphDataRequest): Promise<FetchGraphDataResponse> {
+    async execute(payload: GetGraphDataRequest): Promise<GetGraphDataResponse> {
         try {
             const { providerId, subscription, endDate, startDate } = payload;
 
@@ -24,7 +24,7 @@ export class FetchGraphDataUseCase {
                 startDate
             });
 
-            const dashboardGraphData: FetchGraphDataResponse = {
+            const dashboardGraphData: GetGraphDataResponse = {
                 appointmentsOvertimeChartData: resultArray?.appointmentsOvertimeChartData ?? [],
                 peakBookingHoursChartData: resultArray?.peakBookingHoursChartData ?? [],
                 appointmentModeChartData: resultArray?.appointmentModeChartData ?? [],
@@ -35,7 +35,7 @@ export class FetchGraphDataUseCase {
 
             return dashboardGraphData;
         } catch (error) {
-            log.error("FetchGraphDataUseCase failed", error as Error);
+            log.error("GetGraphDataUseCase failed", error as Error);
             throw error;
         };
     };

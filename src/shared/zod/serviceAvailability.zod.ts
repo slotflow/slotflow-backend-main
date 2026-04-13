@@ -15,6 +15,6 @@ export const createServiceAvailabilitySchema = z.array(
     })
 );
 
-export const fetchServiceAvailabilitySchema = z.object({
+export const getServiceAvailabilitySchema = z.object({
   date: dateSchema,
 }).merge(validateProviderIdSchema);

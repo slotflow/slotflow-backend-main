@@ -13,7 +13,7 @@ router.post('/',
     serviceAvailabilityController.createServiceAvailability
 );
 
-// provider fetch their service availability
+// provider get their service availability
 router.get('/me',
     authMiddleware,
     authorize(Role.PROVIDER),

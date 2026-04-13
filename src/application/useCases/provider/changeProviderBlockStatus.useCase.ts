@@ -1,32 +1,32 @@
 import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
-import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
-import { ICacheService } from "../../../domain/interfaces/services/ICache.service";
-import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-import { AdminChangeProviderBlockStatusRequest, AdminChangeProviderBlockStatusResponse } from "../../dtos/admin.dto";
-import { EventEnvelope, SendAccountBlockStatusEvent } from "../../dtos/kafka.dtos";
 import { notificationContentMap } from "../../../shared/utils/constants";
+import { ICacheService } from "../../../domain/interfaces/services/ICache.service";
+import { EventEnvelope, SendAccountBlockStatusEvent } from "../../dtos/kafka.dtos";
+import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
+import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
+import { AdminChangeProviderBlockStatusRequest, AdminChangeProviderBlockStatusResponse } from "../../dtos/admin.dto";
 
 export class ChangeProviderBlockStatusUseCase {
     constructor(
-        private providerRepository: IProviderRepository,
-        private kafkaProducer: IKafkaProducerAdapter,
-        private cacheService: ICacheService
+        private readonly userRepository: IUserRepository,
+        private readonly kafkaProducer: IKafkaProducerAdapter,
+        private readonly cacheService: ICacheService
     ) { };
 
     async execute(payload: AdminChangeProviderBlockStatusRequest): Promise<AdminChangeProviderBlockStatusResponse> {
         try {
             const { providerId, isBlocked } = payload;
 
-            const provider = await this.providerRepository.findById(providerId);
+            const provider = await this.userRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");
 
             if (provider.isBlocked === isBlocked) {
                 isBlocked ? provider.unblock() : provider.block();
             };
 
-            const updatedProvider = await this.providerRepository.update(provider);
+            const updatedProvider = await this.userRepository.update(provider);
             if (!updatedProvider) throw new Error("Provider not found");
 
             if (updatedProvider.isBlocked) {

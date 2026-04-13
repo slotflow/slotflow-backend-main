@@ -7,7 +7,13 @@ import { addressController } from "../address/address.controller";
 
 const router = Router();
 
-// user fetch profile details
+router.patch('/me/role',
+    authMiddleware,
+    authorize(Role.USER),
+    userController.setRole
+)
+
+// user get profile details
 router.get('/me',
     authMiddleware,
     authorize(Role.USER),
@@ -35,7 +41,7 @@ router.patch('/me/notification-settings',
     userController.updatePushNotification
 )
 
-// admin fetch user address
+// admin get user address
 router.get('/:userId/address',
     authMiddleware,
     authorize(Role.ADMIN),
@@ -49,14 +55,14 @@ router.patch('/:userId/block',
     userController.changeUserBlockStatus
 );
 
-// admin fetch users
+// admin get users
 router.get('/',
     authMiddleware,
     authorize(Role.ADMIN, Role.PROVIDER),
     userController.getUsers
 );
 
-// admin fetch user details
+// admin get user details
 router.get('/:userId',
     authMiddleware,
     authorize(Role.ADMIN),

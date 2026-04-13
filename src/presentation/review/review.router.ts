@@ -6,38 +6,38 @@ import { authorize } from "../middleware/authRole.middleware";
 
 const router = Router();
 
-// admin or user or provider fetch reviews
-router.get('/', 
-    authMiddleware, 
+// admin or user or provider get reviews
+router.get('/',
+    authMiddleware,
     authorize(Role.ADMIN, Role.USER, Role.PROVIDER),
     reviewController.getReviews
 );
 
 // user create review
-router.post('/', 
-    authMiddleware, 
+router.post('/',
+    authMiddleware,
     authorize(Role.USER),
     reviewController.createReview
 );
 
 // user delete review
-router.delete('/:reviewId', 
-    authMiddleware, 
+router.delete('/:reviewId',
+    authMiddleware,
     authorize(Role.USER),
     reviewController.deleteReview
 );
 
 // provider report review
-router.patch('/:reviewId/report', 
-    authMiddleware, 
+router.patch('/:reviewId/report',
+    authMiddleware,
     authorize(Role.PROVIDER),
     reviewController.reportReview
 );
 
 // admin block review
-router.patch("/:reviewId/block", 
-    authMiddleware, 
-     authorize(Role.ADMIN),
+router.patch("/:reviewId/block",
+    authMiddleware,
+    authorize(Role.ADMIN),
     reviewController.toggleReviewBlockStatus
 );
 

@@ -1,23 +1,22 @@
 import { log } from "../../../shared/logger/logger";
 import { ISubscriptionQueries } from "../../queries/ISubscription.queries";
 import { GetSubscribedPlanRequest, GetSubscribedPlanResponse } from "../../dtos/subscription";
-import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
+import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 
 export class GetSubscribedPlanUseCase {
     constructor(
-        private readonly providerRepository: IProviderRepository,
+        private readonly providerProfileRepository: IProviderProfileRepository,
         private readonly subscriptionQueries: ISubscriptionQueries
     ) { };
 
     async execute(payload: GetSubscribedPlanRequest): Promise<GetSubscribedPlanResponse> {
-        console.log("Provider fetching subscription");
         const { providerId } = payload;
         try {
-            const provider = await this.providerRepository.findById(providerId);
-            if (!provider) throw new Error("Invalid request.");
-            if (!provider.subscription.length) throw new Error("No subscription found.");
+            const providerProfile = await this.providerProfileRepository.findById(providerId);
+            if (!providerProfile) throw new Error("Profile not found.");
+            if (!providerProfile.subscription.length) throw new Error("No subscription found.");
 
-            const result = await this.subscriptionQueries.findMySubscritpion(provider.subscription.at(-1)!);
+            const result = await this.subscriptionQueries.findMySubscritpion(providerProfile.subscription.at(-1)!);
             if (!result) throw new Error("No subscription found.");
 
             return {

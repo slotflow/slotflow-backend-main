@@ -6,7 +6,7 @@ import { authMiddleware } from "../middleware/auth.middleware";
 
 const router = Router();
 
-// admin or provider or user fetch services
+// admin or provider or user get services
 router.get('/',
     authMiddleware,
     authorize(Role.ADMIN, Role.PROVIDER, Role.USER),

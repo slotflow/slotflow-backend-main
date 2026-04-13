@@ -1,31 +1,31 @@
-import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-import { IProviderServiceRepository } from "../../../domain/interfaces/repositories/IProviderService.repository";
-import { ProviderService } from "../../../domain/entities/providerService.entity";
 import { log } from "../../../shared/logger/logger";
 import { CreateProviderServiceRequest } from "../../dtos/providerService";
+import { ProviderService } from "../../../domain/entities/providerService.entity";
+import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
+import { IProviderServiceRepository } from "../../../domain/interfaces/repositories/IProviderService.repository";
 
 export class CreateProviderServiceUseCase {
 
     constructor(
-        private providerRepository: IProviderRepository,
+        private providerProfileRepository: IProviderProfileRepository,
         private providerServiceRepository: IProviderServiceRepository,
     ) { };
 
     async execute(payload: CreateProviderServiceRequest): Promise<void> {
         try {
-            const provider = await this.providerRepository.findById(payload.providerId);
-            if (!provider) throw new Error("Please logout and try again.");
+            const providerProfile = await this.providerProfileRepository.findById(payload.providerId);
+            if (!providerProfile) throw new Error("Profile not found.");
 
             const providerService = ProviderService.create({
                 ...payload
             });
 
-            const serivce = await this.providerServiceRepository.create(providerService);
+            const newSerivce = await this.providerServiceRepository.create(providerService);
 
-            if (provider && serivce) {
-                provider.attachService(serivce._id);
-                const updatedProvider = await this.providerRepository.update(provider);
-                if (!updatedProvider) throw new Error("Failed to update provider with service ID.");
+            if (providerProfile && newSerivce) {
+                providerProfile.attachService(newSerivce._id);
+                const updatedProviderProfile = await this.providerProfileRepository.update(providerProfile);
+                if (!updatedProviderProfile) throw new Error("Failed to update provider with service.");
             };
 
         } catch (error) {

@@ -4,7 +4,7 @@ import { IGoogleRefreshTokenService } from "../../domain/interfaces/services/IGo
 export class GoogleRefreshTokenServiceImpl implements IGoogleRefreshTokenService {
 
     async refreshAccessToken(refreshToken: string): Promise<{ accessToken: string; refreshToken: string; expiresIn: number; }> {
-        const response = await fetch("https://oauth2.googleapis.com/token", {
+        const response = await get("https://oauth2.googleapis.com/token", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: new URLSearchParams({

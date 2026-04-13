@@ -9,7 +9,6 @@ export type CreateGoogleUserProps = {
   email: string;
   googleId: string;
   profileImage: string;
-  isEmailVerified: boolean;
 };
 
 export type ChangeProfileInfo = {
@@ -19,10 +18,6 @@ export type ChangeProfileInfo = {
 
 export type ChangePassword = {
   password: string;
-};
-
-export type UpdateVerificationToken = {
-  verificationToken: string;
 };
 
 export type LinkGoogleAccount = {

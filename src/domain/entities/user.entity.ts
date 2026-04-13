@@ -1,6 +1,6 @@
 import { Role } from "../enums/common.enum";
 import { UserProps } from "../contracts/user.contract";
-import { ChangePassword, ChangeProfileImage, ChangeProfileInfo, CreateGoogleUserProps, CreateLocalUserProps, LinkGoogleAccount, UpdatePushNotification, UpdateVerificationToken } from "../commands/user.commands";
+import { ChangePassword, ChangeProfileImage, ChangeProfileInfo, CreateGoogleUserProps, CreateLocalUserProps, LinkGoogleAccount, UpdatePushNotification } from "../commands/user.commands";
 
 export class User {
 
@@ -28,9 +28,8 @@ export class User {
             password: props.password,
             role: Role.USER,
             hasSelectedRole: false,
+            isOnboardingCompleted: false,
             isBlocked: false,
-            //Remove
-            // isEmailVerified: false,
             phone: null,
             profileImage: null,
             addressId: null,
@@ -39,7 +38,7 @@ export class User {
             stripeConnected: false,
             stripeAccountId: null,
             stripeCustomerId: null,
-            allowPushNotification: null,
+            allowPushNotification: false,
             createdAt: new Date(),
             updatedAt: new Date(),
         })
@@ -53,6 +52,7 @@ export class User {
             password: null,
             role: Role.USER,
             hasSelectedRole: false,
+            isOnboardingCompleted: false,
             isBlocked: false,
             phone: null,
             profileImage: props.profileImage,
@@ -62,7 +62,7 @@ export class User {
             stripeConnected: false,
             stripeAccountId: null,
             stripeCustomerId: null,
-            allowPushNotification: null,
+            allowPushNotification: false,
             createdAt: new Date(),
             updatedAt: new Date(),
         })
@@ -88,6 +88,10 @@ export class User {
 
     get hasSelectedRole(): boolean {
         return this.props.hasSelectedRole;
+    }
+
+    get isOnboardingCompleted(): boolean {
+        return this.props.isOnboardingCompleted;
     }
 
     get phone(): string | null {
@@ -125,12 +129,12 @@ export class User {
     get stripeCustomerId(): string | null {
         return this.props.stripeCustomerId;
     }
-    
+
     get addressId(): string | null {
         return this.props.addressId;
     }
 
-    get allowPushNotification(): boolean | null {
+    get allowPushNotification(): boolean {
         return this.props.allowPushNotification;
     };
 
@@ -220,8 +224,19 @@ export class User {
         this.touch();
     }
 
-    chnageHasSelectedRole(value: boolean) {
-        this.props.hasSelectedRole = value;
+    chnageSelectedRole(role: Role) {
+        if (role === Role.USER) {
+            this.props.isOnboardingCompleted = true;
+        } else if (role === Role.PROVIDER) {
+            this.props.isOnboardingCompleted = false;
+        }
+        this.props.hasSelectedRole = true;
+        this.touch();
+    }
+
+    completeOnboarding(role: Role) {
+        this.props.role = role;
+        this.props.isOnboardingCompleted = true;
         this.touch();
     }
 

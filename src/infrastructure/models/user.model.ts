@@ -9,11 +9,9 @@ export interface IUser extends Document {
   role: Role;
   hasSelectedRole: boolean;
   isBlocked: boolean;
-  isEmailVerified: boolean;
   phone: string;
   profileImage: string | null;
   addressId: Types.ObjectId;
-  verificationToken: string;
   googleConnected: boolean;
   googleId: string;
   stripeConnected: boolean;
@@ -63,10 +61,6 @@ const UserSchema = new Schema<IUser>({
     type: Boolean,
     default: false
   },
-  isEmailVerified: {
-    type: Boolean,
-    default: false
-  },
   phone: {
     type: String,
     default: null,
@@ -81,10 +75,6 @@ const UserSchema = new Schema<IUser>({
   addressId: {
     type: Schema.Types.ObjectId,
     ref: "Address",
-    default: null
-  },
-  verificationToken: {
-    type: String,
     default: null
   },
   googleConnected: {

@@ -1,27 +1,32 @@
+import { v4 as uuidv4 } from 'uuid';
+import { kafkaConfig } from "../../../config/env";
+import { log } from "../../../shared/logger/logger";
+import { AdminRejectProviderRequest } from "../../dtos/admin.dto";
+import { notificationContentMap } from "../../../shared/utils/constants";
+import { EventEnvelope, SendAdminProviderReviewEvent } from "../../dtos/kafka.dtos";
+import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { AdminVerificationStatus } from "../../../domain/enums/adminVerificationStatus.enum";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
-import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-import { notificationContentMap } from "../../../shared/utils/constants";
-import { AdminRejectProviderRequest } from "../../dtos/admin.dto";
-import { EventEnvelope, SendAdminProviderReviewEvent } from "../../dtos/kafka.dtos";
-import { kafkaConfig } from "../../../config/env";
-import { v4 as uuidv4 } from 'uuid';
-import { log } from "../../../shared/logger/logger";
+import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 
 export class AdminRejectProviderUseCase {
     constructor(
-        private providerRepository: IProviderRepository,
-        private kafkaProducer: IKafkaProducerAdapter
+        private readonly userRepository: IUserRepository,
+        private readonly providerProfileRepository: IProviderProfileRepository,
+        private readonly kafkaProducer: IKafkaProducerAdapter
     ) { };
 
     async execute(payload: AdminRejectProviderRequest): Promise<void> {
         try {
             const { providerId, verificationRejectionReason, isAddressVerified, isAvailabilityVerified, isProofsVerified, isServiceDetailsVerified } = payload;
 
-            const provider = await this.providerRepository.findById(providerId);
+            const provider = await this.userRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");
 
-            provider.rejectVerification({
+            const providerProfile = await this.providerProfileRepository.findById(providerId);
+            if (!providerProfile) throw new Error("Profile not found.");
+
+            providerProfile.rejectVerification({
                 verificationRejectionReason: verificationRejectionReason ?? "",
                 isAddressVerified,
                 isServiceDetailsVerified,
@@ -29,7 +34,7 @@ export class AdminRejectProviderUseCase {
                 isProofsVerified,
             });
 
-            await this.providerRepository.update(provider);
+            await this.providerProfileRepository.update(providerProfile);
 
             await this.kafkaProducer.publish<EventEnvelope<SendAdminProviderReviewEvent>>(kafkaConfig.topics.pub.adminProviderReview, {
                 eventId: uuidv4(),
@@ -41,7 +46,7 @@ export class AdminRejectProviderUseCase {
                         email: provider.email,
                         name: provider.username,
                         status: AdminVerificationStatus.REJECTED,
-                        reason: provider.verificationRejectionReason ?? undefined,
+                        reason: providerProfile.verificationRejectionReason ?? undefined,
                     },
                     notificationData: {
                         userId: provider._id,

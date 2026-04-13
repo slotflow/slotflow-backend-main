@@ -42,11 +42,6 @@ export class UserRepositoryImpl implements IUserRepository {
         return doc ? UserMapper.toDomain(doc) : null;
     };
 
-    async findByVerificationToken(token: string): Promise<User | null> {
-        const doc = await UserModel.findOne({ verificationToken: token });
-        return doc ? UserMapper.toDomain(doc) : null;
-    };
-
     async count(today?: boolean): Promise<number> {
         if (!today) {
             return UserModel.countDocuments();

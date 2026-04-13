@@ -156,7 +156,6 @@ export interface ProviderSubscriptionUpdatedEvent {
 
 // consume stripe account created event
 export interface StripeAccountCreatedEvent {
-  role: Role;
   userId: string;
   stripeAccountId: string;
 }
@@ -283,6 +282,5 @@ export interface CreateGoogleCalendarEventFailedResult {
 // Consumer Events
 export interface UpdateStripeCustomerCreatedConsumeEvent {
   userId: string;
-  role: Role;
   stripeCustomerId: string;
 }

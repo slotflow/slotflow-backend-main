@@ -1,7 +1,7 @@
 import { log } from "../../../shared/logger/logger";
 import { IReviewQueries } from "../../queries/IReview.queries";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
-import { GetReviesRequest, GetReviewsResponse, TableData } from "../../dtos/common.dto";
+import { GetReviewsRequest, GetReviewsResponse, TableData } from "../../dtos/common.dto";
 
 export class GetReviewsUseCase {
     constructor(
@@ -9,7 +9,7 @@ export class GetReviewsUseCase {
         private signedUrlService: ISignedUrlService
     ) { };
 
-    async execute(payload: GetReviesRequest): Promise<TableData<Array<GetReviewsResponse>>> {
+    async execute(payload: GetReviewsRequest): Promise<TableData<Array<GetReviewsResponse>>> {
         try {
             const { limit, page, providerId, role, userId } = payload;
 
@@ -41,7 +41,7 @@ export class GetReviewsUseCase {
                 totalCount
             };
         } catch (error) {
-            log.error("FetchAllReviewsUseCase failed", error as Error);
+            log.error("GetAllReviewsUseCase failed", error as Error);
             throw error;
         };
     };

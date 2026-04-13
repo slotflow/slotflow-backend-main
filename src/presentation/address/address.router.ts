@@ -6,7 +6,7 @@ import { authMiddleware } from "../middleware/auth.middleware";
 
 const router = Router();
 
-// user or provider fetch their own address
+// user or provider get their own address
 router.get("/me",
     authMiddleware,
     authorize(Role.PROVIDER, Role.USER),

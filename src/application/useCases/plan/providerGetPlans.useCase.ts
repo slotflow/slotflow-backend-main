@@ -10,7 +10,7 @@ export class ProviderGetPlansUseCase {
     async execute(): Promise<ProviderGetPlansResponse> {
         try {
             const planData = await this.planRepository.findAll();
-            if (!planData) throw new Error("Plans Fetching error");
+            if (!planData) throw new Error("Failed to find plans");
             const { data: plans } = planData;
             return plans.map(plan => ({
                 _id: plan._id,
@@ -20,7 +20,7 @@ export class ProviderGetPlansUseCase {
                 price: plan.price,
             }));
         } catch (error) {
-            log.error("ProviderFetchAllPlansUseCase failed", error as Error);
+            log.error("ProviderGetPlansUseCase failed", error as Error);
             throw error;
         };
     };
