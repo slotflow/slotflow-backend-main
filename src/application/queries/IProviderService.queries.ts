@@ -1,13 +1,11 @@
-import { FindProviderServiceResponse } from "../dtos/common.dto";
-import { GetProvidersByFilterRequest, GetProvidersByFilterResponse } from "../dtos/provider.dto";
-import { UpdateProviderServiceRequest, UpdateProviderServiceResponse } from "../dtos/providerService";
+import { ProviderServiceByProviderIdQuery, ProviderServiceByProviderIdView, ProviderServiceByServiceIdsQuery, ProviderServiceByServiceIdsView, UpdateProviderServiceQuery, UpdateProviderServiceView } from "../dtos/providerService";
 
 export interface IProviderServiceQueries {
 
-    findByProviderId(providerId: string): Promise<FindProviderServiceResponse | null>;
+    findByProviderId(query: ProviderServiceByProviderIdQuery): Promise<ProviderServiceByProviderIdView | null>;
 
-    findProvidersUsingServiceIds(payload: GetProvidersByFilterRequest): Promise<Array<GetProvidersByFilterResponse> | []>;
+    findProvidersUsingServiceIds(query: ProviderServiceByServiceIdsQuery): Promise<ProviderServiceByServiceIdsView>;
 
-    updateProviderService(payload: UpdateProviderServiceRequest): Promise<UpdateProviderServiceResponse | null>;
+    updateProviderService(query: UpdateProviderServiceQuery): Promise<UpdateProviderServiceView>;
 
 }

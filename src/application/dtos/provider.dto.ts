@@ -1,12 +1,8 @@
 import { PlanName } from "../../domain/enums/plan.enum";
 import { Review } from "../../domain/entities/review.entity";
 import { ServiceCategory } from "../../domain/enums/service.enum";
-import { BookingDTO, UserDTO, PlanDTO, AddressDTO, ServiceDTO, ProviderServiceDTO, ProviderProfileDTO } from "./common.dto";
+import { UserDTO, AddressDTO, ServiceDTO, ProviderServiceDTO, ProviderProfileDTO } from "./common.dto";
 import { Role } from "../../domain/enums/common.enum";
-
-// provider update profile request payload interface
-export type ProviderUpdateProfileRequest = Pick<UserDTO, "_id" | "username" | "profileImage" | "phone" | "addressId" | "googleConnected" | "googleId" | "isBlocked" | "stripeAccountId" > & Partial<Pick<ProviderProfileDTO, "identityProof" | "serviceProof" | "isAdminVerified" | "serviceAvailabilityId" | "serviceId" | "trustedBySlotflow" | "subscription">>
-
 
 // provider get users for the chat sidebar
 export interface ProviderGetUsersForChatSideBarRequest {
@@ -93,39 +89,7 @@ export interface UserGetServiceProviderDetailsRequest {
 // user get service provider details response interface
 export type UserGetServiceProviderDetailsResponse = Pick<UserDTO, "username" | "email" | "phone" | "profileImage"> & Pick<ProviderProfileDTO, "trustedBySlotflow">;
 
-// get providers by filter request payload interface
-export interface GetProvidersByFilterRequest {
-    serviceIds?: string[];
-    categories?: ServiceCategory[];
-    location?: AddressDTO["location"];
-    maxPrice?: number;
-    minPrice?: number;
-    slotflowTrusted?: boolean;
-    radius?: number;
-    skip?: number;
-    limit?: number;
-};
 
-// find providers using service ids response interface
-export interface FindProvidersUsingServiceIdsResponse {
-    _id: string;
-    provider: {
-        _id: string;
-        username: string;
-        profileImage: string | null;
-        trustedBySlotflow: boolean;
-    },
-    serviceDetails: {
-        serviceId: string;
-        service: ServiceDTO["serviceName"];
-        serviceCategory: ServiceDTO["serviceCategory"];
-        serviceName: ProviderServiceDTO["serviceName"];
-        servicePrice: ProviderServiceDTO["servicePrice"];
-    }
-}
-
-// get providers by filter response interface
-export type GetProvidersByFilterResponse = FindProvidersUsingServiceIdsResponse
 
 
 

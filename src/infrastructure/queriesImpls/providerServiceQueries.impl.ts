@@ -2,19 +2,18 @@ import { Types } from "mongoose";
 import { PipelineStage } from "mongoose";
 import { ProviderServiceModel } from "../models/providerService.model";
 import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
-import { FindProviderServiceResponse } from "../../application/dtos/common.dto";
 import { IProviderServiceQueries } from "../../application/queries/IProviderService.queries";
-import { GetProvidersByFilterRequest, GetProvidersByFilterResponse } from "../../application/dtos/provider.dto";
-import { UpdateProviderServiceRequest, UpdateProviderServiceResponse } from "../../application/dtos/providerService";
+import { ProviderServiceByProviderIdQuery, ProviderServiceByProviderIdView, ProviderServiceByServiceIdsQuery, ProviderServiceByServiceIdsView, UpdateProviderServiceQuery, UpdateProviderServiceView } from "../../application/dtos/providerService";
 
 export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
 
-    async findByProviderId(providerId: string): Promise<FindProviderServiceResponse | null> {
+    async findByProviderId(query: ProviderServiceByProviderIdQuery): Promise<ProviderServiceByProviderIdView | null> {
+        const { providerId } = query
         const service = await ProviderServiceModel.findOne({ providerId })
             .populate({
                 path: "service",
                 select: "-_id serviceName"
-            }).lean<FindProviderServiceResponse>();
+            }).lean<ProviderServiceByProviderIdView>();
 
         if (!service) return null;
         return {
@@ -27,7 +26,7 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
         };
     };
 
-    async findProvidersUsingServiceIds(payload: GetProvidersByFilterRequest): Promise<GetProvidersByFilterResponse[]> {
+    async findProvidersUsingServiceIds(query: ProviderServiceByServiceIdsQuery): Promise<ProviderServiceByServiceIdsView> {
 
         const pipeline: PipelineStage[] = [];
         const now = new Date();
@@ -42,7 +41,7 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
             radius = 5000,
             skip,
             limit
-        } = payload;
+        } = query;
 
         const hasValidPriceRange =
             typeof minPrice === "number" &&
@@ -241,8 +240,8 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
     };
 
 
-    async updateProviderService(payload: UpdateProviderServiceRequest): Promise<UpdateProviderServiceResponse | null> {
-        const { _id, ...data } = payload;
+    async updateProviderService(query: UpdateProviderServiceQuery): Promise<UpdateProviderServiceView> {
+        const { _id, ...data } = query;
         const service = await ProviderServiceModel.findOneAndUpdate(
             { _id: new Types.ObjectId(_id) },
             { $set: { ...data } },
@@ -252,7 +251,7 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
                 path: "service",
                 select: "-_id serviceName",
             })
-            .lean<UpdateProviderServiceResponse>();
+            .lean<UpdateProviderServiceView>();
 
         if (!service) return null;
         return {

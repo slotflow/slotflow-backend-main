@@ -5,7 +5,7 @@ import { ApiPaginationRequest, Availability, BookingDTO, ParticipantPresence, Pl
 
 //// **** booking queries dtos **** ////
 
-// 1. findAll methods parameter and return types / interface
+// 1. findAll method parameter and return types / interface
 export interface BookingsQuery extends ApiPaginationRequest {
   online: boolean;
   role: Role;
@@ -42,7 +42,7 @@ export type OnlineBookingsViewForUser = Array<
 >;
 
 
-// 2. findDetails methods parameter and return type / interface
+// 2. findDetails method parameter and return type / interface
 export interface BookingDetailsQuery {
     bookingId: BookingDTO["_id"];
 }
@@ -51,14 +51,14 @@ export interface BookingDetailsView extends Pick<BookingDTO, "appointmentDate" |
   serviceProviderId: Pick<UserDTO, "username" | "email">;
 };
 
-// 3. findUsersforChatSideBar methods parameter and return type / interface
+// 3. findUsersforChatSideBar method parameter and return type / interface
 export interface BookingUsersForChatQuery {
     userId: UserDTO["_id"];
     role: Role; // need to send the opposite role
 }
 export type BookingUsersForChatView = Array<Pick<UserDTO, "_id" | "username" | "profileImage">>;
 
-// 4. findStatsDataForProviderDashboard methods parameter and return type / interface
+// 4. findStatsDataForProviderDashboard method parameter and return type / interface
 export interface BookingStatsForProviderQuery {
     providerId: UserDTO["_id"];
     startDate: Date;
@@ -73,7 +73,7 @@ export interface BookingStatsForProviderView {
     todaysAppointments: number;
 }
 
-// 5. findGraphDataForProviderDashboard methods parameter and return type / interface
+// 5. findGraphDataForProviderDashboard method parameter and return type / interface
 export interface GetGraphData {
     providerId: UserDTO["_id"],
     subscription: PlanDTO["planName"],
@@ -120,7 +120,7 @@ export interface BookingGraphStatsForProviderView {
     }>;
 }
 
-// 6. findStatsDataForAdminDashboard methods parameter and return type / interface
+// 6. findStatsDataForAdminDashboard method parameter and return type / interface
 export interface BookingsStatsForAdminQuery extends GetStatsDataCommonRequest {}
 export interface BookingsStatsForAdminView {
     totalAppointments: number;

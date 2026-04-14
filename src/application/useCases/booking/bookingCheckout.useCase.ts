@@ -33,7 +33,7 @@ export class BookingCheckoutUseCase {
             const providerProfile = await this.providerProfileRepository.findById(providerId);
             if (!providerProfile) throw new Error("No provider found");
 
-            const providerService = await this.providerServiceQueries.findByProviderId(providerId);
+            const providerService = await this.providerServiceQueries.findByProviderId({providerId});
             if (!providerService) throw new Error("No service found");
 
             function isServiceData(obj: any): obj is FindProviderServiceResponse {

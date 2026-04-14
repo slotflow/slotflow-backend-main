@@ -1,6 +1,6 @@
 import { log } from "../../../shared/logger/logger";
 import { IProviderServiceQueries } from "../../queries/IProviderService.queries";
-import { GetProviderServiceRequest, GetProviderServiceResponse } from "../../dtos/providerService";
+import { GetProviderServiceInput, GetProviderServiceOuput } from "../../dtos/providerService";
 
 export class GetProviderServicesUseCase {
 
@@ -8,11 +8,11 @@ export class GetProviderServicesUseCase {
         private providerServiceQueries: IProviderServiceQueries
     ) { };
 
-    async execute(payload: GetProviderServiceRequest): Promise<GetProviderServiceResponse> {
+    async execute(input: GetProviderServiceInput): Promise<GetProviderServiceOuput> {
         try {
-            const { providerId, isUser } = payload;
+            const { providerId, isUser } = input;
 
-            const service = await this.providerServiceQueries.findByProviderId(providerId);
+            const service = await this.providerServiceQueries.findByProviderId({providerId});
             if (!service) return null;
 
             return {

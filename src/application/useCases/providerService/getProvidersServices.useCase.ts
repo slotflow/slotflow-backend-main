@@ -1,17 +1,17 @@
 import { log } from "../../../shared/logger/logger";
 import { IProviderServiceQueries } from "../../queries/IProviderService.queries";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
-import { GetProvidersByFilterRequest, GetProvidersByFilterResponse } from "../../dtos/provider.dto";
+import { GetProvidersServicesInput, GetProvidersServicesOutput } from "../../dtos/providerService";
 
-export class GetProvidersByFilterUseCase {
+export class GetProvidersServicesUseCase {
   constructor(
     private signedUrlService: ISignedUrlService,
     private providerServiceQueries: IProviderServiceQueries
   ) { };
 
-  async execute(payload: GetProvidersByFilterRequest): Promise<Array<GetProvidersByFilterResponse> | null> {
+  async execute(input: GetProvidersServicesInput): Promise<GetProvidersServicesOutput | null> {
     try {
-      const { serviceIds, categories, location, maxPrice, minPrice, slotflowTrusted, skip, limit } = payload;
+      const { serviceIds, categories, location, maxPrice, minPrice, slotflowTrusted, skip, limit } = input;
 
       const providers = await this.providerServiceQueries.findProvidersUsingServiceIds({
         serviceIds: serviceIds ?? [], 
@@ -40,7 +40,7 @@ export class GetProvidersByFilterUseCase {
 
       return updatedProviders;
     } catch (error) {
-      log.error("GetProvidersByFilterUseCase failed", error as Error);
+      log.error("GetProvidersServicesUseCase failed", error as Error);
       throw error;
     };
   };

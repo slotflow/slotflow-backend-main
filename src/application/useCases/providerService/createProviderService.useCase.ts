@@ -1,5 +1,5 @@
 import { log } from "../../../shared/logger/logger";
-import { CreateProviderServiceRequest } from "../../dtos/providerService";
+import { CreateProviderServiceInput } from "../../dtos/providerService";
 import { ProviderService } from "../../../domain/entities/providerService.entity";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 import { IProviderServiceRepository } from "../../../domain/interfaces/repositories/IProviderService.repository";
@@ -11,7 +11,7 @@ export class CreateProviderServiceUseCase {
         private providerServiceRepository: IProviderServiceRepository,
     ) { };
 
-    async execute(payload: CreateProviderServiceRequest): Promise<void> {
+    async execute(payload: CreateProviderServiceInput): Promise<void> {
         try {
             const providerProfile = await this.providerProfileRepository.findById(payload.providerId);
             if (!providerProfile) throw new Error("Profile not found.");

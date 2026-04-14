@@ -11,8 +11,6 @@ import { GetGraphDataUseCase } from "../../application/useCases/provider/dashboa
 import { GetSubscribedPlanUseCase } from "../../application/useCases/subscription/getSubscribedPlan.useCase";
 import { AdminRejectProviderUseCase } from "../../application/useCases/provider/adminRejectProvider.useCase";
 import { AdminApproveProviderUseCase } from "../../application/useCases/provider/adminApproveProvider.useCase";
-import { GetProvidersByFilterUseCase } from "../../application/useCases/provider/getProvidersByFilter.useCase";
-import { ProviderGetUserForChatSidebarUseCase } from "../../application/useCases/user/getUserFroChat.useCase";
 import { SubscriptionCheckoutUseCase } from "../../application/useCases/subscription/subscriptionCheckout.useCase";
 import { ChangeProviderTrustTagUseCase } from "../../application/useCases/provider/changeProviderTrustTag.useCase";
 import { GetServiceAvailabilityUseCase } from "../../application/useCases/serviceAvailability/getServiceAvailability";
@@ -46,12 +44,6 @@ export const getServiceAvailabilityUseCase = new GetServiceAvailabilityUseCase(p
 export const trialSubscriptionUseCase = new TrialSubscriptionUseCase(userRepository, providerProfileRepository, subscriptionRepository, planRepository, kafkaProducer);
 export const subscriptionCheckoutUseCase = new SubscriptionCheckoutUseCase(planRepository, userRepository, providerProfileRepository, subscriptionRepository, paymentServiceClient);
 export const getSubscribedPlanUseCase = new GetSubscribedPlanUseCase(providerProfileRepository, subscriptionQueries);
-
-// provider user controller dependency injection
-export const providerGetUserForChatSidebarUseCase = new ProviderGetUserForChatSidebarUseCase(signedUrlService, bookingQueries);
-
-// provider search controller dependency injection
-export const getProvidersByFilterUseCase = new GetProvidersByFilterUseCase(signedUrlService, providerServiceQueries);
 
 // admin provider controller dependency injection
 export const adminProviderListUseCase = new AdminProviderListUseCase(userQueries);

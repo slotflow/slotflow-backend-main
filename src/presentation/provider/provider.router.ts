@@ -103,7 +103,7 @@ router.get('/:providerId',
 
 router.get('/',
     authMiddleware,
-    authorize(Role.ADMIN, Role.USER),
+    authorize(Role.ADMIN),
     providerProfileController.getProviders
 );
 

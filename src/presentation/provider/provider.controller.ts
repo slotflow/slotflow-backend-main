@@ -4,20 +4,18 @@ import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { paginationSchema } from "../../shared/zod/base.zod";
 import { DecodedUser } from "../../application/dtos/common.dto";
-import { userGetProvidersSchema } from "../../shared/zod/user.zod";
 import { AdminProviderListUseCase } from "../../application/useCases/provider/getProviders.useCase";
 import { GetProviderProofsUseCase } from "../../application/useCases/common/getProviderProofs.useCase";
+import { providerValidateUpdateFileSchema, validateProviderIdSchema } from "../../shared/zod/provider.zod";
 import { AdminRejectProviderUseCase } from "../../application/useCases/provider/adminRejectProvider.useCase";
-import { GetProvidersByFilterUseCase } from "../../application/useCases/provider/getProvidersByFilter.useCase";
 import { AdminApproveProviderUseCase } from "../../application/useCases/provider/adminApproveProvider.useCase";
 import { ChangeProviderTrustTagUseCase } from "../../application/useCases/provider/changeProviderTrustTag.useCase";
 import { UserGetProviderDetailsUseCase } from "../../application/useCases/provider/userGetProviderDetails.useCase";
 import { AdminGetProviderDetailsUseCase } from "../../application/useCases/provider/adminGetProviderDetails.useCase";
 import { ChangeProviderBlockStatusUseCase } from "../../application/useCases/provider/changeProviderBlockStatus.useCase";
 import { adminChangeProviderBlockStatusSchema, adminChangeProviderTrustTagSchema, adminRejectProviderSchema } from "../../shared/zod/admin.zod";
-import { providerValidateUpdateFileSchema, validateProviderIdSchema } from "../../shared/zod/provider.zod";
 import { ProvideDeleteIdentityProofUseCase, ProvideDeleteServiceProofUseCase, ProviderGetProfileDetailsUseCase, ProviderUpdateIdentityProofUseCase, ProviderRequestForApprovalUseCase, ProviderUpdateServiceProofUseCase } from "../../application/useCases/provider/providerProfile.useCase";
-import { adminApproveProviderUseCase, changeProviderBlockStatusUseCase, changeProviderTrustTagUseCase, adminGetProviderDetailsUseCase, adminProviderListUseCase, adminRejectProviderUseCase, getProviderProofsUseCase, provideDeleteIdentityProofUseCase, provideDeleteServiceProofUseCase, providerGetProfileDetailsUseCase, providerRequestForApprovalUseCase, providerUpdateIdentityProofUseCase, providerUpdateServiceProofUseCase, userGetProviderDetailsUseCase, getProvidersByFilterUseCase } from ".";
+import { adminApproveProviderUseCase, changeProviderBlockStatusUseCase, changeProviderTrustTagUseCase, adminGetProviderDetailsUseCase, adminProviderListUseCase, adminRejectProviderUseCase, getProviderProofsUseCase, provideDeleteIdentityProofUseCase, provideDeleteServiceProofUseCase, providerGetProfileDetailsUseCase, providerRequestForApprovalUseCase, providerUpdateIdentityProofUseCase, providerUpdateServiceProofUseCase, userGetProviderDetailsUseCase } from ".";
 
 class ProviderProfileController {
     constructor(
@@ -31,7 +29,6 @@ class ProviderProfileController {
         private provideDeleteIdentityProofUseCase: ProvideDeleteIdentityProofUseCase,
         private provideDeleteServiceProofUseCase: ProvideDeleteServiceProofUseCase,
         private adminProviderListUseCase: AdminProviderListUseCase,
-        private getProvidersByFilterUseCase: GetProvidersByFilterUseCase,
         private adminApproveProviderUseCase: AdminApproveProviderUseCase,
         private adminRejectProviderUseCase: AdminRejectProviderUseCase,
         private changeProviderBlockStatusUseCase: ChangeProviderBlockStatusUseCase,
@@ -186,22 +183,6 @@ class ProviderProfileController {
                 const result = await this.adminProviderListUseCase.execute({ page, limit });
                 sendResponse(res, result);
             }
-
-            if (user.role === Role.USER) {
-                const validatedData = userGetProvidersSchema.parse(req.query);
-                const { categories, location, maxPrice, minPrice, slotflowTrusted, appServiceIds, skip, limit } = validatedData;
-                let serviceIds: string[] = [];
-                if (appServiceIds) {
-                    const servicesArray = Array.isArray(appServiceIds)
-                        ? appServiceIds
-                        : appServiceIds.split(",");
-
-                    serviceIds = servicesArray.map(id => id);
-                };
-                const result = await this.getProvidersByFilterUseCase.execute({ serviceIds, categories, location, maxPrice, minPrice, slotflowTrusted, skip, limit });
-                sendResponse(res, result);
-            }
-
         } catch (error) {
             log.error("getProviders failed", error as Error);
             next(error);
@@ -276,7 +257,6 @@ export const providerProfileController = new ProviderProfileController(
     provideDeleteIdentityProofUseCase,
     provideDeleteServiceProofUseCase,
     adminProviderListUseCase,
-    getProvidersByFilterUseCase,
     adminApproveProviderUseCase,
     adminRejectProviderUseCase,
     changeProviderBlockStatusUseCase,

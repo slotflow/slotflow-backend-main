@@ -14,10 +14,17 @@ router.post('/',
 );
 
 // provider get service details
+router.get('/me',
+    authMiddleware,
+    authorize(Role.PROVIDER, Role.USER),
+    providerServiceController.getServiceDetails
+);
+
+// user search service providers
 router.get('/',
     authMiddleware,
-    authorize(Role.PROVIDER),
-    providerServiceController.getServiceDetails
+    authorize(Role.USER),
+    providerServiceController.getProvidersServices
 );
 
 // provider update service details
