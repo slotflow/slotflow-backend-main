@@ -28,7 +28,7 @@ export class GoogleAuthOrchestratorUseCase {
         private readonly authResponseBuilder: AuthResponseBuilder
     ) { };
 
-    async execute(payload: GoogleAuthOrchestrationRequest): Promise<GoogleAuthOrchestrationResponse> {
+    async execute(input: GoogleAuthOrchestrationRequest): Promise<GoogleAuthOrchestrationResponse> {
         try {
             const {
                 connectOnly,
@@ -41,7 +41,7 @@ export class GoogleAuthOrchestratorUseCase {
                 accessToken,
                 expiryDate,
                 refreshToken,
-            } = payload;
+            } = input;
 
             let user: User | null = null;
             let providerProfile: ProviderProfile | null = null;

@@ -15,10 +15,10 @@ export class KafkaProducerAdapter implements IKafkaProducerAdapter {
         log.info("Kafka producer connected");
     }
 
-    async publish<T>(topic: string, payload: T): Promise<void> {
+    async publish<T>(topic: string, input: T): Promise<void> {
         await this.producer.send({
             topic,
-            messages: [{ value: JSON.stringify(payload) }],
+            messages: [{ value: JSON.stringify(input) }],
         });
     }
 

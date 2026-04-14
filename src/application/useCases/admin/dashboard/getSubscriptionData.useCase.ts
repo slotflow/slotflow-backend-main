@@ -1,15 +1,15 @@
 import { log } from "../../../../shared/logger/logger";
 import { ISubscriptionQueries } from "../../../queries/ISubscription.queries";
-import { GetSubscriptionDataRequest, GetSubscriptionDataResponse } from "../../../dtos/admin.dto";
+import { GetSubscriptionDataInput, GetSubscriptionDataOutput } from "../../../dtos/subscription";
 
 export class GetSubscriptionDataUseCase {
     constructor(
         private subscriptionQueries: ISubscriptionQueries
     ) { };
 
-    async execute(payload: GetSubscriptionDataRequest): Promise<GetSubscriptionDataResponse> {
+    async execute(input: GetSubscriptionDataInput): Promise<GetSubscriptionDataOutput> {
         try {
-            return await this.subscriptionQueries.findStatsForAdminDashboard(payload);
+            return await this.subscriptionQueries.findStatsForAdminDashboard(input);
         } catch (error) {
             log.error("GetSubscriptionDataUseCase failed", error as Error);
             throw error;

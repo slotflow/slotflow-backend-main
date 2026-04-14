@@ -3,11 +3,11 @@ import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../../shared/utils/response";
 import { startAndEndDateSchema } from "../../../shared/zod/common.zod";
 import { GetUserDataUseCase } from "../../../application/useCases/admin/dashboard/getUsersData.useCase";
-import { GetGraphDataUseCase } from "../../../application/useCases/admin/dashboard/getGraphData.useCase";
+import { GetAdminGraphDataUseCase } from "../../../application/useCases/admin/dashboard/getGraphData.useCase";
 import { GetBookingsDataUseCase } from "../../../application/useCases/admin/dashboard/getBookingsData.useCase";
 import { GetProviderDataUseCase } from "../../../application/useCases/admin/dashboard/getProvidersData.useCase";
 import { GetSubscriptionDataUseCase } from "../../../application/useCases/admin/dashboard/getSubscriptionData.useCase";
-import { getGraphDataUseCase, getProviderDataUseCase, getSubscriptionDataUseCase, getUserDataUseCase, getBookingsDataUseCase } from "..";
+import { getAdminGraphDataUseCase, getProviderDataUseCase, getSubscriptionDataUseCase, getUserDataUseCase, getBookingsDataUseCase } from "..";
 
 class DashboardController {
     constructor(
@@ -15,7 +15,7 @@ class DashboardController {
         private getProviderDataUseCase: GetProviderDataUseCase,
         private getSubscriptionDataUseCase: GetSubscriptionDataUseCase,
         private getBookingsDataUseCase: GetBookingsDataUseCase,
-        private getGraphDataUseCase: GetGraphDataUseCase
+        private getAdminGraphDataUseCase: GetAdminGraphDataUseCase
     ) {
         this.getUserStats = this.getUserStats.bind(this);
         this.getProviderStats = this.getProviderStats.bind(this);
@@ -72,7 +72,7 @@ class DashboardController {
     async getGraphData(req: Request, res: Response, next: NextFunction) {
         try {
             const validatedData = startAndEndDateSchema.parse(req.query);
-            const result = await this.getGraphDataUseCase.execute();
+            const result = await this.getAdminGraphDataUseCase.execute();
             sendResponse(res, result);
         } catch (error) {
             log.error("getGraphData failed", error as Error);
@@ -87,5 +87,5 @@ export const dashboardController = new DashboardController(
     getProviderDataUseCase,
     getSubscriptionDataUseCase,
     getBookingsDataUseCase,
-    getGraphDataUseCase
+    getAdminGraphDataUseCase
 );

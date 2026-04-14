@@ -1,8 +1,8 @@
 import { log } from "../../../shared/logger/logger";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
+import { AdminGetProviderDetailsInput, AdminGetProviderDetailsOutput } from "../../dtos/user.dto";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
-import { AdminGetProviderDetailsRequest, AdminGetProviderDetailsResponse } from "../../dtos/provider.dto";
 
 export class AdminGetProviderDetailsUseCase {
     constructor(
@@ -11,9 +11,9 @@ export class AdminGetProviderDetailsUseCase {
         private providerProfileRepository: IProviderProfileRepository
     ) { };
 
-    async execute(payload: AdminGetProviderDetailsRequest): Promise<AdminGetProviderDetailsResponse> {
+    async execute(input: AdminGetProviderDetailsInput): Promise<AdminGetProviderDetailsOutput> {
         try {
-            const { providerId } = payload;
+            const { providerId } = input;
 
             const provider = await this.userRepository.findById(providerId);
             if (!provider) return null;

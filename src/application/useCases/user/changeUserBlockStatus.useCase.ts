@@ -15,9 +15,9 @@ export class ChangeUserBlockStatusUseCase {
         private cacheService: ICacheService
     ) { };
 
-    async execute(payload: ChangeUserIsBlockedStatusRequest): Promise<ChangeUserIsBlockedStatusResponse> {
+    async execute(input: ChangeUserIsBlockedStatusRequest): Promise<ChangeUserIsBlockedStatusResponse> {
         try {
-            const { userId, isBlocked } = payload;
+            const { userId, isBlocked } = input;
 
             const user = await this.userRepository.findById(userId);
             if (!user) throw new Error("No user found.");

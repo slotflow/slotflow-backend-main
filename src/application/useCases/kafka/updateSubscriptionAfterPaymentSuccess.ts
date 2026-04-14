@@ -21,7 +21,7 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
         private readonly planRepository: IPlanRepository
     ) { };
 
-    async execute(payload: EventEnvelope<ProviderCreatePaymentSuccessEventResult>) {
+    async execute(input: EventEnvelope<ProviderCreatePaymentSuccessEventResult>) {
         try {
 
             const {
@@ -33,7 +33,7 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
                         providerId
                     }
                 }
-            } = payload;
+            } = input;
 
             const provider = await this.userRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");

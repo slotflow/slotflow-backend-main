@@ -8,9 +8,9 @@ export class UpdateStripeAccountDataUseCase {
         private readonly userRepository: IUserRepository,
     ) { };
 
-    async execute(payload: StripeAccountCreatedEvent): Promise<void> {
+    async execute(input: StripeAccountCreatedEvent): Promise<void> {
         try {
-            const { userId, stripeAccountId } = payload;
+            const { userId, stripeAccountId } = input;
             const user = await this.userRepository.findById(userId);
             if (!user) {
                 throw new Error("User not found");

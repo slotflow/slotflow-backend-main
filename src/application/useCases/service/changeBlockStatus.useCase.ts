@@ -7,9 +7,9 @@ export class ChangeServiceBlockStatusUseCase {
         private seriveRepository: IServiceRepository
     ) { };
 
-    async execute(payload: ChangeServiceBlockStatusRequest): Promise<ChangeServiceBlockStatusResponse> {
+    async execute(input: ChangeServiceBlockStatusRequest): Promise<ChangeServiceBlockStatusResponse> {
         try {
-            const { serviceId, isBlocked } = payload;
+            const { serviceId, isBlocked } = input;
 
             const service = await this.seriveRepository.findById(serviceId);
             if (!service) throw new Error("No service found.");

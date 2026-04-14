@@ -8,9 +8,9 @@ export class GetServicesByCategoryUseCase {
         private serviceRepository: IServiceRepository
     ) { };
 
-    async execute(payload: GetServicesByCategoryRequest): Promise<GetServicesByCategoryResponse> {
+    async execute(input: GetServicesByCategoryRequest): Promise<GetServicesByCategoryResponse> {
         try {
-            const { categories } = payload;
+            const { categories } = input;
             const services = await this.serviceRepository.findAllByCategory(categories);
             if (!services) return null;
 

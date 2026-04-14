@@ -1,15 +1,15 @@
 import { log } from "../../../../shared/logger/logger";
 import { IUserQueries } from "../../../queries/IUser.queries";
-import { GetUserDataRequest, GetUserDataResponse } from "../../../dtos/admin.dto";
+import { GetUserDataInput, GetUserDataOutput } from "../../../dtos/user.dto";
 
 export class GetUserDataUseCase {
     constructor(
         private useQueries: IUserQueries
     ) { };
 
-    async execute(payload: GetUserDataRequest): Promise<GetUserDataResponse> {
+    async execute(inout: GetUserDataInput): Promise<GetUserDataOutput> {
         try {
-            return await this.useQueries.findStats(payload);
+            return await this.useQueries.findStats(inout);
         } catch (error) {
             log.error("GetUserDataUseCase failed", error as Error);
             throw error;

@@ -1,19 +1,18 @@
-import { GetSubscribedPlanResponse } from "../dtos/subscription";
-import { GetSubscriptionDataRequest, GetSubscriptionDataResponse } from "../dtos/admin.dto";
-import { GetSubscriptionsRequest, GetSubscriptionsResponse, GetSubscriptionDetailsResponse, TableData } from "../dtos/common.dto";
+import { TableData } from "../dtos/common.dto";
+import { MySubscriptionQuery, MySubscriptionView, SubscribedPlanQuery, SubscriptionDetailsQuery, SubscriptionDetailsView, SubscriptionsQuery, SubscriptionStatsForAdminQuery, SubscriptionStatsForAdminView, SubscriptionsView } from "../dtos/subscription";
 
 export interface ISubscriptionQueries {
 
-    findAll(payload: GetSubscriptionsRequest): Promise<TableData<GetSubscriptionsResponse>>
+    findAll(query: SubscriptionsQuery): Promise<TableData<SubscriptionsView>>
 
-    findSubscribedPlan(subscriptionId: string): Promise<string | boolean>;
+    findSubscribedPlan(query: SubscribedPlanQuery): Promise<string | boolean>;
 
-    findDetails(subscriptionId: string): Promise<GetSubscriptionDetailsResponse | null>;
+    findDetails(query: SubscriptionDetailsQuery): Promise<SubscriptionDetailsView | null>;
 
-    findStatsForAdminDashboard(payload: GetSubscriptionDataRequest): Promise<GetSubscriptionDataResponse>;
+    findStatsForAdminDashboard(query: SubscriptionStatsForAdminQuery): Promise<SubscriptionStatsForAdminView>;
 
     findSubscriptionsForUpdatinStatus(): Promise<boolean>;
 
-    findMySubscritpion(subscriptionId: string): Promise<GetSubscribedPlanResponse | null>;
+    findMySubscritpion(query: MySubscriptionQuery): Promise<MySubscriptionView | null>;
 
 };

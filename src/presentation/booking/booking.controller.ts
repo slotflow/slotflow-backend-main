@@ -83,7 +83,7 @@ class BookingController {
                 bookingId,
                 roomId,
                 role: user.role,
-                userOrProviderId: user.userOrProviderId
+                userId: user.userOrProviderId
             });
             sendResponse(res, result);
         } catch (error) {

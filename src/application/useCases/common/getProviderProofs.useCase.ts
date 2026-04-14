@@ -1,17 +1,18 @@
+import { ApiOutput } from "../../dtos/common.dto";
 import { log } from "../../../shared/logger/logger";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
-import { ApiResponse, GetProviderProofsRequest, GetProviderProofsResponse } from "../../dtos/common.dto";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
+import { GetProviderProofsInput, GetProviderProofsOutput } from "../../dtos/user.dto";
 
 export class GetProviderProofsUseCase {
     constructor(
-        private readonly  signedUrlService: ISignedUrlService,
-        private readonly  providerProfileRepository: IProviderProfileRepository
+        private readonly signedUrlService: ISignedUrlService,
+        private readonly providerProfileRepository: IProviderProfileRepository
     ) { };
 
-    async execute(payload: GetProviderProofsRequest): Promise<ApiResponse<GetProviderProofsResponse>> {
+    async execute(input: GetProviderProofsInput): Promise<ApiOutput<GetProviderProofsOutput>> {
         try {
-            const { providerId } = payload;
+            const { providerId } = input;
 
             const provider = await this.providerProfileRepository.findById(providerId);
             if (!provider) throw new Error("Failed to find provider");

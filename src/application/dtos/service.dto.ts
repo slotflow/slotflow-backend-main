@@ -1,8 +1,8 @@
-import { ApiPaginationRequest, ServiceDTO } from "./common.dto";
+import { ApiPaginationInput, ServiceDTO } from "./common.dto";
 
 // get service details use case request payload
-export interface GetServiceRequest extends ApiPaginationRequest {
-    
+export interface GetServiceRequest extends ApiPaginationInput {
+
 }
 
 // get service details use case respomse interface
@@ -13,8 +13,8 @@ export type CreateServiceRequest = Pick<ServiceDTO, "serviceName" | "serviceCate
 
 // change service block status request payload interface
 export interface ChangeServiceBlockStatusRequest {
-    serviceId: ServiceDTO["_id"];
-    isBlocked: ServiceDTO["isBlocked"];
+  serviceId: ServiceDTO["_id"];
+  isBlocked: ServiceDTO["isBlocked"];
 };
 
 // change service block status response interface

@@ -21,7 +21,7 @@ export class UpdateBookingOnlineTrakingUseCase {
             const booking = await this.bookingRepository.findByRoomId(roomId);
             if (!booking) throw new Error("No booking found");
 
-            const serviceAvailability = await this.serviceAvailabilityQueries.findByProviderId(new Date(), booking.serviceProviderId);
+            const serviceAvailability = await this.serviceAvailabilityQueries.findByProviderId({ date: new Date(), providerId: booking.serviceProviderId });
             if (!serviceAvailability) throw new Error("No service found");
 
             if (role === Role.PROVIDER) {

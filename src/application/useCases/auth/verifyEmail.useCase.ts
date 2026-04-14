@@ -11,9 +11,9 @@ export class VerifyEmailUseCase {
         public readonly jwtService: IJWT,
     ) { }
 
-    async execute(payload: VerifyEmailRequest): Promise<VerifyEmailResponse> {
+    async execute(input: VerifyEmailRequest): Promise<VerifyEmailResponse> {
         try {
-            const { email } = payload;
+            const { email } = input;
 
             const user = await this.userRepository.findByEmail(email);
             if (!user) throw new Error("Invalid credential");

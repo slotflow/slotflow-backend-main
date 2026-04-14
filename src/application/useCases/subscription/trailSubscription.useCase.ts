@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
-import { TrialSubscriptionRequest } from '../../dtos/subscription';
+import { TrialSubscriptionInput } from '../../dtos/subscription';
 import { notificationContentMap } from "../../../shared/utils/constants";
 import { Subscription } from "../../../domain/entities/subscription.entity";
 import { EventEnvelope, SendProviderTrialSubscriptionEvent } from "../../dtos/kafka.dtos";
@@ -22,9 +22,9 @@ export class TrialSubscriptionUseCase {
         private kafkaProducer: IKafkaProducerAdapter
     ) { };
 
-    async execute(payload: TrialSubscriptionRequest): Promise<void> {
+    async execute(input: TrialSubscriptionInput): Promise<void> {
         try {
-            const { providerId } = payload;
+            const { providerId } = input;
 
             const provider = await this.userRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");

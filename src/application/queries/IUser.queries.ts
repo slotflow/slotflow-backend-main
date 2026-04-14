@@ -1,18 +1,17 @@
-import { ApiPaginationRequest, TableData } from "../dtos/common.dto";
-import { GetProviderDataRequest, GetProviderDataResponse } from "../dtos/admin.dto";
-import { GetProvidersResponse, GetUsersResponse, GetUserDataResponse, GetUserDataRequest, GetProviderProfileDetailsResponse } from "../dtos/user.dto";
+import { TableData } from "../dtos/common.dto";
+import { UserDataView, UserDataQuery, UsersQuery, UsersView, ProvidersQuery, ProvidersView, ProviderByIdView, ProviderByIdQuery, ProviderStatsQuery, ProviderStatsView } from "../dtos/user.dto";
 
 
 export interface IUserQueries {
 
-    findStats(payload: GetUserDataRequest): Promise<GetUserDataResponse>;
+    findStats(query: UserDataQuery): Promise<UserDataView>;
 
-    findUsers({ page, limit }: ApiPaginationRequest): Promise<TableData<GetUsersResponse>>;
+    findUsers(query: UsersQuery): Promise<TableData<UsersView>>;
 
-    findProviders({ page, limit }: ApiPaginationRequest): Promise<TableData<GetProvidersResponse>>;
+    findProviders(query: ProvidersQuery): Promise<TableData<ProvidersView>>;
 
-    findProviderById(providerId: string): Promise<GetProviderProfileDetailsResponse | null>;
+    findProviderById(query: ProviderByIdQuery): Promise<ProviderByIdView>;
 
-    findproviderStats(payload: GetProviderDataRequest): Promise<GetProviderDataResponse>;
+    findproviderStats(query: ProviderStatsQuery): Promise<ProviderStatsView>;
 
 }

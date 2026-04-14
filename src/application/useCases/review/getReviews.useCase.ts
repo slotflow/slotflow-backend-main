@@ -1,7 +1,8 @@
+import { TableData } from "../../dtos/common.dto";
 import { log } from "../../../shared/logger/logger";
 import { IReviewQueries } from "../../queries/IReview.queries";
+import { GetReviewsInput, GetReviewsOutput } from "../../dtos/review.dtos";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
-import { GetReviewsRequest, GetReviewsResponse, TableData } from "../../dtos/common.dto";
 
 export class GetReviewsUseCase {
     constructor(
@@ -9,9 +10,9 @@ export class GetReviewsUseCase {
         private signedUrlService: ISignedUrlService
     ) { };
 
-    async execute(payload: GetReviewsRequest): Promise<TableData<Array<GetReviewsResponse>>> {
+    async execute(input: GetReviewsInput): Promise<TableData<Array<GetReviewsOutput>>> {
         try {
-            const { limit, page, providerId, role, userId } = payload;
+            const { limit, page, providerId, role, userId } = input;
 
             const result = await this.reviewQueries.findAll({ limit, page, providerId, userId, role });
             if (!result || !result.data) throw new Error("No reviews found");

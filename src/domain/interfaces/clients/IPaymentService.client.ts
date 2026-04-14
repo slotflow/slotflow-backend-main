@@ -44,10 +44,10 @@ export interface CreateBookingCheckoutSessionResponse {
 
 export interface IPaymentServiceClient {
   createSubsciptionCheckoutSession(
-    payload: CreateSubscriptionCheckoutSessionRequest
+    input: CreateSubscriptionCheckoutSessionRequest
   ): Promise<CreateSubscriptonCheckoutSessionResponse>;
 
   createBookingCheckoutSession(
-    payload: CreateBookingCheckoutSessionRequest
+    input: CreateBookingCheckoutSessionRequest
   ): Promise<CreateBookingCheckoutSessionResponse>;
 }

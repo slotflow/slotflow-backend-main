@@ -1,13 +1,13 @@
 import { google } from "googleapis";
 import { EventData } from "../../shared/utils/constants";
 import { IGoogleCalendarGatewayService } from "../../domain/interfaces/services/IGoogleCalendarGateway.service";
-import { CreateGoogleCalendarEventRequest, UpdateGoogleCalendarEventRequest, AddEventToCalendarProps, GetEventsFromCalendarProps } from "../../application/dtos/common.dto";
+import { CreateGoogleCalendarEventInput, UpdateGoogleCalendarEventInput, AddEventToCalendarProps, GetEventsFromCalendarProps } from "../../application/dtos/common.dto";
 
 export class GoogleCalendarGatewayServiceImpl implements IGoogleCalendarGatewayService {
 
-    async createEvent(payload: CreateGoogleCalendarEventRequest): Promise<string> {
+    async createEvent(query: CreateGoogleCalendarEventInput): Promise<string> {
 
-        const { appointmentDate, appointmentStatus, slotDuration, accessToken } = payload;
+        const { appointmentDate, appointmentStatus, slotDuration, accessToken } = query;
 
         const startDate = new Date(appointmentDate);
         const endDate = new Date(startDate.getTime() + slotDuration * 60 * 1000);
@@ -56,9 +56,9 @@ export class GoogleCalendarGatewayServiceImpl implements IGoogleCalendarGatewayS
         return response.data.id;
     };
 
-    async updateEvent(payload: UpdateGoogleCalendarEventRequest): Promise<string> {
+    async updateEvent(query: UpdateGoogleCalendarEventInput): Promise<string> {
 
-        const { accessToken, appointmentDate, appointmentStatus, eventId } = payload;
+        const { accessToken, appointmentDate, appointmentStatus, eventId } = query;
 
         const startDate = new Date(appointmentDate);
 

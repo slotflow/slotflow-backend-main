@@ -1,5 +1,5 @@
 import { log } from "../../../shared/logger/logger";
-import { ProviderGetPlansResponse } from "../../dtos/plan.dto";
+import { ProviderGetPlansOutput } from "../../dtos/plan.dto";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 
 export class ProviderGetPlansUseCase {
@@ -7,7 +7,7 @@ export class ProviderGetPlansUseCase {
         private planRepository: IPlanRepository
     ) { };
 
-    async execute(): Promise<ProviderGetPlansResponse> {
+    async execute(): Promise<ProviderGetPlansOutput> {
         try {
             const planData = await this.planRepository.findAll();
             if (!planData) throw new Error("Failed to find plans");

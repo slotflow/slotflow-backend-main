@@ -1,7 +1,7 @@
 import { log } from "../../../shared/logger/logger";
 import { IUserQueries } from "../../queries/IUser.queries";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
-import { UserGetServiceProviderDetailsRequest, UserGetServiceProviderDetailsResponse } from "../../dtos/provider.dto";
+import { UserGetServiceProviderDetailsInput, UserGetServiceProviderDetailsOutput } from "../../dtos/user.dto";
 
 export class UserGetProviderDetailsUseCase {
   constructor(
@@ -9,12 +9,12 @@ export class UserGetProviderDetailsUseCase {
     private signedUrlService: ISignedUrlService
   ) { };
 
-  async execute(payload: UserGetServiceProviderDetailsRequest): Promise<UserGetServiceProviderDetailsResponse> {
+  async execute(input: UserGetServiceProviderDetailsInput): Promise<UserGetServiceProviderDetailsOutput> {
     try {
-      const { providerId } = payload;
+      const { providerId } = input;
       if (!providerId) throw new Error("Invalid request");
 
-      const provider = await this.userQueries.findProviderById(providerId);
+      const provider = await this.userQueries.findProviderById({providerId});
       if (!provider) throw new Error("Profile not found");
 
       let signedProfileImageUrl: string | null = null;

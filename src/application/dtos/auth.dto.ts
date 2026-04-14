@@ -1,12 +1,11 @@
-import { CommonResponse } from "./common.dto";
 import { Role } from "../../domain/enums/common.enum";
-import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
+import { CommonOutput, ProviderProfileDTO, UserDTO } from "./common.dto";
 
 // user or provider register usecase request payload interface
 export interface RegisterRequest {
-    username: string;
-    email: string;
-    password: string;
+    username: UserDTO["username"];
+    email: UserDTO["email"];
+    password: UserDTO["password"];
 }
 // user or provider register usecase response interface
 export interface RegisterResponse {
@@ -28,7 +27,7 @@ export interface ResendOtpRequest {
 
 // user or provider verify email use case request payload interface
 export interface VerifyEmailRequest {
-    email: string;
+    email: UserDTO["email"];
 }
 
 export interface VerifyEmailResponse {
@@ -37,43 +36,43 @@ export interface VerifyEmailResponse {
 
 // user or provider login use case request payload interface
 export interface LoginRequest {
-    email: string;
-    password: string;
+    email: UserDTO["email"];
+    password: UserDTO["password"];
 }
 // user or provider login use case response interface
 export interface LoginResponse {
     token: string;
     user: {
-        uid: string;
-        username: string;
-        email: string;
-        role: Role;
-        hasSelectedRole: boolean;
-        isOnboardingCompleted: boolean;
-        isBlocked: boolean;
+        uid: UserDTO["_id"];
+        username: UserDTO["username"];
+        email: UserDTO["email"];
+        role: UserDTO["role"];
+        hasSelectedRole: UserDTO["hasSelectedRole"];
+        isOnboardingCompleted: UserDTO["isOnboardingCompleted"];
+        isBlocked: UserDTO["isBlocked"];
         isLoggedIn: boolean;
-        phone: string | null;
-        profileImage: string | null;
+        phone: UserDTO["phone"];
+        profileImage: UserDTO["profileImage"];
         isAddressAdded: boolean;
 
         isServiceDetailsAdded?: boolean;
         isServiceAvailabilityAdded?: boolean;
         isProofSubmitted?: boolean;
-        isAddressVerified?: boolean,
-        isServiceDetailsVerified?: boolean,
-        isAvailabilityVerified?: boolean,
-        isProofsVerified?: boolean,
-        isAdminVerified?: boolean;
+        isAddressVerified?: ProviderProfileDTO["isAddressVerified"],
+        isServiceDetailsVerified?: ProviderProfileDTO["isServiceDetailsVerified"],
+        isAvailabilityVerified?: ProviderProfileDTO["isAvailabilityVerified"],
+        isProofsVerified?: ProviderProfileDTO["isProofsVerified"],
+        isAdminVerified?: ProviderProfileDTO["isAdminVerified"],
         providerSubscription?: string;
-        verificationRejectionReason?: string | null,
-        adminVerificationStatus?: AdminVerificationStatus,
+        verificationRejectionReason?: ProviderProfileDTO["verificationRejectionReason"],
+        adminVerificationStatus?: ProviderProfileDTO["adminVerificationStatus"],
 
-        googleId: string | null;
-        googleConnected: boolean;
-        stripeConnected: boolean;
-        stripeAccountId: string | null;
-        stripeCustomerId: string | null;
-        allowPushNotification: boolean;
+        googleId: UserDTO["googleId"];
+        googleConnected: UserDTO["googleConnected"];
+        stripeConnected: UserDTO["stripeConnected"];
+        stripeAccountId: UserDTO["stripeAccountId"];
+        stripeCustomerId: UserDTO["stripeCustomerId"];
+        allowPushNotification: UserDTO["allowPushNotification"];
     }
 }
 
@@ -81,17 +80,17 @@ export interface LoginResponse {
 // user or provider update password use case request payload interface
 export interface UpdatePasswordRequest {
     token: string;
-    password: string;
+    password: UserDTO["password"];
 }
 
 
 // check user status use case request payload interface
 export interface CheckUserStatusRequest {
-    _id: string;
+    _id: UserDTO["_id"];
     role: Role;
 }
 // check user status use case response interface
-export interface CheckUserStatusResponse extends CommonResponse {
+export interface CheckUserStatusResponse extends CommonOutput {
     status: number;
 }
 
@@ -117,35 +116,35 @@ export interface GoogleAuthOrchestrationResponse {
         googleId: string;
         googleConnected: boolean;
     } | {
-        uid: string;
-        username: string;
-        email: string;
-        role: Role;
-        hasSelectedRole: boolean;
-        isOnboardingCompleted: boolean;
-        isBlocked: boolean;
+        uid: UserDTO["_id"];
+        username: UserDTO["username"];
+        email: UserDTO["email"];
+        role: UserDTO["role"];
+        hasSelectedRole: UserDTO["hasSelectedRole"];
+        isOnboardingCompleted: UserDTO["isOnboardingCompleted"];
+        isBlocked: UserDTO["isBlocked"];
         isLoggedIn: boolean;
-        phone: string | null;
-        profileImage: string | null;
+        phone: UserDTO["phone"];
+        profileImage: UserDTO["profileImage"];
         isAddressAdded: boolean;
 
         isServiceDetailsAdded: boolean;
         isServiceAvailabilityAdded: boolean;
         isProofSubmitted: boolean;
-        isAddressVerified: boolean,
-        isServiceDetailsVerified: boolean,
-        isAvailabilityVerified: boolean,
-        isProofsVerified: boolean,
-        isAdminVerified: boolean;
+        isAddressVerified: ProviderProfileDTO["isAddressVerified"],
+        isServiceDetailsVerified: ProviderProfileDTO["isServiceDetailsVerified"],
+        isAvailabilityVerified: ProviderProfileDTO["isAvailabilityVerified"],
+        isProofsVerified: ProviderProfileDTO["isProofsVerified"],
+        isAdminVerified: ProviderProfileDTO["isAdminVerified"],
         providerSubscription: string;
-        verificationRejectionReason: string | null,
-        adminVerificationStatus: AdminVerificationStatus,
-        
-        googleId: string;
-        googleConnected: boolean;
-        stripeConnected: boolean;
-        stripeAccountId: string | null;
-        stripeCustomerId: string | null;
-        allowPushNotification: boolean;
+        verificationRejectionReason: ProviderProfileDTO["verificationRejectionReason"],
+        adminVerificationStatus: ProviderProfileDTO["adminVerificationStatus"],
+
+        googleId: UserDTO["googleId"];
+        googleConnected: UserDTO["googleConnected"];
+        stripeConnected: UserDTO["stripeConnected"];
+        stripeAccountId: UserDTO["stripeAccountId"];
+        stripeCustomerId: UserDTO["stripeCustomerId"];
+        allowPushNotification: UserDTO["allowPushNotification"];
     }
 }

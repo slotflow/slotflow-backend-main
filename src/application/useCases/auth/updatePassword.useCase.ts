@@ -17,9 +17,9 @@ export class UpdatePasswordUseCase {
         public readonly jwtService: IJWT,
     ) { };
 
-    async execute(payload: UpdatePasswordRequest): Promise<void> {
+    async execute(input: UpdatePasswordRequest): Promise<void> {
         try {
-            const { token, password } = payload;
+            const { token, password } = input;
 
             if (!token || !password) throw new Error("Invalid Request");
 

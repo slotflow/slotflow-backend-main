@@ -8,19 +8,19 @@ export class GoogleCalendarSuccessUseCases {
         private readonly bookingRepository: IBookingRepository
     ) { };
 
-    async execute(payload: EventEnvelope<CreateGoogleCalendarEventSuccessResult>): Promise<void> {
+    async execute(input: EventEnvelope<CreateGoogleCalendarEventSuccessResult>): Promise<void> {
         try {
-            const { payload: { mbsData: { bookingId, role, eventId } } } = payload;
+            const { payload: { mbsData: { bookingId, role, eventId } } } = input;
 
             const booking = await this.bookingRepository.findById(bookingId);
 
             if (!booking) {
                 return;
             } else {
-                if (role === Role.USER && booking.calendarData.user.googleEventId) {
+                if (role === Role.USER && booking?.calendarData?.user?.googleEventId) {
                     return;
                 };
-                if (role === Role.PROVIDER && booking.calendarData.provider.googleEventId) {
+                if (role === Role.PROVIDER && booking?.calendarData?.provider?.googleEventId) {
                     return;
                 };
                 booking.createCalendarDataSuccess({

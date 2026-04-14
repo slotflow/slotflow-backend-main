@@ -1,5 +1,5 @@
 import { log } from "../../../shared/logger/logger";
-import { ApiResponse } from "../../dtos/common.dto";
+import { ApiOutput } from "../../dtos/common.dto";
 import { IServiceRepository } from "../../../domain/interfaces/repositories/IService.repository";
 import { GetServiceRequest, GetServiceResponse } from "../../dtos/service.dto";
 
@@ -8,9 +8,9 @@ export class GetServicesUseCase {
         private seriveRepository: IServiceRepository,
     ) { };
 
-    async execute(payload: GetServiceRequest): Promise<ApiResponse<GetServiceResponse>> {
+    async execute(input: GetServiceRequest): Promise<ApiOutput<GetServiceResponse>> {
         try {
-            const { page, limit } = payload;
+            const { page, limit } = input;
             const result = await this.seriveRepository.findAll(page, limit);
             const { data: services, currentPage, totalCount, totalPages } = result;
 

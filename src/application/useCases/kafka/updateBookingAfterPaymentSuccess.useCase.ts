@@ -16,7 +16,7 @@ export class UpdateBookingAfterPaymentSuccessUseCase {
         private readonly userRepository: IUserRepository,
     ) { }
 
-    async execute(Payload: EventEnvelope<UpdateBookingAfterPaymentSuccessEventResult>): Promise<void> {
+    async execute(input: EventEnvelope<UpdateBookingAfterPaymentSuccessEventResult>): Promise<void> {
         try {
             const {
                 payload: {
@@ -25,7 +25,7 @@ export class UpdateBookingAfterPaymentSuccessUseCase {
                         paymentId
                     }
                 }
-            } = Payload;
+            } = input;
 
             const booking = await this.bookingRepository.findById(bookingId);
             if (!booking) throw new Error("Booking not found.");

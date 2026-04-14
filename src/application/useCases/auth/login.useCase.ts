@@ -20,9 +20,9 @@ export class LoginUseCase {
         private readonly authResponseBuilder: AuthResponseBuilder
     ) { };
 
-    async execute(payload: LoginRequest): Promise<LoginResponse> {
+    async execute(input: LoginRequest): Promise<LoginResponse> {
         try {
-            const { email, password } = payload;
+            const { email, password } = input;
 
             if (!email || !password) throw new Error("Invalid request.");
 

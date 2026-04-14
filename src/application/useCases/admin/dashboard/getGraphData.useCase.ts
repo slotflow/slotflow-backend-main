@@ -1,6 +1,6 @@
 import { log } from "../../../../shared/logger/logger";
 
-export class GetGraphDataUseCase {
+export class GetAdminGraphDataUseCase {
     constructor(
         
     ){ }
@@ -9,7 +9,7 @@ export class GetGraphDataUseCase {
         try {
             
         } catch (error) {
-            log.error("GetGraphDataUseCase failed", error as Error);
+            log.error("GetAdminGraphDataUseCase failed", error as Error);
             throw error;
         }
     }

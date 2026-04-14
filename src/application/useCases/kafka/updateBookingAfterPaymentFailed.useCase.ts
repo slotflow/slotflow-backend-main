@@ -9,7 +9,7 @@ export class UpdateBookingAfterPaymentFailedUseCase {
         private readonly bookingRepository: IBookingRepository
     ) { }
 
-    async execute(payload: EventEnvelope<UpdateBookingAfterPaymentFailedEventResult>): Promise<void> {
+    async execute(input: EventEnvelope<UpdateBookingAfterPaymentFailedEventResult>): Promise<void> {
         try {
             const { eventId,
                 attempt,
@@ -20,7 +20,7 @@ export class UpdateBookingAfterPaymentFailedUseCase {
                         bookingId
                     }
                 }
-             } = payload;
+             } = input;
 
              const booking = await this.bookingRepository.findById(bookingId);
              if(!booking) throw new Error("Booking not found.");

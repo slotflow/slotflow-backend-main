@@ -1,16 +1,14 @@
 import { SubscriptionModel } from "../models/subscription.model";
-import { PopulatedPlan } from "../../application/dtos/provider.dto";
-import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
-import { GetSubscriptionDataRequest, GetSubscriptionDataResponse } from "../../application/dtos/admin.dto";
-import { GetSubscribedPlanResponse } from "../../application/dtos/subscription";
-import { ISubscriptionQueries } from "../../application/queries/ISubscription.queries";
-import { GetSubscriptionsRequest, GetSubscriptionsResponse, GetSubscriptionDetailsResponse, PlanNameOnly, TableData } from "../../application/dtos/common.dto";
 import { getStartAndEndDate } from "../../shared/utils/dateTime";
+import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
+import { ISubscriptionQueries } from "../../application/queries/ISubscription.queries";
+import { PlanNameOnly, TableData } from "../../application/dtos/common.dto";
+import { MySubscriptionQuery, MySubscriptionView, SubscribedPlanQuery, SubscriptionDetailsQuery, SubscriptionDetailsView, SubscriptionsQuery, SubscriptionStatsForAdminQuery, SubscriptionStatsForAdminView, SubscriptionsView, PopulatedPlan } from "../../application/dtos/subscription";
 
 export class SubscriptionQueriesImpl implements ISubscriptionQueries {
 
-    async findAll(payload: GetSubscriptionsRequest): Promise<TableData<GetSubscriptionsResponse>> {
-        const { page, limit, providerId } = payload;
+    async findAll(query: SubscriptionsQuery): Promise<TableData<SubscriptionsView>> {
+        const { page, limit, providerId } = query;
         const skip = (page - 1) * limit;
 
         const filter: {
@@ -51,21 +49,21 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
         }
     }
 
-    async findSubscribedPlan(subscriptionId: string): Promise<string | boolean> {
-        const subscription = await SubscriptionModel.findById(subscriptionId)
+    async findSubscribedPlan(query: SubscribedPlanQuery): Promise<string | boolean> {
+        const subscription = await SubscriptionModel.findById(query.subscriptionId)
             .populate<PlanNameOnly>("subscriptionPlanId", { planName: 1, _id: 0 })
             .select("subscriptionPlanId -_id")
             .lean();
         return subscription ? subscription.subscriptionPlanId.planName : false;
     }
 
-    async findDetails(subscriptionId: string): Promise<GetSubscriptionDetailsResponse | null> {
-        const data = await SubscriptionModel.findById(subscriptionId)
+    async findDetails(query: SubscriptionDetailsQuery): Promise<SubscriptionDetailsView | null> {
+        const data = await SubscriptionModel.findById(query.subscriptionId)
             .select("startDate endDate subscriptionStatus createdAt -_id")
             .populate([{
                 path: "subscriptionPlanId",
                 select: "-_id planName price adVisibility maxBookingPerMonth"
-            }]).lean<GetSubscriptionDetailsResponse>();
+            }]).lean<SubscriptionDetailsView>();
         if (!data) return null;
         return {
             createdAt: data.createdAt,
@@ -82,8 +80,8 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
         };
     }
 
-    async findStatsForAdminDashboard(payload: GetSubscriptionDataRequest): Promise<GetSubscriptionDataResponse> {
-        const { startDate, endDate } = getStartAndEndDate(payload.startDate, payload.endDate);
+    async findStatsForAdminDashboard(query: SubscriptionStatsForAdminQuery): Promise<SubscriptionStatsForAdminView> {
+        const { startDate, endDate } = getStartAndEndDate(query.startDate, query.endDate);
         const dateFilter = { createdAt: { $gte: startDate, $lte: endDate } };
         const subscriptionStatsData = await SubscriptionModel.aggregate([
             {
@@ -162,9 +160,9 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
         return updated.modifiedCount > 0;
     }
 
-    async findMySubscritpion(subscriptionId: string): Promise<GetSubscribedPlanResponse | null> {
+    async findMySubscritpion(query: MySubscriptionQuery): Promise<MySubscriptionView | null> {
         const subscription = await SubscriptionModel
-            .findOne({ _id: subscriptionId })
+            .findOne({ _id: query.subscriptionId })
             .sort({ createdAt: -1 })
             .populate<PopulatedPlan>({
                 path: "subscriptionPlanId",

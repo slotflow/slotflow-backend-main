@@ -8,9 +8,9 @@ export class GoogleCalendarFailedUseCases {
         private readonly bookingRepository: IBookingRepository,
     ) { };
 
-    async execute(payload: EventEnvelope<CreateGoogleCalendarEventFailedResult>): Promise<void> {
+    async execute(input: EventEnvelope<CreateGoogleCalendarEventFailedResult>): Promise<void> {
         try {
-            const { payload: { mbsData: { bookingId, role } } } = payload;
+            const { payload: { mbsData: { bookingId, role } } } = input;
 
             const booking = await this.bookingRepository.findById(bookingId);
             if (!booking) return;

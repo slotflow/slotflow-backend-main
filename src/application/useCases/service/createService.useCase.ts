@@ -8,9 +8,9 @@ export class CreateServiceUseCase {
         private seriveRepository: IServiceRepository
     ) { };
 
-    async execute(payload: CreateServiceRequest): Promise<void> {
+    async execute(input: CreateServiceRequest): Promise<void> {
         try {
-            const { serviceName, serviceCategory } = payload;
+            const { serviceName, serviceCategory } = input;
 
             const existService = await this.seriveRepository.findByName(serviceName);
             if (existService) throw new Error("Service already exist.");

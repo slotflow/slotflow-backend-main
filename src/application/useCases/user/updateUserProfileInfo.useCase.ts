@@ -7,9 +7,9 @@ export class UpdateUserProfileInfoUseCase {
         private userRepository: IUserRepository
     ) { };
 
-    async execute(payload: UpdateUserProfileInfoRequest): Promise<UpdateUserProfileInfoResponse> {
+    async execute(input: UpdateUserProfileInfoRequest): Promise<UpdateUserProfileInfoResponse> {
         try {
-            const { userId, username, phone } = payload;
+            const { userId, username, phone } = input;
 
             const user = await this.userRepository.findById(userId);
             if (!user) throw new Error("No user found");

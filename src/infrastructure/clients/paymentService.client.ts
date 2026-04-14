@@ -15,11 +15,11 @@ export class PaymentServiceClient implements IPaymentServiceClient {
     });
   };
 
-  async createSubsciptionCheckoutSession(payload: CreateSubscriptionCheckoutSessionRequest): Promise<CreateSubscriptonCheckoutSessionResponse> {
+  async createSubsciptionCheckoutSession(input: CreateSubscriptionCheckoutSessionRequest): Promise<CreateSubscriptonCheckoutSessionResponse> {
     try {
       const { data } = await this.http.post<CreateSubscriptonCheckoutSessionResponse>(
         "/subscription/checkout/session",
-        payload
+        input
       );
 
       if (!data?.data) {
@@ -34,11 +34,11 @@ export class PaymentServiceClient implements IPaymentServiceClient {
     };
   };
 
-  async createBookingCheckoutSession(payload: CreateBookingCheckoutSessionRequest): Promise<CreateBookingCheckoutSessionResponse> {
+  async createBookingCheckoutSession(input: CreateBookingCheckoutSessionRequest): Promise<CreateBookingCheckoutSessionResponse> {
     try {
       const { data } = await this.http.post<CreateBookingCheckoutSessionResponse>(
         "/booking/checkout/session",
-        payload
+        input
       );
 
       if (!data?.data) {

@@ -1,17 +1,17 @@
-import { IProviderServiceRepository } from "../../../domain/interfaces/repositories/IProviderService.repository";
 import { log } from "../../../shared/logger/logger";
-import { UpdateProviderServiceRequest, UpdateProviderServiceResponse } from "../../dtos/providerService";
+import { IProviderServiceRepository } from "../../../domain/interfaces/repositories/IProviderService.repository";
+import { UpdateProviderServiceInput, UpdateProviderServiceOutput } from "../../dtos/providerService";
 
 export class UpdateProviderServiceUseCase {
     constructor(
         private provderServiceRepository: IProviderServiceRepository
     ) { };
 
-    async execute(payload: UpdateProviderServiceRequest): Promise<UpdateProviderServiceResponse> {
+    async execute(input: UpdateProviderServiceInput): Promise<UpdateProviderServiceOutput> {
         try {
 
-            const { _id, ...updateData } = payload;
-            const providerService = await this.provderServiceRepository.findById(payload._id);
+            const { _id, ...updateData } = input;
+            const providerService = await this.provderServiceRepository.findById(_id);
             if (!providerService) return null;
 
             providerService.update({

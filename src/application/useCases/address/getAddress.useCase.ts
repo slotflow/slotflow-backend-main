@@ -1,5 +1,5 @@
 import { log } from "../../../shared/logger/logger";
-import { GetAddressRequest, GetAddressResponse } from "../../dtos/address.dto";
+import { GetAddressInput, GetAddressOutput } from "../../dtos/address.dto";
 import { AddressRepositoryImpl } from "../../../infrastructure/repositoryImpls/address.repository.impl";
 
 export class GetAddressUseCase {
@@ -7,9 +7,9 @@ export class GetAddressUseCase {
         private readonly addressRepository: AddressRepositoryImpl
     ) { }
 
-    async execute(payload: GetAddressRequest): Promise<GetAddressResponse> {
+    async execute(input: GetAddressInput): Promise<GetAddressOutput> {
         try {
-            const { userId, isMyAddress } = payload;
+            const { userId, isMyAddress } = input;
             const address = await this.addressRepository.findByUserId(userId);
             if (!address) return null
             return {

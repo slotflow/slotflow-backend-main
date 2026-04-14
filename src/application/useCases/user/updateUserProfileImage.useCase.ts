@@ -9,9 +9,9 @@ export class UpdateUserProfileImageUseCase {
         private signedUrlService: ISignedUrlService
     ) { };
 
-    async execute(payload: UpdateUserProfileImageRequest): Promise<UpdateUserProfileImageResponse> {
+    async execute(input: UpdateUserProfileImageRequest): Promise<UpdateUserProfileImageResponse> {
         try {
-            const { userId, profileImage } = payload
+            const { userId, profileImage } = input;
             if (!userId || !profileImage) throw new Error("Invalid request");
 
             const user = await this.userRepository.findById(userId);

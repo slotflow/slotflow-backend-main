@@ -1,6 +1,6 @@
 import { bookingQueries, subscriptionQueries, userQueries } from "../../infrastructure/queriesImpls";
 import { GetUserDataUseCase } from "../../application/useCases/admin/dashboard/getUsersData.useCase";
-import { GetGraphDataUseCase } from "../../application/useCases/admin/dashboard/getGraphData.useCase";
+import { GetAdminGraphDataUseCase } from "../../application/useCases/admin/dashboard/getGraphData.useCase";
 import { GetBookingsDataUseCase } from "../../application/useCases/admin/dashboard/getBookingsData.useCase";
 import { GetProviderDataUseCase } from "../../application/useCases/admin/dashboard/getProvidersData.useCase";
 import { GetSubscriptionDataUseCase } from "../../application/useCases/admin/dashboard/getSubscriptionData.useCase";
@@ -13,4 +13,4 @@ export const getSubscriptionDataUseCase = new GetSubscriptionDataUseCase(subscri
 
 export const getBookingsDataUseCase = new GetBookingsDataUseCase(bookingQueries);
 
-export const getGraphDataUseCase = new GetGraphDataUseCase();
+export const getAdminGraphDataUseCase = new GetAdminGraphDataUseCase();

@@ -218,21 +218,21 @@ export interface ServiceAvailabilityDTO {
 
 
 // **** Used as the request interface for the paginated request
-export interface ApiPaginationRequest {
+export interface ApiPaginationInput {
   page: number;
   limit: number;
 }
 
 
 // **** Used as the response interface for the all request
-export interface CommonResponse {
+export interface CommonOutput {
   success?: boolean;
   message?: string;
 };
 
 
 // **** Used as the response interface for the paginated response
-export interface ApiResponse<T = unknown> extends CommonResponse {
+export interface ApiOutput<T = unknown> extends CommonOutput {
   totalPages?: number;
   currentPage?: number;
   totalCount?: number;
@@ -248,45 +248,6 @@ export interface TableData<T> {
 };
 
 
-// **** Common DTOS used in usecases **** \\
-
-// Used as the payments get request and response dto
-export interface userIdAndProviderIdFilterForGetPayments {
-  userId?: UserDTO["_id"];
-  providerId?: UserDTO["_id"];
-}
-
-
-// Used as the request interface for get subscriptions with planName and plan price of a specific provider for the provider side and admin side
-export interface GetSubscriptionsRequest extends ApiPaginationRequest {
-  providerId?: UserDTO["_id"];
-}
-
-// Used as the request type for updating address for provider and user side
-
-
-// Used as the interface for the validate join room
-
-
-
-// get subscription details use case request payload interface 
-export interface GetSubscriptionDetailsRequest {
-  subscriptionId: SubscriptionDTO["_id"];
-};
-// admin get subscription details use case response interface 
-type SubscriptionProps = Pick<SubscriptionDTO, "startDate" | "endDate" | "subscriptionStatus" | "createdAt">;
-type PlanProps = Pick<PlanDTO, "planName" | "price" | "adVisibility" | "maxBookingPerMonth">;
-export interface GetSubscriptionDetailsResponse extends SubscriptionProps {
-  subscriptionPlanId: PlanProps,
-}
-
-// create credential 
-export type CreateCredentialRequest = Pick<CredentialDTO, "userId" | "accessToken" | "refreshToken" | "expiryDate">;
-// update credential 
-export type UpdateCredentialRequest = Pick<CredentialDTO, "_id" | "accessToken" | "refreshToken" | "expiryDate">;
-// get credentials credential 
-export type GetCredentialsResponse = Pick<CredentialDTO, "accessToken" | "refreshToken" | "expiryDate" | "userId">;
-
 
 // Google Event
 interface GoogleCalendarEventsPropsForBackend {
@@ -300,11 +261,7 @@ interface GoogleCalendarEventsPropsForBackend {
   };
 }
 
-interface GoogleCalendarEventsPropsForFrontend {
-  start: string;
-  end: string;
-}
-
+// used in add event to calendar usecase
 interface CombinedStartAndEndProps {
   start: {
     dateTime: string,
@@ -318,6 +275,7 @@ interface CombinedStartAndEndProps {
   } | string;
 }
 
+// used in add event to calendar usecase
 export interface GoogleCalendarEvent extends Partial<BookingDTO> {
   id: string;
   iCalUID?: string;
@@ -376,94 +334,75 @@ export interface GoogleCalendarEvent extends Partial<BookingDTO> {
   },
 };
 
+// used in add event to calendar usecase
 export type AddEventToCalendarProps = Pick<GoogleCalendarEvent, "summary" | "description" | "extendedProperties"> & GoogleCalendarEventsPropsForBackend;
 
+// used in get events from calendar usecase
 export type GetEventsFromCalendarProps = Pick<GoogleCalendarEvent, "id" | "summary" | "description" | "creator" | "organizer" | "iCalUID" | "reminders" | "eventType" | "extendedProperties"> & CombinedStartAndEndProps;
 
-export interface UpdateGoogleCalendarEventRequest {
+// used in update google calendar event usecase
+export interface UpdateGoogleCalendarEventInput {
   eventId: string,
   appointmentDate: BookingDTO["appointmentDate"],
   appointmentStatus: BookingDTO["appointmentStatus"],
   accessToken: string,
 }
 
-export interface CreateGoogleCalendarEventRequest {
+// used in create google calendar event usecase
+export interface CreateGoogleCalendarEventInput {
   appointmentDate: BookingDTO["appointmentDate"],
   appointmentStatus: BookingDTO["appointmentStatus"],
   slotDuration: number,
   accessToken: CredentialDTO["accessToken"];
 }
 
-
-
-
-//// **** Used as the request interface get reviews for admin, provider and user side
-export interface userIdAndProviderIdFilterForGetReviews {
-  userId?: UserDTO["_id"];
-  providerId?: UserDTO["_id"];
-  role?: Role;
-}
-export interface GetReviewsRequest extends ApiPaginationRequest, userIdAndProviderIdFilterForGetReviews { }
-//// **** Used as the response type get reviews for admin, provider and user side
-export interface GetReviewsResponse extends Pick<ReviewDTO, "_id" | "createdAt" | "reviewText" | "rating" | "reported" | "isBlocked"> {
-  userId: Pick<UserDTO, "username" | "profileImage">;
-  providerId: Pick<UserDTO, "username" | "profileImage">;
-};
-
-
-//// **** Used as the response interface of get booking details
-
-
-//// **** Used in s3 controller
-export type CreareFileUploadPresignedUrlRequest = {
+// used in create file upload presigned url usecase
+export interface CreareFileUploadPresignedUrlInput {
   folderName: string;
   fileName: string;
   fileType: string;
 };
 
-export type CreareFileUploadPresignedUrlResponse = {
+// used in create file upload presigned url usecase
+export interface CreareFileUploadPresignedUrlOutput {
   uploadUrl: string;
   key: string;
 };
 
-export interface CreateFileSignedUrlRequest {
+// used in create file signed url usecase
+export interface CreateFileSignedUrlInput {
   key: string;
 };
 
-
-// **** Used in get provider proofs usecase
-export interface GetProviderProofsRequest {
-  providerId: UserDTO["_id"];
-};
-
-export type GetProviderProofsResponse = Pick<ProviderProfileDTO, "identityProof" | "serviceProof">;
-
-export type findAllPlansForDisplayResProps = Pick<PlanDTO, "_id" | "planName" | "price" | "features" | "description">
-
+// used in find provider service usecase
 type FindProviderServiceProps = Omit<ProviderServiceDTO, "service" | "updatedAt" | "createdAt">;
 export interface FindProviderServiceResponse extends FindProviderServiceProps {
   service: { serviceName: string }
 }
 
+// used in create service availability usecase
 export interface PlanNameOnly {
   subscriptionPlanId: {
     planName: PlanDTO["planName"];
   }
 }
 
-
+// used in create service availability usecase
 export interface FontendAvailabilityForResponse extends Omit<Availability, "slots"> {
   slots: TimeSlotForFrontendResponse[]
 }
 
+// used in create service availability usecase
 export interface FrontendAvailabilityForRequest extends Omit<Availability, "slots"> {
   slots: string[];
 }
 
+// used in create service availability usecase
 export interface FrontendAvailabilityUpdatedSlots extends Omit<Availability, "slots"> {
   slots: TimeSlot[];
 }
 
+// used in auth controller
 export interface DecodedUser {
   userOrProviderId: string;
   role: Role;
@@ -496,9 +435,7 @@ export interface ProviderCreatePaymentSuccessEventResult {
   };
 };
 
-// get all subscriptions
-export type GetSubscriptionsResponse = Array<Pick<SubscriptionDTO, "_id" | "startDate" | "endDate" | "subscriptionStatus"> & Pick<PlanDTO, "planName">>;
-
+// used in update booking after payment success event
 export interface UpdateBookingAfterPaymentSuccessEventResult {
   mbsData: {
     bookingId: string;
@@ -506,16 +443,18 @@ export interface UpdateBookingAfterPaymentSuccessEventResult {
   }
 }
 
+// used in update booking after payment failed event
 export interface UpdateBookingAfterPaymentFailedEventResult {
   mbsData: {
     bookingId: string;
   }
 }
 
+// used in link stripe customer usecase
 export interface LinkStripeCustomerRequest {
   userId: string;
   stripeCustomerId: string;
 }
 
-
+// used in count query
 export type CountResult = { count: number };

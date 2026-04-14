@@ -1,16 +1,16 @@
 import { IAddressRepository } from "../../../domain/interfaces/repositories/IAddress.repository";
 import { log } from "../../../shared/logger/logger";
-import { UpdateAddressRequest, UpdateAddressResponse } from "../../dtos/address.dto";
+import { UpdateAddressInput, UpdateAddressOutput } from "../../dtos/address.dto";
 
 export class UpdateAddressUseCase {
     constructor(
         private addressRepository: IAddressRepository,
     ) { };
 
-    async execute(payload: UpdateAddressRequest): Promise<UpdateAddressResponse> {
+    async execute(input: UpdateAddressInput): Promise<UpdateAddressOutput> {
         try {
 
-            const { _id: addressId, ...updateData } = payload;
+            const { _id: addressId, ...updateData } = input;
 
             const address = await this.addressRepository.findById(addressId);
             if (!address) throw new Error("Address not found");

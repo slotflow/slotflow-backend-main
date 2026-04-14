@@ -1,7 +1,7 @@
 import { log } from "../../../shared/logger/logger";
 import { ISubscriptionQueries } from "../../queries/ISubscription.queries";
-import { GetSubscribedPlanRequest, GetSubscribedPlanResponse } from "../../dtos/subscription";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
+import { GetSubscribedPlanInput, GetSubscribedPlanOutput } from "../../dtos/subscription";
 
 export class GetSubscribedPlanUseCase {
     constructor(
@@ -9,14 +9,14 @@ export class GetSubscribedPlanUseCase {
         private readonly subscriptionQueries: ISubscriptionQueries
     ) { };
 
-    async execute(payload: GetSubscribedPlanRequest): Promise<GetSubscribedPlanResponse> {
-        const { providerId } = payload;
+    async execute(input: GetSubscribedPlanInput): Promise<GetSubscribedPlanOutput> {
         try {
+            const { providerId } = input;
             const providerProfile = await this.providerProfileRepository.findById(providerId);
             if (!providerProfile) throw new Error("Profile not found.");
             if (!providerProfile.subscription.length) throw new Error("No subscription found.");
 
-            const result = await this.subscriptionQueries.findMySubscritpion(providerProfile.subscription.at(-1)!);
+            const result = await this.subscriptionQueries.findMySubscritpion({ subscriptionId: providerProfile.subscription.at(-1)! });
             if (!result) throw new Error("No subscription found.");
 
             return {

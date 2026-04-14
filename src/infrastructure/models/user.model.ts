@@ -8,6 +8,7 @@ export interface IUser extends Document {
   password: string;
   role: Role;
   hasSelectedRole: boolean;
+  isOnboardingCompleted: boolean;
   isBlocked: boolean;
   phone: string;
   profileImage: string | null;
@@ -17,7 +18,7 @@ export interface IUser extends Document {
   stripeConnected: boolean;
   stripeAccountId: string | null;
   stripeCustomerId: string | null;
-  allowPushNotification: boolean | null;
+  allowPushNotification: boolean;
   createdAt: Date;
   updatedAt: Date;
 };

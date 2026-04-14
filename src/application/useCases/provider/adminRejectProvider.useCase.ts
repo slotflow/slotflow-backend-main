@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
-import { AdminRejectProviderRequest } from "../../dtos/admin.dto";
+import { AdminRejectProviderInput } from "../../dtos/admin.dto";
 import { notificationContentMap } from "../../../shared/utils/constants";
 import { EventEnvelope, SendAdminProviderReviewEvent } from "../../dtos/kafka.dtos";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
@@ -16,9 +16,9 @@ export class AdminRejectProviderUseCase {
         private readonly kafkaProducer: IKafkaProducerAdapter
     ) { };
 
-    async execute(payload: AdminRejectProviderRequest): Promise<void> {
+    async execute(input: AdminRejectProviderInput): Promise<void> {
         try {
-            const { providerId, verificationRejectionReason, isAddressVerified, isAvailabilityVerified, isProofsVerified, isServiceDetailsVerified } = payload;
+            const { providerId, verificationRejectionReason, isAddressVerified, isAvailabilityVerified, isProofsVerified, isServiceDetailsVerified } = input;
 
             const provider = await this.userRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");

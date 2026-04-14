@@ -7,9 +7,9 @@ export class DeleteReviewUseCase {
         private reviewRepository: IReviewRepository,
     ) { };
 
-    async execute(payload: UserDeleteReviewRequest): Promise<void> {
+    async execute(input: UserDeleteReviewRequest): Promise<void> {
         try {
-            const { reviewId, userId } = payload;
+            const { reviewId, userId } = input;
 
             if (!reviewId || !userId) throw new Error("Invalid request");
 

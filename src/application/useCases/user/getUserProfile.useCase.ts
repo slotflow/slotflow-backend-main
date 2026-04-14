@@ -1,6 +1,6 @@
+import { log } from "../../../shared/logger/logger";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
-import { log } from "../../../shared/logger/logger";
 import { GetUserProfileDetailsRequest, GetUserProfileDetailsResponse } from "../../dtos/user.dto";
 
 export class GetUserProfileDetailsUseCase {
@@ -9,9 +9,9 @@ export class GetUserProfileDetailsUseCase {
         private signedUrlService: ISignedUrlService
     ) { };
 
-    async execute(payload: GetUserProfileDetailsRequest): Promise<GetUserProfileDetailsResponse> {
+    async execute(input: GetUserProfileDetailsRequest): Promise<GetUserProfileDetailsResponse> {
         try {
-            const { userId, isAdmin } = payload;
+            const { userId, isAdmin } = input;
 
             const user = await this.userRepository.findById(userId);
             if (!user) return null;

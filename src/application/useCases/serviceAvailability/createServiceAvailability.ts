@@ -1,5 +1,5 @@
 import { log } from "../../../shared/logger/logger";
-import { CreateServiceAvailabilityRewuest } from "../../dtos/serviceAvailability.dto";
+import { CreateServiceAvailabilityInput } from "../../dtos/serviceAvailability.dto";
 import { ServiceAvailability } from "../../../domain/entities/serviceAvailability.entity";
 import { FrontendAvailabilityForRequest, FrontendAvailabilityUpdatedSlots } from "../../dtos/common.dto";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
@@ -11,9 +11,9 @@ export class CreateServiceAvailabilitiesUseCase {
         private serviceAvailabilityRepository: IServiceAvailabilityRepository,
     ) { };
 
-    async execute(payload: CreateServiceAvailabilityRewuest): Promise<void> {
+    async execute(input: CreateServiceAvailabilityInput): Promise<void> {
         try {
-            const { providerId, availabilities } = payload;
+            const { providerId, availabilities } = input;
             if (!providerId || !availabilities || availabilities.length === 0) throw new Error("Invalid request.");
 
             const providerProfile = await this.providerProfileRepository.findById(providerId);

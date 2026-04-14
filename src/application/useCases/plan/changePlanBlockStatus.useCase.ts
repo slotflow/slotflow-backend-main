@@ -1,20 +1,20 @@
 import { log } from "../../../shared/logger/logger";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
-import { ChangePlanBlockStatusRequest, ChangePlanBlockStatusResponse } from "../../dtos/plan.dto";
+import { ChangePlanBlockStatusInput, ChangePlanBlockStatusOutput } from "../../dtos/plan.dto";
 
 export class ChangePlanBlockStatusUseCase {
     constructor(
         private planRepository: IPlanRepository
     ) { };
 
-    async execute(payload: ChangePlanBlockStatusRequest): Promise<ChangePlanBlockStatusResponse> {
+    async execute(input: ChangePlanBlockStatusInput): Promise<ChangePlanBlockStatusOutput> {
         try {
-            const { planId, isBlocked } = payload;
+            const { planId, isBlocked } = input;
 
             const plan = await this.planRepository.findById(planId);
             if (!plan) throw new Error("Plan does not exists.");
 
-            if(plan.isBlocked === isBlocked) {
+            if (plan.isBlocked === isBlocked) {
                 isBlocked ? plan.unblock() : plan.block();
             };
 

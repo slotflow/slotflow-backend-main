@@ -1,5 +1,5 @@
 import { log } from "../../../../shared/logger/logger";
-import { GetBookingsDataRequest, GetBookingsDataResponse } from "../../../dtos/admin.dto";
+import { GetBookingsDataInput, GetBookingsDataOutput } from "../../../dtos/admin.dto";
 import { IBookingQueries } from "../../../queries/IBooking.queries";
 
 export class GetBookingsDataUseCase {
@@ -7,9 +7,9 @@ export class GetBookingsDataUseCase {
         private bookingQueries: IBookingQueries
     ) { };
 
-    async execute(payload: GetBookingsDataRequest): Promise<GetBookingsDataResponse> {
+    async execute(input: GetBookingsDataInput): Promise<GetBookingsDataOutput> {
         try {
-            return await this.bookingQueries.findStatsDataForAdminDashboard(payload);
+            return await this.bookingQueries.findStatsDataForAdminDashboard(input);
         } catch (error) {
             log.error("GetBookingsDataUseCase failed", error as Error);
             throw error;

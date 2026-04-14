@@ -1,6 +1,7 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
+import { CalendarStatus } from "../../domain/enums/common.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
-import { ParticipantPresence, statusTrack } from "../../domain/commands/booking.commands";
+import { CalendarData, ParticipantPresence, statusTrack } from "../../domain/commands/booking.commands";
 
 export interface IBooking extends Document {
     _id: Types.ObjectId,
@@ -14,6 +15,7 @@ export interface IBooking extends Document {
     paymentId: Types.ObjectId | null,
     videoCallRoomId: string | null,
     googleEventId: string,
+    calendarData: CalendarData | null,
     onlineTrack: {
         user: ParticipantPresence;
         provider: ParticipantPresence;
@@ -38,6 +40,31 @@ const StatusTrackSchema = new Schema<statusTrack>({
     time: {
         type: Date,
         required: true
+    }
+}, { _id: false })
+
+const CalendarDataSchema = new Schema<CalendarData>({
+    user: {
+        calendarStatus: {
+            type: String,
+            enum: Object.values(CalendarStatus),
+            required: true
+        },
+        googleEventId: {
+            type: String,
+            required: true
+        }
+    },
+    provider: {
+        calendarStatus: {
+            type: String,
+            enum: Object.values(CalendarStatus),
+            required: true
+        },
+        googleEventId: {
+            type: String,
+            required: true
+        }
     }
 }, { _id: false })
 
@@ -84,6 +111,10 @@ const BookingSchema = new Schema<IBooking>({
     },
     googleEventId: {
         type: String,
+        default: null,
+    },
+    calendarData: {
+        type: CalendarDataSchema,
         default: null,
     },
     onlineTrack: {

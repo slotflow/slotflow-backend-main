@@ -7,9 +7,9 @@ export class LinkStripeCustomerUseCase {
         private readonly userRepository: IUserRepository,
     ) { };
 
-    async execute(payload: LinkStripeCustomerRequest): Promise<void> {
+    async execute(input: LinkStripeCustomerRequest): Promise<void> {
         try {
-            const { stripeCustomerId, userId } = payload;
+            const { stripeCustomerId, userId } = input;
             const user = await this.userRepository.findById(userId);
             if (!user) throw new Error("User not found.");
             user.linkStripeCustomer(stripeCustomerId);

@@ -11,14 +11,13 @@ export class CreateProviderServiceUseCase {
         private providerServiceRepository: IProviderServiceRepository,
     ) { };
 
-    async execute(payload: CreateProviderServiceInput): Promise<void> {
+    async execute(input: CreateProviderServiceInput): Promise<void> {
         try {
-            const providerProfile = await this.providerProfileRepository.findById(payload.providerId);
+            const { providerId } = input;
+            const providerProfile = await this.providerProfileRepository.findById(providerId);
             if (!providerProfile) throw new Error("Profile not found.");
 
-            const providerService = ProviderService.create({
-                ...payload
-            });
+            const providerService = ProviderService.create({...input});
 
             const newSerivce = await this.providerServiceRepository.create(providerService);
 

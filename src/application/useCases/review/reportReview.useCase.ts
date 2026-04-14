@@ -1,5 +1,5 @@
 import { log } from "../../../shared/logger/logger";
-import { RepostReviewRequest } from "../../dtos/provider.dto";
+import { RepostReviewInput } from "../../dtos/review.dtos";
 import { IReviewRepository } from "../../../domain/interfaces/repositories/IReview.repository";
 
 export class ReportReviewUseCase {
@@ -7,9 +7,9 @@ export class ReportReviewUseCase {
         private reviewRepository: IReviewRepository,
     ) { };
 
-    async execute(payload: RepostReviewRequest): Promise<boolean> {
+    async execute(input: RepostReviewInput): Promise<boolean> {
         try {
-            const { providerId, reviewId } = payload;
+            const { providerId, reviewId } = input;
 
             const review = await this.reviewRepository.findById(reviewId);
             if (!review) throw new Error("No review found");

@@ -2,7 +2,7 @@ import dayjs from '../../../shared/config/dayjs';
 import { log } from "../../../shared/logger/logger";
 import { IServiceAvailabilityQueries } from "../../queries/IServiceAvailability.queries";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
-import { GetServiceAvailabilityRequest, GetServiceAvailabilityResponse } from "../../dtos/serviceAvailability.dto";
+import { GetServiceAvailabilityInput, GetServiceAvailabilityOutput } from "../../dtos/serviceAvailability.dto";
 
 export class GetServiceAvailabilityUseCase {
   constructor(
@@ -10,9 +10,9 @@ export class GetServiceAvailabilityUseCase {
     private serviceAvailabilityQueries: IServiceAvailabilityQueries
   ) { };
 
-  async execute(payload: GetServiceAvailabilityRequest): Promise<GetServiceAvailabilityResponse> {
+  async execute(input: GetServiceAvailabilityInput): Promise<GetServiceAvailabilityOutput> {
     try {
-      const { providerId, date } = payload;
+      const { providerId, date } = input;
       const currentDateTime = dayjs();
       const selectedDate = dayjs(date).format('YYYY-MM-DD');
 
@@ -20,7 +20,7 @@ export class GetServiceAvailabilityUseCase {
       if (!providerProfile) throw new Error("Profile not found");
       if (!providerProfile.serviceAvailabilityId) return null;
 
-      const availability = await this.serviceAvailabilityQueries.findByProviderId(date, providerProfile.serviceAvailabilityId);
+      const availability = await this.serviceAvailabilityQueries.findByProviderId({ date, availabilityId: providerProfile.serviceAvailabilityId });
       if (!availability) return null;
 
       const updatedSlots = availability.slots.map((slot) => {

@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/common.enum";
-import { AdminApproveProviderRequest } from "../../dtos/admin.dto";
+import { AdminApproveProviderInput } from "../../dtos/admin.dto";
 import { notificationContentMap } from "../../../shared/utils/constants";
 import { EventEnvelope, SendAdminProviderReviewEvent } from "../../dtos/kafka.dtos";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
@@ -17,9 +17,9 @@ export class AdminApproveProviderUseCase {
         private kafkaProducer: IKafkaProducerAdapter
     ) { };
 
-    async execute(payload: AdminApproveProviderRequest): Promise<void> {
+    async execute(input: AdminApproveProviderInput): Promise<void> {
         try {
-            const { providerId } = payload;
+            const { providerId } = input;
 
             const provider = await this.userRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");

@@ -6,8 +6,6 @@ import {
   ProviderUpdateServiceProofResponse,
   ProviderUpdateIdentityProofRequest,
   ProviderUpdateIdentityProofResponse,
-  ProviderGetOwnProfileDetailsRequest,
-  ProviderGetOwnProfileDetailsResponse
 } from "../../dtos/providerProfile.dto";
 import { awsConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
@@ -15,6 +13,7 @@ import { IUserQueries } from "../../queries/IUser.queries";
 import { DeleteObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { AdminVerificationStatus } from "../../../domain/enums/adminVerificationStatus.enum";
+import { ProviderGetOwnProfileDetailsInput, ProviderGetOwnProfileDetailsOutput } from "../../dtos/user.dto";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 
 export class ProviderGetProfileDetailsUseCase {
@@ -22,11 +21,9 @@ export class ProviderGetProfileDetailsUseCase {
     private readonly userQueries: IUserQueries
   ) { };
 
-  async execute(payload: ProviderGetOwnProfileDetailsRequest): Promise<ProviderGetOwnProfileDetailsResponse> {
+  async execute(input: ProviderGetOwnProfileDetailsInput): Promise<ProviderGetOwnProfileDetailsOutput> {
     try {
-      const { providerId } = payload;
-
-      const result = await this.userQueries.findProviderById(providerId);
+      const result = await this.userQueries.findProviderById(input);
       if (!result) throw new Error("Provider not found");
       
       return {
@@ -56,10 +53,10 @@ export class ProviderUpdateIdentityProofUseCase {
     private readonly signedUrlService: ISignedUrlService
   ) { };
 
-  async exeute(payload: ProviderUpdateIdentityProofRequest): Promise<ProviderUpdateIdentityProofResponse> {
+  async exeute(input: ProviderUpdateIdentityProofRequest): Promise<ProviderUpdateIdentityProofResponse> {
     try {
 
-      const { providerId, identityProof } = payload;
+      const { providerId, identityProof } = input;
       if (!providerId || !identityProof) throw new Error("Invalid request");
 
       const providerProfile = await this.providerProfileRepository.findById(providerId);
@@ -86,10 +83,10 @@ export class ProviderUpdateServiceProofUseCase {
     private readonly signedUrlService: ISignedUrlService
   ) { };
 
-  async exeute(payload: ProviderUpdateServiceProofRequest): Promise<ProviderUpdateServiceProofResponse> {
+  async exeute(input: ProviderUpdateServiceProofRequest): Promise<ProviderUpdateServiceProofResponse> {
     try {
 
-      const { providerId, serviceProof } = payload;
+      const { providerId, serviceProof } = input;
       if (!providerId || !serviceProof) throw new Error("Invalid request");
 
       const providerProfile = await this.providerProfileRepository.findById(providerId);
@@ -116,10 +113,10 @@ export class ProviderRequestForApprovalUseCase {
     private readonly providerProfileRepository: IProviderProfileRepository
   ) { };
 
-  async execute(payload: ProviderAdminApprovalRequest): Promise<ProviderAdminApprovalResponse> {
+  async execute(input: ProviderAdminApprovalRequest): Promise<ProviderAdminApprovalResponse> {
     try {
 
-      const { providerId } = payload;
+      const { providerId } = input;
 
       const providerProfile = await this.providerProfileRepository.findById(providerId);
       if (!providerProfile) throw new Error("Profile not found");
@@ -161,9 +158,9 @@ export class ProvideDeleteIdentityProofUseCase {
     private readonly signedUrlService: ISignedUrlService
   ) { };
 
-  async execute(payload: ProviderDeleteProofRequest): Promise<void> {
+  async execute(input: ProviderDeleteProofRequest): Promise<void> {
     try {
-      const { providerId } = payload;
+      const { providerId } = input;
 
       const providerProfile = await this.providerProfileRepository.findById(providerId);
       if (!providerProfile) throw new Error("Profile not found");
@@ -197,9 +194,9 @@ export class ProvideDeleteServiceProofUseCase {
     private readonly signedUrlService: ISignedUrlService
   ) { };
 
-  async execute(payload: ProviderDeleteProofRequest): Promise<void> {
+  async execute(input: ProviderDeleteProofRequest): Promise<void> {
     try {
-      const { providerId } = payload;
+      const { providerId } = input;
 
       const providerProfile = await this.providerProfileRepository.findById(providerId);
       if (!providerProfile) throw new Error("Profile not found");

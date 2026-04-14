@@ -1,5 +1,5 @@
 import { log } from "../../../shared/logger/logger";
-import { CreateAddressRequest } from "../../dtos/address.dto";
+import { CreateAddressInput } from "../../dtos/address.dto";
 import { Address } from "../../../domain/entities/address.entity";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IAddressRepository } from "../../../domain/interfaces/repositories/IAddress.repository";
@@ -10,12 +10,12 @@ export class UserCreateAddressUseCase {
         private addressRepository: IAddressRepository,
     ) { };
 
-    async execute(payload: CreateAddressRequest): Promise<void> {
+    async execute(input: CreateAddressInput): Promise<void> {
         try {
-            const user = await this.userRepository.findById(payload.userId);
+            const user = await this.userRepository.findById(input.userId);
             if (!user) throw new Error("Please logout and try again");
 
-            const address = Address.create({...payload});
+            const address = Address.create({ ...input });
 
             const savedAddress = await this.addressRepository.create(address);
             if (!savedAddress) throw new Error("Failed to save address");

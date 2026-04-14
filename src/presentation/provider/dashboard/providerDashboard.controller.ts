@@ -1,17 +1,17 @@
 import { log } from "../../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../../shared/utils/response";
-import { getGraphDataUseCase, getStatsUseCase } from "..";
+import { getProviderGraphDataUseCase, getProviderStatsUseCase } from "..";
 import { DecodedUser } from "../../../application/dtos/common.dto";
 import { startAndEndDateSchema } from "../../../shared/zod/common.zod";
-import { GetStatsUseCase } from "../../../application/useCases/provider/dashboard/getStats.useCase";
-import { GetGraphDataUseCase } from "../../../application/useCases/provider/dashboard/getGraphData.useCase";
+import { GetProviderStatsUseCase } from "../../../application/useCases/provider/dashboard/getStats.useCase";
+import { GetProviderGraphDataUseCase } from "../../../application/useCases/provider/dashboard/getGraphData.useCase";
 import { providerValidateDashboardDataSchema } from "../../../shared/zod/provider.zod";
 
 class ProviderDashboardController {
     constructor(
-        private getStatsUseCase: GetStatsUseCase,
-        private getGraphDataUseCase: GetGraphDataUseCase,
+        private getProviderStatsUseCase: GetProviderStatsUseCase,
+        private getProviderGraphDataUseCase: GetProviderGraphDataUseCase,
     ) {
         this.getDashboardStats = this.getDashboardStats.bind(this);
         this.getDashboardGraphData = this.getDashboardGraphData.bind(this);
@@ -21,7 +21,7 @@ class ProviderDashboardController {
         try {
             const user = req.user as DecodedUser;
             const validatedData = startAndEndDateSchema.parse(req.query);
-            const result = await this.getStatsUseCase.execute({
+            const result = await this.getProviderStatsUseCase.execute({
                 providerId: user.userOrProviderId,
                 ...validatedData,
             });
@@ -36,7 +36,7 @@ class ProviderDashboardController {
         try {
             const user = req.user as DecodedUser;
             const { subscription, endDate, startDate } = providerValidateDashboardDataSchema.parse(req.query);
-            const result = await this.getGraphDataUseCase.execute({
+            const result = await this.getProviderGraphDataUseCase.execute({
                 providerId: user.userOrProviderId,
                 subscription,
                 endDate,
@@ -52,6 +52,6 @@ class ProviderDashboardController {
 };
 
 export const providerDashboardController = new ProviderDashboardController(
-    getStatsUseCase,
-    getGraphDataUseCase
+    getProviderStatsUseCase,
+    getProviderGraphDataUseCase
 );

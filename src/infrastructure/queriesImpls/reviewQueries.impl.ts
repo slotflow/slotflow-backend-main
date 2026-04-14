@@ -2,17 +2,18 @@ import { FilterQuery } from "mongoose";
 import { ReviewModel } from "../models/review.model";
 import { Role } from "../../domain/enums/common.enum";
 import { Review } from "../../domain/entities/review.entity";
+import { ReviewDTO, TableData } from "../../application/dtos/common.dto";
 import { IReviewQueries } from "../../application/queries/IReview.queries";
-import { GetReviesRequest, TableData, GetReviewsResponse } from "../../application/dtos/common.dto";
+import { GetReviewsQuery, GetReviewsView } from "../../application/dtos/review.dtos";
 
 export class ReviewQueriesImpl implements IReviewQueries {
 
-    async findAll(payload: GetReviesRequest): Promise<TableData<Array<GetReviewsResponse>>> {
-        const { limit, page, providerId, userId, role } = payload;
+    async findAll(query: GetReviewsQuery): Promise<TableData<Array<GetReviewsView>>> {
+        const { limit, page, providerId, userId, role } = query;
 
         const skip = (page - 1) * limit;
 
-        const filter: FilterQuery<typeof Review> = {};
+        const filter: FilterQuery<ReviewDTO> = {};
 
         if (role === Role.USER && userId) {
             filter.userId = userId;
@@ -46,7 +47,7 @@ export class ReviewQueriesImpl implements IReviewQueries {
                     path: "providerId",
                     select: "username profileImage",
                 })
-                .skip(skip).limit(limit).sort({ createdAt: 1 }).lean<GetReviewsResponse[]>(),
+                .skip(skip).limit(limit).sort({ createdAt: 1 }).lean<GetReviewsView[]>(),
             ReviewModel.countDocuments(filter),
         ]);
 

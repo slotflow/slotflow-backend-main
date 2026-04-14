@@ -8,14 +8,14 @@ export class UpdateSubscriptionAfterPaymentFailedUseCase {
         private readonly subscriptionRepository: ISubscriptionRepository
     ) { };
 
-    async execute(payload: EventEnvelope<ProviderCreatePaymentFailedEventResult>) {
+    async execute(input: EventEnvelope<ProviderCreatePaymentFailedEventResult>) {
         try {
             const { payload: { 
                 mbsData: { 
                     subscriptionId 
                 } 
             } 
-        } = payload;
+        } = input;
 
             const subscription = await this.subscriptionRepository.findById(subscriptionId);
             if (!subscription) return;

@@ -6,9 +6,9 @@ import { JwtClaims } from "../../domain/commands/jwt.commands";
 
 export class JWTImpl implements IJWT {
 
-  async generateToken(payload: JwtClaims,expiresIn: string = "2d"): Promise<string> {
+  async generateToken(input: JwtClaims,expiresIn: string = "2d"): Promise<string> {
     try {
-      return jwt.sign(payload, jwtConfig.jwtSecret, {
+      return jwt.sign(input, jwtConfig.jwtSecret, {
         expiresIn: expiresIn as jwt.SignOptions["expiresIn"],
       });
     } catch (error) {

@@ -17,9 +17,9 @@ export class VerifyOTPUseCase {
     private readonly jwtService: IJWT
   ) { };
 
-  async execute(payload: OTPVerificationRequest): Promise<void> {
+  async execute(input: OTPVerificationRequest): Promise<void> {
     try {
-      const { token, otp } = payload;
+      const { token, otp } = input;
 
       if (!token) {
         throw new Error("Invalid request");

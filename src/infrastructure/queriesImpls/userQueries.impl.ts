@@ -3,14 +3,13 @@ import { UserModel } from "../models/user.model";
 import { Role } from "../../domain/enums/common.enum";
 import { getStartAndEndDate } from "../../shared/utils/dateTime";
 import { IUserQueries } from "../../application/queries/IUser.queries";
-import { ApiPaginationRequest, CountResult, TableData } from "../../application/dtos/common.dto";
-import { GetUsersResponse, GetUserDataRequest, GetUserDataResponse, GetProvidersResponse, GetProviderProfileDetailsResponse } from "../../application/dtos/user.dto";
-import { GetProviderDataRequest, GetProviderDataResponse } from "../../application/dtos/admin.dto";
+import { CountResult, TableData } from "../../application/dtos/common.dto";
+import { UserDataQuery, UserDataView, UsersQuery, UsersView, ProvidersQuery, ProvidersView, ProviderByIdQuery, ProviderByIdView, ProviderStatsQuery, ProviderStatsView } from "../../application/dtos/user.dto";
 
 export class UserQueriesImpl implements IUserQueries {
 
-    async findStats(payload: GetUserDataRequest): Promise<GetUserDataResponse> {
-        const { startDate, endDate } = getStartAndEndDate(payload.startDate, payload.endDate);
+    async findStats(query: UserDataQuery): Promise<UserDataView> {
+        const { startDate, endDate } = getStartAndEndDate(query.startDate, query.endDate);
         const dateFilter = { createdAt: { $gte: startDate, $lte: endDate } };
 
         const [totalUsers, blockedUsers] = await Promise.all([
@@ -24,7 +23,8 @@ export class UserQueriesImpl implements IUserQueries {
         };
     };
 
-    async findUsers({ page, limit }: ApiPaginationRequest): Promise<TableData<GetUsersResponse>> {
+    async findUsers(query: UsersQuery): Promise<TableData<UsersView>> {
+        const { page, limit } = query;
         const skip = (page - 1) * limit;
         const [users, totalCount] = await Promise.all([
             UserModel.find({}, {
@@ -32,7 +32,7 @@ export class UserQueriesImpl implements IUserQueries {
                 username: 1,
                 email: 1,
                 isBlocked: 1,
-            }).skip(skip).limit(limit).lean<GetUsersResponse>(),
+            }).skip(skip).limit(limit).lean<UsersView>(),
             UserModel.countDocuments(),
 
         ])
@@ -48,7 +48,8 @@ export class UserQueriesImpl implements IUserQueries {
         }
     }
 
-    async findProviders({ page, limit }: ApiPaginationRequest): Promise<TableData<GetProvidersResponse>> {
+    async findProviders(query: ProvidersQuery): Promise<TableData<ProvidersView>> {
+        const { page, limit } = query;
         const skip = (page - 1) * limit;
         const [providers, totalCountResult] = await Promise.all([
             UserModel.aggregate([
@@ -116,7 +117,8 @@ export class UserQueriesImpl implements IUserQueries {
         };
     }
 
-    async findProviderById(providerId: string): Promise<GetProviderProfileDetailsResponse | null> {
+    async findProviderById(query: ProviderByIdQuery): Promise<ProviderByIdView> {
+        const { providerId } = query;
         const result = await UserModel.aggregate([
             {
                 $match: {
@@ -159,10 +161,10 @@ export class UserQueriesImpl implements IUserQueries {
         return result[0] || null;
     }
 
-    async findproviderStats(payload: GetProviderDataRequest): Promise<GetProviderDataResponse> {
+    async findproviderStats(query: ProviderStatsQuery): Promise<ProviderStatsView> {
         const { startDate, endDate } = getStartAndEndDate(
-            payload.startDate,
-            payload.endDate
+            query.startDate,
+            query.endDate
         );
 
         const result = await UserModel.aggregate([

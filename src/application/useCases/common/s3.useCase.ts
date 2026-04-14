@@ -4,14 +4,14 @@ import { log } from "../../../shared/logger/logger";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { DeleteObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
-import { CreareFileUploadPresignedUrlRequest, CreareFileUploadPresignedUrlResponse, CreateFileSignedUrlRequest } from "../../dtos/common.dto";
+import { CreareFileUploadPresignedUrlInput, CreareFileUploadPresignedUrlOutput, CreateFileSignedUrlInput } from "../../dtos/common.dto";
 
 export class CreateFileUploadPresignedUrlUseCase {
     constructor(
         private s3Client: S3Client
     ) { };
 
-    async execute(data: CreareFileUploadPresignedUrlRequest): Promise<CreareFileUploadPresignedUrlResponse> {
+    async execute(data: CreareFileUploadPresignedUrlInput): Promise<CreareFileUploadPresignedUrlOutput> {
         try {
             const { fileName, fileType, folderName } = data;
 
@@ -46,9 +46,9 @@ export class CreateFileSignedUrlUseCase {
         private signedUrlService: ISignedUrlService,
     ) { };
 
-    async execute(payload: CreateFileSignedUrlRequest): Promise<string> {
+    async execute(input: CreateFileSignedUrlInput): Promise<string> {
         try {
-            const { key } = payload;
+            const { key } = input;
             if (!key) throw new Error("Noe key found");
 
             const signedUrl = await this.signedUrlService.get(key);

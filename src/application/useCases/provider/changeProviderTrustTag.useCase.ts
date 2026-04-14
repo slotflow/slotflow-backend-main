@@ -1,6 +1,6 @@
 import {
-    AdminChangeProviderTrustTagRequest,
-    AdminChangeProviderTrustTagResponse,
+    AdminChangeProviderTrustTagInput,
+    AdminChangeProviderTrustTagOutput,
 } from "../../dtos/admin.dto";
 import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
@@ -19,9 +19,9 @@ export class ChangeProviderTrustTagUseCase {
         private readonly kafkaProducer: IKafkaProducerAdapter
     ) { };
 
-    async execute(payload: AdminChangeProviderTrustTagRequest): Promise<AdminChangeProviderTrustTagResponse> {
+    async execute(input: AdminChangeProviderTrustTagInput): Promise<AdminChangeProviderTrustTagOutput> {
         try {
-            const { providerId, trustedBySlotflow } = payload;
+            const { providerId, trustedBySlotflow } = input;
 
             const provider = await this.userRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");

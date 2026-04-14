@@ -6,7 +6,7 @@ import { ICacheService } from "../../../domain/interfaces/services/ICache.servic
 import { EventEnvelope, SendAccountBlockStatusEvent } from "../../dtos/kafka.dtos";
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
-import { AdminChangeProviderBlockStatusRequest, AdminChangeProviderBlockStatusResponse } from "../../dtos/admin.dto";
+import { AdminChangeProviderBlockStatusInput, AdminChangeProviderBlockStatusOutput } from "../../dtos/admin.dto";
 
 export class ChangeProviderBlockStatusUseCase {
     constructor(
@@ -15,9 +15,9 @@ export class ChangeProviderBlockStatusUseCase {
         private readonly cacheService: ICacheService
     ) { };
 
-    async execute(payload: AdminChangeProviderBlockStatusRequest): Promise<AdminChangeProviderBlockStatusResponse> {
+    async execute(input: AdminChangeProviderBlockStatusInput): Promise<AdminChangeProviderBlockStatusOutput> {
         try {
-            const { providerId, isBlocked } = payload;
+            const { providerId, isBlocked } = input;
 
             const provider = await this.userRepository.findById(providerId);
             if (!provider) throw new Error("User not found.");

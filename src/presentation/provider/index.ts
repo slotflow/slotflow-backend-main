@@ -4,10 +4,10 @@ import { subscriptionMapping } from "../../infrastructure/helpers";
 import { paymentServiceClient } from "../../infrastructure/clients";
 import { cacheService, signedUrlService } from "../../infrastructure/services";
 import { AdminProviderListUseCase } from "../../application/useCases/provider/getProviders.useCase";
-import { GetStatsUseCase } from "../../application/useCases/provider/dashboard/getStats.useCase";
+import { GetProviderStatsUseCase } from "../../application/useCases/provider/dashboard/getStats.useCase";
 import { GetProviderProofsUseCase } from "../../application/useCases/common/getProviderProofs.useCase";
 import { TrialSubscriptionUseCase } from "../../application/useCases/subscription/trailSubscription.useCase";
-import { GetGraphDataUseCase } from "../../application/useCases/provider/dashboard/getGraphData.useCase";
+import { GetProviderGraphDataUseCase } from "../../application/useCases/provider/dashboard/getGraphData.useCase";
 import { GetSubscribedPlanUseCase } from "../../application/useCases/subscription/getSubscribedPlan.useCase";
 import { AdminRejectProviderUseCase } from "../../application/useCases/provider/adminRejectProvider.useCase";
 import { AdminApproveProviderUseCase } from "../../application/useCases/provider/adminApproveProvider.useCase";
@@ -18,13 +18,13 @@ import { UserGetProviderDetailsUseCase } from "../../application/useCases/provid
 import { AdminGetProviderDetailsUseCase } from "../../application/useCases/provider/adminGetProviderDetails.useCase";
 import { ChangeProviderBlockStatusUseCase } from "../../application/useCases/provider/changeProviderBlockStatus.useCase";
 import { planRepository, providerProfileRepository, subscriptionRepository, userRepository } from "../../infrastructure/repositoryImpls";
-import { bookingQueries, providerServiceQueries, serviceAvailabilityQueries, subscriptionQueries, userQueries } from "../../infrastructure/queriesImpls";
+import { bookingQueries, serviceAvailabilityQueries, subscriptionQueries, userQueries } from "../../infrastructure/queriesImpls";
 import { ProvideDeleteIdentityProofUseCase, ProvideDeleteServiceProofUseCase, ProviderGetProfileDetailsUseCase, ProviderRequestForApprovalUseCase, ProviderUpdateIdentityProofUseCase, ProviderUpdateServiceProofUseCase } from "../../application/useCases/provider/providerProfile.useCase";
 
 
 // provider dashboard controller dependency injection
-export const getStatsUseCase = new GetStatsUseCase(bookingQueries);
-export const getGraphDataUseCase = new GetGraphDataUseCase(bookingQueries, subscriptionMapping);
+export const getProviderStatsUseCase = new GetProviderStatsUseCase(bookingQueries);
+export const getProviderGraphDataUseCase = new GetProviderGraphDataUseCase(bookingQueries, subscriptionMapping);
 
 // provider profile constroller dependency injection
 export const providerRequestForApprovalUseCase = new ProviderRequestForApprovalUseCase(providerProfileRepository);

@@ -1,7 +1,7 @@
-import { FontendAvailabilityForResponse } from "../dtos/common.dto";
+import { ServiceAvailabilityQuery, ServiceAvailabilityView } from "../dtos/serviceAvailability.dto";
 
 export interface IServiceAvailabilityQueries {
 
-    findByProviderId(date: Date, availabilityId: string): Promise<FontendAvailabilityForResponse | null>;
+    findByProviderId(query: ServiceAvailabilityQuery): Promise<ServiceAvailabilityView>;
 
 };

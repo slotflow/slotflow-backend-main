@@ -11,9 +11,9 @@ export class SetRoleUseCase {
         private readonly providerProfile: IProviderProfileRepository
     ) { };
 
-    async execute(payload: setRoleRequest): Promise<setRoleResponse> {
+    async execute(input: setRoleRequest): Promise<setRoleResponse> {
         try {
-            const { _id: userId, role } = payload;
+            const { _id: userId, role } = input;
             const user = await this.userRepository.findById(userId);
             if (!user) {
                 throw new Error("User not found");

@@ -43,7 +43,7 @@ export class BookingCheckoutUseCase {
             if (!isServiceData(providerService)) throw new Error("No service data found");
             if (!providerProfile.serviceAvailabilityId) throw new Error("No service availability found");
 
-            const providerServiceAvailability = await this.serviceAvailabilityQueries.findByProviderId(date, providerProfile.serviceAvailabilityId);
+            const providerServiceAvailability = await this.serviceAvailabilityQueries.findByProviderId({ date, availabilityId: providerProfile.serviceAvailabilityId });
             if (!providerServiceAvailability) throw new Error("No availability found");
 
             console.dir(providerServiceAvailability, { depth: null, colors: true });

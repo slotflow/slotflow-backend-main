@@ -1,8 +1,8 @@
 import { log } from "../../../shared/logger/logger";
+import { Role } from "../../../domain/enums/common.enum";
 import { IBookingQueries } from "../../queries/IBooking.queries";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
-import { ProviderGetUsersForChatSideBarResponse, ProviderGetUsersForChatSideBarRequest } from "../../dtos/provider.dto";
-import { Role } from "../../../domain/enums/common.enum";
+import { GetUserForChatSidebarInput, GetUserForChatSidebarOutput } from "../../dtos/user.dto";
 
 export class GetUserForChatSidebarUseCase {
     constructor(
@@ -10,16 +10,16 @@ export class GetUserForChatSidebarUseCase {
         private bookingQueries: IBookingQueries,
     ) { };
 
-    async execute(payload: ProviderGetUsersForChatSideBarRequest): Promise<ProviderGetUsersForChatSideBarResponse> {
+    async execute(input: GetUserForChatSidebarInput): Promise<GetUserForChatSidebarOutput> {
         try {
-            const { userId, role } = payload;
+            const { userId, role } = input;
             const result = await this.bookingQueries.findUsersforChatSideBar({
                 userId,
                 role: role === Role.PROVIDER ? Role.USER : Role.PROVIDER
             });
 
             const updatedResult = await Promise.all(
-                (result as ProviderGetUsersForChatSideBarResponse).map(async (user) => {
+                (result as GetUserForChatSidebarOutput).map(async (user) => {
                     let profileImageUrl = user?.profileImage;
 
                     if (profileImageUrl) {

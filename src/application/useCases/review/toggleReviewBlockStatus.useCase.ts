@@ -1,15 +1,15 @@
 import { log } from "../../../shared/logger/logger";
 import { IReviewRepository } from "../../../domain/interfaces/repositories/IReview.repository";
-import { ToggleReviewBlockStatusRequest, ToggleReviewBlockStatusResponse } from "../../dtos/admin.dto";
+import { ToggleReviewBlockStatusInput, ToggleReviewBlockStatusOutput } from "../../dtos/admin.dto";
 
 export class ToggleReviewBlockStatusUseCase {
     constructor(
         private reviewRepository: IReviewRepository,
     ) { };
 
-    async execute(payload: ToggleReviewBlockStatusRequest): Promise<ToggleReviewBlockStatusResponse> {
+    async execute(input: ToggleReviewBlockStatusInput): Promise<ToggleReviewBlockStatusOutput> {
         try {
-            const { reviewId, isBlocked } = payload;
+            const { reviewId, isBlocked } = input;
 
             const review = await this.reviewRepository.findById(reviewId);
             if (!review) throw new Error("No review found");

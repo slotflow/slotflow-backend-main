@@ -12,6 +12,7 @@ export class UserMapper {
             password: doc.password ?? null,
             role: doc.role,
             hasSelectedRole: doc.hasSelectedRole,
+            isOnboardingCompleted: doc.isOnboardingCompleted,
             isBlocked: doc.isBlocked,
             phone: doc.phone ?? null,
             profileImage: doc.profileImage ?? null,

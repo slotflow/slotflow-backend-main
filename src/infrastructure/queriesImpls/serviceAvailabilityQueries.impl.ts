@@ -1,13 +1,15 @@
-import { Types } from "mongoose";
+import { FilterQuery, Types } from "mongoose";
 import { daysOfWeek } from "../../shared/utils/constants";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { ServiceAvailabilityModel } from "../models/serviceAvailability.model";
 import { IServiceAvailabilityQueries } from "../../application/queries/IServiceAvailability.queries";
-import { FontendAvailabilityForResponse, TimeSlotForFrontendResponse } from "../../application/dtos/common.dto";
+import { ServiceAvailabilityDTO, TimeSlotForFrontendResponse } from "../../application/dtos/common.dto";
+import { ServiceAvailabilityQuery, ServiceAvailabilityView } from "../../application/dtos/serviceAvailability.dto";
 
 export class ServiceAvailabilityQueriesImpl implements IServiceAvailabilityQueries {
 
-    async findByProviderId(date: Date, availabilityId: string): Promise<FontendAvailabilityForResponse | null> {
+    async findByProviderId(query: ServiceAvailabilityQuery): Promise<ServiceAvailabilityView> {
+        const { date, availabilityId, providerId } = query;
         const startOfDay = new Date(date);
         startOfDay.setHours(0, 0, 0, 0);
 
@@ -17,11 +19,13 @@ export class ServiceAvailabilityQueriesImpl implements IServiceAvailabilityQueri
         const targetDay = daysOfWeek[date.getDay()];
         const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
 
+        const matchFilter: FilterQuery<ServiceAvailabilityDTO> = {};
+        if (availabilityId) matchFilter._id = new Types.ObjectId(availabilityId);
+        if (providerId) matchFilter.providerId = new Types.ObjectId(providerId);
+
         const availability = await ServiceAvailabilityModel.aggregate([
             {
-                $match: {
-                    _id: new Types.ObjectId(availabilityId)
-                }
+                $match: matchFilter
             },
             {
                 $addFields: {

@@ -1,15 +1,5 @@
 import { ProviderProfileDTO, UserDTO } from "./common.dto";
 
-//// Provider details with provider profiel details
-
-// Used as the request type of provider get own profile details
-export interface ProviderGetOwnProfileDetailsRequest {
-    providerId: UserDTO["_id"];
-}
-// Used as the response type of provider get own profile details
-export type ProviderGetOwnProfileDetailsResponse = Pick<UserDTO, "username" | "email" | "isBlocked" | "phone" | "createdAt"> & Pick<ProviderProfileDTO, "isAdminVerified" | "trustedBySlotflow" | "adminVerificationStatus" | "isAddressVerified" | "isAvailabilityVerified" | "isProofsVerified" | "isServiceDetailsVerified"> | null;
-
-
 // provider update identity proof request payload interface
 export type ProviderUpdateIdentityProofRequest = Pick<ProviderProfileDTO, "identityProof"> & {
     providerId: UserDTO["_id"];

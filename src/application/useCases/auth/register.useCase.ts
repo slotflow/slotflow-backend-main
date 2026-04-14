@@ -20,9 +20,9 @@ export class RegisterUseCase {
     private kafkaProducer: IKafkaProducerAdapter
   ) { };
 
-  async execute(payload: RegisterRequest): Promise<RegisterResponse> {
+  async execute(input: RegisterRequest): Promise<RegisterResponse> {
     try {
-      const { username, email, password } = payload;
+      const { username, email, password } = input;
       if (!username || !email || !password) throw new Error("Invalid request");
 
       const existUser = await this.userRepository.findByEmail(email);

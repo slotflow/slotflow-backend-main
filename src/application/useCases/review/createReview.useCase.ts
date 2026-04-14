@@ -8,9 +8,9 @@ export class CreateReviewUseCase {
         private reviewRepository: IReviewRepository,
     ) { };
 
-    async execute(payload: CreateReviewRequset): Promise<void> {
+    async execute(input: CreateReviewRequset): Promise<void> {
         try {
-            const { providerId, rating, reviewText, userId, bookingId } = payload;
+            const { providerId, rating, reviewText, userId, bookingId } = input;
 
             if (!providerId || !userId || !rating || !reviewText) throw new Error("Invalid request");
 

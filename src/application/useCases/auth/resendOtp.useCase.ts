@@ -16,9 +16,9 @@ export class ResendOtpUseCase {
     private readonly jwtService: IJWT
   ) { };
 
-  async execute(payload: ResendOtpRequest): Promise<void> {
+  async execute(input: ResendOtpRequest): Promise<void> {
     try {
-      const { token } = payload;
+      const { token } = input;
       if (!token) throw new Error("Invalid request.");
 
       const { email, username } = await this.jwtService.verifyToken(token);

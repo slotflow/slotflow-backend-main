@@ -7,9 +7,9 @@ export class ChangePushNotificationUseCase {
         private userRepository: IUserRepository
     ) { };
 
-    async execute(payload: ChangePushNotificationRequest): Promise<void> {
+    async execute(input: ChangePushNotificationRequest): Promise<void> {
         try {
-            const { allowPushNotification, userId } = payload;
+            const { allowPushNotification, userId } = input;
 
             const user = await this.userRepository.findById(userId);
             if (!user) throw new Error("No user found");

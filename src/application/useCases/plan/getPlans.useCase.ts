@@ -1,6 +1,6 @@
 import { log } from "../../../shared/logger/logger";
-import { GetPlansResponse } from "../../dtos/plan.dto";
-import { ApiPaginationRequest, TableData } from "../../dtos/common.dto";
+import { GetPlansOutput } from "../../dtos/plan.dto";
+import { ApiPaginationInput, TableData } from "../../dtos/common.dto";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 
 export class GetPlansUseCase {
@@ -8,9 +8,9 @@ export class GetPlansUseCase {
         private planRepository: IPlanRepository
     ) { };
 
-    async execute(payload: ApiPaginationRequest): Promise<TableData<GetPlansResponse>> {
+    async execute(input: ApiPaginationInput): Promise<TableData<GetPlansOutput>> {
         try {
-            const { page, limit } = payload;
+            const { page, limit } = input;
 
             const result = await this.planRepository.findAll(page, limit);
             const { data: plans, currentPage, totalCount, totalPages } = result;

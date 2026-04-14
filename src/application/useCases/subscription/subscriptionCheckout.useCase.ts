@@ -4,7 +4,7 @@ import { PaymentFor } from "../../../domain/enums/payment.enum";
 import { getNumberOfMonths } from "../../../shared/utils/dateTime";
 import { Subscription } from "../../../domain/entities/subscription.entity";
 import { SubscriptionStatus } from "../../../domain/enums/subscription.enum";
-import { SubscriptionCreateSessionIdRequest } from "../../dtos/subscription";
+import { SubscriptionCreateSessionIdInput } from "../../dtos/subscription";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IPaymentServiceClient } from "../../../domain/interfaces/clients/IPaymentService.client";
@@ -20,9 +20,9 @@ export class SubscriptionCheckoutUseCase {
         private paymentServiceClient: IPaymentServiceClient,
     ) { };
 
-    async execute(payload: SubscriptionCreateSessionIdRequest): Promise<string> {
+    async execute(input: SubscriptionCreateSessionIdInput): Promise<string> {
         try {
-            const { providerId, planId, planDuration } = payload;
+            const { providerId, planId, planDuration } = input;
 
             const provider = await this.userRepository.findById(providerId);
             if (!provider) throw new Error("No user found, please logout and try again.");
