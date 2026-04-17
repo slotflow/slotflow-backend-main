@@ -1,5 +1,5 @@
 import { log } from "../../../shared/logger/logger";
-import { UserDeleteReviewRequest } from "../../dtos/user.dto";
+import { UserDeleteReviewInput } from "../../dtos/review.dto";
 import { IReviewRepository } from "../../../domain/interfaces/repositories/IReview.repository";
 
 export class DeleteReviewUseCase {
@@ -7,7 +7,7 @@ export class DeleteReviewUseCase {
         private reviewRepository: IReviewRepository,
     ) { };
 
-    async execute(input: UserDeleteReviewRequest): Promise<void> {
+    async execute(input: UserDeleteReviewInput): Promise<void> {
         try {
             const { reviewId, userId } = input;
 

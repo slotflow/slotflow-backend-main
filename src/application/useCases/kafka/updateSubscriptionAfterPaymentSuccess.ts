@@ -4,7 +4,7 @@ import { log } from "../../../shared/logger/logger";
 import { getDateAfterMonths } from "../../../shared/utils/dateTime";
 import { notificationContentMap } from "../../../shared/utils/constants";
 import { ProviderCreatePaymentSuccessEventResult } from "../../dtos/common.dto";
-import { EventEnvelope, ProviderSubscriptionUpdatedEvent } from "../../dtos/kafka.dtos";
+import { EventEnvelope, ProviderSubscriptionUpdatedEvent } from "../../dtos/kafka.dto";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
@@ -48,7 +48,7 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
             if (!subscription) throw new Error("Subscription not found.");
 
             const plan = await this.planRepository.findById(subscription.subscriptionPlanId);
-            if(!plan) throw new Error("Subscribed plan not found");
+            if (!plan) throw new Error("Subscribed plan not found");
 
             const endDate = getDateAfterMonths(planDuration);
 

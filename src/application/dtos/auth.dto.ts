@@ -1,46 +1,46 @@
 import { Role } from "../../domain/enums/common.enum";
-import { CommonOutput, ProviderProfileDTO, UserDTO } from "./common.dto";
+import { ProviderProfileDTO, UserDTO } from "./common.dto";
 
-// user or provider register usecase request payload interface
-export interface RegisterRequest {
+//// **** auth dtos **** ////
+
+// Register usecase input output
+export interface RegisterInput {
     username: UserDTO["username"];
     email: UserDTO["email"];
     password: UserDTO["password"];
 }
-// user or provider register usecase response interface
-export interface RegisterResponse {
+
+export interface RegisterOutput {
     token: string
 }
 
 
-// user or provider OTP Verification usecase request payload interface
-export interface OTPVerificationRequest {
+// OTP Verification usecase input
+export interface OTPVerificationInput {
     token: string;
     otp: string;
 }
 
 
-// user or provider Resend use case request payload interface
-export interface ResendOtpRequest {
+// ResendOtp usecase output
+export interface ResendOtpOutput {
     token: string;
 }
 
-// user or provider verify email use case request payload interface
-export interface VerifyEmailRequest {
+// VerifyEmail usecase input output
+export interface VerifyEmailInput {
     email: UserDTO["email"];
 }
-
-export interface VerifyEmailResponse {
+export interface VerifyEmailOutput {
     token: string;
 }
 
-// user or provider login use case request payload interface
-export interface LoginRequest {
+// Login usecase input output
+export interface LoginInput {
     email: UserDTO["email"];
     password: UserDTO["password"];
 }
-// user or provider login use case response interface
-export interface LoginResponse {
+export interface LoginOutput {
     token: string;
     user: {
         uid: UserDTO["_id"];
@@ -77,26 +77,15 @@ export interface LoginResponse {
 }
 
 
-// user or provider update password use case request payload interface
-export interface UpdatePasswordRequest {
+// UpdatePassword usecase output
+export interface UpdatePasswordInput {
     token: string;
     password: UserDTO["password"];
 }
 
 
-// check user status use case request payload interface
-export interface CheckUserStatusRequest {
-    _id: UserDTO["_id"];
-    role: Role;
-}
-// check user status use case response interface
-export interface CheckUserStatusResponse extends CommonOutput {
-    status: number;
-}
-
-
-// google auth orchestration use case request payload interface
-export interface GoogleAuthOrchestrationRequest {
+// GoogleAuthOrchestration usecase input output
+export interface GoogleAuthOrchestrationInput {
     googleId: string;
     email: string;
     name: string;
@@ -108,9 +97,7 @@ export interface GoogleAuthOrchestrationRequest {
     refreshToken: string;
     expiryDate: Date;
 }
-
-// google auth orchestration use case response interface
-export interface GoogleAuthOrchestrationResponse {
+export interface GoogleAuthOrchestrationOutput {
     token?: string;
     user: {
         googleId: string;

@@ -1,5 +1,5 @@
 import { log } from "../../../shared/logger/logger";
-import { UserCancelBookingInput } from "../../dtos/booking.dtos";
+import { UserCancelBookingInput } from "../../dtos/booking.dto";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
@@ -42,46 +42,46 @@ export class CancelBookingUseCase {
 
                 // if (payment.paymentGateway === PaymentGateway.STRIPE) {
 
-                    // let refundAmount = 0
-                    // const currentDate = new Date();
-                    // const appointmentDate = new Date(booking.appointmentDate);
-                    // currentDate.setHours(0, 0, 0, 0);
-                    // appointmentDate.setHours(0, 0, 0, 0);
+                // let refundAmount = 0
+                // const currentDate = new Date();
+                // const appointmentDate = new Date(booking.appointmentDate);
+                // currentDate.setHours(0, 0, 0, 0);
+                // appointmentDate.setHours(0, 0, 0, 0);
 
-                    // if (appointmentDate > currentDate) {
-                    //     refundAmount = Math.round(payment.totalAmount * 0.90);
-                    // } else if (appointmentDate.getTime() === currentDate.getTime()) {
-                    //     refundAmount = Math.round(payment.totalAmount * 0.50);
-                    // };
+                // if (appointmentDate > currentDate) {
+                //     refundAmount = Math.round(payment.totalAmount * 0.90);
+                // } else if (appointmentDate.getTime() === currentDate.getTime()) {
+                //     refundAmount = Math.round(payment.totalAmount * 0.50);
+                // };
 
-                    // const refund = await stripe.refunds.create({
-                    //     payment_intent: payment.transactionId,
-                    //     amount: refundAmount,
-                    // });
+                // const refund = await stripe.refunds.create({
+                //     payment_intent: payment.transactionId,
+                //     amount: refundAmount,
+                // });
 
-                    // if (!refund) throw new Error("Refund processinga failed");
+                // if (!refund) throw new Error("Refund processinga failed");
 
-                    // payment.update({
-                    //     paymentStatus: PaymentStatus.REFUNDED,
-                    //     paymentMethod: payment.paymentMethod,
-                    //     paymentGateway: payment.paymentGateway,
-                    //     paymentFor: payment.paymentFor,
-                    //     initialAmount: payment.initialAmount,
-                    //     discountAmount: payment.discountAmount,
-                    //     totalAmount: payment.totalAmount,
+                // payment.update({
+                //     paymentStatus: PaymentStatus.REFUNDED,
+                //     paymentMethod: payment.paymentMethod,
+                //     paymentGateway: payment.paymentGateway,
+                //     paymentFor: payment.paymentFor,
+                //     initialAmount: payment.initialAmount,
+                //     discountAmount: payment.discountAmount,
+                //     totalAmount: payment.totalAmount,
 
-                    //     refundAmount: refund.amount,
-                    //     refundAt: new Date(refund.created * 1000),
-                    //     refundId: refund.id,
-                    //     refundReason: "Booking cancelled",
-                    //     refundStatus: refund.status as PaymentStatus ?? PaymentStatus.PENDING,
-                    //     chargeId: typeof refund.charge === "string" ? refund.charge : refund.charge?.id ?? undefined,
-                    // });
+                //     refundAmount: refund.amount,
+                //     refundAt: new Date(refund.created * 1000),
+                //     refundId: refund.id,
+                //     refundReason: "Booking cancelled",
+                //     refundStatus: refund.status as PaymentStatus ?? PaymentStatus.PENDING,
+                //     chargeId: typeof refund.charge === "string" ? refund.charge : refund.charge?.id ?? undefined,
+                // });
 
-                    // const updatedPayment = await this.paymentRepository.update(payment);
-                    // if (!updatedPayment) throw new Error("Refund failed");
+                // const updatedPayment = await this.paymentRepository.update(payment);
+                // if (!updatedPayment) throw new Error("Refund failed");
 
-                    // const accessToken = await this.googleTokenService.getAccessToken(userId);
+                // const accessToken = await this.googleTokenService.getAccessToken(userId);
 
 
                 // } else {

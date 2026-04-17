@@ -1,7 +1,7 @@
 import { TableData } from "../../dtos/common.dto";
 import { log } from "../../../shared/logger/logger";
 import { IReviewQueries } from "../../queries/IReview.queries";
-import { GetReviewsInput, GetReviewsOutput } from "../../dtos/review.dtos";
+import { GetReviewsInput, GetReviewsOutput } from "../../dtos/review.dto";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 
 export class GetReviewsUseCase {

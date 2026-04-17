@@ -1,7 +1,7 @@
 import { TableData } from "../../dtos/common.dto";
 import { log } from "../../../shared/logger/logger";
 import { ISubscriptionQueries } from "../../queries/ISubscription.queries";
-import { GetSubscriptionsInput, GetSubscriptionsOutput } from "../../dtos/subscription";
+import { GetSubscriptionsInput, GetSubscriptionsOutput } from "../../dtos/subscription.dto";
 
 export class GetSubscriptionsUseCase {
     constructor(

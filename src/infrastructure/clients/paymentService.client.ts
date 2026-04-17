@@ -1,23 +1,22 @@
 import { AxiosInstance } from "axios";
-import { axiosInstance } from "../http/axios/axios";
 import { serviceConfig } from "../../config/env";
 import { log } from "../../shared/logger/logger";
-import { CreateBookingCheckoutSessionRequest, CreateBookingCheckoutSessionResponse, CreateSubscriptionCheckoutSessionRequest, CreateSubscriptonCheckoutSessionResponse, IPaymentServiceClient } from "../../domain/interfaces/clients/IPaymentService.client";
+import { axiosInstance } from "../http/axios/axios";
+import { CreateBookingCheckoutSessionInput, CreateBookingCheckoutSessionOutput, CreateSubscriptionCheckoutSessionInput, CreateSubscriptionCheckoutSessionOutput, IPaymentServiceClient } from "../../domain/interfaces/clients/IPaymentService.client";
 
 export class PaymentServiceClient implements IPaymentServiceClient {
 
   private readonly http: AxiosInstance;
 
-  constructor() {
+  constructor(baseUrl: string = serviceConfig.paymentServiceUrl) {
     this.http = axiosInstance.create({
-      baseURL: serviceConfig.paymentServiceUrl,
-      timeout: 5000,
+      baseURL: baseUrl,
     });
   };
 
-  async createSubsciptionCheckoutSession(input: CreateSubscriptionCheckoutSessionRequest): Promise<CreateSubscriptonCheckoutSessionResponse> {
+  async createSubscriptionCheckoutSession(input: CreateSubscriptionCheckoutSessionInput): Promise<CreateSubscriptionCheckoutSessionOutput> {
     try {
-      const { data } = await this.http.post<CreateSubscriptonCheckoutSessionResponse>(
+      const { data } = await this.http.post<CreateSubscriptionCheckoutSessionOutput>(
         "/subscription/checkout/session",
         input
       );
@@ -29,14 +28,14 @@ export class PaymentServiceClient implements IPaymentServiceClient {
 
       return data;
     } catch (error) {
-      log.error("createSubsciptionCheckoutSession, Payment Service unavailable", error as Error);
+      log.error("createSubscriptionCheckoutSession, Payment Service unavailable", error as Error);
       throw new Error("Payment Service unavailable");
     };
   };
 
-  async createBookingCheckoutSession(input: CreateBookingCheckoutSessionRequest): Promise<CreateBookingCheckoutSessionResponse> {
+  async createBookingCheckoutSession(input: CreateBookingCheckoutSessionInput): Promise<CreateBookingCheckoutSessionOutput> {
     try {
-      const { data } = await this.http.post<CreateBookingCheckoutSessionResponse>(
+      const { data } = await this.http.post<CreateBookingCheckoutSessionOutput>(
         "/booking/checkout/session",
         input
       );

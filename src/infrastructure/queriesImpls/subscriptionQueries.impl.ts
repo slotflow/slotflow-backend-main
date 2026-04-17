@@ -3,7 +3,7 @@ import { getStartAndEndDate } from "../../shared/utils/dateTime";
 import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 import { ISubscriptionQueries } from "../../application/queries/ISubscription.queries";
 import { PlanNameOnly, TableData } from "../../application/dtos/common.dto";
-import { MySubscriptionQuery, MySubscriptionView, SubscribedPlanQuery, SubscriptionDetailsQuery, SubscriptionDetailsView, SubscriptionsQuery, SubscriptionStatsForAdminQuery, SubscriptionStatsForAdminView, SubscriptionsView, PopulatedPlan } from "../../application/dtos/subscription";
+import { MySubscriptionQuery, MySubscriptionView, SubscribedPlanQuery, SubscriptionDetailsQuery, SubscriptionDetailsView, SubscriptionsQuery, SubscriptionStatsForAdminQuery, SubscriptionStatsForAdminView, SubscriptionsView, PopulatedPlan } from "../../application/dtos/subscription.dto";
 
 export class SubscriptionQueriesImpl implements ISubscriptionQueries {
 

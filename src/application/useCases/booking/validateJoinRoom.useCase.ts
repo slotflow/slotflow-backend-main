@@ -1,7 +1,7 @@
 import { isSameDay, startOfDay } from "date-fns";
 import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/common.enum";
-import { ValidateJoinRoomInput } from "../../dtos/booking.dtos";
+import { ValidateJoinRoomInput } from "../../dtos/booking.dto";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 
@@ -42,7 +42,7 @@ export class ValidateJoinRoomUsecase {
             if (booking.videoCallRoomId !== roomId) {
                 throw new Error("Invalid room ID");
             };
-            
+
         } catch (error) {
             log.error("ValidateJoinRoomUsecase failed", error as Error);
             throw error;

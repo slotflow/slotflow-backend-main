@@ -27,12 +27,21 @@ export interface GetReviewsView extends Pick<ReviewDTO, "_id" | "createdAt" | "r
 
 //// **** review usecase input output **** ////
 
-// getReviews method parameter and return
+// GetReviews usecase input output
 export type GetReviewsInput = GetReviewsQuery
 export type GetReviewsOutput = GetReviewsView
 
-// 
+// RepostReview usecase input output
 export interface RepostReviewInput {
   reviewId: Review["_id"];
   providerId: UserDTO["_id"];
+}
+
+// CreateReview usecase input output
+export type CreateReviewInput = Pick<ReviewDTO, "reviewText" | "rating" | "userId" | "providerId" | "bookingId">;
+
+// UserDeleteReview usecase input output
+export interface UserDeleteReviewInput {
+    reviewId: Review["_id"];
+    userId: UserDTO["_id"];
 }

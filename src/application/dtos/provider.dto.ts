@@ -1,7 +1,9 @@
+import { UserDTO } from "./common.dto";
 import { PlanName } from "../../domain/enums/plan.enum";
-import { SubscriptionDTO, UserDTO } from "./common.dto";
 
-// provider get stats use case request payload interface
+//// **** provider dtos **** ////
+
+// GetProviderStats usecase input output
 export interface GetProviderStatsInput {
     providerId: UserDTO["_id"];
     startDate: Date;
@@ -16,7 +18,7 @@ export interface GetProviderStatsOutput {
     todaysAppointments: number;
 }
 
-// provider get graph data use case request payload interface
+// GetProviderGraphData usecase input output
 export interface GetProviderGraphDataInput {
     providerId: UserDTO["_id"];
     subscription: PlanName;

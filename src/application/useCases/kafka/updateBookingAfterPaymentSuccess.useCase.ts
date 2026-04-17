@@ -5,7 +5,7 @@ import { notificationContentMap } from "../../../shared/utils/constants";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
 import { UpdateBookingAfterPaymentSuccessEventResult } from "../../dtos/common.dto";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { BookingSavedEvent, EventEnvelope, GotAnAppointment } from "../../dtos/kafka.dtos";
+import { BookingSavedEvent, EventEnvelope, GotAnAppointment } from "../../dtos/kafka.dto";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 

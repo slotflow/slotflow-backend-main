@@ -1,13 +1,13 @@
 import { log } from "../../../shared/logger/logger";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { UpdateUserProfileInfoRequest, UpdateUserProfileInfoResponse } from "../../dtos/user.dto";
+import { UpdateUserProfileInfoInput, UpdateUserProfileInfoOutput } from "../../dtos/user.dto";
 
 export class UpdateUserProfileInfoUseCase {
     constructor(
         private userRepository: IUserRepository
     ) { };
 
-    async execute(input: UpdateUserProfileInfoRequest): Promise<UpdateUserProfileInfoResponse> {
+    async execute(input: UpdateUserProfileInfoInput): Promise<UpdateUserProfileInfoOutput> {
         try {
             const { userId, username, phone } = input;
 

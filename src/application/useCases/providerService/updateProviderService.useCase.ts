@@ -1,6 +1,6 @@
 import { log } from "../../../shared/logger/logger";
 import { IProviderServiceRepository } from "../../../domain/interfaces/repositories/IProviderService.repository";
-import { UpdateProviderServiceInput, UpdateProviderServiceOutput } from "../../dtos/providerService";
+import { UpdateProviderServiceInput, UpdateProviderServiceOutput } from "../../dtos/providerService.dto";
 
 export class UpdateProviderServiceUseCase {
     constructor(

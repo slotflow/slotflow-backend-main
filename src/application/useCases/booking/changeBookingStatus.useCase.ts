@@ -4,12 +4,12 @@ import { log } from "../../../shared/logger/logger";
 import { formatUtcDateTime } from "../../../shared/utils/dateTime";
 import { notificationContentMap } from "../../../shared/utils/constants";
 import { NotificationType, Role } from "../../../domain/enums/common.enum";
-import { ProviderChangeBookingAppointmentStatusInput } from '../../dtos/booking.dtos';
+import { ProviderChangeBookingAppointmentStatusInput } from '../../dtos/booking.dto';
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IGoogleTokenService } from "../../../domain/interfaces/services/IGoogleToken.service";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
-import { EventEnvelope, CreateGoogleCalendarEvent, SendAppointmentStatusChangeForProviderEvent, SendAppointmentStatusChangeForUserEvent } from "../../dtos/kafka.dtos";
+import { EventEnvelope, CreateGoogleCalendarEvent, SendAppointmentStatusChangeForProviderEvent, SendAppointmentStatusChangeForUserEvent } from "../../dtos/kafka.dto";
 
 export class ChangeBookingStatusUseCase {
     constructor(
@@ -33,12 +33,12 @@ export class ChangeBookingStatusUseCase {
             if (!provider) throw new Error("No provider found");
 
             let userAccessToken: string | null = null;
-            if(user.googleConnected) {   
+            if (user.googleConnected) {
                 userAccessToken = await this.googleTokenService.getAccessToken(user._id);
             }
-            
+
             let providerAccessToken: string | null = null;
-            if(provider.googleConnected) {
+            if (provider.googleConnected) {
                 providerAccessToken = await this.googleTokenService.getAccessToken(providerId);
             }
 

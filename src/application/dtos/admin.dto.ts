@@ -1,15 +1,15 @@
-import { AddressDTO, ProviderProfileDTO, ReviewDTO, ServiceDTO, UserDTO } from "./common.dto";
+import { ProviderProfileDTO, ReviewDTO, UserDTO } from "./common.dto";
 
-// Used as the request type of admin get dashboard stats data
+//// **** admin dtos **** ////
+
+// GetStatsDataCommon usecase input output
 export interface GetStatsDataCommonInput {
     startDate: Date;
     endDate: Date;
 }
 
-// Used as the request type of admin get dashboard appointments stats data
+// GetBookingsData usecase input output
 export interface GetBookingsDataInput extends GetStatsDataCommonInput { }
-
-// used as the return type of the admin get dashboard appointments stats data
 export interface GetBookingsDataOutput {
     totalAppointments: number;
     completedAppointments: number;
@@ -18,35 +18,33 @@ export interface GetBookingsDataOutput {
     rejectedAppointments: number;
 };
 
-// Used as the request interface of admin approve provider
+// AdminApproveProvider usecase input
 export interface AdminApproveProviderInput {
     providerId: UserDTO["_id"];
 };
-// Used as the request interface of admin reject provider
+
+// AdminRejectProvider usecase input
 export type AdminRejectProviderInput = Pick<ProviderProfileDTO, "verificationRejectionReason" | "isAddressVerified" | "isServiceDetailsVerified" | "isAvailabilityVerified" | "isProofsVerified"> & {
     providerId: UserDTO["_id"];
 };
 
-// Used as the request interface of admin change provider block status
+// AdminChangeProviderBlockStatus usecase input output
 export interface AdminChangeProviderBlockStatusInput {
     providerId: UserDTO["_id"];
     isBlocked: UserDTO["isBlocked"];
 };
-// Used as the response type of admin change provider block status
 export type AdminChangeProviderBlockStatusOutput = AdminChangeProviderBlockStatusInput;
 
-// Used as the request interface of admin change provider trust tag 
+// AdminChangeProviderTrustTag usecase input output
 export interface AdminChangeProviderTrustTagInput {
     providerId: UserDTO["_id"];
     trustedBySlotflow: ProviderProfileDTO["trustedBySlotflow"];
 };
-// Used as the response type of admin change provider trust tag 
 export type AdminChangeProviderTrustTagOutput = AdminChangeProviderTrustTagInput;
 
-// Used as the request interface of admin chage review block status
+// ToggleReviewBlockStatus usecase input output
 export interface ToggleReviewBlockStatusInput {
     reviewId: ReviewDTO["_id"];
     isBlocked: ReviewDTO["isBlocked"];
 };
-// Used as the response interface of admin chage review block status
 export type ToggleReviewBlockStatusOutput = ToggleReviewBlockStatusInput;

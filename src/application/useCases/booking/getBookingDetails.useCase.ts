@@ -1,6 +1,6 @@
 import { log } from "../../../shared/logger/logger";
 import { IBookingQueries } from "../../queries/IBooking.queries";
-import { GetBookingDetailsInput, GetBookingDetailsOutput } from "../../dtos/booking.dtos";
+import { GetBookingDetailsInput, GetBookingDetailsOutput } from "../../dtos/booking.dto";
 
 export class GetBookingDetailsUsecase {
     constructor(
@@ -11,7 +11,7 @@ export class GetBookingDetailsUsecase {
         try {
             const { bookingId } = input;
 
-            const result = await this.bookingQueries.findDetails({bookingId});
+            const result = await this.bookingQueries.findDetails({ bookingId });
             if (!result) return null;
 
             return result;

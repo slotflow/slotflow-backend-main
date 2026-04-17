@@ -10,10 +10,10 @@ import { notificationContentMap } from "../../../shared/utils/constants";
 import { AuthResponseBuilder } from '../../services/AuthResponseBuilder';
 import { ProviderProfile } from '../../../domain/entities/providerProfile.entity';
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { EventEnvelope, SendAppConnectEvent, SendWelcomeEvent } from "../../dtos/kafka.dtos";
+import { EventEnvelope, SendAppConnectEvent, SendWelcomeEvent } from "../../dtos/kafka.dto";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 import { IAesEncryptionService } from "../../../domain/interfaces/services/IAesEncryption.service";
-import { GoogleAuthOrchestrationRequest, GoogleAuthOrchestrationResponse } from "../../dtos/auth.dto";
+import { GoogleAuthOrchestrationInput, GoogleAuthOrchestrationOutput } from "../../dtos/auth.dto";
 import { ICredentialRepository } from "../../../domain/interfaces/repositories/ICredentialRepository";
 import { IProviderProfileRepository } from '../../../domain/interfaces/repositories/IProviderProfile.repository';
 
@@ -28,7 +28,7 @@ export class GoogleAuthOrchestratorUseCase {
         private readonly authResponseBuilder: AuthResponseBuilder
     ) { };
 
-    async execute(input: GoogleAuthOrchestrationRequest): Promise<GoogleAuthOrchestrationResponse> {
+    async execute(input: GoogleAuthOrchestrationInput): Promise<GoogleAuthOrchestrationOutput> {
         try {
             const {
                 connectOnly,

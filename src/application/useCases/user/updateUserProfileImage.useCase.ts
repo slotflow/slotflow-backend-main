@@ -1,7 +1,7 @@
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { log } from "../../../shared/logger/logger";
-import { UpdateUserProfileImageResponse, UpdateUserProfileImageRequest } from "../../dtos/user.dto";
+import { UpdateUserProfileImageOutput, UpdateUserProfileImageInput } from "../../dtos/user.dto";
 
 export class UpdateUserProfileImageUseCase {
     constructor(
@@ -9,7 +9,7 @@ export class UpdateUserProfileImageUseCase {
         private signedUrlService: ISignedUrlService
     ) { };
 
-    async execute(input: UpdateUserProfileImageRequest): Promise<UpdateUserProfileImageResponse> {
+    async execute(input: UpdateUserProfileImageInput): Promise<UpdateUserProfileImageOutput> {
         try {
             const { userId, profileImage } = input;
             if (!userId || !profileImage) throw new Error("Invalid request");

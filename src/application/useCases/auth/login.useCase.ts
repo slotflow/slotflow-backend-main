@@ -2,7 +2,7 @@ import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/common.enum";
 import { PlanName } from "../../../domain/enums/plan.enum";
 import { IJWT } from "../../../domain/interfaces/security/IJwt";
-import { LoginRequest, LoginResponse } from "../../dtos/auth.dto";
+import { LoginInput, LoginOutput } from "../../dtos/auth.dto";
 import { AuthResponseBuilder } from "../../services/AuthResponseBuilder";
 import { ProviderProfile } from "../../../domain/entities/providerProfile.entity";
 import { IPasswordHasher } from "../../../domain/interfaces/security/IPasswordHasher";
@@ -20,7 +20,7 @@ export class LoginUseCase {
         private readonly authResponseBuilder: AuthResponseBuilder
     ) { };
 
-    async execute(input: LoginRequest): Promise<LoginResponse> {
+    async execute(input: LoginInput): Promise<LoginOutput> {
         try {
             const { email, password } = input;
 

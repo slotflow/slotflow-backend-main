@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
-import { TrialSubscriptionInput } from '../../dtos/subscription';
+import { TrialSubscriptionInput } from '../../dtos/subscription.dto';
 import { notificationContentMap } from "../../../shared/utils/constants";
 import { Subscription } from "../../../domain/entities/subscription.entity";
-import { EventEnvelope, SendProviderTrialSubscriptionEvent } from "../../dtos/kafka.dtos";
+import { EventEnvelope, SendProviderTrialSubscriptionEvent } from "../../dtos/kafka.dto";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { SubscriptionStatus, SubscriptionValidity } from "../../../domain/enums/subscription.enum";

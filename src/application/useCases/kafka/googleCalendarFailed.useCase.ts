@@ -1,5 +1,5 @@
 import { log } from "../../../shared/logger/logger";
-import { CreateGoogleCalendarEventFailedResult, EventEnvelope } from "../../dtos/kafka.dtos";
+import { CreateGoogleCalendarEventFailedResult, EventEnvelope } from "../../dtos/kafka.dto";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 

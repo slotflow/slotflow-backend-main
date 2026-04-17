@@ -1,6 +1,6 @@
 import { log } from "../../../../shared/logger/logger";
 import { ISubscriptionQueries } from "../../../queries/ISubscription.queries";
-import { GetSubscriptionDataInput, GetSubscriptionDataOutput } from "../../../dtos/subscription";
+import { GetSubscriptionDataInput, GetSubscriptionDataOutput } from "../../../dtos/subscription.dto";
 
 export class GetSubscriptionDataUseCase {
     constructor(

@@ -1,5 +1,5 @@
 import { log } from "../../../shared/logger/logger";
-import { ChangePushNotificationRequest } from "../../dtos/user.dto";
+import { ChangePushNotificationInput } from "../../dtos/user.dto";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 
 export class ChangePushNotificationUseCase {
@@ -7,7 +7,7 @@ export class ChangePushNotificationUseCase {
         private userRepository: IUserRepository
     ) { };
 
-    async execute(input: ChangePushNotificationRequest): Promise<void> {
+    async execute(input: ChangePushNotificationInput): Promise<void> {
         try {
             const { allowPushNotification, userId } = input;
 

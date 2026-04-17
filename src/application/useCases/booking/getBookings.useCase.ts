@@ -2,7 +2,7 @@ import { TableData } from "../../dtos/common.dto";
 import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/common.enum";
 import { IBookingQueries } from "../../queries/IBooking.queries";
-import { GetBookingsInput, GetBookingsOutput } from "../../dtos/booking.dtos";
+import { GetBookingsInput, GetBookingsOutput } from "../../dtos/booking.dto";
 
 export class GetBookingsUseCase {
     constructor(

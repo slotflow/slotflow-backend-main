@@ -1,7 +1,7 @@
 import { log } from "../../../shared/logger/logger";
 import { IProviderServiceQueries } from "../../queries/IProviderService.queries";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
-import { GetProvidersServicesInput, GetProvidersServicesOutput } from "../../dtos/providerService";
+import { GetProvidersServicesInput, GetProvidersServicesOutput } from "../../dtos/providerService.dto";
 
 export class GetProvidersServicesUseCase {
   constructor(
@@ -14,10 +14,10 @@ export class GetProvidersServicesUseCase {
       const { serviceIds, categories, location, maxPrice, minPrice, slotflowTrusted, skip, limit } = input;
 
       const providers = await this.providerServiceQueries.findProvidersUsingServiceIds({
-        serviceIds: serviceIds ?? [], 
-        categories: categories ?? [], 
-        location, 
-        maxPrice, 
+        serviceIds: serviceIds ?? [],
+        categories: categories ?? [],
+        location,
+        maxPrice,
         minPrice,
         slotflowTrusted: slotflowTrusted,
         skip,

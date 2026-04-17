@@ -1,14 +1,14 @@
 import { log } from "../../../shared/logger/logger";
 import { Service } from "../../../domain/entities/service.entity";
 import { IServiceRepository } from "../../../domain/interfaces/repositories/IService.repository";
-import { CreateServiceRequest } from "../../dtos/service.dto";
+import { CreateServiceInput } from "../../dtos/service.dto";
 
 export class CreateServiceUseCase {
     constructor(
         private seriveRepository: IServiceRepository
     ) { };
 
-    async execute(input: CreateServiceRequest): Promise<void> {
+    async execute(input: CreateServiceInput): Promise<void> {
         try {
             const { serviceName, serviceCategory } = input;
 

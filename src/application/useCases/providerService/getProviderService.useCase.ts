@@ -1,6 +1,6 @@
 import { log } from "../../../shared/logger/logger";
 import { IProviderServiceQueries } from "../../queries/IProviderService.queries";
-import { GetProviderServiceInput, GetProviderServiceOuput } from "../../dtos/providerService";
+import { GetProviderServiceInput, GetProviderServiceOuput } from "../../dtos/providerService.dto";
 
 export class GetProviderServicesUseCase {
 
@@ -12,7 +12,7 @@ export class GetProviderServicesUseCase {
         try {
             const { providerId, isUser } = input;
 
-            const service = await this.providerServiceQueries.findByProviderId({providerId});
+            const service = await this.providerServiceQueries.findByProviderId({ providerId });
             if (!service) return null;
 
             return {

@@ -376,7 +376,7 @@ export interface CreateFileSignedUrlInput {
 
 // used in find provider service usecase
 type FindProviderServiceProps = Omit<ProviderServiceDTO, "service" | "updatedAt" | "createdAt">;
-export interface FindProviderServiceResponse extends FindProviderServiceProps {
+export interface FindProviderServiceOutput extends FindProviderServiceProps {
   service: { serviceName: string }
 }
 
@@ -388,7 +388,7 @@ export interface PlanNameOnly {
 }
 
 // used in create service availability usecase
-export interface FontendAvailabilityForResponse extends Omit<Availability, "slots"> {
+export interface FrontendAvailabilityForResponse extends Omit<Availability, "slots"> {
   slots: TimeSlotForFrontendResponse[]
 }
 

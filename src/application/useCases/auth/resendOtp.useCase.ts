@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from '../../../config/env';
 import { log } from '../../../shared/logger/logger';
-import { ResendOtpRequest } from '../../dtos/auth.dto';
+import { ResendOtpOutput } from '../../dtos/auth.dto';
 import { OtpPurpose } from '../../../domain/enums/common.enum';
 import { IJWT } from '../../../domain/interfaces/security/IJwt';
-import { EventEnvelope, SendOtpEvent } from '../../dtos/kafka.dtos';
+import { EventEnvelope, SendOtpEvent } from '../../dtos/kafka.dto';
 import { IOTPService } from '../../../domain/interfaces/services/IOtp.service';
 import { IKafkaProducerAdapter } from '../../../domain/interfaces/messaging/IKafkaProducerAdapter';
 
@@ -16,13 +16,13 @@ export class ResendOtpUseCase {
     private readonly jwtService: IJWT
   ) { };
 
-  async execute(input: ResendOtpRequest): Promise<void> {
+  async execute(input: ResendOtpOutput): Promise<void> {
     try {
       const { token } = input;
       if (!token) throw new Error("Invalid request.");
 
       const { email, username } = await this.jwtService.verifyToken(token);
-      if(!email) throw new Error("Invalid request, please try again");
+      if (!email) throw new Error("Invalid request, please try again");
 
       const otp = await this.otpService.setOtp(email);
       if (!otp) throw new Error("Unexpected error, please try again.");

@@ -1,6 +1,6 @@
 import { log } from "../../../shared/logger/logger";
 import { IJWT } from "../../../domain/interfaces/security/IJwt";
-import { VerifyEmailRequest, VerifyEmailResponse } from "../../dtos/auth.dto";
+import { VerifyEmailInput, VerifyEmailOutput } from "../../dtos/auth.dto";
 import { IOTPService } from "../../../domain/interfaces/services/IOtp.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 
@@ -11,7 +11,7 @@ export class VerifyEmailUseCase {
         public readonly jwtService: IJWT,
     ) { }
 
-    async execute(input: VerifyEmailRequest): Promise<VerifyEmailResponse> {
+    async execute(input: VerifyEmailInput): Promise<VerifyEmailOutput> {
         try {
             const { email } = input;
 

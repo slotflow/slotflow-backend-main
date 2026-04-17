@@ -1,13 +1,13 @@
 import { log } from "../../../shared/logger/logger";
 import { IServiceRepository } from "../../../domain/interfaces/repositories/IService.repository";
-import { ChangeServiceBlockStatusRequest, ChangeServiceBlockStatusResponse } from "../../dtos/service.dto";
+import { ChangeServiceBlockStatusInput, ChangeServiceBlockStatusOutput } from "../../dtos/service.dto";
 
 export class ChangeServiceBlockStatusUseCase {
     constructor(
         private seriveRepository: IServiceRepository
     ) { };
 
-    async execute(input: ChangeServiceBlockStatusRequest): Promise<ChangeServiceBlockStatusResponse> {
+    async execute(input: ChangeServiceBlockStatusInput): Promise<ChangeServiceBlockStatusOutput> {
         try {
             const { serviceId, isBlocked } = input;
 

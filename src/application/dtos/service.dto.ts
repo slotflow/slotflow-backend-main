@@ -1,29 +1,23 @@
 import { ApiPaginationInput, ServiceDTO } from "./common.dto";
 
-// get service details use case request payload
-export interface GetServiceRequest extends ApiPaginationInput {
+//// **** service dtos **** ////
 
-}
+// GetService usecase input output
+export interface GetServiceInput extends ApiPaginationInput { }
+export type GetServiceOutput = Array<Pick<ServiceDTO, "_id" | "serviceName" | "isBlocked" | "serviceCategory">>;
 
-// get service details use case respomse interface
-export type GetServiceResponse = Array<Pick<ServiceDTO, "_id" | "serviceName" | "isBlocked" | "serviceCategory">>;
+// CreateService usecase input
+export type CreateServiceInput = Pick<ServiceDTO, "serviceName" | "serviceCategory">;
 
-// create service request payload interface
-export type CreateServiceRequest = Pick<ServiceDTO, "serviceName" | "serviceCategory">;
-
-// change service block status request payload interface
-export interface ChangeServiceBlockStatusRequest {
+// ChangeServiceBlockStatus usecase input output
+export interface ChangeServiceBlockStatusInput {
   serviceId: ServiceDTO["_id"];
   isBlocked: ServiceDTO["isBlocked"];
 };
+export type ChangeServiceBlockStatusOutput = ChangeServiceBlockStatusInput;
 
-// change service block status response interface
-export type ChangeServiceBlockStatusResponse = ChangeServiceBlockStatusRequest;
-
-// get services by category request payload interface
-export interface GetServicesByCategoryRequest {
+// GetServicesByCategory usecase input output
+export interface GetServicesByCategoryInput {
   categories: Array<ServiceDTO["serviceCategory"]>;
 };
-
-// get services by category response interface
-export type GetServicesByCategoryResponse = Array<Pick<ServiceDTO, "_id" | "serviceName">> | null;
+export type GetServicesByCategoryOutput = Array<Pick<ServiceDTO, "_id" | "serviceName">> | null;

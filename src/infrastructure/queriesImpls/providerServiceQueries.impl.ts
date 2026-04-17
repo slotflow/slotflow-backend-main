@@ -3,7 +3,7 @@ import { PipelineStage } from "mongoose";
 import { ProviderServiceModel } from "../models/providerService.model";
 import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 import { IProviderServiceQueries } from "../../application/queries/IProviderService.queries";
-import { ProviderServiceByProviderIdQuery, ProviderServiceByProviderIdView, ProviderServiceByServiceIdsQuery, ProviderServiceByServiceIdsView, UpdateProviderServiceQuery, UpdateProviderServiceView } from "../../application/dtos/providerService";
+import { ProviderServiceByProviderIdQuery, ProviderServiceByProviderIdView, ProviderServiceByServiceIdsQuery, ProviderServiceByServiceIdsView, UpdateProviderServiceQuery, UpdateProviderServiceView } from "../../application/dtos/providerService.dto";
 
 export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
 

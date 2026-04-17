@@ -1,5 +1,5 @@
 import { log } from "../../../shared/logger/logger";
-import { RepostReviewInput } from "../../dtos/review.dtos";
+import { RepostReviewInput } from "../../dtos/review.dto";
 import { IReviewRepository } from "../../../domain/interfaces/repositories/IReview.repository";
 
 export class ReportReviewUseCase {

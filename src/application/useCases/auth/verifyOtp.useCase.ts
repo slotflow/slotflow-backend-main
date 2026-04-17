@@ -2,9 +2,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { User } from "../../../domain/entities/user.entity";
-import { OTPVerificationRequest } from "../../dtos/auth.dto";
+import { OTPVerificationInput } from "../../dtos/auth.dto";
 import { IJWT } from '../../../domain/interfaces/security/IJwt';
-import { EventEnvelope, SendWelcomeEvent } from "../../dtos/kafka.dtos";
+import { EventEnvelope, SendWelcomeEvent } from "../../dtos/kafka.dto";
 import { IOTPService } from "../../../domain/interfaces/services/IOtp.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
@@ -17,7 +17,7 @@ export class VerifyOTPUseCase {
     private readonly jwtService: IJWT
   ) { };
 
-  async execute(input: OTPVerificationRequest): Promise<void> {
+  async execute(input: OTPVerificationInput): Promise<void> {
     try {
       const { token, otp } = input;
 
@@ -35,27 +35,27 @@ export class VerifyOTPUseCase {
       const isValidOTP = await this.otpService.verifyOtp(email, otp);
       if (!isValidOTP) throw new Error("Invalid or expired OTP");
 
-      if(!existingUser) {
+      if (!existingUser) {
         const newUser = await this.userRepository.create(User.createLocal({
           email,
           username,
           password,
         }));
-        
-      await this.kafkaProducer.publish<EventEnvelope<SendWelcomeEvent>>(kafkaConfig.topics.pub.registerSuccess, {
-        eventId: uuidv4(),
-        attempt: 1,
-        maxAttempts: 1,
-        occurredAt: new Date().toISOString(),
-        payload: {
-          emailData: {
-            email: newUser.email,
-            name: newUser.username,
-            role: newUser.role,
-          },
-        }
-      });
-    }
+
+        await this.kafkaProducer.publish<EventEnvelope<SendWelcomeEvent>>(kafkaConfig.topics.pub.registerSuccess, {
+          eventId: uuidv4(),
+          attempt: 1,
+          maxAttempts: 1,
+          occurredAt: new Date().toISOString(),
+          payload: {
+            emailData: {
+              email: newUser.email,
+              name: newUser.username,
+              role: newUser.role,
+            },
+          }
+        });
+      }
 
     } catch (error) {
       log.error("VerifyOTPUseCase failed", error as Error);

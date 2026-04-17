@@ -2,7 +2,7 @@ import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum"
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { log } from "../../../shared/logger/logger";
 import { UpdateBookingAfterPaymentFailedEventResult } from "../../dtos/common.dto";
-import { EventEnvelope } from "../../dtos/kafka.dtos";
+import { EventEnvelope } from "../../dtos/kafka.dto";
 
 export class UpdateBookingAfterPaymentFailedUseCase {
     constructor(
@@ -20,19 +20,19 @@ export class UpdateBookingAfterPaymentFailedUseCase {
                         bookingId
                     }
                 }
-             } = input;
+            } = input;
 
-             const booking = await this.bookingRepository.findById(bookingId);
-             if(!booking) throw new Error("Booking not found.");
+            const booking = await this.bookingRepository.findById(bookingId);
+            if (!booking) throw new Error("Booking not found.");
 
-             booking.updateBookingAfterPayment({
+            booking.updateBookingAfterPayment({
                 appointmentStatus: AppointmentStatus.PENDING,
                 paymentId: null
-             });
+            });
 
-             await this.bookingRepository.update(booking);
+            await this.bookingRepository.update(booking);
         } catch (error) {
-            log.error("UpdateBookingAfterPaymentFailedUseCase failed : ",error as Error);
+            log.error("UpdateBookingAfterPaymentFailedUseCase failed : ", error as Error);
             throw error;
         }
     }

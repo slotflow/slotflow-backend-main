@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { notificationContentMap } from "../../../shared/utils/constants";
-import { EventEnvelope, SendAccountTrustStatusEvent } from "../../dtos/kafka.dtos";
+import { EventEnvelope, SendAccountTrustStatusEvent } from "../../dtos/kafka.dto";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";

@@ -1,6 +1,6 @@
 import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/common.enum";
-import { StripeAccountCreatedEvent } from "../../dtos/kafka.dtos";
+import { StripeAccountCreatedEvent } from "../../dtos/kafka.dto";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 
 export class UpdateStripeAccountDataUseCase {

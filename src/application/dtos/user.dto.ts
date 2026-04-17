@@ -1,87 +1,8 @@
 import { Role } from "../../domain/enums/common.enum";
 import { GetStatsDataCommonInput } from "./admin.dto";
-import { Review } from "../../domain/entities/review.entity";
-import { UserDTO, ServiceDTO, ProviderServiceDTO, ReviewDTO, ProviderProfileDTO, ApiPaginationInput } from "./common.dto";
+import { UserDTO, ServiceDTO, ProviderServiceDTO, ProviderProfileDTO, ApiPaginationInput } from "./common.dto";
 
-// user update profile image use case request payload interface 
-export type UpdateUserProfileImageRequest = Pick<UserDTO, "profileImage"> & {
-    userId: UserDTO["_id"],
-}
-
-// user update profile image use case response interface
-export type UpdateUserProfileImageResponse = UserDTO["profileImage"];
-
-// user update user info request payload interface
-export interface UpdateUserProfileInfoRequest {
-    userId: UserDTO["_id"];
-    username: UserDTO["username"];
-    phone: UserDTO["phone"];
-}
-
-// user update user info use case response interface
-export type UpdateUserProfileInfoResponse = Pick<UserDTO, "username" | "phone">
-
-// change push notification request
-export interface ChangePushNotificationRequest {
-    userId: UserDTO["_id"];
-    allowPushNotification: boolean;
-};
-
-// user get provider service use case request payload interface
-export interface UserGetServiceproviderServiceRequest {
-    providerId: UserDTO["_id"];
-}
-
-// user get provider service use case response interface
-type FindProviderServiceProps = Pick<ProviderServiceDTO, "serviceName" | "serviceDescription" | "servicePrice" | "serviceExperience" | "videoUrl" | "serviceType" | "serviceMode" | "requirements" | "maxParticipants" | "isGroupService">;
-export interface FindProviderServiceResponse extends FindProviderServiceProps {
-    service: Pick<ServiceDTO, "serviceName">
-}
-
-// user get provider service use case response interface
-export type UserGetProviderServiceResponse = FindProviderServiceResponse | null;
-
-// use save appointment booking after stripe payment use case request payload
-export interface UserSaveAppointmentBookingRequest {
-    userId: UserDTO["_id"];
-    sessionId: string;
-}
-
-// user create review request
-export type CreateReviewRequset = Pick<ReviewDTO, "reviewText" | "rating" | "userId" | "providerId" | "bookingId">;
-
-// User delete review
-export interface UserDeleteReviewRequest {
-    reviewId: Review["_id"];
-    userId: UserDTO["_id"];
-}
-
-// Used as the request interface of admin get user profile details
-export interface GetUserProfileDetailsRequest {
-    userId: UserDTO["_id"];
-    isAdmin: boolean;
-}
-// Used as the response type of admin get user profile details
-export type GetUserProfileDetailsResponse = Pick<UserDTO, "username" | "phone" | "isBlocked" | "email" | "createdAt"> & Partial<Pick<UserDTO, "profileImage">> | null;
-
-// Used as the request interface of admin change block status of user  
-export interface ChangeUserIsBlockedStatusRequest {
-    userId: UserDTO["_id"];
-    isBlocked: UserDTO["isBlocked"];
-};
-// Used as the response type of admin change user block status
-export type ChangeUserIsBlockedStatusResponse = ChangeUserIsBlockedStatusRequest;
-
-export type setRoleRequest = Pick<UserDTO, "role" | "_id">;
-
-export type setRoleResponse = Pick<UserDTO, "isOnboardingCompleted" | "hasSelectedRole">;
-
-// Used as the request type of admin get dashboard user stats data
-
-
-
-
-//// ****  user queries dtos **** ////
+//// ****  user queries parameter and return type **** ////
 
 // 1. findStats method parameter and return
 export interface UserDataQuery extends GetStatsDataCommonInput { }
@@ -124,8 +45,52 @@ export interface ProviderStatsView {
 
 
 
-
 //// ****  user useCase dtos **** ////
+
+// UpdateUserProfileImage usecase input output
+export type UpdateUserProfileImageInput = Pick<UserDTO, "profileImage"> & {
+    userId: UserDTO["_id"],
+}
+export type UpdateUserProfileImageOutput = UserDTO["profileImage"];
+
+// UpdateUserProfileInfo usecase input output
+export interface UpdateUserProfileInfoInput {
+    userId: UserDTO["_id"];
+    username: UserDTO["username"];
+    phone: UserDTO["phone"];
+}
+export type UpdateUserProfileInfoOutput = Pick<UserDTO, "username" | "phone">
+
+// ChangePushNotification usecase input output
+export interface ChangePushNotificationInput {
+    userId: UserDTO["_id"];
+    allowPushNotification: boolean;
+};
+
+// FindProviderService usecase input
+type FindProviderServiceProps = Pick<ProviderServiceDTO, "serviceName" | "serviceDescription" | "servicePrice" | "serviceExperience" | "videoUrl" | "serviceType" | "serviceMode" | "requirements" | "maxParticipants" | "isGroupService">;
+export interface FindProviderServiceOutput extends FindProviderServiceProps {
+    service: Pick<ServiceDTO, "serviceName">
+}
+
+// Used as the request interface of admin get user profile details
+export interface GetUserProfileDetailsInput {
+    userId: UserDTO["_id"];
+    isAdmin: boolean;
+}
+// Used as the response type of admin get user profile details
+export type GetUserProfileDetailsOutput = Pick<UserDTO, "username" | "phone" | "isBlocked" | "email" | "createdAt"> & Partial<Pick<UserDTO, "profileImage">> | null;
+
+// Used as the request interface of admin change block status of user  
+export interface ChangeUserIsBlockedStatusInput {
+    userId: UserDTO["_id"];
+    isBlocked: UserDTO["isBlocked"];
+};
+// Used as the response type of admin change user block status
+export type ChangeUserIsBlockedStatusOutput = ChangeUserIsBlockedStatusInput;
+
+export type setRoleInput = Pick<UserDTO, "role" | "_id">;
+export type setRoleOutput = Pick<UserDTO, "isOnboardingCompleted" | "hasSelectedRole">;
 
 // GetUserData usecase input output
 export type GetUserDataInput = UserDataQuery;
@@ -168,16 +133,14 @@ export interface GetUserForChatSidebarInput {
 }
 export type GetUserForChatSidebarOutput = Array<Pick<UserDTO, "_id" | "username" | "profileImage">>
 
-// used in admin get provider details usecase
+// AdminGetProviderDetails usecase input output
 export interface AdminGetProviderDetailsInput {
     providerId: UserDTO["_id"];
 }
 export type AdminGetProviderDetailsOutput = Pick<UserDTO, "_id" | "username" | "email" | "phone" | "createdAt" | "profileImage" | "isBlocked"> & Pick<ProviderProfileDTO, "adminVerificationStatus" | "isAddressVerified" | "isAdminVerified" | "isAvailabilityVerified" | "isProofsVerified" | "isServiceDetailsVerified" | "trustedBySlotflow"> | null;
 
-// 
-// **** Used in get provider proofs usecase
+// GetProviderProofs usecase input output
 export interface GetProviderProofsInput {
     providerId: UserDTO["_id"];
 };
-
 export type GetProviderProofsOutput = Pick<ProviderProfileDTO, "identityProof" | "serviceProof">;

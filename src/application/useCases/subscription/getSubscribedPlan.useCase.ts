@@ -1,7 +1,7 @@
 import { log } from "../../../shared/logger/logger";
 import { ISubscriptionQueries } from "../../queries/ISubscription.queries";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
-import { GetSubscribedPlanInput, GetSubscribedPlanOutput } from "../../dtos/subscription";
+import { GetSubscribedPlanInput, GetSubscribedPlanOutput } from "../../dtos/subscription.dto";
 
 export class GetSubscribedPlanUseCase {
     constructor(

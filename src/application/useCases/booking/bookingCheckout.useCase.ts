@@ -2,8 +2,8 @@ import { v4 as uuid } from 'uuid';
 import { log } from "../../../shared/logger/logger";
 import { PaymentFor } from "../../../domain/enums/payment.enum";
 import { Booking } from "../../../domain/entities/booking.entity";
-import { FindProviderServiceResponse } from "../../dtos/common.dto";
-import { UserAppointmentBookingViaStripeInput } from '../../dtos/booking.dtos';
+import { FindProviderServiceOutput } from "../../dtos/common.dto";
+import { UserAppointmentBookingViaStripeInput } from '../../dtos/booking.dto';
 import { IProviderServiceQueries } from "../../queries/IProviderService.queries";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
 import { IServiceAvailabilityQueries } from "../../queries/IServiceAvailability.queries";
@@ -33,10 +33,10 @@ export class BookingCheckoutUseCase {
             const providerProfile = await this.providerProfileRepository.findById(providerId);
             if (!providerProfile) throw new Error("No provider found");
 
-            const providerService = await this.providerServiceQueries.findByProviderId({providerId});
+            const providerService = await this.providerServiceQueries.findByProviderId({ providerId });
             if (!providerService) throw new Error("No service found");
 
-            function isServiceData(obj: any): obj is FindProviderServiceResponse {
+            function isServiceData(obj: any): obj is FindProviderServiceOutput {
                 return obj && typeof obj === 'object' && '_id' in obj;
             }
 
@@ -56,7 +56,7 @@ export class BookingCheckoutUseCase {
             const existBooking = await this.bookingRepository.findByUserId(userId, date, selectedSlot[0].time);
             if (existBooking && existBooking.length > 0) throw new Error("You have already an appointment on the same time");
 
-           const booking = await this.bookingRepository.create(Booking.create({
+            const booking = await this.bookingRepository.create(Booking.create({
                 appointmentDate: date,
                 appointmentMode: selectedServiceMode,
                 appointmentStatus: AppointmentStatus.PENDING,

@@ -1,19 +1,21 @@
 import { PlanDTO } from "./common.dto";
 
-// type for create plan
+//// **** plan dtos **** ////
+
+// CreatePlan usecase input
 export type CreatePlanInput = Pick<PlanDTO, "planName" | "description" | "price" | "features" | "maxBookingPerMonth" | "adVisibility">;
 
-// type for get plans
+// GetPlans usecase output
 export type GetPlansOutput = Array<Pick<PlanDTO, "_id" | "planName" | "isBlocked" | "price" | "maxBookingPerMonth" | "adVisibility">>;
 
-// type for change plan block status
+// ChangePlanBlockStatus usecase output
 export type ChangePlanBlockStatusOutput = {
     planId: PlanDTO["_id"];
     isBlocked: PlanDTO["isBlocked"];
 };
 
-// type for change plan block status
+// ChangePlanBlockStatus usecase input
 export type ChangePlanBlockStatusInput = ChangePlanBlockStatusOutput;
 
-// type for provider get plans
+// ProviderGetPlans usecase output
 export type ProviderGetPlansOutput = Array<Pick<PlanDTO, "_id" | "planName" | "price" | "features" | "description">> | [];

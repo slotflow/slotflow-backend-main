@@ -2,7 +2,7 @@ import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/common.enum";
 import { IServiceAvailabilityQueries } from "../../queries/IServiceAvailability.queries";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
-import { UpdateBookingOnlineTrackInput, UpdateBookingOnlineTrackOutput } from "../../dtos/booking.dtos";
+import { UpdateBookingOnlineTrackInput, UpdateBookingOnlineTrackOutput } from "../../dtos/booking.dto";
 
 export class UpdateBookingOnlineTrakingUseCase {
     constructor(

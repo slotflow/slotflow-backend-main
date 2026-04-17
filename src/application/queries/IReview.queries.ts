@@ -1,5 +1,5 @@
 import { TableData } from "../dtos/common.dto";
-import { GetReviewsQuery, GetReviewsView } from "../dtos/review.dtos";
+import { GetReviewsQuery, GetReviewsView } from "../dtos/review.dto";
 
 export interface IReviewQueries {
 

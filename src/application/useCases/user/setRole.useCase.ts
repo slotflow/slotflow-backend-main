@@ -1,6 +1,6 @@
 import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/common.enum";
-import { setRoleRequest, setRoleResponse } from "../../dtos/user.dto";
+import { setRoleInput, setRoleOutput } from "../../dtos/user.dto";
 import { ProviderProfile } from "../../../domain/entities/providerProfile.entity";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
@@ -11,7 +11,7 @@ export class SetRoleUseCase {
         private readonly providerProfile: IProviderProfileRepository
     ) { };
 
-    async execute(input: setRoleRequest): Promise<setRoleResponse> {
+    async execute(input: setRoleInput): Promise<setRoleOutput> {
         try {
             const { _id: userId, role } = input;
             const user = await this.userRepository.findById(userId);

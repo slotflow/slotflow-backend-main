@@ -1,5 +1,5 @@
 import { log } from "../../../shared/logger/logger";
-import { CreateReviewRequset } from "../../dtos/user.dto";
+import { CreateReviewInput } from "../../dtos/review.dto";
 import { Review } from "../../../domain/entities/review.entity";
 import { IReviewRepository } from "../../../domain/interfaces/repositories/IReview.repository";
 
@@ -8,7 +8,7 @@ export class CreateReviewUseCase {
         private reviewRepository: IReviewRepository,
     ) { };
 
-    async execute(input: CreateReviewRequset): Promise<void> {
+    async execute(input: CreateReviewInput): Promise<void> {
         try {
             const { providerId, rating, reviewText, userId, bookingId } = input;
 

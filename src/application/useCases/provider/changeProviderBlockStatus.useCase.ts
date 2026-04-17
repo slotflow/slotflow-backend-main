@@ -3,7 +3,7 @@ import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
 import { notificationContentMap } from "../../../shared/utils/constants";
 import { ICacheService } from "../../../domain/interfaces/services/ICache.service";
-import { EventEnvelope, SendAccountBlockStatusEvent } from "../../dtos/kafka.dtos";
+import { EventEnvelope, SendAccountBlockStatusEvent } from "../../dtos/kafka.dto";
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 import { AdminChangeProviderBlockStatusInput, AdminChangeProviderBlockStatusOutput } from "../../dtos/admin.dto";

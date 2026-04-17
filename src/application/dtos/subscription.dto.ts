@@ -5,7 +5,7 @@ import { SubscriptionStatus, SubscriptionValidity } from "../../domain/enums/sub
 
 //// **** subscription queries parameter and return **** ////
 
-// 1. findAll method parameter and return
+// findAll method parameter and return
 export interface SubscriptionsQuery extends ApiPaginationInput {
     providerId?: UserDTO["_id"];
 }

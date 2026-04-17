@@ -6,7 +6,7 @@ import { getStartAndEndDate } from "../../shared/utils/dateTime";
 import { IBookingQueries } from "../../application/queries/IBooking.queries";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { TableData, BookingDTO } from "../../application/dtos/common.dto";
-import { BookingDetailsQuery, BookingDetailsView, BookingGraphStatsForProviderQuery, BookingGraphStatsForProviderView, BookingsBaseView, BookingsQuery, BookingsStatsForAdminQuery, BookingsStatsForAdminView, BookingStatsForProviderQuery, BookingStatsForProviderView, BookingsView, BookingUsersForChatQuery, BookingUsersForChatView, OnlineBookingsViewForProvider, OnlineBookingsViewForUser } from "../../application/dtos/booking.dtos";
+import { BookingDetailsQuery, BookingDetailsView, BookingGraphStatsForProviderQuery, BookingGraphStatsForProviderView, BookingsBaseView, BookingsQuery, BookingsStatsForAdminQuery, BookingsStatsForAdminView, BookingStatsForProviderQuery, BookingStatsForProviderView, BookingsView, BookingUsersForChatQuery, BookingUsersForChatView, OnlineBookingsViewForProvider, OnlineBookingsViewForUser } from "../../application/dtos/booking.dto";
 
 export class BookingQueriesImpl implements IBookingQueries {
 

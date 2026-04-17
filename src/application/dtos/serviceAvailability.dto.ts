@@ -1,4 +1,4 @@
-import { FontendAvailabilityForResponse, FrontendAvailabilityForRequest, ServiceAvailabilityDTO, UserDTO } from "./common.dto";
+import { FrontendAvailabilityForResponse, FrontendAvailabilityForRequest, ServiceAvailabilityDTO, UserDTO } from "./common.dto";
 
 //// **** service availability queries parameter and return **** ////
 
@@ -8,7 +8,7 @@ export type ServiceAvailabilityQuery = {
     availabilityId?: ServiceAvailabilityDTO["_id"];
     date: Date;
 }
-export type ServiceAvailabilityView = FontendAvailabilityForResponse | null;
+export type ServiceAvailabilityView = FrontendAvailabilityForResponse | null;
 
 
 
@@ -26,7 +26,7 @@ export interface GetServiceAvailabilityInput {
     providerId: string;
     date: Date;
 }
-export type GetServiceAvailabilityOutput = FontendAvailabilityForResponse | null;
+export type GetServiceAvailabilityOutput = FrontendAvailabilityForResponse | null;
 
 // create service availability input
 export interface CreateServiceAvailabilityInput {

@@ -1,7 +1,7 @@
 import { log } from "../../../shared/logger/logger";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
-import { GetUserProfileDetailsRequest, GetUserProfileDetailsResponse } from "../../dtos/user.dto";
+import { GetUserProfileDetailsInput, GetUserProfileDetailsOutput } from "../../dtos/user.dto";
 
 export class GetUserProfileDetailsUseCase {
     constructor(
@@ -9,7 +9,7 @@ export class GetUserProfileDetailsUseCase {
         private signedUrlService: ISignedUrlService
     ) { };
 
-    async execute(input: GetUserProfileDetailsRequest): Promise<GetUserProfileDetailsResponse> {
+    async execute(input: GetUserProfileDetailsInput): Promise<GetUserProfileDetailsOutput> {
         try {
             const { userId, isAdmin } = input;
 

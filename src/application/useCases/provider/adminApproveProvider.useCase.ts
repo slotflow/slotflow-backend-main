@@ -4,7 +4,7 @@ import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/common.enum";
 import { AdminApproveProviderInput } from "../../dtos/admin.dto";
 import { notificationContentMap } from "../../../shared/utils/constants";
-import { EventEnvelope, SendAdminProviderReviewEvent } from "../../dtos/kafka.dtos";
+import { EventEnvelope, SendAdminProviderReviewEvent } from "../../dtos/kafka.dto";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { AdminVerificationStatus } from "../../../domain/enums/adminVerificationStatus.enum";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";

@@ -4,7 +4,7 @@ import { Role } from "../../domain/enums/common.enum";
 import { Review } from "../../domain/entities/review.entity";
 import { ReviewDTO, TableData } from "../../application/dtos/common.dto";
 import { IReviewQueries } from "../../application/queries/IReview.queries";
-import { GetReviewsQuery, GetReviewsView } from "../../application/dtos/review.dtos";
+import { GetReviewsQuery, GetReviewsView } from "../../application/dtos/review.dto";
 
 export class ReviewQueriesImpl implements IReviewQueries {
 
@@ -22,9 +22,9 @@ export class ReviewQueriesImpl implements IReviewQueries {
         } else if (role === Role.USER && providerId) {
             filter.providerId = providerId;
             filter.isBlocked = false;
-        } else if(role === Role.ADMIN && userId) {
+        } else if (role === Role.ADMIN && userId) {
             filter.userId = userId;
-        } else if(role === Role.ADMIN && providerId) {
+        } else if (role === Role.ADMIN && providerId) {
             filter.providerId = providerId;
         }
 

@@ -3,8 +3,8 @@ import { kafkaConfig } from '../../../config/env';
 import { log } from '../../../shared/logger/logger';
 import { OtpPurpose } from '../../../domain/enums/common.enum';
 import { IJWT } from '../../../domain/interfaces/security/IJwt';
-import { EventEnvelope, SendOtpEvent } from '../../dtos/kafka.dtos';
-import { RegisterRequest, RegisterResponse } from '../../dtos/auth.dto';
+import { EventEnvelope, SendOtpEvent } from '../../dtos/kafka.dto';
+import { RegisterInput, RegisterOutput } from '../../dtos/auth.dto';
 import { IOTPService } from '../../../domain/interfaces/services/IOtp.service';
 import { IPasswordHasher } from '../../../domain/interfaces/security/IPasswordHasher';
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
@@ -20,7 +20,7 @@ export class RegisterUseCase {
     private kafkaProducer: IKafkaProducerAdapter
   ) { };
 
-  async execute(input: RegisterRequest): Promise<RegisterResponse> {
+  async execute(input: RegisterInput): Promise<RegisterOutput> {
     try {
       const { username, email, password } = input;
       if (!username || !email || !password) throw new Error("Invalid request");

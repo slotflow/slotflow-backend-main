@@ -1,5 +1,5 @@
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { UpdateStripeCustomerCreatedConsumeEvent } from "../../dtos/kafka.dtos";
+import { UpdateStripeCustomerCreatedConsumeEvent } from "../../dtos/kafka.dto";
 
 export class UpdateStripeCustomerCreatedUseCase {
     constructor(

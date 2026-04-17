@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
-import { UpdatePasswordRequest } from "../../dtos/auth.dto";
+import { UpdatePasswordInput } from "../../dtos/auth.dto";
 import { IJWT } from '../../../domain/interfaces/security/IJwt';
 import { notificationContentMap } from '../../../shared/utils/constants';
-import { EventEnvelope, SendResetPasswordEvent } from "../../dtos/kafka.dtos";
+import { EventEnvelope, SendResetPasswordEvent } from "../../dtos/kafka.dto";
 import { IPasswordHasher } from "../../../domain/interfaces/security/IPasswordHasher";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
@@ -17,7 +17,7 @@ export class UpdatePasswordUseCase {
         public readonly jwtService: IJWT,
     ) { };
 
-    async execute(input: UpdatePasswordRequest): Promise<void> {
+    async execute(input: UpdatePasswordInput): Promise<void> {
         try {
             const { token, password } = input;
 

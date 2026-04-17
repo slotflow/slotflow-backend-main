@@ -4,7 +4,7 @@ import { PaymentFor } from "../../../domain/enums/payment.enum";
 import { getNumberOfMonths } from "../../../shared/utils/dateTime";
 import { Subscription } from "../../../domain/entities/subscription.entity";
 import { SubscriptionStatus } from "../../../domain/enums/subscription.enum";
-import { SubscriptionCreateSessionIdInput } from "../../dtos/subscription";
+import { SubscriptionCreateSessionIdInput } from "../../dtos/subscription.dto";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IPaymentServiceClient } from "../../../domain/interfaces/clients/IPaymentService.client";
@@ -50,7 +50,7 @@ export class SubscriptionCheckoutUseCase {
 
             const months: number = getNumberOfMonths(planDuration);
 
-            const { data } = await this.paymentServiceClient.createSubsciptionCheckoutSession({
+            const { data } = await this.paymentServiceClient.createSubscriptionCheckoutSession({
                 subscriptionId: subscription._id.toString(),
                 providerId,
                 planName: plan.planName,

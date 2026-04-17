@@ -1,6 +1,6 @@
 import { log } from "../../../shared/logger/logger";
 import { IServiceRepository } from "../../../domain/interfaces/repositories/IService.repository";
-import { GetServicesByCategoryRequest, GetServicesByCategoryResponse } from "../../dtos/service.dto";
+import { GetServicesByCategoryInput, GetServicesByCategoryOutput } from "../../dtos/service.dto";
 
 export class GetServicesByCategoryUseCase {
 
@@ -8,7 +8,7 @@ export class GetServicesByCategoryUseCase {
         private serviceRepository: IServiceRepository
     ) { };
 
-    async execute(input: GetServicesByCategoryRequest): Promise<GetServicesByCategoryResponse> {
+    async execute(input: GetServicesByCategoryInput): Promise<GetServicesByCategoryOutput> {
         try {
             const { categories } = input;
             const services = await this.serviceRepository.findAllByCategory(categories);
