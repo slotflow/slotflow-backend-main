@@ -6,14 +6,14 @@ import { DecodedUser } from "../../application/dtos/common.dto";
 import { adminUserBlockStatusSchema } from "../../shared/zod/admin.zod";
 import { SetRoleUseCase } from "../../application/useCases/user/setRole.useCase";
 import { GetUsersUseCase } from "../../application/useCases/user/getUsers.useCase";
-import { paginationSchema, roleValidationSchema } from "../../shared/zod/base.zod";
+import { paginationSchema, roleValidationSchema, validateUserIdSchema } from "../../shared/zod/base.zod";
 import { GetUserProfileDetailsUseCase } from "../../application/useCases/user/getUserProfile.useCase";
 import { UpdateUserProfileInfoUseCase } from "../../application/useCases/user/updateUserProfileInfo.useCase";
 import { ChangeUserBlockStatusUseCase } from "../../application/useCases/user/changeUserBlockStatus.useCase";
 import { ChangePushNotificationUseCase } from "../../application/useCases/user/changePushNotification.useCase";
 import { UpdateUserProfileImageUseCase } from "../../application/useCases/user/updateUserProfileImage.useCase";
 import { GetUserForChatSidebarUseCase } from "../../application/useCases/user/getUserFroChat.useCase";
-import { userUpdateFileSchema, userUpdateInfoSchema, userUpdatePushNotificationSchema, validateUserIdSchema } from "../../shared/zod/user.zod";
+import { userUpdateFileSchema, userUpdateInfoSchema, userUpdatePushNotificationSchema } from "../../shared/zod/user.zod";
 import { changePushNotificationUseCase, changeUserBlockStatusUseCase, getUserProfileDetailsUseCase, getUsersUseCase, getUserForChatSidebarUseCase, setRoleUseCase, updateUserProfileImageUseCase, updateUserProfileInfoUseCase } from ".";
 
 class UserController {

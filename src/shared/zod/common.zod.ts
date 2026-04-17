@@ -9,16 +9,6 @@ export const presignedUrlSchema = z.object({
   fileType: z.nativeEnum(FileType),
 });
 
-// file deletion validation schema
-export const deleteFileSchema = z.object({
-  folder: z.string().min(1).max(50, "Folername too long"),
-});
-
-// get all app services validation schema
-export const getAllAppServicesSchema = z.object({
-  serviceCategory: z.nativeEnum(ServiceCategory).array(),
-});
-
 // change block status validation schema
 export const changeBlockStatusSchema = z.object({
   blockStatus: z.boolean(),

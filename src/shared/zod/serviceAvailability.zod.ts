@@ -1,9 +1,10 @@
 import z from "zod";
-import { Day } from "../../domain/enums/common.enum";
 import { timeRegex } from "../utils/regex";
+import { Day } from "../../domain/enums/common.enum";
 import { ServiceMode } from "../../domain/enums/service.enum";
 import { dateSchema, validateProviderIdSchema } from "./base.zod";
 
+// Create service availability schema
 export const createServiceAvailabilitySchema = z.array(
     z.object({
         day: z.enum(Day),
@@ -15,6 +16,7 @@ export const createServiceAvailabilitySchema = z.array(
     })
 );
 
+// Get service availability schema
 export const getServiceAvailabilitySchema = z.object({
   date: dateSchema,
 }).merge(validateProviderIdSchema);

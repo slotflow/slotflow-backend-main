@@ -1,7 +1,6 @@
 import { z } from 'zod';
-import { validateUserIdSchema } from './user.zod';
-import { roleValidationSchema } from './base.zod';
 import { strongPasswordRegex, usernameRegex } from '../utils/regex';
+import { roleValidationSchema, validateUserIdSchema } from './base.zod';
 
 // Regist controller zod validation
 export const registerSchema = z
@@ -52,7 +51,7 @@ export const updatePasswordSchema = z.object({
     .regex(strongPasswordRegex, "Password must contain uppercase, lowercase, number & symbol")
 });
 
-//
+// Connect google account zod validation schema
 export const connectGoogleSchema = z.object({
   connectOnly: z.boolean(),
 }).merge(validateUserIdSchema).merge(roleValidationSchema)

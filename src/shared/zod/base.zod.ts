@@ -11,10 +11,6 @@ export const validateProviderIdSchema = z.object({
     providerId: z.string().regex(objectIdRegex, "Invalid providerId"),
 });
 
-export const validateReviewIdSchema = z.object({
-    reviewId: z.string().regex(objectIdRegex, "Invalid reviewId"),
-});
-
 export const validateSubscriptionIdSchema = z.object({
     subscriptionId: z.string().regex(objectIdRegex, "Invalid subscriptionId"),
 });
@@ -110,11 +106,6 @@ export const addressSchema = z.object({
 export const updateInfoSchema = z.object({
     username: z.string().min(4).max(30).regex(usernameRegex, "Invalid username"),
     phone: z.string().min(4).max(30).regex(phoneRegex, "Invalid phone number")
-});
-
-// Stripe payment schema
-export const saveStripePaymentSchema = z.object({
-    sessionId: z.string().min(5).max(200).regex(sessionIdRegex, "Invalid session Id"),
 });
 
 // S3 file key schema

@@ -112,7 +112,7 @@ export interface GetProviderDataOutput {
 };
 
 // GetProviders usecase input output
-export type GetProvidersOuput = Array<Pick<UserDTO, "_id" | "username" | "email" | "isBlocked"> & Pick<ProviderProfileDTO, "adminVerificationStatus" | "isAdminVerified" | "trustedBySlotflow">>;
+export type GetProvidersOutput = Array<Pick<UserDTO, "_id" | "username" | "email" | "isBlocked"> & Pick<ProviderProfileDTO, "adminVerificationStatus" | "isAdminVerified" | "trustedBySlotflow">>;
 
 // ProviderGetOwnProfileDetails usecase input output
 export interface ProviderGetOwnProfileDetailsInput {

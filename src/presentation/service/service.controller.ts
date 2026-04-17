@@ -2,7 +2,7 @@ import { log } from "../../shared/logger/logger";
 import { Role } from "../../domain/enums/common.enum";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
-import { getServicesSchema } from "../../shared/zod/service";
+import { getServicesSchema } from "../../shared/zod/service.zod";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { GetServicesUseCase } from "../../application/useCases/service/getServices.useCase";
 import { CreateServiceUseCase } from "../../application/useCases/service/createService.useCase";

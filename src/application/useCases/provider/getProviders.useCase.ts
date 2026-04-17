@@ -1,5 +1,5 @@
 import { log } from "../../../shared/logger/logger";
-import { GetProvidersOuput } from "../../dtos/user.dto";
+import { GetProvidersOutput } from "../../dtos/user.dto";
 import { IUserQueries } from "../../queries/IUser.queries";
 import { ApiPaginationInput, TableData } from "../../dtos/common.dto";
 

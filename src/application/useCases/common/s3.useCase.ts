@@ -4,14 +4,14 @@ import { log } from "../../../shared/logger/logger";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { DeleteObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
-import { CreareFileUploadPresignedUrlInput, CreareFileUploadPresignedUrlOutput, CreateFileSignedUrlInput } from "../../dtos/common.dto";
+import { CreareFileUploadPresignedUrlInput, CreateFileUploadPresignedUrlOutput, CreateFileSignedUrlInput } from "../../dtos/common.dto";
 
 export class CreateFileUploadPresignedUrlUseCase {
     constructor(
         private s3Client: S3Client
     ) { };
 
-    async execute(data: CreareFileUploadPresignedUrlInput): Promise<CreareFileUploadPresignedUrlOutput> {
+    async execute(data: CreareFileUploadPresignedUrlInput): Promise<CreateFileUploadPresignedUrlOutput> {
         try {
             const { fileName, fileType, folderName } = data;
 

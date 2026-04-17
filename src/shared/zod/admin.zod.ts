@@ -1,25 +1,11 @@
 import { z } from "zod";
-import { ServiceCategory } from "../../domain/enums/service.enum";
-import {
-    validateUserIdSchema,
-    validateProviderIdSchema,
-    validateReviewIdSchema,
-    paginationSchema,
-    dateSchema,
-    roleValidationSchema
-} from "./base.zod";
 import { changeBlockStatusSchema } from "./common.zod";
+import { ServiceCategory } from "../../domain/enums/service.enum";
+import { validateUserIdSchema, validateProviderIdSchema } from "./base.zod";
 import { objectIdRegex, serviceNameRegex, verificationRejectionReasonRegex } from "../utils/regex";
-
-
 
 // Admin change user block status
 export const adminUserBlockStatusSchema = validateUserIdSchema.merge(changeBlockStatusSchema);
-
-// 
-export const adminGetSubscriptionDetailsSchema = z.object({
-    subscriptionId: z.string().regex(objectIdRegex, "Invalid subscriptionId"),
-});
 
 // Admin adding new app service controller zod validation
 export const adminCreateNewServiceSchema = z.object({
@@ -27,18 +13,15 @@ export const adminCreateNewServiceSchema = z.object({
     serviceCategory: z.nativeEnum(ServiceCategory),
 });
 
-// 
+// Admin change service block status
 export const adminChangeServiceBlockStatusSchema = z.object({
     serviceId: z.string().regex(objectIdRegex, "Invalid serviceId"),
 }).merge(changeBlockStatusSchema);
 
-//
-export const adminChangeReviewBlockStatusSchema = validateReviewIdSchema.merge(changeBlockStatusSchema);
-
-//
+// Admin change provider block status
 export const adminChangeProviderBlockStatusSchema = validateProviderIdSchema.merge(changeBlockStatusSchema);
 
-//
+// Admin change provider trust tag
 export const adminChangeProviderTrustTagSchema = z.object({
     trustTag: z.boolean(),
 }).merge(validateProviderIdSchema);
@@ -51,19 +34,3 @@ export const adminRejectProviderSchema = z.object({
     isAvailabilityVerified: z.boolean(),
     isProofsVerified: z.boolean(),
 }).merge(validateProviderIdSchema);
-
-//
-
-//
-export const adminGetRevenueReposrtSchema = z.object({
-    startDate: dateSchema,
-    endDate: dateSchema
-}).merge(paginationSchema);
-
-//
-export const adminGetReviewsSchema = z.object({
-    userId: z.string().regex(objectIdRegex, "Invalid planId").optional(),
-    providerId: z.string().regex(objectIdRegex, "Invalid planId").optional(),
-}).merge(roleValidationSchema).merge(paginationSchema);
-
-export { validateReviewIdSchema };

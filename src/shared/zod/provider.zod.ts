@@ -1,21 +1,16 @@
 import { z } from "zod";
 import { PlanName } from "../../domain/enums/plan.enum";
-import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
-import { objectIdRegex, serviceDescriptionRegex, serviceExperienceRegex, serviceNameRegex, timeRegex } from "../utils/regex";
 import {
     validateProviderIdSchema,
     paginationSchema,
     dateSchema,
-    addressSchema,
-    updateInfoSchema,
     s3FileKeySchema,
-    validateReviewIdSchema
 } from "./base.zod";
-import { Day } from "../../domain/enums/common.enum";
 import { ServiceMode, ServiceType } from "../../domain/enums/service.enum";
 import { SubscriptionValidity } from "../../domain/enums/subscription.enum";
+import { objectIdRegex, serviceDescriptionRegex, serviceExperienceRegex, serviceNameRegex, timeRegex } from "../utils/regex";
 
-//
+// Provider id with pagination validation schema
 export const providerIdWithPaginationSchema = z.object({
     providerId: z.string().regex(objectIdRegex, "Invalid providerId").optional()
 }).merge(paginationSchema);
@@ -91,16 +86,13 @@ export const serviceDetailsSchema = z.object({
   ]).optional(),
 });
 
-//
+// Provider create service details validation schema
 export const providerCreateServiceDetailsSchema = serviceDetailsSchema.merge(validateProviderIdSchema);
 
-//
+// Provider update service details validation schema
 export const providerUpdateServiceDetailsSchema = z.object({
     serviceId: z.string().regex(objectIdRegex, "Invalid serviceId"),
 }).merge(serviceDetailsSchema);
-
-// Provider add service availability
-
 
 // Provider plan subscription duration validation
 export const providerPlanSubscribeSchema = z.object({
@@ -109,25 +101,12 @@ export const providerPlanSubscribeSchema = z.object({
 }).merge(validateProviderIdSchema);
 
 
-//
+// Provider dashboard validation schema
 export const providerValidateDashboardDataSchema = z.object({
     subscription: z.nativeEnum(PlanName).default(PlanName.TRIAL),
     endDate: dateSchema.optional(),
     startDate: dateSchema.optional(),
 });
 
-//
+// Provider update file validation schema
 export const providerValidateUpdateFileSchema = s3FileKeySchema.merge(validateProviderIdSchema);
-
-//
-export const providerValidateUpdateInfoSchema = validateProviderIdSchema.merge(updateInfoSchema);
-
-//
-export const providerChnageReviewReportSchema = validateReviewIdSchema.merge(validateProviderIdSchema);
-
-//
-export const providerUpdatePushNotificationSchema = z.object({
-    allowPushNotification: z.boolean(),
-}).merge(validateProviderIdSchema);
-
-export { validateProviderIdSchema };

@@ -357,14 +357,7 @@ export interface CreateGoogleCalendarEventInput {
 }
 
 // used in create file upload presigned url usecase
-export interface CreareFileUploadPresignedUrlInput {
-  folderName: string;
-  fileName: string;
-  fileType: string;
-};
-
-// used in create file upload presigned url usecase
-export interface CreareFileUploadPresignedUrlOutput {
+export interface CreateFileUploadPresignedUrlOutput {
   uploadUrl: string;
   key: string;
 };
