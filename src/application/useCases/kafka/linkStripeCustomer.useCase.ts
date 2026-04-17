@@ -1,5 +1,5 @@
 import { log } from "../../../shared/logger/logger";
-import { LinkStripeCustomerRequest } from "../../dtos/common.dto";
+import { LinkStripeCustomerInput } from "../../dtos/common.dto";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 
 export class LinkStripeCustomerUseCase {
@@ -7,7 +7,7 @@ export class LinkStripeCustomerUseCase {
         private readonly userRepository: IUserRepository,
     ) { };
 
-    async execute(input: LinkStripeCustomerRequest): Promise<void> {
+    async execute(input: LinkStripeCustomerInput): Promise<void> {
         try {
             const { stripeCustomerId, userId } = input;
             const user = await this.userRepository.findById(userId);

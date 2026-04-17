@@ -3,7 +3,7 @@ import { daysOfWeek } from "../../shared/utils/constants";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { ServiceAvailabilityModel } from "../models/serviceAvailability.model";
 import { IServiceAvailabilityQueries } from "../../application/queries/IServiceAvailability.queries";
-import { ServiceAvailabilityDTO, TimeSlotForFrontendResponse } from "../../application/dtos/common.dto";
+import { ServiceAvailabilityDTO, TimeSlotForClientOutput } from "../../application/dtos/common.dto";
 import { ServiceAvailabilityQuery, ServiceAvailabilityView } from "../../application/dtos/serviceAvailability.dto";
 
 export class ServiceAvailabilityQueriesImpl implements IServiceAvailabilityQueries {
@@ -125,7 +125,7 @@ export class ServiceAvailabilityQueriesImpl implements IServiceAvailabilityQueri
                 $replaceWith: "$availabilityForDay"
             },
         ]);
-        console.log("availability : ",availability);
+        console.log("availability : ", availability);
         const data = availability[0];
         if (!data) return null;
 
@@ -135,7 +135,7 @@ export class ServiceAvailabilityQueriesImpl implements IServiceAvailabilityQueri
             endTime: data.endTime,
             modes: data.modes,
             startTime: data.startTime,
-            slots: data.slots.map((slot: TimeSlotForFrontendResponse) => ({
+            slots: data.slots.map((slot: TimeSlotForClientOutput) => ({
                 _id: slot._id.toString(),
                 time: slot.time,
                 available: slot.available,

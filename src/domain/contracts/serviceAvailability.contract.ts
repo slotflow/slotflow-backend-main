@@ -5,7 +5,7 @@ export interface TimeSlot {
     time: string,
 };
 
-export interface TimeSlotForFrontendResponse {
+export interface TimeSlotForClientOutput {
     _id: string,
     time: string,
     available: boolean,

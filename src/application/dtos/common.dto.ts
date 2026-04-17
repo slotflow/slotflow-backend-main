@@ -190,7 +190,7 @@ export interface TimeSlot {
   time: string,
 };
 
-export interface TimeSlotForFrontendResponse {
+export interface TimeSlotForClientOutput {
   _id: string,
   time: string,
   available: boolean,
@@ -217,21 +217,21 @@ export interface ServiceAvailabilityDTO {
 
 
 
-// **** Used as the request interface for the paginated request
+// **** Used as the input interface for the paginated request
 export interface ApiPaginationInput {
   page: number;
   limit: number;
 }
 
 
-// **** Used as the response interface for the all request
+// **** Used as the output interface for the all request
 export interface CommonOutput {
   success?: boolean;
   message?: string;
 };
 
 
-// **** Used as the response interface for the paginated response
+// **** Used as the output interface for the paginated response
 export interface ApiOutput<T = unknown> extends CommonOutput {
   totalPages?: number;
   currentPage?: number;
@@ -381,12 +381,12 @@ export interface PlanNameOnly {
 }
 
 // used in create service availability usecase
-export interface FrontendAvailabilityForResponse extends Omit<Availability, "slots"> {
-  slots: TimeSlotForFrontendResponse[]
+export interface FrontendAvailabilityForOutput extends Omit<Availability, "slots"> {
+  slots: TimeSlotForClientOutput[]
 }
 
 // used in create service availability usecase
-export interface FrontendAvailabilityForRequest extends Omit<Availability, "slots"> {
+export interface FrontendAvailabilityForClientInput extends Omit<Availability, "slots"> {
   slots: string[];
 }
 
@@ -444,7 +444,7 @@ export interface UpdateBookingAfterPaymentFailedEventResult {
 }
 
 // used in link stripe customer usecase
-export interface LinkStripeCustomerRequest {
+export interface LinkStripeCustomerInput {
   userId: string;
   stripeCustomerId: string;
 }

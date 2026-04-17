@@ -1,7 +1,7 @@
 import { log } from "../../../shared/logger/logger";
 import { CreateServiceAvailabilityInput } from "../../dtos/serviceAvailability.dto";
 import { ServiceAvailability } from "../../../domain/entities/serviceAvailability.entity";
-import { FrontendAvailabilityForRequest, FrontendAvailabilityUpdatedSlots } from "../../dtos/common.dto";
+import { FrontendAvailabilityForClientInput, FrontendAvailabilityUpdatedSlots } from "../../dtos/common.dto";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 import { IServiceAvailabilityRepository } from "../../../domain/interfaces/repositories/IServiceAvailability.repository";
 
@@ -19,7 +19,7 @@ export class CreateServiceAvailabilitiesUseCase {
             const providerProfile = await this.providerProfileRepository.findById(providerId);
             if (!providerProfile) throw new Error("Profile not found.");
 
-            const newAvailabilities: FrontendAvailabilityUpdatedSlots[] = availabilities.map((availability: FrontendAvailabilityForRequest) => ({
+            const newAvailabilities: FrontendAvailabilityUpdatedSlots[] = availabilities.map((availability: FrontendAvailabilityForClientInput) => ({
                 ...availability,
                 slots: availability.slots.map((slot: string) => ({
                     time: slot

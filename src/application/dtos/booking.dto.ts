@@ -1,7 +1,7 @@
 import { Role } from "../../domain/enums/common.enum";
 import { GetStatsDataCommonInput } from "./admin.dto";
 import { ServiceMode } from "../../domain/enums/service.enum";
-import { ApiPaginationInput, Availability, BookingDTO, ParticipantPresence, PlanDTO, TimeSlotForFrontendResponse, UserDTO } from "./common.dto";
+import { ApiPaginationInput, Availability, BookingDTO, ParticipantPresence, PlanDTO, TimeSlotForClientOutput, UserDTO } from "./common.dto";
 
 //// **** booking queries dtos **** ////
 
@@ -146,7 +146,7 @@ export interface BookingsStatsForAdminView {
 export interface UserAppointmentBookingViaStripeInput {
   userId: UserDTO["_id"];
   providerId: UserDTO["_id"];
-  slotId: TimeSlotForFrontendResponse["_id"];
+  slotId: TimeSlotForClientOutput["_id"];
   selectedServiceMode: ServiceMode;
   date: Date
 }
