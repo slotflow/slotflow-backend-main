@@ -68,11 +68,10 @@ class DashboardController {
         };
     };
 
-    // TODO
     async getGraphData(req: Request, res: Response, next: NextFunction) {
         try {
             const validatedData = startAndEndDateSchema.parse(req.query);
-            const result = await this.getAdminGraphDataUseCase.execute();
+            const result = await this.getAdminGraphDataUseCase.execute(validatedData);
             sendResponse(res, result);
         } catch (error) {
             log.error("getGraphData failed", error as Error);

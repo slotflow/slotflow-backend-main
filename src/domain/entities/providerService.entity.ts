@@ -33,8 +33,8 @@ export class ProviderService {
         return this.props.providerId;
     };
 
-    get service(): string {
-        return this.props.service;
+    get serviceId(): string {
+        return this.props.serviceId;
     };
 
     get serviceName(): string {

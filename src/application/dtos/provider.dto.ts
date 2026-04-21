@@ -24,6 +24,7 @@ export interface GetProviderGraphDataInput {
     subscription: PlanName;
     startDate: Date;
     endDate: Date;
+    isAdmin: boolean;
 }
 export interface GetProviderGraphDataOutput {
     appointmentsOvertimeChartData: Array<{
@@ -46,7 +47,7 @@ export interface GetProviderGraphDataOutput {
     }>;
 
     completionBreakdownChartData: Array<{
-        status: 'completed' | 'missed' | 'cancelled' | 'rejected' | "confirmed" | "booked";
+        status: 'completed' | 'missed' | 'cancelled' | 'rejected' | "confirmed" | "booked" | "pending";
         value: number;
     }>;
 

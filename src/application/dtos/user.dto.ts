@@ -92,24 +92,8 @@ export type ChangeUserIsBlockedStatusOutput = ChangeUserIsBlockedStatusInput;
 export type setRoleInput = Pick<UserDTO, "role" | "_id">;
 export type setRoleOutput = Pick<UserDTO, "isOnboardingCompleted" | "hasSelectedRole">;
 
-// GetUserData usecase input output
-export type GetUserDataInput = UserDataQuery;
-export type GetUserDataOutput = UserDataView;
-
 // GetUsers usecase input output
 export type GetUsersOutput = UsersView
-
-// GetProviderData usecase input output
-export interface GetProviderDataInput extends GetStatsDataCommonInput { }
-export interface GetProviderDataOutput {
-    totalProviders: number;
-    adminVerifiedProviders: number;
-    blockedProviders: number;
-    addressAddedProviders: number;
-    serviceAddedProviders: number;
-    availabilityAddedProviders: number;
-    slotflowTrustedProviders: number;
-};
 
 // GetProviders usecase input output
 export type GetProvidersOutput = Array<Pick<UserDTO, "_id" | "username" | "email" | "isBlocked"> & Pick<ProviderProfileDTO, "adminVerificationStatus" | "isAdminVerified" | "trustedBySlotflow">>;

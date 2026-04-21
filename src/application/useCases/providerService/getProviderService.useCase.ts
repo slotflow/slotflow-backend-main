@@ -31,9 +31,11 @@ export class GetProviderServicesUseCase {
                 requirements: service.requirements,
                 maxParticipants: service.maxParticipants,
                 isGroupService: service.isGroupService,
-                service: service.service,
+                serviceId: {
+                    serviceName: service.serviceId.serviceName
+                },
                 providerId: !isUser ? service.providerId : undefined,
-                tags: !isUser ? service.tags : undefined,
+                tags: !isUser ? service.tags : [],
             }
         } catch (error: unknown) {
             throw toAppError(error, "Failed to get provider service");

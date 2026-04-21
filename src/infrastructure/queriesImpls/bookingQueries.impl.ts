@@ -150,17 +150,26 @@ export class BookingQueriesImpl implements IBookingQueries {
         };
     }
 
-    async findGraphDataForProviderDashboard(query: BookingGraphStatsForProviderQuery): Promise<BookingGraphStatsForProviderView | null> {
-        const { providerId, subscriptionGuard, endDate, startDate } = query;
+    async findGraphDataForDashboard(query: BookingGraphStatsForProviderQuery): Promise<BookingGraphStatsForProviderView | null> {
+        const { providerId, subscriptionGuard, endDate, startDate, isAdmin } = query;
 
-        const matchFilter: FilterQuery<BookingDTO> = {
-            serviceProviderId: new Types.ObjectId(providerId),
-        };
+        const matchFilter: FilterQuery<BookingDTO> = {};
+        const facet: Record<string, any> = {};
+        const isProvider = !!providerId && !isAdmin;
+        const guardLevel = isAdmin ? 3 : (subscriptionGuard ?? 0);
+
+        if (isProvider) {
+            matchFilter.serviceProviderId = new Types.ObjectId(providerId);
+        }
+
         matchFilter.createdAt = { $gte: startDate, $lte: endDate };
 
-        const facet: Record<string, any> = {};
 
-        if (subscriptionGuard >= 1) {
+        if (isProvider && (subscriptionGuard ?? 0) === 0) {
+            return null;
+        }
+
+        if (guardLevel >= 1) {
             facet.appointmentsOvertimeChartData = [
                 {
                     $group: {
@@ -209,7 +218,7 @@ export class BookingQueriesImpl implements IBookingQueries {
             ];
         }
 
-        if (subscriptionGuard >= 2) {
+        if (guardLevel >= 2) {
             facet.appointmentModeChartData = [
                 {
                     $group: {
@@ -261,7 +270,7 @@ export class BookingQueriesImpl implements IBookingQueries {
             ];
         }
 
-        if (subscriptionGuard >= 3) {
+        if (guardLevel >= 3) {
             facet.peakBookingHoursChartData = [
                 {
                     $group: {
@@ -296,6 +305,7 @@ export class BookingQueriesImpl implements IBookingQueries {
                                     { case: { $eq: ["$_id", AppointmentStatus.REJECTED_BY_PROVIDER] }, then: "rejected" },
                                     { case: { $eq: ["$_id", AppointmentStatus.CONFIRMED] }, then: "confirmed" },
                                     { case: { $eq: ["$_id", AppointmentStatus.BOOKED] }, then: "booked" },
+                                    { case: { $eq: ["$_id", AppointmentStatus.PENDING] }, then: "pending" },
                                 ],
                             },
                         },
@@ -304,10 +314,6 @@ export class BookingQueriesImpl implements IBookingQueries {
                     },
                 },
             ];
-        }
-
-        if (subscriptionGuard === 0) {
-            return null;
         }
 
         const result = await BookingModel.aggregate([

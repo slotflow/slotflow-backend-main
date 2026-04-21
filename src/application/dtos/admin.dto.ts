@@ -1,4 +1,6 @@
+import { UserDataQuery, UserDataView } from "./user.dto";
 import { ProviderProfileDTO, ReviewDTO, UserDTO } from "./common.dto";
+import { SubscriptionStatsForAdminQuery, SubscriptionStatsForAdminView } from "./subscription.dto";
 
 //// **** admin dtos **** ////
 
@@ -48,3 +50,62 @@ export interface ToggleReviewBlockStatusInput {
     isBlocked: ReviewDTO["isBlocked"];
 };
 export type ToggleReviewBlockStatusOutput = ToggleReviewBlockStatusInput;
+
+// GetGraphData usecase input output
+export interface GetGraphDataInput extends GetStatsDataCommonInput { }
+export interface GetGraphDataOutput {
+    appointmentsOvertimeChartData: Array<{
+        date: string;
+        completed: number;
+        missed: number;
+        cancelled: number;
+    }>;
+
+    peakBookingHoursChartData: Array<{
+        date: string;
+        hour: string;
+        bookings: number;
+    }>;
+
+    appointmentModeChartData: Array<{
+        date: string;
+        online: number;
+        offline: number;
+    }>;
+
+    completionBreakdownChartData: Array<{
+        status: 'completed' | 'missed' | 'cancelled' | 'rejected' | "confirmed" | "booked" | "pending";
+        value: number;
+    }>;
+
+    newVsReturningUsersChartData: Array<{
+        date: string;
+        newUsers: number;
+        returningUsers: number;
+    }>;
+
+    topBookingDaysChartData: Array<{
+        day: string;
+        count: number;
+    }>;
+}
+
+// GetProviderData usecase input output
+export interface GetProviderDataInput extends GetStatsDataCommonInput { }
+export interface GetProviderDataOutput {
+    totalProviders: number;
+    adminVerifiedProviders: number;
+    blockedProviders: number;
+    addressAddedProviders: number;
+    serviceAddedProviders: number;
+    availabilityAddedProviders: number;
+    slotflowTrustedProviders: number;
+};
+
+// GetSubscriptionData usecase input output
+export type GetSubscriptionDataInput = SubscriptionStatsForAdminQuery;
+export type GetSubscriptionDataOutput = SubscriptionStatsForAdminView;
+
+// GetUserData usecase input output
+export type GetUserDataInput = UserDataQuery;
+export type GetUserDataOutput = UserDataView;

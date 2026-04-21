@@ -9,19 +9,19 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
 
     async findByProviderId(query: ProviderServiceByProviderIdQuery): Promise<ProviderServiceByProviderIdView | null> {
         const { providerId } = query
-        const service = await ProviderServiceModel.findOne({ providerId })
+        const providerService = await ProviderServiceModel.findOne({ providerId })
             .populate({
-                path: "service",
+                path: "serviceId",
                 select: "-_id serviceName"
             }).lean<ProviderServiceByProviderIdView>();
 
-        if (!service) return null;
+        if (!providerService) return null;
         return {
-            ...service,
-            _id: service._id.toString(),
-            providerId: service.providerId.toString(),
-            service: {
-                serviceName: service.service.serviceName
+            ...providerService,
+            _id: providerService._id?.toString(),
+            providerId: providerService.providerId?.toString(),
+            serviceId: {
+                serviceName: providerService.serviceId.serviceName
             },
         };
     };
@@ -248,7 +248,7 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
             { new: true }
         )
             .populate({
-                path: "service",
+                path: "serviceId",
                 select: "-_id serviceName",
             })
             .lean<UpdateProviderServiceView>();
@@ -256,9 +256,9 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
         if (!service) return null;
         return {
             ...service,
-            _id: service._id.toString(),
-            service: {
-                serviceName: service.service.serviceName
+            _id: service._id?.toString(),
+            serviceId: {
+                serviceName: service.serviceId.serviceName
             }
         }
     };

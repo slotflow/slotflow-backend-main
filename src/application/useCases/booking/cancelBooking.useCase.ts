@@ -6,7 +6,7 @@ import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum"
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 
-// TODO complete
+// TODO COMPLETE
 
 export class CancelBookingUseCase {
     constructor(

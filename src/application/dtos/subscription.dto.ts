@@ -60,10 +60,6 @@ export interface MySubscriptionView {
 
 //// **** subscription usecases input output **** ////
 
-// 1. getSubscriptionData usecase input output
-export type GetSubscriptionDataInput = SubscriptionStatsForAdminQuery;
-export type GetSubscriptionDataOutput = SubscriptionStatsForAdminView;
-
 // 2. getSubscribedPlan usecase input output
 export interface GetSubscribedPlanInput {
     providerId: UserDTO["_id"]

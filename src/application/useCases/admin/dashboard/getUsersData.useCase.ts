@@ -1,6 +1,6 @@
 import { IUserQueries } from "../../../queries/IUser.queries";
 import { toAppError } from "../../../../shared/error/handleUnknownError";
-import { GetUserDataInput, GetUserDataOutput } from "../../../dtos/user.dto";
+import { GetUserDataInput, GetUserDataOutput } from "../../../dtos/admin.dto";
 
 export class GetUserDataUseCase {
     constructor(

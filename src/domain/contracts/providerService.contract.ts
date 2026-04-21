@@ -3,7 +3,7 @@ import { ServiceMode, ServiceType } from "../enums/service.enum";
 export interface ProviderServiceProps {
     _id: string,
     providerId: string,
-    service: string,
+    serviceId: string,
     serviceName: string,
     serviceDescription: string,
     servicePrice: number,

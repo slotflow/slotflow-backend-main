@@ -11,7 +11,7 @@ export class UpdateProviderServiceUseCase {
     async execute(input: UpdateProviderServiceInput): Promise<UpdateProviderServiceOutput> {
         try {
             const { providerServiceId, ...updateData } = input;
-            if(!providerServiceId || !updateData) {
+            if (!providerServiceId || !updateData) {
                 throw new BadRequestError();
             }
 
@@ -30,7 +30,7 @@ export class UpdateProviderServiceUseCase {
             return {
                 _id: service._id,
                 providerId: service.providerId,
-                service: {
+                serviceId: {
                     serviceName: service.serviceName,
                 },
                 serviceName: service.serviceName,

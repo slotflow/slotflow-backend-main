@@ -1,8 +1,8 @@
 import { IBookingQueries } from "../../../queries/IBooking.queries";
+import { BadRequestError } from "../../../../shared/error/appError";
 import { toAppError } from "../../../../shared/error/handleUnknownError";
 import { GetProviderGraphDataInput, GetProviderGraphDataOutput } from "../../../dtos/provider.dto";
 import { ISubscriptionMapping } from "../../../../domain/interfaces/helper/ISubscriptionMapping.helper";
-import { BadRequestError } from "../../../../shared/error/appError";
 
 
 export class GetProviderGraphDataUseCase {
@@ -23,11 +23,12 @@ export class GetProviderGraphDataUseCase {
                 throw new BadRequestError();
             }
 
-            const resultArray = await this.bookingQueries.findGraphDataForProviderDashboard({
+            const resultArray = await this.bookingQueries.findGraphDataForDashboard({
                 providerId,
                 subscriptionGuard,
                 endDate,
-                startDate
+                startDate,
+                isAdmin: false
             });
 
             const dashboardGraphData: GetProviderGraphDataOutput = {

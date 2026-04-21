@@ -13,7 +13,7 @@ export interface IBookingQueries {
 
     findStatsDataForProviderDashboard(query: BookingStatsForProviderQuery): Promise<BookingStatsForProviderView>;
 
-    findGraphDataForProviderDashboard(query: BookingGraphStatsForProviderQuery): Promise<BookingGraphStatsForProviderView | null>;
+    findGraphDataForDashboard(query: BookingGraphStatsForProviderQuery): Promise<BookingGraphStatsForProviderView | null>;
 
     findStatsDataForAdminDashboard(query: BookingsStatsForAdminQuery): Promise<BookingsStatsForAdminView>;
 

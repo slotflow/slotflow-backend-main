@@ -75,14 +75,12 @@ export interface BookingStatsForProviderView {
 }
 
 // 5. findGraphDataForProviderDashboard method parameter and return type / interface
-export interface GetGraphData {
-  providerId: UserDTO["_id"],
-  subscription: PlanDTO["planName"],
-  startDate: Date,
-  endDate: Date,
-}
-export type BookingGraphStatsForProviderQuery = Omit<GetGraphData, "subscription"> & {
-  subscriptionGuard: number;
+export interface BookingGraphStatsForProviderQuery {
+  subscriptionGuard?: number;
+  providerId?: UserDTO["_id"];
+  startDate: Date;
+  endDate: Date;
+  isAdmin: boolean;
 }
 export interface BookingGraphStatsForProviderView {
   appointmentsOvertimeChartData: Array<{
@@ -105,7 +103,7 @@ export interface BookingGraphStatsForProviderView {
   }>;
 
   completionBreakdownChartData: Array<{
-    status: 'completed' | 'missed' | 'cancelled' | 'rejected' | "confirmed" | "booked";
+    status: 'completed' | 'missed' | 'cancelled' | 'rejected' | "confirmed" | "booked" | "pending";
     value: number;
   }>;
 

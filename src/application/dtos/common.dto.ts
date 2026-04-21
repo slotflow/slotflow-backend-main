@@ -132,7 +132,7 @@ export interface PlanDTO {
 export interface ProviderServiceDTO {
   _id: string,
   providerId: string,
-  service: string,
+  serviceId: ServiceDTO["_id"],
   serviceName: string,
   serviceDescription: string,
   servicePrice: number,

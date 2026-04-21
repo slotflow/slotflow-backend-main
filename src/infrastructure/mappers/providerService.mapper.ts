@@ -8,7 +8,7 @@ export class ProviderServiceMapper {
         return new ProviderService({
             _id: doc._id.toString(),
             providerId: doc.providerId.toString(),
-            service: doc.service.toString(), // TODO app service id
+            serviceId: doc.serviceId.toString(),
             serviceName: doc.serviceName,
             serviceDescription: doc.serviceDescription,
             servicePrice: doc.servicePrice,
@@ -30,7 +30,7 @@ export class ProviderServiceMapper {
 
         return {
             providerId: new Types.ObjectId(props.providerId),
-            service: new Types.ObjectId(props.service),  // TODO app service id
+            serviceId: new Types.ObjectId(props.serviceId),
             serviceName: props.serviceName,
             serviceDescription: props.serviceDescription,
             servicePrice: props.servicePrice,

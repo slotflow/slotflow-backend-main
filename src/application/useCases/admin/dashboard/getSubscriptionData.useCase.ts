@@ -1,6 +1,6 @@
 import { toAppError } from "../../../../shared/error/handleUnknownError";
 import { ISubscriptionQueries } from "../../../queries/ISubscription.queries";
-import { GetSubscriptionDataInput, GetSubscriptionDataOutput } from "../../../dtos/subscription.dto";
+import { GetSubscriptionDataInput, GetSubscriptionDataOutput } from "../../../dtos/admin.dto";
 
 export class GetSubscriptionDataUseCase {
     constructor(
