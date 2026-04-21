@@ -1,8 +1,9 @@
 import dayjs from "../../../shared/config/dayjs";
-import { log } from "../../../shared/logger/logger";
 import { CheckBookingInput } from "../../dtos/booking.dto";
-import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
+import { BadRequestError } from "../../../shared/error/appError";
+import { toAppError } from "../../../shared/error/handleUnknownError";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
+import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 
 export class CheckBookingUseCase {
     constructor(
@@ -12,15 +13,16 @@ export class CheckBookingUseCase {
     async execute(input: CheckBookingInput): Promise<boolean> {
         try {
             const { userId } = input;
+            if (!userId) {
+                throw new BadRequestError()
+            }
 
             const booking = await this.bookingRepository.findOneByUserId(userId);
-            console.log("booking : ", booking)
             if (!booking) {
                 return false;
             }
 
             const isToday = dayjs(booking.createdAt).isSame(dayjs(), "day");
-            console.log("isToday : ", isToday)
             if (
                 isToday &&
                 booking.paymentId &&
@@ -31,9 +33,8 @@ export class CheckBookingUseCase {
 
             return false;
 
-        } catch (error) {
-            log.error("CheckBookingUseCase failed : ", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to check booking");
         }
     }
 }

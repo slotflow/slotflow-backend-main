@@ -1,4 +1,4 @@
-import { log } from "../../../../shared/logger/logger";
+import { toAppError } from "../../../../shared/error/handleUnknownError";
 
 export class GetAdminGraphDataUseCase {
     constructor(
@@ -8,9 +8,8 @@ export class GetAdminGraphDataUseCase {
     async execute() : Promise<void> {
         try {
             
-        } catch (error) {
-            log.error("GetAdminGraphDataUseCase failed", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to fetch graph data");
         }
     }
 }

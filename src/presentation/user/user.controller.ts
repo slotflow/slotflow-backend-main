@@ -15,6 +15,8 @@ import { UpdateUserProfileImageUseCase } from "../../application/useCases/user/u
 import { GetUserForChatSidebarUseCase } from "../../application/useCases/user/getUserFroChat.useCase";
 import { userUpdateFileSchema, userUpdateInfoSchema, userUpdatePushNotificationSchema } from "../../shared/zod/user.zod";
 import { changePushNotificationUseCase, changeUserBlockStatusUseCase, getUserProfileDetailsUseCase, getUsersUseCase, getUserForChatSidebarUseCase, setRoleUseCase, updateUserProfileImageUseCase, updateUserProfileInfoUseCase } from ".";
+import { BadRequestError } from "../../shared/error/appError";
+import { ERROR_CODES } from "../../shared/utils/types";
 
 class UserController {
     constructor(
@@ -58,8 +60,10 @@ class UserController {
 
     async updateProfileImage(req: Request, res: Response, next: NextFunction) {
         try {
+            const user = req.user as DecodedUser;
+            
             const { s3FileKey, userId } = userUpdateFileSchema.parse({
-                userId: (req.user as DecodedUser).userOrProviderId,
+                userId: user.userOrProviderId,
                 ...req.body,
             });
             const result = await this.updateUserProfileImageUseCase.execute({ userId, profileImage: s3FileKey });
@@ -72,8 +76,10 @@ class UserController {
 
     async updateUserInfo(req: Request, res: Response, next: NextFunction) {
         try {
+            const user = req.user as DecodedUser;
+
             const { phone, userId, username } = userUpdateInfoSchema.parse({
-                userId: (req.user as DecodedUser).userOrProviderId,
+                userId: user.userOrProviderId,
                 ...req.body
             });
             const result = await this.updateUserProfileInfoUseCase.execute({ userId, username, phone });
@@ -86,8 +92,10 @@ class UserController {
 
     async updatePushNotification(req: Request, res: Response, next: NextFunction) {
         try {
+            const user = req.user as DecodedUser;
+
             const { allowPushNotification, userId } = userUpdatePushNotificationSchema.parse({
-                userId: (req.user as DecodedUser).userOrProviderId,
+                userId: user.userOrProviderId,
                 ...req.body
             });
             const result = await this.changePushNotificationUseCase.execute({ userId, allowPushNotification });
@@ -135,8 +143,8 @@ class UserController {
 
     async setRole(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log("setRole");
             const user = req.user as DecodedUser;
+            
             const { role } = roleValidationSchema.parse(req.body);
             const result = await this.setRoleUseCase.execute({ _id: user.userOrProviderId, role });
             sendResponse(res, result, "Role set successfully");

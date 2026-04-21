@@ -109,4 +109,4 @@ export const providerValidateDashboardDataSchema = z.object({
 });
 
 // Provider update file validation schema
-export const providerValidateUpdateFileSchema = s3FileKeySchema.merge(validateProviderIdSchema);
+export const providerValidateUpdateFileSchema = s3FileKeySchema;

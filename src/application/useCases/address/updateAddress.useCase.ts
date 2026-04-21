@@ -1,6 +1,8 @@
-import { IAddressRepository } from "../../../domain/interfaces/repositories/IAddress.repository";
-import { log } from "../../../shared/logger/logger";
+import { ERROR_CODES } from "../../../shared/utils/types";
+import { toAppError } from "../../../shared/error/handleUnknownError";
+import { AppError, BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { UpdateAddressInput, UpdateAddressOutput } from "../../dtos/address.dto";
+import { IAddressRepository } from "../../../domain/interfaces/repositories/IAddress.repository";
 
 export class UpdateAddressUseCase {
     constructor(
@@ -9,16 +11,33 @@ export class UpdateAddressUseCase {
 
     async execute(input: UpdateAddressInput): Promise<UpdateAddressOutput> {
         try {
-
             const { _id: addressId, ...updateData } = input;
+            if (!addressId || !updateData) {
+                throw new BadRequestError(
+                    "Invalid request",
+                    ERROR_CODES.INVALID_REQUEST
+                )
+            }
 
             const address = await this.addressRepository.findById(addressId);
-            if (!address) throw new Error("Address not found");
+            if (!address) {
+                throw new NotFoundError(
+                    "Address not found",
+                    ERROR_CODES.ADDRESS_NOT_FOUND
+                );
+            }
 
             address.updateAddress(updateData);
 
             const updatedAddress = await this.addressRepository.update(address);
-            if (!updatedAddress) throw new Error("Address updating failed.");
+            if (!updatedAddress) {
+                throw new AppError(
+                    "Failed to update address.",
+                    500,
+                    true,
+                    ERROR_CODES.INTERNAL_ERROR
+                );
+            }
 
             return {
                 _id: updatedAddress._id,
@@ -33,9 +52,8 @@ export class UpdateAddressUseCase {
                 country: updatedAddress.country,
                 location: updatedAddress.location,
             };
-        } catch (error) {
-            log.error("UpdateAddressUseCase failed", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to update address");
         };
     };
 };

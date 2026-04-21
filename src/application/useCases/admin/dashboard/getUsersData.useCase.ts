@@ -1,5 +1,5 @@
-import { log } from "../../../../shared/logger/logger";
 import { IUserQueries } from "../../../queries/IUser.queries";
+import { toAppError } from "../../../../shared/error/handleUnknownError";
 import { GetUserDataInput, GetUserDataOutput } from "../../../dtos/user.dto";
 
 export class GetUserDataUseCase {
@@ -7,12 +7,11 @@ export class GetUserDataUseCase {
         private useQueries: IUserQueries
     ) { };
 
-    async execute(inout: GetUserDataInput): Promise<GetUserDataOutput> {
+    async execute(input: GetUserDataInput): Promise<GetUserDataOutput> {
         try {
-            return await this.useQueries.findStats(inout);
-        } catch (error) {
-            log.error("GetUserDataUseCase failed", error as Error);
-            throw error;
+            return await this.useQueries.findStats(input);
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to fetch graph data");
         };
     };
 };

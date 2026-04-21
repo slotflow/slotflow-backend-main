@@ -1,4 +1,4 @@
-import { log } from "../../../shared/logger/logger";
+import { toAppError } from "../../../shared/error/handleUnknownError";
 import { ISubscriptionQueries } from "../../queries/ISubscription.queries";
 
 export class UpdateSubscriptionStatusUseCase {
@@ -10,9 +10,8 @@ export class UpdateSubscriptionStatusUseCase {
         try {
             const updatedSubscriptions = await this.subscriptionQuerie.findSubscriptionsForUpdatinStatus();
             return updatedSubscriptions;
-        } catch (error) {
-            log.error("UpdateSubscriptionStatusUseCase failed", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to update subscription status");
         };
     };
 };

@@ -55,7 +55,7 @@ export class ServiceRepositoryImpl implements IServiceRepository {
         return doc ? ServiceMapper.toDomain(doc) : null;
     };
 
-    async update(service: Service): Promise<Service> {
+    async update(service: Service): Promise<Service | null> {
         const persistence = ServiceMapper.toPersistence(service);
 
         const doc = await ServiceModel.findByIdAndUpdate(
@@ -64,11 +64,7 @@ export class ServiceRepositoryImpl implements IServiceRepository {
             { new: true }
         );
 
-        if (!doc) {
-            throw new Error("Service not found");
-        };
-
-        return ServiceMapper.toDomain(doc);
+        return doc ? ServiceMapper.toDomain(doc) : null;
     };
 
 };

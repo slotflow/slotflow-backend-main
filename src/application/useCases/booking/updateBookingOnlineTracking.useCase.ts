@@ -1,5 +1,7 @@
-import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/common.enum";
+import { ERROR_CODES } from "../../../shared/utils/types";
+import { toAppError } from "../../../shared/error/handleUnknownError";
+import { BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { IServiceAvailabilityQueries } from "../../queries/IServiceAvailability.queries";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { UpdateBookingOnlineTrackInput, UpdateBookingOnlineTrackOutput } from "../../dtos/booking.dto";
@@ -13,16 +15,30 @@ export class UpdateBookingOnlineTrakingUseCase {
     async execute(input: UpdateBookingOnlineTrackInput): Promise<UpdateBookingOnlineTrackOutput> {
         try {
             const { joined, joinedTime, leftCallTime, role, roomId } = input;
-            if (joined === null) throw new Error("Invalid request");
 
-            if (joined && (!joinedTime && !leftCallTime)) throw new Error("Invalid request");
-            if (!role || !roomId) throw new Error("role and bookingId are required");
+            if (joined && (!joinedTime && !leftCallTime)) {
+                throw new BadRequestError();
+            }
+
+            if (!role || !roomId) {
+                throw new BadRequestError();
+            }
 
             const booking = await this.bookingRepository.findByRoomId(roomId);
-            if (!booking) throw new Error("No booking found");
+            if (!booking) {
+                throw new NotFoundError(
+                    "Booking not found",
+                    ERROR_CODES.BOOKING_NOT_FOUND
+                );
+            }
 
             const serviceAvailability = await this.serviceAvailabilityQueries.findByProviderId({ date: new Date(), providerId: booking.serviceProviderId });
-            if (!serviceAvailability) throw new Error("No service found");
+            if (!serviceAvailability) {
+                throw new NotFoundError(
+                    "Service not found",
+                    ERROR_CODES.SERVICE_NOT_FOUND
+                );
+            }
 
             if (role === Role.PROVIDER) {
                 if (joined && joinedTime) {
@@ -56,11 +72,9 @@ export class UpdateBookingOnlineTrakingUseCase {
 
             await this.bookingRepository.update(booking);
 
-            // return { duration: serviceAvailability.duration };
-            return { duration: 60 };
-        } catch (error) {
-            log.error("UpdateBookingOnlineTrakingUseCase failed", error as Error);
-            throw error;
+            return { duration: serviceAvailability.duration };
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to update booking");
         };
     };
 };

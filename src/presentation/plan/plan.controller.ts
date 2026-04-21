@@ -10,6 +10,8 @@ import { CreatePlanUseCase } from "../../application/useCases/plan/createPlan.us
 import { changePlanBlockStatusSchema, createPlanSchema } from "../../shared/zod/plan.zod";
 import { ChangePlanBlockStatusUseCase } from "../../application/useCases/plan/changePlanBlockStatus.useCase";
 import { changePlanBlockStatusUseCase, createPlanUseCase, getPlansUseCase, providerGetPlansUseCase } from ".";
+import { BadRequestError } from "../../shared/error/appError";
+import { ERROR_CODES } from "../../shared/utils/types";
 
 class PlanController {
     constructor(
@@ -26,6 +28,7 @@ class PlanController {
     async getPlans(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
+            
             if (user.role === Role.ADMIN) {
                 const { page, limit } = paginationSchema.parse(req.query);
                 const result = await this.getPlansUseCase.execute({ page, limit });

@@ -1,10 +1,12 @@
 import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
-import { log } from "../../../shared/logger/logger";
 import { UpdatePasswordInput } from "../../dtos/auth.dto";
+import { ERROR_CODES } from '../../../shared/utils/types';
 import { IJWT } from '../../../domain/interfaces/security/IJwt';
+import { toAppError } from '../../../shared/error/handleUnknownError';
 import { notificationContentMap } from '../../../shared/utils/constants';
 import { EventEnvelope, SendResetPasswordEvent } from "../../dtos/kafka.dto";
+import { BadRequestError, NotFoundError } from '../../../shared/error/appError';
 import { IPasswordHasher } from "../../../domain/interfaces/security/IPasswordHasher";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
@@ -20,15 +22,22 @@ export class UpdatePasswordUseCase {
     async execute(input: UpdatePasswordInput): Promise<void> {
         try {
             const { token, password } = input;
-
-            if (!token || !password) throw new Error("Invalid Request");
+            if(!token || !password) {
+                throw new BadRequestError()
+            }
 
             const { userId, email } = await this.jwtService.verifyToken(token);
-
-            if (!userId || !email) throw new Error("Invalid Request");
+            if (!userId || !email) {
+                throw new BadRequestError();
+            }
 
             const user = await this.userRepository.findById(userId);
-            if (!user) throw new Error("User not found.");
+            if (!user) {
+                throw new NotFoundError(
+                    "User not found",
+                    ERROR_CODES.USER_NOT_FOUND
+                );
+            }
 
             const hashedPassword = await this.passwordHasher.hashPassword(password);
 
@@ -54,9 +63,8 @@ export class UpdatePasswordUseCase {
                 }
             });
 
-        } catch (error) {
-            log.error("UpdatePasswordUseCase failed : ", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to update password");
         };
     };
 };

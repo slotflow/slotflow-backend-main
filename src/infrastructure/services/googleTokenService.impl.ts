@@ -1,6 +1,8 @@
 import { log } from "../../shared/logger/logger";
-import { IAesEncryptionService } from "../../domain/interfaces/services/IAesEncryption.service";
+import { ERROR_CODES } from "../../shared/utils/types";
+import { AppError, NotFoundError, UnauthorizedError } from "../../shared/error/appError";
 import { IGoogleTokenService } from "../../domain/interfaces/services/IGoogleToken.service";
+import { IAesEncryptionService } from "../../domain/interfaces/services/IAesEncryption.service";
 import { ICredentialRepository } from "../../domain/interfaces/repositories/ICredentialRepository";
 import { IGoogleRefreshTokenService } from "../../domain/interfaces/services/IGoogleRefreshToken.service";
 
@@ -15,10 +17,23 @@ export class GoogleTokenServiceImpl implements IGoogleTokenService {
         try {
             console.log("GoogleTokenService service start");
             console.log("Before credentials")
+
+            if (!userId) {
+                throw new UnauthorizedError(
+                    "User ID is required",
+                    ERROR_CODES.UNAUTHORIZED
+                );
+            }
+
             const credentials = await this.credentialRepository.findByUserId(userId);
             console.log("after credentials ");
 
-            if (!credentials) throw new Error("Failed to find credentials");
+            if (!credentials) {
+                throw new NotFoundError(
+                    "Google credentials not found",
+                    ERROR_CODES.CREDENTIAL_NOT_FOUND
+                );
+            }
             const now = new Date();
 
             if (
@@ -32,7 +47,10 @@ export class GoogleTokenServiceImpl implements IGoogleTokenService {
             }
 
             if (!credentials.refreshToken) {
-                throw new Error("Refresh token missing");
+                throw new UnauthorizedError(
+                    "Refresh token missing",
+                    ERROR_CODES.TOKEN_MISSING
+                );
             }
 
 
@@ -67,7 +85,17 @@ export class GoogleTokenServiceImpl implements IGoogleTokenService {
             return refreshed.accessToken;
         } catch (error) {
             log.error("GoogleTokenService failed", error as Error);
-            throw error;
-        };
+            if (error instanceof AppError) {
+                throw error;
+            }
+
+            throw new AppError(
+                "Unable to get access token",
+                500,
+                false,
+                ERROR_CODES.INTERNAL_ERROR
+            );
+        }
     };
 };
+

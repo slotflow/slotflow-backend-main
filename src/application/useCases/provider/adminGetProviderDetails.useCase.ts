@@ -1,4 +1,5 @@
-import { log } from "../../../shared/logger/logger";
+import { BadRequestError } from "../../../shared/error/appError";
+import { toAppError } from "../../../shared/error/handleUnknownError";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { AdminGetProviderDetailsInput, AdminGetProviderDetailsOutput } from "../../dtos/user.dto";
@@ -14,6 +15,9 @@ export class AdminGetProviderDetailsUseCase {
     async execute(input: AdminGetProviderDetailsInput): Promise<AdminGetProviderDetailsOutput> {
         try {
             const { providerId } = input;
+            if (!providerId) {
+                throw new BadRequestError();
+            }
 
             const provider = await this.userRepository.findById(providerId);
             if (!provider) return null;
@@ -44,9 +48,8 @@ export class AdminGetProviderDetailsUseCase {
                 trustedBySlotflow: providerProfile.trustedBySlotflow,
             };
 
-        } catch (error) {
-            log.error("AdminGetProviderDetailsUseCase failed", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to get provider details");
         };
     };
 };

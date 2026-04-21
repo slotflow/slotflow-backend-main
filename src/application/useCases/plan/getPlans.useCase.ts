@@ -1,5 +1,5 @@
-import { log } from "../../../shared/logger/logger";
 import { GetPlansOutput } from "../../dtos/plan.dto";
+import { toAppError } from "../../../shared/error/handleUnknownError";
 import { ApiPaginationInput, TableData } from "../../dtos/common.dto";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 
@@ -27,9 +27,8 @@ export class GetPlansUseCase {
                 currentPage,
                 totalCount,
             };
-        } catch (error) {
-            log.error("GetPlansUseCase failed", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to get plans");
         };
     };
 };

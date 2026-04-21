@@ -6,7 +6,7 @@ export interface ICredentialRepository {
 
     findByUserId(userId: string): Promise<Credential | null>;
 
-    update(credential: Credential): Promise<Credential>;
+    update(credential: Credential): Promise<Credential | null>;
 
     findById(credentialId: string): Promise<Credential | null>;
 

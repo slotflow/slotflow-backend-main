@@ -1,6 +1,7 @@
-import { log } from "../../../shared/logger/logger";
-import { IProviderServiceRepository } from "../../../domain/interfaces/repositories/IProviderService.repository";
+import { BadRequestError } from "../../../shared/error/appError";
+import { toAppError } from "../../../shared/error/handleUnknownError";
 import { UpdateProviderServiceInput, UpdateProviderServiceOutput } from "../../dtos/providerService.dto";
+import { IProviderServiceRepository } from "../../../domain/interfaces/repositories/IProviderService.repository";
 
 export class UpdateProviderServiceUseCase {
     constructor(
@@ -9,9 +10,12 @@ export class UpdateProviderServiceUseCase {
 
     async execute(input: UpdateProviderServiceInput): Promise<UpdateProviderServiceOutput> {
         try {
+            const { providerServiceId, ...updateData } = input;
+            if(!providerServiceId || !updateData) {
+                throw new BadRequestError();
+            }
 
-            const { _id, ...updateData } = input;
-            const providerService = await this.provderServiceRepository.findById(_id);
+            const providerService = await this.provderServiceRepository.findById(providerServiceId);
             if (!providerService) return null;
 
             providerService.update({
@@ -22,7 +26,6 @@ export class UpdateProviderServiceUseCase {
 
             const service = await this.provderServiceRepository.update(providerService);
             if (!service) return null;
-
 
             return {
                 _id: service._id,
@@ -43,9 +46,8 @@ export class UpdateProviderServiceUseCase {
                 isGroupService: service.isGroupService,
             };
 
-        } catch (error) {
-            log.error("UpdateProviderServiceUseCase failed", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to update provider service");
         };
     };
 };

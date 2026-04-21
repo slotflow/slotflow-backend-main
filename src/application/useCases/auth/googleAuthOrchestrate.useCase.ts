@@ -1,19 +1,21 @@
 import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
-import { log } from "../../../shared/logger/logger";
+import { ERROR_CODES } from '../../../shared/utils/types';
 import { PlanName } from "../../../domain/enums/plan.enum";
 import { User } from "../../../domain/entities/user.entity";
 import { IJWT } from "../../../domain/interfaces/security/IJwt";
+import { BadRequestError } from '../../../shared/error/appError';
 import { AppConnect, Role } from "../../../domain/enums/common.enum";
+import { toAppError } from '../../../shared/error/handleUnknownError';
 import { Credential } from "../../../domain/entities/credential.entity";
 import { notificationContentMap } from "../../../shared/utils/constants";
 import { AuthResponseBuilder } from '../../services/AuthResponseBuilder';
 import { ProviderProfile } from '../../../domain/entities/providerProfile.entity';
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { EventEnvelope, SendAppConnectEvent, SendWelcomeEvent } from "../../dtos/kafka.dto";
+import { GoogleAuthOrchestrationInput, GoogleAuthOrchestrationOutput } from "../../dtos/auth.dto";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 import { IAesEncryptionService } from "../../../domain/interfaces/services/IAesEncryption.service";
-import { GoogleAuthOrchestrationInput, GoogleAuthOrchestrationOutput } from "../../dtos/auth.dto";
 import { ICredentialRepository } from "../../../domain/interfaces/repositories/ICredentialRepository";
 import { IProviderProfileRepository } from '../../../domain/interfaces/repositories/IProviderProfile.repository';
 
@@ -48,6 +50,12 @@ export class GoogleAuthOrchestratorUseCase {
             let token: string | undefined;
 
             if (!connectOnly) {
+                if(!role || !email || !googleId || !name) {
+                    throw new BadRequestError(
+                        "Invalid request",
+                        ERROR_CODES.INVALID_REQUEST
+                    );
+                }
                 user =
                     (await this.userRepository.findByGoogleId(googleId)) ??
                     (await this.userRepository.findByEmail(email));
@@ -79,13 +87,16 @@ export class GoogleAuthOrchestratorUseCase {
                     userId: user._id,
                     role,
                 });
-            }
-
-            else {
-                if (!userId || !role) throw new Error("Invalid connect flow");
+            } else {
+                if (!userId || !role) {
+                    throw new BadRequestError(
+                        "Invalid request",
+                        ERROR_CODES.INVALID_REQUEST
+                    );
+                }
 
                 user = await this.userRepository.findById(userId);
-                if (!user) throw new Error("User not found");
+                if (!user) throw new BadRequestError("User not found");
 
                 user.linkGoogleAccount({
                     googleId,
@@ -95,7 +106,19 @@ export class GoogleAuthOrchestratorUseCase {
                 user = await this.userRepository.update(user);
             }
 
-            if (!user) throw new Error("Invalid request");
+            if (!user) {
+                throw new BadRequestError(
+                    "Invalid request",
+                    ERROR_CODES.INVALID_REQUEST
+                );
+            }
+
+            if (!accessToken || !expiryDate || !refreshToken) {
+                throw new BadRequestError(
+                    "Invalid request",
+                    ERROR_CODES.INVALID_REQUEST
+                );
+            }
 
             const encryptedAccessToken =
                 await this.aesEncryption.encrypt(accessToken);
@@ -195,9 +218,8 @@ export class GoogleAuthOrchestratorUseCase {
                 },
             };
 
-        } catch (error) {
-            log.error("GoogleAuthOrchestratorUseCase failed : ", error as Error,);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to authenticate user");
         };
     };
 };

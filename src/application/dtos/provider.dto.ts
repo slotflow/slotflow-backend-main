@@ -22,8 +22,8 @@ export interface GetProviderStatsOutput {
 export interface GetProviderGraphDataInput {
     providerId: UserDTO["_id"];
     subscription: PlanName;
-    startDate?: Date;
-    endDate?: Date;
+    startDate: Date;
+    endDate: Date;
 }
 export interface GetProviderGraphDataOutput {
     appointmentsOvertimeChartData: Array<{

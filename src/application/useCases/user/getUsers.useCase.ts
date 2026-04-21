@@ -1,7 +1,7 @@
-import { log } from "../../../shared/logger/logger";
 import { GetUsersOutput } from "../../dtos/user.dto";
 import { IUserQueries } from "../../queries/IUser.queries";
 import { ApiPaginationInput, TableData } from "../../dtos/common.dto";
+import { toAppError } from "../../../shared/error/handleUnknownError";
 
 export class GetUsersUseCase {
     constructor(
@@ -11,9 +11,8 @@ export class GetUsersUseCase {
     async execute(input: ApiPaginationInput): Promise<TableData<GetUsersOutput>> {
         try {
             return await this.userQueries.findUsers(input);
-        } catch (error) {
-            log.error("GetUsersUseCase failed", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to get users");
         };
     };
 };

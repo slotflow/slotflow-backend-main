@@ -10,6 +10,8 @@ import { VerifyEmailUseCase } from '../../application/useCases/auth/verifyEmail.
 import { UpdatePasswordUseCase } from '../../application/useCases/auth/updatePassword.useCase';
 import { loginUseCase, registerUseCase, resendOtpUseCase, updatePasswordUseCase, verifyEmailUseCase, verifyOTPUseCase } from '.';
 import { loginSchema, otpVerificationSchema, registerSchema, updatePasswordSchema, verifyEmailSchema } from '../../shared/zod/auth.zod';
+import { UnauthorizedError } from '../../shared/error/appError';
+import { ERROR_CODES } from '../../shared/utils/types';
 
 class AuthController {
 
@@ -49,7 +51,7 @@ class AuthController {
     try {
       console.log("req.cookies : ",req.cookies);
       const { token } = req.cookies;
-      if (!token) throw new Error("Invalid request.");
+      if (!token) throw new UnauthorizedError("Token is required", ERROR_CODES.UNAUTHORIZED);
       const validateData = otpVerificationSchema.parse(req.body);
       await this.verifyOTPUseCase.execute({ ...validateData, token });
       sendResponse(res, null, "OTP verified successfully");
@@ -63,7 +65,7 @@ class AuthController {
     try {
       console.log("req.cookies : ",req.cookies);
       const { token } = req.cookies;
-      if (!token) throw new Error("Invalid request.");
+      if (!token) throw new UnauthorizedError("Token is required", ERROR_CODES.UNAUTHORIZED);
       await this.resendOtpUseCase.execute({ token });
       sendResponse(res, null, "OTP has been sent to your email");
     } catch (error) {
@@ -124,8 +126,7 @@ class AuthController {
       const validateData = updatePasswordSchema.parse(req.body);
       const { password } = validateData;
       const { token } = req.cookies;
-      if (!token) throw new Error("Invalid request.");
-      if (!password) throw new Error("Invalid request.");
+      if (!token) throw new UnauthorizedError("Token is required", ERROR_CODES.UNAUTHORIZED);
       await this.updatePasswordUseCase.execute({ token, password });
       sendResponse(res, null, "Password updated successfully");
     } catch (error) {

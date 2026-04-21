@@ -1,9 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
-import { log } from "../../../shared/logger/logger";
-import { User } from "../../../domain/entities/user.entity";
+import { ERROR_CODES } from '../../../shared/utils/types';
 import { OTPVerificationInput } from "../../dtos/auth.dto";
+import { User } from "../../../domain/entities/user.entity";
 import { IJWT } from '../../../domain/interfaces/security/IJwt';
+import { BadRequestError } from '../../../shared/error/appError';
+import { toAppError } from '../../../shared/error/handleUnknownError';
 import { EventEnvelope, SendWelcomeEvent } from "../../dtos/kafka.dto";
 import { IOTPService } from "../../../domain/interfaces/services/IOtp.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
@@ -20,20 +22,25 @@ export class VerifyOTPUseCase {
   async execute(input: OTPVerificationInput): Promise<void> {
     try {
       const { token, otp } = input;
-
-      if (!token) {
-        throw new Error("Invalid request");
-      };
+      if (!token || !otp) {
+        throw new BadRequestError();
+      }
 
       const { email, username, password } = await this.jwtService.verifyToken(token);
-
-      if (!email || !username || !password) throw new Error("Invalid request, please try again");
+      if (!email || !username || !password) {
+        throw new BadRequestError();
+      }
 
       const existingUser = await this.userRepository.findByEmail(email);
-      if (existingUser) throw new Error("User already exists");
+      if (existingUser) {
+        throw new BadRequestError(
+          "Invalid credentials",
+          ERROR_CODES.INVALID_CREDENTIALS
+        );
+      }
 
       const isValidOTP = await this.otpService.verifyOtp(email, otp);
-      if (!isValidOTP) throw new Error("Invalid or expired OTP");
+      if (!isValidOTP) throw new BadRequestError("Invalid OTP");
 
       if (!existingUser) {
         const newUser = await this.userRepository.create(User.createLocal({
@@ -54,12 +61,11 @@ export class VerifyOTPUseCase {
               role: newUser.role,
             },
           }
-        });
+        })
       }
 
-    } catch (error) {
-      log.error("VerifyOTPUseCase failed", error as Error);
-      throw error;
-    };
-  };
+    } catch (error: unknown) {
+      throw toAppError(error, "Failed to verify otp");
+    }
+  }
 }

@@ -1,10 +1,12 @@
 import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from '../../../config/env';
-import { log } from '../../../shared/logger/logger';
 import { ResendOtpOutput } from '../../dtos/auth.dto';
+import { ERROR_CODES } from '../../../shared/utils/types';
 import { OtpPurpose } from '../../../domain/enums/common.enum';
 import { IJWT } from '../../../domain/interfaces/security/IJwt';
+import { BadRequestError } from '../../../shared/error/appError';
 import { EventEnvelope, SendOtpEvent } from '../../dtos/kafka.dto';
+import { toAppError } from '../../../shared/error/handleUnknownError';
 import { IOTPService } from '../../../domain/interfaces/services/IOtp.service';
 import { IKafkaProducerAdapter } from '../../../domain/interfaces/messaging/IKafkaProducerAdapter';
 
@@ -19,13 +21,16 @@ export class ResendOtpUseCase {
   async execute(input: ResendOtpOutput): Promise<void> {
     try {
       const { token } = input;
-      if (!token) throw new Error("Invalid request.");
+      if (!token) {
+        throw new BadRequestError()
+      }
 
       const { email, username } = await this.jwtService.verifyToken(token);
-      if (!email) throw new Error("Invalid request, please try again");
+      if (!email) {
+        throw new BadRequestError()
+      }
 
       const otp = await this.otpService.setOtp(email);
-      if (!otp) throw new Error("Unexpected error, please try again.");
 
       await this.kafkaProducer.publish<EventEnvelope<SendOtpEvent>>(kafkaConfig.topics.pub.sendOtp, {
         eventId: uuidv4(),
@@ -43,9 +48,8 @@ export class ResendOtpUseCase {
       });
 
       return;
-    } catch (error) {
-      log.error("ResendOtpUseCase failed", error as Error);
-      throw error;
-    };
-  };
-};
+    } catch (error: unknown) {
+      throw toAppError(error, "Failed to resend OTP")
+    }
+  }
+}

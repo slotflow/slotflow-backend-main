@@ -1,7 +1,9 @@
-import { AxiosInstance } from "axios";
+import axios, { AxiosInstance } from "axios";
 import { serviceConfig } from "../../config/env";
 import { log } from "../../shared/logger/logger";
 import { axiosInstance } from "../http/axios/axios";
+import { ERROR_CODES } from "../../shared/utils/types";
+import { AppError, BadRequestError } from "../../shared/error/appError";
 import { CreateBookingCheckoutSessionInput, CreateBookingCheckoutSessionOutput, CreateSubscriptionCheckoutSessionInput, CreateSubscriptionCheckoutSessionOutput, IPaymentServiceClient } from "../../domain/interfaces/clients/IPaymentService.client";
 
 export class PaymentServiceClient implements IPaymentServiceClient {
@@ -23,13 +25,20 @@ export class PaymentServiceClient implements IPaymentServiceClient {
 
       if (!data?.data) {
         log.error("Invalid response from Payment Service");
-        throw new Error("Invalid response from Payment Service");
+
+        throw new AppError(
+          "Invalid response from Payment Service",
+          502,
+          false,
+          ERROR_CODES.PAYMENT_INVALID_RESPONSE
+        );
       };
 
       return data;
-    } catch (error) {
+    } catch (error: unknown) {
       log.error("createSubscriptionCheckoutSession, Payment Service unavailable", error as Error);
-      throw new Error("Payment Service unavailable");
+
+      this.handleError(error, "createSubscriptionCheckoutSession");
     };
   };
 
@@ -42,13 +51,57 @@ export class PaymentServiceClient implements IPaymentServiceClient {
 
       if (!data?.data) {
         log.error("Invalid response from Payment Service");
-        throw new Error("Invalid response from Payment Service");
+
+        throw new AppError(
+          "Invalid response from Payment Service",
+          502,
+          false,
+          ERROR_CODES.PAYMENT_INVALID_RESPONSE
+        );
       };
 
       return data;
-    } catch (error) {
+    } catch (error: unknown) {
       log.error("createBookingCheckoutSession, Payment Service unavailable", error as Error);
-      throw new Error("Payment Service unavailable");
+
+      this.handleError(error, "createBookingCheckoutSession");
     }
+  }
+
+  private handleError(error: unknown, context: string): never {
+    if (error instanceof AppError) {
+      throw error;
+    }
+
+    if (error instanceof Error) {
+      log.error(`${context}:`, error);
+    } else {
+      log.error(`${context}:`, new Error(String(error)));
+    }
+
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+
+      if (status && status >= 400 && status < 500) {
+        throw new BadRequestError(
+          "Payment request failed",
+          ERROR_CODES.PAYMENT_BAD_REQUEST
+        );
+      }
+
+      throw new AppError(
+        "Payment service error",
+        502,
+        false,
+        ERROR_CODES.PAYMENT_SERVICE_ERROR
+      );
+    }
+
+    throw new AppError(
+      "Payment service unavailable",
+      502,
+      false,
+      ERROR_CODES.PAYMENT_SERVICE_UNAVAILABLE
+    );
   }
 };

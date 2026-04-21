@@ -1,8 +1,8 @@
-import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
-import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { log } from "../../../shared/logger/logger";
-import { UpdateBookingAfterPaymentFailedEventResult } from "../../dtos/common.dto";
 import { EventEnvelope } from "../../dtos/kafka.dto";
+import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
+import { UpdateBookingAfterPaymentFailedEventResult } from "../../dtos/common.dto";
+import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 
 export class UpdateBookingAfterPaymentFailedUseCase {
     constructor(
@@ -33,7 +33,6 @@ export class UpdateBookingAfterPaymentFailedUseCase {
             await this.bookingRepository.update(booking);
         } catch (error) {
             log.error("UpdateBookingAfterPaymentFailedUseCase failed : ", error as Error);
-            throw error;
         }
     }
 }

@@ -1,9 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
-import { log } from "../../../shared/logger/logger";
+import { ERROR_CODES } from '../../../shared/utils/types';
+import { toAppError } from '../../../shared/error/handleUnknownError';
 import { notificationContentMap } from "../../../shared/utils/constants";
-import { ICacheService } from "../../../domain/interfaces/services/ICache.service";
+import { BadRequestError, NotFoundError } from '../../../shared/error/appError';
 import { EventEnvelope, SendAccountBlockStatusEvent } from "../../dtos/kafka.dto";
+import { ICacheService } from "../../../domain/interfaces/services/ICache.service";
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 import { AdminChangeProviderBlockStatusInput, AdminChangeProviderBlockStatusOutput } from "../../dtos/admin.dto";
@@ -18,16 +20,29 @@ export class ChangeProviderBlockStatusUseCase {
     async execute(input: AdminChangeProviderBlockStatusInput): Promise<AdminChangeProviderBlockStatusOutput> {
         try {
             const { providerId, isBlocked } = input;
+            if (!providerId) {
+                throw new BadRequestError();
+            }
 
             const provider = await this.userRepository.findById(providerId);
-            if (!provider) throw new Error("User not found.");
+            if (!provider) {
+                throw new NotFoundError(
+                    "User not found.",
+                    ERROR_CODES.USER_NOT_FOUND
+                );
+            }
 
             if (provider.isBlocked === isBlocked) {
                 isBlocked ? provider.unblock() : provider.block();
             };
 
             const updatedProvider = await this.userRepository.update(provider);
-            if (!updatedProvider) throw new Error("Provider not found");
+            if (!updatedProvider) {
+                throw new NotFoundError(
+                    "Provider not found",
+                    ERROR_CODES.USER_NOT_FOUND
+                );
+            }
 
             if (updatedProvider.isBlocked) {
                 await this.cacheService.setBlockList(providerId, JSON.stringify(isBlocked));
@@ -56,9 +71,8 @@ export class ChangeProviderBlockStatusUseCase {
             });
 
             return { providerId, isBlocked: updatedProvider.isBlocked };
-        } catch (error) {
-            log.error("ChangeProviderBlockStatusUseCase failed", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to change provider block status");
         };
     };
 };

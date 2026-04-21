@@ -1,19 +1,17 @@
 import { log } from "../../shared/logger/logger";
 import { Role } from "../../domain/enums/common.enum";
+import { ERROR_CODES } from "../../shared/utils/types";
 import { NextFunction, Request, Response } from "express";
 import { cacheService } from "../../infrastructure/services";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { userRepository } from "../../infrastructure/repositoryImpls";
+import { ForbiddenError, UnauthorizedError } from "../../shared/error/appError";
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
+
     const userId = req.headers["x-user-id"];
     const role = req.headers["x-user-role"];
-
-    if (role !== Role.ADMIN && !userId) {
-      res.status(401).json({ success: false, message: "Unauthenticated request" });
-      return;
-    };
 
     const normalizedUserId = Array.isArray(userId) ? userId[0] : userId;
     const normalizedRole = Array.isArray(role)
@@ -30,8 +28,12 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
 
     if (cachedStatus !== null) {
       if (cachedStatus === "true") {
-        res.status(403).json({ success: false, message: "Your account is blocked" });
-        return;
+        return next(
+          new ForbiddenError(
+            "Your account is blocked",
+            ERROR_CODES.FORBIDDEN
+          )
+        );
       };
       return next();
     };
@@ -39,8 +41,12 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
     // Cache miss DB fallback
     const user = await userRepository.findById(cacheKey);
     if (!user) {
-      res.status(401).json({ success: false, message: "Invalid user" });
-      return;
+      return next(
+        new UnauthorizedError(
+          "Invalid user",
+          ERROR_CODES.USER_NOT_FOUND
+        )
+      );
     };
 
     await cacheService.setBlockList(
@@ -49,15 +55,22 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
     );
 
     if (user.isBlocked) {
-      res.status(403).json({ success: false, message: "Your account is blocked" });
-      return;
+      return next(
+        new ForbiddenError(
+          "Your account is blocked",
+          ERROR_CODES.FORBIDDEN
+        )
+      );
     };
-
 
     next();
   } catch (error) {
     log.error("error", error as Error);
-    res.status(401).json({ success: false, message: "Unauthorized: Invalid token." });
-    return;
+    return next(
+      new UnauthorizedError(
+        "Unauthorized: Invalid token",
+        ERROR_CODES.TOKEN_INVALID
+      )
+    );
   };
 };

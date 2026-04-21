@@ -7,6 +7,8 @@ import { startAndEndDateSchema } from "../../../shared/zod/common.zod";
 import { GetProviderStatsUseCase } from "../../../application/useCases/provider/dashboard/getStats.useCase";
 import { GetProviderGraphDataUseCase } from "../../../application/useCases/provider/dashboard/getGraphData.useCase";
 import { providerValidateDashboardDataSchema } from "../../../shared/zod/provider.zod";
+import { BadRequestError } from "../../../shared/error/appError";
+import { ERROR_CODES } from "../../../shared/utils/types";
 
 class ProviderDashboardController {
     constructor(
@@ -20,6 +22,7 @@ class ProviderDashboardController {
     async getDashboardStats(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
+
             const validatedData = startAndEndDateSchema.parse(req.query);
             const result = await this.getProviderStatsUseCase.execute({
                 providerId: user.userOrProviderId,
@@ -35,6 +38,7 @@ class ProviderDashboardController {
     async getDashboardGraphData(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
+            
             const { subscription, endDate, startDate } = providerValidateDashboardDataSchema.parse(req.query);
             const result = await this.getProviderGraphDataUseCase.execute({
                 providerId: user.userOrProviderId,

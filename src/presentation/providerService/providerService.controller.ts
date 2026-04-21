@@ -7,9 +7,12 @@ import { createProviderServiceUseCase, getProviderServicesUseCase, getProvidersS
 import { GetProviderServicesUseCase } from "../../application/useCases/providerService/getProviderService.useCase";
 import { UpdateProviderServiceUseCase } from "../../application/useCases/providerService/updateProviderService.useCase";
 import { CreateProviderServiceUseCase } from "../../application/useCases/providerService/createProviderService.useCase";
-import { providerCreateServiceDetailsSchema, providerUpdateServiceDetailsSchema, validateProviderIdSchema } from "../../shared/zod/provider.zod";
+import { providerCreateServiceDetailsSchema, providerUpdateServiceDetailsSchema } from "../../shared/zod/provider.zod";
 import { userGetProvidersServicesSchema } from "../../shared/zod/providerService.zod";
 import { GetProvidersServicesUseCase } from "../../application/useCases/providerService/getProvidersServices.useCase";
+import { BadRequestError } from "../../shared/error/appError";
+import { ERROR_CODES } from "../../shared/utils/types";
+import { validateProviderIdSchema } from "../../shared/zod/base.zod";
 
 class ProviderServiceController {
     constructor(
@@ -26,8 +29,10 @@ class ProviderServiceController {
 
     async createServiceDetails(req: Request, res: Response, next: NextFunction) {
         try {
+            const user = req.user as DecodedUser;
+
             const { providerId, ...serviceData } = providerCreateServiceDetailsSchema.parse({
-                providerId: (req.user as DecodedUser).userOrProviderId,
+                providerId: user.userOrProviderId,
                 ...req.body
             });
             await this.createProviderServiceUseCase.execute({
@@ -64,7 +69,7 @@ class ProviderServiceController {
                 }
             } else {
                 filter = {
-                    providerId: (req.user as DecodedUser).userOrProviderId,
+                    providerId: user.userOrProviderId,
                     isUser: false
                 }
             }
@@ -84,7 +89,7 @@ class ProviderServiceController {
             });
             const result = await this.updateProviderServiceUseCase.execute({
                 ...serviceData,
-                _id: serviceId,
+                providerServiceId: serviceId,
             });
             sendResponse(res, result, "Service details updated successfully");
         } catch (error) {

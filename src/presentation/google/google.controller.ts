@@ -5,8 +5,10 @@ import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { connectGoogleSchema } from "../../shared/zod/auth.zod";
-import { validateUserIdSchema } from "../../shared/zod/user.zod";
+import { validateUserIdSchema } from "../../shared/zod/base.zod";
 import { GetGoogleCalendarUseCase } from "../../application/useCases/common/getGoogleCalendar.useCase";
+import { BadRequestError } from "../../shared/error/appError";
+import { ERROR_CODES } from "../../shared/utils/types";
 
 class GoogleController {
     constructor(
@@ -19,8 +21,8 @@ class GoogleController {
     async getUserEvents(req: Request, res: Response, next: NextFunction) {
         try {
             console.log("getUserEvents constroller start");
-            const { userId } = validateUserIdSchema.parse((req.user as DecodedUser).userOrProviderId)
-            const result = await this.getGoogleCalendarUseCase.execute(userId);
+            const user = req.user as DecodedUser;
+            const result = await this.getGoogleCalendarUseCase.execute({userId: user.userOrProviderId });
             sendResponse(res, result);
         } catch (error) {
             log.error("getUserEvents failed", error as Error);
@@ -32,7 +34,6 @@ class GoogleController {
         try {
             console.log("connectGoogle controller starting")
             const user = (req.user as DecodedUser);
-            if (!user) throw new Error("no user found");
             const { connectOnly, role, userId } = connectGoogleSchema.parse({
                 connectOnly: true,
                 role: user.role,

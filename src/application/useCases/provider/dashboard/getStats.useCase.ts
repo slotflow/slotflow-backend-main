@@ -1,5 +1,6 @@
-import { log } from "../../../../shared/logger/logger";
 import { IBookingQueries } from "../../../queries/IBooking.queries";
+import { BadRequestError } from "../../../../shared/error/appError";
+import { toAppError } from "../../../../shared/error/handleUnknownError";
 import { GetProviderStatsInput, GetProviderStatsOutput } from "../../../dtos/provider.dto";
 
 export class GetProviderStatsUseCase {
@@ -9,6 +10,11 @@ export class GetProviderStatsUseCase {
 
     async execute(input: GetProviderStatsInput): Promise<GetProviderStatsOutput> {
         try {
+            const { providerId } = input;
+            if (!providerId) {
+                throw new BadRequestError();
+            }
+
             const [
                 bookingStatsArray,
             ] = await Promise.all([
@@ -16,9 +22,8 @@ export class GetProviderStatsUseCase {
             ]);
 
             return { ...bookingStatsArray };
-        } catch (error) {
-            log.error("ProviderGetDashboardStatsUseCase failed", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to get stats");
         };
     };
 };

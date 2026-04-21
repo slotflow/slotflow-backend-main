@@ -26,7 +26,7 @@ export class PlanRepositoryImpl implements IPlanRepository {
         return doc ? PlanMapper.toDomain(doc) : null;
     };
 
-    async update(plan: Plan): Promise<Plan> {
+    async update(plan: Plan): Promise<Plan | null> {
         const persistence = PlanMapper.toPersistence(plan);
 
         const doc = await PlanModel.findByIdAndUpdate(
@@ -35,11 +35,7 @@ export class PlanRepositoryImpl implements IPlanRepository {
             { new: true }
         );
 
-        if (!doc) {
-            throw new Error("Plan not found");
-        }
-
-        return PlanMapper.toDomain(doc);
+        return doc ? PlanMapper.toDomain(doc) : null;
     };
 
     async findAll(page: number = 1, limit: number = 10): Promise<{ data: Array<Plan>, totalPages: number; currentPage: number; totalCount: number; }> {

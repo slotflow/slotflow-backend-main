@@ -11,6 +11,8 @@ import { GetSubscribedPlanUseCase } from "../../application/useCases/subscriptio
 import { SubscriptionCheckoutUseCase } from "../../application/useCases/subscription/subscriptionCheckout.useCase";
 import { GetSubscriptionDetailsUseCase } from "../../application/useCases/subscription/getSubscriptionDetails.useCase";
 import { getSubscribedPlanUseCase, getSubscriptionDetailsUseCase, getSubscriptionsUseCase, subscriptionCheckoutUseCase, trialSubscriptionUseCase } from ".";
+import { BadRequestError } from "../../shared/error/appError";
+import { ERROR_CODES } from "../../shared/utils/types";
 
 class SubscriptionController {
     constructor(
@@ -68,8 +70,10 @@ class SubscriptionController {
 
     async subscriptionCheckout(req: Request, res: Response, next: NextFunction) {
         try {
+            const user = req.user as DecodedUser;
+
             const { planId, planDuration, providerId } = providerPlanSubscribeSchema.parse({
-                providerId: (req.user as DecodedUser).userOrProviderId,
+                providerId: user.userOrProviderId,
                 ...req.body
             });
             const result = await this.subscriptionCheckoutUseCase.execute({ providerId, planId, planDuration });
@@ -83,10 +87,9 @@ class SubscriptionController {
 
     async subscribeToTrialPlan(req: Request, res: Response, next: NextFunction) {
         try {
-            const { providerId } = validateProviderIdSchema.parse({
-                providerId: (req.user as DecodedUser).userOrProviderId
-            });
-            await this.trialSubscriptionUseCase.execute({ providerId });
+            const user = req.user as DecodedUser;
+
+            await this.trialSubscriptionUseCase.execute({ providerId: user.userOrProviderId });
             sendResponse(res, null, "Your trial plan is on live");
         } catch (error) {
             log.error("subscribeToTrialPlan failed", error as Error);
@@ -96,10 +99,9 @@ class SubscriptionController {
 
     async getSubscribedPlan(req: Request, res: Response, next: NextFunction) {
         try {
-            const { providerId } = validateProviderIdSchema.parse({
-                providerId: (req.user as DecodedUser).userOrProviderId
-            });
-            const result = await this.getSubscribedPlanUseCase.execute({ providerId });
+            const user = req.user as DecodedUser;
+            
+            const result = await this.getSubscribedPlanUseCase.execute({ providerId: user.userOrProviderId });
             sendResponse(res, result);
         } catch (error) {
             log.error("getSubscribedPlan failed", error as Error);

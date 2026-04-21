@@ -1,10 +1,12 @@
 import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from '../../../config/env';
-import { log } from '../../../shared/logger/logger';
+import { ERROR_CODES } from '../../../shared/utils/types';
 import { OtpPurpose } from '../../../domain/enums/common.enum';
 import { IJWT } from '../../../domain/interfaces/security/IJwt';
+import { BadRequestError } from '../../../shared/error/appError';
 import { EventEnvelope, SendOtpEvent } from '../../dtos/kafka.dto';
 import { RegisterInput, RegisterOutput } from '../../dtos/auth.dto';
+import { toAppError } from '../../../shared/error/handleUnknownError';
 import { IOTPService } from '../../../domain/interfaces/services/IOtp.service';
 import { IPasswordHasher } from '../../../domain/interfaces/security/IPasswordHasher';
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
@@ -23,17 +25,23 @@ export class RegisterUseCase {
   async execute(input: RegisterInput): Promise<RegisterOutput> {
     try {
       const { username, email, password } = input;
-      if (!username || !email || !password) throw new Error("Invalid request");
+      if (!username || !email || !password) {
+        throw new BadRequestError()
+      }
 
       const existUser = await this.userRepository.findByEmail(email);
-      if (existUser) throw new Error("Email already exist.");
+      if (existUser) {
+        throw new BadRequestError(
+          "Invalid credentials",
+          ERROR_CODES.INVALID_CREDENTIALS
+        );
+      }
 
       const hashedPassword = await this.passwordHasher.hashPassword(password);
 
       const token = await this.jwtService.generateToken({ email, username, password: hashedPassword });
 
       const otp = await this.otpService.setOtp(email);
-      if (!otp) throw new Error("Unexpected error, please try again.");
 
       await this.kafkaProducer.publish<EventEnvelope<SendOtpEvent>>(kafkaConfig.topics.pub.sendOtp, {
         eventId: uuidv4(),
@@ -52,9 +60,8 @@ export class RegisterUseCase {
 
       return { token };
     }
-    catch (error) {
-      log.error("RegisterUseCase failed", error as Error);
-      throw error;
+    catch (error: unknown) {
+      throw toAppError(error, "Failed to create account");
     };
   };
 };

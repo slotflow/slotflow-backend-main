@@ -7,7 +7,7 @@ import { ProviderProfileDTO, UserDTO } from "./common.dto";
 export interface RegisterInput {
     username: UserDTO["username"];
     email: UserDTO["email"];
-    password: UserDTO["password"];
+    password: string;
 }
 
 export interface RegisterOutput {
@@ -38,7 +38,7 @@ export interface VerifyEmailOutput {
 // Login usecase input output
 export interface LoginInput {
     email: UserDTO["email"];
-    password: UserDTO["password"];
+    password: string;
 }
 export interface LoginOutput {
     token: string;
@@ -80,7 +80,7 @@ export interface LoginOutput {
 // UpdatePassword usecase output
 export interface UpdatePasswordInput {
     token: string;
-    password: UserDTO["password"];
+    password: string;
 }
 
 

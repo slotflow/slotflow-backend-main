@@ -10,6 +10,8 @@ import { DeleteReviewUseCase } from "../../application/useCases/review/deleteRev
 import { ToggleReviewBlockStatusUseCase } from "../../application/useCases/review/toggleReviewBlockStatus.useCase";
 import { createReviewUseCase, deleteReviewUseCase, getReviewsUseCase, reportReviewUseCase, toggleReviewBlockStatusUseCase } from ".";
 import { createReviewSchema, deleteReviewSchema, getReviewsSchema, reportReviewSchema, toggleReviewBlockStatusSchema } from "../../shared/zod/review.zod";
+import { BadRequestError } from "../../shared/error/appError";
+import { ERROR_CODES } from "../../shared/utils/types";
 
 class ReviewController {
     constructor(
@@ -28,6 +30,7 @@ class ReviewController {
     async getReviews(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
+
             const { limit, page, providerId, userId } = getReviewsSchema.parse(req.query);
 
             const filter: {
@@ -44,7 +47,7 @@ class ReviewController {
             } else if (user.role === Role.PROVIDER) {
                 filter.userId = userId;
             } else {
-                throw new Error("Invalid request");
+                throw new BadRequestError("Invalid request", ERROR_CODES.INVALID_REQUEST);
             }
 
             const result = await this.getReviewsUseCase.execute({
@@ -63,6 +66,7 @@ class ReviewController {
     async createReview(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
+
             const { providerId, rating, reviewText, bookingId } = createReviewSchema.parse(req.body);
             const result = await this.createReviewUseCase.execute({
                 providerId,
@@ -81,6 +85,7 @@ class ReviewController {
     async deleteReview(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
+
             const { reviewId } = deleteReviewSchema.parse(req.params);
             await this.deleteReviewUseCase.execute({
                 reviewId,
@@ -96,6 +101,7 @@ class ReviewController {
     async reportReview(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
+
             const { reviewId } = reportReviewSchema.parse({
                 reviewId: req.params.reviewId
             });

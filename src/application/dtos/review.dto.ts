@@ -29,7 +29,7 @@ export interface GetReviewsView extends Pick<ReviewDTO, "_id" | "createdAt" | "r
 
 // GetReviews usecase input output
 export type GetReviewsInput = GetReviewsQuery
-export type GetReviewsOutput = GetReviewsView
+export type GetReviewsOutput = Array<GetReviewsView>;
 
 // RepostReview usecase input output
 export interface RepostReviewInput {

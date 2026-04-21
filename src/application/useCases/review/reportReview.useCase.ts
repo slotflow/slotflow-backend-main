@@ -1,21 +1,31 @@
-import { log } from "../../../shared/logger/logger";
 import { RepostReviewInput } from "../../dtos/review.dto";
+import { ERROR_CODES } from "../../../shared/utils/types";
+import { toAppError } from "../../../shared/error/handleUnknownError";
+import { AppError, BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { IReviewRepository } from "../../../domain/interfaces/repositories/IReview.repository";
 
 export class ReportReviewUseCase {
     constructor(
-        private reviewRepository: IReviewRepository,
+        private readonly reviewRepository: IReviewRepository,
     ) { };
 
     async execute(input: RepostReviewInput): Promise<boolean> {
         try {
             const { providerId, reviewId } = input;
+            if(!reviewId || !providerId) {
+                throw new BadRequestError();
+            }
 
             const review = await this.reviewRepository.findById(reviewId);
-            if (!review) throw new Error("No review found");
+            if (!review) {
+                throw new NotFoundError(
+                    "Review not found",
+                    ERROR_CODES.REVIEW_NOT_FOUND
+                );
+            }
 
             if (review.providerId !== providerId) {
-                throw new Error("You are not permitted to report this review");
+                throw new BadRequestError();
             };
 
             if (review.reported) {
@@ -25,12 +35,18 @@ export class ReportReviewUseCase {
             };
 
             const updatedReview = await this.reviewRepository.update(review);
+            if(!updatedReview) {
+                throw new AppError(
+                    "Failed to update review",
+                    500,
+                    true,
+                    ERROR_CODES.INTERNAL_ERROR
+                );
+            }
 
             return updatedReview.reported;
-
-        } catch (error) {
-            log.error("ProviderReportReviewUseCase failed", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to report review");
         };
     };
 };

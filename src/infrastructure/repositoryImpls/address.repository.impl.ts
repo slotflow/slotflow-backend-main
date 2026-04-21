@@ -1,3 +1,4 @@
+import { ClientSession } from "mongoose";
 import { AddressModel } from "../models/address.model";
 import { AddressMapper } from "../mappers/address.mapper";
 import { Address } from "../../domain/entities/address.entity";
@@ -5,11 +6,12 @@ import { IAddressRepository } from "../../domain/interfaces/repositories/IAddres
 
 export class AddressRepositoryImpl implements IAddressRepository {
 
-    async create(address: Address): Promise<Address> {
+    async create(address: Address, session?: ClientSession): Promise<Address> {
         const doc = await AddressModel.create(
-            AddressMapper.toPersistence(address)
+            [AddressMapper.toPersistence(address)],
+            { session }
         );
-        return AddressMapper.toDomain(doc);
+        return AddressMapper.toDomain(doc[0]);
     };
 
     async findByUserId(userId: string): Promise<Address | null> {
@@ -22,17 +24,16 @@ export class AddressRepositoryImpl implements IAddressRepository {
         return doc ? AddressMapper.toDomain(doc) : null;
     };
 
-    async update(address: Address): Promise<Address> {
+    async update(address: Address, session?: ClientSession): Promise<Address | null> {
         const persistence = AddressMapper.toPersistence(address);
 
         const doc = await AddressModel.findByIdAndUpdate(
             address._id,
             { $set: persistence },
-            { new: true }
+            { new: true, session }
         );
 
-        if (!doc) throw new Error("Address not found");
-        return AddressMapper.toDomain(doc);
+        return doc ? AddressMapper.toDomain(doc) : null;
     };
 
 };

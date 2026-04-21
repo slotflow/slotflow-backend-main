@@ -1,7 +1,9 @@
-import { log } from "../../../shared/logger/logger";
+import { ERROR_CODES } from "../../../shared/utils/types";
+import { toAppError } from "../../../shared/error/handleUnknownError";
 import { ISubscriptionQueries } from "../../queries/ISubscription.queries";
-import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
+import { BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { GetSubscribedPlanInput, GetSubscribedPlanOutput } from "../../dtos/subscription.dto";
+import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 
 export class GetSubscribedPlanUseCase {
     constructor(
@@ -12,12 +14,31 @@ export class GetSubscribedPlanUseCase {
     async execute(input: GetSubscribedPlanInput): Promise<GetSubscribedPlanOutput> {
         try {
             const { providerId } = input;
+            if (!providerId) {
+                throw new BadRequestError();
+            }
+
             const providerProfile = await this.providerProfileRepository.findById(providerId);
-            if (!providerProfile) throw new Error("Profile not found.");
-            if (!providerProfile.subscription.length) throw new Error("No subscription found.");
+            if (!providerProfile) {
+                throw new NotFoundError(
+                    "Profile not found.",
+                    ERROR_CODES.PROVIDER_PROFILE_NOT_FOUND
+                );
+            }
+            if (!providerProfile.subscription.length) {
+                throw new NotFoundError(
+                    "Subsctiption not found.",
+                    ERROR_CODES.SUBSCRIPTION_NOT_FOUND
+                );
+            }
 
             const result = await this.subscriptionQueries.findMySubscritpion({ subscriptionId: providerProfile.subscription.at(-1)! });
-            if (!result) throw new Error("No subscription found.");
+            if (!result) {
+                throw new NotFoundError(
+                    "Subsctiption not found.",
+                    ERROR_CODES.SUBSCRIPTION_NOT_FOUND
+                );
+            }
 
             return {
                 providerId,
@@ -26,9 +47,8 @@ export class GetSubscribedPlanUseCase {
                 endDate: result.endDate,
                 subscriptionStatus: result.subscriptionStatus
             };
-        } catch (error) {
-            log.error("GetSubscribedPlanUseCase failed", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to get subscribed plan");
         };
     };
 };

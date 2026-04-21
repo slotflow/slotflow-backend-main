@@ -1,3 +1,4 @@
+import { ClientSession } from "mongoose";
 import { ProviderProfileModel } from "../models/providerProfile.model";
 import { ProviderProfileMapper } from "../mappers/providerProfile.mapper";
 import { ProviderProfile } from "../../domain/entities/providerProfile.entity";
@@ -5,26 +6,24 @@ import { IProviderProfileRepository } from "../../domain/interfaces/repositories
 
 export class ProviderProfileRepositoryImpl implements IProviderProfileRepository {
 
-    async create(providerProfile: ProviderProfile): Promise<ProviderProfile> {
-        const persistence = ProviderProfileMapper.toPersistence(providerProfile);
-        const doc = await ProviderProfileModel.create(persistence);
-        return ProviderProfileMapper.toDomain(doc);
+    async create(providerProfile: ProviderProfile, session?: ClientSession): Promise<ProviderProfile> {
+        const doc = await ProviderProfileModel.create(
+            [ProviderProfileMapper.toPersistence(providerProfile)],
+            { session }
+        );
+        return ProviderProfileMapper.toDomain(doc[0]);
     };
 
-    async update(providerProfile: ProviderProfile): Promise<ProviderProfile> {
+    async update(providerProfile: ProviderProfile, session?: ClientSession): Promise<ProviderProfile | null> {
         const persistence = ProviderProfileMapper.toPersistence(providerProfile);
 
         const doc = await ProviderProfileModel.findByIdAndUpdate(
             providerProfile._id,
             { $set: persistence },
-            { new: true }
+            { new: true, session }
         );
 
-        if (!doc) {
-            throw new Error("Provider not found");
-        }
-
-        return ProviderProfileMapper.toDomain(doc);
+        return doc ? ProviderProfileMapper.toDomain(doc) : null;
     };
 
     async findById(providerId: string): Promise<ProviderProfile | null> {

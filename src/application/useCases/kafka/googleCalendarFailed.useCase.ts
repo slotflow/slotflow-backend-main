@@ -1,6 +1,6 @@
 import { log } from "../../../shared/logger/logger";
-import { CreateGoogleCalendarEventFailedResult, EventEnvelope } from "../../dtos/kafka.dto";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
+import { CreateGoogleCalendarEventFailedResult, EventEnvelope } from "../../dtos/kafka.dto";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 
 export class GoogleCalendarFailedUseCases {

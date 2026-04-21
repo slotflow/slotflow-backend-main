@@ -1,9 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
-import { log } from "../../../shared/logger/logger";
+import { ERROR_CODES } from '../../../shared/utils/types';
 import { formatUtcDateTime } from "../../../shared/utils/dateTime";
+import { toAppError } from '../../../shared/error/handleUnknownError';
 import { notificationContentMap } from "../../../shared/utils/constants";
 import { NotificationType, Role } from "../../../domain/enums/common.enum";
+import { BadRequestError, NotFoundError } from '../../../shared/error/appError';
 import { ProviderChangeBookingAppointmentStatusInput } from '../../dtos/booking.dto';
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IGoogleTokenService } from "../../../domain/interfaces/services/IGoogleToken.service";
@@ -21,16 +23,34 @@ export class ChangeBookingStatusUseCase {
 
     async execute(input: ProviderChangeBookingAppointmentStatusInput): Promise<void> {
         try {
-            const { _id, appointmentStatus, providerId } = input;
+            const { bookingId, appointmentStatus, providerId } = input;
+            if (!bookingId || !appointmentStatus || !providerId) {
+                throw new BadRequestError();
+            }
 
-            const booking = await this.bookingRepository.findById(_id);
-            if (!booking) throw new Error("No booking found");
+            const booking = await this.bookingRepository.findById(bookingId);
+            if (!booking) {
+                throw new NotFoundError(
+                    "Booking not found",
+                    ERROR_CODES.BOOKING_NOT_FOUND
+                );
+            }
 
             const user = await this.userRepository.findById(booking.userId);
-            if (!user) throw new Error("No user found");
+            if (!user) {
+                throw new NotFoundError(
+                    "User not found",
+                    ERROR_CODES.USER_NOT_FOUND
+                );
+            }
 
             const provider = await this.userRepository.findById(providerId);
-            if (!provider) throw new Error("No provider found");
+            if (!provider) {
+                throw new NotFoundError(
+                    "Provider not found",
+                    ERROR_CODES.USER_NOT_FOUND
+                );
+            }
 
             let userAccessToken: string | null = null;
             if (user.googleConnected) {
@@ -129,9 +149,8 @@ export class ChangeBookingStatusUseCase {
                 });
             };
 
-        } catch (error) {
-            log.error("ChangeBookingStatusUseCase failed", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to change booking status");
         };
     };
 };

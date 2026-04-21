@@ -1,8 +1,9 @@
+import { ClientSession } from "mongoose";
 import { Booking } from "../../entities/booking.entity";
 
 export interface IBookingRepository {
 
-    create(booking: Booking): Promise<Booking>;
+    create(booking: Booking, session?: ClientSession): Promise<Booking>;
 
     findByUserId(userId: string, date: Date, time: string): Promise<Array<Booking> | null>;
 
@@ -12,6 +13,6 @@ export interface IBookingRepository {
 
     findByRoomId(roomId: string): Promise<Booking | null>;
 
-    update(booking: Booking): Promise<Booking>;
+    update(booking: Booking, session?: ClientSession): Promise<Booking | null>;
 
 }

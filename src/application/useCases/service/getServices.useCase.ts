@@ -1,14 +1,14 @@
-import { log } from "../../../shared/logger/logger";
-import { ApiOutput } from "../../dtos/common.dto";
-import { IServiceRepository } from "../../../domain/interfaces/repositories/IService.repository";
+import { TableData } from "../../dtos/common.dto";
+import { toAppError } from "../../../shared/error/handleUnknownError";
 import { GetServiceInput, GetServiceOutput } from "../../dtos/service.dto";
+import { IServiceRepository } from "../../../domain/interfaces/repositories/IService.repository";
 
 export class GetServicesUseCase {
     constructor(
         private seriveRepository: IServiceRepository,
     ) { };
 
-    async execute(input: GetServiceInput): Promise<ApiOutput<GetServiceOutput>> {
+    async execute(input: GetServiceInput): Promise<TableData<GetServiceOutput>> {
         try {
             const { page, limit } = input;
             const result = await this.seriveRepository.findAll(page, limit);
@@ -25,9 +25,8 @@ export class GetServicesUseCase {
                 currentPage,
                 totalCount,
             };
-        } catch (error) {
-            log.error("GetServicesUseCase failed", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to get services");
         };
     };
 };

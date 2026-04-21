@@ -4,13 +4,14 @@ import {
 } from "../../dtos/admin.dto";
 import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
-import { log } from "../../../shared/logger/logger";
+import { ERROR_CODES } from "../../../shared/utils/types";
+import { toAppError } from "../../../shared/error/handleUnknownError";
 import { notificationContentMap } from "../../../shared/utils/constants";
+import { BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { EventEnvelope, SendAccountTrustStatusEvent } from "../../dtos/kafka.dto";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
-
 
 export class ChangeProviderTrustTagUseCase {
     constructor(
@@ -22,19 +23,37 @@ export class ChangeProviderTrustTagUseCase {
     async execute(input: AdminChangeProviderTrustTagInput): Promise<AdminChangeProviderTrustTagOutput> {
         try {
             const { providerId, trustedBySlotflow } = input;
+            if (!providerId) {
+                throw new BadRequestError()
+            }
 
             const provider = await this.userRepository.findById(providerId);
-            if (!provider) throw new Error("User not found.");
+            if (!provider) {
+                throw new NotFoundError(
+                    "User not found.",
+                    ERROR_CODES.USER_NOT_FOUND
+                );
+            }
 
             const providerProfile = await this.providerProfileRepository.findById(providerId);
-            if (!providerProfile) throw new Error("Profile not found.");
+            if (!providerProfile) {
+                throw new NotFoundError(
+                    "Profile not found.",
+                    ERROR_CODES.PROVIDER_PROFILE_NOT_FOUND
+                );
+            }
 
             if (providerProfile.trustedBySlotflow === trustedBySlotflow) {
                 trustedBySlotflow ? providerProfile.revokeTrustBadge() : providerProfile.grantTrustBadge();
             };
 
             const updatedProviderProfile = await this.providerProfileRepository.update(providerProfile);
-            if (!updatedProviderProfile) throw new Error("Provider not found");
+            if (!updatedProviderProfile) {
+                throw new NotFoundError(
+                    "Provider not found",
+                    ERROR_CODES.USER_NOT_FOUND
+                );
+            }
 
             await this.kafkaProducer.publish<EventEnvelope<SendAccountTrustStatusEvent>>(kafkaConfig.topics.pub.accountTrustStatus, {
                 eventId: uuidv4(),
@@ -57,9 +76,8 @@ export class ChangeProviderTrustTagUseCase {
             });
 
             return { providerId, trustedBySlotflow: updatedProviderProfile.trustedBySlotflow };
-        } catch (error) {
-            log.error("ChangeProviderTrustTagUseCase failed", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to change provider trust tag status");
         };
     };
 };

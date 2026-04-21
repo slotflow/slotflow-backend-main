@@ -1,3 +1,4 @@
+import { ClientSession } from "mongoose";
 import { BookingModel } from "../models/booking.model";
 import { BookingMapper } from "../mappers/booking.mapper";
 import { Booking } from "../../domain/entities/booking.entity";
@@ -6,10 +7,10 @@ import { IBookingRepository } from "../../domain/interfaces/repositories/IBookin
 
 export class BookingRepositoryImpl implements IBookingRepository {
 
-    async create(booking: Booking): Promise<Booking> {
+    async create(booking: Booking, session?: ClientSession): Promise<Booking> {
         const persistence = BookingMapper.toPersistence(booking);
-        const doc = await BookingModel.create(persistence);
-        return BookingMapper.toDomain(doc);
+        const doc = await BookingModel.create([persistence], { session });
+        return BookingMapper.toDomain(doc[0]);
     };
 
     async findById(bookingId: string): Promise<Booking | null> {
@@ -50,20 +51,16 @@ export class BookingRepositoryImpl implements IBookingRepository {
         return doc ? BookingMapper.toDomain(doc) : null;
     };
 
-    async update(booking: Booking): Promise<Booking> {
+    async update(booking: Booking, session?: ClientSession): Promise<Booking | null> {
         const persistence = BookingMapper.toPersistence(booking);
 
         const doc = await BookingModel.findByIdAndUpdate(
             booking._id,
             { $set: persistence },
-            { new: true }
+            { new: true, session }
         );
 
-        if (!doc) {
-            throw new Error("Booking not found");
-        }
-
-        return BookingMapper.toDomain(doc);
+        return doc ? BookingMapper.toDomain(doc) : null;
     };
 
 };

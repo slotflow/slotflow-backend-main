@@ -76,7 +76,9 @@ export interface ProviderServiceByProviderIdForUserView extends FindProviderServ
 export type GetProviderServiceOuput = ProviderServiceByProviderIdView | ProviderServiceByProviderIdForUserView | null;
 
 // update provider service input and output
-export type UpdateProviderServiceInput = Pick<ProviderServiceDTO, "_id" | "service" | "serviceName" | "serviceDescription" | "servicePrice" | "isGroupService" | "maxParticipants" | "serviceExperience" | "serviceMode" | "serviceType" | "tags"> & Partial<Pick<ProviderServiceDTO, "videoUrl" | "requirements">>;
+export type UpdateProviderServiceInput = Pick<ProviderServiceDTO,| "service" | "serviceName" | "serviceDescription" | "servicePrice" | "isGroupService" | "maxParticipants" | "serviceExperience" | "serviceMode" | "serviceType" | "tags"> & Partial<Pick<ProviderServiceDTO, "videoUrl" | "requirements">> & {
+    providerServiceId: ProviderServiceDTO["_id"];
+};
 export type UpdateProviderServiceOutput = ProviderServiceByProviderIdView | null;
 
 

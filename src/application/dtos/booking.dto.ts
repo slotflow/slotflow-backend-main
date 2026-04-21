@@ -2,6 +2,7 @@ import { Role } from "../../domain/enums/common.enum";
 import { GetStatsDataCommonInput } from "./admin.dto";
 import { ServiceMode } from "../../domain/enums/service.enum";
 import { ApiPaginationInput, Availability, BookingDTO, ParticipantPresence, PlanDTO, TimeSlotForClientOutput, UserDTO } from "./common.dto";
+import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 
 //// **** booking queries dtos **** ////
 
@@ -77,8 +78,8 @@ export interface BookingStatsForProviderView {
 export interface GetGraphData {
   providerId: UserDTO["_id"],
   subscription: PlanDTO["planName"],
-  startDate?: Date,
-  endDate?: Date,
+  startDate: Date,
+  endDate: Date,
 }
 export type BookingGraphStatsForProviderQuery = Omit<GetGraphData, "subscription"> & {
   subscriptionGuard: number;
@@ -158,8 +159,10 @@ export interface UserCancelBookingInput {
 }
 
 // provider change booking appointment status usecase input
-export type ProviderChangeBookingAppointmentStatusInput = Pick<BookingDTO, "_id" | "appointmentStatus"> & {
+export interface ProviderChangeBookingAppointmentStatusInput {
+  bookingId: BookingDTO["_id"];
   providerId: UserDTO["_id"];
+  appointmentStatus: AppointmentStatus;
 };
 
 // check booking usecase input

@@ -1,9 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
-import { log } from "../../../shared/logger/logger";
+import { ERROR_CODES } from '../../../shared/utils/types';
+import { toAppError } from '../../../shared/error/handleUnknownError';
 import { notificationContentMap } from "../../../shared/utils/constants";
-import { ICacheService } from "../../../domain/interfaces/services/ICache.service";
 import { EventEnvelope, SendAccountBlockStatusEvent } from "../../dtos/kafka.dto";
+import { ICacheService } from "../../../domain/interfaces/services/ICache.service";
+import { AppError, BadRequestError, NotFoundError } from '../../../shared/error/appError';
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 import { ChangeUserIsBlockedStatusInput, ChangeUserIsBlockedStatusOutput } from '../../dtos/user.dto';
@@ -18,16 +20,31 @@ export class ChangeUserBlockStatusUseCase {
     async execute(input: ChangeUserIsBlockedStatusInput): Promise<ChangeUserIsBlockedStatusOutput> {
         try {
             const { userId, isBlocked } = input;
+            if (!userId) {
+                throw new BadRequestError();
+            }
 
             const user = await this.userRepository.findById(userId);
-            if (!user) throw new Error("No user found.");
+            if (!user) {
+                throw new NotFoundError(
+                    "User not found.",
+                    ERROR_CODES.USER_NOT_FOUND
+                );
+            }
 
             if (user.isBlocked === isBlocked) {
                 isBlocked ? user.unblock() : user.block();
             };
 
             const updatedUser = await this.userRepository.update(user);
-            if (!updatedUser) throw new Error("User not found");
+            if (!updatedUser) {
+                throw new AppError(
+                    "Failed to update block status",
+                    500,
+                    false,
+                    ERROR_CODES.INTERNAL_ERROR
+                )
+            }
 
             if (updatedUser.isBlocked) {
                 await this.cacheService.setBlockList(userId, JSON.stringify(isBlocked));
@@ -56,9 +73,8 @@ export class ChangeUserBlockStatusUseCase {
             });
 
             return { userId, isBlocked: updatedUser.isBlocked };
-        } catch (error) {
-            log.error("ChangeUserBlockStatusUseCase failed", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to change user block status");
         };
     };
 };

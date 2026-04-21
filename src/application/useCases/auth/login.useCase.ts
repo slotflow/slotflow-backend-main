@@ -1,10 +1,12 @@
-import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/common.enum";
+import { ERROR_CODES } from "../../../shared/utils/types";
 import { PlanName } from "../../../domain/enums/plan.enum";
-import { IJWT } from "../../../domain/interfaces/security/IJwt";
 import { LoginInput, LoginOutput } from "../../dtos/auth.dto";
+import { IJWT } from "../../../domain/interfaces/security/IJwt";
+import { toAppError } from "../../../shared/error/handleUnknownError";
 import { AuthResponseBuilder } from "../../services/AuthResponseBuilder";
 import { ProviderProfile } from "../../../domain/entities/providerProfile.entity";
+import { BadRequestError, UnauthorizedError } from "../../../shared/error/appError";
 import { IPasswordHasher } from "../../../domain/interfaces/security/IPasswordHasher";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
@@ -23,20 +25,42 @@ export class LoginUseCase {
     async execute(input: LoginInput): Promise<LoginOutput> {
         try {
             const { email, password } = input;
-
-            if (!email || !password) throw new Error("Invalid request.");
-
+            if(!email || !password) {
+                throw new BadRequestError()
+            }
+            
             const user = await this.userRepository.findByEmail(email);
-            if (!user) throw new Error("Invalid credentials");
-            if (user.isBlocked)
-                throw new Error("Your account is blocked, please contact us");
-            if (!user.password) throw new Error("Invalid request");
+            if (!user) {
+                throw new BadRequestError(
+                    "Invalid credentials", 
+                    ERROR_CODES.INVALID_CREDENTIALS
+                );
+            }
 
+            if (user.isBlocked) {
+                throw new UnauthorizedError(
+                    "Your account is blocked, please contact us",
+                    ERROR_CODES.ACCOUNT_BLOCKED
+                );
+            }
+
+            if (!user.password) {
+                throw new BadRequestError(
+                    "Invalid request",
+                    ERROR_CODES.INVALID_REQUEST
+                );
+            }
+                        
             const valid = await this.passwordHasher.comparePassword(
                 password,
                 user.password
             );
-            if (!valid) throw new Error("Invalid credentials.");
+            if (!valid) {
+                throw new BadRequestError(
+                    "Invalid credentials",
+                    ERROR_CODES.INVALID_CREDENTIALS
+                );
+            }
 
             const token = await this.jwtService.generateToken({
                 email: email,
@@ -103,10 +127,9 @@ export class LoginUseCase {
                 };
             }
 
-            throw new Error("Invalid request");
-        } catch (error) {
-            log.error("LoginUseCase failed", error as Error);
-            throw error;
+            throw new BadRequestError();
+        } catch (error: unknown) {
+            throw toAppError(error, "Login failed")
         };
     };
 };

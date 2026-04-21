@@ -3,10 +3,12 @@ import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { getAddressUseCase, updateAddressUseCase, userCreateAddressUseCase } from ".";
-import { createAddressSchema, updateAddressSchema } from "../../shared/zod/address.zod";
+import { createAddressSchema, getAddressSchema, updateAddressSchema } from "../../shared/zod/address.zod";
 import { GetAddressUseCase } from "../../application/useCases/address/getAddress.useCase";
 import { UpdateAddressUseCase } from "../../application/useCases/address/updateAddress.useCase";
 import { UserCreateAddressUseCase } from "../../application/useCases/address/userCreateAddress.useCase";
+import { BadRequestError } from "../../shared/error/appError";
+import { ERROR_CODES } from "../../shared/utils/types";
 
 class AddressController {
     constructor(
@@ -22,12 +24,12 @@ class AddressController {
     async getAddress(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-            const { providerId, userId } = req.params;
+            const { providerId, userId } = getAddressSchema.parse(req.params);
 
             const isMyAddress = !providerId && !userId;
             const targetId = providerId || userId || user.userOrProviderId;
 
-            if (!targetId) throw new Error("ID is required");
+            if (!targetId) throw new BadRequestError("ID is required", ERROR_CODES.INVALID_REQUEST);
 
             const result = await this.getAddressUseCase.execute({
                 userId: targetId as string,

@@ -1,8 +1,10 @@
 import dayjs from '../../../shared/config/dayjs';
-import { log } from "../../../shared/logger/logger";
+import { ERROR_CODES } from '../../../shared/utils/types';
+import { toAppError } from '../../../shared/error/handleUnknownError';
+import { BadRequestError, NotFoundError } from '../../../shared/error/appError';
 import { IServiceAvailabilityQueries } from "../../queries/IServiceAvailability.queries";
-import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 import { GetServiceAvailabilityInput, GetServiceAvailabilityOutput } from "../../dtos/serviceAvailability.dto";
+import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 
 export class GetServiceAvailabilityUseCase {
   constructor(
@@ -13,11 +15,21 @@ export class GetServiceAvailabilityUseCase {
   async execute(input: GetServiceAvailabilityInput): Promise<GetServiceAvailabilityOutput> {
     try {
       const { providerId, date } = input;
+      if (!providerId) {
+        throw new BadRequestError();
+      }
+
       const currentDateTime = dayjs();
       const selectedDate = dayjs(date).format('YYYY-MM-DD');
 
       const providerProfile = await this.providerProfileRepository.findById(providerId);
-      if (!providerProfile) throw new Error("Profile not found");
+      if (!providerProfile) {
+        throw new NotFoundError(
+          "Profile not found",
+          ERROR_CODES.PROVIDER_PROFILE_NOT_FOUND
+        );
+      }
+
       if (!providerProfile.serviceAvailabilityId) return null;
 
       const availability = await this.serviceAvailabilityQueries.findByProviderId({ date, availabilityId: providerProfile.serviceAvailabilityId });
@@ -33,9 +45,8 @@ export class GetServiceAvailabilityUseCase {
       });
 
       return { ...availability, slots: updatedSlots };
-    } catch (error) {
-      log.error("GetServiceAvailabilityUseCase failed", error as Error);
-      throw error;
+    } catch (error: unknown) {
+      throw toAppError(error, "Failed to get service availability");
     };
   };
 };

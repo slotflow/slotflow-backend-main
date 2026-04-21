@@ -4,8 +4,8 @@ import { log } from "../../../shared/logger/logger";
 import { notificationContentMap } from "../../../shared/utils/constants";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
 import { UpdateBookingAfterPaymentSuccessEventResult } from "../../dtos/common.dto";
-import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { BookingSavedEvent, EventEnvelope, GotAnAppointment } from "../../dtos/kafka.dto";
+import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 
@@ -97,7 +97,6 @@ export class UpdateBookingAfterPaymentSuccessUseCase {
 
         } catch (error) {
             log.error("UpdateBookingAfterPaymentSuccessUseCase failed : ", error as Error);
-            throw error;
         }
     }
 }

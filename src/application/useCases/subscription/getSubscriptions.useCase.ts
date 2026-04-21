@@ -1,5 +1,5 @@
 import { TableData } from "../../dtos/common.dto";
-import { log } from "../../../shared/logger/logger";
+import { toAppError } from "../../../shared/error/handleUnknownError";
 import { ISubscriptionQueries } from "../../queries/ISubscription.queries";
 import { GetSubscriptionsInput, GetSubscriptionsOutput } from "../../dtos/subscription.dto";
 
@@ -18,9 +18,8 @@ export class GetSubscriptionsUseCase {
                 currentPage,
                 totalCount,
             };
-        } catch (error) {
-            log.error("GetSubscriptionsUseCase failed", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to get subscriptions");
         };
     };
 };

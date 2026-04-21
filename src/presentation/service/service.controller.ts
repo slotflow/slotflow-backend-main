@@ -10,6 +10,8 @@ import { adminCreateNewServiceSchema, adminChangeServiceBlockStatusSchema } from
 import { ChangeServiceBlockStatusUseCase } from "../../application/useCases/service/changeBlockStatus.useCase";
 import { GetServicesByCategoryUseCase } from "../../application/useCases/service/getServicesByCategory.useCase";
 import { changeServiceBlockStatusUseCase, createServiceUseCase, getServicesByCategoryUseCase, getServicesUseCase } from ".";
+import { BadRequestError } from "../../shared/error/appError";
+import { ERROR_CODES } from "../../shared/utils/types";
 
 class ServiceController {
     constructor(
@@ -26,7 +28,7 @@ class ServiceController {
     async getServices(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-
+            
             const { page, limit, serviceCategory } = getServicesSchema.parse(req.query);
 
             if (user.role === Role.ADMIN) {

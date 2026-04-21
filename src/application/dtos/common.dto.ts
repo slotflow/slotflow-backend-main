@@ -230,17 +230,8 @@ export interface CommonOutput {
   message?: string;
 };
 
-
-// **** Used as the output interface for the paginated response
-export interface ApiOutput<T = unknown> extends CommonOutput {
-  totalPages?: number;
-  currentPage?: number;
-  totalCount?: number;
-  data?: T;
-}
-
 // **** Used as the type of table data
-export interface TableData<T> {
+export interface TableData<T> extends CommonOutput{
   totalPages?: number;
   currentPage?: number;
   totalCount?: number;
@@ -356,7 +347,12 @@ export interface CreateGoogleCalendarEventInput {
   accessToken: CredentialDTO["accessToken"];
 }
 
-// used in create file upload presigned url usecase
+// used in create file upload presigned url usecase input output
+export interface CreateFileUploadPresignedUrlInput {
+  fileName: string;
+  fileType: string;
+  folderName: string;
+}
 export interface CreateFileUploadPresignedUrlOutput {
   uploadUrl: string;
   key: string;
@@ -451,3 +447,9 @@ export interface LinkStripeCustomerInput {
 
 // used in count query
 export type CountResult = { count: number };
+
+// GetGoogleCalendarUseCase usecase input output
+export interface GetGoogleCalendarInput {
+    userId: string;
+}
+export type GetGoogleCalendarOutput = Array<GetEventsFromCalendarProps>;

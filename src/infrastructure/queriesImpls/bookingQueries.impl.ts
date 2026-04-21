@@ -156,10 +156,7 @@ export class BookingQueriesImpl implements IBookingQueries {
         const matchFilter: FilterQuery<BookingDTO> = {
             serviceProviderId: new Types.ObjectId(providerId),
         };
-
-        if (startDate && endDate) {
-            matchFilter.createdAt = { $gte: startDate, $lte: endDate };
-        }
+        matchFilter.createdAt = { $gte: startDate, $lte: endDate };
 
         const facet: Record<string, any> = {};
 

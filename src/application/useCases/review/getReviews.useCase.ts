@@ -1,23 +1,29 @@
 import { TableData } from "../../dtos/common.dto";
-import { log } from "../../../shared/logger/logger";
 import { IReviewQueries } from "../../queries/IReview.queries";
+import { BadRequestError } from "../../../shared/error/appError";
+import { toAppError } from "../../../shared/error/handleUnknownError";
 import { GetReviewsInput, GetReviewsOutput } from "../../dtos/review.dto";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 
 export class GetReviewsUseCase {
     constructor(
-        private reviewQueries: IReviewQueries,
-        private signedUrlService: ISignedUrlService
+        private readonly reviewQueries: IReviewQueries,
+        private readonly signedUrlService: ISignedUrlService
     ) { };
 
-    async execute(input: GetReviewsInput): Promise<TableData<Array<GetReviewsOutput>>> {
+    async execute(input: GetReviewsInput): Promise<TableData<GetReviewsOutput> | null> {
         try {
             const { limit, page, providerId, role, userId } = input;
+            if (!userId && !providerId && !role) {
+                throw new BadRequestError();
+            }
 
             const result = await this.reviewQueries.findAll({ limit, page, providerId, userId, role });
-            if (!result || !result.data) throw new Error("No reviews found");
 
             const { data: reviews, currentPage, totalCount, totalPages } = result;
+            if (!reviews) {
+                return null;
+            }
 
             const updatedData = await Promise.all(
                 reviews.map(async (review) => {
@@ -41,9 +47,8 @@ export class GetReviewsUseCase {
                 currentPage,
                 totalCount
             };
-        } catch (error) {
-            log.error("GetAllReviewsUseCase failed", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to get reviews");
         };
     };
 };

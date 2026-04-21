@@ -1,6 +1,7 @@
-import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/common.enum";
 import { IBookingQueries } from "../../queries/IBooking.queries";
+import { BadRequestError } from "../../../shared/error/appError";
+import { toAppError } from "../../../shared/error/handleUnknownError";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { GetUserForChatSidebarInput, GetUserForChatSidebarOutput } from "../../dtos/user.dto";
 
@@ -13,10 +14,18 @@ export class GetUserForChatSidebarUseCase {
     async execute(input: GetUserForChatSidebarInput): Promise<GetUserForChatSidebarOutput> {
         try {
             const { userId, role } = input;
+            if (!userId || !role) {
+                throw new BadRequestError();
+            }
+
             const result = await this.bookingQueries.findUsersforChatSideBar({
                 userId,
                 role: role === Role.PROVIDER ? Role.USER : Role.PROVIDER
             });
+
+            if (!result) {
+                return [];
+            }
 
             const updatedResult = await Promise.all(
                 (result as GetUserForChatSidebarOutput).map(async (user) => {
@@ -32,9 +41,8 @@ export class GetUserForChatSidebarUseCase {
             );
 
             return updatedResult;
-        } catch (error) {
-            log.error("GetUserForChatSidebarUseCase failed", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to get users");
         };
     };
 };

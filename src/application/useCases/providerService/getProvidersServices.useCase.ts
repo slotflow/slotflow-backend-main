@@ -1,4 +1,4 @@
-import { log } from "../../../shared/logger/logger";
+import { toAppError } from "../../../shared/error/handleUnknownError";
 import { IProviderServiceQueries } from "../../queries/IProviderService.queries";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { GetProvidersServicesInput, GetProvidersServicesOutput } from "../../dtos/providerService.dto";
@@ -39,9 +39,8 @@ export class GetProvidersServicesUseCase {
       );
 
       return updatedProviders;
-    } catch (error) {
-      log.error("GetProvidersServicesUseCase failed", error as Error);
-      throw error;
+    } catch (error: unknown) {
+      throw toAppError(error, "Failed to get provider serices");
     };
   };
 };

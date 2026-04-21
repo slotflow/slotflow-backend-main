@@ -1,8 +1,10 @@
-import { ApiOutput } from "../../dtos/common.dto";
-import { log } from "../../../shared/logger/logger";
+import { TableData } from "../../dtos/common.dto";
+import { ERROR_CODES } from "../../../shared/utils/types";
+import { toAppError } from "../../../shared/error/handleUnknownError";
+import { BadRequestError, NotFoundError } from "../../../shared/error/appError";
+import { GetProviderProofsInput, GetProviderProofsOutput } from "../../dtos/user.dto";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
-import { GetProviderProofsInput, GetProviderProofsOutput } from "../../dtos/user.dto";
 
 export class GetProviderProofsUseCase {
     constructor(
@@ -10,12 +12,20 @@ export class GetProviderProofsUseCase {
         private readonly providerProfileRepository: IProviderProfileRepository
     ) { };
 
-    async execute(input: GetProviderProofsInput): Promise<ApiOutput<GetProviderProofsOutput>> {
+    async execute(input: GetProviderProofsInput): Promise<TableData<GetProviderProofsOutput>> {
         try {
             const { providerId } = input;
+            if (!providerId) {
+                throw new BadRequestError();
+            }
 
             const provider = await this.providerProfileRepository.findById(providerId);
-            if (!provider) throw new Error("Failed to find provider");
+            if (!provider) {
+                throw new NotFoundError(
+                    "Provider profile not found",
+                    ERROR_CODES.PROVIDER_PROFILE_NOT_FOUND
+                );
+            }
 
             let signedIdentityProofUrl: string | null = null;
             let signedServiceProofUrl: string | null = null;
@@ -36,9 +46,8 @@ export class GetProviderProofsUseCase {
                     serviceProof: signedServiceProofUrl,
                 },
             };
-        } catch (error) {
-            log.error("GetProviderProofsUseCase failed", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to get provider proofs");
         };
     };
 };

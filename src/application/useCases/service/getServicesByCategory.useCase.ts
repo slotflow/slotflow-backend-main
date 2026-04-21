@@ -1,4 +1,5 @@
-import { log } from "../../../shared/logger/logger";
+import { BadRequestError } from "../../../shared/error/appError";
+import { toAppError } from "../../../shared/error/handleUnknownError";
 import { IServiceRepository } from "../../../domain/interfaces/repositories/IService.repository";
 import { GetServicesByCategoryInput, GetServicesByCategoryOutput } from "../../dtos/service.dto";
 
@@ -11,6 +12,10 @@ export class GetServicesByCategoryUseCase {
     async execute(input: GetServicesByCategoryInput): Promise<GetServicesByCategoryOutput> {
         try {
             const { categories } = input;
+            if(!categories) {
+                throw new BadRequestError();
+            }
+
             const services = await this.serviceRepository.findAllByCategory(categories);
             if (!services) return null;
 
@@ -18,9 +23,8 @@ export class GetServicesByCategoryUseCase {
                 _id: service._id,
                 serviceName: service.serviceName,
             }));
-        } catch (error) {
-            log.error("GetServicesByCategoryUseCase failed", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to get services by categories");
         };
     };
 };

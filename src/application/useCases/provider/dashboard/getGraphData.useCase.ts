@@ -1,7 +1,8 @@
-import { log } from "../../../../shared/logger/logger";
 import { IBookingQueries } from "../../../queries/IBooking.queries";
+import { toAppError } from "../../../../shared/error/handleUnknownError";
 import { GetProviderGraphDataInput, GetProviderGraphDataOutput } from "../../../dtos/provider.dto";
 import { ISubscriptionMapping } from "../../../../domain/interfaces/helper/ISubscriptionMapping.helper";
+import { BadRequestError } from "../../../../shared/error/appError";
 
 
 export class GetProviderGraphDataUseCase {
@@ -13,9 +14,14 @@ export class GetProviderGraphDataUseCase {
     async execute(input: GetProviderGraphDataInput): Promise<GetProviderGraphDataOutput> {
         try {
             const { providerId, subscription, endDate, startDate } = input;
+            if (!providerId || !subscription) {
+                throw new BadRequestError();
+            }
 
             const subscriptionGuard = await this.subscriptionHelper.getLevel(subscription);
-            if (subscriptionGuard === null) throw new Error("Invalid request");
+            if (subscriptionGuard === null) {
+                throw new BadRequestError();
+            }
 
             const resultArray = await this.bookingQueries.findGraphDataForProviderDashboard({
                 providerId,
@@ -34,9 +40,8 @@ export class GetProviderGraphDataUseCase {
             }
 
             return dashboardGraphData;
-        } catch (error) {
-            log.error("GetProviderGraphDataUseCase failed", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to get graph data");
         };
     };
 };

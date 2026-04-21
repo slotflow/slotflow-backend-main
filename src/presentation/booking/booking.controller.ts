@@ -13,6 +13,8 @@ import { ChangeBookingStatusUseCase } from "../../application/useCases/booking/c
 import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/booking/updateBookingOnlineTracking.useCase";
 import { bookingCheckoutViaStripeSchema, cancelBookingSchema, changeBookingStatusSchema, getBookingsSchema, validateBookingIdSchema, validateJoinRoomSchema, validateRoomIdSchema } from "../../shared/zod/booking.zod";
 import { checkBookingUseCase, getBookingDetailsUsecase, getBookingsUseCase, bookingCheckoutUseCase, validateJoinRoomUsecase, cancelBookingUseCase, updateBookingOnlineTrakingUseCase, changeBookingStatusUseCase } from ".";
+import { BadRequestError } from "../../shared/error/appError";
+import { ERROR_CODES } from "../../shared/utils/types";
 
 class BookingController {
     constructor(
@@ -38,6 +40,7 @@ class BookingController {
     async getBookings(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser
+            if(!user) throw new BadRequestError("User not found", ERROR_CODES.USER_NOT_FOUND);
 
             const filter: {
                 providerId?: string,
@@ -75,6 +78,7 @@ class BookingController {
     async validateRoomId(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
+            if(!user) throw new BadRequestError("User not found", ERROR_CODES.USER_NOT_FOUND);
             const { bookingId, roomId } = validateRoomIdSchema.parse({
                 ...req.params,
                 ...req.query
@@ -189,7 +193,7 @@ class BookingController {
                 ...req.body,
                 providerId: (req.user as DecodedUser).userOrProviderId
             });
-            await this.changeBookingStatusUseCase.execute({ _id: bookingId, appointmentStatus, providerId });
+            await this.changeBookingStatusUseCase.execute({ bookingId, appointmentStatus, providerId });
             sendResponse(res, null, "Booking status updated successfully");
         } catch (error) {
             log.error("updateBookingAppointmentStatus failed", error as Error);

@@ -4,7 +4,7 @@ import { ApiPaginationInput, ServiceDTO } from "./common.dto";
 
 // GetService usecase input output
 export interface GetServiceInput extends ApiPaginationInput { }
-export type GetServiceOutput = Array<Pick<ServiceDTO, "_id" | "serviceName" | "isBlocked" | "serviceCategory">>;
+export type GetServiceOutput = Array<Pick<ServiceDTO, "_id" | "serviceName" | "isBlocked" | "serviceCategory">> | [];
 
 // CreateService usecase input
 export type CreateServiceInput = Pick<ServiceDTO, "serviceName" | "serviceCategory">;

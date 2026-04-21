@@ -1,8 +1,10 @@
-import { log } from "../../../shared/logger/logger";
-import { GetEventsFromCalendarProps } from "../../dtos/common.dto";
+import { ERROR_CODES } from "../../../shared/utils/types";
+import { toAppError } from "../../../shared/error/handleUnknownError";
+import { BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { IAesEncryptionService } from "../../../domain/interfaces/services/IAesEncryption.service";
 import { ICredentialRepository } from "../../../domain/interfaces/repositories/ICredentialRepository";
 import { IGoogleCalendarGatewayService } from "../../../domain/interfaces/services/IGoogleCalendarGateway.service";
+import { GetEventsFromCalendarProps, GetGoogleCalendarInput, GetGoogleCalendarOutput } from "../../dtos/common.dto";
 
 export class GetGoogleCalendarUseCase {
     constructor(
@@ -11,11 +13,19 @@ export class GetGoogleCalendarUseCase {
         private googleCalendarGatewayService: IGoogleCalendarGatewayService
     ) { };
 
-    async execute(userId: string): Promise<Array<GetEventsFromCalendarProps>> {
+    async execute(input: GetGoogleCalendarInput): Promise<GetGoogleCalendarOutput> {
         try {
+            const { userId } = input;
+            if (!userId) {
+                throw new BadRequestError()
+            }
+
             const credential = await this.credentialRepository.findByUserId(userId);
             if (!credential) {
-                throw new Error("Credential not found");
+                throw new NotFoundError(
+                    "Invalid or expired access token",
+                    ERROR_CODES.INVALID_CREDENTIALS
+                );
             };
 
             const accessToken = await this.aesEncryption.decrypt(credential.accessToken);
@@ -43,9 +53,8 @@ export class GetGoogleCalendarUseCase {
             });
 
             return updatedEvents;
-        } catch (error) {
-            log.error("FethGoogleCalendarUseCase failed", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to get google calendar");
         };
     };
 };

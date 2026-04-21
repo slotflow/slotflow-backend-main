@@ -131,7 +131,7 @@ export interface GetUserForChatSidebarInput {
     userId: UserDTO["_id"];
     role: Role;
 }
-export type GetUserForChatSidebarOutput = Array<Pick<UserDTO, "_id" | "username" | "profileImage">>
+export type GetUserForChatSidebarOutput = Array<Pick<UserDTO, "_id" | "username" | "profileImage">> | [];
 
 // AdminGetProviderDetails usecase input output
 export interface AdminGetProviderDetailsInput {

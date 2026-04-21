@@ -1,10 +1,12 @@
-import { log } from "../../../shared/logger/logger";
+import { ERROR_CODES } from "../../../shared/utils/types";
 import { UserCancelBookingInput } from "../../dtos/booking.dto";
+import { toAppError } from "../../../shared/error/handleUnknownError";
+import { BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 
-// TODO kafka event to refund
+// TODO complete
 
 export class CancelBookingUseCase {
     constructor(
@@ -15,22 +17,54 @@ export class CancelBookingUseCase {
     async execute(input: UserCancelBookingInput): Promise<void> {
         try {
             const { userId, bookingId } = input;
+            if (!userId || !bookingId) {
+                throw new BadRequestError();
+            }
 
             const user = await this.userRepository.findById(userId);
-            if (!user) throw new Error("No user found");
+            if (!user) {
+                throw new NotFoundError(
+                    "User not found",
+                    ERROR_CODES.USER_NOT_FOUND
+                );
+            }
 
             const booking = await this.bookingRepository.findById(bookingId);
-            if (!booking) throw new Error("No booking found");
+            if (!booking) {
+                throw new NotFoundError(
+                    "Booking not found",
+                    ERROR_CODES.BOOKING_NOT_FOUND
+                );
+            }
 
             if (booking.appointmentStatus === AppointmentStatus.CANCELLED) {
-                throw new Error("Already cancelled");
-            } else if (booking.appointmentStatus === AppointmentStatus.COMPLETED) {
-                throw new Error("Appointment completed");
-            } else if (booking.appointmentStatus === AppointmentStatus.REJECTED_BY_PROVIDER) {
-                throw new Error("Appointment rejected by the Service provider");
-            };
+                throw new BadRequestError(
+                    "Booking already cancelled",
+                    ERROR_CODES.INVALID_REQUEST
+                );
+            }
 
-            if (!booking.paymentId) throw new Error("No payment id found");
+            if (booking.appointmentStatus === AppointmentStatus.COMPLETED) {
+                throw new BadRequestError(
+                    "Appointment already completed",
+                    ERROR_CODES.INVALID_REQUEST
+                );
+            }
+
+            if (booking.appointmentStatus === AppointmentStatus.REJECTED_BY_PROVIDER) {
+                throw new BadRequestError(
+                    "Appointment was rejected by provider",
+                    ERROR_CODES.INVALID_REQUEST
+                );
+            }
+
+            if (!booking.paymentId) {
+                throw new BadRequestError(
+                    "No payment id found",
+                    ERROR_CODES.INVALID_REQUEST
+                );
+            }
+
             // const payment = await this.paymentRepository.findById(booking.paymentId);
             // if (!payment) throw new Error("No payment found for this booking");
 
@@ -38,7 +72,12 @@ export class CancelBookingUseCase {
 
                 booking.cancelAppointment();
                 const updatedBooking = await this.bookingRepository.update(booking);
-                if (!updatedBooking) throw new Error("Booking status updating error");
+                if (!updatedBooking) {
+                    throw new NotFoundError(
+                        "Updated Booking not found",
+                        ERROR_CODES.BOOKING_NOT_FOUND
+                    );
+                }
 
                 // if (payment.paymentGateway === PaymentGateway.STRIPE) {
 
@@ -88,13 +127,11 @@ export class CancelBookingUseCase {
                 //     throw new Error(`Refund not supported for payment gateway: ${payment.paymentGateway}`);
                 // };
 
-            } catch (error) {
-                log.error("CancelBookingUseCase failed", error as Error);
-                throw error;
+            } catch (error: unknown) {
+                throw toAppError(error, "Failed to cancel booking");
             };
         } catch (error) {
-            log.error("CancelBookingUseCase failed", error as Error);
-            throw error;
+            throw toAppError(error, "Failed to cancel booking");
         };
     };
 };

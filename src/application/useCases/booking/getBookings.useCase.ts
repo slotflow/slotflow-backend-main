@@ -1,7 +1,8 @@
 import { TableData } from "../../dtos/common.dto";
-import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/common.enum";
+import { BadRequestError } from "../../../shared/error/appError";
 import { IBookingQueries } from "../../queries/IBooking.queries";
+import { toAppError } from "../../../shared/error/handleUnknownError";
 import { GetBookingsInput, GetBookingsOutput } from "../../dtos/booking.dto";
 
 export class GetBookingsUseCase {
@@ -12,12 +13,18 @@ export class GetBookingsUseCase {
     async execute(input: GetBookingsInput): Promise<TableData<GetBookingsOutput>> {
         try {
             const { serviceProviderId, userId, page, limit, online, role } = input;
+            if (!role) {
+                throw new BadRequestError()
+            }
 
             if (role === Role.PROVIDER) {
-                if (!serviceProviderId) throw new Error("Invalid request");
+                if (!serviceProviderId) {
+                    throw new BadRequestError();
+                }
             };
+
             if (role === Role.USER) {
-                if (!userId) throw new Error("Invalid request");
+                if (!userId) throw new BadRequestError();
             };
 
             const result = await this.bookingQueries.findAll({
@@ -37,9 +44,8 @@ export class GetBookingsUseCase {
                 currentPage,
                 totalCount,
             };
-        } catch (error) {
-            log.error("GetBookingsUseCase failed", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to get booking");
         };
     };
 };

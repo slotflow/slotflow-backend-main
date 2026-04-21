@@ -1,4 +1,5 @@
-import { log } from "../../../shared/logger/logger";
+import { BadRequestError } from "../../../shared/error/appError";
+import { toAppError } from "../../../shared/error/handleUnknownError";
 import { IProviderServiceQueries } from "../../queries/IProviderService.queries";
 import { GetProviderServiceInput, GetProviderServiceOuput } from "../../dtos/providerService.dto";
 
@@ -11,6 +12,9 @@ export class GetProviderServicesUseCase {
     async execute(input: GetProviderServiceInput): Promise<GetProviderServiceOuput> {
         try {
             const { providerId, isUser } = input;
+            if (!providerId) {
+                throw new BadRequestError();
+            }
 
             const service = await this.providerServiceQueries.findByProviderId({ providerId });
             if (!service) return null;
@@ -31,9 +35,8 @@ export class GetProviderServicesUseCase {
                 providerId: !isUser ? service.providerId : undefined,
                 tags: !isUser ? service.tags : undefined,
             }
-        } catch (error) {
-            log.error("GetProviderServicesUseCase faile : ", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to get provider service");
         };
     };
 };

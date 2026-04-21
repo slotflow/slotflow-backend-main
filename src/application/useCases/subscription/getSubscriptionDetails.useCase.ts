@@ -1,6 +1,7 @@
-import { log } from "../../../shared/logger/logger";
-import { GetSubscriptionDetailsInput, GetSubscriptionDetailsOutput } from "../../dtos/subscription.dto";
+import { BadRequestError } from "../../../shared/error/appError";
+import { toAppError } from "../../../shared/error/handleUnknownError";
 import { ISubscriptionQueries } from "../../queries/ISubscription.queries";
+import { GetSubscriptionDetailsInput, GetSubscriptionDetailsOutput } from "../../dtos/subscription.dto";
 
 export class GetSubscriptionDetailsUseCase {
     constructor(
@@ -10,12 +11,16 @@ export class GetSubscriptionDetailsUseCase {
     async execute(input: GetSubscriptionDetailsInput): Promise<GetSubscriptionDetailsOutput | null> {
         try {
             const { subscriptionId } = input;
+            if (!subscriptionId) {
+                throw new BadRequestError();
+            }
+
             const subscriptionDetails = await this.subscirptionQueries.findDetails({ subscriptionId });
             if (!subscriptionDetails) return null;
+
             return subscriptionDetails;
-        } catch (error) {
-            log.error("GetSubscriptionDetailsUseCase failed", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to get subscription details");
         };
     };
 };

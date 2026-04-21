@@ -1,8 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
-import { log } from "../../../shared/logger/logger";
+import { ERROR_CODES } from '../../../shared/utils/types';
 import { AdminRejectProviderInput } from "../../dtos/admin.dto";
+import { toAppError } from '../../../shared/error/handleUnknownError';
 import { notificationContentMap } from "../../../shared/utils/constants";
+import { BadRequestError, NotFoundError } from '../../../shared/error/appError';
 import { EventEnvelope, SendAdminProviderReviewEvent } from "../../dtos/kafka.dto";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { AdminVerificationStatus } from "../../../domain/enums/adminVerificationStatus.enum";
@@ -19,12 +21,27 @@ export class AdminRejectProviderUseCase {
     async execute(input: AdminRejectProviderInput): Promise<void> {
         try {
             const { providerId, verificationRejectionReason, isAddressVerified, isAvailabilityVerified, isProofsVerified, isServiceDetailsVerified } = input;
+            if (!providerId ||
+                !verificationRejectionReason
+            ) {
+                throw new BadRequestError();
+            }
 
             const provider = await this.userRepository.findById(providerId);
-            if (!provider) throw new Error("User not found.");
+            if (!provider) {
+                throw new NotFoundError(
+                    "User not found.",
+                    ERROR_CODES.USER_NOT_FOUND
+                );
+            }
 
             const providerProfile = await this.providerProfileRepository.findById(providerId);
-            if (!providerProfile) throw new Error("Profile not found.");
+            if (!providerProfile) {
+                throw new NotFoundError(
+                    "Profile not found.",
+                    ERROR_CODES.PROVIDER_PROFILE_NOT_FOUND
+                );
+            }
 
             providerProfile.rejectVerification({
                 verificationRejectionReason: verificationRejectionReason ?? "",
@@ -57,9 +74,8 @@ export class AdminRejectProviderUseCase {
                 },
             });
 
-        } catch (error) {
-            log.error("AdminRejectProviderUseCase failed", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to reject provider");
         };
     };
 };

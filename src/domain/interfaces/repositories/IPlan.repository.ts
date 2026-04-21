@@ -6,7 +6,7 @@ export interface IPlanRepository {
 
     findById(planId: string): Promise<Plan | null>;
 
-    update(plan: Plan): Promise<Plan>;
+    update(plan: Plan): Promise<Plan | null>;
 
     findByNameOrPrice(name: string, price: number): Promise<Plan | null>;
 
