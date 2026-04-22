@@ -29,7 +29,9 @@ export const bookingCheckoutViaStripeSchema = z.object({
 }).merge(validateUserIdSchema).merge(validateProviderIdSchema);
 
 // Booking cancel validation schemas
-export const cancelBookingSchema = validateBookingIdSchema.merge(validateUserIdSchema);
+export const cancelBookingSchema = z.object({
+  reason: z.string().min(10, "Too short reason").max(500, "Too long reason").optional(),
+}).merge(validateBookingIdSchema);
 
 // Booking join room validation schemas
 export const validateJoinRoomSchema = z.object({

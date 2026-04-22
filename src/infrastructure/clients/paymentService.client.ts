@@ -4,7 +4,7 @@ import { log } from "../../shared/logger/logger";
 import { axiosInstance } from "../http/axios/axios";
 import { ERROR_CODES } from "../../shared/utils/types";
 import { AppError, BadRequestError } from "../../shared/error/appError";
-import { CreateBookingCheckoutSessionInput, CreateBookingCheckoutSessionOutput, CreateSubscriptionCheckoutSessionInput, CreateSubscriptionCheckoutSessionOutput, IPaymentServiceClient } from "../../domain/interfaces/clients/IPaymentService.client";
+import { CreateBookingCheckoutSessionInput, CreateBookingCheckoutSessionOutput, CreateSubscriptionCheckoutSessionInput, CreateSubscriptionCheckoutSessionOutput, IPaymentServiceClient, ProcessRefundInput, ProcessRefundOutput } from "../../domain/interfaces/clients/IPaymentService.client";
 
 export class PaymentServiceClient implements IPaymentServiceClient {
 
@@ -65,6 +65,32 @@ export class PaymentServiceClient implements IPaymentServiceClient {
       log.error("createBookingCheckoutSession, Payment Service unavailable", error as Error);
 
       this.handleError(error, "createBookingCheckoutSession");
+    }
+  }
+
+  async processRefund(input: ProcessRefundInput): Promise<ProcessRefundOutput> {
+    try {
+      const { data } = await this.http.post<ProcessRefundOutput>(
+        "/payments/refund",
+        input
+      );
+
+      if (!data?.data) {
+        log.error("Invalid response from Payment Service");
+
+        throw new AppError(
+          "Invalid response from Payment Service",
+          502,
+          false,
+          ERROR_CODES.PAYMENT_INVALID_RESPONSE
+        );
+      };
+
+      return data;
+    } catch (error: unknown) {
+      log.error("processRefund, Payment Service unavailable", error as Error);
+
+      this.handleError(error, "processRefund");
     }
   }
 

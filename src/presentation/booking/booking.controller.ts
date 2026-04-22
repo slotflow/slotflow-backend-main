@@ -1,7 +1,9 @@
 import { log } from "../../shared/logger/logger";
 import { Role } from "../../domain/enums/common.enum";
+import { ERROR_CODES } from "../../shared/utils/types";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
+import { BadRequestError } from "../../shared/error/appError";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { GetBookingsUseCase } from "../../application/useCases/booking/getBookings.useCase";
 import { CheckBookingUseCase } from "../../application/useCases/booking/checkBooking.useCase";
@@ -13,8 +15,6 @@ import { ChangeBookingStatusUseCase } from "../../application/useCases/booking/c
 import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/booking/updateBookingOnlineTracking.useCase";
 import { bookingCheckoutViaStripeSchema, cancelBookingSchema, changeBookingStatusSchema, getBookingsSchema, validateBookingIdSchema, validateJoinRoomSchema, validateRoomIdSchema } from "../../shared/zod/booking.zod";
 import { checkBookingUseCase, getBookingDetailsUsecase, getBookingsUseCase, bookingCheckoutUseCase, validateJoinRoomUsecase, cancelBookingUseCase, updateBookingOnlineTrakingUseCase, changeBookingStatusUseCase } from ".";
-import { BadRequestError } from "../../shared/error/appError";
-import { ERROR_CODES } from "../../shared/utils/types";
 
 class BookingController {
     constructor(
@@ -150,13 +150,14 @@ class BookingController {
 
     async cancelBooking(req: Request, res: Response, next: NextFunction) {
         try {
-            const { bookingId, userId } = cancelBookingSchema.parse({
-                userId: (req.user as DecodedUser).userOrProviderId,
+            const user = req.user as DecodedUser;
+            const { bookingId, reason } = cancelBookingSchema.parse({
                 bookingId: req.params.bookingId
             });
             await this.cancelBookingUseCase.execute({
-                userId,
+                userId: user.userOrProviderId,
                 bookingId,
+                reason
             });
             sendResponse(res, null, "Booking cancelled");
         } catch (error) {

@@ -154,6 +154,7 @@ export interface UserAppointmentBookingViaStripeInput {
 export interface UserCancelBookingInput {
   userId: UserDTO["_id"];
   bookingId: BookingDTO["_id"];
+  reason?: string;
 }
 
 // provider change booking appointment status usecase input

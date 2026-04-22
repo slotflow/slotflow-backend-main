@@ -1,4 +1,4 @@
-import { PaymentFor } from "../../enums/payment.enum";
+import { PaymentFor, RefundFor, RefundReason } from "../../enums/payment.enum";
 
 export interface CreateSubscriptionCheckoutSessionInput {
   subscriptionId: string;
@@ -42,6 +42,19 @@ export interface CreateBookingCheckoutSessionOutput {
   data: string;
 }
 
+export interface ProcessRefundInput {
+  bookingId: string;
+  paymentId: string;
+  refundFor: RefundFor;
+  refundReason: RefundReason;
+  reasonInDetail: string;
+}
+
+export interface ProcessRefundOutput {
+  success: boolean;
+  message: string;
+}
+
 export interface IPaymentServiceClient {
   createSubscriptionCheckoutSession(
     input: CreateSubscriptionCheckoutSessionInput
@@ -50,4 +63,8 @@ export interface IPaymentServiceClient {
   createBookingCheckoutSession(
     input: CreateBookingCheckoutSessionInput
   ): Promise<CreateBookingCheckoutSessionOutput>;
+
+  processRefund(
+    input: ProcessRefundInput
+  ): Promise<ProcessRefundOutput>;
 }

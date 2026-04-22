@@ -160,6 +160,9 @@ export class Booking {
         if (this.props.appointmentStatus === AppointmentStatus.CANCELLED) {
             return;
         };
+        if (this.props.appointmentStatus === AppointmentStatus.COMPLETED) {
+            return;
+        };
 
         this.props.appointmentStatus = AppointmentStatus.CANCELLED;
         this.props.statusTrack.push({

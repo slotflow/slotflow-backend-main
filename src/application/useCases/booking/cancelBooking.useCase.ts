@@ -1,22 +1,23 @@
 import { ERROR_CODES } from "../../../shared/utils/types";
 import { UserCancelBookingInput } from "../../dtos/booking.dto";
 import { toAppError } from "../../../shared/error/handleUnknownError";
-import { BadRequestError, NotFoundError } from "../../../shared/error/appError";
+import { RefundFor, RefundReason } from "../../../domain/enums/payment.enum";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
+import { AppError, BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
-
-// TODO COMPLETE
+import { IPaymentServiceClient } from "../../../domain/interfaces/clients/IPaymentService.client";
 
 export class CancelBookingUseCase {
     constructor(
         private readonly userRepository: IUserRepository,
         private readonly bookingRepository: IBookingRepository,
+        private readonly paymentServiceClient: IPaymentServiceClient
     ) { };
 
     async execute(input: UserCancelBookingInput): Promise<void> {
         try {
-            const { userId, bookingId } = input;
+            const { userId, bookingId, reason } = input;
             if (!userId || !bookingId) {
                 throw new BadRequestError();
             }
@@ -34,6 +35,13 @@ export class CancelBookingUseCase {
                 throw new NotFoundError(
                     "Booking not found",
                     ERROR_CODES.BOOKING_NOT_FOUND
+                );
+            }
+
+            if (booking.userId !== userId) {
+                throw new BadRequestError(
+                    "You are not authorized to cancel this booking",
+                    ERROR_CODES.UNAUTHORIZED
                 );
             }
 
@@ -65,71 +73,32 @@ export class CancelBookingUseCase {
                 );
             }
 
-            // const payment = await this.paymentRepository.findById(booking.paymentId);
-            // if (!payment) throw new Error("No payment found for this booking");
+            booking.cancelAppointment();
+            const updatedBooking = await this.bookingRepository.update(booking);
+            if (!updatedBooking) {
+                throw new NotFoundError(
+                    "Updated Booking not found",
+                    ERROR_CODES.BOOKING_NOT_FOUND
+                );
+            }
 
-            try {
+            const refundResult = await this.paymentServiceClient.processRefund({
+                paymentId: booking.paymentId,
+                bookingId,
+                reasonInDetail: reason ?? "Booking cancelled by user",
+                refundFor: RefundFor.CANCEL_BOOKING,
+                refundReason: RefundReason.REQUESTED_BY_CUSTOMER
+            });
 
-                booking.cancelAppointment();
-                const updatedBooking = await this.bookingRepository.update(booking);
-                if (!updatedBooking) {
-                    throw new NotFoundError(
-                        "Updated Booking not found",
-                        ERROR_CODES.BOOKING_NOT_FOUND
-                    );
-                }
+            if(!refundResult.success) {
+                throw new AppError(
+                    "Failed to process refund",
+                    500,
+                    true,
+                    ERROR_CODES.INTERNAL_ERROR
+                );
+            }
 
-                // if (payment.paymentGateway === PaymentGateway.STRIPE) {
-
-                // let refundAmount = 0
-                // const currentDate = new Date();
-                // const appointmentDate = new Date(booking.appointmentDate);
-                // currentDate.setHours(0, 0, 0, 0);
-                // appointmentDate.setHours(0, 0, 0, 0);
-
-                // if (appointmentDate > currentDate) {
-                //     refundAmount = Math.round(payment.totalAmount * 0.90);
-                // } else if (appointmentDate.getTime() === currentDate.getTime()) {
-                //     refundAmount = Math.round(payment.totalAmount * 0.50);
-                // };
-
-                // const refund = await stripe.refunds.create({
-                //     payment_intent: payment.transactionId,
-                //     amount: refundAmount,
-                // });
-
-                // if (!refund) throw new Error("Refund processinga failed");
-
-                // payment.update({
-                //     paymentStatus: PaymentStatus.REFUNDED,
-                //     paymentMethod: payment.paymentMethod,
-                //     paymentGateway: payment.paymentGateway,
-                //     paymentFor: payment.paymentFor,
-                //     initialAmount: payment.initialAmount,
-                //     discountAmount: payment.discountAmount,
-                //     totalAmount: payment.totalAmount,
-
-                //     refundAmount: refund.amount,
-                //     refundAt: new Date(refund.created * 1000),
-                //     refundId: refund.id,
-                //     refundReason: "Booking cancelled",
-                //     refundStatus: refund.status as PaymentStatus ?? PaymentStatus.PENDING,
-                //     chargeId: typeof refund.charge === "string" ? refund.charge : refund.charge?.id ?? undefined,
-                // });
-
-                // const updatedPayment = await this.paymentRepository.update(payment);
-                // if (!updatedPayment) throw new Error("Refund failed");
-
-                // const accessToken = await this.googleTokenService.getAccessToken(userId);
-
-
-                // } else {
-                //     throw new Error(`Refund not supported for payment gateway: ${payment.paymentGateway}`);
-                // };
-
-            } catch (error: unknown) {
-                throw toAppError(error, "Failed to cancel booking");
-            };
         } catch (error) {
             throw toAppError(error, "Failed to cancel booking");
         };
