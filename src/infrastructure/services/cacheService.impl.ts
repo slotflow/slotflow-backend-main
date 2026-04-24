@@ -33,7 +33,7 @@ export class CacheServiceImpl implements ICacheService {
         } catch (error) {
             log.error("getBlockList failed", error as Error);
             throw new AppError(
-                "Cache read failed",
+                "Failed to fetch blocked users",
                 500,
                 false,
                 ERROR_CODES.INTERNAL_ERROR

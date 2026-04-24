@@ -1,6 +1,6 @@
 // Security instance
 
-import { JWTImpl } from "./JWT..impl";
+import { JWTImpl } from "./jwt..impl";
 import { PasswordHasherImpl } from "./passwordHashing.impl";
 import { IJWT } from "../../domain/interfaces/security/IJwt";
 import { IPasswordHasher } from "../../domain/interfaces/security/IPasswordHasher";

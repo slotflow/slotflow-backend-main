@@ -17,7 +17,6 @@ export const errorHandler = (
     let errors: unknown = undefined;
     let errorCode: string = ERROR_CODES.INTERNAL_ERROR;
 
-    // ✅ Zod Validation Errors
     if (err instanceof ZodError) {
         statusCode = 400;
         message = "Validation failed";
@@ -27,12 +26,10 @@ export const errorHandler = (
         log.warn(`[Validation Error] ${req.method} ${req.url}`);
     }
 
-    // ✅ App Errors (Operational + System)
     else if (err instanceof AppError) {
         statusCode = err.statusCode;
         errorCode = err.errorCode || ERROR_CODES.INTERNAL_ERROR;
 
-        // 🔥 KEY: use isOperational
         message = err.isOperational
             ? err.message
             : "Something went wrong";
@@ -49,7 +46,6 @@ export const errorHandler = (
         }
     }
 
-    // ✅ Named Errors (Passport, JWT etc.)
     else if (isNamedError(err)) {
         if (err.name === "UnauthorizedError") {
             statusCode = 401;
@@ -65,14 +61,11 @@ export const errorHandler = (
         );
     }
 
-    // ❌ Unknown / Programming Errors
     else {
         log.error(
             `[Unexpected Error] ${req.method} ${req.url}`,
             err as Error
         );
-
-        // message already safe ("Something went wrong")
     }
 
     res.status(statusCode).json({
