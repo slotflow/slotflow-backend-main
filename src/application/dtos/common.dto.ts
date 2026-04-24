@@ -407,13 +407,6 @@ export interface DecodedUser {
   userId?: string;
 };
 
-// send provider create payment failed event
-export interface ProviderCreatePaymentFailedEventResult {
-  mbsData: {
-    subscriptionId: string;
-  }
-};
-
 // send provider create payment success event
 export interface ProviderCreatePaymentSuccessEventResult {
   mbsData: {
@@ -429,13 +422,6 @@ export interface UpdateBookingAfterPaymentSuccessEventResult {
   mbsData: {
     bookingId: string;
     paymentId: string;
-  }
-}
-
-// used in update booking after payment failed event
-export interface UpdateBookingAfterPaymentFailedEventResult {
-  mbsData: {
-    bookingId: string;
   }
 }
 

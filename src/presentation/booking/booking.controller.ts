@@ -130,12 +130,12 @@ class BookingController {
 
     async bookingCheckout(req: Request, res: Response, next: NextFunction) {
         try {
-            const { date, providerId, selectedServiceMode, slotId, userId } = bookingCheckoutViaStripeSchema.parse({
-                userId: (req.user as DecodedUser).userOrProviderId,
+            const user = req.user as DecodedUser;
+            const { date, providerId, selectedServiceMode, slotId } = bookingCheckoutViaStripeSchema.parse({
                 ...req.body
             });
             const result = await this.bookingCheckoutUseCase.execute({
-                userId,
+                userId: user.userOrProviderId,
                 providerId,
                 slotId,
                 selectedServiceMode,
@@ -189,12 +189,12 @@ class BookingController {
 
     async updateBookingAppointmentStatus(req: Request, res: Response, next: NextFunction) {
         try {
-            const { appointmentStatus, bookingId, providerId } = changeBookingStatusSchema.parse({
+            const user = req.user as DecodedUser;
+            const { appointmentStatus, bookingId } = changeBookingStatusSchema.parse({
                 ...req.params,
                 ...req.body,
-                providerId: (req.user as DecodedUser).userOrProviderId
             });
-            await this.changeBookingStatusUseCase.execute({ bookingId, appointmentStatus, providerId });
+            await this.changeBookingStatusUseCase.execute({ bookingId, appointmentStatus, providerId: user.userOrProviderId });
             sendResponse(res, null, "Booking status updated successfully");
         } catch (error) {
             log.error("updateBookingAppointmentStatus failed", error as Error);

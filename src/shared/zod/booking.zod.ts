@@ -3,7 +3,7 @@ import { objectIdRegex } from "../utils/regex";
 import { Boolean } from "../../domain/enums/common.enum";
 import { ServiceMode } from "../../domain/enums/service.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
-import { dateSchema, paginationSchema, validateProviderIdSchema, validateUserIdSchema } from "./base.zod";
+import { dateSchema, paginationSchema, validateProviderIdSchema } from "./base.zod";
 
 // Booking validation schemas
 export const validateBookingIdSchema = z.object({
@@ -26,7 +26,7 @@ export const bookingCheckoutViaStripeSchema = z.object({
   slotId: z.string().regex(objectIdRegex, "Invalid slot id"),
   date: dateSchema,
   selectedServiceMode: z.nativeEnum(ServiceMode),
-}).merge(validateUserIdSchema).merge(validateProviderIdSchema);
+}).merge(validateProviderIdSchema);
 
 // Booking cancel validation schemas
 export const cancelBookingSchema = z.object({
@@ -44,4 +44,4 @@ export const validateJoinRoomSchema = z.object({
 // Change booking status validation schemas
 export const changeBookingStatusSchema = z.object({
     appointmentStatus: z.nativeEnum(AppointmentStatus),
-}).merge(validateBookingIdSchema).merge(validateProviderIdSchema);
+}).merge(validateBookingIdSchema);

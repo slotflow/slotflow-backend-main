@@ -1,4 +1,4 @@
-import { v4 as uuid } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { ERROR_CODES } from '../../../shared/utils/types';
 import { PaymentFor } from "../../../domain/enums/payment.enum";
 import { Booking } from "../../../domain/entities/booking.entity";
@@ -119,7 +119,7 @@ export class BookingCheckoutUseCase {
                         time: new Date()
                     }
                 ],
-                videoCallRoomId: uuid(),
+                videoCallRoomId: uuidv4(),
             }));
 
             const { data } = await this.paymentServiceClient.createBookingCheckoutSession({

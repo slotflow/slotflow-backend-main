@@ -54,4 +54,4 @@ export const updatePasswordSchema = z.object({
 // Connect google account zod validation schema
 export const connectGoogleSchema = z.object({
   connectOnly: z.boolean(),
-}).merge(validateUserIdSchema).merge(roleValidationSchema)
+}).merge(roleValidationSchema)

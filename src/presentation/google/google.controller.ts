@@ -33,13 +33,12 @@ class GoogleController {
     async connectGoogle(req: Request, res: Response, next: NextFunction) {
         try {
             console.log("connectGoogle controller starting")
-            const user = (req.user as DecodedUser);
-            const { connectOnly, role, userId } = connectGoogleSchema.parse({
+            const user = req.user as DecodedUser;
+            const { connectOnly, role } = connectGoogleSchema.parse({
                 connectOnly: true,
                 role: user.role,
-                userId: user.userOrProviderId
             });
-            const state = JSON.stringify({ connectOnly, role, userId });
+            const state = JSON.stringify({ connectOnly, role, userId: user.userOrProviderId });
             passport.authenticate("google", {
                 scope: [
                     "openid",
