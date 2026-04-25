@@ -1,6 +1,7 @@
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { AppConnect } from "../../domain/enums/common.enum";
+import { IdType } from "./types";
 
 // used as the Event data
 export enum EventData {
@@ -79,3 +80,11 @@ export const notificationContentMap: Record<string, {
 };
 
 export const daysOfWeek: string[] = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+export const PREFIX_MAP: Record<IdType, string> = {
+  [IdType.EVENT]: "sf_evt_",
+  [IdType.TRANSACTION]: "sf_trx_",
+  [IdType.ROOM]: "sf_room_",
+  [IdType.IDEMPOTENCY]: "sf_idem_",
+  [IdType.FILE]: "sf_file_",
+};

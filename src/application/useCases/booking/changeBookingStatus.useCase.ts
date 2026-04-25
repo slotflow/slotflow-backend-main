@@ -1,6 +1,6 @@
-import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
-import { ERROR_CODES } from '../../../shared/utils/types';
+import { generateId } from '../../../shared/utils/generateId';
+import { ERROR_CODES, IdType } from '../../../shared/utils/types';
 import { formatUtcDateTime } from "../../../shared/utils/dateTime";
 import { toAppError } from '../../../shared/error/handleUnknownError';
 import { notificationContentMap } from "../../../shared/utils/constants";
@@ -69,7 +69,7 @@ export class ChangeBookingStatusUseCase {
             const { date, time } = formatUtcDateTime(booking.appointmentDate);
 
             await this.kafkaProducer.publish<EventEnvelope<SendAppointmentStatusChangeForUserEvent>>(kafkaConfig.topics.pub.providerAppointmentStatusForUser, {
-                eventId: uuidv4(),
+                eventId: generateId(IdType.EVENT),
                 attempt: 1,
                 maxAttempts: 2,
                 occurredAt: new Date().toISOString(),
@@ -92,7 +92,7 @@ export class ChangeBookingStatusUseCase {
             });
 
             await this.kafkaProducer.publish<EventEnvelope<SendAppointmentStatusChangeForProviderEvent>>(kafkaConfig.topics.pub.providerAppointmentStatusForProvider, {
-                eventId: uuidv4(),
+                eventId: generateId(IdType.EVENT),
                 attempt: 1,
                 maxAttempts: 2,
                 occurredAt: new Date().toISOString(),
@@ -115,7 +115,7 @@ export class ChangeBookingStatusUseCase {
 
             if (userAccessToken) {
                 await this.kafkaProducer.publish<EventEnvelope<CreateGoogleCalendarEvent>>(kafkaConfig.topics.pub.createGoogleCalendarEvent, {
-                    eventId: uuidv4(),
+                    eventId: generateId(IdType.EVENT),
                     occurredAt: new Date().toString(),
                     attempt: 1,
                     maxAttempts: 2,
@@ -133,7 +133,7 @@ export class ChangeBookingStatusUseCase {
 
             if (providerAccessToken) {
                 await this.kafkaProducer.publish<EventEnvelope<CreateGoogleCalendarEvent>>(kafkaConfig.topics.pub.createGoogleCalendarEvent, {
-                    eventId: uuidv4(),
+                    eventId: generateId(IdType.EVENT),
                     occurredAt: new Date().toString(),
                     attempt: 1,
                     maxAttempts: 2,

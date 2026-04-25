@@ -88,3 +88,11 @@ export enum ERROR_CODES {
 };
 
 export type ErrorCode = typeof ERROR_CODES[keyof typeof ERROR_CODES];
+
+export enum IdType {
+  EVENT = "EVENT",
+  TRANSACTION = "TRANSACTION",
+  ROOM = "ROOM",
+  IDEMPOTENCY = "IDEMPOTENCY",
+  FILE = "FILE",
+}

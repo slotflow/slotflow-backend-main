@@ -1,6 +1,6 @@
-import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
-import { ERROR_CODES } from '../../../shared/utils/types';
+import { generateId } from '../../../shared/utils/generateId';
+import { ERROR_CODES, IdType } from '../../../shared/utils/types';
 import { toAppError } from '../../../shared/error/handleUnknownError';
 import { notificationContentMap } from "../../../shared/utils/constants";
 import { BadRequestError, NotFoundError } from '../../../shared/error/appError';
@@ -51,7 +51,7 @@ export class ChangeProviderBlockStatusUseCase {
             };
 
             await this.kafkaProducer.publish<EventEnvelope<SendAccountBlockStatusEvent>>(kafkaConfig.topics.pub.accountBlockStatus, {
-                eventId: uuidv4(),
+                eventId: generateId(IdType.EVENT),
                 attempt: 1,
                 maxAttempts: 1,
                 occurredAt: new Date().toISOString(),

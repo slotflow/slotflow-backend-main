@@ -1,10 +1,10 @@
-import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from '../../../config/env';
 import { ResendOtpOutput } from '../../dtos/auth.dto';
-import { ERROR_CODES } from '../../../shared/utils/types';
+import { generateId } from '../../../shared/utils/generateId';
 import { OtpPurpose } from '../../../domain/enums/common.enum';
 import { IJWT } from '../../../domain/interfaces/security/IJwt';
 import { BadRequestError } from '../../../shared/error/appError';
+import { ERROR_CODES, IdType } from '../../../shared/utils/types';
 import { EventEnvelope, SendOtpEvent } from '../../dtos/kafka.dto';
 import { toAppError } from '../../../shared/error/handleUnknownError';
 import { IOTPService } from '../../../domain/interfaces/services/IOtp.service';
@@ -33,7 +33,7 @@ export class ResendOtpUseCase {
       const otp = await this.otpService.setOtp(email);
 
       await this.kafkaProducer.publish<EventEnvelope<SendOtpEvent>>(kafkaConfig.topics.pub.sendOtp, {
-        eventId: uuidv4(),
+        eventId: generateId(IdType.EVENT),
         attempt: 1,
         maxAttempts: 1,
         occurredAt: new Date().toISOString(),

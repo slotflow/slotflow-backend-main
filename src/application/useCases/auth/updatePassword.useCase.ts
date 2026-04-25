@@ -1,8 +1,8 @@
-import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
 import { UpdatePasswordInput } from "../../dtos/auth.dto";
-import { ERROR_CODES } from '../../../shared/utils/types';
+import { generateId } from '../../../shared/utils/generateId';
 import { IJWT } from '../../../domain/interfaces/security/IJwt';
+import { ERROR_CODES, IdType } from '../../../shared/utils/types';
 import { toAppError } from '../../../shared/error/handleUnknownError';
 import { notificationContentMap } from '../../../shared/utils/constants';
 import { EventEnvelope, SendResetPasswordEvent } from "../../dtos/kafka.dto";
@@ -45,7 +45,7 @@ export class UpdatePasswordUseCase {
             await this.userRepository.update(user);
 
             await this.kafkaProducer.publish<EventEnvelope<SendResetPasswordEvent>>(kafkaConfig.topics.pub.passwordReset, {
-                eventId: uuidv4(),
+                eventId: generateId(IdType.EVENT),
                 attempt: 1,
                 maxAttempts: 1,
                 occurredAt: new Date().toISOString(),

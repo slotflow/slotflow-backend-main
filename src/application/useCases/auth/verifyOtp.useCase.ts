@@ -1,10 +1,10 @@
-import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
-import { ERROR_CODES } from '../../../shared/utils/types';
 import { OTPVerificationInput } from "../../dtos/auth.dto";
 import { User } from "../../../domain/entities/user.entity";
+import { generateId } from '../../../shared/utils/generateId';
 import { IJWT } from '../../../domain/interfaces/security/IJwt';
 import { BadRequestError } from '../../../shared/error/appError';
+import { ERROR_CODES, IdType } from '../../../shared/utils/types';
 import { toAppError } from '../../../shared/error/handleUnknownError';
 import { EventEnvelope, SendWelcomeEvent } from "../../dtos/kafka.dto";
 import { IOTPService } from "../../../domain/interfaces/services/IOtp.service";
@@ -50,7 +50,7 @@ export class VerifyOTPUseCase {
         }));
 
         await this.kafkaProducer.publish<EventEnvelope<SendWelcomeEvent>>(kafkaConfig.topics.pub.registerSuccess, {
-          eventId: uuidv4(),
+          eventId: generateId(IdType.EVENT),
           attempt: 1,
           maxAttempts: 1,
           occurredAt: new Date().toISOString(),

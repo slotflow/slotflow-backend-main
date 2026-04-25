@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
-import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
-import { ERROR_CODES } from '../../../shared/utils/types';
+import { generateId } from '../../../shared/utils/generateId';
+import { ERROR_CODES, IdType } from '../../../shared/utils/types';
 import { TrialSubscriptionInput } from '../../dtos/subscription.dto';
 import { toAppError } from '../../../shared/error/handleUnknownError';
 import { notificationContentMap } from "../../../shared/utils/constants";
@@ -116,7 +116,7 @@ export class TrialSubscriptionUseCase {
             const { startDate, endDate } = getUtcDateRange(subscription.startDate, subscription.endDate);
 
             await this.kafkaProducer.publish<EventEnvelope<SendProviderTrialSubscriptionEvent>>(kafkaConfig.topics.pub.providerTrialSubscription, {
-                eventId: uuidv4(),
+                eventId: generateId(IdType.EVENT),
                 attempt: 1,
                 maxAttempts: 1,
                 occurredAt: new Date().toISOString(),

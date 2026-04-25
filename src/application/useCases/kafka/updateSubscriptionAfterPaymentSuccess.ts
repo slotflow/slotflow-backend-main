@@ -1,6 +1,7 @@
-import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
 import { log } from "../../../shared/logger/logger";
+import { IdType } from '../../../shared/utils/types';
+import { generateId } from '../../../shared/utils/generateId';
 import { getDateAfterMonths } from "../../../shared/utils/dateTime";
 import { notificationContentMap } from "../../../shared/utils/constants";
 import { ProviderCreatePaymentSuccessEventResult } from "../../dtos/common.dto";
@@ -62,7 +63,7 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
 
             await this.kafkaProducer.publish<EventEnvelope<ProviderSubscriptionUpdatedEvent>>(
                 kafkaConfig.topics.pub.planSubscribed, {
-                eventId: uuidv4(),
+                eventId: generateId(IdType.EVENT),
                 attempt: 1,
                 maxAttempts: 1,
                 occurredAt: new Date().toISOString(),

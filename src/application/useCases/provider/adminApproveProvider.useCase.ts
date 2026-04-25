@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
-import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from "../../../config/env";
 import { Role } from "../../../domain/enums/common.enum";
-import { ERROR_CODES } from '../../../shared/utils/types';
+import { generateId } from '../../../shared/utils/generateId';
 import { AdminApproveProviderInput } from "../../dtos/admin.dto";
+import { ERROR_CODES, IdType } from '../../../shared/utils/types';
 import { toAppError } from '../../../shared/error/handleUnknownError';
 import { notificationContentMap } from "../../../shared/utils/constants";
 import { BadRequestError, NotFoundError } from '../../../shared/error/appError';
@@ -61,7 +61,7 @@ export class AdminApproveProviderUseCase {
             await this.providerProfileRepository.update(providerProfile, session);
 
             await this.kafkaProducer.publish<EventEnvelope<SendAdminProviderReviewEvent>>(kafkaConfig.topics.pub.adminProviderReview, {
-                eventId: uuidv4(),
+                eventId: generateId(IdType.EVENT),
                 attempt: 1,
                 maxAttempts: 1,
                 occurredAt: new Date().toISOString(),

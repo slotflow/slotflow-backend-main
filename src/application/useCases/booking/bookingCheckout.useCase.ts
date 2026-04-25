@@ -1,6 +1,6 @@
-import { v4 as uuidv4 } from 'uuid';
-import { ERROR_CODES } from '../../../shared/utils/types';
+import { generateId } from '../../../shared/utils/generateId';
 import { PaymentFor } from "../../../domain/enums/payment.enum";
+import { ERROR_CODES, IdType } from '../../../shared/utils/types';
 import { Booking } from "../../../domain/entities/booking.entity";
 import { FindProviderServiceOutput } from "../../dtos/common.dto";
 import { toAppError } from '../../../shared/error/handleUnknownError';
@@ -119,7 +119,7 @@ export class BookingCheckoutUseCase {
                         time: new Date()
                     }
                 ],
-                videoCallRoomId: uuidv4(),
+                videoCallRoomId: generateId(IdType.ROOM),
             }));
 
             const { data } = await this.paymentServiceClient.createBookingCheckoutSession({

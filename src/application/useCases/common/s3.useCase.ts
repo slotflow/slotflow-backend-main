@@ -1,4 +1,3 @@
-import { randomUUID } from "crypto";
 import { awsConfig } from "../../../config/env";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { BadRequestError } from "../../../shared/error/appError";
@@ -6,6 +5,8 @@ import { toAppError } from "../../../shared/error/handleUnknownError";
 import { DeleteObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { CreateFileUploadPresignedUrlOutput, CreateFileSignedUrlInput, CreateFileUploadPresignedUrlInput } from "../../dtos/common.dto";
+import { generateId } from "../../../shared/utils/generateId";
+import { IdType } from "../../../shared/utils/types";
 
 export class CreateFileUploadPresignedUrlUseCase {
     constructor(
@@ -22,7 +23,7 @@ export class CreateFileUploadPresignedUrlUseCase {
             const ext = fileName.split(".").pop();
             if (!ext) throw new BadRequestError();
 
-            const key = `${folderName}/${Date.now()}-${randomUUID()}.${ext}`;
+            const key = `${folderName}/${Date.now()}-${generateId(IdType.FILE)}.${ext}`;
 
             const command = new PutObjectCommand({
                 Bucket: awsConfig.awsS3BucketName,
