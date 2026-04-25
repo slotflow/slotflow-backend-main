@@ -6,10 +6,10 @@ import { IServiceRepository } from "../../domain/interfaces/repositories/IServic
 
 export class ServiceRepositoryImpl implements IServiceRepository {
 
-    async create(service: Service): Promise<Service> {
+    async create(service: Service): Promise<Service | null> {
         const persistence = ServiceMapper.toPersistence(service);
         const doc = await ServiceModel.create(persistence);
-        return ServiceMapper.toDomain(doc);
+        return doc ? ServiceMapper.toDomain(doc) : null;
     };
 
     async findAll(page: number, limit: number): Promise<{ data: Array<Service>; totalPages: number; currentPage: number; totalCount: number; }> {

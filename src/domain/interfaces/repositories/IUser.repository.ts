@@ -3,7 +3,7 @@ import { User } from "../../entities/user.entity";
 
 export interface IUserRepository {
 
-  create(user: User, session?: ClientSession): Promise<User>;
+  create(user: User, session?: ClientSession): Promise<User | null>;
 
   findByEmail(email: string): Promise<User | null>;
 

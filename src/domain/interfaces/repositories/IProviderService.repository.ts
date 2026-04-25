@@ -3,7 +3,7 @@ import { ProviderService } from "../../entities/providerService.entity";
 
 export interface IProviderServiceRepository {
 
-    create(providerService: ProviderService, session?: ClientSession): Promise<ProviderService>;
+    create(providerService: ProviderService, session?: ClientSession): Promise<ProviderService | null>;
 
     findById(providerServiceId: string): Promise<ProviderService | null>;
 

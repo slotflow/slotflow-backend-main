@@ -4,6 +4,7 @@ import { dateSchema, paginationSchema, s3FileKeySchema } from "./base.zod";
 import { ServiceMode, ServiceType } from "../../domain/enums/service.enum";
 import { SubscriptionValidity } from "../../domain/enums/subscription.enum";
 import { objectIdRegex, serviceDescriptionRegex, serviceExperienceRegex, serviceNameRegex, timeRegex } from "../utils/regex";
+import { startAndEndDateSchema } from "./common.zod";
 
 // Provider id with pagination validation schema
 export const providerIdWithPaginationSchema = z.object({
@@ -95,9 +96,7 @@ export const providerPlanSubscribeSchema = z.object({
 // Provider dashboard validation schema
 export const providerValidateDashboardDataSchema = z.object({
     subscription: z.nativeEnum(PlanName).default(PlanName.TRIAL),
-    endDate: dateSchema,
-    startDate: dateSchema,
-});
+}).merge(startAndEndDateSchema);
 
 // Provider update file validation schema
 export const providerValidateUpdateFileSchema = s3FileKeySchema;

@@ -94,6 +94,7 @@ export const kafkaConfig = {
     ],
 
     topics: {
+        dlqTopic: validator.requireEnv("KAFKA_DLQ_TOPIC"),
         sub: {
             googleCalendarSuccess: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_SUCCESS"),
             googleCalendarFailed: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_FAILED"),

@@ -1,6 +1,6 @@
 import { z } from "zod";
+import { dateSchema } from "./base.zod";
 import { FileType } from "../../domain/enums/common.enum";
-import { ServiceCategory } from "../../domain/enums/service.enum";
 
 // s3 presigned URL generation validation schema
 export const presignedUrlSchema = z.object({
@@ -16,6 +16,6 @@ export const changeBlockStatusSchema = z.object({
 
 // start and end date validation schema
 export const startAndEndDateSchema = z.object({
-    startDate: z.coerce.date(),
-    endDate: z.coerce.date(),
+    startDate: dateSchema,
+    endDate: dateSchema,
 });

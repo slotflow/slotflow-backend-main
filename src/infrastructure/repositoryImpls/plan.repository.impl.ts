@@ -5,10 +5,10 @@ import { IPlanRepository } from "../../domain/interfaces/repositories/IPlan.repo
 
 export class PlanRepositoryImpl implements IPlanRepository {
 
-    async create(plan: Plan): Promise<Plan> {
+    async create(plan: Plan): Promise<Plan | null> {
         const persistence = PlanMapper.toPersistence(plan);
         const doc = await PlanModel.create(persistence);
-        return PlanMapper.toDomain(doc);
+        return doc ? PlanMapper.toDomain(doc) : null;
     };
 
     async findById(planId: string): Promise<Plan | null> {

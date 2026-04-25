@@ -23,6 +23,8 @@ import { ISubscriptionRepository } from "../../domain/interfaces/repositories/IS
 import { IProviderServiceRepository } from "../../domain/interfaces/repositories/IProviderService.repository";
 import { IProviderProfileRepository } from "../../domain/interfaces/repositories/IProviderProfile.repository";
 import { IServiceAvailabilityRepository } from "../../domain/interfaces/repositories/IServiceAvailability.repository";
+import { IProcessedEventRepository } from "../../domain/interfaces/repositories/IProcessedEvent.repository";
+import { ProcessedEventRepositoryImpl } from "./processedEvent.repository.impl";
 
 // address repository instance
 export const addressRepository: IAddressRepository = new AddressRepositoryImpl();
@@ -56,3 +58,6 @@ export const userRepository: IUserRepository = new UserRepositoryImpl();
 
 // provider profile repository instance
 export const providerProfileRepository: IProviderProfileRepository = new ProviderProfileRepositoryImpl();
+
+// processed event repository instance
+export const processedEventRepository: IProcessedEventRepository = new ProcessedEventRepositoryImpl();

@@ -22,18 +22,14 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
         private readonly planRepository: IPlanRepository
     ) { };
 
-    async execute(input: EventEnvelope<ProviderCreatePaymentSuccessEventResult>) {
+    async execute(input: ProviderCreatePaymentSuccessEventResult): Promise<void> {
         try {
 
             const {
-                payload: {
-                    mbsData: {
-                        subscriptionId,
-                        paymentId,
-                        planDuration,
-                        providerId
-                    }
-                }
+                subscriptionId,
+                paymentId,
+                planDuration,
+                providerId
             } = input;
 
             const provider = await this.userRepository.findById(providerId);

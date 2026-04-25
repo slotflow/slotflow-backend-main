@@ -29,6 +29,9 @@ export const paginationSchema = z.object({
 // Date validation schema
 export const dateSchema = z.preprocess(
     (val) => {
+        if (val === undefined || val === null || val === "") {
+            return new Date();
+        }
         if (typeof val === "string" || val instanceof String) {
             const parsed = new Date(val as string);
             if (!isNaN(parsed.getTime())) return parsed;

@@ -3,7 +3,7 @@ import { Address } from "../../entities/address.entity";
 
 export interface IAddressRepository {
 
-    create(address: Address, session?: ClientSession): Promise<Address>;
+    create(address: Address, session?: ClientSession): Promise<Address | null>;
 
     findByUserId(userId: string): Promise<Address | null>;
 

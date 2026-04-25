@@ -6,10 +6,10 @@ import { IProviderServiceRepository } from "../../domain/interfaces/repositories
 
 export class ProviderServiceRepositoryImpl implements IProviderServiceRepository {
 
-    async create(providerService: ProviderService, session?: ClientSession): Promise<ProviderService> {
+    async create(providerService: ProviderService, session?: ClientSession): Promise<ProviderService | null> {
         const persistence = ProviderServiceMapper.toPersistence(providerService);
         const doc = await ProviderServiceModel.create([persistence], { session });
-        return ProviderServiceMapper.toDomain(doc[0]);
+        return doc && doc.length > 0 ? ProviderServiceMapper.toDomain(doc[0]) : null;
     };
 
     async update(providerService: ProviderService, session?: ClientSession): Promise<ProviderService | null> {

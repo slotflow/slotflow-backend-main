@@ -2,7 +2,7 @@ import { Credential } from "../../entities/credential.entity";
 
 export interface ICredentialRepository {
 
-    create(credential: Credential): Promise<Credential>;
+    create(credential: Credential): Promise<Credential | null>;
 
     findByUserId(userId: string): Promise<Credential | null>;
 

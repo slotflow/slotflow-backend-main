@@ -1,10 +1,10 @@
 // first step of provider profile creation
 // after addingthe address in the onboarding only the provider profile will create
-export interface CreateProviderProfile {
+export interface CreateProviderProfileProps {
     userId: string;
 };
 
-export type RejectVerification = {
+export type RejectVerificationProps = {
   verificationRejectionReason: string;
   isAddressVerified: boolean;
   isServiceDetailsVerified: boolean;
@@ -12,10 +12,10 @@ export type RejectVerification = {
   isProofsVerified: boolean;
 };
 
-export type SubmitIdentityProof = {
+export type SubmitIdentityProofProps = {
   identityProof: string | null;
 };
 
-export type SubmitServiceProof = {
+export type SubmitServiceProofProps = {
   serviceProof: string | null;
 };

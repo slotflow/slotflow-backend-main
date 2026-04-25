@@ -15,12 +15,20 @@ export interface KafkaClientAdapterProps {
 }
 
 // event envelope
-export interface EventEnvelope<T> {
+export interface EventEnvelope<T, M = DqMetaData> {
     eventId: string;
     occurredAt: string;
     attempt: number;
     maxAttempts: number;
     payload: T;
+    metadata?: M;
+}
+
+// dlq metadata
+export interface DqMetaData {
+    originalTopic: string;
+    error: string;
+    failedAt: Date;
 }
 
 // send email common
@@ -40,7 +48,13 @@ export interface SendNotificationCommon {
 // kafka client adapter message handler
 export type MessageHandler = (payload: KafkaClientAdapterProps) => Promise<void>;
 
-
+export interface ProcessEventWrapperInput<T = any> {
+  topic: string,
+  eventData: EventEnvelope<{
+    mbsData: T;
+  }>,
+  businessUseCase: { execute: (data: any) => Promise<void> }
+}
 
 
 
@@ -160,6 +174,12 @@ export interface StripeAccountCreatedEvent {
   stripeAccountId: string;
 }
 
+// consume stripe customer created event
+export interface UpdateStripeCustomerCreatedConsumeEvent {
+  userId: string;
+  stripeCustomerId: string;
+}
+
 // Added till this 
 
 // send provider payment request event
@@ -261,26 +281,14 @@ export interface CreateGoogleCalendarEvent {
 
 // create google calendar event success result
 export interface CreateGoogleCalendarEventSuccessResult {
-  mbsData: {
-    bookingId: string;
-    role: Role;
-    eventId: string;
-  }
+  bookingId: string;
+  role: Role;
+  eventId: string;
 }
 
 // create google calendar event failed result
 export interface CreateGoogleCalendarEventFailedResult {
-  mbsData: {
-    bookingId: string;
-    role: Role;
-    error: string;
-  }
-}
-
-
-
-// Consumer Events
-export interface UpdateStripeCustomerCreatedConsumeEvent {
-  userId: string;
-  stripeCustomerId: string;
+  bookingId: string;
+  role: Role;
+  error: string;
 }

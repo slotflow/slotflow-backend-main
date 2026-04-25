@@ -3,7 +3,7 @@ import { ServiceCategory } from "../../enums/service.enum";
 
 export interface IServiceRepository {
 
-    create(service: Service): Promise<Service>;
+    create(service: Service): Promise<Service | null>;
 
     findById(serviceId: string): Promise<Service | null>;
 

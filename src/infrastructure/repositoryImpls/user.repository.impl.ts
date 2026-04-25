@@ -6,10 +6,10 @@ import { IUserRepository } from "../../domain/interfaces/repositories/IUser.repo
 
 export class UserRepositoryImpl implements IUserRepository {
 
-    async create(user: User, session?: ClientSession): Promise<User> {
+    async create(user: User, session?: ClientSession): Promise<User | null> {
         const persistence = UserMapper.toPersistence(user);
         const doc = await UserModel.create([persistence], { session });
-        return UserMapper.toDomain(doc[0]);
+        return doc && doc.length > 0 ? UserMapper.toDomain(doc[0]) : null;
     };
 
     async update(user: User, session?: ClientSession): Promise<User | null> {

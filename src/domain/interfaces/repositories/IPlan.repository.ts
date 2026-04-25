@@ -2,7 +2,7 @@ import { Plan } from "../../entities/plan.entity";
 
 export interface IPlanRepository {
 
-    create(plan: Plan): Promise<Plan>;
+    create(plan: Plan): Promise<Plan | null>;
 
     findById(planId: string): Promise<Plan | null>;
 

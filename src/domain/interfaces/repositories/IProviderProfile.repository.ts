@@ -3,7 +3,7 @@ import { ProviderProfile } from "../../entities/providerProfile.entity";
 
 export interface IProviderProfileRepository {
 
-  create(providerProfile: ProviderProfile, session?: ClientSession): Promise<ProviderProfile>;
+  create(providerProfile: ProviderProfile, session?: ClientSession): Promise<ProviderProfile | null>;
 
   update(providerProfile: ProviderProfile, session?: ClientSession): Promise<ProviderProfile | null>;
 

@@ -7,10 +7,10 @@ import { IBookingRepository } from "../../domain/interfaces/repositories/IBookin
 
 export class BookingRepositoryImpl implements IBookingRepository {
 
-    async create(booking: Booking, session?: ClientSession): Promise<Booking> {
+    async create(booking: Booking, session?: ClientSession): Promise<Booking | null> {
         const persistence = BookingMapper.toPersistence(booking);
         const doc = await BookingModel.create([persistence], { session });
-        return BookingMapper.toDomain(doc[0]);
+        return doc && doc.length > 0 ? BookingMapper.toDomain(doc[0]) : null;
     };
 
     async findById(bookingId: string): Promise<Booking | null> {

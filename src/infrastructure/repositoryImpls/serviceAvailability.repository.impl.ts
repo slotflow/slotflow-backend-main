@@ -6,10 +6,12 @@ import { IServiceAvailabilityRepository } from '../../domain/interfaces/reposito
 
 export class ServiceAvailabilityRepositoryImpl implements IServiceAvailabilityRepository {
 
-    async create(serviceAvailability: ServiceAvailability, session?: ClientSession): Promise<ServiceAvailability> {
-        const persistence = ServiceAvailabilityMapper.toPersistence(serviceAvailability);
-        const created = await ServiceAvailabilityModel.create([persistence], { session });
-        return ServiceAvailabilityMapper.toDomain(created[0]);
+    async create(serviceAvailability: ServiceAvailability, session?: ClientSession): Promise<ServiceAvailability | null> {
+        const doc = await ServiceAvailabilityModel.create(
+            [ServiceAvailabilityMapper.toPersistence(serviceAvailability)],
+            { session }
+        );
+        return doc && doc.length > 0 ? ServiceAvailabilityMapper.toDomain(doc[0]) : null;
     };
 
     async deleteById(serviceAvailabilityId: string): Promise<boolean> {

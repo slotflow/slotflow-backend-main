@@ -3,7 +3,7 @@ import { Subscription } from "../../entities/subscription.entity";
 
 export interface ISubscriptionRepository {
 
-    create(subscription: Subscription, session?: ClientSession): Promise<Subscription>;
+    create(subscription: Subscription, session?: ClientSession): Promise<Subscription | null>;
 
     update(subscription: Subscription, session?: ClientSession): Promise<Subscription | null>;
 

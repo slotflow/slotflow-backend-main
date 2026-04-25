@@ -1,6 +1,6 @@
-import { handler } from ".";
 import { kafkaConfig } from "../../config/env";
 import { log } from "../../shared/logger/logger";
+import { handler, processEventWrapperUseCase } from ".";
 import { kafkaConsumer } from "../../infrastructure/messaging";
 import { IKafkaConsumerAdapter } from "../../domain/interfaces/messaging/IKafkaConsumerAdapter";
 
@@ -21,7 +21,11 @@ class KafkaController {
                 await this.kafkaConsumer.subscribe(topic, async ({ message }) => {
                     if (!message.value) return;
                     const eventData = JSON.parse(message.value.toString());
-                    await useCase.execute(eventData);
+                    await processEventWrapperUseCase.execute({
+                        businessUseCase: useCase,
+                        eventData,
+                        topic,
+                    });
                 });
             };
 

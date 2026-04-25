@@ -1,6 +1,6 @@
 import { ProviderProfileProps } from "../contracts/providerProfile.contract";
 import { AdminVerificationStatus } from "../enums/adminVerificationStatus.enum";
-import { CreateProviderProfile, RejectVerification, SubmitIdentityProof, SubmitServiceProof } from "../commands/providerProfile.commands";
+import { CreateProviderProfileProps, RejectVerificationProps, SubmitIdentityProofProps, SubmitServiceProofProps } from "../commands/providerProfile.commands";
 
 export class ProviderProfile {
     private props: ProviderProfileProps;
@@ -13,7 +13,7 @@ export class ProviderProfile {
         this.props.updatedAt = new Date();
     }
 
-    static create(props: CreateProviderProfile): ProviderProfile {
+    static create(props: CreateProviderProfileProps): ProviderProfile {
         return new ProviderProfile({
             _id: "",
             userId: props.userId,
@@ -137,7 +137,7 @@ export class ProviderProfile {
         this.touch();
     };
 
-    rejectVerification(props: RejectVerification) {
+    rejectVerification(props: RejectVerificationProps) {
         this.props.isAdminVerified = false;
         this.props.adminVerificationStatus = AdminVerificationStatus.REJECTED;
         this.props.verificationRejectionReason = props.verificationRejectionReason;
@@ -171,12 +171,12 @@ export class ProviderProfile {
         this.touch();
     }
 
-    submitIdentityProof(props: SubmitIdentityProof) {
+    submitIdentityProof(props: SubmitIdentityProofProps) {
         this.props.identityProof = props.identityProof;
         this.touch();
     }
 
-    submitServiceProof(props: SubmitServiceProof) {
+    submitServiceProof(props: SubmitServiceProofProps) {
         this.props.serviceProof = props.serviceProof;
         this.touch();
     }

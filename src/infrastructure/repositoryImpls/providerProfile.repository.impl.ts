@@ -6,12 +6,12 @@ import { IProviderProfileRepository } from "../../domain/interfaces/repositories
 
 export class ProviderProfileRepositoryImpl implements IProviderProfileRepository {
 
-    async create(providerProfile: ProviderProfile, session?: ClientSession): Promise<ProviderProfile> {
+    async create(providerProfile: ProviderProfile, session?: ClientSession): Promise<ProviderProfile | null> {
         const doc = await ProviderProfileModel.create(
             [ProviderProfileMapper.toPersistence(providerProfile)],
             { session }
         );
-        return ProviderProfileMapper.toDomain(doc[0]);
+        return doc && doc.length > 0 ? ProviderProfileMapper.toDomain(doc[0]) : null;
     };
 
     async update(providerProfile: ProviderProfile, session?: ClientSession): Promise<ProviderProfile | null> {

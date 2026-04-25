@@ -6,12 +6,12 @@ import { ISubscriptionRepository } from "../../domain/interfaces/repositories/IS
 
 export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
 
-    async create(subscription: Subscription, session?: ClientSession): Promise<Subscription> {
+    async create(subscription: Subscription, session?: ClientSession): Promise<Subscription | null> {
         const doc = await SubscriptionModel.create(
             [SubscriptionMapper.toPersistence(subscription)],
             { session }
         );
-        return SubscriptionMapper.toDomain(doc[0]);
+        return doc && doc.length > 0 ? SubscriptionMapper.toDomain(doc[0]) : null;
     };
 
     async update(subscription: Subscription, session?: ClientSession): Promise<Subscription | null> {

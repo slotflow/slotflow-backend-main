@@ -69,3 +69,11 @@ export enum CalendarStatus {
     CREATED = "CREATED",
     FAILED = "FAILED",
 }
+
+
+export enum EventStatus {
+    SUCCESS = "SUCCESS",
+    FAILED = "FAILED",
+    PENDING = "PENDING",
+    RETRY = "RETRY",
+}

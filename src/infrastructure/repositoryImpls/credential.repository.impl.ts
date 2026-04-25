@@ -5,10 +5,10 @@ import { ICredentialRepository } from "../../domain/interfaces/repositories/ICre
 
 export class CredentialRepositoryImpl implements ICredentialRepository {
 
-    async create(credential: Credential): Promise<Credential> {
+    async create(credential: Credential): Promise<Credential | null> {
         const persistence = CredentialMapper.toPersistence(credential);
         const doc = await CredentialModel.create(persistence);
-        return CredentialMapper.toDomain(doc);
+        return doc ? CredentialMapper.toDomain(doc) : null;
     };
 
     async findByUserId(userId: string): Promise<Credential | null> {

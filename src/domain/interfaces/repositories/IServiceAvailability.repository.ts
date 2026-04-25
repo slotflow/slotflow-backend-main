@@ -3,7 +3,7 @@ import { ServiceAvailability } from "../../entities/serviceAvailability.entity";
 
 export interface IServiceAvailabilityRepository {
 
-    create(serviceAvailability: ServiceAvailability, session?: ClientSession): Promise<ServiceAvailability>;
+    create(serviceAvailability: ServiceAvailability, session?: ClientSession): Promise<ServiceAvailability | null>;
 
     update(serviceAvailability: ServiceAvailability, session?: ClientSession): Promise<ServiceAvailability | null>;
 

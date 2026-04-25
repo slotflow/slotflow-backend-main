@@ -6,12 +6,12 @@ import { IAddressRepository } from "../../domain/interfaces/repositories/IAddres
 
 export class AddressRepositoryImpl implements IAddressRepository {
 
-    async create(address: Address, session?: ClientSession): Promise<Address> {
+    async create(address: Address, session?: ClientSession): Promise<Address | null> {
         const doc = await AddressModel.create(
             [AddressMapper.toPersistence(address)],
             { session }
         );
-        return AddressMapper.toDomain(doc[0]);
+        return doc && doc.length > 0 ? AddressMapper.toDomain(doc[0]) : null;
     };
 
     async findByUserId(userId: string): Promise<Address | null> {

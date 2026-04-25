@@ -409,20 +409,16 @@ export interface DecodedUser {
 
 // send provider create payment success event
 export interface ProviderCreatePaymentSuccessEventResult {
-  mbsData: {
-    subscriptionId: string;
-    paymentId: string;
-    planDuration: number;
-    providerId: string;
-  };
+  subscriptionId: string;
+  paymentId: string;
+  planDuration: number;
+  providerId: string;
 };
 
 // used in update booking after payment success event
 export interface UpdateBookingAfterPaymentSuccessEventResult {
-  mbsData: {
-    bookingId: string;
-    paymentId: string;
-  }
+  bookingId: string;
+  paymentId: string;
 }
 
 // used in link stripe customer usecase
