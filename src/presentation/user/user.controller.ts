@@ -6,17 +6,15 @@ import { DecodedUser } from "../../application/dtos/common.dto";
 import { adminUserBlockStatusSchema } from "../../shared/zod/admin.zod";
 import { SetRoleUseCase } from "../../application/useCases/user/setRole.useCase";
 import { GetUsersUseCase } from "../../application/useCases/user/getUsers.useCase";
-import { paginationSchema, roleValidationSchema, validateUserIdSchema } from "../../shared/zod/base.zod";
 import { GetUserProfileDetailsUseCase } from "../../application/useCases/user/getUserProfile.useCase";
+import { GetUserForChatSidebarUseCase } from "../../application/useCases/user/getUserFroChat.useCase";
+import { paginationSchema, roleValidationSchema, validateUserIdSchema } from "../../shared/zod/base.zod";
 import { UpdateUserProfileInfoUseCase } from "../../application/useCases/user/updateUserProfileInfo.useCase";
 import { ChangeUserBlockStatusUseCase } from "../../application/useCases/user/changeUserBlockStatus.useCase";
 import { ChangePushNotificationUseCase } from "../../application/useCases/user/changePushNotification.useCase";
 import { UpdateUserProfileImageUseCase } from "../../application/useCases/user/updateUserProfileImage.useCase";
-import { GetUserForChatSidebarUseCase } from "../../application/useCases/user/getUserFroChat.useCase";
 import { userUpdateFileSchema, userUpdateInfoSchema, userUpdatePushNotificationSchema } from "../../shared/zod/user.zod";
 import { changePushNotificationUseCase, changeUserBlockStatusUseCase, getUserProfileDetailsUseCase, getUsersUseCase, getUserForChatSidebarUseCase, setRoleUseCase, updateUserProfileImageUseCase, updateUserProfileInfoUseCase } from ".";
-import { BadRequestError } from "../../shared/error/appError";
-import { ERROR_CODES } from "../../shared/utils/types";
 
 class UserController {
     constructor(
@@ -41,12 +39,10 @@ class UserController {
     async getProfileDetails(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-
             if (user.role === Role.USER) {
-                const result = await this.getUserProfileDetailsUseCase.execute({ userId: user.userOrProviderId, isAdmin: false });
+                const result = await this.getUserProfileDetailsUseCase.execute({ userId: user.id, isAdmin: false });
                 sendResponse(res, result);
             }
-
             if (user.role === Role.ADMIN) {
                 const { userId } = validateUserIdSchema.parse({ userId: req.params.userId });
                 const result = await this.getUserProfileDetailsUseCase.execute({ userId, isAdmin: true });
@@ -61,12 +57,8 @@ class UserController {
     async updateProfileImage(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-            
-            const { s3FileKey, userId } = userUpdateFileSchema.parse({
-                userId: user.userOrProviderId,
-                ...req.body,
-            });
-            const result = await this.updateUserProfileImageUseCase.execute({ userId, profileImage: s3FileKey });
+            const { s3FileKey } = userUpdateFileSchema.parse(req.body);
+            const result = await this.updateUserProfileImageUseCase.execute({ userId: user.id, profileImage: s3FileKey });
             sendResponse(res, result, "Profile image updated successfully");
         } catch (error) {
             log.error("updateProfileImage failed", error as Error);
@@ -77,12 +69,10 @@ class UserController {
     async updateUserInfo(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-
-            const { phone, userId, username } = userUpdateInfoSchema.parse({
-                userId: user.userOrProviderId,
+            const { phone, username } = userUpdateInfoSchema.parse({
                 ...req.body
             });
-            const result = await this.updateUserProfileInfoUseCase.execute({ userId, username, phone });
+            const result = await this.updateUserProfileInfoUseCase.execute({ userId: user.id, username, phone });
             sendResponse(res, result, "Info updated successfully");
         } catch (error) {
             log.error("updateUserInfo failed", error as Error);
@@ -93,12 +83,10 @@ class UserController {
     async updatePushNotification(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-
-            const { allowPushNotification, userId } = userUpdatePushNotificationSchema.parse({
-                userId: user.userOrProviderId,
+            const { allowPushNotification } = userUpdatePushNotificationSchema.parse({
                 ...req.body
             });
-            const result = await this.changePushNotificationUseCase.execute({ userId, allowPushNotification });
+            const result = await this.changePushNotificationUseCase.execute({ userId: user.id, allowPushNotification });
             sendResponse(res, result, "Push notification updated successfully");
         } catch (error) {
             log.error("updatePushNotification failed", error as Error);
@@ -109,13 +97,12 @@ class UserController {
     async getUsers(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-
             if (user.role === Role.ADMIN) {
                 const { page, limit } = paginationSchema.parse(req.query);
                 const result = await this.getUsersUseCase.execute({ page, limit });
                 sendResponse(res, result);
             } else {
-                const result = await this.getUserForChatSidebarUseCase.execute({ userId: user.userOrProviderId, role: user.role });
+                const result = await this.getUserForChatSidebarUseCase.execute({ userId: user.id, role: user.role });
                 sendResponse(res, result);
             }
         } catch (error) {
@@ -144,9 +131,8 @@ class UserController {
     async setRole(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-            
             const { role } = roleValidationSchema.parse(req.body);
-            const result = await this.setRoleUseCase.execute({ _id: user.userOrProviderId, role });
+            const result = await this.setRoleUseCase.execute({ _id: user.id, role });
             sendResponse(res, result, "Role set successfully");
         } catch (error) {
             log.error("setRole failed", error as Error);

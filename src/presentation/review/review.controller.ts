@@ -1,7 +1,9 @@
 import { log } from "../../shared/logger/logger";
 import { Role } from "../../domain/enums/common.enum";
+import { ERROR_CODES } from "../../shared/utils/types";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
+import { BadRequestError } from "../../shared/error/appError";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { GetReviewsUseCase } from "../../application/useCases/review/getReviews.useCase";
 import { ReportReviewUseCase } from "../../application/useCases/review/reportReview.useCase";
@@ -10,8 +12,6 @@ import { DeleteReviewUseCase } from "../../application/useCases/review/deleteRev
 import { ToggleReviewBlockStatusUseCase } from "../../application/useCases/review/toggleReviewBlockStatus.useCase";
 import { createReviewUseCase, deleteReviewUseCase, getReviewsUseCase, reportReviewUseCase, toggleReviewBlockStatusUseCase } from ".";
 import { createReviewSchema, deleteReviewSchema, getReviewsSchema, reportReviewSchema, toggleReviewBlockStatusSchema } from "../../shared/zod/review.zod";
-import { BadRequestError } from "../../shared/error/appError";
-import { ERROR_CODES } from "../../shared/utils/types";
 
 class ReviewController {
     constructor(
@@ -30,20 +30,17 @@ class ReviewController {
     async getReviews(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-
             const { limit, page, providerId, userId } = getReviewsSchema.parse(req.query);
-
             const filter: {
                 providerId?: string;
                 userId?: string;
             } = {};
-
             if (user.role === Role.ADMIN) {
                 filter.providerId = providerId;
                 filter.userId = userId;
             } else if (user.role === Role.USER) {
                 filter.providerId = providerId;
-                filter.userId = user.userOrProviderId;
+                filter.userId = user.id;
             } else if (user.role === Role.PROVIDER) {
                 filter.userId = userId;
             } else {
@@ -66,14 +63,13 @@ class ReviewController {
     async createReview(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-
             const { providerId, rating, reviewText, bookingId } = createReviewSchema.parse(req.body);
             const result = await this.createReviewUseCase.execute({
                 providerId,
                 rating,
                 reviewText,
                 bookingId,
-                userId: user.userOrProviderId
+                userId: user.id
             });
             sendResponse(res, result);
         } catch (error) {
@@ -85,11 +81,10 @@ class ReviewController {
     async deleteReview(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-
             const { reviewId } = deleteReviewSchema.parse(req.params);
             await this.deleteReviewUseCase.execute({
                 reviewId,
-                userId: user.userOrProviderId
+                userId: user.id
             });
             sendResponse(res, null, "Review deleted successfully");
         } catch (error) {
@@ -107,7 +102,7 @@ class ReviewController {
             });
             const result = await this.reportReviewUseCase.execute({
                 reviewId,
-                providerId: user.userOrProviderId
+                providerId: user.id
             });
             sendResponse(res, result, `Review ${result ? "reported" : "unreported"} successfully`);
         } catch (error) {
@@ -132,7 +127,6 @@ class ReviewController {
             next(error);
         };
     };
-
 }
 
 export const reviewController = new ReviewController(

@@ -22,7 +22,7 @@ class GoogleController {
         try {
             console.log("getUserEvents constroller start");
             const user = req.user as DecodedUser;
-            const result = await this.getGoogleCalendarUseCase.execute({userId: user.userOrProviderId });
+            const result = await this.getGoogleCalendarUseCase.execute({userId: user.id });
             sendResponse(res, result);
         } catch (error) {
             log.error("getUserEvents failed", error as Error);
@@ -38,7 +38,7 @@ class GoogleController {
                 connectOnly: true,
                 role: user.role,
             });
-            const state = JSON.stringify({ connectOnly, role, userId: user.userOrProviderId });
+            const state = JSON.stringify({ connectOnly, role, userId: user.id });
             passport.authenticate("google", {
                 scope: [
                     "openid",
@@ -60,7 +60,6 @@ class GoogleController {
             next(error)
         };
     };
-
 };
 
 export const googleController = new GoogleController(

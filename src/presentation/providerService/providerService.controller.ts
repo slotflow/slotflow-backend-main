@@ -30,14 +30,10 @@ class ProviderServiceController {
     async createServiceDetails(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-
-            const { providerId, ...serviceData } = providerCreateServiceDetailsSchema.parse({
-                providerId: user.userOrProviderId,
-                ...req.body
-            });
+            const { ...serviceData } = providerCreateServiceDetailsSchema.parse({ ...req.body });
             await this.createProviderServiceUseCase.execute({
                 ...serviceData,
-                providerId,
+                providerId: user.id,
                 requirements: serviceData.requirements ?? null,
                 videoUrl: serviceData.videoUrl ?? null
             });
@@ -69,7 +65,7 @@ class ProviderServiceController {
                 }
             } else {
                 filter = {
-                    providerId: user.userOrProviderId,
+                    providerId: user.id,
                     isUser: false
                 }
             }
@@ -83,13 +79,13 @@ class ProviderServiceController {
 
     async updateServiceDetails(req: Request, res: Response, next: NextFunction) {
         try {
-            const { serviceId, ...serviceData } = providerUpdateServiceDetailsSchema.parse({
-                serviceId: req.params.serviceId,
+            const { providerServiceId, ...serviceData } = providerUpdateServiceDetailsSchema.parse({
+                providerServiceId: req.params.serviceId,
                 ...req.body,
             });
             const result = await this.updateProviderServiceUseCase.execute({
                 ...serviceData,
-                providerServiceId: serviceId,
+                providerServiceId,
             });
             sendResponse(res, result, "Service details updated successfully");
         } catch (error) {

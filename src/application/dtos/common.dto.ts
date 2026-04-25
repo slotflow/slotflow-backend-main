@@ -393,7 +393,7 @@ export interface FrontendAvailabilityUpdatedSlots extends Omit<Availability, "sl
 
 // used in auth controller
 export interface DecodedUser {
-  userOrProviderId: string;
+  id: string;
   role: Role;
   googleAccessToken?: string;
   googleRefreshToken?: string;

@@ -3,16 +3,14 @@ import { Role } from "../../domain/enums/common.enum";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
-import { validateProviderIdSchema, validateSubscriptionIdSchema } from "../../shared/zod/base.zod";
-import { providerIdWithPaginationSchema, providerPlanSubscribeSchema } from "../../shared/zod/provider.zod";
+import { validateSubscriptionIdSchema } from "../../shared/zod/base.zod";
 import { GetSubscriptionsUseCase } from "../../application/useCases/subscription/getSubscriptions.useCase";
+import { providerIdWithPaginationSchema, providerPlanSubscribeSchema } from "../../shared/zod/provider.zod";
 import { TrialSubscriptionUseCase } from "../../application/useCases/subscription/trailSubscription.useCase";
 import { GetSubscribedPlanUseCase } from "../../application/useCases/subscription/getSubscribedPlan.useCase";
 import { SubscriptionCheckoutUseCase } from "../../application/useCases/subscription/subscriptionCheckout.useCase";
 import { GetSubscriptionDetailsUseCase } from "../../application/useCases/subscription/getSubscriptionDetails.useCase";
 import { getSubscribedPlanUseCase, getSubscriptionDetailsUseCase, getSubscriptionsUseCase, subscriptionCheckoutUseCase, trialSubscriptionUseCase } from ".";
-import { BadRequestError } from "../../shared/error/appError";
-import { ERROR_CODES } from "../../shared/utils/types";
 
 class SubscriptionController {
     constructor(
@@ -31,20 +29,16 @@ class SubscriptionController {
 
     async getSubscriptions(req: Request, res: Response, next: NextFunction) {
         try {
+            const user = req.user as DecodedUser;
             const filter: {
                 providerId?: string;
             } = {};
-
-            const user = req.user as DecodedUser;
-
             if (user.role === Role.PROVIDER) {
-                filter.providerId = user.userOrProviderId;
+                filter.providerId = user.id;
             };
-
             if (user.role === Role.ADMIN) {
                 filter.providerId = req.query.providerId as string
             }
-
             const { limit, page, providerId } = providerIdWithPaginationSchema.parse({
                 ...filter,
                 ...req.query
@@ -71,13 +65,12 @@ class SubscriptionController {
     async subscriptionCheckout(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-
-            const { planId, planDuration, providerId } = providerPlanSubscribeSchema.parse({
-                providerId: user.userOrProviderId,
-                ...req.body
+            const { planId, planDuration } = providerPlanSubscribeSchema.parse(req.body);
+            const result = await this.subscriptionCheckoutUseCase.execute({
+                providerId: user.id,
+                planId,
+                planDuration
             });
-            const result = await this.subscriptionCheckoutUseCase.execute({ providerId, planId, planDuration });
-            console.log("result : ", result);
             sendResponse(res, result);
         } catch (error) {
             log.error("subscribe failed", error as Error);
@@ -88,8 +81,7 @@ class SubscriptionController {
     async subscribeToTrialPlan(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-
-            await this.trialSubscriptionUseCase.execute({ providerId: user.userOrProviderId });
+            await this.trialSubscriptionUseCase.execute({ providerId: user.id });
             sendResponse(res, null, "Your trial plan is on live");
         } catch (error) {
             log.error("subscribeToTrialPlan failed", error as Error);
@@ -100,16 +92,13 @@ class SubscriptionController {
     async getSubscribedPlan(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-            
-            const result = await this.getSubscribedPlanUseCase.execute({ providerId: user.userOrProviderId });
+            const result = await this.getSubscribedPlanUseCase.execute({ providerId: user.id });
             sendResponse(res, result);
         } catch (error) {
             log.error("getSubscribedPlan failed", error as Error);
             next(error);
         };
     };
-
-
 };
 
 export const subscriptionController = new SubscriptionController(

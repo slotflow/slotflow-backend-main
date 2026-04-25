@@ -1,14 +1,14 @@
 import { log } from "../../shared/logger/logger";
 import { Role } from "../../domain/enums/common.enum";
+import { ERROR_CODES } from "../../shared/utils/types";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
+import { BadRequestError } from "../../shared/error/appError";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { createServiceAvailabilitiesUseCase, getServiceAvailabilityUseCase } from ".";
 import { GetServiceAvailabilityUseCase } from "../../application/useCases/serviceAvailability/getServiceAvailability";
 import { createServiceAvailabilitySchema, getServiceAvailabilitySchema } from "../../shared/zod/serviceAvailability.zod";
 import { CreateServiceAvailabilitiesUseCase } from "../../application/useCases/serviceAvailability/createServiceAvailability";
-import { BadRequestError } from "../../shared/error/appError";
-import { ERROR_CODES } from "../../shared/utils/types";
 
 class ServiceAvailabilityController {
     constructor(
@@ -22,10 +22,14 @@ class ServiceAvailabilityController {
     async createServiceAvailability(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-
             const availabilities = createServiceAvailabilitySchema.parse(req.body);
-            if (!availabilities || availabilities.length === 0) throw new BadRequestError("Invalid request", ERROR_CODES.INVALID_REQUEST);
-            await this.createServiceAvailabilitiesUseCase.execute({ providerId: user.userOrProviderId, availabilities });
+            if (!availabilities || availabilities.length === 0) {
+                throw new BadRequestError(
+                    "Invalid request", 
+                    ERROR_CODES.INVALID_REQUEST
+                );
+            }
+            await this.createServiceAvailabilitiesUseCase.execute({ providerId: user.id, availabilities });
             sendResponse(res, null, "Service availability saved successfully", true, 201);
         } catch (error) {
             log.error("createServiceAvailability failed", error as Error);
@@ -36,15 +40,12 @@ class ServiceAvailabilityController {
     async getServiceAvailability(req: Request, res: Response, next: NextFunction) {
             try {
                 const user = req.user as DecodedUser;
-
                 let providerId: string | undefined;
-
                 if(user.role === Role.PROVIDER) {
-                    providerId = user.userOrProviderId;
+                    providerId = user.id;
                 } else {
                     providerId = req.params.providerId as string;
                 }
-                
                 const validatedData = getServiceAvailabilitySchema.parse({
                     providerId,
                     date: req.query.date

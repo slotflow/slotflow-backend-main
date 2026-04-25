@@ -1,11 +1,6 @@
 import { z } from "zod";
 import { PlanName } from "../../domain/enums/plan.enum";
-import {
-    validateProviderIdSchema,
-    paginationSchema,
-    dateSchema,
-    s3FileKeySchema,
-} from "./base.zod";
+import { dateSchema, paginationSchema, s3FileKeySchema } from "./base.zod";
 import { ServiceMode, ServiceType } from "../../domain/enums/service.enum";
 import { SubscriptionValidity } from "../../domain/enums/subscription.enum";
 import { objectIdRegex, serviceDescriptionRegex, serviceExperienceRegex, serviceNameRegex, timeRegex } from "../utils/regex";
@@ -55,11 +50,7 @@ export const serviceDetailsSchema = z.object({
             "Invalid experience. Only alphanumeric characters, spaces, and symbols allowed (1–500 chars)."
         ),
 
-    service: z
-        .string()
-        .min(1, "Service ID is required")
-        .max(100, "Service ID cannot exceed 100 characters"),
-
+    serviceId: z.string().regex(objectIdRegex, "Invalid serviceId"),
 
     serviceType: z.nativeEnum(ServiceType),
 
@@ -87,25 +78,25 @@ export const serviceDetailsSchema = z.object({
 });
 
 // Provider create service details validation schema
-export const providerCreateServiceDetailsSchema = serviceDetailsSchema.merge(validateProviderIdSchema);
+export const providerCreateServiceDetailsSchema = serviceDetailsSchema;
 
 // Provider update service details validation schema
 export const providerUpdateServiceDetailsSchema = z.object({
-    serviceId: z.string().regex(objectIdRegex, "Invalid serviceId"),
+    providerServiceId: z.string().regex(objectIdRegex, "Invalid providerServiceId"),
 }).merge(serviceDetailsSchema);
 
 // Provider plan subscription duration validation
 export const providerPlanSubscribeSchema = z.object({
     planId: z.string().regex(objectIdRegex, "Invalid planId"),
     planDuration: z.nativeEnum(SubscriptionValidity),
-}).merge(validateProviderIdSchema);
+});
 
 
 // Provider dashboard validation schema
 export const providerValidateDashboardDataSchema = z.object({
     subscription: z.nativeEnum(PlanName).default(PlanName.TRIAL),
-    endDate: dateSchema.optional(),
-    startDate: dateSchema.optional(),
+    endDate: dateSchema,
+    startDate: dateSchema,
 });
 
 // Provider update file validation schema

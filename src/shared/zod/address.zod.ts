@@ -3,7 +3,7 @@ import { objectIdRegex } from "../utils/regex";
 import { addressSchema, validateUserIdSchema } from "./base.zod";
 
 // Create address validation schema
-export const createAddressSchema = addressSchema.merge(validateUserIdSchema);
+export const createAddressSchema = addressSchema;
 
 // Update address validation schema
 export const updateAddressSchema = z.object({

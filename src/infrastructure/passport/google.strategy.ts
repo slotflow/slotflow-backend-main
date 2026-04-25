@@ -32,7 +32,7 @@ export class GooglePassportStrategyImpl implements IGooglePassportStrategy {
               image: profile.photos?.[0]?.value || null,
               role: state.role,
               connectOnly: state.connectOnly,
-              userOrProviderId: state.userId ?? undefined,
+              id: state.userId ?? undefined,
             }, {});
 
           } catch (err) {

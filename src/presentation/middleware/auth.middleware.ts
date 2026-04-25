@@ -9,7 +9,6 @@ import { ForbiddenError, UnauthorizedError } from "../../shared/error/appError";
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
-
     const userId = req.headers["x-user-id"];
     const role = req.headers["x-user-role"];
 
@@ -19,11 +18,11 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
       : (role as Role);
 
     req.user = {
-      userOrProviderId: normalizedUserId,
+      id: normalizedUserId,
       role: normalizedRole,
     } as DecodedUser;
 
-    const cacheKey = req.user.userOrProviderId!;
+    const cacheKey = req.user.id!;
     const cachedStatus = await cacheService.getBlockList(cacheKey);
 
     if (cachedStatus !== null) {

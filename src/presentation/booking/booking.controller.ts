@@ -48,11 +48,11 @@ class BookingController {
             } = {};
 
             if (user.role === Role.USER) {
-                filter.userId = user.userOrProviderId;
+                filter.userId = user.id;
             }
 
             if (user.role === Role.PROVIDER) {
-                filter.providerId = user.userOrProviderId;
+                filter.providerId = user.id;
             }
 
             const { limit, page, online } = getBookingsSchema.parse({
@@ -87,7 +87,7 @@ class BookingController {
                 bookingId,
                 roomId,
                 role: user.role,
-                userId: user.userOrProviderId
+                userId: user.id
             });
             sendResponse(res, result);
         } catch (error) {
@@ -118,7 +118,7 @@ class BookingController {
             console.log("req.user : ", req.user)
             const user = req.user as DecodedUser;
             const result = await this.checkBookingUseCase.execute({
-                userId: user.userOrProviderId,
+                userId: user.id,
             });
             console.log("result : ", result)
             sendResponse(res, result);
@@ -135,7 +135,7 @@ class BookingController {
                 ...req.body
             });
             const result = await this.bookingCheckoutUseCase.execute({
-                userId: user.userOrProviderId,
+                userId: user.id,
                 providerId,
                 slotId,
                 selectedServiceMode,
@@ -155,7 +155,7 @@ class BookingController {
                 bookingId: req.params.bookingId
             });
             await this.cancelBookingUseCase.execute({
-                userId: user.userOrProviderId,
+                userId: user.id,
                 bookingId,
                 reason
             });
@@ -194,7 +194,7 @@ class BookingController {
                 ...req.params,
                 ...req.body,
             });
-            await this.changeBookingStatusUseCase.execute({ bookingId, appointmentStatus, providerId: user.userOrProviderId });
+            await this.changeBookingStatusUseCase.execute({ bookingId, appointmentStatus, providerId: user.id });
             sendResponse(res, null, "Booking status updated successfully");
         } catch (error) {
             log.error("updateBookingAppointmentStatus failed", error as Error);

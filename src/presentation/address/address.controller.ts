@@ -1,14 +1,14 @@
 import { log } from "../../shared/logger/logger";
+import { ERROR_CODES } from "../../shared/utils/types";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
+import { BadRequestError } from "../../shared/error/appError";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { getAddressUseCase, updateAddressUseCase, userCreateAddressUseCase } from ".";
-import { createAddressSchema, getAddressSchema, updateAddressSchema } from "../../shared/zod/address.zod";
 import { GetAddressUseCase } from "../../application/useCases/address/getAddress.useCase";
 import { UpdateAddressUseCase } from "../../application/useCases/address/updateAddress.useCase";
 import { UserCreateAddressUseCase } from "../../application/useCases/address/userCreateAddress.useCase";
-import { BadRequestError } from "../../shared/error/appError";
-import { ERROR_CODES } from "../../shared/utils/types";
+import { createAddressSchema, getAddressSchema, updateAddressSchema } from "../../shared/zod/address.zod";
 
 class AddressController {
     constructor(
@@ -27,7 +27,7 @@ class AddressController {
             const { providerId, userId } = getAddressSchema.parse(req.params);
 
             const isMyAddress = !providerId && !userId;
-            const targetId = providerId || userId || user.userOrProviderId;
+            const targetId = providerId || userId || user.id;
 
             if (!targetId) throw new BadRequestError("ID is required", ERROR_CODES.INVALID_REQUEST);
 
@@ -45,15 +45,14 @@ class AddressController {
     async createAddress(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-
             const validatedData = createAddressSchema.parse({
-                userId: user.userOrProviderId,
                 ...req.body,
             });
-
-            const result = await this.userCreateAddressUseCase.execute(validatedData);
+            const result = await this.userCreateAddressUseCase.execute({
+                ...validatedData,
+                userId: user.id
+            });
             sendResponse(res, result);
-
         } catch (error) {
             log.error("createAddress failed : ", error as Error);
             next(error);
@@ -77,7 +76,6 @@ class AddressController {
             next(error);
         }
     }
-
 }
 
 export const addressController = new AddressController(

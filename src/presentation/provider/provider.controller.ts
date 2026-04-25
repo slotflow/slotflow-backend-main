@@ -2,11 +2,11 @@ import { log } from "../../shared/logger/logger";
 import { Role } from "../../domain/enums/common.enum";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
-import { paginationSchema, validateProviderIdSchema } from "../../shared/zod/base.zod";
 import { DecodedUser } from "../../application/dtos/common.dto";
+import { providerValidateUpdateFileSchema } from "../../shared/zod/provider.zod";
+import { paginationSchema, validateProviderIdSchema } from "../../shared/zod/base.zod";
 import { AdminProviderListUseCase } from "../../application/useCases/provider/getProviders.useCase";
 import { GetProviderProofsUseCase } from "../../application/useCases/common/getProviderProofs.useCase";
-import { providerValidateUpdateFileSchema } from "../../shared/zod/provider.zod";
 import { AdminRejectProviderUseCase } from "../../application/useCases/provider/adminRejectProvider.useCase";
 import { AdminApproveProviderUseCase } from "../../application/useCases/provider/adminApproveProvider.useCase";
 import { ChangeProviderTrustTagUseCase } from "../../application/useCases/provider/changeProviderTrustTag.useCase";
@@ -16,8 +16,6 @@ import { ChangeProviderBlockStatusUseCase } from "../../application/useCases/pro
 import { adminChangeProviderBlockStatusSchema, adminChangeProviderTrustTagSchema, adminRejectProviderSchema } from "../../shared/zod/admin.zod";
 import { ProvideDeleteIdentityProofUseCase, ProvideDeleteServiceProofUseCase, ProviderGetProfileDetailsUseCase, ProviderUpdateIdentityProofUseCase, ProviderRequestForApprovalUseCase, ProviderUpdateServiceProofUseCase } from "../../application/useCases/provider/providerProfile.useCase";
 import { adminApproveProviderUseCase, changeProviderBlockStatusUseCase, changeProviderTrustTagUseCase, adminGetProviderDetailsUseCase, adminProviderListUseCase, adminRejectProviderUseCase, getProviderProofsUseCase, provideDeleteIdentityProofUseCase, provideDeleteServiceProofUseCase, providerGetProfileDetailsUseCase, providerRequestForApprovalUseCase, providerUpdateIdentityProofUseCase, providerUpdateServiceProofUseCase, userGetProviderDetailsUseCase } from ".";
-import { BadRequestError } from "../../shared/error/appError";
-import { ERROR_CODES } from "../../shared/utils/types";
 
 class ProviderProfileController {
     constructor(
@@ -55,16 +53,11 @@ class ProviderProfileController {
     async getProfileDetails(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-
             let providerId: string;
-
             if (user.role === Role.PROVIDER) {
-                providerId = user.userOrProviderId;
+                providerId = user.id;
             } else {
-                providerId = req.params.providerId as string;
-                if (!providerId) {
-                    throw new BadRequestError("Provider ID is required", ERROR_CODES.INVALID_REQUEST);
-                }
+                providerId = validateProviderIdSchema.parse(req.params).providerId;
             }
 
             if (user.role === Role.ADMIN) {
@@ -81,7 +74,6 @@ class ProviderProfileController {
                 const result = await this.providerGetProfileDetailsUseCase.execute({ providerId });
                 return sendResponse(res, result);
             }
-
         } catch (error) {
             log.error("getProfileDetails failed", error as Error);
             next(error);
@@ -91,12 +83,11 @@ class ProviderProfileController {
     async updateIdentityProof(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-
             const { s3FileKey } = providerValidateUpdateFileSchema.parse({
                 ...req.body
             });
             const result = await this.providerUpdateIdentityProofUseCase.exeute({
-                providerId: user.userOrProviderId,
+                providerId: user.id,
                 identityProof: s3FileKey
             });
             sendResponse(res, result, "Identity proof updated successfully");
@@ -109,10 +100,9 @@ class ProviderProfileController {
     async updateServiceProof(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-
             const { s3FileKey } = providerValidateUpdateFileSchema.parse({ ...req.body });
             const result = await this.providerUpdateServiceProofUseCase.exeute({
-                providerId: user.userOrProviderId,
+                providerId: user.id,
                 serviceProof: s3FileKey
             });
             sendResponse(res, result, "Service proof updated successfully");
@@ -125,7 +115,6 @@ class ProviderProfileController {
     async getProofs(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-
             if (user.role === Role.ADMIN) {
                 const { providerId } = validateProviderIdSchema.parse({ providerId: req.params.providerId });
                 const result = await this.getProviderProofsUseCase.execute({ providerId });
@@ -133,7 +122,7 @@ class ProviderProfileController {
             }
 
             if (user.role === Role.PROVIDER) {
-                const result = await this.getProviderProofsUseCase.execute({ providerId: user.userOrProviderId });
+                const result = await this.getProviderProofsUseCase.execute({ providerId: user.id });
                 res.status(200).json(result);
             }
         } catch (error) {
@@ -145,8 +134,7 @@ class ProviderProfileController {
     async requestAdminApproval(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-
-            const result = await this.providerRequestForApprovalUseCase.execute({ providerId: user.userOrProviderId });
+            const result = await this.providerRequestForApprovalUseCase.execute({ providerId: user.id });
             sendResponse(res, result, "Requested admin approval");
         } catch (error) {
             log.error("updateAdminVerificationStatus failed", error as Error);
@@ -157,8 +145,7 @@ class ProviderProfileController {
     async deleteIdentityProof(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-
-            await this.provideDeleteIdentityProofUseCase.execute({ providerId: user.userOrProviderId });
+            await this.provideDeleteIdentityProofUseCase.execute({ providerId: user.id });
             sendResponse(res, null, "Identity proof deleted successfully");
         } catch (error) {
             log.error("deleteIdentityProof failed", error as Error);
@@ -169,8 +156,7 @@ class ProviderProfileController {
     async deleteServiceProof(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-
-            await this.provideDeleteServiceProofUseCase.execute({ providerId: user.userOrProviderId });
+            await this.provideDeleteServiceProofUseCase.execute({ providerId: user.id });
             sendResponse(res, null, "Service proof deleted successfully");
         } catch (error) {
             log.error("deleteServiceProof failed", error as Error);
@@ -181,7 +167,6 @@ class ProviderProfileController {
     async getProviders(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-
             if (user.role === Role.ADMIN) {
                 const { page, limit } = paginationSchema.parse(req.query);
                 const result = await this.adminProviderListUseCase.execute({ page, limit });
@@ -195,9 +180,8 @@ class ProviderProfileController {
 
     async approveProvider(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
-
-            await this.adminApproveProviderUseCase.execute({ providerId: user.userOrProviderId });
+            const { providerId } = validateProviderIdSchema.parse({ providerId: req.params.providerId });
+            await this.adminApproveProviderUseCase.execute({ providerId });
             sendResponse(res, null, "Successfully approved provider");
         } catch (error) {
             log.error("approveProvider failed", error as Error);
@@ -248,7 +232,6 @@ class ProviderProfileController {
             next(error);
         };
     };
-
 };
 
 export const providerProfileController = new ProviderProfileController(
