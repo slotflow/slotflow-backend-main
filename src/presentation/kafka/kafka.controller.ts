@@ -2,10 +2,10 @@ import { kafkaConfig } from "../../config/env";
 import { log } from "../../shared/logger/logger";
 import { handler, processEventWrapperUseCase } from ".";
 import { kafkaConsumer } from "../../infrastructure/messaging";
+import { MBSSubKafkaEventPayload } from "../../application/dtos/kafka.dto";
 import { IKafkaConsumerAdapter } from "../../domain/interfaces/messaging/IKafkaConsumerAdapter";
 
 class KafkaController {
-
     constructor(
         private readonly kafkaConsumer: IKafkaConsumerAdapter
     ) { };
@@ -25,6 +25,7 @@ class KafkaController {
                         businessUseCase: useCase,
                         eventData,
                         topic,
+                        payloadExtractor: (payload: MBSSubKafkaEventPayload) => payload.mbsData
                     });
                 });
             };

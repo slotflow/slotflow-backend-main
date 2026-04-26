@@ -1,85 +1,75 @@
 import { KafkaMessage } from "kafkajs";
 import { PlanName } from "../../domain/enums/plan.enum";
+import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
 import { AppConnect, NotificationType, OtpPurpose, Role } from "../../domain/enums/common.enum";
-import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 
-// **** COMMON DTOS
+// **** KAFKA COMMON DTOS
 
 // kafka client adapter props
 export interface KafkaClientAdapterProps {
-    topic: string;
-    partition: number;
-    message: KafkaMessage;
+  topic: string;
+  partition: number;
+  message: KafkaMessage;
 }
 
-// event envelope
-export interface EventEnvelope<T, M = DqMetaData> {
-    eventId: string;
-    occurredAt: string;
-    attempt: number;
-    maxAttempts: number;
-    payload: T;
-    metadata?: M;
+// backend-main service subscribing kafka event payload
+export interface MBSSubKafkaEventPayload {
+  mbsData: any;
 }
 
 // dlq metadata
 export interface DqMetaData {
-    originalTopic: string;
-    error: string;
-    failedAt: Date;
+  service: string;
+  originalTopic: string;
+  error: string;
+  failedAt: Date;
+  retryCount?: number;
+}
+
+// event envelope
+export interface EventEnvelope<MBSSubKafkaEventPayload, M = DqMetaData> {
+  eventId: string;
+  occurredAt: string;
+  attempt: number;
+  maxAttempts: number;
+  payload: MBSSubKafkaEventPayload;
+  metadata?: M;
 }
 
 // send email common
 export interface SendEmailCommon {
-    email: string;
-    name: string;
+  email: string;
+  name: string;
 }
 
 // send notification common
 export interface SendNotificationCommon {
-    userId: string;
-    body: string;
-    pushNotification: boolean;
-    title: string;
+  userId: string;
+  body: string;
+  pushNotification: boolean;
+  title: string;
 }
 
 // kafka client adapter message handler
 export type MessageHandler = (payload: KafkaClientAdapterProps) => Promise<void>;
 
-export interface ProcessEventWrapperInput<T = any> {
-  topic: string,
-  eventData: EventEnvelope<{
-    mbsData: T;
-  }>,
-  businessUseCase: { execute: (data: any) => Promise<void> }
+// process event wrapper input
+export interface ProcessEventWrapperInput {
+  topic: string;
+  eventData: EventEnvelope<MBSSubKafkaEventPayload>;
+  businessUseCase: { execute: (data: any) => Promise<void> };
+  payloadExtractor: (payload: MBSSubKafkaEventPayload) => any;
 }
 
 
 
-// **** KAFKA EVENTS PAYLOAD
 
-// send otp event for registration and password update
-export interface SendOtpEvent {
-  emailData: SendEmailCommon & {
-    otp: string;
-    purpose: OtpPurpose;
-  }
-}
 
-// send welcome event
-export interface SendWelcomeEvent {
-  emailData: SendEmailCommon & {
-    role: Role;
-  }
-}
+//// **** KAFKA EVENTS PAYLOAD **** ////
 
-// send reset password
-export interface SendResetPasswordEvent {
-  emailData: SendEmailCommon;
-  notificationData: SendNotificationCommon;
-};
+// **** publishing events
 
 // send admin provider review event
 export interface SendAdminProviderReviewEvent {
@@ -122,12 +112,12 @@ export interface SendAppointmentStatusChangeForUserEvent {
 // send appointment status change event for provider
 export interface SendAppointmentStatusChangeForProviderEvent {
   notificationData: SendNotificationCommon & {
-      data: {
-        appointmentDate: string;
-        appointmentTime: string;
-        appointmentMode: string;
-        appointmentStatus: AppointmentStatus;
-        notificationType: NotificationType;
+    data: {
+      appointmentDate: string;
+      appointmentTime: string;
+      appointmentMode: string;
+      appointmentStatus: AppointmentStatus;
+      notificationType: NotificationType;
     };
   }
 }
@@ -141,17 +131,9 @@ export interface SendProviderTrialSubscriptionEvent {
   notificationData: SendNotificationCommon;
 }
 
-// send app connect event
-export interface SendAppConnectEvent {
-  emailData: SendEmailCommon & {
-    appConnect: AppConnect;
-  },
-  notificationData: SendNotificationCommon
-}
-
 // send provider subscription updated event
 export interface ProviderSubscriptionUpdatedEvent {
-  ssData: {
+  socketData: {
     providerId: string;
     subscribedPlan: PlanName;
     startDate: Date;
@@ -168,77 +150,7 @@ export interface ProviderSubscriptionUpdatedEvent {
   notificationData: SendNotificationCommon;
 }
 
-// consume stripe account created event
-export interface StripeAccountCreatedEvent {
-  userId: string;
-  stripeAccountId: string;
-}
-
-// consume stripe customer created event
-export interface UpdateStripeCustomerCreatedConsumeEvent {
-  userId: string;
-  stripeCustomerId: string;
-}
-
-// Added till this 
-
-// send provider payment request event
-export interface SendProviderPaymentRequestEvent {
-  transactionId: string;
-  paymentStatus: String;
-  paymentMethod: string;
-  paymentGateway: string;
-  paymentFor: string;
-  initialAmount: number;
-  discountAmount: number;
-  totalAmount: number;
-  providerId: string;
-  subscriptionId: string;
-  planDuration: number;
-}
-
-// send user payment event
-export interface SendUserPaymentEvent extends SendEmailCommon {
-  amount: number;
-  transactionId: string;
-  paymentDate: string;
-  appointmentDate: string;
-  paymentStatus: string;
-  paymentFor: string;
-}
-
-// send provider payment event
-export interface SendProviderPaymentEvent extends SendEmailCommon {
-  amount: number;
-  transactionId: string;
-  paymentDate: string;
-  subscriptionStartDate: string;
-  subscriptionEndDate: string;
-  paymentStatus: string;
-  paymentFor: string;
-}
-
-// send provider payout event
-export interface SendProviderPayoutEvent extends SendEmailCommon {
-  amount: number;
-  transactionId: string;
-  payoutDate: string;
-}
-
-// send payment request event
-export interface SendPaymentRequestEvent {
-  transactionId: string;
-  paymentStatus: string;
-  paymentMethod: string;
-  paymentGateway: string;
-  paymentFor: string;
-  initialAmount: number;
-  discountAmount: number;
-  totalAmount: number;
-  providerId?: string;
-  userId?: string;
-}
-
+// booking saved event
 export interface BookingSavedEvent {
   emailData: {
     email: string;
@@ -250,7 +162,8 @@ export interface BookingSavedEvent {
   notificationData: SendNotificationCommon;
 }
 
-export interface GotAnAppointment {
+// got an appointment event
+export interface GotAnAppointmentEvent {
   emailData: {
     email: string;
     name: string;
@@ -260,13 +173,6 @@ export interface GotAnAppointment {
   },
   notificationData: SendNotificationCommon
 }
-
-
-
-
-
-
-// Google Calendar dtos
 
 // create google calendar event
 export interface CreateGoogleCalendarEvent {
@@ -279,16 +185,87 @@ export interface CreateGoogleCalendarEvent {
   }
 };
 
+// send app connect event
+export interface SendAppConnectEvent {
+  emailData: SendEmailCommon & {
+    appConnect: AppConnect;
+  },
+  notificationData: SendNotificationCommon
+}
+
+// send welcome event
+export interface SendWelcomeEvent {
+  emailData: SendEmailCommon & {
+    role: Role;
+  }
+}
+
+// send otp event for registration and password update
+export interface SendOtpEvent {
+  emailData: SendEmailCommon & {
+    otp: string;
+    purpose: OtpPurpose;
+  }
+}
+
+// send reset password
+export interface SendResetPasswordEvent {
+  emailData: SendEmailCommon;
+  notificationData: SendNotificationCommon;
+};
+
+
+
+
+
+
+
+
+
+// **** subscribing events
+
 // create google calendar event success result
-export interface CreateGoogleCalendarEventSuccessResult {
+export interface CreateGoogleCalendarEventSuccessInput {
   bookingId: string;
   role: Role;
   eventId: string;
 }
 
 // create google calendar event failed result
-export interface CreateGoogleCalendarEventFailedResult {
+export interface CreateGoogleCalendarEventFailedInput {
   bookingId: string;
   role: Role;
   error: string;
 }
+
+// used in link stripe customer usecase
+export interface LinkStripeCustomerEventInput {
+  userId: string;
+  stripeCustomerId: string;
+}
+
+// consume stripe account created event
+export interface StripeAccountCreatedEventInput {
+  userId: string;
+  stripeAccountId: string;
+}
+
+// used in update booking after payment success event
+export interface UpdateBookingAfterPaymentSuccessEventInput {
+  bookingId: string;
+  paymentId: string;
+}
+
+// consume stripe customer created event
+export interface UpdateStripeCustomerCreatedConsumeEventInput {
+  userId: string;
+  stripeCustomerId: string;
+}
+
+// send provider create payment success event
+export interface ProviderCreatePaymentSuccessEventInput {
+  subscriptionId: string;
+  paymentId: string;
+  planDuration: number;
+  providerId: string;
+};

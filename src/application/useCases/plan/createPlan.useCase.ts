@@ -1,7 +1,7 @@
 import { CreatePlanInput } from "../../dtos/plan.dto";
 import { ERROR_CODES } from "../../../shared/utils/types";
 import { Plan } from "../../../domain/entities/plan.entity";
-import { BadRequestError } from "../../../shared/error/appError";
+import { AppError, BadRequestError } from "../../../shared/error/appError";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 
@@ -36,7 +36,15 @@ export class CreatePlanUseCase {
                 adVisibility,
             });
 
-            await this.planRepository.create(plan);
+            const newPlan = await this.planRepository.create(plan);
+            if(!newPlan) {
+                throw new AppError(
+                    "Internal server error",
+                    500,
+                    true,
+                    ERROR_CODES.INTERNAL_ERROR
+                )
+            };
         } catch (error: unknown) {
             throw toAppError(error, "Failed to create plan");
         };

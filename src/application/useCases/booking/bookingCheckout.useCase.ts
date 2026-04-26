@@ -5,7 +5,7 @@ import { Booking } from "../../../domain/entities/booking.entity";
 import { FindProviderServiceOutput } from "../../dtos/common.dto";
 import { toAppError } from '../../../shared/error/handleUnknownError';
 import { UserAppointmentBookingViaStripeInput } from '../../dtos/booking.dto';
-import { BadRequestError, NotFoundError } from '../../../shared/error/appError';
+import { AppError, BadRequestError, NotFoundError } from '../../../shared/error/appError';
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
 import { IProviderServiceQueries } from "../../queries/IProviderService.queries";
 import { IServiceAvailabilityQueries } from "../../queries/IServiceAvailability.queries";
@@ -121,6 +121,15 @@ export class BookingCheckoutUseCase {
                 ],
                 videoCallRoomId: generateId(IdType.ROOM),
             }));
+
+            if(!booking) {
+                throw new AppError(
+                    "Failed to create booking",
+                    500,
+                    true,
+                    ERROR_CODES.INTERNAL_ERROR
+                )
+            }
 
             const { data } = await this.paymentServiceClient.createBookingCheckoutSession({
                 serviceName: providerService.service.serviceName,

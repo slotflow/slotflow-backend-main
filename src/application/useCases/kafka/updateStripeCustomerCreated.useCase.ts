@@ -1,12 +1,12 @@
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { UpdateStripeCustomerCreatedConsumeEvent } from "../../dtos/kafka.dto";
+import { UpdateStripeCustomerCreatedConsumeEventInput } from "../../dtos/kafka.dto";
 
 export class UpdateStripeCustomerCreatedUseCase {
     constructor(
         private readonly userRepository: IUserRepository,
     ) { }
 
-    async execute(input: UpdateStripeCustomerCreatedConsumeEvent): Promise<void> {
+    async execute(input: UpdateStripeCustomerCreatedConsumeEventInput): Promise<void> {
         try {
             const { userId, stripeCustomerId } = input;
             const user = await this.userRepository.findById(userId);

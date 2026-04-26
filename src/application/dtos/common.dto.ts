@@ -217,28 +217,26 @@ export interface ServiceAvailabilityDTO {
 
 
 
-// **** Used as the input interface for the paginated request
+// common api pagination input
 export interface ApiPaginationInput {
   page: number;
   limit: number;
 }
 
 
-// **** Used as the output interface for the all request
+// common usecase output
 export interface CommonOutput {
   success?: boolean;
   message?: string;
 };
 
-// **** Used as the type of table data
+// Table data output
 export interface TableData<T> extends CommonOutput{
   totalPages?: number;
   currentPage?: number;
   totalCount?: number;
   data?: T
 };
-
-
 
 // Google Event
 interface GoogleCalendarEventsPropsForBackend {
@@ -406,26 +404,6 @@ export interface DecodedUser {
   iat?: number;
   userId?: string;
 };
-
-// send provider create payment success event
-export interface ProviderCreatePaymentSuccessEventResult {
-  subscriptionId: string;
-  paymentId: string;
-  planDuration: number;
-  providerId: string;
-};
-
-// used in update booking after payment success event
-export interface UpdateBookingAfterPaymentSuccessEventResult {
-  bookingId: string;
-  paymentId: string;
-}
-
-// used in link stripe customer usecase
-export interface LinkStripeCustomerInput {
-  userId: string;
-  stripeCustomerId: string;
-}
 
 // used in count query
 export type CountResult = { count: number };

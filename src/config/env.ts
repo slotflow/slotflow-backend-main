@@ -95,6 +95,7 @@ export const kafkaConfig = {
 
     topics: {
         dlqTopic: validator.requireEnv("KAFKA_DLQ_TOPIC"),
+
         sub: {
             googleCalendarSuccess: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_SUCCESS"),
             googleCalendarFailed: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_FAILED"),
@@ -103,6 +104,7 @@ export const kafkaConfig = {
             stripeAccountCreated: validator.requireEnv("KAFKA_STRIPE_ACCOUNT_CREATED"),
             stripeCustomerCreated: validator.requireEnv("KAFKA_STRIPE_CUSTOMER_CREATED"),
         },
+        
         pub: {
             // MBS -> NS
             sendOtp: validator.requireEnv("KAFKA_SEND_OTP"),

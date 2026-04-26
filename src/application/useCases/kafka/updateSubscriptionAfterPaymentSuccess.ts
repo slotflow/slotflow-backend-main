@@ -4,7 +4,7 @@ import { IdType } from '../../../shared/utils/types';
 import { generateId } from '../../../shared/utils/generateId';
 import { getDateAfterMonths } from "../../../shared/utils/dateTime";
 import { notificationContentMap } from "../../../shared/utils/constants";
-import { ProviderCreatePaymentSuccessEventResult } from "../../dtos/common.dto";
+import { ProviderCreatePaymentSuccessEventInput } from "../../dtos/kafka.dto";
 import { EventEnvelope, ProviderSubscriptionUpdatedEvent } from "../../dtos/kafka.dto";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
@@ -22,7 +22,7 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
         private readonly planRepository: IPlanRepository
     ) { };
 
-    async execute(input: ProviderCreatePaymentSuccessEventResult): Promise<void> {
+    async execute(input: ProviderCreatePaymentSuccessEventInput): Promise<void> {
         try {
 
             const {
@@ -64,7 +64,7 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
                 maxAttempts: 1,
                 occurredAt: new Date().toISOString(),
                 payload: {
-                    ssData: {
+                    socketData: {
                         providerId: provider._id,
                         subscribedPlan: plan.planName,
                         startDate: subscription.startDate,

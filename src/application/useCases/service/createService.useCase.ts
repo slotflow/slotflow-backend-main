@@ -1,8 +1,8 @@
 import { ERROR_CODES } from "../../../shared/utils/types";
 import { CreateServiceInput } from "../../dtos/service.dto";
-import { BadRequestError } from "../../../shared/error/appError";
 import { Service } from "../../../domain/entities/service.entity";
 import { toAppError } from "../../../shared/error/handleUnknownError";
+import { AppError, BadRequestError } from "../../../shared/error/appError";
 import { IServiceRepository } from "../../../domain/interfaces/repositories/IService.repository";
 
 export class CreateServiceUseCase {
@@ -30,7 +30,15 @@ export class CreateServiceUseCase {
                 serviceName
             });
 
-            await this.seriveRepository.create(service);
+            const newService = await this.seriveRepository.create(service);
+            if(!newService) {
+                throw new AppError(
+                    "Internal server error",
+                    500,
+                    true, 
+                    ERROR_CODES.INTERNAL_ERROR
+                )
+            };
         } catch (error: unknown) {
             throw toAppError(error, "Failed to create service");
         };

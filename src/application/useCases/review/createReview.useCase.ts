@@ -1,7 +1,8 @@
 import { CreateReviewInput } from "../../dtos/review.dto";
+import { ERROR_CODES } from "../../../shared/utils/types";
 import { Review } from "../../../domain/entities/review.entity";
-import { BadRequestError } from "../../../shared/error/appError";
 import { toAppError } from "../../../shared/error/handleUnknownError";
+import { AppError, BadRequestError } from "../../../shared/error/appError";
 import { IReviewRepository } from "../../../domain/interfaces/repositories/IReview.repository";
 
 export class CreateReviewUseCase {
@@ -29,7 +30,15 @@ export class CreateReviewUseCase {
                 bookingId,
             });
 
-            await this.reviewRepository.create(review);
+            const newReview = await this.reviewRepository.create(review);
+            if (!newReview) {
+                throw new AppError(
+                    "Internal server error",
+                    500,
+                    true,
+                    ERROR_CODES.INTERNAL_ERROR
+                )
+            };
         } catch (error: unknown) {
             throw toAppError(error, "Failed to create review");
         };

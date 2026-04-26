@@ -3,7 +3,7 @@ import { PlanName } from "../../../domain/enums/plan.enum";
 import { User } from "../../../domain/entities/user.entity";
 import { generateId } from "../../../shared/utils/generateId";
 import { IJWT } from "../../../domain/interfaces/security/IJwt";
-import { BadRequestError } from '../../../shared/error/appError';
+import { AppError, BadRequestError } from '../../../shared/error/appError';
 import { ERROR_CODES, IdType } from '../../../shared/utils/types';
 import { AppConnect, Role } from "../../../domain/enums/common.enum";
 import { toAppError } from '../../../shared/error/handleUnknownError';
@@ -69,6 +69,15 @@ export class GoogleAuthOrchestratorUseCase {
                     });
                     user = await this.userRepository.create(userData);
                 }
+
+                if(!user) {
+                    throw new AppError(
+                        "Internal server error",
+                        500,
+                        true,
+                        ERROR_CODES.INTERNAL_ERROR
+                    )
+                };
 
                 if (role === Role.PROVIDER) {
                     providerProfile = await this.providerProfileRepository.findById(user._id);

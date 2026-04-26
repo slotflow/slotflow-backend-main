@@ -3,7 +3,7 @@ import { OTPVerificationInput } from "../../dtos/auth.dto";
 import { User } from "../../../domain/entities/user.entity";
 import { generateId } from '../../../shared/utils/generateId';
 import { IJWT } from '../../../domain/interfaces/security/IJwt';
-import { BadRequestError } from '../../../shared/error/appError';
+import { AppError, BadRequestError } from '../../../shared/error/appError';
 import { ERROR_CODES, IdType } from '../../../shared/utils/types';
 import { toAppError } from '../../../shared/error/handleUnknownError';
 import { EventEnvelope, SendWelcomeEvent } from "../../dtos/kafka.dto";
@@ -48,6 +48,15 @@ export class VerifyOTPUseCase {
           username,
           password,
         }));
+
+        if(!newUser) {
+          throw new AppError(
+            "Internal server error",
+            500,
+            true,
+            ERROR_CODES.INTERNAL_ERROR
+          )
+        };
 
         await this.kafkaProducer.publish<EventEnvelope<SendWelcomeEvent>>(kafkaConfig.topics.pub.registerSuccess, {
           eventId: generateId(IdType.EVENT),
