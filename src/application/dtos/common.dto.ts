@@ -214,15 +214,11 @@ export interface ServiceAvailabilityDTO {
   updatedAt: Date,
 };
 
-
-
-
 // common api pagination input
 export interface ApiPaginationInput {
   page: number;
   limit: number;
 }
-
 
 // common usecase output
 export interface CommonOutput {
