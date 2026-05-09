@@ -2,7 +2,7 @@ import { kafkaProducer } from "../../infrastructure/messaging";
 import { providerProfileRepository, userRepository } from "../../infrastructure/repositoryImpls";
 import { cacheService, signedUrlService } from "../../infrastructure/services";
 import { bookingQueries, userQueries } from "../../infrastructure/queriesImpls";
-import { SetRoleUseCase } from "../../application/useCases/user/setRole.useCase";
+import { PreBoardingUseCase } from "../../application/useCases/user/preBoarding.useCase";
 import { GetUsersUseCase } from "../../application/useCases/user/getUsers.useCase";
 import { GetUserProfileDetailsUseCase } from "../../application/useCases/user/getUserProfile.useCase";
 import { ChangeUserBlockStatusUseCase } from "../../application/useCases/user/changeUserBlockStatus.useCase";
@@ -25,4 +25,4 @@ export const getUserForChatSidebarUseCase = new GetUserForChatSidebarUseCase(sig
 
 export const getUsersUseCase = new GetUsersUseCase(userQueries);
 
-export const setRoleUseCase = new SetRoleUseCase(userRepository, providerProfileRepository);
+export const preBoardingUseCase = new PreBoardingUseCase(userRepository, providerProfileRepository);

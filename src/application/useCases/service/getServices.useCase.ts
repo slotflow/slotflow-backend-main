@@ -12,10 +12,10 @@ export class GetServicesUseCase {
         try {
             const { page, limit } = input;
             const result = await this.seriveRepository.findAll(page, limit);
-            const { data: services, currentPage, totalCount, totalPages } = result;
+            const { items: services, currentPage, totalCount, totalPages } = result;
 
             return {
-                data: services.map(service => ({
+                items: services.map(service => ({
                     _id: service._id,
                     isBlocked: service.isBlocked,
                     serviceName: service.serviceName,

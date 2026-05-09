@@ -11,9 +11,9 @@ export class GetSubscriptionsUseCase {
     async execute(input: GetSubscriptionsInput): Promise<TableData<GetSubscriptionsOutput>> {
         try {
             const result = await this.subscirptionQueries.findAll(input);
-            const { data: subscriptions, currentPage, totalCount, totalPages } = result;
+            const { items: subscriptions, currentPage, totalCount, totalPages } = result;
             return {
-                data: subscriptions,
+                items: subscriptions,
                 totalPages,
                 currentPage,
                 totalCount,

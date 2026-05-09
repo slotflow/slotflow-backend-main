@@ -95,4 +95,12 @@ export enum IdType {
   ROOM = "ROOM",
   IDEMPOTENCY = "IDEMPOTENCY",
   FILE = "FILE",
+  REFERRAL = "REFERRAL",
+}
+
+export interface GenerateId {
+  type: IdType;
+  options?: {
+    name?: string;
+  }
 }

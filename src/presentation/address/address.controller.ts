@@ -52,7 +52,7 @@ class AddressController {
                 ...validatedData,
                 userId: user.id
             });
-            sendResponse(res, result);
+            sendResponse(res, result, "Address created successfully", true, 201);
         } catch (error) {
             log.error("createAddress failed : ", error as Error);
             next(error);
@@ -70,7 +70,7 @@ class AddressController {
                 ...validatedData,
                 _id: validatedData.addressId
             });
-            sendResponse(res, result);
+            sendResponse(res, result, "Address updated successfully");
         } catch (error) {
             log.error("updateAddress failed : ", error as Error);
             next(error);

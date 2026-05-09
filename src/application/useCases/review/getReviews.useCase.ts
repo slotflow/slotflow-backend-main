@@ -20,7 +20,7 @@ export class GetReviewsUseCase {
 
             const result = await this.reviewQueries.findAll({ limit, page, providerId, userId, role });
 
-            const { data: reviews, currentPage, totalCount, totalPages } = result;
+            const { items: reviews, currentPage, totalCount, totalPages } = result;
             if (!reviews) {
                 return null;
             }
@@ -42,7 +42,7 @@ export class GetReviewsUseCase {
             );
 
             return {
-                data: updatedData,
+                items: updatedData,
                 totalPages,
                 currentPage,
                 totalCount

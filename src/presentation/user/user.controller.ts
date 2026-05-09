@@ -4,8 +4,8 @@ import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { adminUserBlockStatusSchema } from "../../shared/zod/admin.zod";
-import { SetRoleUseCase } from "../../application/useCases/user/setRole.useCase";
 import { GetUsersUseCase } from "../../application/useCases/user/getUsers.useCase";
+import { PreBoardingUseCase } from "../../application/useCases/user/preBoarding.useCase";
 import { GetUserProfileDetailsUseCase } from "../../application/useCases/user/getUserProfile.useCase";
 import { GetUserForChatSidebarUseCase } from "../../application/useCases/user/getUserFroChat.useCase";
 import { paginationSchema, roleValidationSchema, validateUserIdSchema } from "../../shared/zod/base.zod";
@@ -14,7 +14,7 @@ import { ChangeUserBlockStatusUseCase } from "../../application/useCases/user/ch
 import { ChangePushNotificationUseCase } from "../../application/useCases/user/changePushNotification.useCase";
 import { UpdateUserProfileImageUseCase } from "../../application/useCases/user/updateUserProfileImage.useCase";
 import { userUpdateFileSchema, userUpdateInfoSchema, userUpdatePushNotificationSchema } from "../../shared/zod/user.zod";
-import { changePushNotificationUseCase, changeUserBlockStatusUseCase, getUserProfileDetailsUseCase, getUsersUseCase, getUserForChatSidebarUseCase, setRoleUseCase, updateUserProfileImageUseCase, updateUserProfileInfoUseCase } from ".";
+import { changePushNotificationUseCase, changeUserBlockStatusUseCase, getUserProfileDetailsUseCase, getUsersUseCase, getUserForChatSidebarUseCase, preBoardingUseCase, updateUserProfileImageUseCase, updateUserProfileInfoUseCase } from ".";
 
 class UserController {
     constructor(
@@ -25,7 +25,7 @@ class UserController {
         private readonly changeUserBlockStatusUseCase: ChangeUserBlockStatusUseCase,
         private readonly getUserProfileDetailsUseCase: GetUserProfileDetailsUseCase,
         private readonly getUserForChatSidebarUseCase: GetUserForChatSidebarUseCase,
-        private readonly setRoleUseCase: SetRoleUseCase
+        private readonly preBoardingUseCase: PreBoardingUseCase
     ) {
         this.getProfileDetails = this.getProfileDetails.bind(this);
         this.updateProfileImage = this.updateProfileImage.bind(this);
@@ -33,7 +33,7 @@ class UserController {
         this.updatePushNotification = this.updatePushNotification.bind(this);
         this.getUsers = this.getUsers.bind(this);
         this.changeUserBlockStatus = this.changeUserBlockStatus.bind(this);
-        this.setRole = this.setRole.bind(this);
+        this.preBoarding = this.preBoarding.bind(this);
     };
 
     async getProfileDetails(req: Request, res: Response, next: NextFunction) {
@@ -128,14 +128,19 @@ class UserController {
         };
     };
 
-    async setRole(req: Request, res: Response, next: NextFunction) {
+    async preBoarding(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-            const { role } = roleValidationSchema.parse(req.body);
-            const result = await this.setRoleUseCase.execute({ _id: user.id, role });
-            sendResponse(res, result, "Role set successfully");
+            const { role, whereDidHearAboutUs, referralCode } = roleValidationSchema.parse(req.body);
+            const result = await this.preBoardingUseCase.execute({ 
+                _id: user.id, 
+                role,
+                whereDidHearAboutUs,
+                referralCode
+            });
+            sendResponse(res, result, "Setup completed successfully");
         } catch (error) {
-            log.error("setRole failed", error as Error);
+            log.error("preBoardingUseCase failed", error as Error);
             next(error);
         };
     };
@@ -150,5 +155,5 @@ export const userController = new UserController(
     changeUserBlockStatusUseCase,
     getUserProfileDetailsUseCase,
     getUserForChatSidebarUseCase,
-    setRoleUseCase
+    preBoardingUseCase
 );

@@ -1,4 +1,4 @@
-import { Role } from "../enums/common.enum";
+import { HearAboutUsOptionValue, OnboardingStatus, Role } from "../enums/common.enum";
 
 export interface UserProps {
     _id: string
@@ -8,8 +8,8 @@ export interface UserProps {
     password: string | null;
 
     role: Role;
-    hasSelectedRole: boolean;
-    isOnboardingCompleted: boolean;
+    onboardingType: Role | null;
+    onboardingStatus: OnboardingStatus;
 
     isBlocked: boolean;
 
@@ -23,6 +23,8 @@ export interface UserProps {
     stripeCustomerId: string | null;
 
     allowPushNotification: boolean;
+    whereDidHearAboutUs: HearAboutUsOptionValue | null;
+    referralCode: string | null;
 
     createdAt: Date,
     updatedAt: Date

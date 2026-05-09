@@ -44,7 +44,7 @@ export class RegisterUseCase {
       const otp = await this.otpService.setOtp(email);
 
       await this.kafkaProducer.publish<EventEnvelope<SendOtpEvent>>(kafkaConfig.topics.pub.sendOtp, {
-        eventId: generateId(IdType.EVENT),
+        eventId: generateId({ type: IdType.EVENT }),
         attempt: 1,
         maxAttempts: 1,
         occurredAt: new Date().toISOString(),

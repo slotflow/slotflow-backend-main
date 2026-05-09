@@ -23,7 +23,7 @@ export class CreateFileUploadPresignedUrlUseCase {
             const ext = fileName.split(".").pop();
             if (!ext) throw new BadRequestError();
 
-            const key = `${folderName}/${Date.now()}-${generateId(IdType.FILE)}.${ext}`;
+            const key = `${folderName}/${Date.now()}-${generateId({ type: IdType.FILE })}.${ext}`;
 
             const command = new PutObjectCommand({
                 Bucket: awsConfig.awsS3BucketName,

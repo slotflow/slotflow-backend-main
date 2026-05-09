@@ -9,14 +9,14 @@ const router = Router();
 // provider create their service availability
 router.post('/',
     authMiddleware,
-    authorize(Role.PROVIDER),
+    authorize(Role.PROVIDER, Role.USER),
     serviceAvailabilityController.createServiceAvailability
 );
 
 // provider get their service availability
 router.get('/me',
     authMiddleware,
-    authorize(Role.PROVIDER),
+    authorize(Role.PROVIDER, Role.USER),
     serviceAvailabilityController.getServiceAvailability
 );
 

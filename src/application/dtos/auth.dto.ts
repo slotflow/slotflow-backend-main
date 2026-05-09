@@ -1,4 +1,4 @@
-import { Role } from "../../domain/enums/common.enum";
+import { OnboardingStatus, Role } from "../../domain/enums/common.enum";
 import { ProviderProfileDTO, UserDTO } from "./common.dto";
 
 //// **** auth dtos **** ////
@@ -47,8 +47,8 @@ export interface LoginOutput {
         username: UserDTO["username"];
         email: UserDTO["email"];
         role: UserDTO["role"];
-        hasSelectedRole: UserDTO["hasSelectedRole"];
-        isOnboardingCompleted: UserDTO["isOnboardingCompleted"];
+        onboardingType: Role | null;
+        onboardingStatus: OnboardingStatus;
         isBlocked: UserDTO["isBlocked"];
         isLoggedIn: boolean;
         phone: UserDTO["phone"];
@@ -57,7 +57,10 @@ export interface LoginOutput {
 
         isServiceDetailsAdded?: boolean;
         isServiceAvailabilityAdded?: boolean;
-        isProofSubmitted?: boolean;
+        isProofSubmitted?: {
+            identityProof: boolean;
+            serviceProof: boolean;
+        };
         isAddressVerified?: ProviderProfileDTO["isAddressVerified"],
         isServiceDetailsVerified?: ProviderProfileDTO["isServiceDetailsVerified"],
         isAvailabilityVerified?: ProviderProfileDTO["isAvailabilityVerified"],
@@ -107,25 +110,28 @@ export interface GoogleAuthOrchestrationOutput {
         username: UserDTO["username"];
         email: UserDTO["email"];
         role: UserDTO["role"];
-        hasSelectedRole: UserDTO["hasSelectedRole"];
-        isOnboardingCompleted: UserDTO["isOnboardingCompleted"];
+        onboardingType: Role | null;
+        onboardingStatus: OnboardingStatus;
         isBlocked: UserDTO["isBlocked"];
         isLoggedIn: boolean;
         phone: UserDTO["phone"];
         profileImage: UserDTO["profileImage"];
         isAddressAdded: boolean;
 
-        isServiceDetailsAdded: boolean;
-        isServiceAvailabilityAdded: boolean;
-        isProofSubmitted: boolean;
-        isAddressVerified: ProviderProfileDTO["isAddressVerified"],
-        isServiceDetailsVerified: ProviderProfileDTO["isServiceDetailsVerified"],
-        isAvailabilityVerified: ProviderProfileDTO["isAvailabilityVerified"],
-        isProofsVerified: ProviderProfileDTO["isProofsVerified"],
-        isAdminVerified: ProviderProfileDTO["isAdminVerified"],
-        providerSubscription: string;
-        verificationRejectionReason: ProviderProfileDTO["verificationRejectionReason"],
-        adminVerificationStatus: ProviderProfileDTO["adminVerificationStatus"],
+        isServiceDetailsAdded?: boolean;
+        isServiceAvailabilityAdded?: boolean;
+        isProofSubmitted?: {
+            identityProof: boolean;
+            serviceProof: boolean;
+        };
+        isAddressVerified?: ProviderProfileDTO["isAddressVerified"],
+        isServiceDetailsVerified?: ProviderProfileDTO["isServiceDetailsVerified"],
+        isAvailabilityVerified?: ProviderProfileDTO["isAvailabilityVerified"],
+        isProofsVerified?: ProviderProfileDTO["isProofsVerified"],
+        isAdminVerified?: ProviderProfileDTO["isAdminVerified"],
+        providerSubscription?: string;
+        verificationRejectionReason?: ProviderProfileDTO["verificationRejectionReason"],
+        adminVerificationStatus?: ProviderProfileDTO["adminVerificationStatus"],
 
         googleId: UserDTO["googleId"];
         googleConnected: UserDTO["googleConnected"];

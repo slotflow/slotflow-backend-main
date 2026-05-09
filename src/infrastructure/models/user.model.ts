@@ -1,5 +1,5 @@
-import { Role } from '../../domain/enums/common.enum';
 import mongoose, { Schema, Document, Types } from 'mongoose';
+import { HearAboutUsOptionValue, OnboardingStatus, Role } from '../../domain/enums/common.enum';
 
 export interface IUser extends Document {
   _id: Types.ObjectId;
@@ -7,8 +7,8 @@ export interface IUser extends Document {
   email: string;
   password: string;
   role: Role;
-  hasSelectedRole: boolean;
-  isOnboardingCompleted: boolean;
+  onboardingType: Role | null;
+  onboardingStatus: OnboardingStatus;
   isBlocked: boolean;
   phone: string;
   profileImage: string | null;
@@ -19,6 +19,8 @@ export interface IUser extends Document {
   stripeAccountId: string | null;
   stripeCustomerId: string | null;
   allowPushNotification: boolean;
+  whereDidHearAboutUs: HearAboutUsOptionValue;
+  referralCode: string | null;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -54,9 +56,15 @@ const UserSchema = new Schema<IUser>({
     enum: Object.values(Role),
     default: Role.USER
   },
-  hasSelectedRole: {
-    type: Boolean,
-    default: false
+  onboardingType: {
+    type: String,
+    enum: Object.values(Role),
+    default: null,
+  },
+  onboardingStatus: {
+    type: String,
+    enum: Object.values(OnboardingStatus),
+    default: OnboardingStatus.NOT_STARTED,
   },
   isBlocked: {
     type: Boolean,
@@ -103,6 +111,15 @@ const UserSchema = new Schema<IUser>({
   },
   allowPushNotification: {
     type: Boolean,
+    default: null
+  },
+  whereDidHearAboutUs: {
+    type: String,
+    enum: Object.values(HearAboutUsOptionValue),
+    default: null
+  },
+  referralCode: {
+    type: String,
     default: null
   },
   createdAt: {

@@ -1,4 +1,3 @@
-import { TableData } from "../../dtos/common.dto";
 import { ERROR_CODES } from "../../../shared/utils/types";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { BadRequestError, NotFoundError } from "../../../shared/error/appError";
@@ -12,15 +11,15 @@ export class GetProviderProofsUseCase {
         private readonly providerProfileRepository: IProviderProfileRepository
     ) { };
 
-    async execute(input: GetProviderProofsInput): Promise<TableData<GetProviderProofsOutput>> {
+    async execute(input: GetProviderProofsInput): Promise<GetProviderProofsOutput> {
         try {
             const { providerId } = input;
             if (!providerId) {
                 throw new BadRequestError();
             }
 
-            const provider = await this.providerProfileRepository.findById(providerId);
-            if (!provider) {
+            const providerProfile = await this.providerProfileRepository.findByUserId(providerId);
+            if (!providerProfile) {
                 throw new NotFoundError(
                     "Provider profile not found",
                     ERROR_CODES.PROVIDER_PROFILE_NOT_FOUND
@@ -30,21 +29,17 @@ export class GetProviderProofsUseCase {
             let signedIdentityProofUrl: string | null = null;
             let signedServiceProofUrl: string | null = null;
 
-            if (provider.identityProof) {
-                signedIdentityProofUrl = await this.signedUrlService.get(provider.identityProof);
+            if (providerProfile.identityProof) {
+                signedIdentityProofUrl = await this.signedUrlService.get(providerProfile.identityProof);
             };
 
-            if (provider.serviceProof) {
-                signedServiceProofUrl = await this.signedUrlService.get(provider.serviceProof);
+            if (providerProfile.serviceProof) {
+                signedServiceProofUrl = await this.signedUrlService.get(providerProfile.serviceProof);
             };
 
             return {
-                success: true,
-                message: "Signed urls",
-                data: {
-                    identityProof: signedIdentityProofUrl,
-                    serviceProof: signedServiceProofUrl,
-                },
+                identityProof: signedIdentityProofUrl,
+                serviceProof: signedServiceProofUrl,
             };
         } catch (error: unknown) {
             throw toAppError(error, "Failed to get provider proofs");

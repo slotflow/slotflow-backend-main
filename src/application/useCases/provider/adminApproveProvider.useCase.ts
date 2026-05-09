@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import { kafkaConfig } from "../../../config/env";
-import { Role } from "../../../domain/enums/common.enum";
 import { generateId } from '../../../shared/utils/generateId';
 import { AdminApproveProviderInput } from "../../dtos/admin.dto";
 import { ERROR_CODES, IdType } from '../../../shared/utils/types';
@@ -54,14 +53,14 @@ export class AdminApproveProviderUseCase {
                 )
             }
 
-            provider.completeOnboarding(Role.PROVIDER);
+            provider.approvedByAdmin();
             await this.userRepository.update(provider, session);
 
             providerProfile.approveVerification();
             await this.providerProfileRepository.update(providerProfile, session);
 
             await this.kafkaProducer.publish<EventEnvelope<SendAdminProviderReviewEvent>>(kafkaConfig.topics.pub.adminProviderReview, {
-                eventId: generateId(IdType.EVENT),
+                eventId: generateId({ type: IdType.EVENT }),
                 attempt: 1,
                 maxAttempts: 1,
                 occurredAt: new Date().toISOString(),

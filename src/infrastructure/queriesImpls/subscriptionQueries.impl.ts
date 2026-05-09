@@ -36,7 +36,7 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
         ])
         const totalPages = Math.ceil(totalCount / limit);
         return {
-            data: subscriptions.map(sub => ({
+            items: subscriptions.map(sub => ({
                 _id: sub._id.toString(),
                 startDate: sub.startDate,
                 endDate: sub.endDate,

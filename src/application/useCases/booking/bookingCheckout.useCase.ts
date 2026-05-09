@@ -44,7 +44,7 @@ export class BookingCheckoutUseCase {
                 );
             }
 
-            const providerProfile = await this.providerProfileRepository.findById(providerId);
+            const providerProfile = await this.providerProfileRepository.findByUserId(providerId);
             if (!providerProfile) {
                 throw new NotFoundError(
                     "Profile not found",
@@ -119,7 +119,7 @@ export class BookingCheckoutUseCase {
                         time: new Date()
                     }
                 ],
-                videoCallRoomId: generateId(IdType.ROOM),
+                videoCallRoomId: generateId({ type: IdType.ROOM }),
             }));
 
             if(!booking) {

@@ -18,8 +18,8 @@ export class AuthResponseBuilder {
       email: user.email,
 
       role: user.role,
-      hasSelectedRole: user.hasSelectedRole,
-      isOnboardingCompleted: user.isOnboardingCompleted,
+      onboardingType: user.onboardingType,
+      onboardingStatus: user.onboardingStatus,
 
       isBlocked: user.isBlocked,
       isLoggedIn: true,
@@ -47,8 +47,10 @@ export class AuthResponseBuilder {
     return {
       isServiceDetailsAdded: !!providerProfile?.serviceId,
       isServiceAvailabilityAdded: !!providerProfile?.serviceAvailabilityId,
-      isProofSubmitted:
-        !!providerProfile?.identityProof && !!providerProfile?.serviceProof,
+      isProofSubmitted: {
+        identityProof: !!providerProfile?.identityProof,
+        serviceProof: !!providerProfile?.serviceProof,
+      },
 
       isAddressVerified: providerProfile?.isAddressVerified ?? false,
       isServiceDetailsVerified:

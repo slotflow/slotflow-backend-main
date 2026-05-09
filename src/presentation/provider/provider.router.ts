@@ -18,14 +18,14 @@ router.get('/me',
 // provider update identity proof
 router.patch('/me/identity',
     authMiddleware,
-    authorize(Role.PROVIDER),
+    authorize(Role.PROVIDER, Role.USER),
     providerProfileController.updateIdentityProof
 );
 
 // provider update service proof
 router.patch('/me/service',
     authMiddleware,
-    authorize(Role.PROVIDER),
+    authorize(Role.PROVIDER, Role.USER),
     providerProfileController.updateServiceProof
 );
 
@@ -39,21 +39,21 @@ router.get('/me/proofs',
 // provider delete identity proof
 router.delete('/me/identity',
     authMiddleware,
-    authorize(Role.PROVIDER),
+    authorize(Role.PROVIDER, Role.USER),
     providerProfileController.deleteIdentityProof
 );
 
 // 
 router.delete('/me/service',
     authMiddleware,
-    authorize(Role.PROVIDER),
+    authorize(Role.PROVIDER, Role.USER),
     providerProfileController.deleteServiceProof
 );
 
 // provider request admin approval
 router.patch('/me/approval',
     authMiddleware,
-    authorize(Role.PROVIDER),
+    authorize(Role.USER),
     providerProfileController.requestAdminApproval
 );
 

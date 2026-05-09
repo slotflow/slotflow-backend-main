@@ -16,7 +16,7 @@ const start = async () => {
     await initDB();
     initCronJobs();
     initPassport();
-    // await initKafka();
+    await initKafka();
 
     const server = app.listen(appConfig.port, () => {
       printText();

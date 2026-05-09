@@ -9,7 +9,7 @@ export interface IServiceRepository {
 
     update(service: Service): Promise<Service | null>;
 
-    findAll(page: number, limit: number): Promise<{ data: Array<Service>, totalPages: number; currentPage: number; totalCount: number; }>;
+    findAll(page: number, limit: number): Promise<{ items: Array<Service>, totalPages: number; currentPage: number; totalCount: number; }>;
 
     findByName(serviceName: string): Promise<Service | null>;
 

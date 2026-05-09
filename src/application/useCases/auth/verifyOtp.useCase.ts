@@ -42,14 +42,20 @@ export class VerifyOTPUseCase {
       const isValidOTP = await this.otpService.verifyOtp(email, otp);
       if (!isValidOTP) throw new BadRequestError("Invalid OTP");
 
+      const referralCode = generateId({
+        type: IdType.REFERRAL,
+        options: { name: username }
+      });
+
       if (!existingUser) {
         const newUser = await this.userRepository.create(User.createLocal({
           email,
           username,
           password,
+          referralCode
         }));
 
-        if(!newUser) {
+        if (!newUser) {
           throw new AppError(
             "Internal server error",
             500,
@@ -59,7 +65,7 @@ export class VerifyOTPUseCase {
         };
 
         await this.kafkaProducer.publish<EventEnvelope<SendWelcomeEvent>>(kafkaConfig.topics.pub.registerSuccess, {
-          eventId: generateId(IdType.EVENT),
+          eventId: generateId({ type: IdType.EVENT }),
           attempt: 1,
           maxAttempts: 1,
           occurredAt: new Date().toISOString(),

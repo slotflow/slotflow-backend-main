@@ -27,7 +27,7 @@ export class GetBookingsUseCase {
                 if (!userId) throw new BadRequestError();
             };
 
-            const result = await this.bookingQueries.findAll({
+            return await this.bookingQueries.findAll({
                 page,
                 limit,
                 serviceProviderId,
@@ -36,14 +36,6 @@ export class GetBookingsUseCase {
                 role
             });
 
-            const { data: bookings, currentPage, totalCount, totalPages } = result;
-
-            return {
-                data: bookings,
-                totalPages,
-                currentPage,
-                totalCount,
-            };
         } catch (error: unknown) {
             throw toAppError(error, "Failed to get booking");
         };

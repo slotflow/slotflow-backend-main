@@ -39,7 +39,7 @@ export class UpdateBookingAfterPaymentSuccessUseCase {
                 await this.kafkaProducer.publish<EventEnvelope<BookingSavedEvent>>(
                     kafkaConfig.topics.pub.slotBooked,
                     {
-                        eventId: generateId(IdType.EVENT),
+                        eventId: generateId({ type: IdType.EVENT }),
                         attempt: 1,
                         maxAttempts: 3,
                         occurredAt: new Date().toISOString(),
@@ -66,7 +66,7 @@ export class UpdateBookingAfterPaymentSuccessUseCase {
                 await this.kafkaProducer.publish<EventEnvelope<GotAnAppointmentEvent>>(
                     kafkaConfig.topics.pub.gotAnAppointment,
                     {
-                        eventId: generateId(IdType.EVENT),
+                        eventId: generateId({ type: IdType.EVENT }),
                         attempt: 1,
                         maxAttempts: 3,
                         occurredAt: new Date().toISOString(),

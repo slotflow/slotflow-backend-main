@@ -18,7 +18,7 @@ export class GetSubscribedPlanUseCase {
                 throw new BadRequestError();
             }
 
-            const providerProfile = await this.providerProfileRepository.findById(providerId);
+            const providerProfile = await this.providerProfileRepository.findByUserId(providerId);
             if (!providerProfile) {
                 throw new NotFoundError(
                     "Profile not found.",

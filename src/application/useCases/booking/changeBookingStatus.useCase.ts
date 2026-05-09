@@ -69,7 +69,7 @@ export class ChangeBookingStatusUseCase {
             const { date, time } = formatUtcDateTime(booking.appointmentDate);
 
             await this.kafkaProducer.publish<EventEnvelope<SendAppointmentStatusChangeForUserEvent>>(kafkaConfig.topics.pub.providerAppointmentStatusForUser, {
-                eventId: generateId(IdType.EVENT),
+                eventId: generateId({ type: IdType.EVENT }),
                 attempt: 1,
                 maxAttempts: 2,
                 occurredAt: new Date().toISOString(),
@@ -92,7 +92,7 @@ export class ChangeBookingStatusUseCase {
             });
 
             await this.kafkaProducer.publish<EventEnvelope<SendAppointmentStatusChangeForProviderEvent>>(kafkaConfig.topics.pub.providerAppointmentStatusForProvider, {
-                eventId: generateId(IdType.EVENT),
+                eventId: generateId({ type: IdType.EVENT }),
                 attempt: 1,
                 maxAttempts: 2,
                 occurredAt: new Date().toISOString(),
@@ -115,7 +115,7 @@ export class ChangeBookingStatusUseCase {
 
             if (userAccessToken) {
                 await this.kafkaProducer.publish<EventEnvelope<CreateGoogleCalendarEvent>>(kafkaConfig.topics.pub.createGoogleCalendarEvent, {
-                    eventId: generateId(IdType.EVENT),
+                    eventId: generateId({ type: IdType.EVENT }),
                     occurredAt: new Date().toString(),
                     attempt: 1,
                     maxAttempts: 2,
@@ -133,7 +133,7 @@ export class ChangeBookingStatusUseCase {
 
             if (providerAccessToken) {
                 await this.kafkaProducer.publish<EventEnvelope<CreateGoogleCalendarEvent>>(kafkaConfig.topics.pub.createGoogleCalendarEvent, {
-                    eventId: generateId(IdType.EVENT),
+                    eventId: generateId({ type: IdType.EVENT }),
                     occurredAt: new Date().toString(),
                     attempt: 1,
                     maxAttempts: 2,

@@ -45,7 +45,7 @@ export class UpdatePasswordUseCase {
             await this.userRepository.update(user);
 
             await this.kafkaProducer.publish<EventEnvelope<SendResetPasswordEvent>>(kafkaConfig.topics.pub.passwordReset, {
-                eventId: generateId(IdType.EVENT),
+                eventId: generateId({ type: IdType.EVENT }),
                 attempt: 1,
                 maxAttempts: 1,
                 occurredAt: new Date().toISOString(),

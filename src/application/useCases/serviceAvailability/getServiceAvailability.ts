@@ -22,7 +22,7 @@ export class GetServiceAvailabilityUseCase {
       const currentDateTime = dayjs();
       const selectedDate = dayjs(date).format('YYYY-MM-DD');
 
-      const providerProfile = await this.providerProfileRepository.findById(providerId);
+      const providerProfile = await this.providerProfileRepository.findByUserId(providerId);
       if (!providerProfile) {
         throw new NotFoundError(
           "Profile not found",

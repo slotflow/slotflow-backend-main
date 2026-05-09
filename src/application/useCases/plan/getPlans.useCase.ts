@@ -13,9 +13,9 @@ export class GetPlansUseCase {
             const { page, limit } = input;
 
             const result = await this.planRepository.findAll(page, limit);
-            const { data: plans, currentPage, totalCount, totalPages } = result;
+            const { items: plans, currentPage, totalCount, totalPages } = result;
             return {
-                data: plans.map(plan => ({
+                items: plans.map(plan => ({
                     _id: plan._id,
                     adVisibility: plan.adVisibility,
                     isBlocked: plan.isBlocked,

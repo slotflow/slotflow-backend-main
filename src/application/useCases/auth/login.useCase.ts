@@ -74,9 +74,11 @@ export class LoginUseCase {
 
             let providerProfile: ProviderProfile | null = null;
             let providerSubscription: PlanName = PlanName.NO_SUBSCRIPTION;
+            const isProviderFlow = user.onboardingType === Role.PROVIDER ;
 
-            if (user.hasSelectedRole && !user.isOnboardingCompleted) {
-                providerProfile = await this.providerProfileRepository.findById(user._id);
+            if (isProviderFlow) {
+                providerProfile = await this.providerProfileRepository.findByUserId(user._id);
+                console.log("providerProfile : ",providerProfile);
 
                 if (providerProfile) {
                     providerSubscription = await this.authResponseBuilder.resolveSubscription(
@@ -87,27 +89,7 @@ export class LoginUseCase {
 
             const baseUser = this.authResponseBuilder.buildBaseUser(user);
 
-            if (user.role === Role.USER) {
-                if (providerProfile) {
-                    return {
-                        token,
-                        user: {
-                            ...baseUser,
-                            ...this.authResponseBuilder.buildProviderFields(
-                                providerProfile,
-                                providerSubscription
-                            ),
-                        },
-                    };
-                }
-
-                return {
-                    token,
-                    user: baseUser,
-                };
-            }
-
-            if (user.role === Role.PROVIDER) {
+            if (isProviderFlow) {
                 return {
                     token,
                     user: {
@@ -118,9 +100,12 @@ export class LoginUseCase {
                         ),
                     },
                 };
-            }
-
-            if (user.role === Role.ADMIN) {
+            } else if(user.role === Role.USER) {
+                return {
+                    token,
+                    user: baseUser,
+                };
+            } else if(user.role === Role.ADMIN) {
                 return {
                     token,
                     user: baseUser,

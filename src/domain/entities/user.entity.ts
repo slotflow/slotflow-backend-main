@@ -1,6 +1,6 @@
-import { Role } from "../enums/common.enum";
+import { OnboardingStatus, Role } from "../enums/common.enum";
 import { UserProps } from "../contracts/user.contract";
-import { ChangePassword, ChangeProfileImage, ChangeProfileInfo, CreateGoogleUserProps, CreateLocalUserProps, LinkGoogleAccount, UpdatePushNotification } from "../commands/user.commands";
+import { ChangePasswordProps, ChangeProfileImageProps, ChangeProfileInfoProps, CreateGoogleUserProps, CreateLocalUserProps, LinkGoogleAccountProps, UpdatePushNotificationProps, CompletePreBoardingProps } from "../commands/user.commands";
 
 export class User {
 
@@ -27,18 +27,20 @@ export class User {
             email: props.email,
             password: props.password,
             role: Role.USER,
-            hasSelectedRole: false,
-            isOnboardingCompleted: false,
+            onboardingType: null,
+            onboardingStatus: OnboardingStatus.NOT_STARTED,
             isBlocked: false,
+            googleConnected: false,
+            stripeConnected: false,
+            allowPushNotification: false,
+            whereDidHearAboutUs: null,
+            referralCode: props.referralCode,
+            addressId: null,
+            googleId: null,
             phone: null,
             profileImage: null,
-            addressId: null,
-            googleConnected: false,
-            googleId: null,
-            stripeConnected: false,
             stripeAccountId: null,
             stripeCustomerId: null,
-            allowPushNotification: false,
             createdAt: new Date(),
             updatedAt: new Date(),
         })
@@ -51,18 +53,20 @@ export class User {
             email: props.email,
             password: null,
             role: Role.USER,
-            hasSelectedRole: false,
-            isOnboardingCompleted: false,
+            onboardingType: null,
+            onboardingStatus: OnboardingStatus.NOT_STARTED,
             isBlocked: false,
-            phone: null,
             profileImage: props.profileImage,
-            addressId: null,
             googleConnected: true,
             googleId: props.googleId,
             stripeConnected: false,
+            allowPushNotification: false,
+            whereDidHearAboutUs: null,
+            referralCode: props.referralCode,
+            addressId: null,
+            phone: null,
             stripeAccountId: null,
             stripeCustomerId: null,
-            allowPushNotification: false,
             createdAt: new Date(),
             updatedAt: new Date(),
         })
@@ -86,12 +90,12 @@ export class User {
         return this.props.role;
     }
 
-    get hasSelectedRole(): boolean {
-        return this.props.hasSelectedRole;
+    get onboardingType(): Role | null {
+        return this.props.onboardingType;
     }
 
-    get isOnboardingCompleted(): boolean {
-        return this.props.isOnboardingCompleted;
+    get onboardingStatus(): OnboardingStatus {
+        return this.props.onboardingStatus;
     }
 
     get phone(): string | null {
@@ -162,7 +166,7 @@ export class User {
         this.touch();
     }
 
-    updateProfileInfo(props: ChangeProfileInfo) {
+    updateProfileInfo(props: ChangeProfileInfoProps) {
         this.ensureNotBlocked("update info");
 
         if (props.phone !== undefined) {
@@ -175,7 +179,7 @@ export class User {
         this.touch();
     }
 
-    changePassword(props: ChangePassword) {
+    changePassword(props: ChangePasswordProps) {
         this.ensureNotBlocked("update password");
 
         if (props.password) {
@@ -184,12 +188,12 @@ export class User {
         this.touch();
     }
 
-    updatePushNotification(props: UpdatePushNotification) {
+    updatePushNotification(props: UpdatePushNotificationProps) {
         this.props.allowPushNotification = props.allowPushNotification;
         this.touch();
     }
 
-    linkGoogleAccount(props: LinkGoogleAccount) {
+    linkGoogleAccount(props: LinkGoogleAccountProps) {
         this.ensureNotBlocked("update google data");
 
         this.props.googleId = props.googleId;
@@ -197,14 +201,16 @@ export class User {
         this.touch();
     }
 
-    updateProfileImage(props: ChangeProfileImage) {
+    updateProfileImage(props: ChangeProfileImageProps) {
         this.ensureNotBlocked("update profile image");
-
+        if(props.profileImage === undefined) {
+            throw new Error("Profile image is required");
+        }
         this.props.profileImage = props.profileImage;
         this.touch();
     }
 
-    attachAddress(addressId: string | null) {
+    attachAddress(addressId: string) {
         this.props.addressId = addressId;
         this.touch();
     }
@@ -224,19 +230,27 @@ export class User {
         this.touch();
     }
 
-    chnageSelectedRole(role: Role) {
+    completePreBoarding(props: CompletePreBoardingProps) {
+        const { role } = props;
         if (role === Role.USER) {
-            this.props.isOnboardingCompleted = true;
+            this.props.onboardingType = Role.USER;
+            this.props.onboardingStatus = OnboardingStatus.APPROVED;
         } else if (role === Role.PROVIDER) {
-            this.props.isOnboardingCompleted = false;
+            this.props.onboardingType = Role.PROVIDER;
+            this.props.onboardingStatus = OnboardingStatus.IN_PROGRESS;
         }
-        this.props.hasSelectedRole = true;
+        if(props.whereDidHearAboutUs) {
+            this.props.whereDidHearAboutUs = props.whereDidHearAboutUs;
+        }
+        if(props.referralCode) {
+            this.props.referralCode = props.referralCode;
+        }
         this.touch();
     }
-
-    completeOnboarding(role: Role) {
-        this.props.role = role;
-        this.props.isOnboardingCompleted = true;
+    
+    approvedByAdmin() {
+        this.props.role = Role.PROVIDER;
+        this.props.onboardingStatus = OnboardingStatus.APPROVED;
         this.touch();
     }
 

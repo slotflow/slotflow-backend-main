@@ -9,7 +9,7 @@ const router = Router();
 // provider create service details
 router.post('/',
     authMiddleware,
-    authorize(Role.PROVIDER),
+    authorize(Role.PROVIDER, Role.USER),
     providerServiceController.createServiceDetails
 );
 

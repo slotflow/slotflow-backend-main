@@ -54,7 +54,7 @@ export class ReviewQueriesImpl implements IReviewQueries {
         const totalPages = Math.ceil(totalCount / limit);
 
         return {
-            data: reviews.map((r) => ({
+            items: reviews.map((r) => ({
                 _id: r._id.toString(),
                 reviewText: r.reviewText,
                 rating: r.rating,

@@ -1,6 +1,6 @@
 import { z } from "zod";
+import { HearAboutUsOptionValue, Role } from "../../domain/enums/common.enum";
 import { addressLineRegex, cityRegex, countryRegex, districtRegex, landMarkRegex, objectIdRegex, phoneRegex, pincodeRegex, placeRegex, sessionIdRegex, stateRegex, usernameRegex } from "../utils/regex";
-import { Role } from "../../domain/enums/common.enum";
 
 // Base ID validation schemas
 export const validateUserIdSchema = z.object({
@@ -18,6 +18,8 @@ export const validateSubscriptionIdSchema = z.object({
 // Role validation
 export const roleValidationSchema = z.object({
     role: z.nativeEnum(Role),
+    whereDidHearAboutUs: z.enum(HearAboutUsOptionValue),
+    referralCode: z.string().startsWith("SF_REF").min(12).max(15).optional()
 });
 
 // Pagination zod schema with default values

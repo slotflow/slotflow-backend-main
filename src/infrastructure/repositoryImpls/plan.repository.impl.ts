@@ -38,7 +38,7 @@ export class PlanRepositoryImpl implements IPlanRepository {
         return doc ? PlanMapper.toDomain(doc) : null;
     };
 
-    async findAll(page: number = 1, limit: number = 10): Promise<{ data: Array<Plan>, totalPages: number; currentPage: number; totalCount: number; }> {
+    async findAll(page: number = 1, limit: number = 10): Promise<{ items: Array<Plan>, totalPages: number; currentPage: number; totalCount: number; }> {
         const skip = (page - 1) * limit;
         const [plans, totalCount] = await Promise.all([
             PlanModel.find({}, {
@@ -55,7 +55,7 @@ export class PlanRepositoryImpl implements IPlanRepository {
         ]);
         const totalPages = Math.ceil(totalCount / limit);
         return {
-            data: plans.map(plan => PlanMapper.toDomain(plan)),
+            items: plans.map(plan => PlanMapper.toDomain(plan)),
             totalPages,
             currentPage: page,
             totalCount

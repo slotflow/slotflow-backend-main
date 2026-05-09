@@ -52,6 +52,10 @@ export class OTPServiceImpl implements IOTPService {
 
       const storedOtp = await this.redisClient.get(email);
 
+      console.log("email : ",email);
+      console.log("otp : ",otp);
+      console.log("storedOtp : ",storedOtp);
+
       if (!storedOtp) {
         throw new UnauthorizedError(
           "OTP expired or not found",
@@ -59,14 +63,18 @@ export class OTPServiceImpl implements IOTPService {
         );
       }
 
-      if (storedOtp !== otp) {
+      // Convert both to strings and trim to handle type mismatches
+      const normalizedStoredOtp = String(storedOtp).trim();
+      const normalizedOtp = String(otp).trim();
+
+      if (normalizedStoredOtp !== normalizedOtp) {
         throw new UnauthorizedError(
           "Invalid OTP",
           ERROR_CODES.INVALID_REQUEST
         );
       }
 
-      return storedOtp == otp;
+      return normalizedStoredOtp === normalizedOtp;
     } catch (error) {
       log.error("verifyOtp failed", error as Error);
 

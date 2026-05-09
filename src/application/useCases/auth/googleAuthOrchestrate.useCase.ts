@@ -3,13 +3,13 @@ import { PlanName } from "../../../domain/enums/plan.enum";
 import { User } from "../../../domain/entities/user.entity";
 import { generateId } from "../../../shared/utils/generateId";
 import { IJWT } from "../../../domain/interfaces/security/IJwt";
-import { AppError, BadRequestError } from '../../../shared/error/appError';
 import { ERROR_CODES, IdType } from '../../../shared/utils/types';
 import { AppConnect, Role } from "../../../domain/enums/common.enum";
 import { toAppError } from '../../../shared/error/handleUnknownError';
 import { Credential } from "../../../domain/entities/credential.entity";
 import { notificationContentMap } from "../../../shared/utils/constants";
 import { AuthResponseBuilder } from '../../services/AuthResponseBuilder';
+import { AppError, BadRequestError } from '../../../shared/error/appError';
 import { ProviderProfile } from '../../../domain/entities/providerProfile.entity';
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { EventEnvelope, SendAppConnectEvent, SendWelcomeEvent } from "../../dtos/kafka.dto";
@@ -50,7 +50,7 @@ export class GoogleAuthOrchestratorUseCase {
             let token: string | undefined;
 
             if (!connectOnly) {
-                if(!role || !email || !googleId || !name) {
+                if (!role || !email || !googleId || !name) {
                     throw new BadRequestError(
                         "Invalid request",
                         ERROR_CODES.INVALID_REQUEST
@@ -60,17 +60,23 @@ export class GoogleAuthOrchestratorUseCase {
                     (await this.userRepository.findByGoogleId(googleId)) ??
                     (await this.userRepository.findByEmail(email));
 
+                const referralCode = generateId({
+                    type: IdType.REFERRAL,
+                    options: { name }
+                });
+
                 if (!user) {
                     const userData = User.createGoogle({
                         username: name,
                         email,
                         googleId,
                         profileImage: image ?? "",
+                        referralCode
                     });
                     user = await this.userRepository.create(userData);
                 }
 
-                if(!user) {
+                if (!user) {
                     throw new AppError(
                         "Internal server error",
                         500,
@@ -80,7 +86,7 @@ export class GoogleAuthOrchestratorUseCase {
                 };
 
                 if (role === Role.PROVIDER) {
-                    providerProfile = await this.providerProfileRepository.findById(user._id);
+                    providerProfile = await this.providerProfileRepository.findByUserId(user._id);
 
                     if (!providerProfile) {
                         const newProfile = ProviderProfile.create({
@@ -165,7 +171,7 @@ export class GoogleAuthOrchestratorUseCase {
             if (!user.googleConnected) {
                 if (connectOnly) {
                     await this.kafkaProducer.publish<EventEnvelope<SendAppConnectEvent>>(kafkaConfig.topics.pub.appConnect, {
-                        eventId: generateId(IdType.EVENT),
+                        eventId: generateId({ type: IdType.EVENT }),
                         attempt: 1,
                         maxAttempts: 1,
                         occurredAt: new Date().toISOString(),
@@ -187,7 +193,7 @@ export class GoogleAuthOrchestratorUseCase {
                     });
                 } else {
                     await this.kafkaProducer.publish<EventEnvelope<SendWelcomeEvent>>(kafkaConfig.topics.pub.registerSuccess, {
-                        eventId: generateId(IdType.EVENT),
+                        eventId: generateId({ type: IdType.EVENT }),
                         attempt: 1,
                         maxAttempts: 1,
                         occurredAt: new Date().toISOString(),

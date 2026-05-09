@@ -7,10 +7,10 @@ import { addressController } from "../address/address.controller";
 
 const router = Router();
 
-router.patch('/me/role',
+router.patch('/me/preboarding',
     authMiddleware,
     authorize(Role.USER),
-    userController.setRole
+    userController.preBoarding
 )
 
 // user get profile details

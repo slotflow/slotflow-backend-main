@@ -1,7 +1,10 @@
+import { HearAboutUsOptionValue, Role } from "../enums/common.enum";
+
 export type CreateLocalUserProps = {
   username: string;
   email: string;
   password: string;
+  referralCode: string;
 };
 
 export type CreateGoogleUserProps = {
@@ -9,26 +12,33 @@ export type CreateGoogleUserProps = {
   email: string;
   googleId: string;
   profileImage: string;
+  referralCode: string;
 };
 
-export type ChangeProfileInfo = {
+export type ChangeProfileInfoProps = {
   username?: string;
   phone?: string;
 };
 
-export type ChangePassword = {
+export type ChangePasswordProps = {
   password: string;
 };
 
-export type LinkGoogleAccount = {
+export type LinkGoogleAccountProps = {
   googleId: string;
   googleConnected: boolean;
 };
 
-export type ChangeProfileImage = {
-  profileImage: string | null;
+export type ChangeProfileImageProps = {
+  profileImage?: string;
 };
 
-export type UpdatePushNotification = {
-    allowPushNotification: boolean;
+export type UpdatePushNotificationProps = {
+  allowPushNotification: boolean;
+};
+
+export type CompletePreBoardingProps = {
+  role: Role;
+  whereDidHearAboutUs: HearAboutUsOptionValue;
+  referralCode?: string;
 };

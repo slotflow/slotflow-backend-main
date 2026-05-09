@@ -1,5 +1,5 @@
 import { PlanName } from "../../domain/enums/plan.enum";
-import { Day, Role } from "../../domain/enums/common.enum";
+import { Day, HearAboutUsOptionValue, OnboardingStatus, Role } from "../../domain/enums/common.enum";
 import { GeoLocation } from "../../domain/contracts/address.contract";
 import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
@@ -33,8 +33,8 @@ export interface UserDTO {
   email: string;
   password: string | null;
   role: Role;
-  hasSelectedRole: boolean;
-  isOnboardingCompleted: boolean;
+  onboardingType: Role | null;
+  onboardingStatus: OnboardingStatus;
   isBlocked: boolean;
   phone: string | null;
   profileImage: string | null;
@@ -45,6 +45,8 @@ export interface UserDTO {
   stripeAccountId: string | null;
   stripeCustomerId: string | null;
   allowPushNotification: boolean | null;
+  whereDidHearAboutUs: HearAboutUsOptionValue;
+  referralCode: string | null;
   createdAt: Date;
   updatedAt: Date
 }
@@ -220,18 +222,12 @@ export interface ApiPaginationInput {
   limit: number;
 }
 
-// common usecase output
-export interface CommonOutput {
-  success?: boolean;
-  message?: string;
-};
-
 // Table data output
-export interface TableData<T> extends CommonOutput{
+export interface TableData<T>{
   totalPages?: number;
   currentPage?: number;
   totalCount?: number;
-  data?: T
+  items?: T
 };
 
 // Google Event

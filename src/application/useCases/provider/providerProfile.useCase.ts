@@ -71,7 +71,7 @@ export class ProviderUpdateIdentityProofUseCase {
         throw new BadRequestError();
       }
 
-      const providerProfile = await this.providerProfileRepository.findById(providerId);
+      const providerProfile = await this.providerProfileRepository.findByUserId(providerId);
       if (!providerProfile) {
         throw new NotFoundError(
           "Profile not found",
@@ -112,7 +112,7 @@ export class ProviderUpdateServiceProofUseCase {
         throw new BadRequestError();
       }
 
-      const providerProfile = await this.providerProfileRepository.findById(providerId);
+      const providerProfile = await this.providerProfileRepository.findByUserId(providerId);
       if (!providerProfile) {
         throw new NotFoundError(
           "Profile not found",
@@ -148,11 +148,11 @@ export class ProviderRequestForApprovalUseCase {
   async execute(input: ProviderAdminApprovalRequest): Promise<ProviderAdminApprovalResponse> {
     try {
       const { providerId } = input;
-      if (providerId) {
+      if (!providerId) {
         throw new BadRequestError();
       }
 
-      const providerProfile = await this.providerProfileRepository.findById(providerId);
+      const providerProfile = await this.providerProfileRepository.findByUserId(providerId);
       if (!providerProfile) {
         throw new NotFoundError(
           "Profile not found",
@@ -213,7 +213,7 @@ export class ProvideDeleteIdentityProofUseCase {
         throw new BadRequestError();
       }
 
-      const providerProfile = await this.providerProfileRepository.findById(providerId);
+      const providerProfile = await this.providerProfileRepository.findByUserId(providerId);
       if (!providerProfile) {
         throw new NotFoundError(
           "Profile not found",
@@ -223,10 +223,12 @@ export class ProvideDeleteIdentityProofUseCase {
 
       if (!providerProfile.identityProof) throw new Error("No file found");
 
+      const identityProofKey = providerProfile.identityProof;
+
       await this.s3Client.send(
         new DeleteObjectCommand({
           Bucket: awsConfig.awsS3BucketName,
-          Key: providerProfile.identityProof,
+          Key: identityProofKey,
         })
       );
 
@@ -241,7 +243,7 @@ export class ProvideDeleteIdentityProofUseCase {
         );
       }
 
-      await this.signedUrlService.delete(providerProfile.identityProof);
+      await this.signedUrlService.delete(identityProofKey);
 
     } catch (error: unknown) {
       throw toAppError(error, "Failed to delete identity proof");
@@ -264,7 +266,7 @@ export class ProvideDeleteServiceProofUseCase {
         throw new BadRequestError();
       }
 
-      const providerProfile = await this.providerProfileRepository.findById(providerId);
+      const providerProfile = await this.providerProfileRepository.findByUserId(providerId);
       if (!providerProfile) {
         throw new NotFoundError(
           "Profile not found",
@@ -276,10 +278,12 @@ export class ProvideDeleteServiceProofUseCase {
         throw new BadRequestError();
       }
 
+      const serviceProofKey = providerProfile.serviceProof;
+
       await this.s3Client.send(
         new DeleteObjectCommand({
           Bucket: awsConfig.awsS3BucketName,
-          Key: providerProfile.serviceProof,
+          Key: serviceProofKey,
         })
       );
 
@@ -294,7 +298,7 @@ export class ProvideDeleteServiceProofUseCase {
         )
       }
 
-      await this.signedUrlService.delete(providerProfile.serviceProof);
+      await this.signedUrlService.delete(serviceProofKey);
 
     } catch (error: unknown) {
       throw toAppError(error, "Failed to get ptovider profile");

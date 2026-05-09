@@ -1,7 +1,9 @@
 import { appConfig } from '../../config/env';
 import { log } from '../../shared/logger/logger';
+import { ERROR_CODES } from '../../shared/utils/types';
 import { NextFunction, Request, Response } from 'express';
 import { sendResponse } from '../../shared/utils/response';
+import { UnauthorizedError } from '../../shared/error/appError';
 import { LoginUseCase } from '../../application/useCases/auth/login.useCase';
 import { RegisterUseCase } from '../../application/useCases/auth/register.useCase';
 import { ResendOtpUseCase } from '../../application/useCases/auth/resendOtp.useCase';
@@ -10,8 +12,6 @@ import { VerifyEmailUseCase } from '../../application/useCases/auth/verifyEmail.
 import { UpdatePasswordUseCase } from '../../application/useCases/auth/updatePassword.useCase';
 import { loginUseCase, registerUseCase, resendOtpUseCase, updatePasswordUseCase, verifyEmailUseCase, verifyOTPUseCase } from '.';
 import { loginSchema, otpVerificationSchema, registerSchema, updatePasswordSchema, verifyEmailSchema } from '../../shared/zod/auth.zod';
-import { UnauthorizedError } from '../../shared/error/appError';
-import { ERROR_CODES } from '../../shared/utils/types';
 
 class AuthController {
 
@@ -40,7 +40,7 @@ class AuthController {
         sameSite: appConfig.nodeEnv === 'development' ? 'lax' : 'none',
         secure: appConfig.nodeEnv !== 'development'
       });
-      sendResponse(res, null, "An OTP has bees sent to your email");
+      sendResponse(res, null, "An OTP has been sent to your email");
     } catch (error) {
       log.error("RegisterUseCase failed", error as Error);
       next(error);
@@ -49,7 +49,6 @@ class AuthController {
 
   async verifyOTP(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log("req.cookies : ",req.cookies);
       const { token } = req.cookies;
       if (!token) throw new UnauthorizedError("Token is required", ERROR_CODES.UNAUTHORIZED);
       const validateData = otpVerificationSchema.parse(req.body);
@@ -93,7 +92,6 @@ class AuthController {
   
   async login(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log("login controller");
       const validateData = loginSchema.parse(req.body);
       const result = await this.loginUseCase.execute({ ...validateData });
       const { token, ...user } = result;
@@ -122,7 +120,6 @@ class AuthController {
 
   async updatePassword(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log("req.cookies : ",req.cookies);
       const validateData = updatePasswordSchema.parse(req.body);
       const { password } = validateData;
       const { token } = req.cookies;

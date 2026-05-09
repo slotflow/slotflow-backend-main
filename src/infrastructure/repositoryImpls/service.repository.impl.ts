@@ -12,7 +12,7 @@ export class ServiceRepositoryImpl implements IServiceRepository {
         return doc ? ServiceMapper.toDomain(doc) : null;
     };
 
-    async findAll(page: number, limit: number): Promise<{ data: Array<Service>; totalPages: number; currentPage: number; totalCount: number; }> {
+    async findAll(page: number, limit: number): Promise<{ items: Array<Service>; totalPages: number; currentPage: number; totalCount: number; }> {
         const skip = (page - 1) * limit;
         const [services, totalCount] = await Promise.all([
             ServiceModel.find({}, {
@@ -25,7 +25,7 @@ export class ServiceRepositoryImpl implements IServiceRepository {
         ])
         const totalPages = Math.ceil(totalCount / limit);
         return {
-            data: services.map(service => ServiceMapper.toDomain(service)),
+            items: services.map(service => ServiceMapper.toDomain(service)),
             totalPages,
             currentPage: page,
             totalCount

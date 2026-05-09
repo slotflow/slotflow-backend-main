@@ -118,12 +118,12 @@ class ProviderProfileController {
             if (user.role === Role.ADMIN) {
                 const { providerId } = validateProviderIdSchema.parse({ providerId: req.params.providerId });
                 const result = await this.getProviderProofsUseCase.execute({ providerId });
-                res.status(200).json(result);
+                sendResponse(res, result);
             }
 
             if (user.role === Role.PROVIDER) {
                 const result = await this.getProviderProofsUseCase.execute({ providerId: user.id });
-                res.status(200).json(result);
+                sendResponse(res, result);
             }
         } catch (error) {
             console.log("getProofs error : ", error);

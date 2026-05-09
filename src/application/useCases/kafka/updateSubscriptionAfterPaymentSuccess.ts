@@ -59,7 +59,7 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
 
             await this.kafkaProducer.publish<EventEnvelope<ProviderSubscriptionUpdatedEvent>>(
                 kafkaConfig.topics.pub.planSubscribed, {
-                eventId: generateId(IdType.EVENT),
+                eventId: generateId({ type: IdType.EVENT }),
                 attempt: 1,
                 maxAttempts: 1,
                 occurredAt: new Date().toISOString(),

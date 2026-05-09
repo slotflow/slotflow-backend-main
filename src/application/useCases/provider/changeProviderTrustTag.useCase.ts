@@ -35,7 +35,7 @@ export class ChangeProviderTrustTagUseCase {
                 );
             }
 
-            const providerProfile = await this.providerProfileRepository.findById(providerId);
+            const providerProfile = await this.providerProfileRepository.findByUserId(providerId);
             if (!providerProfile) {
                 throw new NotFoundError(
                     "Profile not found.",
@@ -56,7 +56,7 @@ export class ChangeProviderTrustTagUseCase {
             }
 
             await this.kafkaProducer.publish<EventEnvelope<SendAccountTrustStatusEvent>>(kafkaConfig.topics.pub.accountTrustStatus, {
-                eventId: generateId(IdType.EVENT),
+                eventId: generateId({ type: IdType.EVENT }),
                 attempt: 1,
                 maxAttempts: 1,
                 occurredAt: new Date().toISOString(),

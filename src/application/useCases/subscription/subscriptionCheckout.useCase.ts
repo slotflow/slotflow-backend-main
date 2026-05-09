@@ -37,7 +37,7 @@ export class SubscriptionCheckoutUseCase {
                 );
             }
 
-            const providerProfile = await this.providerProfileRepository.findById(providerId);
+            const providerProfile = await this.providerProfileRepository.findByUserId(providerId);
             if (!providerProfile) {
                 throw new NotFoundError(
                     "Profile not found.",
@@ -77,6 +77,14 @@ export class SubscriptionCheckoutUseCase {
                     subscriptionPlanId: planId,
                 })
             );
+            if(!subscription) {
+                throw new AppError(
+                    "Failed to create subscription.",
+                    500,
+                    true,
+                    ERROR_CODES.INTERNAL_ERROR
+                );
+            }
 
             const months: number = getNumberOfMonths(planDuration);
 

@@ -67,7 +67,7 @@ export class BookingQueriesImpl implements IBookingQueries {
 
         if (online && role === Role.USER) {
             return {
-                data: (bookings as OnlineBookingsViewForUser).map(booking => ({
+                items: (bookings as OnlineBookingsViewForUser).map(booking => ({
                     ...booking,
                     _id: booking._id.toString(),
                     serviceProviderId: {
@@ -80,7 +80,7 @@ export class BookingQueriesImpl implements IBookingQueries {
             }
         } else if (online && role === Role.PROVIDER) {
             return {
-                data: (bookings as OnlineBookingsViewForProvider).map(booking => ({
+                items: (bookings as OnlineBookingsViewForProvider).map(booking => ({
                     ...booking,
                     _id: booking._id.toString(),
                     userId: {
@@ -93,7 +93,7 @@ export class BookingQueriesImpl implements IBookingQueries {
             }
         } else {
             return {
-                data: (bookings as BookingsBaseView).map(booking => ({
+                items: (bookings as BookingsBaseView).map(booking => ({
                     ...booking,
                     _id: booking._id.toString(),
                     serviceProviderId: booking.serviceProviderId?.toString(),

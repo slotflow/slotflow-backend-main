@@ -1,7 +1,7 @@
-import { Kafka, Consumer } from "kafkajs";
 import { log } from "../../shared/logger/logger";
-import { AppError } from "../../shared/error/appError";
 import { ERROR_CODES } from "../../shared/utils/types";
+import { AppError } from "../../shared/error/appError";
+import { Kafka, Consumer, ConsumerCrashEvent } from "kafkajs";
 import { MessageHandler } from "../../application/dtos/kafka.dto";
 import { IKafkaConsumerAdapter } from "../../domain/interfaces/messaging/IKafkaConsumerAdapter";
 
@@ -16,7 +16,31 @@ export class KafkaConsumerAdapter implements IKafkaConsumerAdapter {
 
     async connectConsumer(): Promise<void> {
         try {
-            this.consumer = this.kafka.consumer({ groupId: this.groupId });
+            this.consumer = this.kafka.consumer({
+                groupId: this.groupId,
+                sessionTimeout: 45000,
+                heartbeatInterval: 6000,
+                rebalanceTimeout: 90000,
+                retry: {
+                    initialRetryTime: 300,
+                    retries: 8,
+                    maxRetryTime: 30000,
+                },
+            });
+
+            this.consumer.on('consumer.crash', (event: ConsumerCrashEvent) => {
+                const { error, groupId } = event.payload;
+
+                log.error(
+                    `Kafka consumer crashed [group=${groupId}]`,
+                    error
+                );
+            });
+
+            this.consumer.on('consumer.disconnect', () => {
+                log.warn(`Kafka consumer disconnected [group=${this.groupId}]`);
+            });
+
             await this.consumer.connect();
 
             log.info(`Kafka consumer connected [group=${this.groupId}]`);
@@ -96,5 +120,6 @@ export class KafkaConsumerAdapter implements IKafkaConsumerAdapter {
             );
         }
     }
+
 
 };

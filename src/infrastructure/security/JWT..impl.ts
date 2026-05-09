@@ -1,10 +1,10 @@
 import { jwtConfig } from "../../config/env";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { log } from "../../shared/logger/logger";
 import { ERROR_CODES } from "../../shared/utils/types";
 import { IJWT } from "../../domain/interfaces/security/IJwt";
 import { JwtClaims } from "../../domain/commands/jwt.commands";
 import { AppError, BadRequestError, UnauthorizedError } from "../../shared/error/appError";
-import jwt, { JsonWebTokenError, JwtPayload, TokenExpiredError } from "jsonwebtoken";
 
 export class JWTImpl implements IJWT {
 
@@ -56,14 +56,14 @@ export class JWTImpl implements IJWT {
     } catch (error) {
       log.error("verifyToken failed", error as Error);
 
-      if (error instanceof TokenExpiredError) {
+      if (error instanceof jwt.TokenExpiredError) {
         throw new UnauthorizedError(
           "Token expired",
           ERROR_CODES.TOKEN_EXPIRED
         );
       }
 
-      if (error instanceof JsonWebTokenError) {
+      if (error instanceof jwt.JsonWebTokenError) {
         throw new UnauthorizedError(
           "Invalid token",
           ERROR_CODES.INVALID_TOKEN

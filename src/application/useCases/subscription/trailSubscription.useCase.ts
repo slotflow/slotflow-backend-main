@@ -116,7 +116,7 @@ export class TrialSubscriptionUseCase {
             const { startDate, endDate } = getUtcDateRange(subscription.startDate, subscription.endDate);
 
             await this.kafkaProducer.publish<EventEnvelope<SendProviderTrialSubscriptionEvent>>(kafkaConfig.topics.pub.providerTrialSubscription, {
-                eventId: generateId(IdType.EVENT),
+                eventId: generateId({ type: IdType.EVENT }),
                 attempt: 1,
                 maxAttempts: 1,
                 occurredAt: new Date().toISOString(),

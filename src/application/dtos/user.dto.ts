@@ -89,8 +89,13 @@ export interface ChangeUserIsBlockedStatusInput {
 // Used as the response type of admin change user block status
 export type ChangeUserIsBlockedStatusOutput = ChangeUserIsBlockedStatusInput;
 
-export type setRoleInput = Pick<UserDTO, "role" | "_id">;
-export type setRoleOutput = Pick<UserDTO, "isOnboardingCompleted" | "hasSelectedRole">;
+export type PreBoardingInput = Pick<UserDTO, "role" | "_id"> & {
+    whereDidHearAboutUs: UserDTO["whereDidHearAboutUs"];
+    referralCode?: string;
+};
+export type PreBoardingOutput = Pick<UserDTO, "onboardingType" | "onboardingStatus"> & { 
+    adminVerificationStatus: ProviderProfileDTO["adminVerificationStatus"] | null 
+};
 
 // GetUsers usecase input output
 export type GetUsersOutput = UsersView

@@ -38,7 +38,7 @@ export class UserQueriesImpl implements IUserQueries {
         ])
         const totalPages = Math.ceil(totalCount / limit);
         return {
-            data: users.map(user => ({
+            items: users.map(user => ({
                 ...user,
                 _id: user._id.toString(),
             })),
@@ -107,7 +107,7 @@ export class UserQueriesImpl implements IUserQueries {
         const totalPages = Math.ceil(totalCount / limit);
 
         return {
-            data: providers.map(provider => ({
+            items: providers.map(provider => ({
                 ...provider,
                 _id: provider._id.toString(),
             })),

@@ -76,3 +76,24 @@ export enum EventStatus {
     PENDING = "PENDING",
     RETRY = "RETRY",
 }
+
+export enum HearAboutUsOptionValue {
+  GOOGLE = "google",
+  REFERRAL = "referral",
+  YOUTUBE = "youtube",
+  LINKEDIN = "linkedin",
+  TWITTER = "twitter",
+  INSTAGRAM = "instagram",
+  WHATSAPP = "whatsapp",
+  FACEBOOK = "facebook",
+  THREADS = "threads",
+  OTHER = "other",
+}
+
+export enum OnboardingStatus {
+  NOT_STARTED = "NOT_STARTED",
+  IN_PROGRESS = "IN_PROGRESS",
+  SUBMITTED = "SUBMITTED",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+}
