@@ -11,8 +11,10 @@ export interface IUserRepository {
 
   update(user: User, session?: ClientSession): Promise<User | null>;
 
-  findById(userId: string): Promise<User | null>;
+  findById(userId: string, session?: ClientSession): Promise<User | null>;
 
   count(today?: boolean): Promise<number>;
+
+  findByReferralCode(referralCode: string): Promise<User | null>;
 
 }

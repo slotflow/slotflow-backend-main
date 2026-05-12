@@ -1,6 +1,9 @@
 import { log } from "../../../shared/logger/logger";
+import { ERROR_CODES } from "../../../shared/utils/types";
 import { StripeAccountCreatedEventInput } from "../../dtos/kafka.dto";
+import { AppError, NotFoundError } from "../../../shared/error/appError";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
+import { toAppError } from "../../../shared/error/handleUnknownError";
 
 export class UpdateStripeAccountDataUseCase {
     constructor(
@@ -12,12 +15,23 @@ export class UpdateStripeAccountDataUseCase {
             const { userId, stripeAccountId } = input;
             const user = await this.userRepository.findById(userId);
             if (!user) {
-                throw new Error("User not found");
+                throw new NotFoundError(
+                    "User not found",
+                    ERROR_CODES.USER_NOT_FOUND
+                );
             }
             user.linkStripeAccount(stripeAccountId);
-            await this.userRepository.update(user);
+            const updatedUser = await this.userRepository.update(user);
+            if (!updatedUser) {
+                throw new AppError(
+                    "Filed to update",
+                    500,
+                    true,
+                    ERROR_CODES.INTERNAL_ERROR
+                )
+            }
         } catch (error) {
-            log.error("UpdateStripeAccountDataUseCase failed", error as Error);
+            throw toAppError(error, "Failed to update stripe account id");
         };
     };
 };

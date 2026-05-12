@@ -238,12 +238,6 @@ export interface CreateGoogleCalendarEventFailedInput {
   error: string;
 }
 
-// used in link stripe customer usecase
-export interface LinkStripeCustomerEventInput {
-  userId: string;
-  stripeCustomerId: string;
-}
-
 // consume stripe account created event
 export interface StripeAccountCreatedEventInput {
   userId: string;

@@ -7,11 +7,13 @@ export interface IBookingRepository {
 
     findByUserId(userId: string, date: Date, time: string): Promise<Array<Booking> | null>;
 
-    findOneByUserId(userId: string): Promise<Booking | null>;
+    getLatestBookingByUserId(userId: string): Promise<Booking | null>;
+
+    getFirstBookingByUserId(userId: string): Promise<Booking | null>;
 
     findById(bookingId: string): Promise<Booking | null>;
 
-    findByRoomId(roomId: string): Promise<Booking | null>;
+    findByRoomId(roomId: string, session?: ClientSession): Promise<Booking | null>;
 
     update(booking: Booking, session?: ClientSession): Promise<Booking | null>;
 

@@ -1,5 +1,8 @@
-import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
+import { ERROR_CODES } from "../../../shared/utils/types";
+import { toAppError } from "../../../shared/error/handleUnknownError";
+import { AppError, NotFoundError } from "../../../shared/error/appError";
 import { UpdateStripeCustomerCreatedConsumeEventInput } from "../../dtos/kafka.dto";
+import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 
 export class UpdateStripeCustomerCreatedUseCase {
     constructor(
@@ -11,12 +14,23 @@ export class UpdateStripeCustomerCreatedUseCase {
             const { userId, stripeCustomerId } = input;
             const user = await this.userRepository.findById(userId);
             if (!user) {
-                throw new Error("User not found");
+                throw new NotFoundError(
+                    "User not found",
+                    ERROR_CODES.USER_NOT_FOUND
+                );
             }
             user.linkStripeCustomer(stripeCustomerId);
-            await this.userRepository.update(user);
+            const updatedUser = await this.userRepository.update(user);
+            if(!updatedUser) {
+                throw new AppError(
+                    "Filed to update",
+                    500,
+                    true,
+                    ERROR_CODES.INTERNAL_ERROR
+                )
+            }
         } catch (error) {
-            console.error("UpdateStripeCustomerCreatedUseCase failed : ", error as Error);
+            throw toAppError(error, "Failed to update stripe customer id");
         }
     }
 }

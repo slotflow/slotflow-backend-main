@@ -25,6 +25,7 @@ export class UserMapper {
             allowPushNotification: doc.allowPushNotification,
             whereDidHearAboutUs: doc.whereDidHearAboutUs,
             referralCode: doc.referralCode ?? null,
+            referredBy: doc.referredBy ?? null,
             createdAt: doc.createdAt,
             updatedAt: doc.updatedAt,
         });
@@ -52,6 +53,7 @@ export class UserMapper {
             allowPushNotification: props.allowPushNotification,
             whereDidHearAboutUs: props.whereDidHearAboutUs,
             referralCode: props.referralCode,
+            referredBy: props.referredBy,
             createdAt: props.createdAt,
             updatedAt: props.updatedAt,
         };

@@ -9,4 +9,8 @@ export interface ISubscriptionRepository {
 
     findById(subscriptionId: string): Promise<Subscription | null>;
 
+    getLatestSubscriptionByUserId(userId: string): Promise<Subscription | null>;
+
+    getFirstPaidSubscriptionByUserId(userId: string): Promise<Subscription | null>;
+
 }

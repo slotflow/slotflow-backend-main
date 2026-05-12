@@ -59,7 +59,7 @@ export class UserCreateAddressUseCase {
             await session.abortTransaction();
             throw toAppError(error, "Failed to create address");
         } finally {
-            session.endSession()
+            session.endSession();
         }
     }
 };

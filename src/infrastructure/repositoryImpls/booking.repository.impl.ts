@@ -41,13 +41,22 @@ export class BookingRepositoryImpl implements IBookingRepository {
         return docs ? docs.map(doc => BookingMapper.toDomain(doc)) : null;
     };
 
-    async findOneByUserId(userId: string): Promise<Booking | null> {
+    async getLatestBookingByUserId(userId: string): Promise<Booking | null> {
         const doc = await BookingModel.findOne({ userId }).sort({ createdAt: -1 });
         return doc ? BookingMapper.toDomain(doc) : null;
     }
 
-    async findByRoomId(roomId: string): Promise<Booking | null> {
-        const doc = await BookingModel.findOne({ videoCallRoomId:roomId });
+    async getFirstBookingByUserId(userId: string): Promise<Booking | null> {
+        const doc = await BookingModel.findOne({ userId }).sort({ createdAt: 1 });
+        return doc ? BookingMapper.toDomain(doc) : null;
+    }
+
+    async findByRoomId(roomId: string, session?: ClientSession): Promise<Booking | null> {
+        const query = BookingModel.findOne({ videoCallRoomId: roomId });
+        if (session) {
+            query.session(session);
+        }
+        const doc = await query;
         return doc ? BookingMapper.toDomain(doc) : null;
     };
 

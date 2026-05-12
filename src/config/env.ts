@@ -89,8 +89,8 @@ export const kafkaConfig = {
 
     brokers: [
         validator.requireEnv("KAFKA_BROKER_1"),
-        validator.requireEnv("KAFKA_BROKER_2"),
-        validator.requireEnv("KAFKA_BROKER_3"),
+        // validator.requireEnv("KAFKA_BROKER_2"),
+        // validator.requireEnv("KAFKA_BROKER_3"),
     ],
 
     topics: {

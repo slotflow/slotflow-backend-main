@@ -5,6 +5,7 @@ import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
 import { ServiceCategory, ServiceMode, ServiceType } from "../../domain/enums/service.enum";
+import { CreditTransactionSource, CreditTransactionStatus, CreditTransactionType } from "../../domain/enums/creditTransaction.enum";
 
 // **** ENTITY INTERFACES FOR APPLICATION LAYER **** \\
 
@@ -185,6 +186,31 @@ export interface ReviewDTO {
   isBlocked: boolean,
   createdAt: Date,
   updatedAt: Date,
+}
+
+export interface CreditTransactionDTO {
+  _id: string;
+  accountId: string;
+  userId: string;
+  type: CreditTransactionType;
+  credits: number;
+  balanceAfter: number;
+  source: CreditTransactionSource;
+  status: CreditTransactionStatus;
+  referenceId?: string; // subscriptionId or appointment / bookingId
+  idempotencyKey?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface CreditAccountDTO {
+  _id: string;
+  userId: string;
+  balance: number;
+  isActive: boolean;
+  version: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 // **** SERVICEAVAILABILITY INTERFACE AND ITS SUPPORTS

@@ -97,3 +97,9 @@ export enum OnboardingStatus {
   APPROVED = "APPROVED",
   REJECTED = "REJECTED",
 }
+
+export enum ReferralStatus {
+  PENDING = "PENDING",
+  COMPLETED = "COMPLETED",
+  REWARDED = "REWARDED",
+}

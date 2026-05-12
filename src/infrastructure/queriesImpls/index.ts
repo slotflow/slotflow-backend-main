@@ -12,6 +12,8 @@ import { ServiceAvailabilityQueriesImpl } from "./serviceAvailabilityQueries.imp
 import { ISubscriptionQueries } from "../../application/queries/ISubscription.queries";
 import { IProviderServiceQueries } from "../../application/queries/IProviderService.queries";
 import { IServiceAvailabilityQueries } from "../../application/queries/IServiceAvailability.queries";
+import { ICreditAccountQueries } from "../../application/queries/ICreditAccount.queries";
+import { CreditAccountQueriesImpl } from "./creditAccountQueries.impl";
 
 // booking queries instance
 export const bookingQueries: IBookingQueries = new BookingQueriesImpl();
@@ -30,3 +32,6 @@ export const subscriptionQueries: ISubscriptionQueries = new SubscriptionQueries
 
 // user queries instance
 export const userQueries: IUserQueries = new UserQueriesImpl();
+
+// credit account queries instance
+export const CreditAccountQueries: ICreditAccountQueries = new CreditAccountQueriesImpl();

@@ -25,6 +25,7 @@ export interface UserProps {
     allowPushNotification: boolean;
     whereDidHearAboutUs: HearAboutUsOptionValue | null;
     referralCode: string | null;
+    referredBy: string | null;
 
     createdAt: Date,
     updatedAt: Date

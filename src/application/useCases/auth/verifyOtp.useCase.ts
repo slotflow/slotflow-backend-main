@@ -1,25 +1,31 @@
+import mongoose from "mongoose";
 import { kafkaConfig } from "../../../config/env";
 import { OTPVerificationInput } from "../../dtos/auth.dto";
 import { User } from "../../../domain/entities/user.entity";
 import { generateId } from '../../../shared/utils/generateId';
 import { IJWT } from '../../../domain/interfaces/security/IJwt';
-import { AppError, BadRequestError } from '../../../shared/error/appError';
 import { ERROR_CODES, IdType } from '../../../shared/utils/types';
 import { toAppError } from '../../../shared/error/handleUnknownError';
 import { EventEnvelope, SendWelcomeEvent } from "../../dtos/kafka.dto";
+import { AppError, BadRequestError } from '../../../shared/error/appError';
+import { CreditAccount } from "../../../domain/entities/creditAccount.entity";
 import { IOTPService } from "../../../domain/interfaces/services/IOtp.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
+import { ICreditAccountRepository } from "../../../domain/interfaces/repositories/ICreditAccount.repository";
 
 export class VerifyOTPUseCase {
   constructor(
     private readonly userRepository: IUserRepository,
     private readonly otpService: IOTPService,
     private readonly kafkaProducer: IKafkaProducerAdapter,
-    private readonly jwtService: IJWT
+    private readonly jwtService: IJWT,
+    private readonly creditAccountRepository: ICreditAccountRepository
   ) { };
 
   async execute(input: OTPVerificationInput): Promise<void> {
+    const session = await mongoose.startSession();
+    session.startTransaction();
     try {
       const { token, otp } = input;
       if (!token || !otp) {
@@ -53,7 +59,7 @@ export class VerifyOTPUseCase {
           username,
           password,
           referralCode
-        }));
+        }), session);
 
         if (!newUser) {
           throw new AppError(
@@ -63,6 +69,18 @@ export class VerifyOTPUseCase {
             ERROR_CODES.INTERNAL_ERROR
           )
         };
+
+        const creditAccount = await this.creditAccountRepository.create(CreditAccount.create({
+          userId: newUser._id
+        }), session);
+        if (!creditAccount) {
+          throw new AppError(
+            "Internal server error",
+            500,
+            true,
+            ERROR_CODES.INTERNAL_ERROR
+          )
+        }
 
         await this.kafkaProducer.publish<EventEnvelope<SendWelcomeEvent>>(kafkaConfig.topics.pub.registerSuccess, {
           eventId: generateId({ type: IdType.EVENT }),
@@ -78,9 +96,12 @@ export class VerifyOTPUseCase {
           }
         })
       }
-
+      await session.commitTransaction();
     } catch (error: unknown) {
+      await session.abortTransaction();
       throw toAppError(error, "Failed to verify otp");
+    } finally {
+      session.endSession();
     }
   }
 }

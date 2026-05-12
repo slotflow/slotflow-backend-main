@@ -1,17 +1,21 @@
 import mongoose from "mongoose";
 import { ERROR_CODES } from "../../../shared/utils/types";
+import { User } from "../../../domain/entities/user.entity";
+import { Referral } from "../../../domain/entities/referral.entity";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { PreBoardingInput, PreBoardingOutput } from "../../dtos/user.dto";
 import { HearAboutUsOptionValue, Role } from "../../../domain/enums/common.enum";
 import { ProviderProfile } from "../../../domain/entities/providerProfile.entity";
 import { AppError, BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
+import { IReferralRepository } from "../../../domain/interfaces/repositories/IReferral.repository";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 
 export class PreBoardingUseCase {
     constructor(
         private readonly userRepository: IUserRepository,
-        private readonly providerProfile: IProviderProfileRepository
+        private readonly providerProfile: IProviderProfileRepository,
+        private readonly referralRepository: IReferralRepository
     ) { };
 
     async execute(input: PreBoardingInput): Promise<PreBoardingOutput> {
@@ -37,9 +41,33 @@ export class PreBoardingUseCase {
                 );
             }
 
+            let referrer: User | null = null;
+            if(referralCode) {
+                referrer = await this.userRepository.findByReferralCode(referralCode);
+                if(referrer?._id === userId) {
+                    throw new BadRequestError("Cannot use your own referral code")
+                }
+                if(referrer) {
+                    const referral = Referral.create({
+                        referralCode,
+                        referredUserId: userId,
+                        referrerUserId: referrer._id
+                    });
+                    const newReferral = await this.referralRepository.create(referral, session);
+                    if(!newReferral) {
+                        throw new AppError(
+                            "Failed to create referral",
+                            500,
+                            true,
+                            ERROR_CODES.INTERNAL_ERROR
+                        )
+                    }
+                }
+            }
+
             user.completePreBoarding({ 
                 role ,
-                referralCode,
+                referredBy: referrer?._id,
                 whereDidHearAboutUs
             });
 
@@ -71,11 +99,6 @@ export class PreBoardingUseCase {
             }
 
             await session.commitTransaction();
-            console.log("updatedUser : ", updatedUser);
-            console.log(updatedUser.onboardingType);
-            console.log(updatedUser.onboardingStatus);
-            console.log("providerProfile : ",providerProfile);
-            console.log("providerProfile.adminVerificationStatus : ", providerProfile?.adminVerificationStatus);
             return {
                 onboardingType: updatedUser.onboardingType,
                 onboardingStatus: updatedUser.onboardingStatus,

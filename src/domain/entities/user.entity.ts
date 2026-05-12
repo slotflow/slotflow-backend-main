@@ -35,6 +35,7 @@ export class User {
             allowPushNotification: false,
             whereDidHearAboutUs: null,
             referralCode: props.referralCode,
+            referredBy: null,
             addressId: null,
             googleId: null,
             phone: null,
@@ -63,6 +64,7 @@ export class User {
             allowPushNotification: false,
             whereDidHearAboutUs: null,
             referralCode: props.referralCode,
+            referredBy: null,
             addressId: null,
             phone: null,
             stripeAccountId: null,
@@ -141,6 +143,14 @@ export class User {
     get allowPushNotification(): boolean {
         return this.props.allowPushNotification;
     };
+
+    get referralCode(): string | null {
+        return this.props.referralCode;
+    }
+
+    get referredBy(): string | null {
+        return this.props.referredBy;
+    }
 
     get createdAt(): Date {
         return this.props.createdAt;
@@ -242,8 +252,8 @@ export class User {
         if(props.whereDidHearAboutUs) {
             this.props.whereDidHearAboutUs = props.whereDidHearAboutUs;
         }
-        if(props.referralCode) {
-            this.props.referralCode = props.referralCode;
+        if(props.referredBy) {
+            this.props.referredBy = props.referredBy;
         }
         this.touch();
     }

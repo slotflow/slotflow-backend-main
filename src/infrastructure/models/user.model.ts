@@ -21,6 +21,7 @@ export interface IUser extends Document {
   allowPushNotification: boolean;
   whereDidHearAboutUs: HearAboutUsOptionValue;
   referralCode: string | null;
+  referredBy: string | null;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -119,6 +120,10 @@ const UserSchema = new Schema<IUser>({
     default: null
   },
   referralCode: {
+    type: String,
+    default: null
+  },
+  referredBy: {
     type: String,
     default: null
   },

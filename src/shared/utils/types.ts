@@ -96,6 +96,7 @@ export enum IdType {
   IDEMPOTENCY = "IDEMPOTENCY",
   FILE = "FILE",
   REFERRAL = "REFERRAL",
+  CREDIT_TRANSACTION = "CREDIT_TRANSACTION"
 }
 
 export interface GenerateId {

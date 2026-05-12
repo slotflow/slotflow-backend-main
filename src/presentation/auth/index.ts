@@ -9,7 +9,7 @@ import { VerifyEmailUseCase } from "../../application/useCases/auth/verifyEmail.
 import { UpdatePasswordUseCase } from "../../application/useCases/auth/updatePassword.useCase";
 import { aesEncryptionService, otpService, signedUrlService } from "../../infrastructure/services";
 import { GoogleAuthOrchestratorUseCase } from "../../application/useCases/auth/googleAuthOrchestrate.useCase";
-import { credentialRepository, planRepository, providerProfileRepository, subscriptionRepository, userRepository } from "../../infrastructure/repositoryImpls";
+import { credentialRepository, creditAccountRepository, planRepository, providerProfileRepository, subscriptionRepository, userRepository } from "../../infrastructure/repositoryImpls";
 
 const authResponseBuilder = new AuthResponseBuilder(subscriptionRepository, planRepository);
 
@@ -18,7 +18,7 @@ export const resendOtpUseCase = new ResendOtpUseCase(otpService, kafkaProducer, 
 
 export const verifyEmailUseCase = new VerifyEmailUseCase(userRepository, otpService, jwtService);
 
-export const verifyOTPUseCase = new VerifyOTPUseCase(userRepository, otpService, kafkaProducer, jwtService);
+export const verifyOTPUseCase = new VerifyOTPUseCase(userRepository, otpService, kafkaProducer, jwtService, creditAccountRepository);
 
 export const registerUseCase = new RegisterUseCase(userRepository, otpService, jwtService, passwordHasher, kafkaProducer);
 

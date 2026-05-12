@@ -20,12 +20,16 @@ export class UserRepositoryImpl implements IUserRepository {
             persistence,
             { new: true, session }
         );
-        
+
         return doc ? UserMapper.toDomain(doc) : null;
     };
 
-    async findById(userId: string): Promise<User | null> {
-        const doc = await UserModel.findById(userId);
+    async findById(userId: string, session?: ClientSession): Promise<User | null> {
+        const query = UserModel.findById(userId);
+        if (session) {
+            query.session(session);
+        }
+        const doc = await query;
         return doc ? UserMapper.toDomain(doc) : null;
     };
 
@@ -54,5 +58,10 @@ export class UserRepositoryImpl implements IUserRepository {
             createdAt: { $gte: start, $lte: end },
         });
     };
+
+    async findByReferralCode(referralCode: string): Promise<User | null> {
+        const doc = await UserModel.findOne({ referralCode });
+        return doc ? UserMapper.toDomain(doc) : null;
+    }
 
 };

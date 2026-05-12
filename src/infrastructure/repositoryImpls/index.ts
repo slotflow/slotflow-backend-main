@@ -25,6 +25,12 @@ import { IProviderProfileRepository } from "../../domain/interfaces/repositories
 import { IServiceAvailabilityRepository } from "../../domain/interfaces/repositories/IServiceAvailability.repository";
 import { IProcessedEventRepository } from "../../domain/interfaces/repositories/IProcessedEvent.repository";
 import { ProcessedEventRepositoryImpl } from "./processedEvent.repository.impl";
+import { IReferralRepository } from "../../domain/interfaces/repositories/IReferral.repository";
+import { ReferralRepositoryImpl } from "./referral.repository.impl";
+import { ICreditAccountRepository } from "../../domain/interfaces/repositories/ICreditAccount.repository";
+import { CreditAccountRepositoryImpl } from "./creditAccount.repository.impl";
+import { ICreditTransactionRepository } from "../../domain/interfaces/repositories/ICreditTransaction.repository";
+import { CreditTransactionRepositoryImpl } from "./creditTransaction.repository.impl";
 
 // address repository instance
 export const addressRepository: IAddressRepository = new AddressRepositoryImpl();
@@ -61,3 +67,12 @@ export const providerProfileRepository: IProviderProfileRepository = new Provide
 
 // processed event repository instance
 export const processedEventRepository: IProcessedEventRepository = new ProcessedEventRepositoryImpl();
+
+// referral repository instance
+export const referralRepository: IReferralRepository = new ReferralRepositoryImpl();
+
+// creditAccount repository instance
+export const creditAccountRepository: ICreditAccountRepository = new CreditAccountRepositoryImpl();
+
+// creditTransaction repository instance
+export const creditTransactionRepository: ICreditTransactionRepository = new CreditTransactionRepositoryImpl();

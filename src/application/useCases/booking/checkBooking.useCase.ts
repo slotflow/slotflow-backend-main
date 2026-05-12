@@ -17,7 +17,7 @@ export class CheckBookingUseCase {
                 throw new BadRequestError()
             }
 
-            const booking = await this.bookingRepository.findOneByUserId(userId);
+            const booking = await this.bookingRepository.getLatestBookingByUserId(userId);
             if (!booking) {
                 return false;
             }

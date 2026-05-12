@@ -1,12 +1,13 @@
 import { kafkaConfig } from "../../../config/env";
-import { log } from "../../../shared/logger/logger";
-import { IdType } from "../../../shared/utils/types";
 import { generateId } from "../../../shared/utils/generateId";
+import { ERROR_CODES, IdType } from "../../../shared/utils/types";
+import { toAppError } from "../../../shared/error/handleUnknownError";
 import { notificationContentMap } from "../../../shared/utils/constants";
+import { AppError, NotFoundError } from "../../../shared/error/appError";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
 import { UpdateBookingAfterPaymentSuccessEventInput } from "../../dtos/kafka.dto";
-import { BookingSavedEvent, EventEnvelope, GotAnAppointmentEvent } from "../../dtos/kafka.dto";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
+import { BookingSavedEvent, EventEnvelope, GotAnAppointmentEvent } from "../../dtos/kafka.dto";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 
@@ -22,17 +23,42 @@ export class UpdateBookingAfterPaymentSuccessUseCase {
             const { bookingId, paymentId } = input;
 
             const booking = await this.bookingRepository.findById(bookingId);
-            if (!booking) throw new Error("Booking not found.");
+            if (!booking) {
+                throw new NotFoundError(
+                    "Booking not found",
+                    ERROR_CODES.BOOKING_NOT_FOUND
+                )
+            }
 
             booking.updateBookingAfterPayment({
                 paymentId,
                 appointmentStatus: AppointmentStatus.BOOKED,
             });
 
-            await this.bookingRepository.update(booking);
+            const updatedBooking = await this.bookingRepository.update(booking);
+            if (!updatedBooking) {
+                throw new AppError(
+                    "Failed to update booking",
+                    500,
+                    true,
+                    ERROR_CODES.INTERNAL_ERROR
+                )
+            }
 
             const user = await this.userRepository.findById(booking.userId);
+            if (!user) {
+                throw new NotFoundError(
+                    "User not found",
+                    ERROR_CODES.USER_NOT_FOUND
+                );
+            }
             const provider = await this.userRepository.findById(booking.providerId);
+            if (!provider) {
+                throw new NotFoundError(
+                    "Provider not found",
+                    ERROR_CODES.USER_NOT_FOUND
+                );
+            }
 
             if (user) {
 
@@ -90,7 +116,7 @@ export class UpdateBookingAfterPaymentSuccessUseCase {
             }
 
         } catch (error) {
-            log.error("UpdateBookingAfterPaymentSuccessUseCase failed : ", error as Error);
+            throw toAppError(error, "Failed to update booking after payment");
         }
     }
 }

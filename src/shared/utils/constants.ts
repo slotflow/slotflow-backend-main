@@ -87,7 +87,8 @@ export const PREFIX_MAP: Record<IdType, string> = {
   [IdType.ROOM]: "sf_room_",
   [IdType.IDEMPOTENCY]: "sf_idem_",
   [IdType.FILE]: "sf_file_",
-  [IdType.REFERRAL]: "sf_ref_"
+  [IdType.REFERRAL]: "sf_ref_",
+  [IdType.CREDIT_TRANSACTION]: "sf_crtsn"
 };
 
 export const BASE36 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

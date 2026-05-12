@@ -5,6 +5,7 @@ export type CreateLocalUserProps = {
   email: string;
   password: string;
   referralCode: string;
+  referredBy?: string;
 };
 
 export type CreateGoogleUserProps = {
@@ -40,5 +41,5 @@ export type UpdatePushNotificationProps = {
 export type CompletePreBoardingProps = {
   role: Role;
   whereDidHearAboutUs: HearAboutUsOptionValue;
-  referralCode?: string;
+  referredBy?: string;
 };
