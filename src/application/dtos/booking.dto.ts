@@ -138,7 +138,6 @@ export interface BookingsStatsForAdminView {
 
 
 
-
 //// **** booking usecase dtos **** ////
 
 // user appointment booking via stripe creating session id usecase input

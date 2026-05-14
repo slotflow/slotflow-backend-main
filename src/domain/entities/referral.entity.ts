@@ -9,7 +9,7 @@ export class Referral {
         const referral = new Referral({
             _id: "",
             referrerUserId: input.referrerUserId,
-            referredUserId: input.referredUserId,
+            refereeUserId: input.refereeUserId,
             referralCode: input.referralCode,
             status: ReferralStatus.PENDING,
             rewardGiven: false,
@@ -32,8 +32,8 @@ export class Referral {
         return this.props.referrerUserId;
     }
 
-    get referredUserId(): string {
-        return this.props.referredUserId;
+    get refereeUserId(): string {
+        return this.props.refereeUserId;
     }
 
     get referralCode(): string {

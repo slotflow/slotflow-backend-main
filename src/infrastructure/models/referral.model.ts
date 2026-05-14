@@ -4,7 +4,7 @@ import { ReferralStatus } from '../../domain/enums/common.enum';
 export interface IReferral extends Document {
     _id: Types.ObjectId;
     referrerUserId: Types.ObjectId;
-    referredUserId: Types.ObjectId;
+    refereeUserId: Types.ObjectId;
     referralCode: string;
     status: ReferralStatus;
     rewardGiven: boolean;
@@ -19,7 +19,7 @@ const ReferralSchema = new Schema<IReferral>({
         ref: 'User',
         required: true
     },
-    referredUserId: {
+    refereeUserId: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true
@@ -57,7 +57,7 @@ const ReferralSchema = new Schema<IReferral>({
 
 // Index for querying referrals by referrer or referred user
 ReferralSchema.index({ referrerUserId: 1 });
-ReferralSchema.index({ referredUserId: 1 });
+ReferralSchema.index({ refereeUserId: 1 });
 ReferralSchema.index({ status: 1 });
 
 export const ReferralModel = mongoose.model<IReferral>('Referral', ReferralSchema);

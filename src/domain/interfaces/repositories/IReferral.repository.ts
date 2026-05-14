@@ -1,5 +1,7 @@
 import { ClientSession } from 'mongoose';
 import { Referral } from '../../entities/referral.entity';
+import { ReferralStatus } from '../../enums/common.enum';
+import { TableData } from '../../../application/dtos/common.dto';
 
 export interface IReferralRepository {
     create(referral: Referral, session?: ClientSession): Promise<Referral | null>;
@@ -8,17 +10,9 @@ export interface IReferralRepository {
 
     findByCode(code: string): Promise<Referral | null>;
 
-    findByReferrerUserId(referrerUserId: string): Promise<Referral[]>;
-
-    findByReferredUserId(referredUserId: string): Promise<Referral[]>;
+    findByUserId(page: number, limit: number, referrerUserId?: string, status?: ReferralStatus): Promise<TableData<Array<Referral>>>;
 
     update(referral: Referral, session?: ClientSession): Promise<Referral | null>;
 
     delete(id: string): Promise<boolean>;
-
-    findPendingReferralsByReferrer(referrerUserId: string): Promise<Referral[]>;
-
-    findCompletedReferralsByReferrer(referrerUserId: string): Promise<Referral[]>;
-
-    findByReferrerAndReferredUser(referrerUserId: string, referredUserId: string): Promise<Referral | null>;
 }

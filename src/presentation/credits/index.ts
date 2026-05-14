@@ -1,8 +1,8 @@
-import { CreditAccountQueries } from "../../infrastructure/queriesImpls";
+import { creditAccountQueries } from "../../infrastructure/queriesImpls";
 import { creditTransactionRepository } from "../../infrastructure/repositoryImpls";
 import { GetCreditTransactionsUseCase } from "../../application/useCases/credits/getCreditTransactions.useCase";
-import { GetCreditAccountDetailsUseCase } from "../../application/useCases/credits/getCreditAccountDetails.useCase";
+import { GetCreditDetailsUseCase } from "../../application/useCases/credits/getCreditDetails.useCase";
 
-export const getCreditAccountDetailsUseCase = new GetCreditAccountDetailsUseCase(CreditAccountQueries);
+export const getCreditDetailsUseCase = new GetCreditDetailsUseCase(creditAccountQueries);
 
 export const getCreditTransactionsUseCase = new GetCreditTransactionsUseCase(creditTransactionRepository);

@@ -1,3 +1,5 @@
+import { Dayjs } from "dayjs";
+
 // formatted date time
 export interface FormattedDateTime {
   date: string;
@@ -104,4 +106,13 @@ export interface GenerateId {
   options?: {
     name?: string;
   }
+}
+
+export interface DateRangeResult {
+  start: Dayjs;
+  end: Dayjs;
+  days: number;
+  duration: number;
+  prevStart: Dayjs;
+  prevEnd: Dayjs;
 }

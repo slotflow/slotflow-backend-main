@@ -1,5 +1,5 @@
 import { CreditTransactionSource, CreditTransactionStatus, CreditTransactionType } from "../../domain/enums/creditTransaction.enum";
-import { CreditAccountDTO, CreditTransactionDTO, UserDTO } from "./common.dto";
+import { CreditAccountDTO, CreditTransactionDTO, MiniCardData, UserDTO } from "./common.dto";
 
 //// **** credits  dtos **** ////
 
@@ -8,15 +8,25 @@ import { CreditAccountDTO, CreditTransactionDTO, UserDTO } from "./common.dto";
 // 1. GetCreditAccountDetails method query and view 
 export interface GetCreditAccountDetailsQuery {
   userId: UserDTO["_id"]
+  startDate: Date;
+  endDate: Date;
 }
-export type GetCreditAccountDetailsView = Pick<CreditAccountDTO, "isActive" | "balance"> & {
+export interface CreditMainChartData {
+  date: string;
   totalCredits: number;
-  spentCredits: number
-  chartData: Array<{
-    credits: number;
-    date: string
-  }>
+  spentCredits: number;
+  balanceCredits: number;
 }
+export type GetCreditAccountDetailsView = Pick<CreditAccountDTO, "isActive"> & {
+  totalCredits: MiniCardData;
+  spentCredits: MiniCardData;
+  balanceCredits: MiniCardData
+  chartData: CreditMainChartData[];
+}
+export type CreditChartKeys =
+    | "totalCredits"
+    | "spentCredits"
+    | "balanceCredits"
 
 
 

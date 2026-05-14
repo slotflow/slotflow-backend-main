@@ -7,11 +7,6 @@ export const sendResponse = <T>(
   success: boolean = true,
   statusCode: number = 200
 ) => {
-  console.log("json : ",{
-    success,
-    message,
-    data
-  })
   return res.status(statusCode).json({
     success,
     message,

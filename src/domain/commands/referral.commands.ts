@@ -2,7 +2,7 @@ import { ReferralStatus } from "../enums/common.enum";
 
 export type CreateReferralProps = {
     referrerUserId: string;
-    referredUserId: string;
+    refereeUserId: string;
     referralCode: string;
 };
 

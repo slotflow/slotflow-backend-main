@@ -50,7 +50,7 @@ export class PreBoardingUseCase {
                 if(referrer) {
                     const referral = Referral.create({
                         referralCode,
-                        referredUserId: userId,
+                        refereeUserId: userId,
                         referrerUserId: referrer._id
                     });
                     const newReferral = await this.referralRepository.create(referral, session);

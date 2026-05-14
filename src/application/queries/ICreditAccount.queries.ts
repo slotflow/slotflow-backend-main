@@ -2,6 +2,6 @@ import { GetCreditAccountDetailsQuery, GetCreditAccountDetailsView } from "../dt
 
 export interface ICreditAccountQueries {
 
-    findCreditAccountDetailsWithGraphData(query: GetCreditAccountDetailsQuery): Promise<GetCreditAccountDetailsView>;
+    findCreditDetails(query: GetCreditAccountDetailsQuery): Promise<GetCreditAccountDetailsView>;
     
 }

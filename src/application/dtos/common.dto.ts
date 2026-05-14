@@ -1,5 +1,5 @@
 import { PlanName } from "../../domain/enums/plan.enum";
-import { Day, HearAboutUsOptionValue, OnboardingStatus, Role } from "../../domain/enums/common.enum";
+import { Day, HearAboutUsOptionValue, OnboardingStatus, ReferralStatus, Role } from "../../domain/enums/common.enum";
 import { GeoLocation } from "../../domain/contracts/address.contract";
 import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
@@ -188,6 +188,21 @@ export interface ReviewDTO {
   updatedAt: Date,
 }
 
+// **** REFERRAL INTERFACE
+export interface ReferralDTO {
+    _id: string;
+    referrerUserId: string;
+    refereeUserId: string; // TODO change to refereeUserId
+    referralCode: string;
+    status: ReferralStatus;
+    rewardGiven: boolean;
+    completedAt?: Date;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+
+// **** CREDITTRANSACTION INTERFACE
 export interface CreditTransactionDTO {
   _id: string;
   accountId: string;
@@ -203,6 +218,7 @@ export interface CreditTransactionDTO {
   updatedAt: Date;
 }
 
+// **** CREDITACCOUNT INTERFACE
 export interface CreditAccountDTO {
   _id: string;
   userId: string;
@@ -431,3 +447,21 @@ export interface GetGoogleCalendarInput {
     userId: string;
 }
 export type GetGoogleCalendarOutput = Array<GetEventsFromCalendarProps>;
+
+
+// queries
+
+export type AggregateCountResult = { count: number };
+
+// Chart DTOS
+export interface MiniChartData {
+  date: string;
+  value: number;
+}
+
+export interface MiniCardData {
+  count: number;
+  percentage: number;
+  days: number;
+  chartData: MiniChartData[];
+}

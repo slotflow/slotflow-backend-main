@@ -3,6 +3,8 @@ import { ReferralModel } from '../models/referral.model';
 import { ReferralMapper } from '../mappers/referral.mapper';
 import { Referral } from '../../domain/entities/referral.entity';
 import { IReferralRepository } from '../../domain/interfaces/repositories/IReferral.repository';
+import { ReferralStatus } from '../../domain/enums/common.enum';
+import { TableData } from '../../application/dtos/common.dto';
 
 export class ReferralRepositoryImpl implements IReferralRepository {
     async create(referral: Referral, session?: ClientSession): Promise<Referral | null> {
@@ -23,14 +25,38 @@ export class ReferralRepositoryImpl implements IReferralRepository {
         return doc ? ReferralMapper.toDomain(doc) : null;
     }
 
-    async findByReferrerUserId(referrerUserId: string): Promise<Referral[]> {
-        const docs = await ReferralModel.find({ referrerUserId });
-        return docs.map(doc => ReferralMapper.toDomain(doc));
-    }
+    async findByUserId(page: number, limit: number, referrerUserId: string, status?: ReferralStatus): Promise<TableData<Array<Referral>>> {
+        const skip = (page - 1) * limit;
+        const query: {
+            referrerUserId?: string;
+            status?: ReferralStatus;
+        } = { referrerUserId };
 
-    async findByReferredUserId(referredUserId: string): Promise<Referral[]> {
-        const docs = await ReferralModel.find({ referredUserId });
-        return docs.map(doc => ReferralMapper.toDomain(doc));
+        if (status) {
+            query.status = status;
+        }
+
+        if (referrerUserId) {
+            query.referrerUserId = referrerUserId;
+        }
+
+        const [referrals, totalCount] = await Promise.all([
+            ReferralModel.find({}, {
+                _id: 1,
+                status: 1,
+                createdAt: 1,
+                completedAt: 1,
+                rewardGiven: 1
+            }).skip(skip).limit(limit),
+            ReferralModel.countDocuments(),
+        ])
+        const totalPages = Math.ceil(totalCount / limit);
+        return {
+            items: referrals.map(referral => ReferralMapper.toDomain(referral)),
+            totalPages,
+            currentPage: page,
+            totalCount
+        }
     }
 
     async update(referral: Referral, session?: ClientSession): Promise<Referral | null> {
@@ -46,28 +72,5 @@ export class ReferralRepositoryImpl implements IReferralRepository {
         const result = await ReferralModel.findByIdAndDelete(id);
         return !!result;
     }
-
-    async findPendingReferralsByReferrer(referrerUserId: string): Promise<Referral[]> {
-        const docs = await ReferralModel.find({
-            referrerUserId,
-            status: "PENDING"
-        });
-        return docs.map(doc => ReferralMapper.toDomain(doc));
-    }
-
-    async findCompletedReferralsByReferrer(referrerUserId: string): Promise<Referral[]> {
-        const docs = await ReferralModel.find({
-            referrerUserId,
-            status: { $in: ["COMPLETED", "REWARDED"] }
-        });
-        return docs.map(doc => ReferralMapper.toDomain(doc));
-    }
-
-    async findByReferrerAndReferredUser(referrerUserId: string, referredUserId: string): Promise<Referral | null> {
-        const doc = await ReferralModel.findOne({
-            referrerUserId,
-            referredUserId
-        });
-        return doc ? ReferralMapper.toDomain(doc) : null;
-    }
+    
 }

@@ -8,7 +8,7 @@ export class ReferralMapper {
         const props: ReferralProps = {
             _id: doc._id.toString(),
             referrerUserId: doc.referrerUserId.toString(),
-            referredUserId: doc.referredUserId.toString(),
+            refereeUserId: doc.refereeUserId.toString(),
             referralCode: doc.referralCode,
             status: doc.status,
             rewardGiven: doc.rewardGiven,
@@ -23,7 +23,7 @@ export class ReferralMapper {
         const props = referral.getPersistenceProps();
         return {
             referrerUserId: new Types.ObjectId(props.referrerUserId),
-            referredUserId: new Types.ObjectId(props.referredUserId),
+            refereeUserId: new Types.ObjectId(props.refereeUserId),
             referralCode: props.referralCode,
             status: props.status,
             rewardGiven: props.rewardGiven,
