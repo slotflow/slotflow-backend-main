@@ -1,17 +1,17 @@
 import { kafkaConfig } from "../../../config/env";
-import { UpdatePasswordInput } from "../../dtos/auth.dto";
+import { ResetPasswordInput } from "../../dtos/auth.dto";
 import { generateId } from '../../../shared/utils/generateId';
 import { IJWT } from '../../../domain/interfaces/security/IJwt';
 import { ERROR_CODES, IdType } from '../../../shared/utils/types';
 import { toAppError } from '../../../shared/error/handleUnknownError';
 import { notificationContentMap } from '../../../shared/utils/constants';
 import { EventEnvelope, SendResetPasswordEvent } from "../../dtos/kafka.dto";
-import { BadRequestError, NotFoundError } from '../../../shared/error/appError';
 import { IPasswordHasher } from "../../../domain/interfaces/security/IPasswordHasher";
+import { AppError, BadRequestError, NotFoundError } from '../../../shared/error/appError';
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 
-export class UpdatePasswordUseCase {
+export class ResetPasswordUseCase {
     constructor(
         public readonly userRepository: IUserRepository,
         public readonly passwordHasher: IPasswordHasher,
@@ -19,7 +19,7 @@ export class UpdatePasswordUseCase {
         public readonly jwtService: IJWT,
     ) { };
 
-    async execute(input: UpdatePasswordInput): Promise<void> {
+    async execute(input: ResetPasswordInput): Promise<void> {
         try {
             const { token, password } = input;
             if(!token || !password) {
@@ -42,7 +42,15 @@ export class UpdatePasswordUseCase {
             const hashedPassword = await this.passwordHasher.hashPassword(password);
 
             user.changePassword({ password: hashedPassword });
-            await this.userRepository.update(user);
+            const updatedUser = await this.userRepository.update(user);
+            if(!updatedUser) {
+                throw new AppError(
+                    "Failed to update user",
+                    500,
+                    false,
+                    ERROR_CODES.INTERNAL_ERROR
+                )
+            }
 
             await this.kafkaProducer.publish<EventEnvelope<SendResetPasswordEvent>>(kafkaConfig.topics.pub.passwordReset, {
                 eventId: generateId({ type: IdType.EVENT }),
@@ -64,7 +72,7 @@ export class UpdatePasswordUseCase {
             });
 
         } catch (error: unknown) {
-            throw toAppError(error, "Failed to update password");
+            throw toAppError(error, "Failed to reset password");
         };
     };
 };

@@ -20,7 +20,12 @@ export const notificationContentMap: Record<string, {
   passwordReset: {
     title: "Password Reset",
     body: () =>
-      `assword has been reset successfully.`
+      `password has been reset successfully.`
+  },
+  passwordUpdate: {
+    title: "Password Updated",
+    body: () =>
+      `password has been updated successfully.`
   },
   appConnect: {
     title: "App Connect",

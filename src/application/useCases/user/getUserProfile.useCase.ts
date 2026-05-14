@@ -32,6 +32,7 @@ export class GetUserProfileDetailsUseCase {
                 username: user.username,
                 profileImage: isAdmin ? signedProfileImage : undefined,
                 createdAt: user.createdAt,
+                referralCode: user.referralCode
             };
         } catch (error: unknown) {
             throw toAppError(error, "Failed to get user profile");

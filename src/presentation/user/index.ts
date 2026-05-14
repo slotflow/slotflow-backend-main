@@ -10,6 +10,8 @@ import { UpdateUserProfileInfoUseCase } from "../../application/useCases/user/up
 import { ChangePushNotificationUseCase } from "../../application/useCases/user/changePushNotification.useCase";
 import { UpdateUserProfileImageUseCase } from "../../application/useCases/user/updateUserProfileImage.useCase";
 import { providerProfileRepository, referralRepository, userRepository } from "../../infrastructure/repositoryImpls";
+import { UpdatePasswordUseCase } from "../../application/useCases/user/updatePassword.useCase";
+import { passwordHasher } from "../../infrastructure/security";
 
 export const updateUserProfileInfoUseCase = new UpdateUserProfileInfoUseCase(userRepository);
 
@@ -26,3 +28,5 @@ export const getUserForChatSidebarUseCase = new GetUserForChatSidebarUseCase(sig
 export const getUsersUseCase = new GetUsersUseCase(userQueries);
 
 export const preBoardingUseCase = new PreBoardingUseCase(userRepository, providerProfileRepository, referralRepository);
+
+export const updatePasswordUseCase = new UpdatePasswordUseCase(userRepository, passwordHasher, kafkaProducer);

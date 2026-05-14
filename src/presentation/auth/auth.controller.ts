@@ -9,8 +9,8 @@ import { RegisterUseCase } from '../../application/useCases/auth/register.useCas
 import { ResendOtpUseCase } from '../../application/useCases/auth/resendOtp.useCase';
 import { VerifyOTPUseCase } from '../../application/useCases/auth/verifyOtp.useCase';
 import { VerifyEmailUseCase } from '../../application/useCases/auth/verifyEmail.useCase';
-import { UpdatePasswordUseCase } from '../../application/useCases/auth/updatePassword.useCase';
-import { loginUseCase, registerUseCase, resendOtpUseCase, updatePasswordUseCase, verifyEmailUseCase, verifyOTPUseCase } from '.';
+import { ResetPasswordUseCase } from '../../application/useCases/auth/resetPassword.useCase';
+import { loginUseCase, registerUseCase, resendOtpUseCase, resetPasswordUseCase, verifyEmailUseCase, verifyOTPUseCase } from '.';
 import { loginSchema, otpVerificationSchema, registerSchema, updatePasswordSchema, verifyEmailSchema } from '../../shared/zod/auth.zod';
 
 class AuthController {
@@ -21,13 +21,15 @@ class AuthController {
     private readonly resendOtpUseCase: ResendOtpUseCase,
     private readonly verifyEmailUseCase: VerifyEmailUseCase,
     private readonly loginUseCase: LoginUseCase,
-    private readonly updatePasswordUseCase: UpdatePasswordUseCase,
+    private readonly resetPasswordUseCase: ResetPasswordUseCase,
   ) {
     this.register = this.register.bind(this);
     this.verifyOTP = this.verifyOTP.bind(this);
     this.resendOtp = this.resendOtp.bind(this);
     this.login = this.login.bind(this);
-    this.updatePassword = this.updatePassword.bind(this);
+    this.logout = this.logout.bind(this);
+    this.verifyEmail = this.verifyEmail.bind(this);
+    this.resetPassword = this.resetPassword.bind(this);
   };
 
   async register(req: Request, res: Response, next: NextFunction) {
@@ -118,13 +120,13 @@ class AuthController {
     };
   };
 
-  async updatePassword(req: Request, res: Response, next: NextFunction) {
+  async resetPassword(req: Request, res: Response, next: NextFunction) {
     try {
       const validateData = updatePasswordSchema.parse(req.body);
       const { password } = validateData;
       const { token } = req.cookies;
       if (!token) throw new UnauthorizedError("Token is required", ERROR_CODES.UNAUTHORIZED);
-      await this.updatePasswordUseCase.execute({ token, password });
+      await this.resetPasswordUseCase.execute({ token, password });
       sendResponse(res, null, "Password updated successfully");
     } catch (error) {
       log.error("updatePassword failed", error as Error);
@@ -140,5 +142,5 @@ export const authController = new AuthController(
   resendOtpUseCase,
   verifyEmailUseCase,
   loginUseCase,
-  updatePasswordUseCase,
+  resetPasswordUseCase,
 );

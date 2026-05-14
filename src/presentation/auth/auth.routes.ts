@@ -29,7 +29,7 @@ router.post('/signout',
 );
 
 router.patch('/password', 
-    authController.updatePassword
+    authController.resetPassword
 );
 
 router.get('/google', 

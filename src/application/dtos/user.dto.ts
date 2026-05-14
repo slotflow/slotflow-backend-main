@@ -79,7 +79,7 @@ export interface GetUserProfileDetailsInput {
     isAdmin: boolean;
 }
 // Used as the response type of admin get user profile details
-export type GetUserProfileDetailsOutput = Pick<UserDTO, "username" | "phone" | "isBlocked" | "email" | "createdAt"> & Partial<Pick<UserDTO, "profileImage">> | null;
+export type GetUserProfileDetailsOutput = Pick<UserDTO, "username" | "phone" | "isBlocked" | "email" | "createdAt" | "referralCode"> & Partial<Pick<UserDTO, "profileImage">> | null;
 
 // Used as the request interface of admin change block status of user  
 export interface ChangeUserIsBlockedStatusInput {
@@ -133,3 +133,10 @@ export interface GetProviderProofsInput {
     providerId: UserDTO["_id"];
 };
 export type GetProviderProofsOutput = Pick<ProviderProfileDTO, "identityProof" | "serviceProof">;
+
+// UpdatePassword usecase input
+export interface UpdatePasswordInput {
+    userId: UserDTO["_id"];
+    currentPassword: string;
+    newPassword: string;
+}

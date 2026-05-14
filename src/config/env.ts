@@ -110,6 +110,7 @@ export const kafkaConfig = {
             sendOtp: validator.requireEnv("KAFKA_SEND_OTP"),
             registerSuccess: validator.requireEnv("KAFKA_REGISTER_SUCCESS"),
             passwordReset: validator.requireEnv("KAFKA_PASSWORD_RESET"),
+            passwordUpdate: validator.requireEnv("KAFKA_PASSWORD_UPDATE"),
             adminProviderReview: validator.requireEnv("KAFKA_ADMIN_PROVIDER_REVIEW"),
             accountBlockStatus: validator.requireEnv("KAFKA_ACCOUNT_BLOCK_STATUS"),
             accountTrustStatus: validator.requireEnv("KAFKA_ACCOUNT_TRUST_STATUS"),

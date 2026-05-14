@@ -6,6 +6,7 @@ import { DecodedUser } from "../../application/dtos/common.dto";
 import { adminUserBlockStatusSchema } from "../../shared/zod/admin.zod";
 import { GetUsersUseCase } from "../../application/useCases/user/getUsers.useCase";
 import { PreBoardingUseCase } from "../../application/useCases/user/preBoarding.useCase";
+import { UpdatePasswordUseCase } from "../../application/useCases/user/updatePassword.useCase";
 import { GetUserProfileDetailsUseCase } from "../../application/useCases/user/getUserProfile.useCase";
 import { GetUserForChatSidebarUseCase } from "../../application/useCases/user/getUserFroChat.useCase";
 import { paginationSchema, roleValidationSchema, validateUserIdSchema } from "../../shared/zod/base.zod";
@@ -13,8 +14,8 @@ import { UpdateUserProfileInfoUseCase } from "../../application/useCases/user/up
 import { ChangeUserBlockStatusUseCase } from "../../application/useCases/user/changeUserBlockStatus.useCase";
 import { ChangePushNotificationUseCase } from "../../application/useCases/user/changePushNotification.useCase";
 import { UpdateUserProfileImageUseCase } from "../../application/useCases/user/updateUserProfileImage.useCase";
-import { userUpdateFileSchema, userUpdateInfoSchema, userUpdatePushNotificationSchema } from "../../shared/zod/user.zod";
-import { changePushNotificationUseCase, changeUserBlockStatusUseCase, getUserProfileDetailsUseCase, getUsersUseCase, getUserForChatSidebarUseCase, preBoardingUseCase, updateUserProfileImageUseCase, updateUserProfileInfoUseCase } from ".";
+import { userUpdateFileSchema, userUpdateInfoSchema, userUpdatePasswordSchema, userUpdatePushNotificationSchema } from "../../shared/zod/user.zod";
+import { changePushNotificationUseCase, changeUserBlockStatusUseCase, getUserProfileDetailsUseCase, getUsersUseCase, getUserForChatSidebarUseCase, preBoardingUseCase, updateUserProfileImageUseCase, updateUserProfileInfoUseCase, updatePasswordUseCase } from ".";
 
 class UserController {
     constructor(
@@ -25,7 +26,8 @@ class UserController {
         private readonly changeUserBlockStatusUseCase: ChangeUserBlockStatusUseCase,
         private readonly getUserProfileDetailsUseCase: GetUserProfileDetailsUseCase,
         private readonly getUserForChatSidebarUseCase: GetUserForChatSidebarUseCase,
-        private readonly preBoardingUseCase: PreBoardingUseCase
+        private readonly preBoardingUseCase: PreBoardingUseCase,
+        private readonly updatePasswordUseCase: UpdatePasswordUseCase
     ) {
         this.getProfileDetails = this.getProfileDetails.bind(this);
         this.updateProfileImage = this.updateProfileImage.bind(this);
@@ -34,6 +36,7 @@ class UserController {
         this.getUsers = this.getUsers.bind(this);
         this.changeUserBlockStatus = this.changeUserBlockStatus.bind(this);
         this.preBoarding = this.preBoarding.bind(this);
+        this.updatePassword = this.updatePassword.bind(this);
     };
 
     async getProfileDetails(req: Request, res: Response, next: NextFunction) {
@@ -145,6 +148,21 @@ class UserController {
         };
     };
 
+    async updatePassword(req: Request, res: Response, next: NextFunction) {
+        try {
+            const user = req.user as DecodedUser;
+            const validatedData = userUpdatePasswordSchema.parse(req.body);
+            await this.updatePasswordUseCase.execute({
+                ...validatedData,
+                userId: user.id
+            });
+            sendResponse(res,null, "Password updated successfully");
+        } catch (error) {
+            log.error("updatePassword failed", error as Error);
+            next(error);
+        }
+    }
+
 };
 
 export const userController = new UserController(
@@ -155,5 +173,6 @@ export const userController = new UserController(
     changeUserBlockStatusUseCase,
     getUserProfileDetailsUseCase,
     getUserForChatSidebarUseCase,
-    preBoardingUseCase
+    preBoardingUseCase,
+    updatePasswordUseCase
 );

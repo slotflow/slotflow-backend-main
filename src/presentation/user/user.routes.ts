@@ -55,6 +55,20 @@ router.patch('/:userId/block',
     userController.changeUserBlockStatus
 );
 
+// admin get user details
+router.get('/:userId',
+    authMiddleware,
+    authorize(Role.ADMIN),
+    userController.getProfileDetails
+);
+
+// user update password
+router.patch('/password',
+    authMiddleware,
+    authorize(Role.USER, Role.PROVIDER),
+    userController.updatePassword
+);
+
 // admin get users
 router.get('/',
     authMiddleware,
@@ -62,11 +76,5 @@ router.get('/',
     userController.getUsers
 );
 
-// admin get user details
-router.get('/:userId',
-    authMiddleware,
-    authorize(Role.ADMIN),
-    userController.getProfileDetails
-);
 
 export default router;

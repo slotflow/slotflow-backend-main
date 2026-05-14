@@ -192,7 +192,7 @@ export interface ReviewDTO {
 export interface ReferralDTO {
     _id: string;
     referrerUserId: string;
-    refereeUserId: string; // TODO change to refereeUserId
+    refereeUserId: string;
     referralCode: string;
     status: ReferralStatus;
     rewardGiven: boolean;

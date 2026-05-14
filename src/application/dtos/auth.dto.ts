@@ -81,7 +81,7 @@ export interface LoginOutput {
 
 
 // UpdatePassword usecase output
-export interface UpdatePasswordInput {
+export interface ResetPasswordInput {
     token: string;
     password: string;
 }

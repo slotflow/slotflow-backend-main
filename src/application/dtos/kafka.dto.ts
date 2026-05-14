@@ -214,9 +214,10 @@ export interface SendResetPasswordEvent {
   notificationData: SendNotificationCommon;
 };
 
-
-
-
+// send update password
+export interface SendUpdatePasswordEvent {
+  notificationData: SendNotificationCommon;
+}
 
 
 
