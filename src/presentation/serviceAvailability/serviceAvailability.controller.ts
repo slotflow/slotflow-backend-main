@@ -39,9 +39,12 @@ class ServiceAvailabilityController {
 
     async getServiceAvailability(req: Request, res: Response, next: NextFunction) {
             try {
+                console.log("get service availability");
+                // TODO For the onboarding Need to check if the Role is user But the onBoarding is PROVIDER so need to get the provider data , but the role is user so it will fall in to the first one
                 const user = req.user as DecodedUser;
                 let providerId: string | undefined;
                 if(user.role === Role.PROVIDER) {
+                    console.log("Provider fetching provider service availability")
                     providerId = user.id;
                 } else {
                     providerId = req.params.providerId as string;

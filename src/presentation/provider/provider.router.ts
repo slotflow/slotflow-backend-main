@@ -43,7 +43,7 @@ router.delete('/me/identity',
     providerProfileController.deleteIdentityProof
 );
 
-// 
+// provider delete service proof
 router.delete('/me/service',
     authMiddleware,
     authorize(Role.PROVIDER, Role.USER),
@@ -57,37 +57,49 @@ router.patch('/me/approval',
     providerProfileController.requestAdminApproval
 );
 
-// admin or user get providers service availability
+// admin or user get provider service availability
 router.get('/:providerId/service-availability',
     authMiddleware,
     authorize(Role.ADMIN, Role.USER),
     serviceAvailabilityController.getServiceAvailability
 );
 
+// admin or user get provider service
 router.get('/:providerId/provider-service',
     authMiddleware,
     authorize(Role.ADMIN, Role.USER),
     providerServiceController.getServiceDetails
 );
 
+// admin get provider proofs
+router.get('/:providerId/proofs',
+    authMiddleware,
+    authorize(Role.ADMIN),
+    providerProfileController.getProofs
+);
+
+// admin approve provider
 router.patch('/:providerId/approve',
     authMiddleware,
     authorize(Role.ADMIN),
     providerProfileController.approveProvider
 );
 
+// admin reject provider
 router.patch('/:providerId/reject',
     authMiddleware,
     authorize(Role.ADMIN),
     providerProfileController.rejectProvider
 );
 
+// admin change block status
 router.patch('/:providerId/block',
     authMiddleware,
     authorize(Role.ADMIN),
     providerProfileController.changeProviderBlockStatus
 );
 
+// admin change provider trust tag
 router.patch('/:providerId/trust-tag',
     authMiddleware,
     authorize(Role.ADMIN),
@@ -101,6 +113,7 @@ router.get('/:providerId',
     providerProfileController.getProfileDetails
 );
 
+// admin get providers
 router.get('/',
     authMiddleware,
     authorize(Role.ADMIN),

@@ -8,8 +8,8 @@ import { IProviderProfileRepository } from "../../../domain/interfaces/repositor
 
 export class GetServiceAvailabilityUseCase {
   constructor(
-    private providerProfileRepository: IProviderProfileRepository,
-    private serviceAvailabilityQueries: IServiceAvailabilityQueries
+    private readonly providerProfileRepository: IProviderProfileRepository,
+    private readonly serviceAvailabilityQueries: IServiceAvailabilityQueries
   ) { };
 
   async execute(input: GetServiceAvailabilityInput): Promise<GetServiceAvailabilityOutput> {
@@ -34,6 +34,7 @@ export class GetServiceAvailabilityUseCase {
 
       const availability = await this.serviceAvailabilityQueries.findByProviderId({ date, availabilityId: providerProfile.serviceAvailabilityId });
       if (!availability) return null;
+      console.log("availability : ",availability)
 
       const updatedSlots = availability.slots.map((slot) => {
         const slotDateTime = dayjs(`${selectedDate} ${slot.time}`, 'YYYY-MM-DD hh:mm A');

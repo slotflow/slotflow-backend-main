@@ -55,7 +55,13 @@ export class UserQueriesImpl implements IUserQueries {
             UserModel.aggregate([
                 {
                     $match: {
-                        role: Role.PROVIDER,
+                        $or : [ {
+                            role: Role.PROVIDER,
+                        },
+                        {
+                            onboardingType: Role.PROVIDER
+                        }
+                        ]
                     },
                 },
                 {
