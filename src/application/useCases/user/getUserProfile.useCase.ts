@@ -21,7 +21,7 @@ export class GetUserProfileDetailsUseCase {
             if (!user) return null;
 
             let signedProfileImage: string | null = null;
-            if (isAdmin && user.profileImage) {
+            if (user.profileImage) {
                 signedProfileImage = await this.signedUrlService.get(user.profileImage);
             };
 
@@ -30,7 +30,7 @@ export class GetUserProfileDetailsUseCase {
                 isBlocked: user.isBlocked,
                 phone: user.phone,
                 username: user.username,
-                profileImage: isAdmin ? signedProfileImage : undefined,
+                profileImage: signedProfileImage || undefined,
                 createdAt: user.createdAt,
                 referralCode: user.referralCode
             };

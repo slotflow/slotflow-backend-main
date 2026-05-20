@@ -33,13 +33,11 @@ class CreditController {
     async getCreditTransactions(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-            console.log("req.query : ", req.query);
             const validatedData = getCreditTransactionsSchema.parse(req.query);
             const result = await this.getCreditTransactionsUseCase.execute({
                 ...validatedData,
                 userId: user.id,
             });
-            console.log("result : ", result)
             sendResponse(res, result);
         } catch (error) {
             next(error);

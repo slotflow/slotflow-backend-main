@@ -20,19 +20,16 @@ class GoogleController {
 
     async getUserEvents(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log("getUserEvents constroller start");
             const user = req.user as DecodedUser;
             const result = await this.getGoogleCalendarUseCase.execute({userId: user.id });
             sendResponse(res, result);
         } catch (error) {
-            log.error("getUserEvents failed", error as Error);
             next(error);
         };
     };
 
     async connectGoogle(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log("connectGoogle controller starting")
             const user = req.user as DecodedUser;
             const { connectOnly, role } = connectGoogleSchema.parse({
                 connectOnly: true,
@@ -56,7 +53,6 @@ class GoogleController {
                 state: state,
             })(req, res, next);
         } catch (error) {
-            log.error("connectGoogle failed", error as Error);
             next(error)
         };
     };

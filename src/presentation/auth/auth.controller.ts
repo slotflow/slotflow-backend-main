@@ -64,7 +64,6 @@ class AuthController {
 
   async resendOtp(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log("req.cookies : ",req.cookies);
       const { token } = req.cookies;
       if (!token) throw new UnauthorizedError("Token is required", ERROR_CODES.UNAUTHORIZED);
       await this.resendOtpUseCase.execute({ token });

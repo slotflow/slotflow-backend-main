@@ -23,7 +23,6 @@ class PlanController {
 
     async getPlans(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log("getPlans");
             const user = req.user as DecodedUser;
             const { page, limit } = paginationSchema.parse(req.query);
 
@@ -44,7 +43,6 @@ class PlanController {
             });
             sendResponse(res, result);
         } catch (error) {
-            log.error("getAllPlans failed", error as Error);
             next(error);
         };
     };
@@ -55,7 +53,6 @@ class PlanController {
             await this.createPlanUseCase.execute(validateBody);
             sendResponse(res, null, "Plan created", true, 201);
         } catch (error) {
-            log.error("createPlan failed", error as Error);
             next(error);
         };
     };
@@ -69,7 +66,6 @@ class PlanController {
             const result = await this.changePlanBlockStatusUseCase.execute({ planId, isBlocked: blockStatus });
             sendResponse(res, result, `plan ${result.isBlocked ? "blocked" : "unblocked"} successfully`);
         } catch (error) {
-            console.log("changePlanBlockStatus error : ", error);
             next(error)
         };
     };

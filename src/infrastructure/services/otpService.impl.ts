@@ -21,8 +21,6 @@ export class OTPServiceImpl implements IOTPService {
         );
       }
       const otp = generateOTP({ length: 6 });
-      // Remove
-      console.log("otp : ", otp);
       await this.redisClient.set(email, otp, { ex: redisConfig.redisOtpTtl });
       return otp;
     } catch (error) {
@@ -51,10 +49,6 @@ export class OTPServiceImpl implements IOTPService {
       }
 
       const storedOtp = await this.redisClient.get(email);
-
-      console.log("email : ",email);
-      console.log("otp : ",otp);
-      console.log("storedOtp : ",storedOtp);
 
       if (!storedOtp) {
         throw new UnauthorizedError(

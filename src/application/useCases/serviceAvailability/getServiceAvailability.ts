@@ -34,7 +34,6 @@ export class GetServiceAvailabilityUseCase {
 
       const availability = await this.serviceAvailabilityQueries.findByProviderId({ date, availabilityId: providerProfile.serviceAvailabilityId });
       if (!availability) return null;
-      console.log("availability : ",availability)
 
       const updatedSlots = availability.slots.map((slot) => {
         const slotDateTime = dayjs(`${selectedDate} ${slot.time}`, 'YYYY-MM-DD hh:mm A');

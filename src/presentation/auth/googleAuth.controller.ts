@@ -17,7 +17,6 @@ class GoogleAuthController {
 
     async googleAuth(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log("google auth login");
             const { role } = roleValidationSchema.parse({ role: req.query.role });
             passport.authenticate("google", {
                 scope: [
@@ -40,7 +39,6 @@ class GoogleAuthController {
 
     async googleAuthCallback(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log("google auth callback");
             passport.authenticate("google", { session: false }, async (err, user, info) => {
 
                 if (err || !user) {
@@ -95,7 +93,6 @@ class GoogleAuthController {
                 return res.redirect(`${frontendUrl}?authUser=${encodeURIComponent(authUserWithoutTokenJson)}`);
             })(req, res);
         } catch (error) {
-            log.error("googleAuthCallback failed", error as Error);
             next(error);
         };
     };

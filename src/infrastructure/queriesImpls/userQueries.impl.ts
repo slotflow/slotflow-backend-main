@@ -27,7 +27,9 @@ export class UserQueriesImpl implements IUserQueries {
         const { page, limit } = query;
         const skip = (page - 1) * limit;
         const [users, totalCount] = await Promise.all([
-            UserModel.find({}, {
+            UserModel.find({
+                role: Role.USER
+            }, {
                 _id: 1,
                 username: 1,
                 email: 1,
@@ -66,7 +68,7 @@ export class UserQueriesImpl implements IUserQueries {
                 },
                 {
                     $lookup: {
-                        from: "providerprofiles", // collection name (IMPORTANT: exact Mongo collection name)
+                        from: "providerprofiles",
                         localField: "_id",
                         foreignField: "userId",
                         as: "profile",
@@ -75,7 +77,7 @@ export class UserQueriesImpl implements IUserQueries {
                 {
                     $unwind: {
                         path: "$profile",
-                        preserveNullAndEmptyArrays: true, // avoid crash if profile missing
+                        preserveNullAndEmptyArrays: true,
                     },
                 },
                 {
@@ -150,6 +152,7 @@ export class UserQueriesImpl implements IUserQueries {
                     _id: 0,
                     username: 1,
                     email: 1,
+                    profileImage: 1,
                     isBlocked: 1,
                     phone: 1,
                     createdAt: 1,

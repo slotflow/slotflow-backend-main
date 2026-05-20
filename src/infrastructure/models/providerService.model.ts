@@ -9,14 +9,16 @@ export interface IProviderService extends Document {
   serviceName: string;
   serviceDescription: string;
   servicePrice: number;
+  serviceExperienceYears: number;
   serviceExperience: string;
   serviceType: ServiceType;
   serviceMode: ServiceMode;
   tags: string[] | [];
   maxParticipants: number;
   isGroupService: boolean;
-  requirements: string | null;
+  requirements: string[] | [];
   videoUrl: string | null;
+  portfolioUrl: string | null;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -64,6 +66,13 @@ const ProviderServiceSchema = new Schema<IProviderService>(
       max: [1_000_000, "Invalid service price"],
     },
 
+    serviceExperienceYears: {
+      type: Number,
+      min: [0, "Invalid service experience years"],
+      max: [80, "Invalid service experience years"],
+      default: 0
+    },
+
     serviceExperience: {
       type: String,
       required: [true, "Experience is required"],
@@ -101,9 +110,14 @@ const ProviderServiceSchema = new Schema<IProviderService>(
     },
 
     requirements: {
-      type: String,
-      maxlength: [500, "Requirements cannot exceed 500 characters"],
-      default: null
+      type: [String],
+      validate: {
+        validator: function (arr: string[]) {
+          return arr.every(item => item.length <= 500);
+        },
+        message: "Each requirement cannot exceed 500 characters"
+      },
+      default: []
     },
 
     videoUrl: {
@@ -111,6 +125,13 @@ const ProviderServiceSchema = new Schema<IProviderService>(
       match: [/^https?:\/\/.+/, "Invalid video URL format"],
       default: null,
     },
+
+    portfolioUrl: {
+      type: String,
+      match: [/^https?:\/\/.+/, "Invalid potfolio URL format"],
+      default: null,
+    },
+
     createdAt: {
       type: Date,
       required: true

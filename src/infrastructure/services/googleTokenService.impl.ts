@@ -15,8 +15,6 @@ export class GoogleTokenServiceImpl implements IGoogleTokenService {
 
     async getAccessToken(userId: string): Promise<string> {
         try {
-            console.log("GoogleTokenService service start");
-            console.log("Before credentials")
 
             if (!userId) {
                 throw new UnauthorizedError(
@@ -26,7 +24,6 @@ export class GoogleTokenServiceImpl implements IGoogleTokenService {
             }
 
             const credentials = await this.credentialRepository.findByUserId(userId);
-            console.log("after credentials ");
 
             if (!credentials) {
                 throw new NotFoundError(

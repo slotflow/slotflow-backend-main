@@ -32,14 +32,12 @@ class ReferralController {
 
     async getReferralsList(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log("getReferralsList");
             const user = req.user as DecodedUser;
             const validatedData = getReferralsListSchema.parse(req.query);
             const result = await this.getReferralsListUseCase.execute({
                 ...validatedData,
                 referrerUserId: user.id
             });
-            console.log("getReferralsList result : ",result);
             sendResponse(res, result);
         } catch (error) {
             next(error);

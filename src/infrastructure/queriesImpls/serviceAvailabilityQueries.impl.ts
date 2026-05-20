@@ -125,7 +125,6 @@ export class ServiceAvailabilityQueriesImpl implements IServiceAvailabilityQueri
                 $replaceWith: "$availabilityForDay"
             },
         ]);
-        console.log("availability : ", availability);
         const data = availability[0];
         if (!data) return null;
 

@@ -14,7 +14,6 @@ export class CreatePlanUseCase {
     async execute(input: CreatePlanInput): Promise<void> {
         try {
             const { planName, description, price, features, maxBookingPerMonth, adVisibility } = input;
-            console.log("price : ",price)
             if (!planName || !description || !features || !maxBookingPerMonth) {
                 throw new BadRequestError();
             }

@@ -20,7 +20,8 @@ import { IProviderProfileRepository } from "../../../domain/interfaces/repositor
 
 export class ProviderGetProfileDetailsUseCase {
   constructor(
-    private readonly userQueries: IUserQueries
+    private readonly userQueries: IUserQueries,
+    private readonly signedUrlService: ISignedUrlService
   ) { };
 
   async execute(input: ProviderGetOwnProfileDetailsInput): Promise<ProviderGetOwnProfileDetailsOutput> {
@@ -38,6 +39,11 @@ export class ProviderGetProfileDetailsUseCase {
         );
       }
 
+      let signedProfileImageUrl: string | null = null;
+      if (provider.profileImage) {
+        signedProfileImageUrl = await this.signedUrlService.get(provider.profileImage);
+      }
+
       return {
         username: provider.username,
         email: provider.email,
@@ -51,7 +57,8 @@ export class ProviderGetProfileDetailsUseCase {
         isAvailabilityVerified: provider.isAvailabilityVerified,
         isProofsVerified: provider.isProofsVerified,
         isServiceDetailsVerified: provider.isServiceDetailsVerified,
-        referralCode: provider.referralCode
+        referralCode: provider.referralCode,
+        profileImage: signedProfileImageUrl || null
       }
     } catch (error: unknown) {
       throw toAppError(error, "Failed to profile details")

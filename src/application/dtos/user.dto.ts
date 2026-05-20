@@ -12,7 +12,7 @@ export interface UserDataView {
 };
 
 // 2. findUsers method parameter and return
-export interface UsersQuery extends ApiPaginationInput { };
+export interface UsersQuery extends ApiPaginationInput {};
 export type UsersView = Array<Pick<UserDTO, "_id" | "username" | "email" | "isBlocked">>;
 
 // 3. findProviders method parameter and return
@@ -107,7 +107,7 @@ export type GetProvidersOutput = Array<Pick<UserDTO, "_id" | "username" | "email
 export interface ProviderGetOwnProfileDetailsInput {
     providerId: UserDTO["_id"];
 }
-export type ProviderGetOwnProfileDetailsOutput = Pick<UserDTO, "username" | "email" | "isBlocked" | "phone" | "createdAt" | "referralCode"> & Pick<ProviderProfileDTO, "isAdminVerified" | "trustedBySlotflow" | "adminVerificationStatus" | "isAddressVerified" | "isAvailabilityVerified" | "isProofsVerified" | "isServiceDetailsVerified"> | null;
+export type ProviderGetOwnProfileDetailsOutput = Pick<UserDTO, "username" | "email" | "isBlocked" | "phone" | "createdAt" | "referralCode" | "profileImage"> & Pick<ProviderProfileDTO, "isAdminVerified" | "trustedBySlotflow" | "adminVerificationStatus" | "isAddressVerified" | "isAvailabilityVerified" | "isProofsVerified" | "isServiceDetailsVerified"> | null;
 
 // UserGetServiceProviderDetails usecase input output
 export interface UserGetServiceProviderDetailsInput {

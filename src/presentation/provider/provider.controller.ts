@@ -73,7 +73,6 @@ class ProviderProfileController {
                 return sendResponse(res, result);
             }
         } catch (error) {
-            log.error("getProfileDetails failed", error as Error);
             next(error);
         };
     };
@@ -90,7 +89,6 @@ class ProviderProfileController {
             });
             sendResponse(res, result, "Identity proof updated successfully");
         } catch (error) {
-            log.error("updateProviderIdentityProof failed", error as Error);
             next(error);
         };
     };
@@ -105,7 +103,6 @@ class ProviderProfileController {
             });
             sendResponse(res, result, "Service proof updated successfully");
         } catch (error) {
-            log.error("updateProviderServiceProof failed", error as Error);
             next(error);
         };
     };
@@ -124,7 +121,6 @@ class ProviderProfileController {
                 sendResponse(res, result);
             }
         } catch (error) {
-            console.log("getProofs error : ", error);
             next(error);
         };
     };
@@ -135,7 +131,6 @@ class ProviderProfileController {
             const result = await this.providerRequestForApprovalUseCase.execute({ providerId: user.id });
             sendResponse(res, result, "Requested admin approval");
         } catch (error) {
-            log.error("updateAdminVerificationStatus failed", error as Error);
             next(error);
         };
     };
@@ -146,7 +141,6 @@ class ProviderProfileController {
             await this.provideDeleteIdentityProofUseCase.execute({ providerId: user.id });
             sendResponse(res, null, "Identity proof deleted successfully");
         } catch (error) {
-            log.error("deleteIdentityProof failed", error as Error);
             next(error);
         };
     };
@@ -157,7 +151,6 @@ class ProviderProfileController {
             await this.provideDeleteServiceProofUseCase.execute({ providerId: user.id });
             sendResponse(res, null, "Service proof deleted successfully");
         } catch (error) {
-            log.error("deleteServiceProof failed", error as Error);
             next(error);
         };
     };
@@ -171,7 +164,6 @@ class ProviderProfileController {
                 sendResponse(res, result);
             }
         } catch (error) {
-            log.error("getProviders failed", error as Error);
             next(error);
         };
     };
@@ -182,7 +174,6 @@ class ProviderProfileController {
             await this.adminApproveProviderUseCase.execute({ providerId });
             sendResponse(res, null, "Successfully approved provider");
         } catch (error) {
-            log.error("approveProvider failed", error as Error);
             next(error);
         };
     };
@@ -198,7 +189,6 @@ class ProviderProfileController {
             });
             sendResponse(res, null, "Successfully rejected provider");
         } catch (error) {
-            log.error("rejectProvider failed", error as Error);
             next(error);
         };
     };
@@ -212,7 +202,6 @@ class ProviderProfileController {
             const result = await this.changeProviderBlockStatusUseCase.execute({ providerId, isBlocked: blockStatus });
             sendResponse(res, result, `Successfully ${result.isBlocked ? "blocked" : "unblocked"} provider`);
         } catch (error) {
-            log.error("changeProviderBlockStatus failed", error as Error);
             next(error);
         };
     };
@@ -226,7 +215,6 @@ class ProviderProfileController {
             const result = await this.changeProviderTrustTagUseCase.execute({ providerId, trustedBySlotflow: trustTag });
             sendResponse(res, result, `Successfully ${result.trustedBySlotflow ? "given" : "revoked"} provider trust tag`);
         } catch (error) {
-            log.error("changeProviderTrustedTag failed", error as Error);
             next(error);
         };
     };

@@ -70,7 +70,6 @@ class BookingController {
             });
             sendResponse(res, result);
         } catch (error) {
-            log.error("getBookings failed", error as Error);
             next(error);
         };
     };
@@ -91,15 +90,12 @@ class BookingController {
             });
             sendResponse(res, result);
         } catch (error) {
-            log.error("validateRoomId failed", error as Error);
             next(error);
         };
     };
 
     async getBookingDetails(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log("getBookingDetails")
-            console.log("req.params : ", req.params)
             const { bookingId } = validateBookingIdSchema.parse({ bookingId: req.params.bookingId });
             const result = await this.getBookingDetailsUsecase.execute({
                 bookingId,
@@ -107,23 +103,18 @@ class BookingController {
             sendResponse(res, result);
 
         } catch (error) {
-            log.error("getBookingDetails failed", error as Error);
             next(error);
         };
     };
 
     async checkBooking(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log("checkBooking")
-            console.log("req.user : ", req.user)
             const user = req.user as DecodedUser;
             const result = await this.checkBookingUseCase.execute({
                 userId: user.id,
             });
-            console.log("result : ", result)
             sendResponse(res, result);
         } catch (error) {
-            log.error("checkBooking failed : ", error as Error);
             next(error);
         }
     }
@@ -143,7 +134,6 @@ class BookingController {
             });
             sendResponse(res, result);
         } catch (error) {
-            log.error("createSessionIdForbookingViaStripe failed", error as Error);
             next(error);
         };
     };
@@ -161,7 +151,6 @@ class BookingController {
             });
             sendResponse(res, null, "Booking cancelled");
         } catch (error) {
-            log.error("cancelBooking failed", error as Error);
             next(error);
         };
     };
@@ -182,7 +171,6 @@ class BookingController {
             });
             sendResponse(res, result);
         } catch (error) {
-            log.error("joinOrLeftRoom failed", error as Error);
             next(error);
         };
     };
@@ -197,7 +185,6 @@ class BookingController {
             await this.changeBookingStatusUseCase.execute({ bookingId, appointmentStatus, providerId: user.id });
             sendResponse(res, null, "Booking status updated successfully");
         } catch (error) {
-            log.error("updateBookingAppointmentStatus failed", error as Error);
             next(error);
         };
     };

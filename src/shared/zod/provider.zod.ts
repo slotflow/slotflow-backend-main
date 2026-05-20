@@ -1,10 +1,10 @@
 import { z } from "zod";
+import { startAndEndDateSchema } from "./common.zod";
 import { PlanName } from "../../domain/enums/plan.enum";
 import { dateSchema, paginationSchema, s3FileKeySchema } from "./base.zod";
 import { ServiceMode, ServiceType } from "../../domain/enums/service.enum";
 import { SubscriptionValidity } from "../../domain/enums/subscription.enum";
-import { objectIdRegex, serviceDescriptionRegex, serviceExperienceRegex, serviceNameRegex, timeRegex } from "../utils/regex";
-import { startAndEndDateSchema } from "./common.zod";
+import { objectIdRegex, serviceDescriptionRegex, serviceExperienceRegex, serviceNameRegex } from "../utils/regex";
 
 // Provider id with pagination validation schema
 export const providerIdWithPaginationSchema = z.object({
@@ -41,7 +41,7 @@ export const serviceDetailsSchema = z.object({
             .min(1, "Service price must be at least 1")
             .max(1_000_000, "Service price cannot exceed 1,000,000")
     ),
-
+    serviceExperienceYears: z.number().min(0).max(80),
     serviceExperience: z
         .string()
         .min(1, "Experience must be at least 1 character")
@@ -68,12 +68,17 @@ export const serviceDetailsSchema = z.object({
     isGroupService: z.boolean(),
 
     requirements: z
-        .string()
+        .string().array()
         .max(500, "Requirements cannot exceed 500 characters")
         .optional(),
 
     videoUrl: z.union([
     z.string().url("Invalid video URL"),
+    z.literal(""),
+  ]).optional(),
+
+  portfolioUrl: z.union([
+    z.string().url("Invalid portfolio URL"),
     z.literal(""),
   ]).optional(),
 });

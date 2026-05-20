@@ -13,12 +13,12 @@ import { AdminRejectProviderUseCase } from "../../application/useCases/provider/
 import { AdminApproveProviderUseCase } from "../../application/useCases/provider/adminApproveProvider.useCase";
 import { SubscriptionCheckoutUseCase } from "../../application/useCases/subscription/subscriptionCheckout.useCase";
 import { ChangeProviderTrustTagUseCase } from "../../application/useCases/provider/changeProviderTrustTag.useCase";
-import { GetServiceAvailabilityUseCase } from "../../application/useCases/serviceAvailability/getServiceAvailability";
 import { UserGetProviderDetailsUseCase } from "../../application/useCases/provider/userGetProviderDetails.useCase";
 import { AdminGetProviderDetailsUseCase } from "../../application/useCases/provider/adminGetProviderDetails.useCase";
+import { GetServiceAvailabilityUseCase } from "../../application/useCases/serviceAvailability/getServiceAvailability";
 import { ChangeProviderBlockStatusUseCase } from "../../application/useCases/provider/changeProviderBlockStatus.useCase";
-import { planRepository, providerProfileRepository, subscriptionRepository, userRepository } from "../../infrastructure/repositoryImpls";
 import { bookingQueries, serviceAvailabilityQueries, subscriptionQueries, userQueries } from "../../infrastructure/queriesImpls";
+import { planRepository, providerProfileRepository, subscriptionRepository, userRepository } from "../../infrastructure/repositoryImpls";
 import { ProvideDeleteIdentityProofUseCase, ProvideDeleteServiceProofUseCase, ProviderGetProfileDetailsUseCase, ProviderRequestForApprovalUseCase, ProviderUpdateIdentityProofUseCase, ProviderUpdateServiceProofUseCase } from "../../application/useCases/provider/providerProfile.useCase";
 
 
@@ -28,7 +28,7 @@ export const getProviderGraphDataUseCase = new GetProviderGraphDataUseCase(booki
 
 // provider profile constroller dependency injection
 export const providerRequestForApprovalUseCase = new ProviderRequestForApprovalUseCase(providerProfileRepository);
-export const providerGetProfileDetailsUseCase = new ProviderGetProfileDetailsUseCase(userQueries);
+export const providerGetProfileDetailsUseCase = new ProviderGetProfileDetailsUseCase(userQueries, signedUrlService);
 export const adminGetProviderDetailsUseCase = new AdminGetProviderDetailsUseCase(signedUrlService, userRepository, providerProfileRepository);
 export const userGetProviderDetailsUseCase = new UserGetProviderDetailsUseCase(userQueries, signedUrlService);
 export const getProviderProofsUseCase = new GetProviderProofsUseCase(signedUrlService, providerProfileRepository);

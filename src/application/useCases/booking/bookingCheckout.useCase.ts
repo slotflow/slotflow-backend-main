@@ -80,8 +80,6 @@ export class BookingCheckoutUseCase {
                 );
             }
 
-            console.dir(providerServiceAvailability, { depth: null, colors: true });
-
             const selectedSlot = providerServiceAvailability.slots.filter((slot) => slot._id.toString() === slotId.toString());
             if (!selectedSlot || selectedSlot.length === 0) {
                 throw new NotFoundError(

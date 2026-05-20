@@ -178,7 +178,6 @@ export class SignedUrlServiceImpl implements ISignedUrlService {
                 allData[key] = await this.redis.get<string>(key);
             }
 
-            console.log("Redis Signed URL Cache:", allData);
         } catch (error) {
             log.error("Failed to debug redis signed URLs", error as Error);
         }

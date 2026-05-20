@@ -68,8 +68,9 @@ export class LoginUseCase {
                 userId: user._id,
             });
 
+            let signedProfileImageUrl: string | null = null;
             if (user.profileImage) {
-                await this.signedUrlService.save(user.profileImage);
+                signedProfileImageUrl = await this.signedUrlService.save(user.profileImage);
             }
 
             let providerProfile: ProviderProfile | null = null;
@@ -78,8 +79,6 @@ export class LoginUseCase {
 
             if (isProviderFlow) {
                 providerProfile = await this.providerProfileRepository.findByUserId(user._id);
-                console.log("providerProfile : ",providerProfile);
-
                 if (providerProfile) {
                     providerSubscription = await this.authResponseBuilder.resolveSubscription(
                         providerProfile
@@ -96,19 +95,26 @@ export class LoginUseCase {
                         ...baseUser,
                         ...this.authResponseBuilder.buildProviderFields(
                             providerProfile,
-                            providerSubscription
+                            providerSubscription,
                         ),
+                        profileImage: signedProfileImageUrl
                     },
                 };
             } else if(user.role === Role.USER) {
                 return {
                     token,
-                    user: baseUser,
+                    user: {
+                        ...baseUser,
+                        profileImage: signedProfileImageUrl
+                    },
                 };
             } else if(user.role === Role.ADMIN) {
                 return {
                     token,
-                    user: baseUser,
+                    user: {
+                        ...baseUser,
+                        profileImage: signedProfileImageUrl
+                    },
                 };
             }
 

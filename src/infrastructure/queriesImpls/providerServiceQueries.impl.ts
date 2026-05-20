@@ -50,8 +50,6 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
             maxPrice > 0 &&
             minPrice <= maxPrice;
 
-        console.log("hasValidPriceRange : ",hasValidPriceRange);
-
         if (serviceIds?.length) {
             pipeline.push({
                 $match: {
@@ -253,7 +251,6 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
         };
 
         const result = await ProviderServiceModel.aggregate(pipeline);
-        console.log("result : ",result);
         return result.map(p => ({
             _id: p._id.toString(),
             provider: {

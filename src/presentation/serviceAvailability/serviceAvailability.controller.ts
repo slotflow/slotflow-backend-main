@@ -42,7 +42,6 @@ class ServiceAvailabilityController {
                 const user = req.user as DecodedUser;
                 let providerId: string | undefined;
                 if(user.role === Role.PROVIDER) {
-                    console.log("Provider fetching provider service availability")
                     providerId = user.id;
                 } else {
                     providerId = req.params.providerId as string;

@@ -19,6 +19,7 @@ export class ProviderService {
             ...props,
             requirements: props.requirements ?? null,
             videoUrl: props.videoUrl ?? null,
+            portfolioUrl: props.portfolioUrl ?? null,
             createdAt: new Date(),
             updatedAt: new Date(),
         })
@@ -65,13 +66,17 @@ export class ProviderService {
         return this.props.tags;
     };
 
-    get requirements(): string | null {
+    get requirements(): string[] | [] {
         return this.props.requirements;
     };
 
     get videoUrl(): string | null {
         return this.props.videoUrl;
     };
+
+    get portfolioUrl(): string | null {
+        return this.props.portfolioUrl;
+    }
 
     get maxParticipants(): number {
         return this.props.maxParticipants;

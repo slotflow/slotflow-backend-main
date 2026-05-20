@@ -20,10 +20,10 @@ router.get('/me',
     userController.getProfileDetails
 );
 
-// user update profile image
+// user / provider update profile image
 router.patch('/me/image',
     authMiddleware,
-    authorize(Role.USER),
+    authorize(Role.USER, Role.PROVIDER),
     userController.updateProfileImage
 );
 
@@ -69,7 +69,7 @@ router.patch('/password',
     userController.updatePassword
 );
 
-// admin get users
+// admin get users for listing  and user and provider get users for chat
 router.get('/',
     authMiddleware,
     authorize(Role.ADMIN, Role.PROVIDER, Role.USER),
