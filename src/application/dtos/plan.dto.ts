@@ -1,12 +1,15 @@
-import { PlanDTO } from "./common.dto";
+import { ApiPaginationInput, PlanDTO } from "./common.dto";
 
 //// **** plan dtos **** ////
 
 // CreatePlan usecase input
 export type CreatePlanInput = Pick<PlanDTO, "planName" | "description" | "price" | "features" | "maxBookingPerMonth" | "adVisibility">;
 
-// GetPlans usecase output
-export type GetPlansOutput = Array<Pick<PlanDTO, "_id" | "planName" | "isBlocked" | "price" | "maxBookingPerMonth" | "adVisibility">>;
+// GetPlans usecase input and output
+export interface GetPlansInput extends ApiPaginationInput {
+    isProvider: boolean;
+}
+export type GetPlansOutput = Array<Pick<PlanDTO, "_id" | "planName" | "isBlocked" | "price">> & Partial<Pick<PlanDTO, "maxBookingPerMonth" | "adVisibility" | "features" |"description">>;
 
 // ChangePlanBlockStatus usecase output
 export type ChangePlanBlockStatusOutput = {

@@ -50,7 +50,8 @@ export class ProviderGetProfileDetailsUseCase {
         isAddressVerified: provider.isAddressVerified,
         isAvailabilityVerified: provider.isAvailabilityVerified,
         isProofsVerified: provider.isProofsVerified,
-        isServiceDetailsVerified: provider.isServiceDetailsVerified
+        isServiceDetailsVerified: provider.isServiceDetailsVerified,
+        referralCode: provider.referralCode
       }
     } catch (error: unknown) {
       throw toAppError(error, "Failed to profile details")

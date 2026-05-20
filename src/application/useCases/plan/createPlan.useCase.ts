@@ -1,8 +1,9 @@
 import { CreatePlanInput } from "../../dtos/plan.dto";
 import { ERROR_CODES } from "../../../shared/utils/types";
+import { PlanName } from "../../../domain/enums/plan.enum";
 import { Plan } from "../../../domain/entities/plan.entity";
-import { AppError, BadRequestError } from "../../../shared/error/appError";
 import { toAppError } from "../../../shared/error/handleUnknownError";
+import { AppError, BadRequestError } from "../../../shared/error/appError";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 
 export class CreatePlanUseCase {
@@ -13,8 +14,16 @@ export class CreatePlanUseCase {
     async execute(input: CreatePlanInput): Promise<void> {
         try {
             const { planName, description, price, features, maxBookingPerMonth, adVisibility } = input;
+            console.log("price : ",price)
+            if (!planName || !description || !features || !maxBookingPerMonth) {
+                throw new BadRequestError();
+            }
 
-            if (!planName || !description || !price || !features || !maxBookingPerMonth || !adVisibility) {
+            if(planName === PlanName.TRIAL && price !== 0) {
+                throw new BadRequestError();
+            }
+
+            if(planName !== PlanName.TRIAL && price <= 0) {
                 throw new BadRequestError();
             }
 

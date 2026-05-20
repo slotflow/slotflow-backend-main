@@ -1,7 +1,7 @@
 import { ClientSession } from "mongoose";
 import { ProcessedEventModel } from "../models/processedEvent.model";
 import { ProcessedEventMapper } from "../mappers/processedEvent.mapper";
-import { ProcessedEvent } from "../../domain/entities/ProcessedEvent.entity";
+import { ProcessedEvent } from "../../domain/entities/processedEvent.entity";
 import { IProcessedEventRepository } from "../../domain/interfaces/repositories/IProcessedEvent.repository";
 
 export class ProcessedEventRepositoryImpl implements IProcessedEventRepository {

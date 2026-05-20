@@ -15,7 +15,7 @@ export interface ProviderServiceByProviderIdView extends FindProviderService {
     tags: string[] | [];
 }
 
-// 2. findProvidersUsingServiceIds method parameter and return type / interface
+// 2. findProvidersCardDataForUsers method parameter and return type / interface
 export interface ProviderServiceByServiceIdsQuery {
     serviceIds?: string[];
     categories?: ServiceCategory[];
@@ -70,7 +70,6 @@ export type CreateProviderServiceInput = Pick<ProviderServiceDTO, "isGroupServic
 // get provider service input and output
 export interface GetProviderServiceInput {
     providerId: UserDTO["_id"];
-    isUser: boolean;
 }
 export type GetProviderServiceOuput = ProviderServiceByProviderIdView | null;
 

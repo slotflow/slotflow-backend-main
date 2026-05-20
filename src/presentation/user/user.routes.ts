@@ -44,7 +44,7 @@ router.patch('/me/notification-settings',
 // admin get user address
 router.get('/:userId/address',
     authMiddleware,
-    authorize(Role.ADMIN),
+    authorize(Role.ADMIN, Role.USER),
     addressController.getAddress
 );
 

@@ -12,6 +12,7 @@ export interface CreateSubscriptionCheckoutSessionInput {
   name: string;
   email: string;
   initialAmount: number;
+  stripeCustomerId: string | null;
 }
 
 export interface CreateSubscriptionCheckoutSessionOutput {

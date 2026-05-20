@@ -53,7 +53,8 @@ class SubscriptionController {
 
     async getSubscriptionDetails(req: Request, res: Response, next: NextFunction) {
         try {
-            const { subscriptionId } = validateSubscriptionIdSchema.parse({ subscriptionId: req.params.subscriptionId });
+            console.log("req.prams : ",req.params)
+            const { subscriptionId } = validateSubscriptionIdSchema.parse(req.params);
             const result = await this.getSubscriptionDetailsUseCase.execute({ subscriptionId });
             sendResponse(res, result);
         } catch (error) {

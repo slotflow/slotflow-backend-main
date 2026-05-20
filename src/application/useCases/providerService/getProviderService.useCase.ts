@@ -11,7 +11,7 @@ export class GetProviderServicesUseCase {
 
     async execute(input: GetProviderServiceInput): Promise<GetProviderServiceOuput> {
         try {
-            const { providerId, isUser } = input;
+            const { providerId } = input;
             if (!providerId) {
                 throw new BadRequestError();
             }
@@ -20,7 +20,7 @@ export class GetProviderServicesUseCase {
             if (!service) return null;
 
             return {
-                _id: !isUser ? service._id : undefined,
+                _id: service._id,
                 serviceName: service.serviceName,
                 serviceDescription: service.serviceDescription,
                 servicePrice: service.servicePrice,
@@ -34,8 +34,8 @@ export class GetProviderServicesUseCase {
                 serviceId: {
                     serviceName: service.serviceId.serviceName
                 },
-                providerId: !isUser ? service.providerId : undefined,
-                tags: !isUser ? service.tags : [],
+                providerId: service.providerId,
+                tags: service.tags,
             }
         } catch (error: unknown) {
             throw toAppError(error, "Failed to get provider service");

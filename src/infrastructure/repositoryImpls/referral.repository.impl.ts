@@ -1,10 +1,10 @@
 import { ClientSession } from 'mongoose';
 import { ReferralModel } from '../models/referral.model';
 import { ReferralMapper } from '../mappers/referral.mapper';
+import { TableData } from '../../application/dtos/common.dto';
+import { ReferralStatus } from '../../domain/enums/common.enum';
 import { Referral } from '../../domain/entities/referral.entity';
 import { IReferralRepository } from '../../domain/interfaces/repositories/IReferral.repository';
-import { ReferralStatus } from '../../domain/enums/common.enum';
-import { TableData } from '../../application/dtos/common.dto';
 
 export class ReferralRepositoryImpl implements IReferralRepository {
     async create(referral: Referral, session?: ClientSession): Promise<Referral | null> {
@@ -72,5 +72,15 @@ export class ReferralRepositoryImpl implements IReferralRepository {
         const result = await ReferralModel.findByIdAndDelete(id);
         return !!result;
     }
-    
+
+    async findByReferrerAndReferredUser(referrerUserId: string, refereeUserId: string): Promise<Referral | null> {
+
+        const doc = await ReferralModel.findOne({
+            referrerUserId,
+            refereeUserId
+        });
+
+        return doc ? ReferralMapper.toDomain(doc) : null;
+    }
+
 }

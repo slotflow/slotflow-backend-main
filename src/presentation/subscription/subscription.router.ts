@@ -13,11 +13,11 @@ router.get('/',
     subscriptionController.getSubscriptions
 );
 
-// admin or provider get subscription details
-router.get('/:subscriptionId',
+// provider get subscribed plan
+router.get('/me',
     authMiddleware,
-    authorize(Role.ADMIN, Role.PROVIDER),
-    subscriptionController.getSubscriptionDetails
+    authorize(Role.PROVIDER),
+    subscriptionController.getSubscribedPlan
 );
 
 // provider create subscription checkout session
@@ -27,18 +27,18 @@ router.post('/checkout/session',
     subscriptionController.subscriptionCheckout
 );
 
-// provider get subscribed plan
-router.get('/me',
-    authMiddleware,
-    authorize(Role.PROVIDER),
-    subscriptionController.getSubscribedPlan
-);
-
 // provider subscribe to trial plan
 router.post('/trial',
     authMiddleware,
     authorize(Role.PROVIDER),
     subscriptionController.subscribeToTrialPlan
+);
+
+// admin or provider get subscription details
+router.get('/:subscriptionId',
+    authMiddleware,
+    authorize(Role.ADMIN, Role.PROVIDER),
+    subscriptionController.getSubscriptionDetails
 );
 
 export default router;

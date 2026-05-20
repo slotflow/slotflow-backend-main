@@ -153,6 +153,7 @@ export class UserQueriesImpl implements IUserQueries {
                     isBlocked: 1,
                     phone: 1,
                     createdAt: 1,
+                    referralCode: 1,
                     isAdminVerified: "$profile.isAdminVerified",
                     trustedBySlotflow: "$profile.trustedBySlotflow",
                     adminVerificationStatus: "$profile.adminVerificationStatus",

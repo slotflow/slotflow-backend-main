@@ -15,4 +15,6 @@ export interface IReferralRepository {
     update(referral: Referral, session?: ClientSession): Promise<Referral | null>;
 
     delete(id: string): Promise<boolean>;
+
+    findByReferrerAndReferredUser(referrerUserId: string, refereeUserId: string): Promise<Referral | null>;
 }

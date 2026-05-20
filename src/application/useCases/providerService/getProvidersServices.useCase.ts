@@ -11,9 +11,10 @@ export class GetProvidersServicesUseCase {
 
   async execute(input: GetProvidersServicesInput): Promise<GetProvidersServicesOutput | null> {
     try {
+      console.log("input : ",input);
       const { serviceIds, categories, location, maxPrice, minPrice, slotflowTrusted, skip, limit } = input;
 
-      const providers = await this.providerServiceQueries.findProvidersUsingServiceIds({
+      const providers = await this.providerServiceQueries.findProvidersCardDataForUsers({
         serviceIds: serviceIds ?? [],
         categories: categories ?? [],
         location,
@@ -24,6 +25,8 @@ export class GetProvidersServicesUseCase {
         limit
       });
       if (!providers) return null;
+
+      console.log("providers : ",providers);
 
       const updatedProviders = await Promise.all(
         providers.map(async (provider) => {

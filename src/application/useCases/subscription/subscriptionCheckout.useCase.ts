@@ -100,6 +100,7 @@ export class SubscriptionCheckoutUseCase {
                 name: provider.username,
                 email: provider.email,
                 initialAmount: plan.price * months,
+                stripeCustomerId: provider.stripeCustomerId
             });
 
             return data;

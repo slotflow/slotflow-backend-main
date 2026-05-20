@@ -1,6 +1,6 @@
-import { GetPlansOutput } from "../../dtos/plan.dto";
+import { TableData } from "../../dtos/common.dto";
+import { GetPlansInput, GetPlansOutput } from "../../dtos/plan.dto";
 import { toAppError } from "../../../shared/error/handleUnknownError";
-import { ApiPaginationInput, TableData } from "../../dtos/common.dto";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 
 export class GetPlansUseCase {
@@ -8,18 +8,20 @@ export class GetPlansUseCase {
         private planRepository: IPlanRepository
     ) { };
 
-    async execute(input: ApiPaginationInput): Promise<TableData<GetPlansOutput>> {
+    async execute(input: GetPlansInput): Promise<TableData<GetPlansOutput>> {
         try {
-            const { page, limit } = input;
+            const { page, limit, isProvider } = input;
 
             const result = await this.planRepository.findAll(page, limit);
             const { items: plans, currentPage, totalCount, totalPages } = result;
             return {
                 items: plans.map(plan => ({
                     _id: plan._id,
-                    adVisibility: plan.adVisibility,
+                    adVisibility: !isProvider ? plan.adVisibility : undefined,
                     isBlocked: plan.isBlocked,
-                    maxBookingPerMonth: plan.maxBookingPerMonth,
+                    features: isProvider ? plan.features : undefined,
+                    description: isProvider ? plan.description : undefined,
+                    maxBookingPerMonth: !isProvider ? plan.maxBookingPerMonth : undefined,
                     planName: plan.planName,
                     price: plan.price,
                 })),

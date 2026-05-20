@@ -3,16 +3,14 @@ import { Role } from "../../domain/enums/common.enum";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
-import { createProviderServiceUseCase, getProviderServicesUseCase, getProvidersServicesUseCase, updateProviderServiceUseCase } from ".";
+import { validateProviderIdSchema } from "../../shared/zod/base.zod";
+import { userGetProvidersServicesSchema } from "../../shared/zod/providerService.zod";
 import { GetProviderServicesUseCase } from "../../application/useCases/providerService/getProviderService.useCase";
+import { GetProvidersServicesUseCase } from "../../application/useCases/providerService/getProvidersServices.useCase";
+import { providerCreateServiceDetailsSchema, providerUpdateServiceDetailsSchema } from "../../shared/zod/provider.zod";
 import { UpdateProviderServiceUseCase } from "../../application/useCases/providerService/updateProviderService.useCase";
 import { CreateProviderServiceUseCase } from "../../application/useCases/providerService/createProviderService.useCase";
-import { providerCreateServiceDetailsSchema, providerUpdateServiceDetailsSchema } from "../../shared/zod/provider.zod";
-import { userGetProvidersServicesSchema } from "../../shared/zod/providerService.zod";
-import { GetProvidersServicesUseCase } from "../../application/useCases/providerService/getProvidersServices.useCase";
-import { BadRequestError } from "../../shared/error/appError";
-import { ERROR_CODES } from "../../shared/utils/types";
-import { validateProviderIdSchema } from "../../shared/zod/base.zod";
+import { createProviderServiceUseCase, getProviderServicesUseCase, getProvidersServicesUseCase, updateProviderServiceUseCase } from ".";
 
 class ProviderServiceController {
     constructor(
@@ -50,24 +48,18 @@ class ProviderServiceController {
 
             let filter: {
                 providerId: string;
-                isUser: boolean;
             }
-
-            // TODO For the onboarding Need to check if the Role is user But the onBoarding is PROVIDER so need to get the provider data , but the role is user so it will fall in to the first one
             if (user.role === Role.USER) {
                 filter = {
                     providerId: validateProviderIdSchema.parse(req.params).providerId,
-                    isUser: true
                 }
             } else if (user.role === Role.ADMIN) {
                 filter = {
                     providerId: validateProviderIdSchema.parse(req.params).providerId,
-                    isUser: false
                 }
             } else {
                 filter = {
                     providerId: user.id,
-                    isUser: false
                 }
             }
             const result = await this.getProviderServicesUseCase.execute(filter);

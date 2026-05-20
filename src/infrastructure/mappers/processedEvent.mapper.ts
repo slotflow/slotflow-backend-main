@@ -1,4 +1,4 @@
-import { ProcessedEvent } from "../../domain/entities/ProcessedEvent.entity";
+import { ProcessedEvent } from "../../domain/entities/processedEvent.entity";
 import { IProcessedEvent } from "../models/processedEvent.model";
 
 export class ProcessedEventMapper {

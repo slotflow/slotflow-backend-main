@@ -5,18 +5,14 @@ import { sendResponse } from "../../shared/utils/response";
 import { paginationSchema } from "../../shared/zod/base.zod";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { GetPlansUseCase } from "../../application/useCases/plan/getPlans.useCase";
-import { ProviderGetPlansUseCase } from "../../application/useCases/plan/providerGetPlans.useCase";
+import { changePlanBlockStatusUseCase, createPlanUseCase, getPlansUseCase } from ".";
 import { CreatePlanUseCase } from "../../application/useCases/plan/createPlan.useCase";
 import { changePlanBlockStatusSchema, createPlanSchema } from "../../shared/zod/plan.zod";
 import { ChangePlanBlockStatusUseCase } from "../../application/useCases/plan/changePlanBlockStatus.useCase";
-import { changePlanBlockStatusUseCase, createPlanUseCase, getPlansUseCase, providerGetPlansUseCase } from ".";
-import { BadRequestError } from "../../shared/error/appError";
-import { ERROR_CODES } from "../../shared/utils/types";
 
 class PlanController {
     constructor(
         private readonly getPlansUseCase: GetPlansUseCase,
-        private readonly providerGetPlansUseCase: ProviderGetPlansUseCase,
         private readonly createPlanUseCase: CreatePlanUseCase,
         private readonly changePlanBlockStatusUseCase: ChangePlanBlockStatusUseCase
     ) {
@@ -27,18 +23,26 @@ class PlanController {
 
     async getPlans(req: Request, res: Response, next: NextFunction) {
         try {
+            console.log("getPlans");
             const user = req.user as DecodedUser;
-            
+            const { page, limit } = paginationSchema.parse(req.query);
+
+            let filter: {
+                isProvider?: boolean;
+            } = {}
+
             if (user.role === Role.ADMIN) {
-                const { page, limit } = paginationSchema.parse(req.query);
-                const result = await this.getPlansUseCase.execute({ page, limit });
-                sendResponse(res, result);
+                filter.isProvider = false;
+            } else {
+                filter.isProvider = true;
             }
 
-            if (user.role === Role.PROVIDER) {
-                const result = await this.providerGetPlansUseCase.execute();
-                sendResponse(res, result);
-            }
+            const result = await this.getPlansUseCase.execute({
+                page,
+                limit,
+                isProvider: filter.isProvider ?? false
+            });
+            sendResponse(res, result);
         } catch (error) {
             log.error("getAllPlans failed", error as Error);
             next(error);
@@ -74,7 +78,6 @@ class PlanController {
 
 export const planController = new PlanController(
     getPlansUseCase,
-    providerGetPlansUseCase,
     createPlanUseCase,
     changePlanBlockStatusUseCase,
 )

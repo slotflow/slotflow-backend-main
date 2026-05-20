@@ -41,9 +41,7 @@ class ProviderProfileController {
         this.requestAdminApproval = this.requestAdminApproval.bind(this);
         this.deleteIdentityProof = this.deleteIdentityProof.bind(this);
         this.deleteServiceProof = this.deleteServiceProof.bind(this);
-
         this.getProviders = this.getProviders.bind(this);
-
         this.approveProvider = this.approveProvider.bind(this);
         this.rejectProvider = this.rejectProvider.bind(this);
         this.changeProviderBlockStatus = this.changeProviderBlockStatus.bind(this);

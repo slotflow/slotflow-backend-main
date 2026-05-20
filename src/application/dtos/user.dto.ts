@@ -23,7 +23,7 @@ export type ProvidersView = Array<Pick<UserDTO, "_id" | "username" | "email" | "
 export interface ProviderByIdQuery {
     providerId: UserDTO["_id"];
 }
-export type ProviderByIdView = Pick<UserDTO, "username" | "email" | "isBlocked" | "profileImage" | "phone" | "createdAt"> & Pick<ProviderProfileDTO, "isAdminVerified" | "trustedBySlotflow" | "adminVerificationStatus" | "isAddressVerified" | "isAvailabilityVerified" | "isProofsVerified" | "isServiceDetailsVerified"> | null;
+export type ProviderByIdView = Pick<UserDTO, "username" | "email" | "isBlocked" | "profileImage" | "phone" | "createdAt" | "referralCode"> & Pick<ProviderProfileDTO, "isAdminVerified" | "trustedBySlotflow" | "adminVerificationStatus" | "isAddressVerified" | "isAvailabilityVerified" | "isProofsVerified" | "isServiceDetailsVerified"> | null;
 
 // 5. findProviderStats method parameter and return
 export interface ProviderStatsQuery extends GetStatsDataCommonInput { };
@@ -107,7 +107,7 @@ export type GetProvidersOutput = Array<Pick<UserDTO, "_id" | "username" | "email
 export interface ProviderGetOwnProfileDetailsInput {
     providerId: UserDTO["_id"];
 }
-export type ProviderGetOwnProfileDetailsOutput = Pick<UserDTO, "username" | "email" | "isBlocked" | "phone" | "createdAt"> & Pick<ProviderProfileDTO, "isAdminVerified" | "trustedBySlotflow" | "adminVerificationStatus" | "isAddressVerified" | "isAvailabilityVerified" | "isProofsVerified" | "isServiceDetailsVerified"> | null;
+export type ProviderGetOwnProfileDetailsOutput = Pick<UserDTO, "username" | "email" | "isBlocked" | "phone" | "createdAt" | "referralCode"> & Pick<ProviderProfileDTO, "isAdminVerified" | "trustedBySlotflow" | "adminVerificationStatus" | "isAddressVerified" | "isAvailabilityVerified" | "isProofsVerified" | "isServiceDetailsVerified"> | null;
 
 // UserGetServiceProviderDetails usecase input output
 export interface UserGetServiceProviderDetailsInput {

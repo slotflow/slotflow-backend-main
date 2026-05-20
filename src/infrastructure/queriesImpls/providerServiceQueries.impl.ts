@@ -26,7 +26,7 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
         };
     };
 
-    async findProvidersUsingServiceIds(query: ProviderServiceByServiceIdsQuery): Promise<ProviderServiceByServiceIdsView> {
+    async findProvidersCardDataForUsers(query: ProviderServiceByServiceIdsQuery): Promise<ProviderServiceByServiceIdsView> {
 
         const pipeline: PipelineStage[] = [];
         const now = new Date();
@@ -50,26 +50,27 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
             maxPrice > 0 &&
             minPrice <= maxPrice;
 
+        console.log("hasValidPriceRange : ",hasValidPriceRange);
+
         if (serviceIds?.length) {
             pipeline.push({
                 $match: {
-                    service: { $in: serviceIds.map(id => new Types.ObjectId(id)) }
+                    serviceId: { $in: serviceIds.map(id => new Types.ObjectId(id)) }
                 }
             });
         }
 
         pipeline.push({
             $lookup: {
-                from: "providers",
+                from: "providerprofiles",
                 let: { providerId: "$providerId" },
                 pipeline: [
                     {
                         $match: {
                             $expr: {
                                 $and: [
-                                    { $eq: ["$_id", "$$providerId"] },
+                                    { $eq: ["$userId", "$$providerId"] },
                                     { $eq: ["$isAdminVerified", true] },
-                                    { $eq: ["$isBlocked", false] },
                                     ...(slotflowTrusted === true
                                         ? [{ $eq: ["$trustedBySlotflow", true] }]
                                         : [])
@@ -78,17 +79,38 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
                         }
                     }
                 ],
-                as: "provider"
+                as: "providerProfile"
             }
         });
 
-        pipeline.push({ $unwind: "$provider" });
+        pipeline.push({
+            $lookup: {
+                from: "users",
+                let: { providerId: "$providerId" },
+                pipeline: [
+                    {
+                        $match: {
+                            $expr: {
+                                $and: [
+                                    { $eq: ["$_id", "$$providerId"] },
+                                    { $eq: ["$isBlocked", false] },
+                                ]
+                            }
+                        }
+                    }
+                ],
+                as: "user"
+            }
+        });
+
+        pipeline.push({ $unwind: "$providerProfile" });
+        pipeline.push({ $unwind: "$user" });
 
         pipeline.push(
             {
                 $lookup: {
                     from: "subscriptions",
-                    let: { providerId: "$provider._id" },
+                    let: { providerId: "$user._id" },
                     pipeline: [
                         {
                             $match: {
@@ -110,42 +132,53 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
             { $unwind: "$activeSubscription" }
         );
 
+        // if (hasValidPriceRange) {
+        //     pipeline.push(
+        //         {
+        //             $lookup: {
+        //                 from: "providerServices",
+        //                 let: { providerId: "$user._id" },
+        //                 pipeline: [
+        //                     {
+        //                         $match: {
+        //                             $expr: {
+        //                                 $and: [
+        //                                     { $eq: ["$providerId", "$$providerId"] },
+        //                                     { $lte: ["$servicePrice", maxPrice] },
+        //                                     { $gte: ["$servicePrice", minPrice] }
+        //                                 ]
+        //                             }
+        //                         }
+        //                     }
+        //                 ],
+        //                 as: "providerServices"
+        //             }
+        //         },
+        //         {
+        //             $match: {
+        //                 $expr: { $gt: [{ $size: "$providerServices" }, 0] }
+        //             }
+        //         }
+        //     );
+        // }
+
         if (hasValidPriceRange) {
-            pipeline.push(
-                {
-                    $lookup: {
-                        from: "providerServices",
-                        let: { providerId: "$provider._id" },
-                        pipeline: [
-                            {
-                                $match: {
-                                    $expr: {
-                                        $and: [
-                                            { $eq: ["$providerId", "$$providerId"] },
-                                            { $lte: ["$servicePrice", maxPrice] },
-                                            { $gte: ["$servicePrice", minPrice] }
-                                        ]
-                                    }
-                                }
-                            }
-                        ],
-                        as: "providerServices"
-                    }
-                },
-                {
-                    $match: {
-                        $expr: { $gt: [{ $size: "$providerServices" }, 0] }
-                    }
-                }
-            );
+    pipeline.push({
+        $match: {
+            servicePrice: {
+                $gte: minPrice,
+                $lte: maxPrice
+            }
         }
+    });
+}
 
         if (location?.coordinates?.length === 2) {
             pipeline.push(
                 {
                     $lookup: {
                         from: "addresses",
-                        let: { providerId: "$provider._id" },
+                        let: { providerId: "$user._id" },
                         pipeline: [
                             {
                                 $geoNear: {
@@ -176,7 +209,7 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
             {
                 $lookup: {
                     from: "services",
-                    localField: "service",
+                    localField: "serviceId",
                     foreignField: "_id",
                     as: "serviceDetails"
                 }
@@ -196,10 +229,10 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
             $project: {
                 _id: 1,
                 provider: {
-                    _id: "$provider._id",
-                    username: "$provider.username",
-                    profileImage: "$provider.profileImage",
-                    trustedBySlotflow: "$provider.trustedBySlotflow"
+                    _id: "$user._id",
+                    username: "$user.username",
+                    profileImage: "$user.profileImage",
+                    trustedBySlotflow: "$providerProfile.trustedBySlotflow"
                 },
                 serviceDetails: {
                     serviceId: "$serviceDetails._id",
@@ -220,7 +253,7 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
         };
 
         const result = await ProviderServiceModel.aggregate(pipeline);
-
+        console.log("result : ",result);
         return result.map(p => ({
             _id: p._id.toString(),
             provider: {

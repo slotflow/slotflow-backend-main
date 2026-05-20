@@ -1,7 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import { serviceConfig } from "../../config/env";
 import { log } from "../../shared/logger/logger";
-import { axiosInstance } from "../http/axios/axios";
 import { ERROR_CODES } from "../../shared/utils/types";
 import { AppError, BadRequestError } from "../../shared/error/appError";
 import { CreateBookingCheckoutSessionInput, CreateBookingCheckoutSessionOutput, CreateSubscriptionCheckoutSessionInput, CreateSubscriptionCheckoutSessionOutput, IPaymentServiceClient, ProcessRefundInput, ProcessRefundOutput } from "../../domain/interfaces/clients/IPaymentService.client";
@@ -11,9 +10,10 @@ export class PaymentServiceClient implements IPaymentServiceClient {
   private readonly http: AxiosInstance;
 
   constructor(baseUrl: string = serviceConfig.paymentServiceUrl) {
-    this.http = axiosInstance.create({
-      baseURL: baseUrl,
-    });
+      this.http = axios.create({
+        baseURL: baseUrl,
+        timeout: 5000,
+      });
   };
 
   async createSubscriptionCheckoutSession(input: CreateSubscriptionCheckoutSessionInput): Promise<CreateSubscriptionCheckoutSessionOutput> {
@@ -36,8 +36,7 @@ export class PaymentServiceClient implements IPaymentServiceClient {
 
       return data;
     } catch (error: unknown) {
-      log.error("createSubscriptionCheckoutSession, Payment Service unavailable", error as Error);
-
+      log.error(`createSubscriptionCheckoutSession failed - URL: ${this.http.defaults.baseURL}/subscription/checkout/session`, error as Error);
       this.handleError(error, "createSubscriptionCheckoutSession");
     };
   };
@@ -63,7 +62,6 @@ export class PaymentServiceClient implements IPaymentServiceClient {
       return data;
     } catch (error: unknown) {
       log.error("createBookingCheckoutSession, Payment Service unavailable", error as Error);
-
       this.handleError(error, "createBookingCheckoutSession");
     }
   }
@@ -71,11 +69,11 @@ export class PaymentServiceClient implements IPaymentServiceClient {
   async processRefund(input: ProcessRefundInput): Promise<ProcessRefundOutput> {
     try {
       const { data } = await this.http.post<ProcessRefundOutput>(
-        "/payments/refund",
+        "/refund",
         input
       );
 
-      if (!data?.data) {
+      if (!data || !data.success) {
         log.error("Invalid response from Payment Service");
 
         throw new AppError(
@@ -89,7 +87,6 @@ export class PaymentServiceClient implements IPaymentServiceClient {
       return data;
     } catch (error: unknown) {
       log.error("processRefund, Payment Service unavailable", error as Error);
-
       this.handleError(error, "processRefund");
     }
   }
