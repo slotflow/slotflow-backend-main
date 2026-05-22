@@ -44,6 +44,9 @@ export class GetServiceAvailabilityUseCase {
         }
       });
 
+      console.log("availability  : ", availability);
+      console.log("updatedSlots : ",updatedSlots);
+
       return { ...availability, slots: updatedSlots };
     } catch (error: unknown) {
       throw toAppError(error, "Failed to get service availability");

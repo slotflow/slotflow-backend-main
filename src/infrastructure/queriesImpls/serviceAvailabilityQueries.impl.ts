@@ -48,8 +48,23 @@ export class ServiceAvailabilityQueriesImpl implements IServiceAvailabilityQueri
                     availabilityForDay: {
                         $ifNull: [
                             "$availabilityForDay",
-                            { day: targetDay, slots: [] }
+                            {
+                                day: targetDay,
+                                isAvailable: false,
+                                startTime: null,
+                                endTime: null,
+                                duration: null,
+                                modes: [],
+                                slots: []
+                            }
                         ]
+                    }
+                }
+            },
+            {
+                $addFields: {
+                    "availabilityForDay.isAvailable": {
+                        $ifNull: ["$availabilityForDay.isAvailable", false]
                     }
                 }
             },
@@ -130,14 +145,15 @@ export class ServiceAvailabilityQueriesImpl implements IServiceAvailabilityQueri
 
         return {
             day: data.day,
+            isAvailable: data.isAvailable,
             duration: data.duration,
             endTime: data.endTime,
             modes: data.modes,
             startTime: data.startTime,
-            slots: data.slots.map((slot: TimeSlotForClientOutput) => ({
+            slots: (data.slots || []).map((slot: TimeSlotForClientOutput) => ({
                 _id: slot._id.toString(),
                 time: slot.time,
-                available: slot.available,
+                available: slot.available
             }))
         }
     };

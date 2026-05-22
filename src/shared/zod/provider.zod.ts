@@ -68,9 +68,11 @@ export const serviceDetailsSchema = z.object({
     isGroupService: z.boolean(),
 
     requirements: z
-        .string().array()
-        .max(500, "Requirements cannot exceed 500 characters")
-        .optional(),
+    .array(
+      z.string().max(200, "Each requirement cannot exceed 200 characters")
+    )
+    .max(10, "You can add at most 10 requirements")
+    .optional(),
 
     videoUrl: z.union([
     z.string().url("Invalid video URL"),

@@ -3,10 +3,10 @@ import { ERROR_CODES } from "../../../shared/utils/types";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { CreateServiceAvailabilityInput } from "../../dtos/serviceAvailability.dto";
 import { ServiceAvailability } from "../../../domain/entities/serviceAvailability.entity";
+import { AppError, BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { FrontendAvailabilityForClientInput, FrontendAvailabilityUpdatedSlots } from "../../dtos/common.dto";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 import { IServiceAvailabilityRepository } from "../../../domain/interfaces/repositories/IServiceAvailability.repository";
-import { AppError, BadRequestError, NotFoundError } from "../../../shared/error/appError";
 
 export class CreateServiceAvailabilitiesUseCase {
     constructor(
@@ -33,9 +33,9 @@ export class CreateServiceAvailabilitiesUseCase {
 
             const newAvailabilities: FrontendAvailabilityUpdatedSlots[] = availabilities.map((availability: FrontendAvailabilityForClientInput) => ({
                 ...availability,
-                slots: availability.slots.map((slot: string) => ({
+                slots: availability.isAvailable ? availability.slots?.map((slot: string) => ({
                     time: slot
-                }))
+                })) : []
             }));
 
             const serviceAvailabilityData = ServiceAvailability.create({

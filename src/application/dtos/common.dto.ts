@@ -245,11 +245,12 @@ export interface TimeSlotForClientOutput {
 
 export interface Availability {
   day: Day,
-  duration: number,
-  startTime: string,
-  endTime: string,
-  modes: ServiceMode[],
-  slots: TimeSlot[],
+  isAvailable: boolean,
+  duration?: number,
+  startTime?: string,
+  endTime?: string,
+  modes?: ServiceMode[],
+  slots?: TimeSlot[],
 };
 
 export interface ServiceAvailabilityDTO {
@@ -417,12 +418,12 @@ export interface FrontendAvailabilityForOutput extends Omit<Availability, "slots
 
 // used in create service availability usecase
 export interface FrontendAvailabilityForClientInput extends Omit<Availability, "slots"> {
-  slots: string[];
+  slots?: string[];
 }
 
 // used in create service availability usecase
 export interface FrontendAvailabilityUpdatedSlots extends Omit<Availability, "slots"> {
-  slots: TimeSlot[];
+  slots?: TimeSlot[];
 }
 
 // used in auth controller

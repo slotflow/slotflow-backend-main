@@ -14,11 +14,12 @@ export interface TimeSlotForClientOutput {
 
 export interface Availability {
     day: Day,
-    duration: number,
-    startTime: string,
-    endTime: string,
-    modes: ServiceMode[],
-    slots: TimeSlot[],
+    isAvailable: boolean,
+    duration?: number,
+    startTime?: string,
+    endTime?: string,
+    modes?: ServiceMode[],
+    slots?: TimeSlot[],
 };
 
 export interface ServiceAvailabilityProps {

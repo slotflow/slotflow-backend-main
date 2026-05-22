@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
-import { Availability } from "../../domain/contracts/serviceAvailability.contract";
 import { ServiceMode } from "../../domain/enums/service.enum";
+import { Availability } from "../../domain/contracts/serviceAvailability.contract";
 
 export interface IServiceAvailability extends Document {
   _id: Types.ObjectId,
@@ -16,11 +16,38 @@ const slotSchema = new Schema({
 
 const availabilitySchema = new Schema({
   day: { type: String, required: true },
-  duration: { type: String, required: true },
-  startTime: { type: String, required: true },
-  endTime: { type: String, required: true },
-  modes: { type: [String], required: true, enum: Object.values(ServiceMode) },
-  slots: [slotSchema]
+  isAvailable: { type: Boolean, required: true },
+  duration: {
+    type: Number,
+    required: function () {
+      return this.isAvailable;
+    }
+  },
+  startTime: {
+    type: String,
+    required: function () {
+      return this.isAvailable;
+    }
+  },
+  endTime: {
+    type: String,
+    required: function () {
+      return this.isAvailable;
+    }
+  },
+  modes: {
+    type: [String],
+    enum: Object.values(ServiceMode),
+    required: function () {
+      return this.isAvailable;
+    }
+  },
+  slots: {
+    type: [slotSchema],
+    required: function () {
+      return this.isAvailable;
+    }
+  }
 }, { _id: true });
 
 
