@@ -160,6 +160,7 @@ export class GoogleAuthOrchestratorUseCase {
                     userId: userId ?? user._id,
                 });
                 await this.credentialRepository.create(credentials);
+                console.log("credetials : ",credentials)
             }
 
             let providerSubscription: PlanName = PlanName.NO_SUBSCRIPTION;

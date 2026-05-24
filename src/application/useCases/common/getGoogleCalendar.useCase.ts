@@ -8,9 +8,9 @@ import { GetEventsFromCalendarProps, GetGoogleCalendarInput, GetGoogleCalendarOu
 
 export class GetGoogleCalendarUseCase {
     constructor(
-        private credentialRepository: ICredentialRepository,
-        private aesEncryption: IAesEncryptionService,
-        private googleCalendarGatewayService: IGoogleCalendarGatewayService
+        private readonly credentialRepository: ICredentialRepository,
+        private readonly aesEncryption: IAesEncryptionService,
+        private readonly googleCalendarGatewayService: IGoogleCalendarGatewayService
     ) { };
 
     async execute(input: GetGoogleCalendarInput): Promise<GetGoogleCalendarOutput> {

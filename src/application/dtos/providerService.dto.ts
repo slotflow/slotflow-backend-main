@@ -7,7 +7,7 @@ import { AddressDTO, ProviderProfileDTO, ProviderServiceDTO, ServiceDTO, UserDTO
 export interface ProviderServiceByProviderIdQuery {
     providerId: UserDTO["_id"];
 }
-type FindProviderService = Pick<ProviderServiceDTO, "serviceName" | "serviceDescription" | "servicePrice" | "serviceExperience" | "serviceType" | "serviceMode" | "requirements" | "maxParticipants" | "isGroupService" | "videoUrl">;
+type FindProviderService = Pick<ProviderServiceDTO, "serviceName" | "serviceDescription" | "servicePrice" | "serviceExperience" | "serviceType" | "serviceMode" | "requirements" | "maxParticipants" | "isGroupService" | "videoUrl" | "portfolioUrl">;
 export interface ProviderServiceByProviderIdView extends FindProviderService {
     serviceId: { serviceName: string };
     _id?: string;

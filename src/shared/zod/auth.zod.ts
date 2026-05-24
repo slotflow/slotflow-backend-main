@@ -1,6 +1,7 @@
 import { z } from 'zod';
+import { roleValidationSchema } from './base.zod';
 import { strongPasswordRegex, usernameRegex } from '../utils/regex';
-import { roleValidationSchema, validateUserIdSchema } from './base.zod';
+import { HearAboutUsOptionValue } from '../../domain/enums/common.enum';
 
 // Regist controller zod validation
 export const registerSchema = z
@@ -55,3 +56,9 @@ export const updatePasswordSchema = z.object({
 export const connectGoogleSchema = z.object({
   connectOnly: z.boolean(),
 }).merge(roleValidationSchema)
+
+// preboardgin zod schema
+export const preboardingSchema = z.object({
+  whereDidHearAboutUs: z.enum(HearAboutUsOptionValue),
+  referralCode: z.string().startsWith("SF_REF").min(12).max(15).optional()
+}).merge(roleValidationSchema);

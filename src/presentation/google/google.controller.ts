@@ -1,14 +1,10 @@
 import passport from "passport";
 import { getGoogleCalendarUseCase } from ".";
-import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { connectGoogleSchema } from "../../shared/zod/auth.zod";
-import { validateUserIdSchema } from "../../shared/zod/base.zod";
 import { GetGoogleCalendarUseCase } from "../../application/useCases/common/getGoogleCalendar.useCase";
-import { BadRequestError } from "../../shared/error/appError";
-import { ERROR_CODES } from "../../shared/utils/types";
 
 class GoogleController {
     constructor(

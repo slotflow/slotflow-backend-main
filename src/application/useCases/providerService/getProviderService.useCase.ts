@@ -26,6 +26,7 @@ export class GetProviderServicesUseCase {
                 servicePrice: service.servicePrice,
                 serviceExperience: service.serviceExperience,
                 videoUrl: service.videoUrl,
+                portfolioUrl:service.portfolioUrl,
                 serviceType: service.serviceType,
                 serviceMode: service.serviceMode,
                 requirements: service.requirements,

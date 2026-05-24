@@ -42,14 +42,14 @@ router.patch('/:bookingId/change-status',
 );
 
 // user and provider get booking details
-router.get('/:bookingId',
+router.get('/:bookingId/details',
     authMiddleware,
     authorize(Role.USER, Role.PROVIDER),
     bookingController.getBookingDetails
 );
 
 // user cancel booking
-router.patch('/:bookingId',
+router.patch('/:bookingId/cancel',
     authMiddleware,
     authorize(Role.USER),
     bookingController.cancelBooking

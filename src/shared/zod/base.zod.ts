@@ -17,9 +17,7 @@ export const validateSubscriptionIdSchema = z.object({
 
 // Role validation
 export const roleValidationSchema = z.object({
-    role: z.nativeEnum(Role),
-    whereDidHearAboutUs: z.enum(HearAboutUsOptionValue),
-    referralCode: z.string().startsWith("SF_REF").min(12).max(15).optional()
+    role: z.nativeEnum(Role)
 });
 
 // Pagination zod schema with default values

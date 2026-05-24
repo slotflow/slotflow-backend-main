@@ -66,7 +66,7 @@ class GoogleAuthController {
                     role,
                     connectOnly: user.connectOnly,
                     image: user.image,
-                    userId: user.userId,
+                    userId: user.id,
                     accessToken: user.googleAccessToken,
                     refreshToken: user.googleRefreshToken,
                     expiryDate,
@@ -78,7 +78,7 @@ class GoogleAuthController {
                         ...updatedUser,
                     };
                     const redirectData = encodeURIComponent(JSON.stringify(successPayload));
-                    return res.redirect(`${serviceConfig.frontendUrl}/${role === Role.PROVIDER ? "provider" : "user"}/integrations?response=${redirectData}`);
+                    return res.redirect(`${serviceConfig.frontendUrl}/${role === Role.PROVIDER ? "provider" : "user"}/settings/integrations?response=${redirectData}`);
                 };
 
                 res.cookie("token", token, {

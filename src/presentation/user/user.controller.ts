@@ -2,6 +2,7 @@ import { log } from "../../shared/logger/logger";
 import { Role } from "../../domain/enums/common.enum";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
+import { preboardingSchema } from "../../shared/zod/auth.zod";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { adminUserBlockStatusSchema } from "../../shared/zod/admin.zod";
 import { GetUsersUseCase } from "../../application/useCases/user/getUsers.useCase";
@@ -134,7 +135,7 @@ class UserController {
     async preBoarding(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-            const { role, whereDidHearAboutUs, referralCode } = roleValidationSchema.parse(req.body);
+            const { role, whereDidHearAboutUs, referralCode } = preboardingSchema.parse(req.body);
             const result = await this.preBoardingUseCase.execute({ 
                 _id: user.id, 
                 role,

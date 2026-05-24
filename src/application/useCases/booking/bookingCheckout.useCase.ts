@@ -53,6 +53,7 @@ export class BookingCheckoutUseCase {
             }
 
             const providerService = await this.providerServiceQueries.findByProviderId({ providerId });
+            console.log("providerService : ",providerService)
             if (!providerService) {
                 throw new NotFoundError(
                     "Service not found",
@@ -128,9 +129,8 @@ export class BookingCheckoutUseCase {
                     ERROR_CODES.INTERNAL_ERROR
                 )
             }
-
             const { data } = await this.paymentServiceClient.createBookingCheckoutSession({
-                serviceName: providerService.service.serviceName,
+                serviceName: providerService.serviceId.serviceName,
                 bookingId: booking._id,
                 description: providerService.serviceDescription,
                 initialAmount: providerService.servicePrice,
