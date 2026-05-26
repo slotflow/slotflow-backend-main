@@ -1,18 +1,17 @@
-import { log } from "../../../shared/logger/logger";
 import { ERROR_CODES } from "../../../shared/utils/types";
-import { StripeAccountCreatedEventInput } from "../../dtos/kafka.dto";
-import { AppError, NotFoundError } from "../../../shared/error/appError";
-import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { toAppError } from "../../../shared/error/handleUnknownError";
+import { AppError, NotFoundError } from "../../../shared/error/appError";
+import { StripeAccountUpdateStatusEventInput } from "../../dtos/kafka.dto";
+import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 
-export class UpdateStripeAccountDataUseCase {
+export class UpdateStripeAccountStatusUseCase {
     constructor(
-        private readonly userRepository: IUserRepository,
-    ) { };
+        private readonly userRepository: IUserRepository
+    ) { }
 
-    async execute(input: StripeAccountCreatedEventInput): Promise<void> {
+    async execute(input: StripeAccountUpdateStatusEventInput): Promise<void> {
         try {
-            const { userId, stripeAccountId } = input;
+            const { accountStatus, userId } = input;
             const user = await this.userRepository.findById(userId);
             if (!user) {
                 throw new NotFoundError(
@@ -20,18 +19,18 @@ export class UpdateStripeAccountDataUseCase {
                     ERROR_CODES.USER_NOT_FOUND
                 );
             }
-            user.linkStripeAccount(stripeAccountId);
+            user.updateStripeAccountStatus(accountStatus);
             const updatedUser = await this.userRepository.update(user);
             if (!updatedUser) {
                 throw new AppError(
-                    "Failed to update stripe account id",
+                    "Failed to update stripe account status",
                     500,
                     false,
                     ERROR_CODES.INTERNAL_ERROR
                 )
             }
-        } catch (error) {
-            throw toAppError(error, "Failed to update stripe account id");
-        };
-    };
-};
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to update stripe account status");
+        }
+    }
+}

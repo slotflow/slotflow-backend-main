@@ -103,3 +103,9 @@ export enum ReferralStatus {
   COMPLETED = "COMPLETED",
   REWARDED = "REWARDED",
 }
+
+export enum StripeAccountStatus {
+  PENDING = "pending",
+  ACTIVE = "active",
+  RESTRICTED = "restricted",
+}

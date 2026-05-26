@@ -1,4 +1,4 @@
-import { OnboardingStatus, Role } from "../enums/common.enum";
+import { OnboardingStatus, Role, StripeAccountStatus } from "../enums/common.enum";
 import { UserProps } from "../contracts/user.contract";
 import { ChangePasswordProps, ChangeProfileImageProps, ChangeProfileInfoProps, CreateGoogleUserProps, CreateLocalUserProps, LinkGoogleAccountProps, UpdatePushNotificationProps, CompletePreBoardingProps } from "../commands/user.commands";
 
@@ -31,7 +31,7 @@ export class User {
             onboardingStatus: OnboardingStatus.NOT_STARTED,
             isBlocked: false,
             googleConnected: false,
-            stripeConnected: false,
+            stripeAccountStatus: null,
             allowPushNotification: false,
             whereDidHearAboutUs: null,
             referralCode: props.referralCode,
@@ -60,7 +60,7 @@ export class User {
             profileImage: props.profileImage,
             googleConnected: true,
             googleId: props.googleId,
-            stripeConnected: false,
+            stripeAccountStatus: null,
             allowPushNotification: false,
             whereDidHearAboutUs: null,
             referralCode: props.referralCode,
@@ -124,8 +124,8 @@ export class User {
         return this.props.googleId;
     }
 
-    get stripeConnected(): boolean {
-        return this.props.stripeConnected;
+    get stripeAccountStatus(): StripeAccountStatus | null {
+        return this.props.stripeAccountStatus;
     }
 
     get stripeAccountId(): string | null {
@@ -229,7 +229,14 @@ export class User {
         this.ensureNotBlocked("update stripe account");
 
         this.props.stripeAccountId = stripeAccountId;
-        this.props.stripeConnected = true;
+        this.props.stripeAccountStatus = StripeAccountStatus.PENDING;
+        this.touch();
+    }
+
+    updateStripeAccountStatus(stripeAccountStatus: StripeAccountStatus) {
+        this.ensureNotBlocked("update stripe account status");
+
+        this.props.stripeAccountStatus = stripeAccountStatus;
         this.touch();
     }
 

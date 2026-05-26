@@ -1,5 +1,5 @@
 import { PlanName } from "../../domain/enums/plan.enum";
-import { Day, HearAboutUsOptionValue, OnboardingStatus, ReferralStatus, Role } from "../../domain/enums/common.enum";
+import { Day, HearAboutUsOptionValue, OnboardingStatus, ReferralStatus, Role, StripeAccountStatus } from "../../domain/enums/common.enum";
 import { GeoLocation } from "../../domain/contracts/address.contract";
 import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
@@ -42,7 +42,7 @@ export interface UserDTO {
   addressId: string | null;
   googleConnected: boolean;
   googleId: string | null;
-  stripeConnected: boolean;
+  stripeAccountStatus: StripeAccountStatus;
   stripeAccountId: string | null;
   stripeCustomerId: string | null;
   allowPushNotification: boolean | null;

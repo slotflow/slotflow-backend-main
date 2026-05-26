@@ -32,7 +32,7 @@ export class AuthResponseBuilder {
       googleId: user.googleId,
       googleConnected: user.googleConnected,
 
-      stripeConnected: user.stripeConnected,
+      stripeAccountStatus: user.stripeAccountStatus,
       stripeAccountId: user.stripeAccountId,
       stripeCustomerId: user.stripeCustomerId,
 

@@ -72,7 +72,7 @@ export interface LoginOutput {
 
         googleId: UserDTO["googleId"];
         googleConnected: UserDTO["googleConnected"];
-        stripeConnected: UserDTO["stripeConnected"];
+        stripeAccountStatus: UserDTO["stripeAccountStatus"]
         stripeAccountId: UserDTO["stripeAccountId"];
         stripeCustomerId: UserDTO["stripeCustomerId"];
         allowPushNotification: UserDTO["allowPushNotification"];
@@ -135,7 +135,7 @@ export interface GoogleAuthOrchestrationOutput {
 
         googleId: UserDTO["googleId"];
         googleConnected: UserDTO["googleConnected"];
-        stripeConnected: UserDTO["stripeConnected"];
+        stripeAccountStatus: UserDTO["stripeAccountStatus"]
         stripeAccountId: UserDTO["stripeAccountId"];
         stripeCustomerId: UserDTO["stripeCustomerId"];
         allowPushNotification: UserDTO["allowPushNotification"];

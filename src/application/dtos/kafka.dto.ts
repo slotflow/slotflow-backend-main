@@ -3,7 +3,7 @@ import { PlanName } from "../../domain/enums/plan.enum";
 import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
-import { AppConnect, NotificationType, OtpPurpose, Role } from "../../domain/enums/common.enum";
+import { AppConnect, NotificationType, OtpPurpose, Role, StripeAccountStatus } from "../../domain/enums/common.enum";
 
 // **** KAFKA COMMON DTOS
 
@@ -243,6 +243,12 @@ export interface CreateGoogleCalendarEventFailedInput {
 export interface StripeAccountCreatedEventInput {
   userId: string;
   stripeAccountId: string;
+}
+
+// consume stripe account update status event
+export interface StripeAccountUpdateStatusEventInput {
+  userId: string;
+  accountStatus: StripeAccountStatus;
 }
 
 // used in update booking after payment success event

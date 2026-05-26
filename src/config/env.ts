@@ -103,6 +103,7 @@ export const kafkaConfig = {
             userBookingPaymentSuccess: validator.requireEnv("KAFKA_USER_BOOKING_PAYMENT_SUCCESS"),
             stripeAccountCreated: validator.requireEnv("KAFKA_STRIPE_ACCOUNT_CREATED"),
             stripeCustomerCreated: validator.requireEnv("KAFKA_STRIPE_CUSTOMER_CREATED"),
+            stripeAccountUpdateStatus: validator.requireEnv("KAFKA_STRIPE_ACCOUNT_UPDATE_STATUS"),
         },
         
         pub: {
