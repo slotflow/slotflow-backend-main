@@ -1,5 +1,6 @@
+import { OnboardingStatus, Role, StripeAccountStatus } from "../enums/common.enum";
 import { UserProps } from "../contracts/user.contract";
-import { ChangePassword, ChangeProfileImage, ChangeProfileInfo, CreateGoogleUserProps, CreateLocalUserProps, LinkGoogleAccount, UpdatePushNotification, UpdateVerificationToken } from "../commands/user.commands";
+import { ChangePasswordProps, ChangeProfileImageProps, ChangeProfileInfoProps, CreateGoogleUserProps, CreateLocalUserProps, LinkGoogleAccountProps, UpdatePushNotificationProps, CompletePreBoardingProps } from "../commands/user.commands";
 
 export class User {
 
@@ -25,16 +26,22 @@ export class User {
             username: props.username,
             email: props.email,
             password: props.password,
+            role: Role.USER,
+            onboardingType: null,
+            onboardingStatus: OnboardingStatus.NOT_STARTED,
             isBlocked: false,
-            isEmailVerified: false,
+            googleConnected: false,
+            stripeAccountStatus: null,
+            allowPushNotification: false,
+            whereDidHearAboutUs: null,
+            referralCode: props.referralCode,
+            referredBy: null,
+            addressId: null,
+            googleId: null,
             phone: null,
             profileImage: null,
-            addressId: null,
-            bookingsId: null,
-            verificationToken: props.verificationToken,
-            googleConnected: false,
-            googleId: null,
-            allowPushNotification: null,
+            stripeAccountId: null,
+            stripeCustomerId: null,
             createdAt: new Date(),
             updatedAt: new Date(),
         })
@@ -46,16 +53,22 @@ export class User {
             username: props.username,
             email: props.email,
             password: null,
+            role: Role.USER,
+            onboardingType: null,
+            onboardingStatus: OnboardingStatus.NOT_STARTED,
             isBlocked: false,
-            isEmailVerified: props.isEmailVerified,
-            phone: null,
             profileImage: props.profileImage,
-            addressId: null,
-            bookingsId: null,
-            verificationToken: null,
             googleConnected: true,
             googleId: props.googleId,
-            allowPushNotification: null,
+            stripeAccountStatus: null,
+            allowPushNotification: false,
+            whereDidHearAboutUs: null,
+            referralCode: props.referralCode,
+            referredBy: null,
+            addressId: null,
+            phone: null,
+            stripeAccountId: null,
+            stripeCustomerId: null,
             createdAt: new Date(),
             updatedAt: new Date(),
         })
@@ -75,6 +88,18 @@ export class User {
         return this.props.email;
     }
 
+    get role(): Role {
+        return this.props.role;
+    }
+
+    get onboardingType(): Role | null {
+        return this.props.onboardingType;
+    }
+
+    get onboardingStatus(): OnboardingStatus {
+        return this.props.onboardingStatus;
+    }
+
     get phone(): string | null {
         return this.props.phone;
     }
@@ -85,14 +110,6 @@ export class User {
 
     get password(): string | null {
         return this.props.password;
-    }
-
-    get verificationToken(): string | null {
-        return this.props.verificationToken;
-    }
-
-    get isEmailVerified(): boolean {
-        return this.props.isEmailVerified;
     }
 
     get isBlocked(): boolean {
@@ -107,17 +124,33 @@ export class User {
         return this.props.googleId;
     }
 
+    get stripeAccountStatus(): StripeAccountStatus | null {
+        return this.props.stripeAccountStatus;
+    }
+
+    get stripeAccountId(): string | null {
+        return this.props.stripeAccountId;
+    }
+
+    get stripeCustomerId(): string | null {
+        return this.props.stripeCustomerId;
+    }
+
     get addressId(): string | null {
         return this.props.addressId;
     }
 
-    get bookingsId(): string | null {
-        return this.props.bookingsId;
-    }
-
-    get allowPushNotification(): boolean | null {
+    get allowPushNotification(): boolean {
         return this.props.allowPushNotification;
     };
+
+    get referralCode(): string | null {
+        return this.props.referralCode;
+    }
+
+    get referredBy(): string | null {
+        return this.props.referredBy;
+    }
 
     get createdAt(): Date {
         return this.props.createdAt;
@@ -143,12 +176,7 @@ export class User {
         this.touch();
     }
 
-    markEmailVerified() {
-        this.props.isEmailVerified = true;
-        this.touch();
-    }
-
-    updateProfileInfo(props: ChangeProfileInfo) {
+    updateProfileInfo(props: ChangeProfileInfoProps) {
         this.ensureNotBlocked("update info");
 
         if (props.phone !== undefined) {
@@ -161,7 +189,7 @@ export class User {
         this.touch();
     }
 
-    changePassword(props: ChangePassword) {
+    changePassword(props: ChangePasswordProps) {
         this.ensureNotBlocked("update password");
 
         if (props.password) {
@@ -170,17 +198,12 @@ export class User {
         this.touch();
     }
 
-    upcateVerificationToken(props: UpdateVerificationToken) {
-        this.props.verificationToken = props.verificationToken;
-        this.touch();
-    }
-
-    updatePushNotification(props: UpdatePushNotification) {
+    updatePushNotification(props: UpdatePushNotificationProps) {
         this.props.allowPushNotification = props.allowPushNotification;
         this.touch();
     }
 
-    linkGoogleAccount(props: LinkGoogleAccount) {
+    linkGoogleAccount(props: LinkGoogleAccountProps) {
         this.ensureNotBlocked("update google data");
 
         this.props.googleId = props.googleId;
@@ -188,20 +211,63 @@ export class User {
         this.touch();
     }
 
-    updateProfileImage(props: ChangeProfileImage) {
+    updateProfileImage(props: ChangeProfileImageProps) {
         this.ensureNotBlocked("update profile image");
-
+        if(props.profileImage === undefined) {
+            throw new Error("Profile image is required");
+        }
         this.props.profileImage = props.profileImage;
         this.touch();
     }
 
-    updateAddressId(addressId: string | null) {
+    attachAddress(addressId: string) {
         this.props.addressId = addressId;
         this.touch();
     }
 
-    updateBookingsId(bookingsId: string | null) {
-        this.props.bookingsId = bookingsId;
+    linkStripeAccount(stripeAccountId: string) {
+        this.ensureNotBlocked("update stripe account");
+
+        this.props.stripeAccountId = stripeAccountId;
+        this.props.stripeAccountStatus = StripeAccountStatus.PENDING;
+        this.touch();
+    }
+
+    updateStripeAccountStatus(stripeAccountStatus: StripeAccountStatus) {
+        this.ensureNotBlocked("update stripe account status");
+
+        this.props.stripeAccountStatus = stripeAccountStatus;
+        this.touch();
+    }
+
+    linkStripeCustomer(stripeCustomerId: string) {
+        this.ensureNotBlocked("update stripe customer");
+
+        this.props.stripeCustomerId = stripeCustomerId;
+        this.touch();
+    }
+
+    completePreBoarding(props: CompletePreBoardingProps) {
+        const { role } = props;
+        if (role === Role.USER) {
+            this.props.onboardingType = Role.USER;
+            this.props.onboardingStatus = OnboardingStatus.APPROVED;
+        } else if (role === Role.PROVIDER) {
+            this.props.onboardingType = Role.PROVIDER;
+            this.props.onboardingStatus = OnboardingStatus.IN_PROGRESS;
+        }
+        if(props.whereDidHearAboutUs) {
+            this.props.whereDidHearAboutUs = props.whereDidHearAboutUs;
+        }
+        if(props.referredBy) {
+            this.props.referredBy = props.referredBy;
+        }
+        this.touch();
+    }
+    
+    approvedByAdmin() {
+        this.props.role = Role.PROVIDER;
+        this.props.onboardingStatus = OnboardingStatus.APPROVED;
         this.touch();
     }
 

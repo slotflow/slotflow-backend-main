@@ -5,10 +5,10 @@ import { IReviewRepository } from "../../domain/interfaces/repositories/IReview.
 
 export class ReviewRepositoryImpl implements IReviewRepository {
 
-    async create(review: Review): Promise<Review> {
+    async create(review: Review): Promise<Review | null> {
         const persistence = ReviewMapper.toPersistence(review);
         const doc = await ReviewModel.create(persistence);
-        return ReviewMapper.toDomain(doc);
+        return doc ? ReviewMapper.toDomain(doc) : null;
     };
 
     async deleteById(reviewId: string): Promise<boolean> {
@@ -21,7 +21,7 @@ export class ReviewRepositoryImpl implements IReviewRepository {
         return doc ? ReviewMapper.toDomain(doc) : null;
     };
 
-    async update(review: Review): Promise<Review> {
+    async update(review: Review): Promise<Review | null> {
         const persistence = ReviewMapper.toPersistence(review);
 
         const doc = await ReviewModel.findByIdAndUpdate(
@@ -30,11 +30,7 @@ export class ReviewRepositoryImpl implements IReviewRepository {
             { new: true }
         );
 
-        if (!doc) {
-            throw new Error("Review not found");
-        };
-
-        return ReviewMapper.toDomain(doc);
+        return doc ? ReviewMapper.toDomain(doc) : null;
     };
 
 };

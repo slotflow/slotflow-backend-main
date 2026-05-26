@@ -1,4 +1,4 @@
-import { s3Client } from "../../infrastructure/lib/aws_s3";
+import { s3Client } from "../../infrastructure/cloud/aws/aws_s3";
 import { signedUrlService } from "../../infrastructure/services";
 import { CreateFileSignedUrlUseCase, CreateFileUploadPresignedUrlUseCase } from "../../application/useCases/common/s3.useCase";
 

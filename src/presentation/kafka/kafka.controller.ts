@@ -1,10 +1,11 @@
-import { handler } from ".";
 import { kafkaConfig } from "../../config/env";
 import { log } from "../../shared/logger/logger";
+import { handler, processEventWrapperUseCase } from ".";
+import { kafkaConsumer } from "../../infrastructure/messaging";
+import { MBSSubKafkaEventPayload } from "../../application/dtos/kafka.dto";
 import { IKafkaConsumerAdapter } from "../../domain/interfaces/messaging/IKafkaConsumerAdapter";
 
-export class KafkaController {
-
+class KafkaController {
     constructor(
         private readonly kafkaConsumer: IKafkaConsumerAdapter
     ) { };
@@ -20,7 +21,12 @@ export class KafkaController {
                 await this.kafkaConsumer.subscribe(topic, async ({ message }) => {
                     if (!message.value) return;
                     const eventData = JSON.parse(message.value.toString());
-                    await useCase.execute(eventData);
+                    await processEventWrapperUseCase.execute({
+                        businessUseCase: useCase,
+                        eventData,
+                        topic,
+                        payloadExtractor: (payload: MBSSubKafkaEventPayload) => payload.mbsData
+                    });
                 });
             };
 
@@ -30,3 +36,5 @@ export class KafkaController {
         };
     };
 };
+
+export const kafkaController = new KafkaController(kafkaConsumer)

@@ -1,91 +1,107 @@
-import { v4 as uuidv4 } from 'uuid';
+import mongoose from "mongoose";
 import { kafkaConfig } from "../../../config/env";
-import { log } from "../../../shared/logger/logger";
-import { Role } from "../../../domain/enums/common.enum";
+import { OTPVerificationInput } from "../../dtos/auth.dto";
 import { User } from "../../../domain/entities/user.entity";
-import { Provider } from "../../../domain/entities/provider.entity";
-import { EventEnvelope, SendWelcomeEvent } from "../../dtos/kafka.dtos";
+import { generateId } from '../../../shared/utils/generateId';
+import { IJWT } from '../../../domain/interfaces/security/IJwt';
+import { ERROR_CODES, IdType } from '../../../shared/utils/types';
+import { toAppError } from '../../../shared/error/handleUnknownError';
+import { EventEnvelope, SendWelcomeEvent } from "../../dtos/kafka.dto";
+import { AppError, BadRequestError } from '../../../shared/error/appError';
+import { CreditAccount } from "../../../domain/entities/creditAccount.entity";
 import { IOTPService } from "../../../domain/interfaces/services/IOtp.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { OTPVerificationRequest, VerifyAndActivateEntityRequest } from "../../dtos/auth.dto";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
-import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
+import { ICreditAccountRepository } from "../../../domain/interfaces/repositories/ICreditAccount.repository";
 
 export class VerifyOTPUseCase {
   constructor(
     private readonly userRepository: IUserRepository,
-    private readonly providerRepository: IProviderRepository,
     private readonly otpService: IOTPService,
-    private readonly kafkaProducer: IKafkaProducerAdapter
+    private readonly kafkaProducer: IKafkaProducerAdapter,
+    private readonly jwtService: IJWT,
+    private readonly creditAccountRepository: ICreditAccountRepository
   ) { };
 
-  async execute(payload: OTPVerificationRequest): Promise<void> {
+  async execute(input: OTPVerificationInput): Promise<void> {
+    const session = await mongoose.startSession();
+    session.startTransaction();
     try {
-      const { otp, verificationToken, role } = payload;
+      const { token, otp } = input;
+      if (!token || !otp) {
+        throw new BadRequestError();
+      }
 
-      if (!otp || !verificationToken || !role) {
-        throw new Error("Invalid request");
-      };
+      const { email, username, password } = await this.jwtService.verifyToken(token);
+      if (!email || !username || !password) {
+        throw new BadRequestError();
+      }
 
-      const isValidOTP = await this.otpService.verifyOtp(
-        verificationToken,
-        otp
-      );
+      const existingUser = await this.userRepository.findByEmail(email);
+      if (existingUser) {
+        throw new BadRequestError(
+          "Invalid credentials",
+          ERROR_CODES.INVALID_CREDENTIALS
+        );
+      }
 
-      if (!isValidOTP) {
-        throw new Error("Invalid or expired OTP");
-      };
+      const isValidOTP = await this.otpService.verifyOtp(email, otp);
+      if (!isValidOTP) throw new BadRequestError("Invalid OTP");
 
-      const entity = await this.verifyAndActivateEntity({
-        role,
-        verificationToken
+      const referralCode = generateId({
+        type: IdType.REFERRAL,
+        options: { name: username }
       });
 
-      await this.kafkaProducer.publish<EventEnvelope<SendWelcomeEvent>>(kafkaConfig.topics.pub.registerSuccess, {
-        eventId: uuidv4(),
-        attempt: 1,
-        maxAttempts: 1,
-        occurredAt: new Date().toISOString(),
-        payload: {
-          emailData: {
-            email: entity.email,
-            name: entity.username,
-            role,
-          },
+      if (!existingUser) {
+        const newUser = await this.userRepository.create(User.createLocal({
+          email,
+          username,
+          password,
+          referralCode
+        }), session);
+
+        if (!newUser) {
+          throw new AppError(
+            "Internal server error",
+            500,
+            true,
+            ERROR_CODES.INTERNAL_ERROR
+          )
+        };
+
+        const creditAccount = await this.creditAccountRepository.create(CreditAccount.create({
+          userId: newUser._id
+        }), session);
+        if (!creditAccount) {
+          throw new AppError(
+            "Internal server error",
+            500,
+            true,
+            ERROR_CODES.INTERNAL_ERROR
+          )
         }
-      });
 
-    } catch (error) {
-      log.error("VerifyOTPUseCase failed", error as Error);
-      throw error;
-    };
-  };
-
-  private async verifyAndActivateEntity(payload: VerifyAndActivateEntityRequest): Promise<User | Provider> {
-
-    const { role, verificationToken } = payload;
-
-    if (role === Role.USER) {
-      const user = await this.userRepository.findByVerificationToken(verificationToken);
-
-      if (!user) {
-        throw new Error("Verification failed");
-      };
-
-      user.markEmailVerified();
-      return this.userRepository.update(user);
-    };
-
-    if (role === Role.PROVIDER) {
-      const provider = await this.providerRepository.findByVerificationToken(verificationToken);
-
-      if (!provider) {
-        throw new Error("Verification failed");
-      };
-
-      provider.markEmailVerified();
-      return this.providerRepository.update(provider);
-    };
-    throw new Error("Unsupported role");
-  };
-};
+        await this.kafkaProducer.publish<EventEnvelope<SendWelcomeEvent>>(kafkaConfig.topics.pub.registerSuccess, {
+          eventId: generateId({ type: IdType.EVENT }),
+          attempt: 1,
+          maxAttempts: 1,
+          occurredAt: new Date().toISOString(),
+          payload: {
+            emailData: {
+              email: newUser.email,
+              name: newUser.username,
+              role: newUser.role,
+            },
+          }
+        })
+      }
+      await session.commitTransaction();
+    } catch (error: unknown) {
+      await session.abortTransaction();
+      throw toAppError(error, "Failed to verify otp");
+    } finally {
+      session.endSession();
+    }
+  }
+}

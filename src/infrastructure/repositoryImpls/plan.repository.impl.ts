@@ -5,10 +5,10 @@ import { IPlanRepository } from "../../domain/interfaces/repositories/IPlan.repo
 
 export class PlanRepositoryImpl implements IPlanRepository {
 
-    async create(plan: Plan): Promise<Plan> {
+    async create(plan: Plan): Promise<Plan | null> {
         const persistence = PlanMapper.toPersistence(plan);
         const doc = await PlanModel.create(persistence);
-        return PlanMapper.toDomain(doc);
+        return doc ? PlanMapper.toDomain(doc) : null;
     };
 
     async findById(planId: string): Promise<Plan | null> {
@@ -26,7 +26,7 @@ export class PlanRepositoryImpl implements IPlanRepository {
         return doc ? PlanMapper.toDomain(doc) : null;
     };
 
-    async update(plan: Plan): Promise<Plan> {
+    async update(plan: Plan): Promise<Plan | null> {
         const persistence = PlanMapper.toPersistence(plan);
 
         const doc = await PlanModel.findByIdAndUpdate(
@@ -35,14 +35,10 @@ export class PlanRepositoryImpl implements IPlanRepository {
             { new: true }
         );
 
-        if (!doc) {
-            throw new Error("Plan not found");
-        }
-
-        return PlanMapper.toDomain(doc);
+        return doc ? PlanMapper.toDomain(doc) : null;
     };
 
-    async findAll(page: number = 1, limit: number = 10): Promise<{ data: Array<Plan>, totalPages: number; currentPage: number; totalCount: number; }> {
+    async findAll(page: number = 1, limit: number = 10): Promise<{ items: Array<Plan>, totalPages: number; currentPage: number; totalCount: number; }> {
         const skip = (page - 1) * limit;
         const [plans, totalCount] = await Promise.all([
             PlanModel.find({}, {
@@ -54,12 +50,12 @@ export class PlanRepositoryImpl implements IPlanRepository {
                 adVisibility: 1,
                 features: 1,
                 description: 1,
-            }).skip(skip).limit(limit).lean(),
+            }).skip(skip).limit(limit),
             PlanModel.countDocuments(),
         ]);
         const totalPages = Math.ceil(totalCount / limit);
         return {
-            data: plans.map(plan => PlanMapper.toDomain(plan)),
+            items: plans.map(plan => PlanMapper.toDomain(plan)),
             totalPages,
             currentPage: page,
             totalCount

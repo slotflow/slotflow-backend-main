@@ -1,8 +1,10 @@
 import { Redis } from "@upstash/redis";
 import { log } from "../../shared/logger/logger";
+import { ERROR_CODES } from "../../shared/utils/types";
 import { awsConfig, redisConfig } from "../../config/env";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { AppError, BadRequestError } from "../../shared/error/appError";
 import { ISignedUrlService } from "../../domain/interfaces/services/ISignedUrl.service";
 
 export class SignedUrlServiceImpl implements ISignedUrlService {
@@ -33,8 +35,11 @@ export class SignedUrlServiceImpl implements ISignedUrlService {
     async get(key: string): Promise<string> {
         try {
             if (!key) {
-                throw new Error("Invalid request");
-            };
+                throw new BadRequestError(
+                    "Invalid key",
+                    ERROR_CODES.INVALID_REQUEST
+                );
+            }
 
             if (this.isExternalUrl(key)) {
                 return key;
@@ -69,15 +74,28 @@ export class SignedUrlServiceImpl implements ISignedUrlService {
 
         } catch (error) {
             log.error("SignedUrlService.get failed", error as Error);
-            throw new Error("Failed to get signed Url");
+
+            if (error instanceof AppError) {
+                throw error;
+            }
+
+            throw new AppError(
+                "Failed to generate signed URL",
+                502,
+                false,
+                ERROR_CODES.INTERNAL_ERROR
+            );
         };
     };
 
     async save(key: string): Promise<string> {
         try {
             if (!key) {
-                throw new Error("Invalid request");
-            };
+                throw new BadRequestError(
+                    "Invalid key",
+                    ERROR_CODES.INVALID_REQUEST
+                );
+            }
 
             const command = new GetObjectCommand({
                 Bucket: awsConfig.awsS3BucketName!,
@@ -102,22 +120,41 @@ export class SignedUrlServiceImpl implements ISignedUrlService {
 
         } catch (error) {
             log.error("SignedUrlService.save failed", error as Error);
-            throw new Error("Failed to save signed url");
+
+            if (error instanceof AppError) {
+                throw error;
+            }
+
+            throw new AppError(
+                "Failed to save signed URL",
+                502,
+                false,
+                ERROR_CODES.INTERNAL_ERROR
+            );
         };
     };
 
     async delete(key: string): Promise<boolean> {
         try {
             if (!key) {
-                throw new Error("Invalid request");
-            };
+                throw new BadRequestError(
+                    "Invalid key",
+                    ERROR_CODES.INVALID_REQUEST
+                );
+            }
 
             const redisKey = this.buildRedisKey(key);
             const deletedCount = await this.redis.del(redisKey);
             return deletedCount === 1;
         } catch (error) {
             log.error("SignedUrlService delete failed", error as Error);
-            throw error;
+
+            throw new AppError(
+                "Failed to delete signed URL",
+                500,
+                false,
+                ERROR_CODES.INTERNAL_ERROR
+            );
         };
     };
 
@@ -141,7 +178,6 @@ export class SignedUrlServiceImpl implements ISignedUrlService {
                 allData[key] = await this.redis.get<string>(key);
             }
 
-            console.log("Redis Signed URL Cache:", allData);
         } catch (error) {
             log.error("Failed to debug redis signed URLs", error as Error);
         }

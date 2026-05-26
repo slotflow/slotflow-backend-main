@@ -26,11 +26,11 @@ const SubscriptionSchema = new Schema<ISubscription>({
     },
     startDate: {
         type: Date,
-        required: [true, "StartDate is required"]
+        default: null
     },
     endDate: {
         type: Date,
-        required: [true, "EndDate is required"]
+        default: null
     },
     subscriptionStatus: {
         type: String,

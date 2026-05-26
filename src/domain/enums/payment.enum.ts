@@ -12,13 +12,6 @@ export enum PaymentGateway {
     PAYPAL = "PAYPAL"
 };
 
-export enum PaymentMethod {
-    CARD = "CARD",
-    UPI = "UPI",
-    WALLET = "WALLET",
-    NET_BANKING = "NET_BANKING",
-};
-
 export enum PaymentStatus {
     PENDING = "PENDING",
     PAID = "PAID",
@@ -26,3 +19,14 @@ export enum PaymentStatus {
     CANCELLED = "CANCELLED",
     REFUNDED = "REFUNDED",
 };
+
+export enum RefundReason {
+    DUPLICATE= "duplicate",
+    FRAUDUKENT= "fraudulent",
+    REQUESTED_BY_CUSTOMER= "requested_by_customer"
+}
+
+export enum RefundFor {
+    CANCEL_BOOKING = "CANCEL_BOOKING",
+    CANCEL_SUBSCRIPTION = "CANCEL_SUBSCRIPTION",
+}

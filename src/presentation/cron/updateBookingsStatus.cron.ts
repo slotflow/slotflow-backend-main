@@ -6,6 +6,7 @@ export class UpdateBookingStatusCron {
     
   private lastRunDate: string | null = null;
   private readonly intervalMs: number;
+  private intervalId: NodeJS.Timeout | null = null;
 
   constructor(
     private readonly updateBookingStatusUseCase: UpdateBookingStatusUseCase,
@@ -17,10 +18,18 @@ export class UpdateBookingStatusCron {
   start(): void {
     log.info("UpdateBookingStatusCron started");
 
-    setInterval(async () => {
+    this.intervalId = setInterval(async () => {
       await this.run();
     }, this.intervalMs);
   };
+
+  stop(): void {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+    log.info("UpdateBookingStatusCron stopped");
+  }
 
   private async run(): Promise<void> {
     const today = dayjs().format("YYYY-MM-DD");

@@ -1,13 +1,15 @@
-import { Types } from "mongoose";
+import { FilterQuery, Types } from "mongoose";
+import { daysOfWeek } from "../../shared/utils/constants";
+import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { ServiceAvailabilityModel } from "../models/serviceAvailability.model";
 import { IServiceAvailabilityQueries } from "../../application/queries/IServiceAvailability.queries";
-import { FontendAvailabilityForResponse, TimeSlotForFrontendResponse } from "../../application/dtos/common.dto";
-
-const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+import { ServiceAvailabilityDTO, TimeSlotForClientOutput } from "../../application/dtos/common.dto";
+import { ServiceAvailabilityQuery, ServiceAvailabilityView } from "../../application/dtos/serviceAvailability.dto";
 
 export class ServiceAvailabilityQueriesImpl implements IServiceAvailabilityQueries {
 
-    async findByProviderId(date: Date, availabilityId: string): Promise<FontendAvailabilityForResponse | null> {
+    async findByProviderId(query: ServiceAvailabilityQuery): Promise<ServiceAvailabilityView> {
+        const { date, availabilityId, providerId } = query;
         const startOfDay = new Date(date);
         startOfDay.setHours(0, 0, 0, 0);
 
@@ -15,13 +17,15 @@ export class ServiceAvailabilityQueriesImpl implements IServiceAvailabilityQueri
         endOfDay.setHours(23, 59, 59, 999);
 
         const targetDay = daysOfWeek[date.getDay()];
-        console.log("targetDay : ", targetDay);
+        const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
+
+        const matchFilter: FilterQuery<ServiceAvailabilityDTO> = {};
+        if (availabilityId) matchFilter._id = new Types.ObjectId(availabilityId);
+        if (providerId) matchFilter.providerId = new Types.ObjectId(providerId);
 
         const availability = await ServiceAvailabilityModel.aggregate([
             {
-                $match: {
-                    _id: new Types.ObjectId(availabilityId)
-                }
+                $match: matchFilter
             },
             {
                 $addFields: {
@@ -44,8 +48,23 @@ export class ServiceAvailabilityQueriesImpl implements IServiceAvailabilityQueri
                     availabilityForDay: {
                         $ifNull: [
                             "$availabilityForDay",
-                            { day: targetDay, slots: [] }
+                            {
+                                day: targetDay,
+                                isAvailable: false,
+                                startTime: null,
+                                endTime: null,
+                                duration: null,
+                                modes: [],
+                                slots: []
+                            }
                         ]
+                    }
+                }
+            },
+            {
+                $addFields: {
+                    "availabilityForDay.isAvailable": {
+                        $ifNull: ["$availabilityForDay.isAvailable", false]
                     }
                 }
             },
@@ -61,6 +80,17 @@ export class ServiceAvailabilityQueriesImpl implements IServiceAvailabilityQueri
                                         { $eq: ["$serviceProviderId", "$$providerId"] },
                                         { $gte: ["$appointmentDate", "$$startOfDay"] },
                                         { $lte: ["$appointmentDate", "$$endOfDay"] },
+                                        {
+                                            $or: [
+                                                { $in: ["$appointmentStatus", [AppointmentStatus.BOOKED, AppointmentStatus.CONFIRMED, AppointmentStatus.COMPLETED]] },
+                                                {
+                                                    $and: [
+                                                        { $eq: ["$appointmentStatus", AppointmentStatus.PENDING] },
+                                                        { $gte: ["$createdAt", fifteenMinutesAgo] }
+                                                    ]
+                                                }
+                                            ]
+                                        }
                                     ]
                                 }
                             }
@@ -115,14 +145,15 @@ export class ServiceAvailabilityQueriesImpl implements IServiceAvailabilityQueri
 
         return {
             day: data.day,
+            isAvailable: data.isAvailable,
             duration: data.duration,
             endTime: data.endTime,
             modes: data.modes,
             startTime: data.startTime,
-            slots: data.slots.map((slot: TimeSlotForFrontendResponse) => ({
+            slots: (data.slots || []).map((slot: TimeSlotForClientOutput) => ({
                 _id: slot._id.toString(),
                 time: slot.time,
-                available: slot.available,
+                available: slot.available
             }))
         }
     };

@@ -1,20 +1,27 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
+import { HearAboutUsOptionValue, OnboardingStatus, Role, StripeAccountStatus } from '../../domain/enums/common.enum';
 
 export interface IUser extends Document {
   _id: Types.ObjectId;
   username: string;
   email: string;
   password: string;
+  role: Role;
+  onboardingType: Role | null;
+  onboardingStatus: OnboardingStatus;
   isBlocked: boolean;
-  isEmailVerified: boolean;
   phone: string;
-  profileImage: string;
+  profileImage: string | null;
   addressId: Types.ObjectId;
-  bookingsId: Types.ObjectId;
-  verificationToken: string;
   googleConnected: boolean;
   googleId: string;
-  allowPushNotification: boolean | null;
+  stripeAccountStatus: StripeAccountStatus | null;
+  stripeAccountId: string | null;
+  stripeCustomerId: string | null;
+  allowPushNotification: boolean;
+  whereDidHearAboutUs: HearAboutUsOptionValue;
+  referralCode: string | null;
+  referredBy: string | null;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -38,18 +45,29 @@ const UserSchema = new Schema<IUser>({
   },
   password: {
     type: String,
-    required: function () {
+    required: function (): boolean {
       return !this.googleId;
     },
     minlength: [8, "Password must be at least 8 characters"],
     maxlength: [100, "Password must be at most 100 characters"],
     match: [/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,100}$/, "Invalid password"]
   },
-  isBlocked: {
-    type: Boolean,
-    default: false
+  role: {
+    type: String,
+    enum: Object.values(Role),
+    default: Role.USER
   },
-  isEmailVerified: {
+  onboardingType: {
+    type: String,
+    enum: Object.values(Role),
+    default: null,
+  },
+  onboardingStatus: {
+    type: String,
+    enum: Object.values(OnboardingStatus),
+    default: OnboardingStatus.NOT_STARTED,
+  },
+  isBlocked: {
     type: Boolean,
     default: false
   },
@@ -69,14 +87,6 @@ const UserSchema = new Schema<IUser>({
     ref: "Address",
     default: null
   },
-  bookingsId: {
-    type: Schema.Types.ObjectId,
-    ref: "Booking", default: null
-  },
-  verificationToken: {
-    type: String,
-    default: null
-  },
   googleConnected: {
     type: Boolean,
     default: false
@@ -84,12 +94,38 @@ const UserSchema = new Schema<IUser>({
   googleId: {
     type: String,
     default: null,
-    required: function () {
+    required: function (): boolean {
       return !this.password;
     }
   },
+  stripeAccountStatus: {
+    type: String,
+    enum: Object.values(StripeAccountStatus),
+    default: null
+  },
+  stripeAccountId: {
+    type: String,
+    default: null
+  },
+  stripeCustomerId: {
+    type: String,
+    default: null
+  },
   allowPushNotification: {
     type: Boolean,
+    default: null
+  },
+  whereDidHearAboutUs: {
+    type: String,
+    enum: Object.values(HearAboutUsOptionValue),
+    default: null
+  },
+  referralCode: {
+    type: String,
+    default: null
+  },
+  referredBy: {
+    type: String,
     default: null
   },
   createdAt: {

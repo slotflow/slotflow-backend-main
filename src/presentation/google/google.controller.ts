@@ -1,16 +1,14 @@
 import passport from "passport";
-import { fethGoogleCalendarUseCase } from ".";
-import { log } from "../../shared/logger/logger";
+import { getGoogleCalendarUseCase } from ".";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { connectGoogleSchema } from "../../shared/zod/auth.zod";
-import { validateUserIdSchema } from "../../shared/zod/user.zod";
-import { FethGoogleCalendarUseCase } from "../../application/useCases/common/fetchGoogleCalendar.useCase";
+import { GetGoogleCalendarUseCase } from "../../application/useCases/common/getGoogleCalendar.useCase";
 
 class GoogleController {
     constructor(
-        private fethGoogleCalendarUseCase: FethGoogleCalendarUseCase
+        private getGoogleCalendarUseCase: GetGoogleCalendarUseCase
     ) {
         this.getUserEvents = this.getUserEvents.bind(this);
         this.connectGoogle = this.connectGoogle.bind(this);
@@ -18,27 +16,22 @@ class GoogleController {
 
     async getUserEvents(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log("getUserEvents constroller start");
-            const { userId } = validateUserIdSchema.parse((req.user as DecodedUser).userOrProviderId)
-            const result = await this.fethGoogleCalendarUseCase.execute(userId);
+            const user = req.user as DecodedUser;
+            const result = await this.getGoogleCalendarUseCase.execute({userId: user.id });
             sendResponse(res, result);
         } catch (error) {
-            log.error("getUserEvents failed",error as Error);
             next(error);
         };
     };
 
     async connectGoogle(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log("connectGoogle controller starting")
-            const user = (req.user as DecodedUser);
-            if (!user) throw new Error("no user found");
-            const { connectOnly, role, userId } = connectGoogleSchema.parse({
+            const user = req.user as DecodedUser;
+            const { connectOnly, role } = connectGoogleSchema.parse({
                 connectOnly: true,
                 role: user.role,
-                userId: user.userOrProviderId
             });
-            const state = JSON.stringify({ connectOnly, role, userId });
+            const state = JSON.stringify({ connectOnly, role, userId: user.id });
             passport.authenticate("google", {
                 scope: [
                     "openid",
@@ -56,13 +49,11 @@ class GoogleController {
                 state: state,
             })(req, res, next);
         } catch (error) {
-            log.error("connectGoogle failed",error as Error);
             next(error)
         };
     };
-
 };
 
 export const googleController = new GoogleController(
-    fethGoogleCalendarUseCase
+    getGoogleCalendarUseCase
 );

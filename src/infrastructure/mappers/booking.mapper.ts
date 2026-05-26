@@ -19,6 +19,7 @@ export class BookingMapper {
             googleEventId: doc.googleEventId ?? null,
             onlineTrack: doc.onlineTrack,
             statusTrack: doc.statusTrack,
+            calendarData: doc.calendarData,
             createdAt: doc.createdAt,
             updatedAt: doc.updatedAt,
         });

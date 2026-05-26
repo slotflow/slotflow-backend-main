@@ -1,75 +1,55 @@
-import { v4 as uuidv4 } from 'uuid';
 import { kafkaConfig } from '../../../config/env';
-import { log } from '../../../shared/logger/logger';
-import { User } from '../../../domain/entities/user.entity';
-import { EventEnvelope, SendOtpEvent } from '../../dtos/kafka.dtos';
-import { Provider } from '../../../domain/entities/provider.entity';
-import { OtpPurpose, Role } from '../../../domain/enums/common.enum';
-import { ResendOtpRequest, ResendOtpResponse } from '../../dtos/auth.dto';
+import { IdType } from '../../../shared/utils/types';
+import { ResendOtpOutput } from '../../dtos/auth.dto';
+import { generateId } from '../../../shared/utils/generateId';
+import { OtpPurpose } from '../../../domain/enums/common.enum';
+import { IJWT } from '../../../domain/interfaces/security/IJwt';
+import { BadRequestError } from '../../../shared/error/appError';
+import { EventEnvelope, SendOtpEvent } from '../../dtos/kafka.dto';
+import { toAppError } from '../../../shared/error/handleUnknownError';
 import { IOTPService } from '../../../domain/interfaces/services/IOtp.service';
-import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { IKafkaProducerAdapter } from '../../../domain/interfaces/messaging/IKafkaProducerAdapter';
-import { IProviderRepository } from '../../../domain/interfaces/repositories/IProvider.repository';
 
 export class ResendOtpUseCase {
 
   constructor(
-    private userRepository: IUserRepository,
-    private providerRepository: IProviderRepository,
-    private otpService: IOTPService,
-    private kafkaProducer: IKafkaProducerAdapter
+    private readonly otpService: IOTPService,
+    private readonly kafkaProducer: IKafkaProducerAdapter,
+    private readonly jwtService: IJWT
   ) { };
 
-  async execute(payload: ResendOtpRequest): Promise<ResendOtpResponse> {
+  async execute(input: ResendOtpOutput): Promise<void> {
     try {
-      const { role, verificationToken, email } = payload;
-      if (!role || (!verificationToken && !email)) throw new Error("Invalid request.");
+      const { token } = input;
+      if (!token) {
+        throw new BadRequestError()
+      }
 
-      let userOrProvider: Provider | User | null = null;
+      const { email, username } = await this.jwtService.verifyToken(token);
+      if (!email) {
+        throw new BadRequestError()
+      }
 
-      if (email && role) {
-        if (role === Role.USER) {
-          userOrProvider = await this.userRepository.findByEmail(email);
-        } else if (role === Role.PROVIDER) {
-          userOrProvider = await this.providerRepository.findByEmail(email);
-        } else {
-          throw new Error("Invalid request.");
-        };
-
-      } else if (verificationToken && role) {
-        if (role === Role.USER) {
-          userOrProvider = await this.userRepository.findByVerificationToken(verificationToken);
-        } else if (role === Role.PROVIDER) {
-          userOrProvider = await this.providerRepository.findByVerificationToken(verificationToken);
-        } else {
-          throw new Error("Invalid request.");
-        };
-      };
-
-      if (!userOrProvider || !userOrProvider?.email || !userOrProvider?.verificationToken) throw new Error("Please register.")
-
-      const otp = await this.otpService.setOtp(userOrProvider?.verificationToken);
-      if (!otp) throw new Error("Unexpected error, please try again.");
+      const otp = await this.otpService.setOtp(email);
 
       await this.kafkaProducer.publish<EventEnvelope<SendOtpEvent>>(kafkaConfig.topics.pub.sendOtp, {
-        eventId: uuidv4(),
+        eventId: generateId({ type: IdType.EVENT }),
         attempt: 1,
         maxAttempts: 1,
         occurredAt: new Date().toISOString(),
         payload: {
           emailData: {
-            email: userOrProvider.email,
-            name: userOrProvider.username,
+            email: email,
+            name: username || email,
             otp,
             purpose: OtpPurpose.REGISTRATION
           }
         }
       });
 
-      return { authUser: { verificationToken: userOrProvider.verificationToken, role } };
-    } catch (error) {
-      log.error("ResendOtpUseCase failed", error as Error);
-      throw error;
-    };
-  };
-};
+      return;
+    } catch (error: unknown) {
+      throw toAppError(error, "Failed to resend OTP")
+    }
+  }
+}

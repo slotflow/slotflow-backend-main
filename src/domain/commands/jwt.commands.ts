@@ -1,7 +1,11 @@
+import { Role } from "../enums/common.enum";
+
 export interface JwtClaims {
-  userOrProviderId?: string;
+  userId?: string;
   email?: string;
-  role?: string;
+  username?: string;
+  password?: string;
+  role?: Role;
   iat?: number;
   exp?: number;
 }

@@ -2,32 +2,31 @@ import { Types } from "mongoose";
 import { PipelineStage } from "mongoose";
 import { ProviderServiceModel } from "../models/providerService.model";
 import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
-import { FindProviderServiceResponse } from "../../application/dtos/common.dto";
-import { UserFetchServiceProvidersRequest, UserFetchServiceProvidersResponse } from "../../application/dtos/user.dto";
 import { IProviderServiceQueries } from "../../application/queries/IProviderService.queries";
-import { ProviderUpdateProviderServiceRequest, ProviderUpdateProviderServiceResponse } from "../../application/dtos/provider.dto";
+import { ProviderServiceByProviderIdQuery, ProviderServiceByProviderIdView, ProviderServiceByServiceIdsQuery, ProviderServiceByServiceIdsView, UpdateProviderServiceQuery, UpdateProviderServiceView } from "../../application/dtos/providerService.dto";
 
 export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
 
-    async findByProviderId(providerId: string): Promise<FindProviderServiceResponse | null> {
-        const service = await ProviderServiceModel.findOne({ providerId })
+    async findByProviderId(query: ProviderServiceByProviderIdQuery): Promise<ProviderServiceByProviderIdView | null> {
+        const { providerId } = query
+        const providerService = await ProviderServiceModel.findOne({ providerId })
             .populate({
-                path: "service",
+                path: "serviceId",
                 select: "-_id serviceName"
-            }).lean<FindProviderServiceResponse>();
+            }).lean<ProviderServiceByProviderIdView>();
 
-        if (!service) return null;
+        if (!providerService) return null;
         return {
-            ...service,
-            _id: service._id.toString(),
-            providerId: service.providerId.toString(),
-            service: {
-                serviceName: service.service.serviceName
+            ...providerService,
+            _id: providerService._id?.toString(),
+            providerId: providerService.providerId?.toString(),
+            serviceId: {
+                serviceName: providerService.serviceId.serviceName
             },
         };
     };
 
-    async findProvidersUsingServiceIds(payload: UserFetchServiceProvidersRequest): Promise<UserFetchServiceProvidersResponse[]> {
+    async findProvidersCardDataForUsers(query: ProviderServiceByServiceIdsQuery): Promise<ProviderServiceByServiceIdsView> {
 
         const pipeline: PipelineStage[] = [];
         const now = new Date();
@@ -42,7 +41,7 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
             radius = 5000,
             skip,
             limit
-        } = payload;
+        } = query;
 
         const hasValidPriceRange =
             typeof minPrice === "number" &&
@@ -54,24 +53,22 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
         if (serviceIds?.length) {
             pipeline.push({
                 $match: {
-                    service: { $in: serviceIds.map(id => new Types.ObjectId(id)) }
+                    serviceId: { $in: serviceIds.map(id => new Types.ObjectId(id)) }
                 }
             });
         }
 
         pipeline.push({
             $lookup: {
-                from: "providers",
+                from: "providerprofiles",
                 let: { providerId: "$providerId" },
                 pipeline: [
                     {
                         $match: {
                             $expr: {
                                 $and: [
-                                    { $eq: ["$_id", "$$providerId"] },
+                                    { $eq: ["$userId", "$$providerId"] },
                                     { $eq: ["$isAdminVerified", true] },
-                                    { $eq: ["$isBlocked", false] },
-                                    { $eq: ["$isEmailVerified", true] },
                                     ...(slotflowTrusted === true
                                         ? [{ $eq: ["$trustedBySlotflow", true] }]
                                         : [])
@@ -80,17 +77,38 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
                         }
                     }
                 ],
-                as: "provider"
+                as: "providerProfile"
             }
         });
 
-        pipeline.push({ $unwind: "$provider" });
+        pipeline.push({
+            $lookup: {
+                from: "users",
+                let: { providerId: "$providerId" },
+                pipeline: [
+                    {
+                        $match: {
+                            $expr: {
+                                $and: [
+                                    { $eq: ["$_id", "$$providerId"] },
+                                    { $eq: ["$isBlocked", false] },
+                                ]
+                            }
+                        }
+                    }
+                ],
+                as: "user"
+            }
+        });
+
+        pipeline.push({ $unwind: "$providerProfile" });
+        pipeline.push({ $unwind: "$user" });
 
         pipeline.push(
             {
                 $lookup: {
                     from: "subscriptions",
-                    let: { providerId: "$provider._id" },
+                    let: { providerId: "$user._id" },
                     pipeline: [
                         {
                             $match: {
@@ -112,42 +130,53 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
             { $unwind: "$activeSubscription" }
         );
 
+        // if (hasValidPriceRange) {
+        //     pipeline.push(
+        //         {
+        //             $lookup: {
+        //                 from: "providerServices",
+        //                 let: { providerId: "$user._id" },
+        //                 pipeline: [
+        //                     {
+        //                         $match: {
+        //                             $expr: {
+        //                                 $and: [
+        //                                     { $eq: ["$providerId", "$$providerId"] },
+        //                                     { $lte: ["$servicePrice", maxPrice] },
+        //                                     { $gte: ["$servicePrice", minPrice] }
+        //                                 ]
+        //                             }
+        //                         }
+        //                     }
+        //                 ],
+        //                 as: "providerServices"
+        //             }
+        //         },
+        //         {
+        //             $match: {
+        //                 $expr: { $gt: [{ $size: "$providerServices" }, 0] }
+        //             }
+        //         }
+        //     );
+        // }
+
         if (hasValidPriceRange) {
-            pipeline.push(
-                {
-                    $lookup: {
-                        from: "providerServices",
-                        let: { providerId: "$provider._id" },
-                        pipeline: [
-                            {
-                                $match: {
-                                    $expr: {
-                                        $and: [
-                                            { $eq: ["$providerId", "$$providerId"] },
-                                            { $lte: ["$servicePrice", maxPrice] },
-                                            { $gte: ["$servicePrice", minPrice] }
-                                        ]
-                                    }
-                                }
-                            }
-                        ],
-                        as: "providerServices"
-                    }
-                },
-                {
-                    $match: {
-                        $expr: { $gt: [{ $size: "$providerServices" }, 0] }
-                    }
-                }
-            );
+    pipeline.push({
+        $match: {
+            servicePrice: {
+                $gte: minPrice,
+                $lte: maxPrice
+            }
         }
+    });
+}
 
         if (location?.coordinates?.length === 2) {
             pipeline.push(
                 {
                     $lookup: {
                         from: "addresses",
-                        let: { providerId: "$provider._id" },
+                        let: { providerId: "$user._id" },
                         pipeline: [
                             {
                                 $geoNear: {
@@ -178,7 +207,7 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
             {
                 $lookup: {
                     from: "services",
-                    localField: "service",
+                    localField: "serviceId",
                     foreignField: "_id",
                     as: "serviceDetails"
                 }
@@ -198,10 +227,10 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
             $project: {
                 _id: 1,
                 provider: {
-                    _id: "$provider._id",
-                    username: "$provider.username",
-                    profileImage: "$provider.profileImage",
-                    trustedBySlotflow: "$provider.trustedBySlotflow"
+                    _id: "$user._id",
+                    username: "$user.username",
+                    profileImage: "$user.profileImage",
+                    trustedBySlotflow: "$providerProfile.trustedBySlotflow"
                 },
                 serviceDetails: {
                     serviceId: "$serviceDetails._id",
@@ -222,7 +251,6 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
         };
 
         const result = await ProviderServiceModel.aggregate(pipeline);
-
         return result.map(p => ({
             _id: p._id.toString(),
             provider: {
@@ -242,25 +270,25 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
     };
 
 
-    async updateProviderService(payload: ProviderUpdateProviderServiceRequest): Promise<ProviderUpdateProviderServiceResponse | null> {
-        const { _id, ...data } = payload;
+    async updateProviderService(query: UpdateProviderServiceQuery): Promise<UpdateProviderServiceView> {
+        const { _id, ...data } = query;
         const service = await ProviderServiceModel.findOneAndUpdate(
             { _id: new Types.ObjectId(_id) },
             { $set: { ...data } },
             { new: true }
         )
             .populate({
-                path: "service",
+                path: "serviceId",
                 select: "-_id serviceName",
             })
-            .lean<ProviderUpdateProviderServiceResponse>();
+            .lean<UpdateProviderServiceView>();
 
         if (!service) return null;
         return {
             ...service,
-            _id: service._id.toString(),
-            service: {
-                serviceName: service.service.serviceName
+            _id: service._id?.toString(),
+            serviceId: {
+                serviceName: service.serviceId.serviceName
             }
         }
     };

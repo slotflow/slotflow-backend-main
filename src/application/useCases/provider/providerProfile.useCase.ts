@@ -1,175 +1,148 @@
-import { awsConfig } from "../../../config/env";
 import {
   ProviderDeleteProofRequest,
   ProviderAdminApprovalRequest,
   ProviderAdminApprovalResponse,
-  ProviderUpdateProviderInfoRequest,
   ProviderUpdateServiceProofRequest,
-  ProviderFetchProfileDetailsRequest,
   ProviderUpdateServiceProofResponse,
-  ProviderUpdateprofileImageResponse,
-  ProviderUpdateProviderInfoResponse,
   ProviderUpdateIdentityProofRequest,
-  ProviderFetchProfileDetailsResponse,
   ProviderUpdateIdentityProofResponse,
-  ProviderUpdateprofileImageRequestPayload,
-  ProviderUpdatePushNotificationRequest,
-} from "../../dtos/provider.dto";
-import { log } from "../../../shared/logger/logger";
+} from "../../dtos/providerProfile.dto";
+import { awsConfig } from "../../../config/env";
+import { ERROR_CODES } from "../../../shared/utils/types";
+import { IUserQueries } from "../../queries/IUser.queries";
 import { DeleteObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { toAppError } from "../../../shared/error/handleUnknownError";
+import { AppError, BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { AdminVerificationStatus } from "../../../domain/enums/adminVerificationStatus.enum";
-import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
+import { ProviderGetOwnProfileDetailsInput, ProviderGetOwnProfileDetailsOutput } from "../../dtos/user.dto";
+import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 
-export class ProviderFetchProfileDetailsUseCase {
+export class ProviderGetProfileDetailsUseCase {
   constructor(
-    private providerRepository: IProviderRepository
+    private readonly userQueries: IUserQueries,
+    private readonly signedUrlService: ISignedUrlService
   ) { };
 
-  async execute(payload: ProviderFetchProfileDetailsRequest): Promise<ProviderFetchProfileDetailsResponse> {
+  async execute(input: ProviderGetOwnProfileDetailsInput): Promise<ProviderGetOwnProfileDetailsOutput> {
     try {
-      const { providerId } = payload;
+      const { providerId } = input;
+      if (!providerId) {
+        throw new BadRequestError();
+      }
 
-      const provider = await this.providerRepository.findById(providerId);
-      if (!provider) return null;
+      const provider = await this.userQueries.findProviderById({ providerId });
+      if (!provider) {
+        throw new NotFoundError(
+          "Provider not found",
+          ERROR_CODES.USER_NOT_FOUND
+        );
+      }
+
+      let signedProfileImageUrl: string | null = null;
+      if (provider.profileImage) {
+        signedProfileImageUrl = await this.signedUrlService.get(provider.profileImage);
+      }
 
       return {
-        createdAt: provider.createdAt,
+        username: provider.username,
         email: provider.email,
-        isAdminVerified: provider.isAdminVerified,
         isBlocked: provider.isBlocked,
-        isEmailVerified: provider.isEmailVerified,
         phone: provider.phone,
-        username: provider.username
-      };
-    } catch (error) {
-      log.error("ProviderFetchProfileDetailsUseCase failed", error as Error);
-      throw error;
+        createdAt: provider.createdAt,
+        isAdminVerified: provider.isAdminVerified,
+        trustedBySlotflow: provider.trustedBySlotflow,
+        adminVerificationStatus: provider.adminVerificationStatus,
+        isAddressVerified: provider.isAddressVerified,
+        isAvailabilityVerified: provider.isAvailabilityVerified,
+        isProofsVerified: provider.isProofsVerified,
+        isServiceDetailsVerified: provider.isServiceDetailsVerified,
+        referralCode: provider.referralCode,
+        profileImage: signedProfileImageUrl || null
+      }
+    } catch (error: unknown) {
+      throw toAppError(error, "Failed to profile details")
     };
   };
 };
-
-export class ProviderUpdateProviderInfoUseCase {
-  constructor(
-    private providerRepository: IProviderRepository
-  ) { };
-
-  async execute(payload: ProviderUpdateProviderInfoRequest): Promise<ProviderUpdateProviderInfoResponse> {
-    try {
-      const { providerId, username, phone } = payload;
-
-      if (!phone && !username) throw new Error("Invalid request");
-
-      const provider = await this.providerRepository.findById(providerId);
-      if (!provider) throw new Error("No user found");
-
-      provider.updateProfileInfo({
-        phone: phone ?? undefined,
-        username: username ?? undefined
-      });
-
-      const updatedProvider = await this.providerRepository.update(provider);
-      if (!updatedProvider) throw new Error("Failed to update info, please try again");
-
-      return { username: updatedProvider.username, phone: updatedProvider.phone };
-    } catch (error) {
-      log.error("ProviderUpdateProviderInfoUseCase failed", error as Error);
-      throw error;
-    };
-  };
-};
-
 
 export class ProviderUpdateIdentityProofUseCase {
-
   constructor(
-    private providerRepository: IProviderRepository,
-    private signedUrlService: ISignedUrlService
+    private readonly providerProfileRepository: IProviderProfileRepository,
+    private readonly signedUrlService: ISignedUrlService
   ) { };
 
-  async exeute(payload: ProviderUpdateIdentityProofRequest): Promise<ProviderUpdateIdentityProofResponse> {
+  async exeute(input: ProviderUpdateIdentityProofRequest): Promise<ProviderUpdateIdentityProofResponse> {
     try {
+      const { providerId, identityProof } = input;
+      if (!providerId || !identityProof) {
+        throw new BadRequestError();
+      }
 
-      const { providerId, identityProof } = payload;
-      if (!providerId || !identityProof) throw new Error("Invalid request");
+      const providerProfile = await this.providerProfileRepository.findByUserId(providerId);
+      if (!providerProfile) {
+        throw new NotFoundError(
+          "Profile not found",
+          ERROR_CODES.PROVIDER_PROFILE_NOT_FOUND
+        );
+      }
 
-      const provider = await this.providerRepository.findById(providerId);
-      if (!provider) throw new Error("User not found");
-
-      provider.submitIdentityProof({ identityProof });
-      const updatedProvider = await this.providerRepository.update(provider);
-      if (!updatedProvider) throw new Error("Failed to update proof");
+      providerProfile.submitIdentityProof({ identityProof });
+      const updatedProvider = await this.providerProfileRepository.update(providerProfile);
+      if (!updatedProvider) {
+        throw new AppError(
+          "Failed to update identity proof in profile.",
+          500,
+          true,
+          ERROR_CODES.INTERNAL_ERROR
+        );
+      }
 
       const signedUrl = await this.signedUrlService.save(identityProof);
-      if (!signedUrl) throw new Error("Failed to generate signed url");
 
       return signedUrl;
-    } catch (error) {
-      log.error("ProviderUpdateIdentityProofUseCase failed", error as Error);
-      throw error;
+    } catch (error: unknown) {
+      throw toAppError(error, "Failed to update identity proof")
     };
   };
 };
 
 export class ProviderUpdateServiceProofUseCase {
-
   constructor(
-    private providerRepository: IProviderRepository,
-    private signedUrlService: ISignedUrlService
+    private readonly providerProfileRepository: IProviderProfileRepository,
+    private readonly signedUrlService: ISignedUrlService
   ) { };
 
-  async exeute(payload: ProviderUpdateServiceProofRequest): Promise<ProviderUpdateServiceProofResponse> {
+  async exeute(input: ProviderUpdateServiceProofRequest): Promise<ProviderUpdateServiceProofResponse> {
     try {
+      const { providerId, serviceProof } = input;
+      if (!providerId || !serviceProof) {
+        throw new BadRequestError();
+      }
 
-      const { providerId, serviceProof } = payload;
-      if (!providerId || !serviceProof) throw new Error("Invali drequest");
+      const providerProfile = await this.providerProfileRepository.findByUserId(providerId);
+      if (!providerProfile) {
+        throw new NotFoundError(
+          "Profile not found",
+          ERROR_CODES.PROVIDER_PROFILE_NOT_FOUND
+        );
+      }
 
-      const provider = await this.providerRepository.findById(providerId);
-      if (!provider) throw new Error("User not found");
-
-      provider.submitServiceProof({ serviceProof });
-      const updatedProvider = await this.providerRepository.update(provider);
-      if (!updatedProvider) throw new Error("Failed to update proof");
+      providerProfile.submitServiceProof({ serviceProof });
+      const updatedProviderProfile = await this.providerProfileRepository.update(providerProfile);
+      if (!updatedProviderProfile) {
+        throw new AppError(
+          "Failed to update identity proof in profile.",
+          500,
+          true,
+          ERROR_CODES.INTERNAL_ERROR
+        );
+      }
 
       const signedUrl = await this.signedUrlService.save(serviceProof);
-      if (!signedUrl) throw new Error("Failed to generate signed url");
-
       return signedUrl;
-    } catch (error) {
-      log.error("ProviderUpdateServiceProofUseCase failed", error as Error);
-      throw error;
-    };
-  };
-};
-
-
-export class ProviderUpdateProfileImageUseCase {
-
-  constructor(
-    private providerRepository: IProviderRepository,
-    private signedUrlService: ISignedUrlService
-  ) { };
-
-  async execute(payload: ProviderUpdateprofileImageRequestPayload): Promise<ProviderUpdateprofileImageResponse> {
-    try {
-
-      const { providerId, profileImage } = payload;
-      if (!providerId || !profileImage) throw new Error("Invalid request");
-
-      const provider = await this.providerRepository.findById(providerId);
-      if (!provider) throw new Error("User not found");
-
-      provider.updateProfileImage({ profileImage });
-      const updatedProvider = await this.providerRepository.update(provider);
-      if (!updatedProvider) throw new Error("Failed to update profile image");
-
-      const signedUrl = await this.signedUrlService.save(profileImage);
-      if (!signedUrl) throw new Error("Failed to generate signed url");
-
-      return signedUrl;
-    } catch (error) {
-      log.error("ProviderUpdateProfileImageUseCase failed", error as Error);
-      throw error;
+    } catch (error: unknown) {
+      throw toAppError(error, "Failed to update service proof");
     };
   };
 };
@@ -177,42 +150,58 @@ export class ProviderUpdateProfileImageUseCase {
 
 export class ProviderRequestForApprovalUseCase {
   constructor(
-    private providerRepository: IProviderRepository
+    private readonly providerProfileRepository: IProviderProfileRepository
   ) { };
 
-  async execute(payload: ProviderAdminApprovalRequest): Promise<ProviderAdminApprovalResponse> {
+  async execute(input: ProviderAdminApprovalRequest): Promise<ProviderAdminApprovalResponse> {
     try {
+      const { providerId } = input;
+      if (!providerId) {
+        throw new BadRequestError();
+      }
 
-      const { providerId } = payload;
+      const providerProfile = await this.providerProfileRepository.findByUserId(providerId);
+      if (!providerProfile) {
+        throw new NotFoundError(
+          "Profile not found",
+          ERROR_CODES.PROVIDER_PROFILE_NOT_FOUND
+        );
+      }
 
-      const provider = await this.providerRepository.findById(providerId);
-      if (!provider) throw new Error("Invalid request");
-      if (provider?.isAdminVerified) throw new Error("You are already verified");
+      if (providerProfile?.isAdminVerified) {
+        throw new BadRequestError();
+      }
 
-      if (provider?.adminVerificationStatus === AdminVerificationStatus.REQUESTED ||
-        provider?.adminVerificationStatus === AdminVerificationStatus.UNDER_REVIEW ||
-        provider?.adminVerificationStatus === AdminVerificationStatus.APPROVED ||
-        provider?.adminVerificationStatus === AdminVerificationStatus.RESUBMITTED
+      if (providerProfile?.adminVerificationStatus === AdminVerificationStatus.REQUESTED ||
+        providerProfile?.adminVerificationStatus === AdminVerificationStatus.UNDER_REVIEW ||
+        providerProfile?.adminVerificationStatus === AdminVerificationStatus.APPROVED ||
+        providerProfile?.adminVerificationStatus === AdminVerificationStatus.RESUBMITTED
       ) {
-        throw new Error("Invalid request");
+        throw new BadRequestError();
       };
 
-      if (provider?.adminVerificationStatus === AdminVerificationStatus.NOT_REQUESTED) {
-        provider.submitForAdminVerification();
+      if (providerProfile?.adminVerificationStatus === AdminVerificationStatus.NOT_REQUESTED) {
+        providerProfile.submitForAdminVerification();
       };
 
-      if (provider?.adminVerificationStatus === AdminVerificationStatus.REJECTED) {
-        provider.resubmitForAdminVerification();
+      if (providerProfile?.adminVerificationStatus === AdminVerificationStatus.REJECTED) {
+        providerProfile.resubmitForAdminVerification();
       };
 
-      const updatedProvider = await this.providerRepository.update(provider);
-      if (!updatedProvider) throw new Error("Failed to update approval request status");
+      const updatedProvider = await this.providerProfileRepository.update(providerProfile);
+      if (!updatedProvider) {
+        throw new AppError(
+          "Failed to update approval request status",
+          500,
+          true,
+          ERROR_CODES.INTERNAL_ERROR
+        );
+      }
 
       return { adminVerificationStatus: updatedProvider?.adminVerificationStatus };
 
-    } catch (error) {
-      log.error("ProviderRequestForApprovalUseCase failed", error as Error);
-      throw error;
+    } catch (error: unknown) {
+      throw toAppError(error, "Failed to update provider approval request");
     };
   };
 };
@@ -220,35 +209,52 @@ export class ProviderRequestForApprovalUseCase {
 
 export class ProvideDeleteIdentityProofUseCase {
   constructor(
-    private s3Client: S3Client,
-    private providerRepository: IProviderRepository,
-    private signedUrlService: ISignedUrlService
+    private readonly s3Client: S3Client,
+    private readonly providerProfileRepository: IProviderProfileRepository,
+    private readonly signedUrlService: ISignedUrlService
   ) { };
 
-  async execute(payload: ProviderDeleteProofRequest): Promise<void> {
+  async execute(input: ProviderDeleteProofRequest): Promise<void> {
     try {
-      const { providerId } = payload;
+      const { providerId } = input;
+      if (!providerId) {
+        throw new BadRequestError();
+      }
 
-      const provider = await this.providerRepository.findById(providerId);
-      if (!provider) throw new Error("User not found");
+      const providerProfile = await this.providerProfileRepository.findByUserId(providerId);
+      if (!providerProfile) {
+        throw new NotFoundError(
+          "Profile not found",
+          ERROR_CODES.PROVIDER_PROFILE_NOT_FOUND
+        );
+      }
 
-      if (!provider.identityProof) throw new Error("No file found");
+      if (!providerProfile.identityProof) throw new Error("No file found");
+
+      const identityProofKey = providerProfile.identityProof;
 
       await this.s3Client.send(
         new DeleteObjectCommand({
           Bucket: awsConfig.awsS3BucketName,
-          Key: provider.identityProof,
+          Key: identityProofKey,
         })
       );
 
-      provider.submitIdentityProof({ identityProof: null });
-      await this.providerRepository.update(provider);
+      providerProfile.submitIdentityProof({ identityProof: null });
+      const updatedProfile = await this.providerProfileRepository.update(providerProfile);
+      if (!updatedProfile) {
+        throw new AppError(
+          "Failed to delete identity proof",
+          500,
+          true,
+          ERROR_CODES.INTERNAL_ERROR
+        );
+      }
 
-      await this.signedUrlService.delete(provider.identityProof);
+      await this.signedUrlService.delete(identityProofKey);
 
-    } catch (error) {
-      log.error("ProvideDeleteIdentityProofUseCase failed", error as Error);
-      throw error;
+    } catch (error: unknown) {
+      throw toAppError(error, "Failed to delete identity proof");
     };
   };
 };
@@ -256,58 +262,54 @@ export class ProvideDeleteIdentityProofUseCase {
 
 export class ProvideDeleteServiceProofUseCase {
   constructor(
-    private s3Client: S3Client,
-    private providerRepository: IProviderRepository,
-    private signedUrlService: ISignedUrlService
+    private readonly s3Client: S3Client,
+    private readonly providerProfileRepository: IProviderProfileRepository,
+    private readonly signedUrlService: ISignedUrlService
   ) { };
 
-  async execute(payload: ProviderDeleteProofRequest): Promise<void> {
+  async execute(input: ProviderDeleteProofRequest): Promise<void> {
     try {
-      const { providerId } = payload;
+      const { providerId } = input;
+      if (!providerId) {
+        throw new BadRequestError();
+      }
 
-      const provider = await this.providerRepository.findById(providerId);
-      if (!provider) throw new Error("User not found");
+      const providerProfile = await this.providerProfileRepository.findByUserId(providerId);
+      if (!providerProfile) {
+        throw new NotFoundError(
+          "Profile not found",
+          ERROR_CODES.PROVIDER_PROFILE_NOT_FOUND
+        );
+      }
 
-      if (!provider.serviceProof) throw new Error("No file found");
+      if (!providerProfile.serviceProof) {
+        throw new BadRequestError();
+      }
+
+      const serviceProofKey = providerProfile.serviceProof;
 
       await this.s3Client.send(
         new DeleteObjectCommand({
           Bucket: awsConfig.awsS3BucketName,
-          Key: provider.serviceProof,
+          Key: serviceProofKey,
         })
       );
 
-      provider.submitServiceProof({ serviceProof: null });
-      await this.providerRepository.update(provider);
+      providerProfile.submitServiceProof({ serviceProof: null });
+      const updatedProfile = await this.providerProfileRepository.update(providerProfile);
+      if (!updatedProfile) {
+        throw new AppError(
+          "Failed to delete service proof",
+          500,
+          true,
+          ERROR_CODES.INTERNAL_ERROR
+        )
+      }
 
-      await this.signedUrlService.delete(provider.serviceProof);
+      await this.signedUrlService.delete(serviceProofKey);
 
-    } catch (error) {
-      log.error("ProvideDeleteServiceProofUseCase failed", error as Error);
-      throw error;
+    } catch (error: unknown) {
+      throw toAppError(error, "Failed to get ptovider profile");
     };
   };
-};
-
-export class ProviderUpdatePushNotificationUseCase {
-    constructor(
-        private providerRepository: IProviderRepository
-    ) { };
-
-    async execute(payload: ProviderUpdatePushNotificationRequest): Promise<void> {
-        try {
-            const { allowPushNotification, providerId } = payload;
-            
-            const provider = await this.providerRepository.findById(providerId);
-            if (!provider) throw new Error("No provider found");
-            
-            provider.updatePushNotification({allowPushNotification});
-            
-            const updatedProvider = await this.providerRepository.update(provider);
-            if (!updatedProvider) throw new Error("Info adding failed, please try again");
-        } catch (error) {
-            log.error("ProviderUpdatePushNotificationUseCase failed", error as Error);
-            throw error;
-        };
-    };
 };

@@ -1,11 +1,11 @@
 import passport from "passport";
 import { log } from "../../shared/logger/logger";
 import { googleAuthOrchestratorUseCase } from ".";
+import { Role } from "../../domain/enums/common.enum";
 import { NextFunction, Request, Response } from "express";
 import { appConfig, serviceConfig } from "../../config/env";
-import { roleValidationSchema } from "../../shared/zod/common.zod";
+import { roleValidationSchema } from "../../shared/zod/base.zod";
 import { GoogleAuthOrchestratorUseCase } from "../../application/useCases/auth/googleAuthOrchestrate.useCase";
-import { Role } from "../../domain/enums/common.enum";
 
 class GoogleAuthController {
     constructor(
@@ -17,7 +17,6 @@ class GoogleAuthController {
 
     async googleAuth(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log("google auth login");
             const { role } = roleValidationSchema.parse({ role: req.query.role });
             passport.authenticate("google", {
                 scope: [
@@ -40,7 +39,6 @@ class GoogleAuthController {
 
     async googleAuthCallback(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log("google auth callback");
             passport.authenticate("google", { session: false }, async (err, user, info) => {
 
                 if (err || !user) {
@@ -68,7 +66,7 @@ class GoogleAuthController {
                     role,
                     connectOnly: user.connectOnly,
                     image: user.image,
-                    userId: user.userId,
+                    userId: user.id,
                     accessToken: user.googleAccessToken,
                     refreshToken: user.googleRefreshToken,
                     expiryDate,
@@ -77,10 +75,10 @@ class GoogleAuthController {
                 if (user.connectOnly) {
                     const successPayload = {
                         success: true,
-                        googleConnected: true,
+                        ...updatedUser,
                     };
                     const redirectData = encodeURIComponent(JSON.stringify(successPayload));
-                    return res.redirect(`${serviceConfig.frontendUrl}/${role === Role.PROVIDER ? "provider" : "user"}/integrations?response=${redirectData}`);
+                    return res.redirect(`${serviceConfig.frontendUrl}/${role === Role.PROVIDER ? "provider" : "user"}/settings/integrations?response=${redirectData}`);
                 };
 
                 res.cookie("token", token, {
@@ -90,22 +88,11 @@ class GoogleAuthController {
                     secure: appConfig.nodeEnv !== "development",
                 });
 
-                const authUserWithoutToken = {
-                    email: user.email,
-                    name: user.name,
-                    role,
-                    googleConnected: !!user.googleAccessToken,
-                    image: user.image,
-                    googleId: user.googleId,
-                    ...updatedUser
-                };
-
-                const authUserWithoutTokenJson = JSON.stringify(authUserWithoutToken);
+                const authUserWithoutTokenJson = JSON.stringify(updatedUser);
                 const frontendUrl = serviceConfig.frontendUrl;
                 return res.redirect(`${frontendUrl}?authUser=${encodeURIComponent(authUserWithoutTokenJson)}`);
             })(req, res);
         } catch (error) {
-            log.error("googleAuthCallback failed", error as Error);
             next(error);
         };
     };

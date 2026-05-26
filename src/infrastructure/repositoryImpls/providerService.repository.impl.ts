@@ -1,3 +1,4 @@
+import { ClientSession } from "mongoose";
 import { ProviderServiceModel } from "../models/providerService.model";
 import { ProviderServiceMapper } from "../mappers/providerService.mapper";
 import { ProviderService } from "../../domain/entities/providerService.entity";
@@ -5,26 +6,22 @@ import { IProviderServiceRepository } from "../../domain/interfaces/repositories
 
 export class ProviderServiceRepositoryImpl implements IProviderServiceRepository {
 
-    async create(providerService: ProviderService): Promise<ProviderService> {
+    async create(providerService: ProviderService, session?: ClientSession): Promise<ProviderService | null> {
         const persistence = ProviderServiceMapper.toPersistence(providerService);
-        const doc = await ProviderServiceModel.create(persistence);
-        return ProviderServiceMapper.toDomain(doc);
+        const doc = await ProviderServiceModel.create([persistence], { session });
+        return doc && doc.length > 0 ? ProviderServiceMapper.toDomain(doc[0]) : null;
     };
 
-    async update(providerService: ProviderService): Promise<ProviderService> {
+    async update(providerService: ProviderService, session?: ClientSession): Promise<ProviderService | null> {
         const persistence = ProviderServiceMapper.toPersistence(providerService);
 
         const doc = await ProviderServiceModel.findByIdAndUpdate(
             providerService._id,
             { $set: persistence },
-            { new: true }
+            { new: true, session }
         );
 
-        if (!doc) {
-            throw new Error("Provider Service not found");
-        };
-
-        return ProviderServiceMapper.toDomain(doc);
+        return doc ? ProviderServiceMapper.toDomain(doc) : null;
     };
 
     async findById(providerServiceId: string): Promise<ProviderService | null> {

@@ -1,7 +1,8 @@
-import { FetchReviesRequest, FetchReviewsResponse, TableData } from "../dtos/common.dto";
+import { TableData } from "../dtos/common.dto";
+import { GetReviewsQuery, GetReviewsView } from "../dtos/review.dto";
 
 export interface IReviewQueries {
 
-    findAll(payload: FetchReviesRequest) : Promise<TableData<Array<FetchReviewsResponse>>>;
+    findAll(query: GetReviewsQuery): Promise<TableData<Array<GetReviewsView>>>;
 
 };

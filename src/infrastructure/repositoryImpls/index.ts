@@ -5,26 +5,32 @@ import { UserRepositoryImpl } from "./user.repository.impl";
 import { ReviewRepositoryImpl } from "./review.repository.impl";
 import { AddressRepositoryImpl } from "./address.repository.impl";
 import { BookingRepositoryImpl } from "./booking.repository.impl";
-import { PaymentRepositoryImpl } from "./payment.repository.impl";
 import { ServiceRepositoryImpl } from "./service.repository.impl";
-import { ProviderRepositoryImpl } from "./provider.repository.impl";
 import { CredentialRepositoryImpl } from "./credential.repository.impl";
 import { SubscriptionRepositoryImpl } from "./subscription.repository.impl";
 import { ProviderServiceRepositoryImpl } from "./providerService.repository.impl";
 import { ServiceAvailabilityRepositoryImpl } from "./serviceAvailability.repository.impl";
 
+import { ProviderProfileRepositoryImpl } from "./providerProfile.repository.impl";
 import { IPlanRepository } from "../../domain/interfaces/repositories/IPlan.repository";
 import { IUserRepository } from "../../domain/interfaces/repositories/IUser.repository";
 import { IReviewRepository } from "../../domain/interfaces/repositories/IReview.repository";
 import { IBookingRepository } from "../../domain/interfaces/repositories/IBooking.repository";
-import { IPaymentRepository } from "../../domain/interfaces/repositories/IPayment.repository";
 import { IAddressRepository } from "../../domain/interfaces/repositories/IAddress.repository";
 import { IServiceRepository } from "../../domain/interfaces/repositories/IService.repository";
-import { IProviderRepository } from "../../domain/interfaces/repositories/IProvider.repository";
 import { ICredentialRepository } from "../../domain/interfaces/repositories/ICredentialRepository";
 import { ISubscriptionRepository } from "../../domain/interfaces/repositories/ISubscription.repository";
 import { IProviderServiceRepository } from "../../domain/interfaces/repositories/IProviderService.repository";
+import { IProviderProfileRepository } from "../../domain/interfaces/repositories/IProviderProfile.repository";
 import { IServiceAvailabilityRepository } from "../../domain/interfaces/repositories/IServiceAvailability.repository";
+import { IProcessedEventRepository } from "../../domain/interfaces/repositories/IProcessedEvent.repository";
+import { ProcessedEventRepositoryImpl } from "./processedEvent.repository.impl";
+import { IReferralRepository } from "../../domain/interfaces/repositories/IReferral.repository";
+import { ReferralRepositoryImpl } from "./referral.repository.impl";
+import { ICreditAccountRepository } from "../../domain/interfaces/repositories/ICreditAccount.repository";
+import { CreditAccountRepositoryImpl } from "./creditAccount.repository.impl";
+import { ICreditTransactionRepository } from "../../domain/interfaces/repositories/ICreditTransaction.repository";
+import { CreditTransactionRepositoryImpl } from "./creditTransaction.repository.impl";
 
 // address repository instance
 export const addressRepository: IAddressRepository = new AddressRepositoryImpl();
@@ -35,14 +41,8 @@ export const bookingRepository: IBookingRepository = new BookingRepositoryImpl()
 // credential repository instance
 export const credentialRepository: ICredentialRepository = new CredentialRepositoryImpl();
 
-// payment repository instance
-export const paymentRepository: IPaymentRepository = new PaymentRepositoryImpl();
-
 // plan repository instance
 export const planRepository: IPlanRepository = new PlanRepositoryImpl();
-
-// provider repository instance
-export const providerRepository: IProviderRepository = new ProviderRepositoryImpl();
 
 // provider service repository instance
 export const providerServiceRepository: IProviderServiceRepository = new ProviderServiceRepositoryImpl();
@@ -61,3 +61,18 @@ export const subscriptionRepository: ISubscriptionRepository = new SubscriptionR
 
 // user repository instance
 export const userRepository: IUserRepository = new UserRepositoryImpl();
+
+// provider profile repository instance
+export const providerProfileRepository: IProviderProfileRepository = new ProviderProfileRepositoryImpl();
+
+// processed event repository instance
+export const processedEventRepository: IProcessedEventRepository = new ProcessedEventRepositoryImpl();
+
+// referral repository instance
+export const referralRepository: IReferralRepository = new ReferralRepositoryImpl();
+
+// creditAccount repository instance
+export const creditAccountRepository: ICreditAccountRepository = new CreditAccountRepositoryImpl();
+
+// creditTransaction repository instance
+export const creditTransactionRepository: ICreditTransactionRepository = new CreditTransactionRepositoryImpl();

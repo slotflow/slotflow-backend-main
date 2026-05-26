@@ -12,7 +12,7 @@ export class Review {
         this.props.updatedAt = new Date();
     };
 
-    static create(props: CreateReviewDProps) {
+    static create(props: CreateReviewDProps): Review {
         return new Review({
             _id: "",
             ...props,

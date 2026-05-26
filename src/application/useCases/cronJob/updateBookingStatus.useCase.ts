@@ -1,5 +1,5 @@
-import { log } from "../../../shared/logger/logger";
 import { IBookingQueries } from "../../queries/IBooking.queries";
+import { toAppError } from "../../../shared/error/handleUnknownError";
 
 export class UpdateBookingStatusUseCase {
     constructor(
@@ -10,9 +10,8 @@ export class UpdateBookingStatusUseCase {
         try {
             const todaysExhaustedBookings = await this.bookingQueries.findTodaysBookingsForCronjob();
             return todaysExhaustedBookings;
-        } catch (error) {
-            log.error("UpdateBookingStatusUseCase failed", error as Error);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to update booking status")
         };
     };
 };

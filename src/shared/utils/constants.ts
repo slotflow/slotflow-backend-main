@@ -1,6 +1,7 @@
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { AppConnect } from "../../domain/enums/common.enum";
+import { IdType } from "./types";
 
 // used as the Event data
 export enum EventData {
@@ -19,7 +20,12 @@ export const notificationContentMap: Record<string, {
   passwordReset: {
     title: "Password Reset",
     body: () =>
-      `assword has been reset successfully.`
+      `password has been reset successfully.`
+  },
+  passwordUpdate: {
+    title: "Password Updated",
+    body: () =>
+      `password has been updated successfully.`
   },
   appConnect: {
     title: "App Connect",
@@ -44,12 +50,12 @@ export const notificationContentMap: Record<string, {
   appointmentStatusChangeForUser: {
     title: "Booking Status Updated",
     body: (appointmentStatus: AppointmentStatus) =>
-      `Your booking has been ${appointmentStatus}.`
+      `Your booking has been ${appointmentStatus.toLowerCase()}.`
   },
   appointmentStatusChangeForProvider: {
     title: "Appointment Status Updated",
     body: (appointmentStatus: AppointmentStatus) =>
-      `Your appointment has been ${appointmentStatus}.`
+      `Your appointment has been ${appointmentStatus.toLowerCase()}.`
   },
   providerTrialSubscription: {
     title: "Trial Subscription",
@@ -60,5 +66,34 @@ export const notificationContentMap: Record<string, {
     title: "Password Reset",
     body: () =>
       `Your password has been reset successfully.`
+  },
+  slotBooked: {
+    title: "Slot Booked",
+    body: (appointmentDate: string) =>
+      `Your slot has been booked for ${appointmentDate}.`
+  },
+  planSubscribed: {
+    title: "Plan Subscribed",
+    body: () =>
+      `Your subscription has been Confirmed.`
+  },
+  gotAnAppointment: {
+    title: "Got an Appointment",
+    body: (appointmentDate: string) =>
+      `You have got an appointment for ${appointmentDate}.`
   }
 };
+
+export const daysOfWeek: string[] = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+export const PREFIX_MAP: Record<IdType, string> = {
+  [IdType.EVENT]: "sf_evt_",
+  [IdType.TRANSACTION]: "sf_trx_",
+  [IdType.ROOM]: "sf_room_",
+  [IdType.IDEMPOTENCY]: "sf_idem_",
+  [IdType.FILE]: "sf_file_",
+  [IdType.REFERRAL]: "sf_ref_",
+  [IdType.CREDIT_TRANSACTION]: "sf_crtsn"
+};
+
+export const BASE36 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

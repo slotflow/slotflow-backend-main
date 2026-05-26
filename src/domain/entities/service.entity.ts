@@ -13,7 +13,7 @@ export class Service {
         this.props.updatedAt = new Date();
     }
 
-    static create(props: CreateServiceProps) {
+    static create(props: CreateServiceProps): Service {
         return new Service({
             _id: "",
             ...props,

@@ -1,46 +1,80 @@
 import { Router } from "express";
+import { userController } from "./user.controller";
+import { Role } from "../../domain/enums/common.enum";
+import { authorize } from "../middleware/authRole.middleware";
 import { authMiddleware } from "../middleware/auth.middleware";
-import { userReviewController } from "./userReview.controller";
-import { userProfileController } from "./userProfile.controller";
-import { userAddressController } from './userAddress.controller';
-import { userPaymentController } from "./userPayment.controller";
-import { userBookingController } from "./userBooking.controller";
-import { userProviderController } from "./userProvider.controller";
-import { userAppServiceController } from "./userAppService.controller";
+import { addressController } from "../address/address.controller";
 
 const router = Router();
 
-router.get('/appservices', authMiddleware, userAppServiceController.fetchAllAppService);
+router.patch('/me/preboarding',
+    authMiddleware,
+    authorize(Role.USER),
+    userController.preBoarding
+)
 
-router.get('/profile', authMiddleware, userProfileController.getProfileDetails);
-router.post('/profile/image', authMiddleware, userProfileController.updateProfileImage);
-router.patch('/profile', authMiddleware, userProfileController.updateUserInfo);
-router.patch('/profile/push-notification', authMiddleware, userProfileController.updatePushNotification)
+// user get profile details
+router.get('/me',
+    authMiddleware,
+    authorize(Role.USER),
+    userController.getProfileDetails
+);
 
-router.post('/addresses', authMiddleware, userAddressController.createAddress);
-router.get('/address', authMiddleware, userAddressController.getAddress);
-router.patch('/addresses/:addressId', authMiddleware, userAddressController.updateAddress);
+// user / provider update profile image
+router.patch('/me/image',
+    authMiddleware,
+    authorize(Role.USER, Role.PROVIDER),
+    userController.updateProfileImage
+);
 
-router.get('/providers', authMiddleware, userProviderController.fetchServiceProviders);
-router.get('/providers/:providerId', authMiddleware, userProviderController.fetchServiceProviderProfileDetails);
-router.get('/providers/:providerId/address', authMiddleware, userProviderController.fetchServiceProviderAddress);
-router.get('/providers/:providerId/service', authMiddleware, userProviderController.fetchServiceProviderServiceDetails);
-router.get('/providers/:providerId/availability', authMiddleware, userProviderController.fetchServiceProviderServiceAvailability);
+// user update user info
+router.patch('/me',
+    authMiddleware,
+    authorize(Role.USER),
+    userController.updateUserInfo
+);
 
-router.post('/bookings/checkout-session', authMiddleware, userBookingController.createSessionIdForbookingViaStripe);
-router.post('/bookings', authMiddleware, userBookingController.saveBookingAfterStripePayment);
-router.get('/bookings', authMiddleware, userBookingController.fetchBookings);
-router.get('/bookings/:bookingId', authMiddleware, userBookingController.fetchBookingDetails);
-router.patch('/bookings/:bookingId', authMiddleware, userBookingController.cancelBooking);
-router.get('/bookings/:bookingId/can-join', authMiddleware, userBookingController.validateRoom);
-router.patch('/bookings/:roomId/join-left', authMiddleware, userBookingController.userJoinRoom);
+// user update push notification
+router.patch('/me/notification-settings',
+    authMiddleware,
+    authorize(Role.USER),
+    userController.updatePushNotification
+)
 
-router.get('/payments', authMiddleware, userPaymentController.fetchPayments);
+// admin get user address
+router.get('/:userId/address',
+    authMiddleware,
+    authorize(Role.ADMIN, Role.USER),
+    addressController.getAddress
+);
 
-router.get('/chat/providers', authMiddleware, userProviderController.fetchProvidersForChatSidebar);
+// admin block user
+router.patch('/:userId/block',
+    authMiddleware,
+    authorize(Role.ADMIN),
+    userController.changeUserBlockStatus
+);
 
-router.post('/reviews', authMiddleware, userReviewController.createReview);
-router.get('/reviews/:providerId?', authMiddleware, userReviewController.findAllReviews);
-router.delete('/reviews/:reviewId', authMiddleware, userReviewController.deleteReview);
+// admin get user details
+router.get('/:userId',
+    authMiddleware,
+    authorize(Role.ADMIN),
+    userController.getProfileDetails
+);
+
+// user update password
+router.patch('/password',
+    authMiddleware,
+    authorize(Role.USER, Role.PROVIDER),
+    userController.updatePassword
+);
+
+// admin get users for listing  and user and provider get users for chat
+router.get('/',
+    authMiddleware,
+    authorize(Role.ADMIN, Role.PROVIDER, Role.USER),
+    userController.getUsers
+);
+
 
 export default router;

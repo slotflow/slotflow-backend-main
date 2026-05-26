@@ -1,6 +1,6 @@
 import { credentialRepository } from "../../infrastructure/repositoryImpls";
 import { aesEncryptionService, googleCalendarGatewayService } from "../../infrastructure/services";
-import { FethGoogleCalendarUseCase } from "../../application/useCases/common/fetchGoogleCalendar.useCase";
+import { GetGoogleCalendarUseCase } from "../../application/useCases/common/getGoogleCalendar.useCase";
 
 // google controller dependency injection
-export const fethGoogleCalendarUseCase = new FethGoogleCalendarUseCase(credentialRepository, aesEncryptionService, googleCalendarGatewayService);
+export const getGoogleCalendarUseCase = new GetGoogleCalendarUseCase(credentialRepository, aesEncryptionService, googleCalendarGatewayService);

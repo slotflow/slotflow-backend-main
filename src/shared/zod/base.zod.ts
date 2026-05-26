@@ -1,6 +1,6 @@
 import { z } from "zod";
+import { HearAboutUsOptionValue, Role } from "../../domain/enums/common.enum";
 import { addressLineRegex, cityRegex, countryRegex, districtRegex, landMarkRegex, objectIdRegex, phoneRegex, pincodeRegex, placeRegex, sessionIdRegex, stateRegex, usernameRegex } from "../utils/regex";
-import { Role } from "../../domain/enums/common.enum";
 
 // Base ID validation schemas
 export const validateUserIdSchema = z.object({
@@ -11,25 +11,13 @@ export const validateProviderIdSchema = z.object({
     providerId: z.string().regex(objectIdRegex, "Invalid providerId"),
 });
 
-export const validateBookingIdSchema = z.object({
-    bookingId: z.string().regex(objectIdRegex, "Invalid bookingId"),
-});
-
-export const validateRoomIdSchema = z.object({
-    roomId: z.string(),
-});
-
-export const validateReviewIdSchema = z.object({
-    reviewId: z.string().regex(objectIdRegex, "Invalid reviewId"),
-});
-
 export const validateSubscriptionIdSchema = z.object({
     subscriptionId: z.string().regex(objectIdRegex, "Invalid subscriptionId"),
 });
 
 // Role validation
 export const roleValidationSchema = z.object({
-    role: z.nativeEnum(Role),
+    role: z.nativeEnum(Role)
 });
 
 // Pagination zod schema with default values
@@ -41,6 +29,9 @@ export const paginationSchema = z.object({
 // Date validation schema
 export const dateSchema = z.preprocess(
     (val) => {
+        if (val === undefined || val === null || val === "") {
+            return new Date();
+        }
         if (typeof val === "string" || val instanceof String) {
             const parsed = new Date(val as string);
             if (!isNaN(parsed.getTime())) return parsed;
@@ -118,11 +109,6 @@ export const addressSchema = z.object({
 export const updateInfoSchema = z.object({
     username: z.string().min(4).max(30).regex(usernameRegex, "Invalid username"),
     phone: z.string().min(4).max(30).regex(phoneRegex, "Invalid phone number")
-});
-
-// Stripe payment schema
-export const saveStripePaymentSchema = z.object({
-    sessionId: z.string().min(5).max(200).regex(sessionIdRegex, "Invalid session Id"),
 });
 
 // S3 file key schema

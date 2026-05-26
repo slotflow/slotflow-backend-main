@@ -6,13 +6,13 @@ import { IServiceRepository } from "../../domain/interfaces/repositories/IServic
 
 export class ServiceRepositoryImpl implements IServiceRepository {
 
-    async create(service: Service): Promise<Service> {
+    async create(service: Service): Promise<Service | null> {
         const persistence = ServiceMapper.toPersistence(service);
         const doc = await ServiceModel.create(persistence);
-        return ServiceMapper.toDomain(doc);
+        return doc ? ServiceMapper.toDomain(doc) : null;
     };
 
-    async findAll(page: number, limit: number): Promise<{ data: Array<Service>; totalPages: number; currentPage: number; totalCount: number; }> {
+    async findAll(page: number, limit: number): Promise<{ items: Array<Service>; totalPages: number; currentPage: number; totalCount: number; }> {
         const skip = (page - 1) * limit;
         const [services, totalCount] = await Promise.all([
             ServiceModel.find({}, {
@@ -20,12 +20,12 @@ export class ServiceRepositoryImpl implements IServiceRepository {
                 serviceName: 1,
                 serviceCategory: 1,
                 isBlocked: 1,
-            }).skip(skip).limit(limit).lean(),
+            }).skip(skip).limit(limit),
             ServiceModel.countDocuments(),
         ])
         const totalPages = Math.ceil(totalCount / limit);
         return {
-            data: services.map(service => ServiceMapper.toDomain(service)),
+            items: services.map(service => ServiceMapper.toDomain(service)),
             totalPages,
             currentPage: page,
             totalCount
@@ -55,7 +55,7 @@ export class ServiceRepositoryImpl implements IServiceRepository {
         return doc ? ServiceMapper.toDomain(doc) : null;
     };
 
-    async update(service: Service): Promise<Service> {
+    async update(service: Service): Promise<Service | null> {
         const persistence = ServiceMapper.toPersistence(service);
 
         const doc = await ServiceModel.findByIdAndUpdate(
@@ -64,11 +64,7 @@ export class ServiceRepositoryImpl implements IServiceRepository {
             { new: true }
         );
 
-        if (!doc) {
-            throw new Error("Service not found");
-        };
-
-        return ServiceMapper.toDomain(doc);
+        return doc ? ServiceMapper.toDomain(doc) : null;
     };
 
 };

@@ -1,22 +1,18 @@
 import dayjs from "dayjs";
-import { Types } from "mongoose";
+import { FilterQuery, Types } from "mongoose";
+import { Role } from "../../domain/enums/common.enum";
 import { BookingModel } from "../models/booking.model";
+import { getStartAndEndDate } from "../../shared/utils/dateTime";
 import { IBookingQueries } from "../../application/queries/IBooking.queries";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
-import { endOfDay, startOfDay, startOfToday, startOfTomorrow } from "date-fns";
-import { UserFetchProvidersForChatSidebarResponse } from "../../application/dtos/user.dto";
-import { AdminFetchDashboardAppointmentStatsDataResponse, AdminFetchTodaysBookingStatsForDashboardResponse } from "../../application/dtos/admin.dto";
-import { FetchBookingsRequest, TableData, FetchBookingsResponse, FetchOnlineBookingsForProviderResponse, FetchOnlineBookingsForUserResponse, FetchBookingDetailsResponse } from "../../application/dtos/common.dto";
-import { ProviderFetchDashboardGraphRepository, ProviderFetchDashboardGraphDataResponse, ProviderFetchDashboardBookingStatsDataResponse, ProviderFetchUsersForChatSideBarResponse } from "../../application/dtos/provider.dto";
-import { Role } from "../../domain/enums/common.enum";
+import { TableData, BookingDTO } from "../../application/dtos/common.dto";
+import { BookingDetailsQuery, BookingDetailsView, BookingGraphStatsForProviderQuery, BookingGraphStatsForProviderView, BookingsBaseView, BookingsQuery, BookingsStatsForAdminQuery, BookingsStatsForAdminView, BookingStatsForProviderQuery, BookingStatsForProviderView, BookingsView, BookingUsersForChatQuery, BookingUsersForChatView, OnlineBookingsViewForProvider, OnlineBookingsViewForUser } from "../../application/dtos/booking.dto";
 
 export class BookingQueriesImpl implements IBookingQueries {
 
-    async findAll({ page, limit, userId, serviceProviderId, online, raw, role }: FetchBookingsRequest): Promise<
-        TableData<FetchBookingsResponse> |
-        TableData<FetchOnlineBookingsForProviderResponse> |
-        TableData<FetchOnlineBookingsForUserResponse>
-    > {
+    async findAll(query: BookingsQuery): Promise<TableData<BookingsView>> {
+
+        const { page, limit, userId, serviceProviderId, online, role } = query;
 
         const skip = (page - 1) * limit;
 
@@ -48,22 +44,22 @@ export class BookingQueriesImpl implements IBookingQueries {
             username: 1,
         }
 
-        const project = raw ? rawProject : online ? onlineProject : rawProject;
+        const project = online ? onlineProject : rawProject;
 
-        let query = BookingModel.find(filter, project)
+        let dbquery = BookingModel.find(filter, project)
             .skip(skip)
             .limit(limit)
             .sort({ createdAt: -1 })
-            .lean<FetchBookingsResponse | FetchOnlineBookingsForProviderResponse | FetchOnlineBookingsForUserResponse>();
+            .lean<BookingsView>();
 
         if (online && role === Role.USER) {
-            query = query.populate("serviceProviderId", "username -_id");
+            dbquery = dbquery.populate("serviceProviderId", "username -_id");
         } else if (online && role === Role.PROVIDER) {
-            query = query.populate("userId", "username -_id");
+            dbquery = dbquery.populate("userId", "username -_id");
         }
 
         const [bookings, totalCount] = await Promise.all([
-            query.exec(),
+            dbquery.exec(),
             BookingModel.countDocuments(filter)
         ]);
 
@@ -71,7 +67,7 @@ export class BookingQueriesImpl implements IBookingQueries {
 
         if (online && role === Role.USER) {
             return {
-                data: (bookings as FetchOnlineBookingsForUserResponse).map(booking => ({
+                items: (bookings as OnlineBookingsViewForUser).map(booking => ({
                     ...booking,
                     _id: booking._id.toString(),
                     serviceProviderId: {
@@ -84,7 +80,7 @@ export class BookingQueriesImpl implements IBookingQueries {
             }
         } else if (online && role === Role.PROVIDER) {
             return {
-                data: (bookings as FetchOnlineBookingsForProviderResponse).map(booking => ({
+                items: (bookings as OnlineBookingsViewForProvider).map(booking => ({
                     ...booking,
                     _id: booking._id.toString(),
                     userId: {
@@ -97,7 +93,7 @@ export class BookingQueriesImpl implements IBookingQueries {
             }
         } else {
             return {
-                data: (bookings as FetchBookingsResponse).map(booking => ({
+                items: (bookings as BookingsBaseView).map(booking => ({
                     ...booking,
                     _id: booking._id.toString(),
                     serviceProviderId: booking.serviceProviderId?.toString(),
@@ -109,7 +105,8 @@ export class BookingQueriesImpl implements IBookingQueries {
         }
     }
 
-    async findDetails(bookingId: string): Promise<FetchBookingDetailsResponse | null> {
+    async findDetails(query: BookingDetailsQuery): Promise<BookingDetailsView | null> {
+        const { bookingId } = query;
         const booking = await BookingModel.findById(new Types.ObjectId(bookingId), {
             _id: 0,
             appointmentDate: 1,
@@ -129,7 +126,7 @@ export class BookingQueriesImpl implements IBookingQueries {
                 path: "serviceProviderId",
                 select: "username email",
             })
-            .lean<FetchBookingDetailsResponse>();
+            .lean<BookingDetailsView>();
 
         if (!booking) return null;
 
@@ -153,27 +150,26 @@ export class BookingQueriesImpl implements IBookingQueries {
         };
     }
 
-    async findGraphDataForProviderDashboard(payload: ProviderFetchDashboardGraphRepository): Promise<ProviderFetchDashboardGraphDataResponse | null> {
-        const { providerId, subscriptionGuard, endDate, startDate } = payload
+    async findGraphDataForDashboard(query: BookingGraphStatsForProviderQuery): Promise<BookingGraphStatsForProviderView | null> {
+        const { providerId, subscriptionGuard, endDate, startDate, isAdmin } = query;
 
-        console.log("providerId,  : ", providerId)
-        console.log("subscriptionGuard,  : ", subscriptionGuard)
-        console.log("endDate : ", endDate)
-        console.log("startDate : ", startDate)
+        const matchFilter: FilterQuery<BookingDTO> = {};
+        const facet: Record<string, any> = {};
+        const isProvider = !!providerId && !isAdmin;
+        const guardLevel = isAdmin ? 3 : (subscriptionGuard ?? 0);
 
-        const matchFilter: Record<string, any> = {
-            serviceProviderId: new Types.ObjectId(providerId),
-        };
-
-        if (startDate && endDate) {
-            matchFilter.createdAt = { $gte: startDate, $lte: endDate };
+        if (isProvider) {
+            matchFilter.serviceProviderId = new Types.ObjectId(providerId);
         }
 
-        console.log("matchFilter : ", matchFilter);
+        matchFilter.createdAt = { $gte: startDate, $lte: endDate };
 
-        const facet: Record<string, any> = {};
 
-        if (subscriptionGuard >= 1) {
+        if (isProvider && (subscriptionGuard ?? 0) === 0) {
+            return null;
+        }
+
+        if (guardLevel >= 1) {
             facet.appointmentsOvertimeChartData = [
                 {
                     $group: {
@@ -222,7 +218,7 @@ export class BookingQueriesImpl implements IBookingQueries {
             ];
         }
 
-        if (subscriptionGuard >= 2) {
+        if (guardLevel >= 2) {
             facet.appointmentModeChartData = [
                 {
                     $group: {
@@ -274,7 +270,7 @@ export class BookingQueriesImpl implements IBookingQueries {
             ];
         }
 
-        if (subscriptionGuard >= 3) {
+        if (guardLevel >= 3) {
             facet.peakBookingHoursChartData = [
                 {
                     $group: {
@@ -309,6 +305,7 @@ export class BookingQueriesImpl implements IBookingQueries {
                                     { case: { $eq: ["$_id", AppointmentStatus.REJECTED_BY_PROVIDER] }, then: "rejected" },
                                     { case: { $eq: ["$_id", AppointmentStatus.CONFIRMED] }, then: "confirmed" },
                                     { case: { $eq: ["$_id", AppointmentStatus.BOOKED] }, then: "booked" },
+                                    { case: { $eq: ["$_id", AppointmentStatus.PENDING] }, then: "pending" },
                                 ],
                             },
                         },
@@ -317,10 +314,6 @@ export class BookingQueriesImpl implements IBookingQueries {
                     },
                 },
             ];
-        }
-
-        if (subscriptionGuard === 0) {
-            return null;
         }
 
         const result = await BookingModel.aggregate([
@@ -344,56 +337,134 @@ export class BookingQueriesImpl implements IBookingQueries {
         }
     }
 
-    async findStatsDataForProviderDashboard(providerId: string): Promise<ProviderFetchDashboardBookingStatsDataResponse> {
-        const today = startOfToday();
-        const tomorrow = startOfTomorrow();
+    async findStatsDataForProviderDashboard(query: BookingStatsForProviderQuery): Promise<BookingStatsForProviderView> {
+        const { providerId } = query;
+
+        const matchFilter: FilterQuery<BookingDTO> = {
+            serviceProviderId: new Types.ObjectId(providerId),
+        };
+
+        const { startDate, endDate } = getStartAndEndDate(
+            query.startDate,
+            query.endDate
+        );
+
+        const today = new Date();
+        today.setUTCHours(0, 0, 0, 0);
+
+        const tomorrow = new Date(today);
+        tomorrow.setUTCDate(today.getUTCDate() + 1);
 
         const result = await BookingModel.aggregate([
-            { $match: { serviceProviderId: new Types.ObjectId(providerId) } },
             {
-                $group: {
-                    _id: null,
-                    totalAppointments: { $sum: 1 },
-                    completedAppointments: {
-                        $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.COMPLETED] }, 1, 0] }
-                    },
-                    missedAppointments: {
-                        $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.NOT_ATTENDED] }, 1, 0] }
-                    },
-                    cancelledAppointmentsByUser: {
-                        $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.CANCELLED] }, 1, 0] }
-                    },
-                    rejectedAppointmentsByProvider: {
-                        $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.REJECTED_BY_PROVIDER] }, 1, 0] }
-                    },
-                    todaysAppointments: {
-                        $sum: {
-                            $cond: [
-                                {
-                                    $and: [
-                                        { $gte: ["$appointmentDate", today] },
-                                        { $lt: ["$appointmentDate", tomorrow] },
-                                        { $eq: ["$appointmentStatus", AppointmentStatus.BOOKED] }
-                                    ]
-                                }, 1, 0
-                            ]
-                        }
-                    }
-                }
+                $match: matchFilter,
             },
+
+            {
+                $facet: {
+
+                    rangeStats: [
+                        {
+                            $match: {
+                                ...(startDate && endDate && {
+                                    appointmentDate: { $gte: startDate, $lte: endDate },
+                                }),
+                            },
+                        },
+                        {
+                            $group: {
+                                _id: null,
+                                totalAppointments: { $sum: 1 },
+
+                                completedAppointments: {
+                                    $sum: {
+                                        $cond: [
+                                            { $eq: ["$appointmentStatus", AppointmentStatus.COMPLETED] },
+                                            1,
+                                            0,
+                                        ],
+                                    },
+                                },
+
+                                missedAppointments: {
+                                    $sum: {
+                                        $cond: [
+                                            { $eq: ["$appointmentStatus", AppointmentStatus.NOT_ATTENDED] },
+                                            1,
+                                            0,
+                                        ],
+                                    },
+                                },
+
+                                cancelledAppointmentsByUser: {
+                                    $sum: {
+                                        $cond: [
+                                            { $eq: ["$appointmentStatus", AppointmentStatus.CANCELLED] },
+                                            1,
+                                            0,
+                                        ],
+                                    },
+                                },
+
+                                rejectedAppointmentsByProvider: {
+                                    $sum: {
+                                        $cond: [
+                                            {
+                                                $eq: [
+                                                    "$appointmentStatus",
+                                                    AppointmentStatus.REJECTED_BY_PROVIDER,
+                                                ],
+                                            },
+                                            1,
+                                            0,
+                                        ],
+                                    },
+                                },
+                            },
+                        },
+                    ],
+
+                    todayStats: [
+                        {
+                            $match: {
+                                appointmentDate: {
+                                    $gte: today,
+                                    $lt: tomorrow,
+                                },
+                                appointmentStatus: AppointmentStatus.BOOKED,
+                            },
+                        },
+                        {
+                            $count: "todaysAppointments",
+                        },
+                    ],
+                },
+            },
+
             {
                 $project: {
-                    _id: 0,
-                    totalAppointments: 1,
-                    completedAppointments: 1,
-                    missedAppointments: 1,
-                    cancelledAppointmentsByUser: 1,
-                    rejectedAppointmentsByProvider: 1,
-                    todaysAppointments: 1,
+                    range: { $arrayElemAt: ["$rangeStats", 0] },
+                    today: { $arrayElemAt: ["$todayStats", 0] },
+                },
+            },
+
+            {
+                $project: {
+                    totalAppointments: { $ifNull: ["$range.totalAppointments", 0] },
+                    completedAppointments: { $ifNull: ["$range.completedAppointments", 0] },
+                    missedAppointments: { $ifNull: ["$range.missedAppointments", 0] },
+                    cancelledAppointmentsByUser: {
+                        $ifNull: ["$range.cancelledAppointmentsByUser", 0],
+                    },
+                    rejectedAppointmentsByProvider: {
+                        $ifNull: ["$range.rejectedAppointmentsByProvider", 0],
+                    },
+                    todaysAppointments: {
+                        $ifNull: ["$today.todaysAppointments", 0],
+                    },
                 },
             },
         ]);
-
 
         return result[0] || {
             totalAppointments: 0,
@@ -401,12 +472,21 @@ export class BookingQueriesImpl implements IBookingQueries {
             missedAppointments: 0,
             cancelledAppointmentsByUser: 0,
             rejectedAppointmentsByProvider: 0,
-            todaysAppointments: 0
+            todaysAppointments: 0,
         };
     }
 
-    async findStatsDataForAdminDashboard(): Promise<AdminFetchDashboardAppointmentStatsDataResponse> {
+    async findStatsDataForAdminDashboard(query: BookingsStatsForAdminQuery): Promise<BookingsStatsForAdminView> {
+        const { startDate, endDate } = getStartAndEndDate(query.startDate, query.endDate);
         const result = await BookingModel.aggregate([
+            {
+                $match: {
+                    appointmentDate: {
+                        $gte: startDate,
+                        $lte: endDate,
+                    },
+                },
+            },
             {
                 $group: {
                     _id: null,
@@ -427,79 +507,6 @@ export class BookingQueriesImpl implements IBookingQueries {
         };
     }
 
-    async findProvidersforChatSideBar(userId: string): Promise<UserFetchProvidersForChatSidebarResponse> {
-        const providers = await BookingModel.aggregate([
-            {
-                $match: {
-                    userId: new Types.ObjectId(userId),
-                    appointmentDate: {
-                        $gte: dayjs().subtract(1, 'day').startOf('day').toDate(),
-                        $lte: dayjs().add(1, 'day').startOf('day').toDate(),
-                    },
-                }
-            },
-            {
-                $lookup: {
-                    from: "providers",
-                    localField: "serviceProviderId",
-                    foreignField: "_id",
-                    as: "provider"
-                }
-            },
-            { $unwind: "$provider" },
-            {
-                $group: {
-                    _id: "$provider._id",
-                    username: { $first: "$provider.username" },
-                    profileImage: { $first: "$provider.profileImage" }
-                }
-            },
-            {
-                $project: {
-                    _id: 1,
-                    username: 1,
-                    profileImage: 1
-                }
-            }
-        ]);
-        return providers.map(provider => ({
-            ...provider,
-            _id: provider._id.toString(),
-        }));
-    }
-
-    async findTodayStatsDataForAdminDashboard(): Promise<AdminFetchTodaysBookingStatsForDashboardResponse> {
-        const startOfToday = startOfDay(new Date());
-        const endOfToday = endOfDay(new Date());
-
-        const result = await BookingModel.aggregate([
-            {
-                $match: {
-                    createdAt: { $gte: startOfToday, $lte: endOfToday },
-                },
-            },
-            {
-                $group: {
-                    _id: null,
-                    todaysBookedAppointments: {
-                        $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.BOOKED] }, 1, 0] }
-                    },
-                    todaysCancelledAppointments: {
-                        $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.CANCELLED] }, 1, 0] }
-                    },
-                    todaysCompletedAppointments: {
-                        $sum: { $cond: [{ $eq: ["$appointmentStatus", AppointmentStatus.COMPLETED] }, 1, 0] }
-                    }
-                }
-            },
-        ])
-        return result[0] || {
-            todaysBookedAppointments: 0,
-            todaysCancelledAppointments: 0,
-            todaysCompletedAppointments: 0
-        };
-    }
-
     async findTodaysBookingsForCronjob(): Promise<boolean> {
         const now = new Date();
         const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -507,7 +514,7 @@ export class BookingQueriesImpl implements IBookingQueries {
 
         const bookings = await BookingModel.updateMany(
             {
-                appointmentStatus: AppointmentStatus.BOOKED,
+                appointmentStatus: AppointmentStatus.CONFIRMED,
                 appointmentDate: {
                     $gte: todayStart,
                     $lt: todayEnd
@@ -526,11 +533,21 @@ export class BookingQueriesImpl implements IBookingQueries {
         return bookings.modifiedCount > 0;
     }
 
-    async findUsersforChatSideBar(providerId: string): Promise<ProviderFetchUsersForChatSideBarResponse> {
+    async findUsersforChatSideBar(query: BookingUsersForChatQuery): Promise<BookingUsersForChatView> {
+        const { userId, role } = query;
+
+        const matchFilter: FilterQuery<BookingDTO> = {};
+
+        if (role === Role.USER) {
+            matchFilter.userId = new Types.ObjectId(userId);
+        } else {
+            matchFilter.serviceProviderId = new Types.ObjectId(userId);
+        }
+
         const users = await BookingModel.aggregate([
             {
                 $match: {
-                    serviceProviderId: new Types.ObjectId(providerId),
+                    ...matchFilter,
                     appointmentDate: {
                         $gte: dayjs().subtract(1, 'day').startOf('day').toDate(),
                         $lte: dayjs().add(1, 'day').startOf('day').toDate(),
@@ -540,8 +557,25 @@ export class BookingQueriesImpl implements IBookingQueries {
             {
                 $lookup: {
                     from: "users",
-                    localField: "userId",
-                    foreignField: "_id",
+                    let: { userId: "$userId" },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ["$_id", "$$userId"] },
+                                        { $eq: ["$role", role] }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            $project: {
+                                username: 1,
+                                profileImage: 1
+                            }
+                        }
+                    ],
                     as: "user"
                 }
             },

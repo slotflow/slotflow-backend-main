@@ -1,11 +1,11 @@
-import { CreateGoogleCalendarEventRequest, UpdateGoogleCalendarEventRequest, FetchEventsFromCalendarProps } from "../../../application/dtos/common.dto";
+import { CreateGoogleCalendarEventInput, UpdateGoogleCalendarEventInput, GetEventsFromCalendarProps } from "../../../application/dtos/common.dto";
 
 export interface IGoogleCalendarGatewayService {
 
-    createEvent(payload: CreateGoogleCalendarEventRequest): Promise<string>;
+    createEvent(query: CreateGoogleCalendarEventInput): Promise<string>;
 
-    updateEvent(payload: UpdateGoogleCalendarEventRequest): Promise<string>;
+    updateEvent(query: UpdateGoogleCalendarEventInput): Promise<string>;
 
-    fetchEvents(accessToken: string): Promise<Array<FetchEventsFromCalendarProps>>;
+    findEvents(accessToken: string): Promise<Array<GetEventsFromCalendarProps>>;
 
 };

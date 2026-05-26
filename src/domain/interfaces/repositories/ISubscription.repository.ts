@@ -1,11 +1,16 @@
+import { ClientSession } from "mongoose";
 import { Subscription } from "../../entities/subscription.entity";
 
 export interface ISubscriptionRepository {
 
-    create(subscription: Subscription): Promise<Subscription>;
+    create(subscription: Subscription, session?: ClientSession): Promise<Subscription | null>;
 
-    update(subscription: Subscription): Promise<Subscription>;
+    update(subscription: Subscription, session?: ClientSession): Promise<Subscription | null>;
 
     findById(subscriptionId: string): Promise<Subscription | null>;
+
+    getLatestSubscriptionByUserId(userId: string): Promise<Subscription | null>;
+
+    getFirstPaidSubscriptionByUserId(userId: string): Promise<Subscription | null>;
 
 }

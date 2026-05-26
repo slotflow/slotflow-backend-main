@@ -1,9 +1,9 @@
 export interface IOTPService {
 
-    setOtp(verificationToken: string): Promise<string>;
+    setOtp(email: string): Promise<string>;
 
-    verifyOtp(verificationToken: string, otp: string): Promise<boolean>;
+    verifyOtp(email: string, otp: string): Promise<boolean>;
 
-    deleteOtp(verificationToken: string): Promise<void>;
+    deleteOtp(email: string): Promise<void>;
 
 };

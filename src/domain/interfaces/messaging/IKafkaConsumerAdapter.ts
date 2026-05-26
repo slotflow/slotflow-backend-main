@@ -1,4 +1,4 @@
-import { MessageHandler } from "../../../application/dtos/kafka.dtos";
+import { MessageHandler } from "../../../application/dtos/kafka.dto";
 
 export interface IKafkaConsumerAdapter {
 
@@ -7,5 +7,7 @@ export interface IKafkaConsumerAdapter {
   subscribe(topic: string, handler: MessageHandler): Promise<void>;
 
   startConsumer(): Promise<void>;
+
+  disconnectConsumer(): Promise<void>;
 
 };

@@ -1,8 +1,11 @@
+import { HearAboutUsOptionValue, Role } from "../enums/common.enum";
+
 export type CreateLocalUserProps = {
   username: string;
   email: string;
   password: string;
-  verificationToken: string;
+  referralCode: string;
+  referredBy?: string;
 };
 
 export type CreateGoogleUserProps = {
@@ -10,47 +13,33 @@ export type CreateGoogleUserProps = {
   email: string;
   googleId: string;
   profileImage: string;
-  isEmailVerified: boolean;
+  referralCode: string;
 };
 
-export type ChangeProfileInfo = {
+export type ChangeProfileInfoProps = {
   username?: string;
   phone?: string;
 };
 
-export type ChangePassword = {
+export type ChangePasswordProps = {
   password: string;
 };
 
-export type UpdateVerificationToken = {
-  verificationToken: string;
-};
-
-export type SubmitIdentityProof = {
-  identityProof: string | null;
-};
-
-export type SubmitServiceProof = {
-  serviceProof: string | null;
-};
-
-export type LinkGoogleAccount = {
+export type LinkGoogleAccountProps = {
   googleId: string;
   googleConnected: boolean;
 };
 
-export type ChangeProfileImage = {
-  profileImage: string | null;
+export type ChangeProfileImageProps = {
+  profileImage?: string;
 };
 
-export type RejectVerification = {
-  verificationRejectionReason: string;
-  isAddressVerified: boolean;
-  isServiceDetailsVerified: boolean;
-  isAvailabilityVerified: boolean;
-  isProofsVerified: boolean;
+export type UpdatePushNotificationProps = {
+  allowPushNotification: boolean;
 };
 
-export type UpdatePushNotification = {
-    allowPushNotification: boolean;
+export type CompletePreBoardingProps = {
+  role: Role;
+  whereDidHearAboutUs: HearAboutUsOptionValue;
+  referredBy?: string;
 };

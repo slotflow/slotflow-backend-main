@@ -1,12 +1,11 @@
 import { PlanName } from "../../domain/enums/plan.enum";
+import { Day, HearAboutUsOptionValue, OnboardingStatus, ReferralStatus, Role, StripeAccountStatus } from "../../domain/enums/common.enum";
 import { GeoLocation } from "../../domain/contracts/address.contract";
-import { ServiceCategory, ServiceMode, ServiceType } from "../../domain/enums/service.enum";
-import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
+import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
-import { Day, Role } from "../../domain/enums/common.enum";
-import { PaymentFor, PaymentGateway, PaymentMethod, PaymentStatus } from "../../domain/enums/payment.enum";
-
+import { ServiceCategory, ServiceMode, ServiceType } from "../../domain/enums/service.enum";
+import { CreditTransactionSource, CreditTransactionStatus, CreditTransactionType } from "../../domain/enums/creditTransaction.enum";
 
 // **** ENTITY INTERFACES FOR APPLICATION LAYER **** \\
 
@@ -28,14 +27,35 @@ export interface AddressDTO {
   updatedAt: Date,
 }
 
-// **** PROVIDER INTERFACE
-export interface ProviderDTO {
+// **** USER INTERFACE
+export interface UserDTO {
   _id: string;
   username: string;
   email: string;
-  password: string;
+  password: string | null;
+  role: Role;
+  onboardingType: Role | null;
+  onboardingStatus: OnboardingStatus;
   isBlocked: boolean;
-  isEmailVerified: boolean;
+  phone: string | null;
+  profileImage: string | null;
+  addressId: string | null;
+  googleConnected: boolean;
+  googleId: string | null;
+  stripeAccountStatus: StripeAccountStatus;
+  stripeAccountId: string | null;
+  stripeCustomerId: string | null;
+  allowPushNotification: boolean | null;
+  whereDidHearAboutUs: HearAboutUsOptionValue;
+  referralCode: string | null;
+  createdAt: Date;
+  updatedAt: Date
+}
+
+// **** PROVIDER PROFILE INTERFACE
+export interface ProviderProfileDTO {
+  _id: string;
+  userId: string;
   isAdminVerified: boolean;
   verificationRejectionReason: string | null;
   adminVerificationStatus: AdminVerificationStatus;
@@ -43,42 +63,14 @@ export interface ProviderDTO {
   isServiceDetailsVerified: boolean;
   isAvailabilityVerified: boolean;
   isProofsVerified: boolean;
-  phone: string | null;
-  profileImage: string | null;
-  addressId: string | null;
   serviceId: string | null;
   serviceAvailabilityId: string | null;
   subscription: string[];
-  verificationToken: string | null;
-  googleConnected: boolean;
-  googleId: string | null;
-  stripeAccountId: string | null;
   trustedBySlotflow: boolean;
   identityProof: string | null;
   serviceProof: string | null;
-  allowPushNotification: boolean | null;
   createdAt: Date;
   updatedAt: Date;
-}
-
-// **** USER INTERFACE
-export interface UserDTO {
-  _id: string;
-  username: string;
-  email: string;
-  password: string | null;
-  isBlocked: boolean;
-  isEmailVerified: boolean;
-  phone: string | null;
-  profileImage: string | null;
-  addressId: string | null;
-  bookingsId: string | null;
-  verificationToken: string | null;
-  googleConnected: boolean;
-  googleId: string | null;
-  allowPushNotification: boolean | null;
-  createdAt: Date,
-  updatedAt: Date
 }
 
 // **** BOOKING INTERFACE
@@ -114,30 +106,6 @@ export interface statusTrack {
   time: Date;
 }
 
-
-// **** PAYMENT INTERFACE
-export interface PaymentDTO {
-  _id: string,
-  transactionId: string,
-  paymentStatus: PaymentStatus,
-  paymentMethod: PaymentMethod,
-  paymentGateway: PaymentGateway,
-  paymentFor: PaymentFor,
-  initialAmount: number,
-  discountAmount: number,
-  totalAmount: number,
-  userId?: string | null,
-  providerId?: string | null,
-  refundId?: string | null,
-  refundAmount?: number | null,
-  refundStatus?: string | null,
-  refundAt?: Date | null,
-  refundReason?: string | null,
-  chargeId?: string | null,
-  createdAt: Date,
-  updatedAt: Date,
-}
-
 // **** CREDENTIAL INTERFACE
 export interface CredentialDTO {
   _id: string,
@@ -167,16 +135,18 @@ export interface PlanDTO {
 export interface ProviderServiceDTO {
   _id: string,
   providerId: string,
-  service: string,
+  serviceId: ServiceDTO["_id"],
   serviceName: string,
   serviceDescription: string,
   servicePrice: number,
+  serviceExperienceYears: number,
   serviceExperience: string,
   serviceType: ServiceType,
   serviceMode: ServiceMode,
   tags: string[] | [],
-  requirements: string | null,
+  requirements: string[] | [],
   videoUrl: string | null,
+  portfolioUrl: string | null,
   maxParticipants: number,
   isGroupService: boolean,
   createdAt: Date,
@@ -220,12 +190,53 @@ export interface ReviewDTO {
   updatedAt: Date,
 }
 
+// **** REFERRAL INTERFACE
+export interface ReferralDTO {
+    _id: string;
+    referrerUserId: string;
+    refereeUserId: string;
+    referralCode: string;
+    status: ReferralStatus;
+    rewardGiven: boolean;
+    completedAt?: Date;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+
+// **** CREDITTRANSACTION INTERFACE
+export interface CreditTransactionDTO {
+  _id: string;
+  accountId: string;
+  userId: string;
+  type: CreditTransactionType;
+  credits: number;
+  balanceAfter: number;
+  source: CreditTransactionSource;
+  status: CreditTransactionStatus;
+  referenceId?: string; // subscriptionId or appointment / bookingId
+  idempotencyKey?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// **** CREDITACCOUNT INTERFACE
+export interface CreditAccountDTO {
+  _id: string;
+  userId: string;
+  balance: number;
+  isActive: boolean;
+  version: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 // **** SERVICEAVAILABILITY INTERFACE AND ITS SUPPORTS
 export interface TimeSlot {
   time: string,
 };
 
-export interface TimeSlotForFrontendResponse {
+export interface TimeSlotForClientOutput {
   _id: string,
   time: string,
   available: boolean,
@@ -234,11 +245,12 @@ export interface TimeSlotForFrontendResponse {
 
 export interface Availability {
   day: Day,
-  duration: number,
-  startTime: string,
-  endTime: string,
-  modes: ServiceMode[],
-  slots: TimeSlot[],
+  isAvailable: boolean,
+  duration?: number,
+  startTime?: string,
+  endTime?: string,
+  modes?: ServiceMode[],
+  slots?: TimeSlot[],
 };
 
 export interface ServiceAvailabilityDTO {
@@ -249,151 +261,19 @@ export interface ServiceAvailabilityDTO {
   updatedAt: Date,
 };
 
-
-
-
-// **** Used as the request interface for the paginated request
-export interface ApiPaginationRequest {
+// common api pagination input
+export interface ApiPaginationInput {
   page: number;
   limit: number;
 }
 
-
-// **** Used as the response interface for the all request
-export interface CommonResponse {
-  success?: boolean;
-  message?: string;
-};
-
-
-// **** Used as the response interface for the paginated response
-export interface ApiResponse<T = unknown> extends CommonResponse {
+// Table data output
+export interface TableData<T>{
   totalPages?: number;
   currentPage?: number;
   totalCount?: number;
-  data?: T;
-}
-
-// **** Used as the type of table data
-export interface TableData<T> {
-  totalPages?: number;
-  currentPage?: number;
-  totalCount?: number;
-  data?: T
+  items?: T
 };
-
-
-// **** Common DTOS used in usecases **** \\
-
-// Used as the payments fetching request and response dto
-export interface userIdAndProviderIdFilterForFetchPayments {
-  userId?: UserDTO["_id"];
-  providerId?: ProviderDTO["_id"];
-}
-export interface FetchPaymentsRequest extends ApiPaginationRequest, userIdAndProviderIdFilterForFetchPayments { };
-export type FetchPaymentResponse = Array<Pick<PaymentDTO, "_id" | "createdAt" | "totalAmount" | "paymentFor" | "paymentGateway" | "paymentStatus" | "paymentMethod" | "discountAmount">> | null;
-
-
-// Used as the request interface for fetching subscriptions with planName and plan price of a specific provider for the provider side and admin side
-export interface FetchProviderSubscriptionsRequest extends ApiPaginationRequest {
-  providerId: ProviderDTO["_id"];
-}
-// Used as the response type for fetching subscriptions with planName and plan price of a specific provider for the provider side and admin side
-// removing payment dependedcy data from here the data will be requested from payment service from client directly
-export type FindSubscriptionsByProviderIdResponse = Array<
-  Pick<SubscriptionDTO, "_id" | "startDate" | "endDate" | "subscriptionStatus"> &
-  Partial<Pick<PlanDTO, "planName">>>
-  // Partial<Pick<PaymentDTO, "totalAmount">>
-  ;
-export type PopulatedSubscription = Omit<SubscriptionDTO, 'subscriptionPlanId' | "paymentId"> & {
-  subscriptionPlanId: {
-    planName: PlanDTO["planName"];
-  },
-  // paymentId: {
-  //   totalAmount: string;
-  // }
-};
-
-
-// Used as the request type for adding address for user or provider
-export type CreateAddressRequest = Pick<AddressDTO, "userId" | "addressLine" | "landMark" | "place" | "phone" | "city" | "country" | "district" | "pincode" | "state" | "location">;
-
-
-// Used as the request interface for fetching bookings for admin, provider and user side
-export interface userIdAndServiceProviderId {
-  userId?: UserDTO["_id"];
-  serviceProviderId?: ProviderDTO["_id"];
-}
-export interface FetchBookingsRequest extends ApiPaginationRequest, userIdAndServiceProviderId {
-  online: boolean;
-  raw: boolean;
-  role: Role;
-}
-// Used as the response type for fetching bookings for admin, provider and user side
-export type FetchBookingsResponse = Array<Pick<BookingDTO, "_id" | "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "videoCallRoomId" | "serviceProviderId">>;
-export type FetchOnlineBookingsForProviderResponse = Array<
-  Pick<
-    BookingDTO,
-    | "_id"
-    | "appointmentDate"
-    | "appointmentStatus"
-    | "appointmentTime"
-    | "videoCallRoomId"
-    | "createdAt"
-  > & {
-    userId: Pick<UserDTO, "username">;
-  }
->;
-export type FetchOnlineBookingsForUserResponse = Array<
-  Pick<
-    BookingDTO,
-    | "_id"
-    | "appointmentDate"
-    | "appointmentStatus"
-    | "appointmentTime"
-    | "videoCallRoomId"
-    | "createdAt"
-  > & {
-    serviceProviderId: Pick<ProviderDTO, "username">;
-  }
->;
-
-
-// Used as the response type for fetching AppServices for provider and user side
-export interface FetchAllAppServiceRequest {
-  categories: Array<ServiceDTO["serviceCategory"]>;
-};
-export type FetchAllAppServicesResponse = Array<Pick<ServiceDTO, "_id" | "serviceName">> | null;
-
-
-// Used as the request type for updating address for provider and user side
-export type UpdateAddressRequest = Pick<AddressDTO, "_id" | "userId" | "addressLine" | "landMark" | "place" | "phone" | "city" | "country" | "district" | "pincode" | "state" | "location">;
-
-
-// Used as the interface for the validate join room
-export interface ValidateJoinRoomRequest {
-  role: Role;
-  bookingId: string;
-  roomId: string;
-  userOrProviderId: string;
-};
-
-
-// fetch subscription details use case request payload interface 
-export interface FetchSubscriptionDetailsRequest {
-  subscriptionId: SubscriptionDTO["_id"];
-};
-// admin fetch subscription details use case response interface 
-export type FetchSubscriptionDetailsResponse = findSubscriptionFullDetailsResProps | null;
-
-
-// create credential 
-export type CreateCredentialRequest = Pick<CredentialDTO, "userId" | "accessToken" | "refreshToken" | "expiryDate">;
-// update credential 
-export type UpdateCredentialRequest = Pick<CredentialDTO, "_id" | "accessToken" | "refreshToken" | "expiryDate">;
-// fetch credentials credential 
-export type FetchCredentialsResponse = Pick<CredentialDTO, "accessToken" | "refreshToken" | "expiryDate" | "userId">;
-
 
 // Google Event
 interface GoogleCalendarEventsPropsForBackend {
@@ -407,11 +287,7 @@ interface GoogleCalendarEventsPropsForBackend {
   };
 }
 
-interface GoogleCalendarEventsPropsForFrontend {
-  start: string;
-  end: string;
-}
-
+// used in add event to calendar usecase
 interface CombinedStartAndEndProps {
   start: {
     dateTime: string,
@@ -425,6 +301,7 @@ interface CombinedStartAndEndProps {
   } | string;
 }
 
+// used in add event to calendar usecase
 export interface GoogleCalendarEvent extends Partial<BookingDTO> {
   id: string;
   iCalUID?: string;
@@ -483,118 +360,76 @@ export interface GoogleCalendarEvent extends Partial<BookingDTO> {
   },
 };
 
+// used in add event to calendar usecase
 export type AddEventToCalendarProps = Pick<GoogleCalendarEvent, "summary" | "description" | "extendedProperties"> & GoogleCalendarEventsPropsForBackend;
 
-export type FetchEventsFromCalendarProps = Pick<GoogleCalendarEvent, "id" | "summary" | "description" | "creator" | "organizer" | "iCalUID" | "reminders" | "eventType" | "extendedProperties"> & CombinedStartAndEndProps;
+// used in get events from calendar usecase
+export type GetEventsFromCalendarProps = Pick<GoogleCalendarEvent, "id" | "summary" | "description" | "creator" | "organizer" | "iCalUID" | "reminders" | "eventType" | "extendedProperties"> & CombinedStartAndEndProps;
 
-export interface UpdateGoogleCalendarEventRequest {
+// used in update google calendar event usecase
+export interface UpdateGoogleCalendarEventInput {
   eventId: string,
   appointmentDate: BookingDTO["appointmentDate"],
   appointmentStatus: BookingDTO["appointmentStatus"],
   accessToken: string,
 }
 
-export interface CreateGoogleCalendarEventRequest {
+// used in create google calendar event usecase
+export interface CreateGoogleCalendarEventInput {
   appointmentDate: BookingDTO["appointmentDate"],
   appointmentStatus: BookingDTO["appointmentStatus"],
   slotDuration: number,
   accessToken: CredentialDTO["accessToken"];
 }
 
-export interface UpdateBookingOnlineTrackRequest extends ParticipantPresence {
-  role: Role,
-  roomId: string,
-}
-
-export type UpdateBookingOnlineTrackResponse = Pick<Availability, "duration">;
-
-
-//// **** Used as the request interface fetching reviews for admin, provider and user side
-export interface userIdAndProviderIdFilterForFetchReviews {
-  userId?: UserDTO["_id"];
-  providerId?: ProviderDTO["_id"];
-  role?: Role;
-}
-export interface FetchReviesRequest extends ApiPaginationRequest, userIdAndProviderIdFilterForFetchReviews { }
-//// **** Used as the response type fetching payments for admin, provider and user side
-export interface FetchReviewsResponse extends Pick<ReviewDTO, "_id" | "createdAt" | "reviewText" | "rating" | "reported" | "isBlocked"> {
-  userId: Pick<UserDTO, "username" | "profileImage">;
-  providerId: Pick<ProviderDTO, "username" | "profileImage">;
-};
-
-
-//// **** Used as the response interface of fetch booking details
-export interface FetchBookingDetailsRequest {
-  bookingId: BookingDTO["_id"];
-};
-export interface FetchBookingDetailsResponse extends Pick<BookingDTO, "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "onlineTrack" | "statusTrack" | "videoCallRoomId"> {
-  userId: Pick<UserDTO, "username" | "email">;
-  serviceProviderId: Pick<ProviderDTO, "username" | "email">;
-};
-
-//// **** Used in s3 controller
-export type CreareFileUploadPresignedUrlRequest = {
-  folderName: string;
+// used in create file upload presigned url usecase input output
+export interface CreateFileUploadPresignedUrlInput {
   fileName: string;
   fileType: string;
-};
-
-export type CreareFileUploadPresignedUrlResponse = {
+  folderName: string;
+}
+export interface CreateFileUploadPresignedUrlOutput {
   uploadUrl: string;
   key: string;
 };
 
-export interface CreateFileSignedUrlRequest {
+// used in create file signed url usecase
+export interface CreateFileSignedUrlInput {
   key: string;
 };
 
-
-// **** Used in fetch provider proofs usecase
-export interface FetchProviderProofsRequest {
-  providerId: ProviderDTO["_id"];
-};
-
-export type FetchProviderProofsResponse = Pick<ProviderDTO, "identityProof" | "serviceProof">;
-
-export type findAllPlansForDisplayResProps = Pick<PlanDTO, "_id" | "planName" | "price" | "features" | "description">
-
+// used in find provider service usecase
 type FindProviderServiceProps = Omit<ProviderServiceDTO, "service" | "updatedAt" | "createdAt">;
-export interface FindProviderServiceResponse extends FindProviderServiceProps {
+export interface FindProviderServiceOutput extends FindProviderServiceProps {
   service: { serviceName: string }
 }
 
-
-type SubscriptionProps = Pick<SubscriptionDTO, "startDate" | "endDate" | "subscriptionStatus" | "createdAt">;
-// type PaymentsProps = Pick<PaymentDTO, "transactionId" | "discountAmount" | "initialAmount" | "paymentFor" | "paymentGateway" | "paymentMethod" | "paymentStatus" | "totalAmount">;
-type PlanProps = Pick<PlanDTO, "planName" | "price" | "adVisibility" | "maxBookingPerMonth">;
-export interface findSubscriptionFullDetailsResProps extends SubscriptionProps {
-  subscriptionPlanId: PlanProps,
-  // removing payment data from here and the data will come from payment service to client
-  // paymentId: PaymentsProps | null,
-}
-
+// used in create service availability usecase
 export interface PlanNameOnly {
   subscriptionPlanId: {
     planName: PlanDTO["planName"];
   }
 }
 
-
-export interface FontendAvailabilityForResponse extends Omit<Availability, "slots"> {
-  slots: TimeSlotForFrontendResponse[]
+// used in create service availability usecase
+export interface FrontendAvailabilityForOutput extends Omit<Availability, "slots"> {
+  slots: TimeSlotForClientOutput[]
 }
 
-export interface FrontendAvailabilityForRequest extends Omit<Availability, "slots"> {
-  slots: string[];
+// used in create service availability usecase
+export interface FrontendAvailabilityForClientInput extends Omit<Availability, "slots"> {
+  slots?: string[];
 }
 
+// used in create service availability usecase
 export interface FrontendAvailabilityUpdatedSlots extends Omit<Availability, "slots"> {
-  slots: TimeSlot[];
+  slots?: TimeSlot[];
 }
 
+// used in auth controller
 export interface DecodedUser {
-  userOrProviderId?: string;
-  role?: Role;
+  id: string;
+  role: Role;
   googleAccessToken?: string;
   googleRefreshToken?: string;
   googleId?: string;
@@ -607,19 +442,29 @@ export interface DecodedUser {
   userId?: string;
 };
 
-// send provider create payment failed event
-export interface ProviderCreatePaymentFailedEventResult {
-  mbsData: {
-    subscriptionId: string;
-  }
-};
+// used in count query
+export type CountResult = { count: number };
 
-// send provider create payment success event
-export interface ProviderCreatePaymentSuccessEventResult {
-  mbsData: {
-        subscriptionId: string;
-        paymentId: string;
-        planDuration: number;
-        providerId: string;
-    };
-};
+// GetGoogleCalendarUseCase usecase input output
+export interface GetGoogleCalendarInput {
+    userId: string;
+}
+export type GetGoogleCalendarOutput = Array<GetEventsFromCalendarProps>;
+
+
+// queries
+
+export type AggregateCountResult = { count: number };
+
+// Chart DTOS
+export interface MiniChartData {
+  date: string;
+  value: number;
+}
+
+export interface MiniCardData {
+  count: number;
+  percentage: number;
+  days: number;
+  chartData: MiniChartData[];
+}

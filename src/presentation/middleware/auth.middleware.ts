@@ -1,20 +1,16 @@
 import { log } from "../../shared/logger/logger";
+import { Role } from "../../domain/enums/common.enum";
+import { ERROR_CODES } from "../../shared/utils/types";
 import { NextFunction, Request, Response } from "express";
 import { cacheService } from "../../infrastructure/services";
 import { DecodedUser } from "../../application/dtos/common.dto";
-import { providerRepository, userRepository } from "../../infrastructure/repositoryImpls";
-import { Role } from "../../domain/enums/common.enum";
+import { userRepository } from "../../infrastructure/repositoryImpls";
+import { ForbiddenError, UnauthorizedError } from "../../shared/error/appError";
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-
   try {
     const userId = req.headers["x-user-id"];
     const role = req.headers["x-user-role"];
-
-    if (role !== Role.ADMIN && !userId) {
-      res.status(401).json({ success: false, message: "Unauthenticated request" });
-      return;
-    };
 
     const normalizedUserId = Array.isArray(userId) ? userId[0] : userId;
     const normalizedRole = Array.isArray(role)
@@ -22,76 +18,58 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
       : (role as Role);
 
     req.user = {
-      userOrProviderId: normalizedUserId,
+      id: normalizedUserId,
       role: normalizedRole,
     } as DecodedUser;
 
-    // User auth
-    if (req.user.role === Role.USER) {
-      const cacheKey = req.user.userOrProviderId!;
-      const cachedStatus = await cacheService.getBlockList(cacheKey);
+    const cacheKey = req.user.id!;
+    const cachedStatus = await cacheService.getBlockList(cacheKey);
 
-      if (cachedStatus !== null) {
-        if (cachedStatus === "true") {
-          res.status(403).json({ success: false, message: "Your account is blocked" });
-          return;
-        };
-        return next();
+    if (cachedStatus !== null) {
+      if (cachedStatus === "true") {
+        return next(
+          new ForbiddenError(
+            "Your account is blocked",
+            ERROR_CODES.FORBIDDEN
+          )
+        );
       };
-
-      // Cache miss DB fallback
-      const user = await userRepository.findById(cacheKey);
-      if (!user) {
-        res.status(401).json({ success: false, message: "Invalid user" });
-        return;
-      };
-
-      await cacheService.setBlockList(
-        cacheKey,
-        JSON.stringify(user.isBlocked)
-      );
-
-      if (user.isBlocked) {
-        res.status(403).json({ success: false, message: "Your account is blocked" });
-        return;
-      };
+      return next();
     };
 
-    // Provider auth
-    if (req.user.role === Role.PROVIDER) {
-      const cacheKey = req.user.userOrProviderId!;
-      const cachedStatus = await cacheService.getBlockList(cacheKey);
-
-      if (cachedStatus !== null) {
-        if (cachedStatus === "true") {
-          res.status(403).json({ success: false, message: "Your account is blocked" });
-          return;
-        };
-        return next();
-      };
-
-      // Cache miss DB fallback
-      const provider = await providerRepository.findById(cacheKey);
-      if (!provider) {
-        res.status(401).json({ success: false, message: "Invalid provider" });
-        return;
-      };
-
-      await cacheService.setBlockList(
-        cacheKey,
-        JSON.stringify(provider.isBlocked)
+    // Cache miss DB fallback
+    const user = await userRepository.findById(cacheKey);
+    if (!user) {
+      return next(
+        new UnauthorizedError(
+          "Invalid user",
+          ERROR_CODES.USER_NOT_FOUND
+        )
       );
+    };
 
-      if (provider.isBlocked) {
-        res.status(403).json({ success: false, message: "Your account is blocked" });
-        return;
-      };
+    await cacheService.setBlockList(
+      cacheKey,
+      JSON.stringify(user.isBlocked)
+    );
+
+    if (user.isBlocked) {
+      return next(
+        new ForbiddenError(
+          "Your account is blocked",
+          ERROR_CODES.FORBIDDEN
+        )
+      );
     };
 
     next();
   } catch (error) {
     log.error("error", error as Error);
-    res.status(401).json({ success: false, message: "Unauthorized: Invalid token." });
-    return;
+    return next(
+      new UnauthorizedError(
+        "Unauthorized: Invalid token",
+        ERROR_CODES.TOKEN_INVALID
+      )
+    );
   };
 };

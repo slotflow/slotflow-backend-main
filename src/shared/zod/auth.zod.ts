@@ -1,8 +1,7 @@
 import { z } from 'zod';
-import { validateUserIdSchema } from './user.zod';
-import { roleValidationSchema } from './common.zod';
-import { strongPasswordRegex, usernameRegex, verificationTokenRegex } from '../utils/regex';
-import { Role } from '../../domain/enums/common.enum';
+import { roleValidationSchema } from './base.zod';
+import { strongPasswordRegex, usernameRegex } from '../utils/regex';
+import { HearAboutUsOptionValue } from '../../domain/enums/common.enum';
 
 // Regist controller zod validation
 export const registerSchema = z
@@ -20,7 +19,6 @@ export const registerSchema = z
       .min(8, "Password must be at least 8 characters")
       .max(50, "Password cannot exceed 50 characters")
       .regex(strongPasswordRegex, "Password must contain uppercase, lowercase, number & symbol"),
-    role: z.nativeEnum(Role),
   });
 
 // OTP Verification controller zod validation
@@ -28,15 +26,6 @@ export const otpVerificationSchema = z.object({
   otp: z
     .string()
     .length(6, "OTP must be exactly 6 digits"),
-  verificationToken: z.string().length(36).regex(verificationTokenRegex, "Invalid token"),
-  role: z.nativeEnum(Role),
-});
-
-// Resend otp controller zod validation
-export const resendOTPSchema = z.object({
-  role: z.nativeEnum(Role),
-  verificationToken: z.string().length(36).regex(verificationTokenRegex, "Invalid token").optional(),
-  email: z.string().email("Invalid email address").optional(),
 });
 
 // Login controller zod validation
@@ -47,13 +36,15 @@ export const loginSchema = z.object({
     .min(8, "Password must be at least 8 characters")
     .max(50, "Password cannot exceed 50 characters")
     .regex(strongPasswordRegex, "Password must contain uppercase, lowercase, number & symbol"),
-  role: z.nativeEnum(Role)
+});
+
+// Verify email zod validation
+export const verifyEmailSchema = z.object({
+  email: z.string().email("Invalid email address"),
 });
 
 // Update password zod validation
 export const updatePasswordSchema = z.object({
-  role: z.nativeEnum(Role),
-  verificationToken: z.string().length(36).regex(verificationTokenRegex, "Invalid token").optional(),
   password: z
     .string()
     .min(8, "Password must be at least 8 characters")
@@ -61,7 +52,13 @@ export const updatePasswordSchema = z.object({
     .regex(strongPasswordRegex, "Password must contain uppercase, lowercase, number & symbol")
 });
 
-//
+// Connect google account zod validation schema
 export const connectGoogleSchema = z.object({
   connectOnly: z.boolean(),
-}).merge(validateUserIdSchema).merge(roleValidationSchema)
+}).merge(roleValidationSchema)
+
+// preboardgin zod schema
+export const preboardingSchema = z.object({
+  whereDidHearAboutUs: z.enum(HearAboutUsOptionValue),
+  referralCode: z.string().startsWith("SF_REF").min(12).max(15).optional()
+}).merge(roleValidationSchema);

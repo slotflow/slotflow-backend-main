@@ -5,7 +5,7 @@ export interface TimeSlot {
     time: string,
 };
 
-export interface TimeSlotForFrontendResponse {
+export interface TimeSlotForClientOutput {
     _id: string,
     time: string,
     available: boolean,
@@ -14,11 +14,12 @@ export interface TimeSlotForFrontendResponse {
 
 export interface Availability {
     day: Day,
-    duration: number,
-    startTime: string,
-    endTime: string,
-    modes: ServiceMode[],
-    slots: TimeSlot[],
+    isAvailable: boolean,
+    duration?: number,
+    startTime?: string,
+    endTime?: string,
+    modes?: ServiceMode[],
+    slots?: TimeSlot[],
 };
 
 export interface ServiceAvailabilityProps {

@@ -1,6 +1,6 @@
+import { ServiceMode, ServiceType } from '../enums/service.enum';
 import { ProviderServiceProps } from '../contracts/providerService.contract';
 import { CreateProviderServiceProps, UpdateProviderServiceProps } from '../commands/providerService.commands';
-import { ServiceMode, ServiceType } from '../enums/service.enum';
 
 export class ProviderService {
     private props: ProviderServiceProps;
@@ -13,12 +13,13 @@ export class ProviderService {
         this.props.updatedAt = new Date();
     };
 
-    static create(props: CreateProviderServiceProps) {
+    static create(props: CreateProviderServiceProps): ProviderService {
         return new ProviderService({
             _id: "",
             ...props,
             requirements: props.requirements ?? null,
             videoUrl: props.videoUrl ?? null,
+            portfolioUrl: props.portfolioUrl ?? null,
             createdAt: new Date(),
             updatedAt: new Date(),
         })
@@ -33,8 +34,8 @@ export class ProviderService {
         return this.props.providerId;
     };
 
-    get service(): string {
-        return this.props.service;
+    get serviceId(): string {
+        return this.props.serviceId;
     };
 
     get serviceName(): string {
@@ -65,13 +66,17 @@ export class ProviderService {
         return this.props.tags;
     };
 
-    get requirements(): string | null {
+    get requirements(): string[] | [] {
         return this.props.requirements;
     };
 
     get videoUrl(): string | null {
         return this.props.videoUrl;
     };
+
+    get portfolioUrl(): string | null {
+        return this.props.portfolioUrl;
+    }
 
     get maxParticipants(): number {
         return this.props.maxParticipants;

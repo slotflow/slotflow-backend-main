@@ -1,3 +1,4 @@
+import { ClientSession } from 'mongoose';
 import { ServiceAvailabilityModel } from '../models/serviceAvailability.model';
 import { ServiceAvailabilityMapper } from '../mappers/serviceAvailability.mapper';
 import { ServiceAvailability } from '../../domain/entities/serviceAvailability.entity';
@@ -5,10 +6,12 @@ import { IServiceAvailabilityRepository } from '../../domain/interfaces/reposito
 
 export class ServiceAvailabilityRepositoryImpl implements IServiceAvailabilityRepository {
 
-    async create(serviceAvailability: ServiceAvailability): Promise<ServiceAvailability> {
-        const persistence = ServiceAvailabilityMapper.toPersistence(serviceAvailability);
-        const created = await ServiceAvailabilityModel.create(persistence);
-        return ServiceAvailabilityMapper.toDomain(created);
+    async create(serviceAvailability: ServiceAvailability, session?: ClientSession): Promise<ServiceAvailability | null> {
+        const doc = await ServiceAvailabilityModel.create(
+            [ServiceAvailabilityMapper.toPersistence(serviceAvailability)],
+            { session }
+        );
+        return doc && doc.length > 0 ? ServiceAvailabilityMapper.toDomain(doc[0]) : null;
     };
 
     async deleteById(serviceAvailabilityId: string): Promise<boolean> {
@@ -21,20 +24,16 @@ export class ServiceAvailabilityRepositoryImpl implements IServiceAvailabilityRe
         return doc ? ServiceAvailabilityMapper.toDomain(doc) : null;
     };
 
-    async update(serviceAvailability: ServiceAvailability): Promise<ServiceAvailability> {
+    async update(serviceAvailability: ServiceAvailability, session?: ClientSession): Promise<ServiceAvailability | null> {
         const persistence = ServiceAvailabilityMapper.toPersistence(serviceAvailability);
 
         const doc = await ServiceAvailabilityModel.findByIdAndUpdate(
             serviceAvailability._id,
             { $set: persistence },
-            { new: true }
+            { new: true, session }
         );
 
-        if (!doc) {
-            throw new Error("Service availabiltiy not found");
-        };
-
-        return ServiceAvailabilityMapper.toDomain(doc);
+        return doc ? ServiceAvailabilityMapper.toDomain(doc) : null;
     };
 
 };

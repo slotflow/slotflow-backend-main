@@ -1,3 +1,4 @@
+import { ClientSession } from "mongoose";
 import { UserModel } from "../models/user.model";
 import { UserMapper } from "../mappers/user.mapper";
 import { User } from "../../domain/entities/user.entity";
@@ -5,30 +6,30 @@ import { IUserRepository } from "../../domain/interfaces/repositories/IUser.repo
 
 export class UserRepositoryImpl implements IUserRepository {
 
-    async create(user: User): Promise<User> {
+    async create(user: User, session?: ClientSession): Promise<User | null> {
         const persistence = UserMapper.toPersistence(user);
-        const doc = await UserModel.create(persistence);
-        return UserMapper.toDomain(doc);
+        const doc = await UserModel.create([persistence], { session });
+        return doc && doc.length > 0 ? UserMapper.toDomain(doc[0]) : null;
     };
 
-    async update(user: User): Promise<User> {
+    async update(user: User, session?: ClientSession): Promise<User | null> {
         const persistence = UserMapper.toPersistence(user);
 
         const doc = await UserModel.findByIdAndUpdate(
             user._id,
             persistence,
-            { new: true }
+            { new: true, session }
         );
 
-        if (!doc) {
-            throw new Error("User not found");
-        }
-
-        return UserMapper.toDomain(doc);
+        return doc ? UserMapper.toDomain(doc) : null;
     };
 
-    async findById(userId: string): Promise<User | null> {
-        const doc = await UserModel.findById(userId);
+    async findById(userId: string, session?: ClientSession): Promise<User | null> {
+        const query = UserModel.findById(userId);
+        if (session) {
+            query.session(session);
+        }
+        const doc = await query;
         return doc ? UserMapper.toDomain(doc) : null;
     };
 
@@ -39,11 +40,6 @@ export class UserRepositoryImpl implements IUserRepository {
 
     async findByGoogleId(googleId: string): Promise<User | null> {
         const doc = await UserModel.findOne({ googleId });
-        return doc ? UserMapper.toDomain(doc) : null;
-    };
-
-    async findByVerificationToken(token: string): Promise<User | null> {
-        const doc = await UserModel.findOne({ verificationToken: token });
         return doc ? UserMapper.toDomain(doc) : null;
     };
 
@@ -62,5 +58,10 @@ export class UserRepositoryImpl implements IUserRepository {
             createdAt: { $gte: start, $lte: end },
         });
     };
+
+    async findByReferralCode(referralCode: string): Promise<User | null> {
+        const doc = await UserModel.findOne({ referralCode });
+        return doc ? UserMapper.toDomain(doc) : null;
+    }
 
 };

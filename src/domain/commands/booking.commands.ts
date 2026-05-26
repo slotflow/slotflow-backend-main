@@ -22,18 +22,20 @@ export interface CalendarData {
     user: {
         googleEventId: string | null;
         calendarStatus: CalendarStatus; 
-    },
+    } | null,
     provider: {
         googleEventId: string | null;
         calendarStatus: CalendarStatus; 
-    },
+    } | null,
 };
 
-export type CreateBookingProps = Omit<BookingProps, "_id" | "createdAt" | "updatedAt" | "onlineTrack" | "calendarData">;
+export type CreateBookingProps = Omit<BookingProps, "_id" | "createdAt" | "updatedAt" | "onlineTrack" | "calendarData" | "paymentId" | "googleEventId">;
 
 export type UpdateEventIProps = Pick<BookingProps, "googleEventId">;
 
 export type UpdateAppointmentProps = Pick<BookingProps, "appointmentStatus">;
+
+export type UpdateBookingAfterPaymentProps = Pick<BookingProps, "paymentId" | "appointmentStatus">;
 
 export interface CreateCalendarProps {
     role: Role;

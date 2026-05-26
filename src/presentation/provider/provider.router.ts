@@ -1,68 +1,123 @@
 import { Router } from 'express';
+import { Role } from '../../domain/enums/common.enum';
+import { authorize } from '../middleware/authRole.middleware';
 import { authMiddleware } from '../middleware/auth.middleware';
-import { providerPlanController } from './providerPlan.controller';
-import { providerUserController } from './providerUser.controller';
-import { providerReviewController } from './providerReview.controller';
-import { providerStripeController } from './providerStripe.controller';
-import { provideAddressController } from './providerAddress.controller';
-import { providerServiceController } from './providerService.controller';
-import { providerProfileController } from './providerProfile.controller';
-import { providerPaymentController } from './providerPayment.controller';
-import { providerBookingController } from './providerBooking.controller';
-import { providerDashboardController } from './providerDashboard.controller';
-import { providerAppServiceController } from './providerAppService.controller';
-import { providerSubscriptionController } from './providerSubscription.controller';
-import { providerServiceAvailabilityController } from './providerServiceAvailability.controller';
+import { providerProfileController } from './provider.controller';
+import { providerServiceController } from '../providerService/providerService.controller';
+import { serviceAvailabilityController } from '../serviceAvailability/serviceAvailability.controller';
 
 const router = Router();
 
-router.get('/', authMiddleware, providerProfileController.getProfileDetails);
-router.patch('/profile/image', authMiddleware,providerProfileController.updateProfileImage);
-router.patch('/profile/info', authMiddleware, providerProfileController.updateInfo);
-router.patch('/profile/identity', authMiddleware, providerProfileController.updateIdentityProof);
-router.patch('/profile/service', authMiddleware, providerProfileController.updateServiceProof);
-router.get('/profile/proofs', authMiddleware,providerProfileController.fetchProofs);
-router.patch('/profile/approval', authMiddleware, providerProfileController.requestAdminApproval);
-router.delete('/profile/identity', authMiddleware, providerProfileController.deleteIdentityProof);
-router.delete('/profile/service', authMiddleware, providerProfileController.deleteServiceProof);
-router.patch('/profile/push-notification', authMiddleware, providerProfileController.updatePushNotification);
+// provider get profile details
+router.get('/me',
+    authMiddleware,
+    authorize(Role.PROVIDER),
+    providerProfileController.getProfileDetails
+);
 
-router.post('/addresses', authMiddleware, provideAddressController.createAddress);
-router.get('/address', authMiddleware, provideAddressController.getAddress);
-router.patch('/addresses/:addressId', authMiddleware, provideAddressController.updateAddress);
+// provider update identity proof
+router.patch('/me/identity',
+    authMiddleware,
+    authorize(Role.PROVIDER, Role.USER),
+    providerProfileController.updateIdentityProof
+);
 
-router.get('/appservices', authMiddleware, providerAppServiceController.getAllAppServices);
+// provider update service proof
+router.patch('/me/service',
+    authMiddleware,
+    authorize(Role.PROVIDER, Role.USER),
+    providerProfileController.updateServiceProof
+);
 
-router.get('/bookings', authMiddleware, providerBookingController.fetchBookingAppointments);
-router.patch('/bookings/:bookingId', authMiddleware, providerBookingController.updateBookingAppointmentStatus);
-router.get('/bookings/:bookingId/can-join', authMiddleware, providerBookingController.validateRoom);
-router.patch('/bookings/:roomId/join-left', authMiddleware, providerBookingController.providerJoinRoom);
-router.get('/bookings/:bookingId', authMiddleware, providerBookingController.fetchBookingDetails);
+// provider get proofs
+router.get('/me/proofs',
+    authMiddleware,
+    authorize(Role.PROVIDER),
+    providerProfileController.getProofs
+);
 
-router.post('/service', authMiddleware,providerServiceController.createServiceDetails);
-router.get('/service', authMiddleware, providerServiceController.getServiceDetails);
-router.patch('/service/:serviceId', authMiddleware, providerServiceController.updateServiceDetails);
+// provider delete identity proof
+router.delete('/me/identity',
+    authMiddleware,
+    authorize(Role.PROVIDER, Role.USER),
+    providerProfileController.deleteIdentityProof
+);
 
-router.post('/availabilities', authMiddleware, providerServiceAvailabilityController.createServiceAvailability);
-router.get('/availability', authMiddleware, providerServiceAvailabilityController.getServiceAvailability);
+// provider delete service proof
+router.delete('/me/service',
+    authMiddleware,
+    authorize(Role.PROVIDER, Role.USER),
+    providerProfileController.deleteServiceProof
+);
 
-router.get('/plans', authMiddleware, providerPlanController.fetchAllPlans);
+// provider request admin approval
+router.patch('/me/approval',
+    authMiddleware,
+    authorize(Role.USER),
+    providerProfileController.requestAdminApproval
+);
 
-router.post('/subscriptions/checkout/session', authMiddleware, providerSubscriptionController.subscribe);
-router.get('/subscriptions', authMiddleware, providerSubscriptionController.fetchProviderSubscriptions);
-router.post('/subscriptions/trial', authMiddleware, providerSubscriptionController.subscribeToTrialPlan);
-router.get('/subscriptions/:subscriptionId', authMiddleware, providerSubscriptionController.getSubscriptionDetails);
+// admin or user get provider service availability
+router.get('/:providerId/service-availability',
+    authMiddleware,
+    authorize(Role.ADMIN, Role.USER),
+    serviceAvailabilityController.getServiceAvailability
+);
 
-router.get('/payments', authMiddleware, providerPaymentController.getPayments);
+// admin or user get provider service
+router.get('/:providerId/provider-service',
+    authMiddleware,
+    authorize(Role.ADMIN, Role.USER),
+    providerServiceController.getServiceDetails
+);
 
-router.get('/chat/users', authMiddleware, providerUserController.fetchUsersForChatSideBar);
+// admin get provider proofs
+router.get('/:providerId/proofs',
+    authMiddleware,
+    authorize(Role.ADMIN),
+    providerProfileController.getProofs
+);
 
-router.get('/dashboard/stats', authMiddleware, providerDashboardController.getDashboardStats);
-router.get('/dashboard/graph-data', authMiddleware, providerDashboardController.getDashboardGraphData);
+// admin approve provider
+router.patch('/:providerId/approve',
+    authMiddleware,
+    authorize(Role.ADMIN),
+    providerProfileController.approveProvider
+);
 
-router.get('/reviews', authMiddleware, providerReviewController.findAllReviews);
-router.patch('/reviews/:reviewId', authMiddleware, providerReviewController.chnageReportReview);
+// admin reject provider
+router.patch('/:providerId/reject',
+    authMiddleware,
+    authorize(Role.ADMIN),
+    providerProfileController.rejectProvider
+);
 
-router.post("/stripe/connect", authMiddleware, providerStripeController.connectStripe);
+// admin change block status
+router.patch('/:providerId/block',
+    authMiddleware,
+    authorize(Role.ADMIN),
+    providerProfileController.changeProviderBlockStatus
+);
+
+// admin change provider trust tag
+router.patch('/:providerId/trust-tag',
+    authMiddleware,
+    authorize(Role.ADMIN),
+    providerProfileController.changeProviderTrustedTag
+);
+
+// admin or user get provider details
+router.get('/:providerId',
+    authMiddleware,
+    authorize(Role.ADMIN, Role.USER),
+    providerProfileController.getProfileDetails
+);
+
+// admin get providers
+router.get('/',
+    authMiddleware,
+    authorize(Role.ADMIN),
+    providerProfileController.getProviders
+);
 
 export default router;  

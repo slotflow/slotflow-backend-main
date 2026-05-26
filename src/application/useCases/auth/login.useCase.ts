@@ -1,155 +1,126 @@
-import { adminConfig } from "../../../config/env";
-import { log } from "../../../shared/logger/logger";
+import { Role } from "../../../domain/enums/common.enum";
+import { ERROR_CODES } from "../../../shared/utils/types";
 import { PlanName } from "../../../domain/enums/plan.enum";
+import { LoginInput, LoginOutput } from "../../dtos/auth.dto";
 import { IJWT } from "../../../domain/interfaces/security/IJwt";
-import { LoginRequest, LoginResponse } from "../../dtos/auth.dto";
-import { SubscriptionStatus } from "../../../domain/enums/subscription.enum";
+import { toAppError } from "../../../shared/error/handleUnknownError";
+import { AuthResponseBuilder } from "../../services/AuthResponseBuilder";
+import { ProviderProfile } from "../../../domain/entities/providerProfile.entity";
+import { BadRequestError, UnauthorizedError } from "../../../shared/error/appError";
+import { IPasswordHasher } from "../../../domain/interfaces/security/IPasswordHasher";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
-import { IProviderRepository } from "../../../domain/interfaces/repositories/IProvider.repository";
-import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
-import { IPasswordHasher } from "../../../domain/interfaces/security/IPasswordHasher";
-import { Role } from "../../../domain/enums/common.enum";
+import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 
 export class LoginUseCase {
     constructor(
-        private userRepository: IUserRepository,
-        private providerRepository: IProviderRepository,
-        private planRepository: IPlanRepository,
-        private subscriptionRepository: ISubscriptionRepository,
-        private signedUrlService: ISignedUrlService,
-        private jwtService: IJWT,
-        private passwordHasher: IPasswordHasher
+        private readonly userRepository: IUserRepository,
+        private readonly providerProfileRepository: IProviderProfileRepository,
+        private readonly signedUrlService: ISignedUrlService,
+        private readonly jwtService: IJWT,
+        private readonly passwordHasher: IPasswordHasher,
+        private readonly authResponseBuilder: AuthResponseBuilder
     ) { };
 
-    async execute(payload: LoginRequest): Promise<LoginResponse> {
+    async execute(input: LoginInput): Promise<LoginOutput> {
         try {
-            const { email, password, role } = payload;
+            const { email, password } = input;
+            if(!email || !password) {
+                throw new BadRequestError()
+            }
+            
+            const user = await this.userRepository.findByEmail(email);
+            if (!user) {
+                throw new BadRequestError(
+                    "Invalid credentials", 
+                    ERROR_CODES.INVALID_CREDENTIALS
+                );
+            }
 
-            if (!email || !password || !role) throw new Error("Invalid request.");
+            if (user.isBlocked) {
+                throw new UnauthorizedError(
+                    "Your account is blocked, please contact us",
+                    ERROR_CODES.ACCOUNT_BLOCKED
+                );
+            }
 
-            if (role === Role.USER) {
-                const user = await this.userRepository.findByEmail(email);
-                if (!user) throw new Error("Invalid credentials");
-                if (user.isBlocked) throw new Error("Your account is blocked, please contact us");
-                if (!user.isEmailVerified) throw new Error("Your registration is incomplete, please register again.");
-                if (!user.password) throw new Error("Invalid request");
+            if (!user.password) {
+                throw new BadRequestError(
+                    "Invalid request",
+                    ERROR_CODES.INVALID_REQUEST
+                );
+            }
+                        
+            const valid = await this.passwordHasher.comparePassword(
+                password,
+                user.password
+            );
+            if (!valid) {
+                throw new BadRequestError(
+                    "Invalid credentials",
+                    ERROR_CODES.INVALID_CREDENTIALS
+                );
+            }
 
-                const valid = await this.passwordHasher.comparePassword(password, user.password);
-                if (!valid) throw new Error("Invalid credentials.");
+            const token = await this.jwtService.generateToken({
+                email: email,
+                role: user.role,
+                userId: user._id,
+            });
 
-                const token = await this.jwtService.generateToken({ userOrProviderId: user._id, role: role });
+            let signedProfileImageUrl: string | null = null;
+            if (user.profileImage) {
+                signedProfileImageUrl = await this.signedUrlService.save(user.profileImage);
+            }
 
-                let signedProfileImageUrl: string = "";
-                if (user.profileImage) {
-                    signedProfileImageUrl = await this.signedUrlService.save(user.profileImage);
-                };
+            let providerProfile: ProviderProfile | null = null;
+            let providerSubscription: PlanName = PlanName.NO_SUBSCRIPTION;
+            const isProviderFlow = user.onboardingType === Role.PROVIDER ;
 
+            if (isProviderFlow) {
+                providerProfile = await this.providerProfileRepository.findByUserId(user._id);
+                if (providerProfile) {
+                    providerSubscription = await this.authResponseBuilder.resolveSubscription(
+                        providerProfile
+                    );
+                }
+            }
+
+            const baseUser = this.authResponseBuilder.buildBaseUser(user);
+
+            if (isProviderFlow) {
                 return {
-                    authUser: {
-                        uid: user._id,
-                        username: user.username,
-                        phone: user.phone ?? undefined,
-                        profileImage: signedProfileImageUrl,
-                        role: role,
-                        token,
-                        isBlocked: user.isBlocked,
-                        isLoggedIn: true,
-                        googleConnected: user.googleConnected,
+                    token,
+                    user: {
+                        ...baseUser,
+                        ...this.authResponseBuilder.buildProviderFields(
+                            providerProfile,
+                            providerSubscription,
+                        ),
+                        profileImage: signedProfileImageUrl
                     },
                 };
-
-            } else if (role === Role.PROVIDER) {
-                const provider = await this.providerRepository.findByEmail(email);
-                if (!provider) throw new Error("Invalid credentials");
-                if (provider.isBlocked) throw new Error("Your account is blocked, please contact us");
-                if (!provider.isEmailVerified) throw new Error("Your registration is incomplete, please register again.");
-                if (!provider.password) throw new Error("Invalid request");
-
-                const valid = await this.passwordHasher.comparePassword(password, provider.password);
-                if (!valid) throw new Error("Invalid credentials.");
-
-                const token = await this.jwtService.generateToken({ userOrProviderId: provider._id, role: role });
-
-                let signedProfileImageUrl: string = "";
-                if (provider.profileImage) {
-                    signedProfileImageUrl = await this.signedUrlService.save(provider.profileImage);
-                };
-
-                let providerSubscription: string | undefined = PlanName.NO_SUBSCRIPTION;
-
-                const subscriptions = provider?.subscription;
-
-                if (Array.isArray(subscriptions) && subscriptions.length > 0) {
-                    const subscriptionId = subscriptions[subscriptions.length - 1];
-
-                    const subscription =
-                        await this.subscriptionRepository.findById(subscriptionId);
-
-                    if (subscription) {
-                        const now = new Date();
-                        const isActive =
-                            subscription.subscriptionStatus === SubscriptionStatus.ACTIVE &&
-                            new Date(subscription.endDate) > now;
-
-                        if (isActive) {
-                            const subscribedPlan =
-                                await this.planRepository.findById(
-                                    subscription.subscriptionPlanId
-                                );
-                            providerSubscription = subscribedPlan?.planName;
-                        };
-                    };
-                };
-
+            } else if(user.role === Role.USER) {
                 return {
-                    authUser: {
-                        uid: provider._id,
-                        username: provider.username,
-                        phone: provider.phone ?? undefined,
-                        profileImage: signedProfileImageUrl,
-                        role: role,
-                        token,
-                        isBlocked: provider.isBlocked,
-                        isLoggedIn: true,
-                        isAddressAdded: !!provider.addressId,
-                        isServiceDetailsAdded: !!provider.serviceId,
-                        isServiceAvailabilityAdded: !!provider.serviceAvailabilityId,
-                        isAdminVerified: provider.isAdminVerified,
-                        isProofSubmitted: !!provider.identityProof && !!provider.serviceProof,
-                        adminVerificationStatus: provider.adminVerificationStatus,
-                        isAddressVerified: provider.isAddressVerified,
-                        isAvailabilityVerified: provider.isAvailabilityVerified,
-                        isProofsVerified: provider.isProofsVerified,
-                        isServiceDetailsVerified: provider.isServiceDetailsVerified,
-                        verificationRejectionReason: provider.verificationRejectionReason,
-                        providerSubscription,
-                        googleConnected: provider.googleConnected,
+                    token,
+                    user: {
+                        ...baseUser,
+                        profileImage: signedProfileImageUrl
                     },
                 };
-
-            } else if (role === Role.ADMIN) {
-                if (email !== adminConfig.adminEmail || password !== adminConfig.adminPassword) {
-                    throw new Error("Invalid credentials.");
-                };
-                const token = await this.jwtService.generateToken({ email: email, role: role });
+            } else if(user.role === Role.ADMIN) {
                 return {
-                    authUser: {
-                        username: "Admin",
-                        profileImage: "",
-                        role: role,
-                        token,
-                        isLoggedIn: true
-                    }
+                    token,
+                    user: {
+                        ...baseUser,
+                        profileImage: signedProfileImageUrl
+                    },
                 };
-            } else {
-                throw new Error("Invalid request.");
-            };
+            }
 
-        } catch (error) {
-            log.error("LoginUseCase failed", error as Error);
-            throw error;
+            throw new BadRequestError();
+        } catch (error: unknown) {
+            throw toAppError(error, "Login failed")
         };
     };
 };

@@ -5,10 +5,10 @@ import { ICredentialRepository } from "../../domain/interfaces/repositories/ICre
 
 export class CredentialRepositoryImpl implements ICredentialRepository {
 
-    async create(credential: Credential): Promise<Credential> {
+    async create(credential: Credential): Promise<Credential | null> {
         const persistence = CredentialMapper.toPersistence(credential);
         const doc = await CredentialModel.create(persistence);
-        return CredentialMapper.toDomain(doc);
+        return doc ? CredentialMapper.toDomain(doc) : null;
     };
 
     async findByUserId(userId: string): Promise<Credential | null> {
@@ -16,7 +16,7 @@ export class CredentialRepositoryImpl implements ICredentialRepository {
         return doc ? CredentialMapper.toDomain(doc) : null;
     };
 
-    async update(credential: Credential): Promise<Credential> {
+    async update(credential: Credential): Promise<Credential | null> {
         const persistence = CredentialMapper.toPersistence(credential);
 
         const doc = await CredentialModel.findByIdAndUpdate(
@@ -25,11 +25,7 @@ export class CredentialRepositoryImpl implements ICredentialRepository {
             { new: true }
         );
 
-        if (!doc) {
-            throw new Error("Credential not found");
-        }
-
-        return CredentialMapper.toDomain(doc);
+        return doc ? CredentialMapper.toDomain(doc) : null;
     };
 
     async findById(credentialId: string): Promise<Credential | null> {

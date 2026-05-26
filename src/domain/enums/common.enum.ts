@@ -69,3 +69,43 @@ export enum CalendarStatus {
     CREATED = "CREATED",
     FAILED = "FAILED",
 }
+
+export enum EventStatus {
+    SUCCESS = "SUCCESS",
+    FAILED = "FAILED",
+    PENDING = "PENDING",
+    RETRY = "RETRY",
+}
+
+export enum HearAboutUsOptionValue {
+  GOOGLE = "google",
+  REFERRAL = "referral",
+  YOUTUBE = "youtube",
+  LINKEDIN = "linkedin",
+  TWITTER = "twitter",
+  INSTAGRAM = "instagram",
+  WHATSAPP = "whatsapp",
+  FACEBOOK = "facebook",
+  THREADS = "threads",
+  OTHER = "other",
+}
+
+export enum OnboardingStatus {
+  NOT_STARTED = "NOT_STARTED",
+  IN_PROGRESS = "IN_PROGRESS",
+  SUBMITTED = "SUBMITTED",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+}
+
+export enum ReferralStatus {
+  PENDING = "PENDING",
+  COMPLETED = "COMPLETED",
+  REWARDED = "REWARDED",
+}
+
+export enum StripeAccountStatus {
+  PENDING = "pending",
+  ACTIVE = "active",
+  RESTRICTED = "restricted",
+}

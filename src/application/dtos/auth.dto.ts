@@ -1,140 +1,143 @@
-import { CommonResponse } from "./common.dto";
-import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
-import { Role } from "../../domain/enums/common.enum";
+import { OnboardingStatus, Role } from "../../domain/enums/common.enum";
+import { ProviderProfileDTO, UserDTO } from "./common.dto";
 
-// **** Register usec case
-// user or provider register usecase request payload interface
-export interface RegisterRequest {
-    username: string;
-    email: string;
+//// **** auth dtos **** ////
+
+// Register usecase input output
+export interface RegisterInput {
+    username: UserDTO["username"];
+    email: UserDTO["email"];
     password: string;
-    role: Role;
 }
-// user or provider register usecase response interface
-export interface RegisterResponse {
-    authUser: {
-        verificationToken: string,
-        role: Role,
-        token: string
-    }
+
+export interface RegisterOutput {
+    token: string
 }
 
 
-// **** OTP Verification use case
-// user or provider OTP Verification usecase request payload interface
-export interface OTPVerificationRequest {
+// OTP Verification usecase input
+export interface OTPVerificationInput {
+    token: string;
     otp: string;
-    verificationToken: string;
-    role: Role;
-}
-
-export interface VerifyAndActivateEntityRequest {
-    verificationToken: string;
-    role: Role;
 }
 
 
-// **** Resend OTP use case
-// user or provider Resend use case request payload interface
-export interface ResendOtpRequest {
-    role: Role;
-    verificationToken?: string;
-    email?: string;
-}
-export interface ResendOtpResponse {
-    authUser: {
-        verificationToken: string,
-        role: string
-    }
+// ResendOtp usecase output
+export interface ResendOtpOutput {
+    token: string;
 }
 
+// VerifyEmail usecase input output
+export interface VerifyEmailInput {
+    email: UserDTO["email"];
+}
+export interface VerifyEmailOutput {
+    token: string;
+}
 
-// **** Login use case
-// user or provider login use case request payload interface
-export interface LoginRequest {
-    email: string;
+// Login usecase input output
+export interface LoginInput {
+    email: UserDTO["email"];
     password: string;
-    role: Role;
 }
-// user or provider login use case response interface
-export interface LoginResponse {
-    authUser: {
-        uid?: string;
-        username: string;
-        phone?: string;
-        profileImage?: string | null;
-        role: Role;
-        token: string;
-        isBlocked?: boolean;
+export interface LoginOutput {
+    token: string;
+    user: {
+        uid: UserDTO["_id"];
+        username: UserDTO["username"];
+        email: UserDTO["email"];
+        role: UserDTO["role"];
+        onboardingType: Role | null;
+        onboardingStatus: OnboardingStatus;
+        isBlocked: UserDTO["isBlocked"];
         isLoggedIn: boolean;
-        isAddressAdded?: boolean;
+        phone: UserDTO["phone"];
+        profileImage: UserDTO["profileImage"];
+        isAddressAdded: boolean;
+
         isServiceDetailsAdded?: boolean;
         isServiceAvailabilityAdded?: boolean;
-        isAdminVerified?: boolean;
-        isProofSubmitted?: boolean;
-        verificationRejectionReason?: string | null,
-        adminVerificationStatus?: AdminVerificationStatus,
-        isAddressVerified?: boolean,
-        isServiceDetailsVerified?: boolean,
-        isAvailabilityVerified?: boolean,
-        isProofsVerified?: boolean,
+        isProofSubmitted?: {
+            identityProof: boolean;
+            serviceProof: boolean;
+        };
+        isAddressVerified?: ProviderProfileDTO["isAddressVerified"],
+        isServiceDetailsVerified?: ProviderProfileDTO["isServiceDetailsVerified"],
+        isAvailabilityVerified?: ProviderProfileDTO["isAvailabilityVerified"],
+        isProofsVerified?: ProviderProfileDTO["isProofsVerified"],
+        isAdminVerified?: ProviderProfileDTO["isAdminVerified"],
         providerSubscription?: string;
-        googleConnected?: boolean;
-        allowPushNotification?: boolean;
+        verificationRejectionReason?: ProviderProfileDTO["verificationRejectionReason"],
+        adminVerificationStatus?: ProviderProfileDTO["adminVerificationStatus"],
+
+        googleId: UserDTO["googleId"];
+        googleConnected: UserDTO["googleConnected"];
+        stripeAccountStatus: UserDTO["stripeAccountStatus"]
+        stripeAccountId: UserDTO["stripeAccountId"];
+        stripeCustomerId: UserDTO["stripeCustomerId"];
+        allowPushNotification: UserDTO["allowPushNotification"];
     }
 }
 
 
-// **** Update password use case
-// user or provider update password use case request payload interface
-export interface UpdatePasswordRequest {
-    role: Role;
-    verificationToken: string;
+// UpdatePassword usecase output
+export interface ResetPasswordInput {
+    token: string;
     password: string;
 }
 
 
-// **** Check status
-// check user status use case request payload interface
-export interface CheckUserStatusRequest {
-    _id: string;
-    role: Role;
-}
-// check user status use case response interface
-export interface CheckUserStatusResponse extends CommonResponse {
-    status: number;
-}
-
-
-export interface GoogleAuthOrchestrationRequest {
+// GoogleAuthOrchestration usecase input output
+export interface GoogleAuthOrchestrationInput {
     googleId: string;
     email: string;
     name: string;
-    image?: string | null;
+    image: string | null;
     role: Role;
-    connectOnly?: boolean;
-    userId?: string;
+    connectOnly: boolean;
+    userId: string | null;
     accessToken: string;
     refreshToken: string;
     expiryDate: Date;
 }
-
-export interface GoogleAuthOrchestrationResponse {
+export interface GoogleAuthOrchestrationOutput {
     token?: string;
     user: {
-        _id: string;
-        isAddressAdded?: boolean;
+        googleId: string;
+        googleConnected: boolean;
+    } | {
+        uid: UserDTO["_id"];
+        username: UserDTO["username"];
+        email: UserDTO["email"];
+        role: UserDTO["role"];
+        onboardingType: Role | null;
+        onboardingStatus: OnboardingStatus;
+        isBlocked: UserDTO["isBlocked"];
+        isLoggedIn: boolean;
+        phone: UserDTO["phone"];
+        profileImage: UserDTO["profileImage"];
+        isAddressAdded: boolean;
+
         isServiceDetailsAdded?: boolean;
         isServiceAvailabilityAdded?: boolean;
-        isAdminVerified?: boolean;
-        isProofSubmitted?: boolean;
-        verificationRejectionReason?: string | null,
-        adminVerificationStatus?: AdminVerificationStatus,
-        isAddressVerified?: boolean,
-        isServiceDetailsVerified?: boolean,
-        isAvailabilityVerified?: boolean,
-        isProofsVerified?: boolean,
+        isProofSubmitted?: {
+            identityProof: boolean;
+            serviceProof: boolean;
+        };
+        isAddressVerified?: ProviderProfileDTO["isAddressVerified"],
+        isServiceDetailsVerified?: ProviderProfileDTO["isServiceDetailsVerified"],
+        isAvailabilityVerified?: ProviderProfileDTO["isAvailabilityVerified"],
+        isProofsVerified?: ProviderProfileDTO["isProofsVerified"],
+        isAdminVerified?: ProviderProfileDTO["isAdminVerified"],
         providerSubscription?: string;
-        allowPushNotification: boolean | null,
+        verificationRejectionReason?: ProviderProfileDTO["verificationRejectionReason"],
+        adminVerificationStatus?: ProviderProfileDTO["adminVerificationStatus"],
+
+        googleId: UserDTO["googleId"];
+        googleConnected: UserDTO["googleConnected"];
+        stripeAccountStatus: UserDTO["stripeAccountStatus"]
+        stripeAccountId: UserDTO["stripeAccountId"];
+        stripeCustomerId: UserDTO["stripeCustomerId"];
+        allowPushNotification: UserDTO["allowPushNotification"];
     }
 }
