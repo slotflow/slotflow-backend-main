@@ -4,6 +4,7 @@ import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 import { ISubscriptionQueries } from "../../application/queries/ISubscription.queries";
 import { PlanNameOnly, TableData } from "../../application/dtos/common.dto";
 import { MySubscriptionQuery, MySubscriptionView, SubscribedPlanQuery, SubscriptionDetailsQuery, SubscriptionDetailsView, SubscriptionsQuery, SubscriptionStatsForAdminQuery, SubscriptionStatsForAdminView, SubscriptionsView, PopulatedPlan } from "../../application/dtos/subscription.dto";
+import { PlanName } from "../../domain/enums/plan.enum";
 
 export class SubscriptionQueriesImpl implements ISubscriptionQueries {
 
@@ -104,19 +105,19 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
                         { $count: "count" }
                     ],
                     subscriptionsByFreePlan: [
-                        { $match: { "plan.planName": "Free", ...dateFilter } },
+                        { $match: { "plan.planName": PlanName.TRIAL, ...dateFilter } },
                         { $count: "count" }
                     ],
                     subscriptionsByStarterPlan: [
-                        { $match: { "plan.planName": "Starter", ...dateFilter } },
+                        { $match: { "plan.planName": PlanName.STARTER, ...dateFilter } },
                         { $count: "count" }
                     ],
                     subscriptionsByProfessionalPlan: [
-                        { $match: { "plan.planName": "Professional", ...dateFilter } },
+                        { $match: { "plan.planName": PlanName.PROFESSIONAL, ...dateFilter } },
                         { $count: "count" }
                     ],
                     subscriptionsByEnterprisePlan: [
-                        { $match: { "plan.planName": "Enterprise", ...dateFilter } },
+                        { $match: { "plan.planName": PlanName.ENTERPRISE, ...dateFilter } },
                         { $count: "count" }
                     ]
                 }
@@ -125,7 +126,6 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
                 $project: {
                     activeSubscriptions: { $ifNull: [{ $arrayElemAt: ["$activeSubscriptions.count", 0] }, 0] },
                     expiredSubscriptions: { $ifNull: [{ $arrayElemAt: ["$expiredSubscriptions.count", 0] }, 0] },
-                    notSubscribedProviders: { $ifNull: [{ $arrayElemAt: ["$notSubscribedProviders.count", 0] }, 0] },
                     subscriptionsByFreePlan: { $ifNull: [{ $arrayElemAt: ["$subscriptionsByFreePlan.count", 0] }, 0] },
                     subscriptionsByStarterPlan: { $ifNull: [{ $arrayElemAt: ["$subscriptionsByStarterPlan.count", 0] }, 0] },
                     subscriptionsByProfessionalPlan: { $ifNull: [{ $arrayElemAt: ["$subscriptionsByProfessionalPlan.count", 0] }, 0] },
@@ -135,7 +135,7 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
         ]);
         const data = subscriptionStatsData[0];
         return {
-            activeSubscriptions: data.activeSubscription,
+            activeSubscriptions: data.activeSubscriptions,
             expiredSubscriptions: data.expiredSubscriptions,
             subscriptionsByEnterprisePlan: data.subscriptionsByEnterprisePlan,
             subscriptionsByFreePlan: data.subscriptionsByFreePlan,

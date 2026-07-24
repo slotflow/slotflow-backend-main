@@ -19,7 +19,7 @@ export class UserMapper {
             addressId: doc.addressId ? doc.addressId.toString() : null,
             googleConnected: doc.googleConnected,
             googleId: doc.googleId ?? null,
-            stripeAccountStatus: doc.stripeAccountStatus ?? null,
+            stripeAccountStatus: doc.stripeAccountStatus,
             stripeAccountId: doc.stripeAccountId ?? null,
             stripeCustomerId: doc.stripeCustomerId ?? null,
             allowPushNotification: doc.allowPushNotification,

@@ -1,12 +1,17 @@
-import { ERROR_CODES } from "../../../shared/utils/types";
+import { kafkaConfig } from "../../../config/env";
+import { generateId } from "../../../shared/utils/generateId";
+import { ERROR_CODES, IdType } from "../../../shared/utils/types";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { AppError, NotFoundError } from "../../../shared/error/appError";
-import { StripeAccountUpdateStatusEventInput } from "../../dtos/kafka.dto";
+import { notificationContentMap } from "../../../shared/utils/constants";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
+import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
+import { EventEnvelope, SendStripeAccountStatusUpdatedEvent, StripeAccountUpdateStatusEventInput } from "../../dtos/kafka.dto";
 
 export class UpdateStripeAccountStatusUseCase {
     constructor(
-        private readonly userRepository: IUserRepository
+        private readonly userRepository: IUserRepository,
+        private readonly kafkaProducer: IKafkaProducerAdapter
     ) { }
 
     async execute(input: StripeAccountUpdateStatusEventInput): Promise<void> {
@@ -29,6 +34,26 @@ export class UpdateStripeAccountStatusUseCase {
                     ERROR_CODES.INTERNAL_ERROR
                 )
             }
+
+            await this.kafkaProducer.publish<EventEnvelope<SendStripeAccountStatusUpdatedEvent>>(
+                kafkaConfig.topics.pub.stripeAccountStatusUpdated, {
+                eventId: generateId({type: IdType.EVENT}),
+                attempt: 1,
+                maxAttempts: 1,
+                occurredAt: new Date().toString(),
+                payload: {
+                    socketData: {
+                        userId,
+                        accountStatus: updatedUser.stripeAccountStatus,
+                    },
+                    notificationData: {
+                        userId,
+                        title: notificationContentMap.stripeAccountStatusUpdated.title,
+                        body: notificationContentMap.stripeAccountStatusUpdated.body(updatedUser.stripeAccountStatus),
+                        pushNotification: false,
+                    }
+                }
+            });
         } catch (error: unknown) {
             throw toAppError(error, "Failed to update stripe account status");
         }

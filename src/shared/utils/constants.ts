@@ -1,6 +1,6 @@
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
-import { AppConnect } from "../../domain/enums/common.enum";
+import { AppConnect, StripeAccountStatus } from "../../domain/enums/common.enum";
 import { IdType } from "./types";
 
 // used as the Event data
@@ -81,6 +81,28 @@ export const notificationContentMap: Record<string, {
     title: "Got an Appointment",
     body: (appointmentDate: string) =>
       `You have got an appointment for ${appointmentDate}.`
+  },
+  stripeAccountStatusUpdated: {
+    title: "Stripe Account Status",
+    body: (accountStatus: StripeAccountStatus) => {
+      switch (accountStatus) {
+        case StripeAccountStatus.PENDING:
+          return `Your stripe account activation is pending.`;
+        case StripeAccountStatus.RESTRICTED:
+          return `Your stripe account is restricted.`;
+        case StripeAccountStatus.ACTIVE:
+          return `Your stripe account is now active. You can now receive payments`;
+        case StripeAccountStatus.REVOKED:
+          return `Your stripe application has been revoked.`;
+        default:
+          return "Your stripe account status has been updated.";
+      }
+    }
+  },
+  stripeAccountCreated: {
+    title: "Stripeonboarding completed",
+    body: () =>
+      `Your stripe account has been created successfully. You can receive payments once your account status will be activated`
   }
 };
 

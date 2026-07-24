@@ -16,7 +16,7 @@ export const handler = {
     googleCalendarFailed: new GoogleCalendarFailedUseCases(bookingRepository),
     providerSubscriptionPaymentSuccess: new UpdateSubscriptionAfterPaymentSuccessUseCase(subscriptionRepository, userRepository, providerProfileRepository, kafkaProducer, planRepository, referralRepository, creditAccountRepository, creditTransactionRepository),
     userBookingPaymentSuccess: new UpdateBookingAfterPaymentSuccessUseCase(bookingRepository, kafkaProducer, userRepository),
-    stripeAccountCreated: new UpdateStripeAccountDataUseCase(userRepository),
+    stripeAccountCreated: new UpdateStripeAccountDataUseCase(userRepository, kafkaProducer),
     stripeCustomerCreated: new UpdateStripeCustomerCreatedUseCase(userRepository),
-    stripeAccountUpdateStatus: new UpdateStripeAccountStatusUseCase(userRepository)
+    stripeAccountUpdateStatus: new UpdateStripeAccountStatusUseCase(userRepository, kafkaProducer)
 };

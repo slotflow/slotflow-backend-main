@@ -73,15 +73,6 @@ export class CancelBookingUseCase {
                 );
             }
 
-            booking.cancelAppointment();
-            const updatedBooking = await this.bookingRepository.update(booking);
-            if (!updatedBooking) {
-                throw new NotFoundError(
-                    "Updated Booking not found",
-                    ERROR_CODES.BOOKING_NOT_FOUND
-                );
-            }
-
             const refundResult = await this.paymentServiceClient.processRefund({
                 paymentId: booking.paymentId,
                 bookingId,
@@ -98,6 +89,16 @@ export class CancelBookingUseCase {
                     ERROR_CODES.INTERNAL_ERROR
                 );
             }
+
+            booking.cancelAppointment();
+            const updatedBooking = await this.bookingRepository.update(booking);
+            if (!updatedBooking) {
+                throw new NotFoundError(
+                    "Updated Booking not found",
+                    ERROR_CODES.BOOKING_NOT_FOUND
+                );
+            }
+
 
         } catch (error) {
             throw toAppError(error, "Failed to cancel booking");

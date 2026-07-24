@@ -18,7 +18,7 @@ export interface UserProps {
     addressId: string | null;
     googleConnected: boolean;
     googleId: string | null;
-    stripeAccountStatus: StripeAccountStatus | null;
+    stripeAccountStatus: StripeAccountStatus;
     stripeAccountId: string | null;
     stripeCustomerId: string | null;
 

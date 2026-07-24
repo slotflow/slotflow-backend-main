@@ -101,7 +101,6 @@ class BookingController {
                 bookingId,
             });
             sendResponse(res, result);
-
         } catch (error) {
             next(error);
         };

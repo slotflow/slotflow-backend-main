@@ -29,11 +29,9 @@ export class AuthResponseBuilder {
 
       isAddressAdded: !!user.addressId,
 
-      googleId: user.googleId,
       googleConnected: user.googleConnected,
 
       stripeAccountStatus: user.stripeAccountStatus,
-      stripeAccountId: user.stripeAccountId,
       stripeCustomerId: user.stripeCustomerId,
 
       allowPushNotification: user.allowPushNotification,
