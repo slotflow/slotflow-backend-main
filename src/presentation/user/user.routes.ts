@@ -20,6 +20,13 @@ router.get('/me',
     userController.getProfileDetails
 );
 
+// user check stripe account status
+router.get('/me/stripe-account-status',
+    authMiddleware,
+    authorize(Role.USER, Role.PROVIDER),
+    userController.checkStripeAccountStatus
+);
+
 // user / provider update profile image
 router.patch('/me/image',
     authMiddleware,

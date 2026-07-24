@@ -15,7 +15,7 @@ export interface IUser extends Document {
   addressId: Types.ObjectId;
   googleConnected: boolean;
   googleId: string;
-  stripeAccountStatus: StripeAccountStatus | null;
+  stripeAccountStatus: StripeAccountStatus;
   stripeAccountId: string | null;
   stripeCustomerId: string | null;
   allowPushNotification: boolean;
@@ -101,7 +101,8 @@ const UserSchema = new Schema<IUser>({
   stripeAccountStatus: {
     type: String,
     enum: Object.values(StripeAccountStatus),
-    default: null
+    default: StripeAccountStatus.NOT_CONNECTED,
+    required: true,
   },
   stripeAccountId: {
     type: String,

@@ -16,7 +16,8 @@ import { ChangeUserBlockStatusUseCase } from "../../application/useCases/user/ch
 import { ChangePushNotificationUseCase } from "../../application/useCases/user/changePushNotification.useCase";
 import { UpdateUserProfileImageUseCase } from "../../application/useCases/user/updateUserProfileImage.useCase";
 import { userUpdateFileSchema, userUpdateInfoSchema, userUpdatePasswordSchema, userUpdatePushNotificationSchema } from "../../shared/zod/user.zod";
-import { changePushNotificationUseCase, changeUserBlockStatusUseCase, getUserProfileDetailsUseCase, getUsersUseCase, getUserForChatSidebarUseCase, preBoardingUseCase, updateUserProfileImageUseCase, updateUserProfileInfoUseCase, updatePasswordUseCase } from ".";
+import { changePushNotificationUseCase, changeUserBlockStatusUseCase, getUserProfileDetailsUseCase, getUsersUseCase, getUserForChatSidebarUseCase, preBoardingUseCase, updateUserProfileImageUseCase, updateUserProfileInfoUseCase, updatePasswordUseCase, checkStripeAccountStatusUseCase } from ".";
+import { CheckStripeAccountStatusUseCase } from "../../application/useCases/user/checkStripeAccountStatus.useCase";
 
 class UserController {
     constructor(
@@ -28,7 +29,8 @@ class UserController {
         private readonly getUserProfileDetailsUseCase: GetUserProfileDetailsUseCase,
         private readonly getUserForChatSidebarUseCase: GetUserForChatSidebarUseCase,
         private readonly preBoardingUseCase: PreBoardingUseCase,
-        private readonly updatePasswordUseCase: UpdatePasswordUseCase
+        private readonly updatePasswordUseCase: UpdatePasswordUseCase,
+        private readonly checkStripeAccountStatusUseCase: CheckStripeAccountStatusUseCase
     ) {
         this.getProfileDetails = this.getProfileDetails.bind(this);
         this.updateProfileImage = this.updateProfileImage.bind(this);
@@ -38,6 +40,7 @@ class UserController {
         this.changeUserBlockStatus = this.changeUserBlockStatus.bind(this);
         this.preBoarding = this.preBoarding.bind(this);
         this.updatePassword = this.updatePassword.bind(this);
+        this.checkStripeAccountStatus = this.checkStripeAccountStatus.bind(this);
     };
 
     async getProfileDetails(req: Request, res: Response, next: NextFunction) {
@@ -164,6 +167,17 @@ class UserController {
         }
     }
 
+    async checkStripeAccountStatus(req: Request, res: Response, next: NextFunction) {
+        try {
+            const user = req.user as DecodedUser;
+            const result = await this.checkStripeAccountStatusUseCase.execute({ userId: user.id });
+            sendResponse(res, result);
+        } catch (error) {
+            log.error("checkStripeAccountStatus failed", error as Error);
+            next(error);
+        }
+    };
+
 };
 
 export const userController = new UserController(
@@ -175,5 +189,6 @@ export const userController = new UserController(
     getUserProfileDetailsUseCase,
     getUserForChatSidebarUseCase,
     preBoardingUseCase,
-    updatePasswordUseCase
+    updatePasswordUseCase,
+    checkStripeAccountStatusUseCase
 );

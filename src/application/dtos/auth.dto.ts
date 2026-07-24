@@ -70,10 +70,8 @@ export interface LoginOutput {
         verificationRejectionReason?: ProviderProfileDTO["verificationRejectionReason"],
         adminVerificationStatus?: ProviderProfileDTO["adminVerificationStatus"],
 
-        googleId: UserDTO["googleId"];
         googleConnected: UserDTO["googleConnected"];
         stripeAccountStatus: UserDTO["stripeAccountStatus"]
-        stripeAccountId: UserDTO["stripeAccountId"];
         stripeCustomerId: UserDTO["stripeCustomerId"];
         allowPushNotification: UserDTO["allowPushNotification"];
     }

@@ -1,4 +1,4 @@
-import { Role } from "../../domain/enums/common.enum";
+import { Role, StripeAccountStatus } from "../../domain/enums/common.enum";
 import { GetStatsDataCommonInput } from "./admin.dto";
 import { UserDTO, ServiceDTO, ProviderServiceDTO, ProviderProfileDTO, ApiPaginationInput } from "./common.dto";
 
@@ -139,4 +139,12 @@ export interface UpdatePasswordInput {
     userId: UserDTO["_id"];
     currentPassword: string;
     newPassword: string;
+}
+
+// CheckStripeAccountStatus usecase input output
+export interface CheckStripeAccountStatusInput {
+    userId: UserDTO["_id"];
+}
+export interface CheckStripeAccountStatusOutput {
+    accountStatus: StripeAccountStatus;
 }

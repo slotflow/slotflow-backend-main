@@ -134,7 +134,7 @@ export interface SendProviderTrialSubscriptionEvent {
 // send provider subscription updated event
 export interface ProviderSubscriptionUpdatedEvent {
   socketData: {
-    providerId: string;
+    userId: string;
     subscribedPlan: PlanName;
     startDate: Date;
     endDate: Date;
@@ -219,7 +219,19 @@ export interface SendUpdatePasswordEvent {
   notificationData: SendNotificationCommon;
 }
 
+// send stripe account status updated event
+export interface SendStripeAccountStatusUpdatedEvent {
+  socketData: {
+    userId: string;
+    accountStatus: StripeAccountStatus;
+  }
+  notificationData: SendNotificationCommon;
+}
 
+// send stipe account linked event
+export interface SendStripeAccountLinkedEvent {
+  notificationData: SendNotificationCommon;
+}
 
 
 

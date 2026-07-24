@@ -153,7 +153,7 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
                 occurredAt: new Date().toISOString(),
                 payload: {
                     socketData: {
-                        providerId: provider._id,
+                        userId: provider._id,
                         subscribedPlan: plan.planName,
                         startDate: subscription.startDate,
                         endDate: subscription.endDate,

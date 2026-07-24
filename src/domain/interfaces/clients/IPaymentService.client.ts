@@ -1,3 +1,4 @@
+import { StripeAccountStatus } from "../../enums/common.enum";
 import { PaymentFor, RefundFor, RefundReason } from "../../enums/payment.enum";
 
 export interface CreateSubscriptionCheckoutSessionInput {
@@ -56,16 +57,24 @@ export interface ProcessRefundOutput {
   message: string;
 }
 
+export interface CheckStripeAccountStatusInput {
+  accoundId: string;
+}
+
+export interface CheckStripeAccountStatusOutput {
+  success: boolean;
+  message: string;
+  data: {
+    accountStatus: StripeAccountStatus;
+  }
+}
+
 export interface IPaymentServiceClient {
-  createSubscriptionCheckoutSession(
-    input: CreateSubscriptionCheckoutSessionInput
-  ): Promise<CreateSubscriptionCheckoutSessionOutput>;
+  createSubscriptionCheckoutSession(input: CreateSubscriptionCheckoutSessionInput): Promise<CreateSubscriptionCheckoutSessionOutput>;
 
-  createBookingCheckoutSession(
-    input: CreateBookingCheckoutSessionInput
-  ): Promise<CreateBookingCheckoutSessionOutput>;
+  createBookingCheckoutSession(input: CreateBookingCheckoutSessionInput): Promise<CreateBookingCheckoutSessionOutput>;
 
-  processRefund(
-    input: ProcessRefundInput
-  ): Promise<ProcessRefundOutput>;
+  processRefund(input: ProcessRefundInput): Promise<ProcessRefundOutput>;
+
+  checkStripeAccountStatus(input: CheckStripeAccountStatusInput): Promise<CheckStripeAccountStatusOutput>;
 }

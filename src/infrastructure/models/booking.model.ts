@@ -71,7 +71,7 @@ const CalendarDataSchema = new Schema<CalendarData>({
 const BookingSchema = new Schema<IBooking>({
     serviceProviderId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Provider",
+        ref: "User",
         required: true
     },
     userId: {

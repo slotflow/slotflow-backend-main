@@ -31,7 +31,7 @@ export class User {
             onboardingStatus: OnboardingStatus.NOT_STARTED,
             isBlocked: false,
             googleConnected: false,
-            stripeAccountStatus: null,
+            stripeAccountStatus: StripeAccountStatus.NOT_CONNECTED,
             allowPushNotification: false,
             whereDidHearAboutUs: null,
             referralCode: props.referralCode,
@@ -60,7 +60,7 @@ export class User {
             profileImage: props.profileImage,
             googleConnected: true,
             googleId: props.googleId,
-            stripeAccountStatus: null,
+            stripeAccountStatus: StripeAccountStatus.NOT_CONNECTED,
             allowPushNotification: false,
             whereDidHearAboutUs: null,
             referralCode: props.referralCode,
@@ -124,7 +124,7 @@ export class User {
         return this.props.googleId;
     }
 
-    get stripeAccountStatus(): StripeAccountStatus | null {
+    get stripeAccountStatus(): StripeAccountStatus {
         return this.props.stripeAccountStatus;
     }
 

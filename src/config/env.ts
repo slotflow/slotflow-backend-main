@@ -124,11 +124,12 @@ export const kafkaConfig = {
 
             // MBS -> NS
             gotAnAppointment: validator.requireEnv("KAFKA_GOT_AN_APPOINTMENT"),
+            stripeAccountLinked: validator.requireEnv("KAFKA_STRIPE_ACCOUNT_LINKED"),
             
             // MBS -> NS, SS
             slotBooked: validator.requireEnv("KAFKA_SLOT_BOOKED"),
             planSubscribed: validator.requireEnv("KAFKA_PLAN_SUBSCRIBED"),
-
+            stripeAccountStatusUpdated: validator.requireEnv("KAFKA_STRIPE_ACCOUNT_STATUS_UPDATED"),
 
         },
     },
