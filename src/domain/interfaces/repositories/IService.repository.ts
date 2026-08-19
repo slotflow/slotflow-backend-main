@@ -5,6 +5,8 @@ export interface IServiceRepository {
 
     create(service: Service): Promise<Service | null>;
 
+    createMany(services: Service[]): Promise<Service[]>;
+
     findById(serviceId: string): Promise<Service | null>;
 
     update(service: Service): Promise<Service | null>;

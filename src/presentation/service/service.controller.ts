@@ -5,18 +5,16 @@ import { sendResponse } from "../../shared/utils/response";
 import { getServicesSchema } from "../../shared/zod/service.zod";
 import { DecodedUser } from "../../application/dtos/common.dto";
 import { GetServicesUseCase } from "../../application/useCases/service/getServices.useCase";
-import { CreateServiceUseCase } from "../../application/useCases/service/createService.useCase";
+import { CreateServicesUseCase } from "../../application/useCases/service/createServices.useCase";
 import { adminCreateNewServiceSchema, adminChangeServiceBlockStatusSchema } from "../../shared/zod/admin.zod";
 import { ChangeServiceBlockStatusUseCase } from "../../application/useCases/service/changeBlockStatus.useCase";
 import { GetServicesByCategoryUseCase } from "../../application/useCases/service/getServicesByCategory.useCase";
-import { changeServiceBlockStatusUseCase, createServiceUseCase, getServicesByCategoryUseCase, getServicesUseCase } from ".";
-import { BadRequestError } from "../../shared/error/appError";
-import { ERROR_CODES } from "../../shared/utils/types";
+import { changeServiceBlockStatusUseCase, createServicesUseCase, getServicesByCategoryUseCase, getServicesUseCase } from ".";
 
 class ServiceController {
     constructor(
         private getServicesUseCase: GetServicesUseCase,
-        private createServiceUseCase: CreateServiceUseCase,
+        private createServicesUseCase: CreateServicesUseCase,
         private changeServiceBlockStatusUseCase: ChangeServiceBlockStatusUseCase,
         private getServicesByCategoryUseCase: GetServicesByCategoryUseCase
     ) {
@@ -47,10 +45,10 @@ class ServiceController {
 
     async createService(req: Request, res: Response, next: NextFunction) {
         try {
-            const { serviceCategory, serviceName } = adminCreateNewServiceSchema.parse(req.body);
-            const result = await this.createServiceUseCase.execute({
+            const { serviceCategory, serviceNames } = adminCreateNewServiceSchema.parse(req.body);
+            const result = await this.createServicesUseCase.execute({
                 serviceCategory: serviceCategory,
-                serviceName: serviceName
+                serviceNames
             });
             sendResponse(res, result, "Service saved successfully", true, 201);
         } catch (error) {
@@ -77,7 +75,7 @@ class ServiceController {
 
 export const serviceController = new ServiceController(
     getServicesUseCase,
-    createServiceUseCase,
+    createServicesUseCase,
     changeServiceBlockStatusUseCase,
-    getServicesByCategoryUseCase
+    getServicesByCategoryUseCase,
 );

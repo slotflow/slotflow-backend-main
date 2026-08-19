@@ -12,7 +12,8 @@ export interface IProviderService extends Document {
   serviceExperienceYears: number;
   serviceExperience: string;
   serviceType: ServiceType;
-  serviceMode: ServiceMode;
+  // TODO Remove
+  // serviceMode: ServiceMode;
   tags: string[] | [];
   maxParticipants: number;
   isGroupService: boolean;
@@ -87,11 +88,12 @@ const ProviderServiceSchema = new Schema<IProviderService>(
       required: [true, "Service type is required"],
     },
 
-    serviceMode: {
-      type: String,
-      enum: Object.values(ServiceMode),
-      required: [true, "Service mode is required"],
-    },
+    // TODO Remove
+    // serviceMode: {
+    //   type: String,
+    //   enum: Object.values(ServiceMode),
+    //   required: [true, "Service mode is required"],
+    // },
 
     tags: {
       type: [String],

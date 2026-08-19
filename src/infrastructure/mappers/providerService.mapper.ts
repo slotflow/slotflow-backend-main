@@ -15,7 +15,8 @@ export class ProviderServiceMapper {
             serviceExperienceYears: doc.serviceExperienceYears,
             serviceExperience: doc.serviceExperience,
             serviceType: doc.serviceType,
-            serviceMode: doc.serviceMode,
+            // TODO Remove
+            // serviceMode: doc.serviceMode,
             tags: doc.tags ?? [],
             requirements: doc.requirements ?? [],
             videoUrl: doc.videoUrl ?? null,
@@ -39,7 +40,8 @@ export class ProviderServiceMapper {
             serviceExperienceYears: props.serviceExperienceYears,
             serviceExperience: props.serviceExperience,
             serviceType: props.serviceType,
-            serviceMode: props.serviceMode,
+            // TODO Remove
+            // serviceMode: props.serviceMode,
             tags: props.tags,
             requirements: props.requirements,
             videoUrl: props.videoUrl,

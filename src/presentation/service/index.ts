@@ -3,10 +3,13 @@ import { GetServicesUseCase } from "../../application/useCases/service/getServic
 import { CreateServiceUseCase } from "../../application/useCases/service/createService.useCase";
 import { ChangeServiceBlockStatusUseCase } from "../../application/useCases/service/changeBlockStatus.useCase";
 import { GetServicesByCategoryUseCase } from "../../application/useCases/service/getServicesByCategory.useCase";
+import { CreateServicesUseCase } from "../../application/useCases/service/createServices.useCase";
 
 export const getServicesUseCase = new GetServicesUseCase(serviceRepository);
 
 export const createServiceUseCase = new CreateServiceUseCase(serviceRepository);
+
+export const createServicesUseCase = new CreateServicesUseCase(serviceRepository);
 
 export const changeServiceBlockStatusUseCase = new ChangeServiceBlockStatusUseCase(serviceRepository)
 

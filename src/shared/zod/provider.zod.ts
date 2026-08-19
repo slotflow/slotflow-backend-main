@@ -55,7 +55,8 @@ export const serviceDetailsSchema = z.object({
 
     serviceType: z.nativeEnum(ServiceType),
 
-    serviceMode: z.nativeEnum(ServiceMode),
+    // TODO Remove
+    // serviceMode: z.nativeEnum(ServiceMode),
 
     maxParticipants: z
         .number()

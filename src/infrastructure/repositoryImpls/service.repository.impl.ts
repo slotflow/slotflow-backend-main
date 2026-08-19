@@ -12,6 +12,48 @@ export class ServiceRepositoryImpl implements IServiceRepository {
         return doc ? ServiceMapper.toDomain(doc) : null;
     };
 
+    async createMany(services: Service[]): Promise<Service[]> {
+        if (!services.length) {
+            return [];
+        }
+
+        const operations = services.map((service) => {
+            const persistence = ServiceMapper.toPersistence(service);
+
+            return {
+                updateOne: {
+                    filter: {
+                        serviceCategory: persistence.serviceCategory,
+                        serviceName: persistence.serviceName,
+                    },
+                    update: {
+                        $setOnInsert: persistence,
+                    },
+                    upsert: true,
+                },
+            };
+        });
+
+        await ServiceModel.bulkWrite(operations, {
+            ordered: false,
+        });
+
+        const filters = services.map((service) => {
+            const persistence = ServiceMapper.toPersistence(service);
+
+            return {
+                serviceCategory: persistence.serviceCategory,
+                serviceName: persistence.serviceName,
+            };
+        });
+
+        const documents = await ServiceModel.find({
+            $or: filters,
+        });
+
+        return documents.map(ServiceMapper.toDomain);
+    }
+
     async findAll(page: number, limit: number): Promise<{ items: Array<Service>; totalPages: number; currentPage: number; totalCount: number; }> {
         const skip = (page - 1) * limit;
         const [services, totalCount] = await Promise.all([

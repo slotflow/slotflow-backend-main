@@ -7,7 +7,19 @@ import { AddressDTO, ProviderProfileDTO, ProviderServiceDTO, ServiceDTO, UserDTO
 export interface ProviderServiceByProviderIdQuery {
     providerId: UserDTO["_id"];
 }
-type FindProviderService = Pick<ProviderServiceDTO, "serviceName" | "serviceDescription" | "servicePrice" | "serviceExperience" | "serviceType" | "serviceMode" | "requirements" | "maxParticipants" | "isGroupService" | "videoUrl" | "portfolioUrl">;
+type FindProviderService = Pick<ProviderServiceDTO, 
+"serviceName" | 
+"serviceDescription" | 
+"servicePrice" | 
+"serviceExperience" | 
+"serviceType" | 
+// TODO Remove
+// "serviceMode" | 
+"requirements" | 
+"maxParticipants" | 
+"isGroupService" | 
+"videoUrl" | 
+"portfolioUrl">;
 export interface ProviderServiceByProviderIdView extends FindProviderService {
     serviceId: { serviceName: string };
     _id?: string;
@@ -46,7 +58,20 @@ export interface ProviderServiceByServiceIds {
 export type ProviderServiceByServiceIdsView = Array<ProviderServiceByServiceIds>;
 
 // 3. updateProviderService method parameter and return type / interface
-export type UpdateProviderServiceQuery = Pick<ProviderServiceDTO, "_id" | "serviceId" | "serviceName" | "serviceDescription" | "servicePrice" | "isGroupService" | "maxParticipants" | "serviceExperience" | "serviceMode" | "serviceType" | "tags"> & Partial<Pick<ProviderServiceDTO, "videoUrl" | "requirements">>;
+export type UpdateProviderServiceQuery = Pick<ProviderServiceDTO, 
+"_id" | 
+"serviceId" | 
+"serviceName" | 
+"serviceDescription" | 
+"servicePrice" | 
+"isGroupService" | 
+"maxParticipants" | 
+"serviceExperience" |
+// TODO Remove 
+// "serviceMode" | 
+"serviceType" | 
+"tags"
+> & Partial<Pick<ProviderServiceDTO, "videoUrl" | "requirements">>;
 export type UpdateProviderServiceView = ProviderServiceByProviderIdView | null;
 
 
@@ -65,7 +90,22 @@ export type GetProvidersServicesInput = ProviderServiceByServiceIdsQuery;
 export type GetProvidersServicesOutput = ProviderServiceByServiceIdsView;
 
 // create provider service input
-export type CreateProviderServiceInput = Pick<ProviderServiceDTO, "isGroupService" | "maxParticipants" | "providerId" | "requirements" | "serviceId" | "serviceDescription" | "serviceExperience" | "serviceMode" | "serviceName" | "servicePrice" | "serviceType" | "tags" | "videoUrl">;
+export type CreateProviderServiceInput = Pick<ProviderServiceDTO, 
+"isGroupService" | 
+"maxParticipants" | 
+"providerId" | 
+"requirements" | 
+"serviceId" | 
+"serviceDescription" | 
+"serviceExperience" | 
+// TODO Remove
+// "serviceMode" | 
+"serviceName" | 
+"servicePrice" | 
+"serviceType" | 
+"tags" | 
+"videoUrl"
+>;
 
 // get provider service input and output
 export interface GetProviderServiceInput {
@@ -74,7 +114,21 @@ export interface GetProviderServiceInput {
 export type GetProviderServiceOuput = ProviderServiceByProviderIdView | null;
 
 // update provider service input and output
-export type UpdateProviderServiceInput = Pick<ProviderServiceDTO, | "serviceId" | "serviceName" | "serviceDescription" | "servicePrice" | "isGroupService" | "maxParticipants" | "serviceExperience" | "serviceMode" | "serviceType" | "tags"> & Partial<Pick<ProviderServiceDTO, "videoUrl" | "requirements">> & {
+export type UpdateProviderServiceInput = Pick<ProviderServiceDTO, 
+"serviceId" | 
+"serviceName" | 
+"serviceDescription" | 
+"servicePrice" | 
+"isGroupService" | 
+"maxParticipants" | 
+"serviceExperience" |
+// TODO Remove 
+// "serviceMode" | 
+"serviceType" | 
+"tags" |
+"portfolioUrl" |
+"serviceExperienceYears"
+> & Partial<Pick<ProviderServiceDTO, "videoUrl" | "requirements">> & {
     providerServiceId: ProviderServiceDTO["_id"];
 };
 export type UpdateProviderServiceOutput = ProviderServiceByProviderIdView | null;

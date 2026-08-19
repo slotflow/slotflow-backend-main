@@ -51,7 +51,7 @@ export const addressSchema = z.object({
             addressLineRegex,
             "Address line must be 10–150 characters long and can include letters, numbers, spaces, and . , # -"
         ),
-    landMark: z
+    landmark: z
         .string()
         .min(5, "Landmark line must be at least 5 characters")
         .max(150, "Landmark line cannot exceed 150 characters")

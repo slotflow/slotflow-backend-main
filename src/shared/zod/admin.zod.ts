@@ -9,8 +9,21 @@ export const adminUserBlockStatusSchema = validateUserIdSchema.merge(changeBlock
 
 // Admin adding new app service controller zod validation
 export const adminCreateNewServiceSchema = z.object({
-    serviceName: z.string().min(4).max(50).regex(serviceNameRegex, "Invalid service name"),
     serviceCategory: z.nativeEnum(ServiceCategory),
+    serviceNames: z
+        .array(
+            z
+                .string()
+                .trim()
+                .min(4)
+                .max(50)
+                .regex(serviceNameRegex, "Invalid service name")
+        )
+        .min(1, "At least one service name is required")
+        .refine(
+            (names) => new Set(names.map((name) => name.toLowerCase())).size === names.length,
+            "Duplicate service names are not allowed"
+        ),
 });
 
 // Admin change service block status

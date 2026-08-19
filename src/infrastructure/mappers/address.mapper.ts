@@ -9,7 +9,7 @@ export class AddressMapper {
             _id: doc._id.toString(),
             userId: doc.userId.toString(),
             addressLine: doc.addressLine,
-            landMark: doc.landMark,
+            landmark: doc.landmark,
             phone: doc.phone,
             place: doc.place,
             city: doc.city,
@@ -29,7 +29,7 @@ export class AddressMapper {
         return {
             userId: new Types.ObjectId(props.userId),
             addressLine: props.addressLine,
-            landMark: props.landMark,
+            landmark: props.landmark,
             phone: props.phone,
             place: props.place,
             city: props.city,

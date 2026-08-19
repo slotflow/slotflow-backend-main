@@ -9,6 +9,11 @@ export type GetServiceOutput = Array<Pick<ServiceDTO, "_id" | "serviceName" | "i
 // CreateService usecase input
 export type CreateServiceInput = Pick<ServiceDTO, "serviceName" | "serviceCategory">;
 
+// CreateServices usecase input
+export type CreateServicesInput = {
+    serviceCategory: ServiceDTO["serviceCategory"];
+    serviceNames: string[];
+};
 // ChangeServiceBlockStatus usecase input output
 export interface ChangeServiceBlockStatusInput {
   serviceId: ServiceDTO["_id"];

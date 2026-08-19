@@ -68,7 +68,19 @@ export interface ChangePushNotificationInput {
 };
 
 // FindProviderService usecase input
-type FindProviderServiceProps = Pick<ProviderServiceDTO, "serviceName" | "serviceDescription" | "servicePrice" | "serviceExperience" | "videoUrl" | "serviceType" | "serviceMode" | "requirements" | "maxParticipants" | "isGroupService">;
+type FindProviderServiceProps = Pick<ProviderServiceDTO, 
+"serviceName" | 
+"serviceDescription" | 
+"servicePrice" | 
+"serviceExperience" | 
+"videoUrl" | 
+"serviceType" |
+// TODO Remove 
+// "serviceMode" | 
+"requirements" | 
+"maxParticipants" | 
+"isGroupService"
+>;
 export interface FindProviderServiceOutput extends FindProviderServiceProps {
     service: Pick<ServiceDTO, "serviceName">
 }

@@ -19,7 +19,7 @@ export class Address {
             city: props.city,
             country: props.country,
             district: props.district,
-            landMark: props.landMark,
+            landmark: props.landmark,
             location: props.location,
             phone: props.phone,
             pincode: props.pincode,
@@ -44,8 +44,8 @@ export class Address {
         return this.props.addressLine;
     }
 
-    get landMark(): string {
-        return this.props.landMark;
+    get landmark(): string {
+        return this.props.landmark;
     }
 
     get phone(): string {

@@ -7,7 +7,7 @@ export interface AddressProps {
     _id: string,
     userId: string,
     addressLine: string,
-    landMark: string,
+    landmark: string,
     phone: string,
     place: string,
     city: string,

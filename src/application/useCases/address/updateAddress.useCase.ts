@@ -42,7 +42,7 @@ export class UpdateAddressUseCase {
             return {
                 _id: updatedAddress._id,
                 addressLine: updatedAddress.addressLine,
-                landMark: updatedAddress.landMark,
+                landmark: updatedAddress.landmark,
                 phone: updatedAddress.phone,
                 place: updatedAddress.place,
                 city: updatedAddress.city,

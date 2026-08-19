@@ -61,7 +61,6 @@ export class KafkaConsumerAdapter implements IKafkaConsumerAdapter {
             await this.consumer.subscribe({ topic, fromBeginning: false });
             this.handlers.set(topic, handler);
 
-            log.info(`Subscribed to topic: ${topic}`);
         } catch (error) {
             log.error(`Kafka subscribe failed [topic=${topic}]`, error as Error);
 

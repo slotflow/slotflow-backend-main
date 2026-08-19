@@ -32,7 +32,7 @@ export class GetAddressUseCase {
                 pincode: address.pincode,
                 state: address.state,
                 country: address.country,
-                landMark: address.landMark,
+                landmark: address.landmark,
                 location: address.location
             }
 

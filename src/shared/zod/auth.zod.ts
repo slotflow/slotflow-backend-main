@@ -12,7 +12,7 @@ export const registerSchema = z
       .max(30, "Username cannot exceed 30 characters")
       .regex(usernameRegex, "Invalid Username format"),
 
-    email: z.string().email("Invalid email address"),
+    email: z.string().email("Invalid email"),
 
     password: z
       .string()
@@ -30,7 +30,7 @@ export const otpVerificationSchema = z.object({
 
 // Login controller zod validation
 export const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
+  email: z.string().email("Invalid email"),
   password: z
     .string()
     .min(8, "Password must be at least 8 characters")
@@ -40,7 +40,7 @@ export const loginSchema = z.object({
 
 // Verify email zod validation
 export const verifyEmailSchema = z.object({
-  email: z.string().email("Invalid email address"),
+  email: z.string().email("Invalid email"),
 });
 
 // Update password zod validation

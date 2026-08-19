@@ -6,7 +6,7 @@ export interface IAddress extends Document {
     _id: Types.ObjectId,
     userId: Types.ObjectId,
     addressLine: string,
-    landMark: string,
+    landmark: string,
     phone: string,
     place: string,
     city: string,
@@ -32,7 +32,7 @@ const addressSchema = new Schema<IAddress>({
         maxlength: [150, "Address line must be at most 150 characters"],
         match: [addressLineRegex, "Address line can only include letters, numbers, spaces, and the symbols . , # -",],
     },
-    landMark: {
+    landmark: {
         type: String,
         required: [true, "Land mark is required"],
         minlength: [5, "Land mark must be at least 5 characters"],

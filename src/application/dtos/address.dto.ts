@@ -7,12 +7,12 @@ export interface GetAddressInput {
     userId: UserDTO["_id"];
     isMyAddress?: boolean;
 }
-export type GetAddressOutput = Pick<AddressDTO, "addressLine" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "landMark" | "location"> & Partial<Pick<AddressDTO, "_id">> | null;
+export type GetAddressOutput = Pick<AddressDTO, "addressLine" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "landmark" | "location"> & Partial<Pick<AddressDTO, "_id">> | null;
 
 // CreateAddress usecase input output
-export type CreateAddressInput = Pick<AddressDTO, "userId" | "addressLine" | "landMark" | "place" | "phone" | "city" | "country" | "district" | "pincode" | "state" | "location">;
-export type CreateAddressOutput = Pick<AddressDTO, "_id" | "addressLine" | "landMark" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location" | "updatedAt">;
+export type CreateAddressInput = Pick<AddressDTO, "userId" | "addressLine" | "landmark" | "place" | "phone" | "city" | "country" | "district" | "pincode" | "state" | "location">;
+export type CreateAddressOutput = Pick<AddressDTO, "_id" | "addressLine" | "landmark" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location" | "updatedAt">;
 
 // UpdateAddress usecase input output
-export type UpdateAddressInput = Pick<AddressDTO, "_id" | "addressLine" | "landMark" | "place" | "phone" | "city" | "country" | "district" | "pincode" | "state" | "location">;
-export type UpdateAddressOutput = Pick<AddressDTO, "_id" | "addressLine" | "landMark" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location">;
+export type UpdateAddressInput = Pick<AddressDTO, "_id" | "addressLine" | "landmark" | "place" | "phone" | "city" | "country" | "district" | "pincode" | "state" | "location">;
+export type UpdateAddressOutput = Pick<AddressDTO, "_id" | "addressLine" | "landmark" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location">;

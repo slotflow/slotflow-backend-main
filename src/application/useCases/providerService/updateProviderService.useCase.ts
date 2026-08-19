@@ -20,8 +20,10 @@ export class UpdateProviderServiceUseCase {
 
             providerService.update({
                 ...updateData,
-                requirements: updateData.requirements ?? null,
+                requirements: updateData.requirements ?? [],
                 videoUrl: updateData.videoUrl ?? null,
+                portfolioUrl: updateData.portfolioUrl,
+                serviceExperienceYears: updateData.serviceExperienceYears
             });
 
             const service = await this.provderServiceRepository.update(providerService);
@@ -38,12 +40,14 @@ export class UpdateProviderServiceUseCase {
                 servicePrice: service.servicePrice,
                 serviceExperience: service.serviceExperience,
                 serviceType: service.serviceType,
-                serviceMode: service.serviceMode,
+                // TODO Remove
+                // serviceMode: service.serviceMode,
                 tags: service.tags,
                 requirements: service.requirements,
                 videoUrl: service.videoUrl,
                 maxParticipants: service.maxParticipants,
                 isGroupService: service.isGroupService,
+                portfolioUrl: service.portfolioUrl
             };
 
         } catch (error: unknown) {

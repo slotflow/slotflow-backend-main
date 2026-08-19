@@ -58,9 +58,10 @@ export class ProviderService {
         return this.props.serviceType;
     };
 
-    get serviceMode(): ServiceMode {
-        return this.props.serviceMode;
-    };
+    // TODO Remove
+    // get serviceMode(): ServiceMode {
+    //     return this.props.serviceMode;
+    // };
 
     get tags(): string[] | [] {
         return this.props.tags;

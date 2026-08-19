@@ -14,7 +14,7 @@ export interface AddressDTO {
   _id: string,
   userId: string,
   addressLine: string,
-  landMark: string,
+  landmark: string,
   phone: string,
   place: string,
   city: string,
@@ -142,7 +142,8 @@ export interface ProviderServiceDTO {
   serviceExperienceYears: number,
   serviceExperience: string,
   serviceType: ServiceType,
-  serviceMode: ServiceMode,
+  // TODO Remove
+  // serviceMode: ServiceMode,
   tags: string[] | [],
   requirements: string[] | [],
   videoUrl: string | null,

@@ -52,7 +52,7 @@ export class OTPServiceImpl implements IOTPService {
 
       if (!storedOtp) {
         throw new UnauthorizedError(
-          "OTP expired or not found",
+          "OTP expired",
           ERROR_CODES.TOKEN_EXPIRED
         );
       }
