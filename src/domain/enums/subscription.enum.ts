@@ -14,3 +14,8 @@ export enum SubscriptionValidity {
     SIX_MONTHS = 180,
     TWELVE_MONTHS = 360,
 };
+
+export enum BillingCycle {
+  MONTHLY = 'monthly',
+  YEARLY = 'yearly',
+}

@@ -1,9 +1,9 @@
 import { z } from "zod";
 import { startAndEndDateSchema } from "./common.zod";
 import { PlanName } from "../../domain/enums/plan.enum";
-import { dateSchema, paginationSchema, s3FileKeySchema } from "./base.zod";
-import { ServiceMode, ServiceType } from "../../domain/enums/service.enum";
-import { SubscriptionValidity } from "../../domain/enums/subscription.enum";
+import { ServiceType } from "../../domain/enums/service.enum";
+import { paginationSchema, s3FileKeySchema } from "./base.zod";
+import { BillingCycle } from "../../domain/enums/subscription.enum";
 import { objectIdRegex, serviceDescriptionRegex, serviceExperienceRegex, serviceNameRegex } from "../utils/regex";
 
 // Provider id with pagination validation schema
@@ -53,7 +53,7 @@ export const serviceDetailsSchema = z.object({
 
     serviceId: z.string().regex(objectIdRegex, "Invalid serviceId"),
 
-    serviceType: z.nativeEnum(ServiceType),
+    serviceType: z.enum(ServiceType),
 
     // TODO Remove
     // serviceMode: z.nativeEnum(ServiceMode),
@@ -97,7 +97,7 @@ export const providerUpdateServiceDetailsSchema = z.object({
 // Provider plan subscription duration validation
 export const providerPlanSubscribeSchema = z.object({
     planId: z.string().regex(objectIdRegex, "Invalid planId"),
-    planDuration: z.nativeEnum(SubscriptionValidity),
+    billingCycle: z.enum(BillingCycle),
 });
 
 

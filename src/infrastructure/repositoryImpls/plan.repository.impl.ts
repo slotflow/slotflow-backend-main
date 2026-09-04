@@ -16,13 +16,8 @@ export class PlanRepositoryImpl implements IPlanRepository {
         return doc ? PlanMapper.toDomain(doc) : null;
     };
 
-    async findByNameOrPrice(name: string, price: number): Promise<Plan | null> {
-        const doc = await PlanModel.findOne({
-            $or: [
-                { planName: name },
-                { price }
-            ]
-        });
+    async findByName(name: string): Promise<Plan | null> {
+        const doc = await PlanModel.findOne({ planName: name });
         return doc ? PlanMapper.toDomain(doc) : null;
     };
 
@@ -43,13 +38,15 @@ export class PlanRepositoryImpl implements IPlanRepository {
         const [plans, totalCount] = await Promise.all([
             PlanModel.find({}, {
                 _id: 1,
-                planName: 1,
-                price: 1,
-                maxBookingPerMonth: 1,
-                isBlocked: 1,
                 adVisibility: 1,
+                isBlocked: 1,
                 features: 1,
                 description: 1,
+                maxBookingPerMonth: 1,
+                planName: 1,
+                monthlyPrice: 1,
+                yearlyPrice: 1,
+                stripeSync: 1,
             }).skip(skip).limit(limit),
             PlanModel.countDocuments(),
         ]);
@@ -66,7 +63,8 @@ export class PlanRepositoryImpl implements IPlanRepository {
         const plans = await PlanModel.find({}, {
             _id: 1,
             planName: 1,
-            price: 1,
+            monthlyPrice: 1,
+            yearlyPrice: 1,
             features: 1,
             description: 1
         });

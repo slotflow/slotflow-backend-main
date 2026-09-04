@@ -6,16 +6,22 @@ import { authMiddleware } from "../middleware/auth.middleware";
 
 const router = Router();
 
+router.post('/', 
+    authMiddleware, 
+    authorize(Role.ADMIN),
+    planController.createPlan
+);
+
 router.get('/', 
     authMiddleware, 
     authorize(Role.ADMIN, Role.PROVIDER),
     planController.getPlans
 );
 
-router.post('/', 
+router.get('/:planId', 
     authMiddleware, 
     authorize(Role.ADMIN),
-    planController.createPlan
+    planController.getPlanDetails
 );
 
 router.patch('/:planId/block', 
@@ -23,5 +29,17 @@ router.patch('/:planId/block',
     authorize(Role.ADMIN),
     planController.changePlanBlockStatus
 );
+
+router.patch('/:planId',
+    authMiddleware,
+    authorize(Role.ADMIN),
+    planController.updatePlan
+);
+
+router.post('/:planId/resync',
+    authMiddleware,
+    authorize(Role.ADMIN),
+    planController.resyncStripePlan
+)
 
 export default router;

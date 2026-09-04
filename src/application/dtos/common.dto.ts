@@ -6,6 +6,7 @@ import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
 import { ServiceCategory, ServiceMode, ServiceType } from "../../domain/enums/service.enum";
 import { CreditTransactionSource, CreditTransactionStatus, CreditTransactionType } from "../../domain/enums/creditTransaction.enum";
+import { StripePlanDetails, StripeSyncStatus } from "../../domain/contracts/plan.contract";
 
 // **** ENTITY INTERFACES FOR APPLICATION LAYER **** \\
 
@@ -122,11 +123,16 @@ export interface PlanDTO {
   _id: string,
   planName: PlanName,
   description: string,
-  price: number,
+  monthlyPrice: number;
+  yearlyPrice: number;
   features: string[],
   maxBookingPerMonth: number,
   adVisibility: boolean,
   isBlocked: boolean,
+  stripePlanDetails: StripePlanDetails | null;
+  stripeSync: StripeSyncStatus;
+  hasTrial: boolean;
+  trialDays: number;
   createdAt: Date,
   updatedAt: Date,
 }

@@ -63,7 +63,7 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
             .select("startDate endDate subscriptionStatus createdAt -_id")
             .populate([{
                 path: "subscriptionPlanId",
-                select: "-_id planName price adVisibility maxBookingPerMonth"
+                select: "-_id planName adVisibility maxBookingPerMonth"
             }]).lean<SubscriptionDetailsView>();
         if (!data) return null;
         return {
@@ -73,7 +73,6 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
             subscriptionStatus: data.subscriptionStatus,
             subscriptionPlanId: {
                 planName: data.subscriptionPlanId.planName,
-                price: data.subscriptionPlanId.price,
                 adVisibility: data.subscriptionPlanId.adVisibility,
                 maxBookingPerMonth: data.subscriptionPlanId.maxBookingPerMonth,
             },

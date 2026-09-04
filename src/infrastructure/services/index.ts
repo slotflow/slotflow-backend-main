@@ -1,7 +1,9 @@
 import { s3Client } from "../cloud/aws/aws_s3";
+import { stripeClient } from "../stripe/clinet";
 import { redisClient } from "../cache/redis/redis";
 import { OTPServiceImpl } from "./otpService.impl";
 import { CacheServiceImpl } from "./cacheService.impl";
+import { StripePlanService } from "./stripeService.impl";
 import { credentialRepository } from "../repositoryImpls";
 import { SignedUrlServiceImpl } from "./signedUrlService.impl";
 import { GoogleTokenServiceImpl } from "./googleTokenService.impl";
@@ -11,6 +13,7 @@ import { ICacheService } from "../../domain/interfaces/services/ICache.service";
 import { GoogleRefreshTokenServiceImpl } from "./googleRefreshTokenService.impl";
 import { GoogleCalendarGatewayServiceImpl } from "./googleCalendarGatewayService.impl";
 import { ISignedUrlService } from "../../domain/interfaces/services/ISignedUrl.service";
+import { IStripePlanService } from "../../domain/interfaces/services/IStripePlan.service";
 import { IGoogleTokenService } from "../../domain/interfaces/services/IGoogleToken.service";
 import { IAesEncryptionService } from "../../domain/interfaces/services/IAesEncryption.service";
 import { IGoogleRefreshTokenService } from "../../domain/interfaces/services/IGoogleRefreshToken.service";
@@ -36,3 +39,6 @@ export const googleTokenService: IGoogleTokenService = new GoogleTokenServiceImp
 
 // cache service instance
 export const cacheService: ICacheService = new CacheServiceImpl(redisClient);
+
+// stripe plan product service instance
+export const stripePlanService: IStripePlanService = new StripePlanService(stripeClient)

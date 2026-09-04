@@ -1,6 +1,6 @@
 import { PlanName } from "../enums/plan.enum";
-import { PlanProps } from "../contracts/plan.contract";
 import { CreatePlanProps, UpdatePlanProps } from "../commands/plan.commands";
+import { PlanProps, StripePlanDetails, StripeSyncStatus } from "../contracts/plan.contract";
 
 export class Plan {
     private props: PlanProps;
@@ -21,8 +21,13 @@ export class Plan {
             features: props.features,
             maxBookingPerMonth: props.maxBookingPerMonth,
             planName: props.planName,
-            price: props.price,
+            monthlyPrice: props.monthlyPrice,
+            yearlyPrice: props.yearlyPrice,
+            stripePlanDetails: null,
+            stripeSync: StripeSyncStatus.PENDING,
             isBlocked: false,
+            hasTrial: props.hasTrial,
+            trialDays: props.trialDays,
             createdAt: new Date(),
             updatedAt: new Date(),
         })
@@ -50,8 +55,12 @@ export class Plan {
         return this.props.maxBookingPerMonth;
     };
 
-    get price(): number {
-        return this.props.price;
+    get monthlyPrice(): number {
+        return this.props.monthlyPrice;
+    };
+
+    get yearlyPrice(): number {
+        return this.props.yearlyPrice;
     };
 
     get description(): string {
@@ -61,6 +70,22 @@ export class Plan {
     get features(): string[] {
         return this.props.features;
     };
+
+    get stripeSync(): StripeSyncStatus {
+        return this.props.stripeSync;
+    }
+
+    get stripePlanDetails(): StripePlanDetails | null {
+        return this.props.stripePlanDetails;
+    }
+
+    get hasTrial(): boolean {
+        return this.props.hasTrial;
+    }
+
+    get trialDays(): number {
+        return this.props.trialDays;
+    }
 
     // Business Method
     getProps(): Readonly<PlanProps> {
@@ -84,5 +109,15 @@ export class Plan {
         };
         this.touch();
     };
+
+    stripeSynced() {
+        this.props.stripeSync = StripeSyncStatus.SYNCED;
+        this.touch();
+    }
+
+    isStripeSyncPending() {
+        return this.props.stripeSync === StripeSyncStatus.PENDING;
+    }
+
 
 }

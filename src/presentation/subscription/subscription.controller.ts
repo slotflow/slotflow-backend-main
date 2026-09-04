@@ -65,11 +65,11 @@ class SubscriptionController {
     async subscriptionCheckout(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as DecodedUser;
-            const { planId, planDuration } = providerPlanSubscribeSchema.parse(req.body);
+            const { planId, billingCycle } = providerPlanSubscribeSchema.parse(req.body);
             const result = await this.subscriptionCheckoutUseCase.execute({
                 providerId: user.id,
                 planId,
-                planDuration
+                billingCycle
             });
             sendResponse(res, result);
         } catch (error) {

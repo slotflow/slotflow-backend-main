@@ -1,7 +1,7 @@
 import { PlanName } from "../../domain/enums/plan.enum";
 import { GetStatsDataCommonInput } from "./admin.dto";
 import { ApiPaginationInput, PlanDTO, SubscriptionDTO, UserDTO } from "./common.dto";
-import { SubscriptionStatus, SubscriptionValidity } from "../../domain/enums/subscription.enum";
+import { BillingCycle, SubscriptionStatus, SubscriptionValidity } from "../../domain/enums/subscription.enum";
 
 //// **** subscription queries parameter and return **** ////
 
@@ -21,7 +21,7 @@ export interface SubscriptionDetailsQuery {
     subscriptionId: SubscriptionDTO["_id"];
 }
 type SubscriptionProps = Pick<SubscriptionDTO, "startDate" | "endDate" | "subscriptionStatus" | "createdAt">;
-type PlanProps = Pick<PlanDTO, "planName" | "price" | "adVisibility" | "maxBookingPerMonth">;
+type PlanProps = Pick<PlanDTO, "planName" | "adVisibility" | "maxBookingPerMonth">;
 export interface SubscriptionDetailsView extends SubscriptionProps {
     subscriptionPlanId: PlanProps,
 }
@@ -76,7 +76,7 @@ export interface GetSubscribedPlanOutput {
 export interface SubscriptionCreateSessionIdInput {
     providerId: string;
     planId: string;
-    planDuration: SubscriptionValidity;
+    billingCycle: BillingCycle
 }
 
 // 4. trialSubscription usecase input output

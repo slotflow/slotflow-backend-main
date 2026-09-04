@@ -24,8 +24,8 @@ export class SubscriptionCheckoutUseCase {
 
     async execute(input: SubscriptionCreateSessionIdInput): Promise<string> {
         try {
-            const { providerId, planId, planDuration } = input;
-            if (!providerId || !planId || !planDuration) {
+            const { providerId, planId, billingCycle } = input;
+            if (!providerId || !planId || !billingCycle) {
                 throw new BadRequestError();
             }
 
@@ -86,13 +86,14 @@ export class SubscriptionCheckoutUseCase {
                 );
             }
 
-            const months: number = getNumberOfMonths(planDuration);
+            const months: number = getNumberOfMonths(billingCycle);
 
             const { data } = await this.paymentServiceClient.createSubscriptionCheckoutSession({
                 subscriptionId: subscription._id.toString(),
                 providerId,
                 planName: plan.planName,
                 description: plan.description,
+                billingCycle,
                 planDuration: months,
                 unitAmount: plan.price,
                 paymentFor: PaymentFor.PROVIDER_SUBSCRIPTION,

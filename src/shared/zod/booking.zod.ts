@@ -5,7 +5,7 @@ import { ServiceMode } from "../../domain/enums/service.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { dateSchema, paginationSchema, validateProviderIdSchema } from "./base.zod";
 
-// Booking validation schemas
+// BookingId validation schemas
 export const validateBookingIdSchema = z.object({
   bookingId: z.string().regex(objectIdRegex, "Invalid bookingId"),
 });
