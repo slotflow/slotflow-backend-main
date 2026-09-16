@@ -62,13 +62,14 @@ export class AuthResponseBuilder {
       verificationRejectionReason:
         providerProfile?.verificationRejectionReason ?? null,
       adminVerificationStatus: providerProfile?.adminVerificationStatus,
+      hasUsedTrial: providerProfile?.hasUsedTrial ?? false,
     };
   }
 
   async resolveSubscription(
     providerProfile: ProviderProfile
   ): Promise<PlanName> {
-    const subscriptions = providerProfile.subscription;
+    const subscriptions = providerProfile.subscriptions;
 
     if (!Array.isArray(subscriptions) || subscriptions.length === 0) {
       return PlanName.NO_SUBSCRIPTION;

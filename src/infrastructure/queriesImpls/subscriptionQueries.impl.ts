@@ -1,10 +1,12 @@
+import { PlanName } from "../../domain/enums/plan.enum";
 import { SubscriptionModel } from "../models/subscription.model";
 import { getStartAndEndDate } from "../../shared/utils/dateTime";
+import { formatStatMetric } from "../../shared/utils/formatStatMetric";
 import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
-import { ISubscriptionQueries } from "../../application/queries/ISubscription.queries";
 import { PlanNameOnly, TableData } from "../../application/dtos/common.dto";
-import { MySubscriptionQuery, MySubscriptionView, SubscribedPlanQuery, SubscriptionDetailsQuery, SubscriptionDetailsView, SubscriptionsQuery, SubscriptionStatsForAdminQuery, SubscriptionStatsForAdminView, SubscriptionsView, PopulatedPlan } from "../../application/dtos/subscription.dto";
-import { PlanName } from "../../domain/enums/plan.enum";
+import { calculatePreviousPeriod } from "../../shared/utils/calculatePreviosPeriod";
+import { ISubscriptionQueries } from "../../application/queries/ISubscription.queries";
+import { MySubscriptionQuery, MySubscriptionView, SubscribedPlanQuery, SubscriptionDetailsQuery, SubscriptionDetailsView, SubscriptionsQuery, SubscriptionStatsDataQuery, SubscriptionStatsDataView, SubscriptionsView, PopulatedPlan, SubscriptionAnalyticsQuery, SubscriptionAnalyticsView } from "../../application/dtos/subscription.dto";
 
 export class SubscriptionQueriesImpl implements ISubscriptionQueries {
 
@@ -80,10 +82,19 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
         };
     }
 
-    async findStatsForAdminDashboard(query: SubscriptionStatsForAdminQuery): Promise<SubscriptionStatsForAdminView> {
+    async findStatsForAdminDashboard(query: SubscriptionStatsDataQuery): Promise<SubscriptionStatsDataView> {
         const { startDate, endDate } = getStartAndEndDate(query.startDate, query.endDate);
-        const dateFilter = { createdAt: { $gte: startDate, $lte: endDate } };
-        const subscriptionStatsData = await SubscriptionModel.aggregate([
+        const { previousStartDate, previousEndDate } = calculatePreviousPeriod(startDate, endDate);
+
+        const [subscriptionStatsData] = await SubscriptionModel.aggregate([
+            {
+                $match: {
+                    $or: [
+                        { createdAt: { $gte: previousStartDate, $lte: endDate } },
+                        { subscriptionStatus: SubscriptionStatus.ACTIVE, endDate: { $gte: previousStartDate } }
+                    ]
+                }
+            },
             {
                 $lookup: {
                     from: "plans",
@@ -92,54 +103,231 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
                     as: "plan"
                 }
             },
-            { $unwind: "$plan" },
             {
-                $facet: {
-                    activeSubscriptions: [
-                        { $match: { subscriptionStatus: SubscriptionStatus.ACTIVE, ...dateFilter } },
-                        { $count: "count" }
-                    ],
-                    expiredSubscriptions: [
-                        { $match: { subscriptionStatus: SubscriptionStatus.CANCELLED, ...dateFilter } },
-                        { $count: "count" }
-                    ],
-                    subscriptionsByFreePlan: [
-                        { $match: { "plan.planName": PlanName.TRIAL, ...dateFilter } },
-                        { $count: "count" }
-                    ],
-                    subscriptionsByStarterPlan: [
-                        { $match: { "plan.planName": PlanName.STARTER, ...dateFilter } },
-                        { $count: "count" }
-                    ],
-                    subscriptionsByProfessionalPlan: [
-                        { $match: { "plan.planName": PlanName.PROFESSIONAL, ...dateFilter } },
-                        { $count: "count" }
-                    ],
-                    subscriptionsByEnterprisePlan: [
-                        { $match: { "plan.planName": PlanName.ENTERPRISE, ...dateFilter } },
-                        { $count: "count" }
-                    ]
+                $unwind: {
+                    path: "$plan",
+                    preserveNullAndEmptyArrays: true
                 }
             },
             {
-                $project: {
-                    activeSubscriptions: { $ifNull: [{ $arrayElemAt: ["$activeSubscriptions.count", 0] }, 0] },
-                    expiredSubscriptions: { $ifNull: [{ $arrayElemAt: ["$expiredSubscriptions.count", 0] }, 0] },
-                    subscriptionsByFreePlan: { $ifNull: [{ $arrayElemAt: ["$subscriptionsByFreePlan.count", 0] }, 0] },
-                    subscriptionsByStarterPlan: { $ifNull: [{ $arrayElemAt: ["$subscriptionsByStarterPlan.count", 0] }, 0] },
-                    subscriptionsByProfessionalPlan: { $ifNull: [{ $arrayElemAt: ["$subscriptionsByProfessionalPlan.count", 0] }, 0] },
-                    subscriptionsByEnterprisePlan: { $ifNull: [{ $arrayElemAt: ["$subscriptionsByEnterprisePlan.count", 0] }, 0] }
+                $facet: {
+                    current: [
+                        {
+                            $group: {
+                                _id: null,
+                                activeSubscriptions: {
+                                    $sum: {
+                                        $cond: [
+                                            {
+                                                $and: [
+                                                    { $eq: ["$subscriptionStatus", SubscriptionStatus.ACTIVE] },
+                                                    { $lte: ["$startDate", endDate] },
+                                                    { $gte: ["$endDate", startDate] }
+                                                ]
+                                            },
+                                            1,
+                                            0
+                                        ]
+                                    }
+                                },
+                                expiredSubscriptions: {
+                                    $sum: {
+                                        $cond: [
+                                            {
+                                                $and: [
+                                                    { $gte: ["$createdAt", startDate] },
+                                                    { $lte: ["$createdAt", endDate] },
+                                                    { $eq: ["$subscriptionStatus", SubscriptionStatus.CANCELLED] }
+                                                ]
+                                            },
+                                            1,
+                                            0
+                                        ]
+                                    }
+                                },
+                                subscriptionsByFreePlan: {
+                                    $sum: {
+                                        $cond: [
+                                            {
+                                                $and: [
+                                                    { $gte: ["$createdAt", startDate] },
+                                                    { $lte: ["$createdAt", endDate] },
+                                                    { $eq: ["$plan.planName", PlanName.TRIAL] }
+                                                ]
+                                            },
+                                            1,
+                                            0
+                                        ]
+                                    }
+                                },
+                                subscriptionsByStarterPlan: {
+                                    $sum: {
+                                        $cond: [
+                                            {
+                                                $and: [
+                                                    { $gte: ["$createdAt", startDate] },
+                                                    { $lte: ["$createdAt", endDate] },
+                                                    { $eq: ["$plan.planName", PlanName.STARTER] }
+                                                ]
+                                            },
+                                            1,
+                                            0
+                                        ]
+                                    }
+                                },
+                                subscriptionsByProfessionalPlan: {
+                                    $sum: {
+                                        $cond: [
+                                            {
+                                                $and: [
+                                                    { $gte: ["$createdAt", startDate] },
+                                                    { $lte: ["$createdAt", endDate] },
+                                                    { $eq: ["$plan.planName", PlanName.PROFESSIONAL] }
+                                                ]
+                                            },
+                                            1,
+                                            0
+                                        ]
+                                    }
+                                },
+                                subscriptionsByEnterprisePlan: {
+                                    $sum: {
+                                        $cond: [
+                                            {
+                                                $and: [
+                                                    { $gte: ["$createdAt", startDate] },
+                                                    { $lte: ["$createdAt", endDate] },
+                                                    { $eq: ["$plan.planName", PlanName.ENTERPRISE] }
+                                                ]
+                                            },
+                                            1,
+                                            0
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    previous: [
+                        {
+                            $group: {
+                                _id: null,
+                                activeSubscriptions: {
+                                    $sum: {
+                                        $cond: [
+                                            {
+                                                $and: [
+                                                    { $eq: ["$subscriptionStatus", SubscriptionStatus.ACTIVE] },
+                                                    { $lte: ["$startDate", previousEndDate] },
+                                                    { $gte: ["$endDate", previousStartDate] }
+                                                ]
+                                            },
+                                            1,
+                                            0
+                                        ]
+                                    }
+                                },
+                                expiredSubscriptions: {
+                                    $sum: {
+                                        $cond: [
+                                            {
+                                                $and: [
+                                                    { $gte: ["$createdAt", previousStartDate] },
+                                                    { $lte: ["$createdAt", previousEndDate] },
+                                                    { $eq: ["$subscriptionStatus", SubscriptionStatus.CANCELLED] }
+                                                ]
+                                            },
+                                            1,
+                                            0
+                                        ]
+                                    }
+                                },
+                                subscriptionsByFreePlan: {
+                                    $sum: {
+                                        $cond: [
+                                            {
+                                                $and: [
+                                                    { $gte: ["$createdAt", previousStartDate] },
+                                                    { $lte: ["$createdAt", previousEndDate] },
+                                                    { $eq: ["$plan.planName", PlanName.TRIAL] }
+                                                ]
+                                            },
+                                            1,
+                                            0
+                                        ]
+                                    }
+                                },
+                                subscriptionsByStarterPlan: {
+                                    $sum: {
+                                        $cond: [
+                                            {
+                                                $and: [
+                                                    { $gte: ["$createdAt", previousStartDate] },
+                                                    { $lte: ["$createdAt", previousEndDate] },
+                                                    { $eq: ["$plan.planName", PlanName.STARTER] }
+                                                ]
+                                            },
+                                            1,
+                                            0
+                                        ]
+                                    }
+                                },
+                                subscriptionsByProfessionalPlan: {
+                                    $sum: {
+                                        $cond: [
+                                            {
+                                                $and: [
+                                                    { $gte: ["$createdAt", previousStartDate] },
+                                                    { $lte: ["$createdAt", previousEndDate] },
+                                                    { $eq: ["$plan.planName", PlanName.PROFESSIONAL] }
+                                                ]
+                                            },
+                                            1,
+                                            0
+                                        ]
+                                    }
+                                },
+                                subscriptionsByEnterprisePlan: {
+                                    $sum: {
+                                        $cond: [
+                                            {
+                                                $and: [
+                                                    { $gte: ["$createdAt", previousStartDate] },
+                                                    { $lte: ["$createdAt", previousEndDate] },
+                                                    { $eq: ["$plan.planName", PlanName.ENTERPRISE] }
+                                                ]
+                                            },
+                                            1,
+                                            0
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    ]
                 }
             }
         ]);
-        const data = subscriptionStatsData[0];
+
+        const defaultStats = {
+            activeSubscriptions: 0,
+            expiredSubscriptions: 0,
+            subscriptionsByFreePlan: 0,
+            subscriptionsByStarterPlan: 0,
+            subscriptionsByProfessionalPlan: 0,
+            subscriptionsByEnterprisePlan: 0,
+        };
+
+        const current = subscriptionStatsData?.current[0] || defaultStats;
+        const previous = subscriptionStatsData?.previous[0] || defaultStats;
+
         return {
-            activeSubscriptions: data.activeSubscriptions,
-            expiredSubscriptions: data.expiredSubscriptions,
-            subscriptionsByEnterprisePlan: data.subscriptionsByEnterprisePlan,
-            subscriptionsByFreePlan: data.subscriptionsByFreePlan,
-            subscriptionsByProfessionalPlan: data.subscriptionsByProfessionalPlan,
-            subscriptionsByStarterPlan: data.subscriptionsByStarterPlan,
+            activeSubscriptions: formatStatMetric(current.activeSubscriptions, previous.activeSubscriptions),
+            expiredSubscriptions: formatStatMetric(current.expiredSubscriptions, previous.expiredSubscriptions),
+            subscriptionsByFreePlan: formatStatMetric(current.subscriptionsByFreePlan, previous.subscriptionsByFreePlan),
+            subscriptionsByStarterPlan: formatStatMetric(current.subscriptionsByStarterPlan, previous.subscriptionsByStarterPlan),
+            subscriptionsByProfessionalPlan: formatStatMetric(current.subscriptionsByProfessionalPlan, previous.subscriptionsByProfessionalPlan),
+            subscriptionsByEnterprisePlan: formatStatMetric(current.subscriptionsByEnterprisePlan, previous.subscriptionsByEnterprisePlan),
         };
     }
 
@@ -178,4 +366,31 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
             subscriptionStatus: subscription.subscriptionStatus
         };
     };
+
+    async findAnalyticsForAdminDashboard(query: SubscriptionAnalyticsQuery): Promise<SubscriptionAnalyticsView> {
+        const { startDate, endDate } = getStartAndEndDate(query.startDate, query.endDate);
+       
+        const chartData = await SubscriptionModel.aggregate([
+        {
+            $match: {
+                createdAt: { $gte: startDate, $lte: endDate }
+            }
+        },
+        {
+            $group: {
+                _id: "$subscriptionStatus",
+                value: { $sum: 1 },
+            },
+        },
+        {
+            $project: {
+                _id: 0,
+                status: { $toLower: { $ifNull: ["$_id", "unknown"] } },
+                value: 1,
+            },
+        },
+    ]);
+
+        return chartData;
+    }
 }

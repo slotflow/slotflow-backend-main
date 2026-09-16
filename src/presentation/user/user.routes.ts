@@ -21,6 +21,8 @@ router.get('/me',
 );
 
 // user check stripe account status
+
+// TODO remove and moving this to payment service
 router.get('/me/stripe-account-status',
     authMiddleware,
     authorize(Role.USER, Role.PROVIDER),

@@ -1,8 +1,8 @@
-import { IBookingQueries } from "../../../queries/IBooking.queries";
-import { toAppError } from "../../../../shared/error/handleUnknownError";
-import { GetGraphDataInput, GetGraphDataOutput } from "../../../dtos/admin.dto";
+import { IBookingQueries } from "../../../../queries/IBooking.queries";
+import { toAppError } from "../../../../../shared/error/handleUnknownError";
+import { GetGraphDataInput, GetGraphDataOutput } from "../../../../dtos/admin.dto";
 
-export class GetAdminGraphDataUseCase {
+export class GetAdminBookingsChartDataUseCase {
     constructor(
         private readonly bookingQueries: IBookingQueries
     ) { }
@@ -25,7 +25,7 @@ export class GetAdminGraphDataUseCase {
 
             return dashboardGraphData;
         } catch (error: unknown) {
-            throw toAppError(error, "Failed to fetch graph data");
+            throw toAppError(error, "Failed to fetch bookings chart data");
         }
     }
 }

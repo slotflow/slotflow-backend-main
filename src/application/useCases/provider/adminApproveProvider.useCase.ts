@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
 import { kafkaConfig } from "../../../config/env";
 import { generateId } from '../../../shared/utils/generateId';
-import { AdminApproveProviderInput } from "../../dtos/admin.dto";
+import { AdminApproveProviderInput, AdminApproveProviderOutput } from "../../dtos/admin.dto";
 import { ERROR_CODES, IdType } from '../../../shared/utils/types';
 import { toAppError } from '../../../shared/error/handleUnknownError';
 import { notificationContentMap } from "../../../shared/utils/constants";
-import { BadRequestError, NotFoundError } from '../../../shared/error/appError';
+import { AppError, BadRequestError, NotFoundError } from '../../../shared/error/appError';
 import { EventEnvelope, SendAdminProviderReviewEvent } from "../../dtos/kafka.dto";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { AdminVerificationStatus } from "../../../domain/enums/adminVerificationStatus.enum";
@@ -19,7 +19,7 @@ export class AdminApproveProviderUseCase {
         private kafkaProducer: IKafkaProducerAdapter
     ) { };
 
-    async execute(input: AdminApproveProviderInput): Promise<void> {
+    async execute(input: AdminApproveProviderInput): Promise<AdminApproveProviderOutput> {
         const session = await mongoose.startSession();
         session.startTransaction();
         try {
@@ -57,7 +57,15 @@ export class AdminApproveProviderUseCase {
             await this.userRepository.update(provider, session);
 
             providerProfile.approveVerification();
-            await this.providerProfileRepository.update(providerProfile, session);
+            const updatedProviderProfile = await this.providerProfileRepository.update(providerProfile, session);
+            if (!updatedProviderProfile) {
+                throw new AppError(
+                    "Provider approval error.",
+                    500,
+                    true,
+                    ERROR_CODES.INTERNAL_ERROR
+                );
+            }
 
             await this.kafkaProducer.publish<EventEnvelope<SendAdminProviderReviewEvent>>(kafkaConfig.topics.pub.adminProviderReview, {
                 eventId: generateId({ type: IdType.EVENT }),
@@ -79,6 +87,14 @@ export class AdminApproveProviderUseCase {
                 },
             });
             await session.commitTransaction();
+
+            const { isAdminVerified, adminVerificationStatus } = updatedProviderProfile?.getProps();
+
+            return {
+                _id: provider._id,
+                isAdminVerified,
+                adminVerificationStatus
+            }
         } catch (error: unknown) {
             await session.abortTransaction();
             throw toAppError(error, "Failed to approve provider");

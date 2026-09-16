@@ -32,10 +32,12 @@ export type GetReviewsInput = GetReviewsQuery
 export type GetReviewsOutput = Array<GetReviewsView>;
 
 // RepostReview usecase input output
-export interface RepostReviewInput {
+export interface ReportReviewInput {
   reviewId: Review["_id"];
   providerId: UserDTO["_id"];
+  reported: ReviewDTO["reported"];
 }
+export type ReportReviewOutput = Pick<ReviewDTO, "_id" | "reported">; 
 
 // CreateReview usecase input output
 export type CreateReviewInput = Pick<ReviewDTO, "reviewText" | "rating" | "userId" | "providerId" | "bookingId">;

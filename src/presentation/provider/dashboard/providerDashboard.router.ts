@@ -12,7 +12,7 @@ router.get("/graph",
     providerDashboardController.getDashboardGraphData
 );
 
-router.get("/",
+router.get("/analytics/stats",
     authMiddleware,
     authorize(Role.PROVIDER),
     providerDashboardController.getDashboardStats

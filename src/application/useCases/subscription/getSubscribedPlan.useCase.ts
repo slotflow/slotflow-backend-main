@@ -25,14 +25,14 @@ export class GetSubscribedPlanUseCase {
                     ERROR_CODES.PROVIDER_PROFILE_NOT_FOUND
                 );
             }
-            if (!providerProfile.subscription.length) {
+            if (!providerProfile.subscriptions.length) {
                 throw new NotFoundError(
                     "Subsctiption not found.",
                     ERROR_CODES.SUBSCRIPTION_NOT_FOUND
                 );
             }
 
-            const result = await this.subscriptionQueries.findMySubscritpion({ subscriptionId: providerProfile.subscription.at(-1)! });
+            const result = await this.subscriptionQueries.findMySubscritpion({ subscriptionId: providerProfile.subscriptions.at(-1)! });
             if (!result) {
                 throw new NotFoundError(
                     "Subsctiption not found.",

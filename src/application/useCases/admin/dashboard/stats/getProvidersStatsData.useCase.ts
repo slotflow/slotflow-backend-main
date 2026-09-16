@@ -1,8 +1,8 @@
-import { IUserQueries } from "../../../queries/IUser.queries";
-import { toAppError } from "../../../../shared/error/handleUnknownError";
-import { GetProviderDataInput, GetProviderDataOutput } from "../../../dtos/admin.dto";
+import { IUserQueries } from "../../../../queries/IUser.queries";
+import { toAppError } from "../../../../../shared/error/handleUnknownError";
+import { GetProviderDataInput, GetProviderDataOutput } from "../../../../dtos/admin.dto";
 
-export class GetProviderDataUseCase {
+export class GetProviderStatsDataUseCase {
     constructor(
         private userQueries: IUserQueries
     ) { };

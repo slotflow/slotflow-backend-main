@@ -142,7 +142,7 @@ export class BookingCheckoutUseCase {
                 userId,
                 userEmail: user.email,
                 userName: user.username,
-                pushNotification: user.allowPushNotification ?? false,
+                pushNotification: user.allowPushNotification,
             });
 
             return data;

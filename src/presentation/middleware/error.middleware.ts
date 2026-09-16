@@ -68,6 +68,11 @@ export const errorHandler = (
         );
     }
 
+    console.log("success : ",success);
+    console.log("message : ",message);
+    console.log("errorCode : ",errorCode);
+    console.log("errors : ",errors);
+
     res.status(statusCode).json({
         success,
         message,

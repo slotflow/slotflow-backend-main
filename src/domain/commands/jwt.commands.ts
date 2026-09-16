@@ -1,11 +1,10 @@
+import { JwtPayload } from "jsonwebtoken";
 import { Role } from "../enums/common.enum";
 
-export interface JwtClaims {
+export interface JwtClaims extends JwtPayload {
   userId?: string;
   email?: string;
-  username?: string;
+  name?: string;
   password?: string;
   role?: Role;
-  iat?: number;
-  exp?: number;
 }

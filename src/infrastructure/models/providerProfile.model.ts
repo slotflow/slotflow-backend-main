@@ -13,10 +13,11 @@ export interface IProviderProfile extends Document {
     isProofsVerified: boolean,
     serviceId: Types.ObjectId;
     serviceAvailabilityId: Types.ObjectId;
-    subscription: Types.ObjectId[];
+    subscriptions: Types.ObjectId[];
     trustedBySlotflow: boolean;
     identityProof: string;
     serviceProof: string;
+    hasUsedTrial: boolean;
     createdAt: Date;
     updatedAt: Date;
 };
@@ -73,7 +74,7 @@ const ProviderProfileSchema = new Schema<IProviderProfile>({
         ref: "ServiceAvailability",
         default: null
     },
-    subscription: {
+    subscriptions: {
         type: [Schema.Types.ObjectId],
         ref: "Subscription",
         default: []
@@ -89,6 +90,10 @@ const ProviderProfileSchema = new Schema<IProviderProfile>({
     serviceProof: {
         type: String,
         default: null
+    },
+    hasUsedTrial: {
+        type: Boolean,
+        default: false,
     },
     createdAt: {
         type: Date,

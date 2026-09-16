@@ -3,26 +3,42 @@ import { Role } from "../../domain/enums/common.enum";
 import { ERROR_CODES } from "../../shared/utils/types";
 import { NextFunction, Request, Response } from "express";
 import { cacheService } from "../../infrastructure/services";
-import { DecodedUser } from "../../application/dtos/common.dto";
+import { AuthUser } from "../../application/dtos/common.dto";
 import { userRepository } from "../../infrastructure/repositoryImpls";
 import { ForbiddenError, UnauthorizedError } from "../../shared/error/appError";
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
+
     const userId = req.headers["x-user-id"];
     const role = req.headers["x-user-role"];
+    const name = req.headers["x-user-name"];
+    const email = req.headers["x-user-email"];
 
     const normalizedUserId = Array.isArray(userId) ? userId[0] : userId;
-    const normalizedRole = Array.isArray(role)
-      ? (role[0] as Role)
-      : (role as Role);
+    const normalizedRole = Array.isArray(role) ? (role[0] as Role) : (role as Role);
+    const normalizedName = Array.isArray(name) ? (name[0] as string) : name;
+    const normalizedEmail = Array.isArray(email) ? (email[0] as string) : email;
 
-    req.user = {
+    if (!normalizedUserId || !normalizedRole || !normalizedName || !normalizedEmail) {
+      return next(
+        new UnauthorizedError(
+          "Invalid user identity headers",
+          ERROR_CODES.USER_NOT_FOUND
+        )
+      );
+    }
+
+    const decodedUser: AuthUser = {
       id: normalizedUserId,
       role: normalizedRole,
-    } as DecodedUser;
+      name: normalizedName,
+      email: normalizedEmail,
+    };
 
-    const cacheKey = req.user.id!;
+    req.user = decodedUser;
+
+    const cacheKey = decodedUser.id;
     const cachedStatus = await cacheService.getBlockList(cacheKey);
 
     if (cachedStatus !== null) {

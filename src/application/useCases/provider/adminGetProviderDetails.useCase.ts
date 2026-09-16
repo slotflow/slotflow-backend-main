@@ -38,7 +38,6 @@ export class AdminGetProviderDetailsUseCase {
                 createdAt: provider.createdAt,
                 profileImage: signedProfileImageUrl,
                 isBlocked: provider.isBlocked,
-
                 adminVerificationStatus: providerProfile.adminVerificationStatus,
                 isAddressVerified: providerProfile.isAddressVerified,
                 isAdminVerified: providerProfile.isAdminVerified,

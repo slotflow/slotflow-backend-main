@@ -4,7 +4,7 @@ import { ERROR_CODES } from "../../shared/utils/types";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { BadRequestError } from "../../shared/error/appError";
-import { DecodedUser } from "../../application/dtos/common.dto";
+import { AuthUser } from "../../application/dtos/common.dto";
 import { createServiceAvailabilitiesUseCase, getServiceAvailabilityUseCase } from ".";
 import { GetServiceAvailabilityUseCase } from "../../application/useCases/serviceAvailability/getServiceAvailability";
 import { createServiceAvailabilitySchema, getServiceAvailabilitySchema } from "../../shared/zod/serviceAvailability.zod";
@@ -21,7 +21,7 @@ class ServiceAvailabilityController {
 
     async createServiceAvailability(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             console.log("req.body : ",req.body);
             const availabilities = createServiceAvailabilitySchema.parse(req.body);
             if (!availabilities || availabilities.length === 0) {
@@ -40,7 +40,7 @@ class ServiceAvailabilityController {
 
     async getServiceAvailability(req: Request, res: Response, next: NextFunction) {
             try {
-                const user = req.user as DecodedUser;
+                const user = req.user as AuthUser;
                 let providerId: string | undefined;
                 if(user.role === Role.PROVIDER) {
                     providerId = user.id;

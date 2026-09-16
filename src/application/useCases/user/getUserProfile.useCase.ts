@@ -30,9 +30,9 @@ export class GetUserProfileDetailsUseCase {
                 isBlocked: user.isBlocked,
                 phone: user.phone,
                 username: user.username,
-                profileImage: signedProfileImage || undefined,
+                profileImage: signedProfileImage,
                 createdAt: user.createdAt,
-                referralCode: user.referralCode
+                referralCode: !isAdmin ? user.referralCode : undefined,
             };
         } catch (error: unknown) {
             throw toAppError(error, "Failed to get user profile");

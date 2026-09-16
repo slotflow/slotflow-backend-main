@@ -1,35 +1,10 @@
 import { z } from "zod";
-import { changeBlockStatusSchema } from "./common.zod";
-import { ServiceCategory } from "../../domain/enums/service.enum";
-import { validateUserIdSchema, validateProviderIdSchema } from "./base.zod";
-import { objectIdRegex, serviceNameRegex, verificationRejectionReasonRegex } from "../utils/regex";
+import { verificationRejectionReasonRegex } from "../utils/regex";
+import { changeBlockStatusSchema, startAndEndDateSchema } from "./common.zod";
+import { validateUserIdSchema, validateProviderIdSchema, roleValidationSchema } from "./base.zod";
 
 // Admin change user block status
 export const adminUserBlockStatusSchema = validateUserIdSchema.merge(changeBlockStatusSchema);
-
-// Admin adding new app service controller zod validation
-export const adminCreateNewServiceSchema = z.object({
-    serviceCategory: z.nativeEnum(ServiceCategory),
-    serviceNames: z
-        .array(
-            z
-                .string()
-                .trim()
-                .min(4)
-                .max(50)
-                .regex(serviceNameRegex, "Invalid service name")
-        )
-        .min(1, "At least one service name is required")
-        .refine(
-            (names) => new Set(names.map((name) => name.toLowerCase())).size === names.length,
-            "Duplicate service names are not allowed"
-        ),
-});
-
-// Admin change service block status
-export const adminChangeServiceBlockStatusSchema = z.object({
-    serviceId: z.string().regex(objectIdRegex, "Invalid serviceId"),
-}).merge(changeBlockStatusSchema);
 
 // Admin change provider block status
 export const adminChangeProviderBlockStatusSchema = validateProviderIdSchema.merge(changeBlockStatusSchema);
@@ -47,3 +22,6 @@ export const adminRejectProviderSchema = z.object({
     isAvailabilityVerified: z.boolean(),
     isProofsVerified: z.boolean(),
 }).merge(validateProviderIdSchema);
+
+// Admin get role based chart data
+export const adminGetRoleBasedChartData = roleValidationSchema.merge(startAndEndDateSchema);

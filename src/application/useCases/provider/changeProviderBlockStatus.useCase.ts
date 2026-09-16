@@ -32,8 +32,10 @@ export class ChangeProviderBlockStatusUseCase {
                 );
             }
 
-            if (provider.isBlocked === isBlocked) {
-                isBlocked ? provider.unblock() : provider.block();
+            if (isBlocked) {
+                provider.block();
+            } else {
+                provider.unblock();
             };
 
             const updatedProvider = await this.userRepository.update(provider);
@@ -70,7 +72,7 @@ export class ChangeProviderBlockStatusUseCase {
                 },
             });
 
-            return { providerId, isBlocked: updatedProvider.isBlocked };
+            return { _id: providerId, isBlocked: updatedProvider.isBlocked };
         } catch (error: unknown) {
             throw toAppError(error, "Failed to change provider block status");
         };

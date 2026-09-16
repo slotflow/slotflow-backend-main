@@ -24,10 +24,11 @@ export const deleteReviewSchema = z.object({
 // Report review schema
 export const reportReviewSchema = z.object({
     reviewId: z.string().regex(objectIdRegex, "Invalid reviewId"),
+    reported: z.boolean(),
 });
 
 // Toggle review block status schema
-export const toggleReviewBlockStatusSchema = z.object({
+export const changeReviewBlockStatusSchema = z.object({
     reviewId: z.string().regex(objectIdRegex, "Invalid reviewId"),
-    blockStatus: z.boolean(),
+    isBlocked: z.boolean(),
 });

@@ -4,14 +4,14 @@ import { ERROR_CODES } from "../../shared/utils/types";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { BadRequestError } from "../../shared/error/appError";
-import { DecodedUser } from "../../application/dtos/common.dto";
+import { AuthUser } from "../../application/dtos/common.dto";
 import { GetReviewsUseCase } from "../../application/useCases/review/getReviews.useCase";
 import { ReportReviewUseCase } from "../../application/useCases/review/reportReview.useCase";
 import { CreateReviewUseCase } from "../../application/useCases/review/createReview.useCase";
 import { DeleteReviewUseCase } from "../../application/useCases/review/deleteReview.useCase";
-import { ToggleReviewBlockStatusUseCase } from "../../application/useCases/review/toggleReviewBlockStatus.useCase";
+import { ToggleReviewBlockStatusUseCase } from "../../application/useCases/review/changeReviewBlockStatus.useCase";
 import { createReviewUseCase, deleteReviewUseCase, getReviewsUseCase, reportReviewUseCase, toggleReviewBlockStatusUseCase } from ".";
-import { createReviewSchema, deleteReviewSchema, getReviewsSchema, reportReviewSchema, toggleReviewBlockStatusSchema } from "../../shared/zod/review.zod";
+import { createReviewSchema, deleteReviewSchema, getReviewsSchema, reportReviewSchema, changeReviewBlockStatusSchema } from "../../shared/zod/review.zod";
 
 class ReviewController {
     constructor(
@@ -29,7 +29,7 @@ class ReviewController {
 
     async getReviews(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             const { limit, page, providerId, userId } = getReviewsSchema.parse(req.query);
             const filter: {
                 providerId?: string;
@@ -62,7 +62,7 @@ class ReviewController {
 
     async createReview(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             const { providerId, rating, reviewText, bookingId } = createReviewSchema.parse(req.body);
             const result = await this.createReviewUseCase.execute({
                 providerId,
@@ -80,7 +80,7 @@ class ReviewController {
 
     async deleteReview(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             const { reviewId } = deleteReviewSchema.parse(req.params);
             await this.deleteReviewUseCase.execute({
                 reviewId,
@@ -95,31 +95,32 @@ class ReviewController {
 
     async reportReview(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
 
-            const { reviewId } = reportReviewSchema.parse({
+            const { reviewId, reported } = reportReviewSchema.parse({
                 reviewId: req.params.reviewId
             });
             const result = await this.reportReviewUseCase.execute({
                 reviewId,
-                providerId: user.id
+                providerId: user.id,
+                reported
             });
-            sendResponse(res, result, `Review ${result ? "reported" : "unreported"} successfully`);
+            sendResponse(res, result, `Review ${result.reported ? "reported" : "unreported"} successfully`);
         } catch (error) {
             log.error("reportReview failed", error as Error);
             next(error);
         };
     };
 
-    async toggleReviewBlockStatus(req: Request, res: Response, next: NextFunction) {
+    async changeReviewBlockStatus(req: Request, res: Response, next: NextFunction) {
         try {
-            const { blockStatus, reviewId } = toggleReviewBlockStatusSchema.parse({
+            const { isBlocked, reviewId } = changeReviewBlockStatusSchema.parse({
                 reviewId: req.params.reviewId,
                 blockStatus: req.body.blockStatus
             });
             const result = await this.toggleReviewBlockStatusUseCase.execute({
                 reviewId,
-                isBlocked: blockStatus
+                isBlocked
             });
             sendResponse(res, result);
         } catch (error) {

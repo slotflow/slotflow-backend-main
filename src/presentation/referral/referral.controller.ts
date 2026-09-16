@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
-import { DecodedUser } from "../../application/dtos/common.dto";
+import { AuthUser } from "../../application/dtos/common.dto";
 import { startAndEndDateSchema } from "../../shared/zod/common.zod";
 import { getReferralDetailsUseCase, getReferralsListUseCase } from ".";
 import { getReferralsListSchema } from "../../shared/zod/referral.zod";
@@ -18,7 +18,7 @@ class ReferralController {
 
     async getReferralDetails(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             const validatedData = startAndEndDateSchema.parse(req.query);
             const result = await this.getReferralDetailsUseCase.execute({
                 ...validatedData,
@@ -32,7 +32,7 @@ class ReferralController {
 
     async getReferralsList(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             const validatedData = getReferralsListSchema.parse(req.query);
             const result = await this.getReferralsListUseCase.execute({
                 ...validatedData,

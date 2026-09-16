@@ -1,21 +1,26 @@
-import { StripeAccountStatus } from "../../enums/common.enum";
-import { PaymentFor, RefundFor, RefundReason } from "../../enums/payment.enum";
 import { BillingCycle } from "../../enums/subscription.enum";
+import { Role, StripeAccountStatus } from "../../enums/common.enum";
+import { PaymentFor, RefundFor, RefundReason } from "../../enums/payment.enum";
 
 export interface CreateSubscriptionCheckoutSessionInput {
-  subscriptionId: string;
-  providerId: string;
-  planName: string;
-  description: string;
-  billingCycle: BillingCycle;
-  planDuration: number;
-  unitAmount: number;
-  paymentFor: PaymentFor;
-  paymentDate: Date;
-  name: string;
-  email: string;
-  initialAmount: number;
-  stripeCustomerId: string | null;
+  subscriptionData: {
+    subscriptionId: string;
+    planName: string;
+    billingCycle: BillingCycle;
+    paymentFor: PaymentFor;
+    paymentDate: Date;
+    priceId: string;
+    unitAmount: number;
+    trialPeriodDays?: number;
+    alreadyUsedTrial: boolean;
+    isTrial: boolean;
+  },
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    role: Role;
+  }
 }
 
 export interface CreateSubscriptionCheckoutSessionOutput {

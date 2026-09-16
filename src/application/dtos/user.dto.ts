@@ -1,18 +1,20 @@
+import { CommonDateInput } from "./common.dto";
 import { Role, StripeAccountStatus } from "../../domain/enums/common.enum";
-import { GetStatsDataCommonInput } from "./admin.dto";
-import { UserDTO, ServiceDTO, ProviderServiceDTO, ProviderProfileDTO, ApiPaginationInput } from "./common.dto";
+import { UserDTO, ServiceDTO, ProviderServiceDTO, ProviderProfileDTO, ApiPaginationInput, StatMetric } from "./common.dto";
 
 //// ****  user queries parameter and return type **** ////
 
 // 1. findStats method parameter and return
-export interface UserDataQuery extends GetStatsDataCommonInput { }
-export interface UserDataView {
-    totalUsers: number;
-    blockedUsers: number;
-};
+export interface UserStatsDataQuery extends CommonDateInput { }
+export interface UserStatsDataView extends Record<string, StatMetric | undefined> {
+    totalUsers: StatMetric;
+    blockedUsers?: StatMetric;
+    NewUsers?: StatMetric;
+    ReturningUsers?: StatMetric;
+}
 
 // 2. findUsers method parameter and return
-export interface UsersQuery extends ApiPaginationInput {};
+export interface UsersQuery extends ApiPaginationInput { };
 export type UsersView = Array<Pick<UserDTO, "_id" | "username" | "email" | "isBlocked">>;
 
 // 3. findProviders method parameter and return
@@ -26,16 +28,23 @@ export interface ProviderByIdQuery {
 export type ProviderByIdView = Pick<UserDTO, "username" | "email" | "isBlocked" | "profileImage" | "phone" | "createdAt" | "referralCode"> & Pick<ProviderProfileDTO, "isAdminVerified" | "trustedBySlotflow" | "adminVerificationStatus" | "isAddressVerified" | "isAvailabilityVerified" | "isProofsVerified" | "isServiceDetailsVerified"> | null;
 
 // 5. findProviderStats method parameter and return
-export interface ProviderStatsQuery extends GetStatsDataCommonInput { };
-export interface ProviderStatsView {
-    totalProviders: number;
-    adminVerifiedProviders: number;
-    blockedProviders: number;
-    addressAddedProviders: number;
-    serviceAddedProviders: number;
-    availabilityAddedProviders: number;
-    slotflowTrustedProviders: number;
+export interface ProviderStatsDataQuery extends CommonDateInput { };
+export interface ProviderStatsDataView extends Record<string, StatMetric | undefined> {
+    totalProviders: StatMetric;
+    adminVerifiedProviders: StatMetric;
+    blockedProviders: StatMetric;
+    slotflowTrustedProviders: StatMetric;
 };
+
+// 6. findNewVsReturningUserStats method parameter and return
+export type UserChartDataQuery = CommonDateInput & {
+    role: Role;
+ };
+export type UserChartDataView = Array<{
+  date: string;
+  newUsers: number;
+  returningUsers: number;
+}>;
 
 
 
@@ -68,18 +77,18 @@ export interface ChangePushNotificationInput {
 };
 
 // FindProviderService usecase input
-type FindProviderServiceProps = Pick<ProviderServiceDTO, 
-"serviceName" | 
-"serviceDescription" | 
-"servicePrice" | 
-"serviceExperience" | 
-"videoUrl" | 
-"serviceType" |
-// TODO Remove 
-// "serviceMode" | 
-"requirements" | 
-"maxParticipants" | 
-"isGroupService"
+type FindProviderServiceProps = Pick<ProviderServiceDTO,
+    "serviceName" |
+    "serviceDescription" |
+    "servicePrice" |
+    "serviceExperience" |
+    "videoUrl" |
+    "serviceType" |
+    // TODO Remove 
+    // "serviceMode" | 
+    "requirements" |
+    "maxParticipants" |
+    "isGroupService"
 >;
 export interface FindProviderServiceOutput extends FindProviderServiceProps {
     service: Pick<ServiceDTO, "serviceName">
@@ -91,22 +100,21 @@ export interface GetUserProfileDetailsInput {
     isAdmin: boolean;
 }
 // Used as the response type of admin get user profile details
-export type GetUserProfileDetailsOutput = Pick<UserDTO, "username" | "phone" | "isBlocked" | "email" | "createdAt" | "referralCode"> & Partial<Pick<UserDTO, "profileImage">> | null;
+export type GetUserProfileDetailsOutput = Pick<UserDTO, "username" | "phone" | "isBlocked" | "email" | "createdAt" | "profileImage"> & Partial<Pick<UserDTO, "referralCode">> | null;
 
 // Used as the request interface of admin change block status of user  
-export interface ChangeUserIsBlockedStatusInput {
+export type ChangeUserIsBlockedStatusInput = {
     userId: UserDTO["_id"];
-    isBlocked: UserDTO["isBlocked"];
-};
+} & Pick<UserDTO, "isBlocked">;
 // Used as the response type of admin change user block status
-export type ChangeUserIsBlockedStatusOutput = ChangeUserIsBlockedStatusInput;
+export type ChangeUserIsBlockedStatusOutput = Pick<UserDTO, "_id" | "isBlocked">;
 
 export type PreBoardingInput = Pick<UserDTO, "role" | "_id"> & {
     whereDidHearAboutUs: UserDTO["whereDidHearAboutUs"];
     referralCode?: string;
 };
-export type PreBoardingOutput = Pick<UserDTO, "onboardingType" | "onboardingStatus"> & { 
-    adminVerificationStatus: ProviderProfileDTO["adminVerificationStatus"] | null 
+export type PreBoardingOutput = Pick<UserDTO, "onboardingType" | "onboardingStatus"> & {
+    adminVerificationStatus: ProviderProfileDTO["adminVerificationStatus"] | null
 };
 
 // GetUsers usecase input output

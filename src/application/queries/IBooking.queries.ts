@@ -1,5 +1,5 @@
 import { TableData } from "../dtos/common.dto";
-import { BookingDetailsQuery, BookingDetailsView, BookingGraphStatsForProviderQuery, BookingGraphStatsForProviderView, BookingsQuery, BookingsStatsForAdminQuery, BookingsStatsForAdminView, BookingStatsForProviderQuery, BookingStatsForProviderView, BookingsView, BookingUsersForChatQuery, BookingUsersForChatView } from "../dtos/booking.dto";
+import { BookingDetailsQuery, BookingDetailsView, BookingGraphStatsForProviderQuery, BookingGraphStatsForProviderView, BookingsQuery, BookingsStatsDataAdminQuery, BookingsStatsDataAdminView, BookingStatsForProviderQuery, BookingStatsForProviderView, BookingsView, BookingUsersForChatQuery, BookingUsersForChatView } from "../dtos/booking.dto";
 
 export interface IBookingQueries {
 
@@ -15,6 +15,6 @@ export interface IBookingQueries {
 
     findGraphDataForDashboard(query: BookingGraphStatsForProviderQuery): Promise<BookingGraphStatsForProviderView | null>;
 
-    findStatsDataForAdminDashboard(query: BookingsStatsForAdminQuery): Promise<BookingsStatsForAdminView>;
+    findStatsDataForAdminDashboard(query: BookingsStatsDataAdminQuery): Promise<BookingsStatsDataAdminView>;
 
 };

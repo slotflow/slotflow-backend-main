@@ -1,8 +1,8 @@
 import { ERROR_CODES } from "../../../shared/utils/types";
-import { UserCancelBookingInput } from "../../dtos/booking.dto";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { RefundFor, RefundReason } from "../../../domain/enums/payment.enum";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
+import { UserCancelBookingInput, UserCancelBookingOutput } from "../../dtos/booking.dto";
 import { AppError, BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
@@ -15,7 +15,7 @@ export class CancelBookingUseCase {
         private readonly paymentServiceClient: IPaymentServiceClient
     ) { };
 
-    async execute(input: UserCancelBookingInput): Promise<void> {
+    async execute(input: UserCancelBookingInput): Promise<UserCancelBookingOutput> {
         try {
             const { userId, bookingId, reason } = input;
             if (!userId || !bookingId) {
@@ -93,12 +93,18 @@ export class CancelBookingUseCase {
             booking.cancelAppointment();
             const updatedBooking = await this.bookingRepository.update(booking);
             if (!updatedBooking) {
-                throw new NotFoundError(
-                    "Updated Booking not found",
-                    ERROR_CODES.BOOKING_NOT_FOUND
+                throw new AppError(
+                    "Failed to update booking.",
+                    500,
+                    true,
+                    ERROR_CODES.INTERNAL_ERROR
                 );
             }
 
+            return {
+                _id: updatedBooking._id,
+                appointmentStatus: updatedBooking.appointmentStatus
+            }
 
         } catch (error) {
             throw toAppError(error, "Failed to cancel booking");

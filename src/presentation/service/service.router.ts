@@ -21,10 +21,17 @@ router.post('/',
 );
 
 // admin block service
-router.patch('/:serviceId',
+router.patch('/:serviceId/block',
     authMiddleware,
     authorize(Role.ADMIN),
     serviceController.changeServiceBlockStatus
+);
+
+// admin update service
+router.patch('/:serviceId',
+    authMiddleware,
+    authorize(Role.ADMIN),
+    serviceController.updateService
 );
 
 export default router;

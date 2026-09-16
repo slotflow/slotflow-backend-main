@@ -1,5 +1,5 @@
 // first step of provider profile creation
-// after addingthe address in the onboarding only the provider profile will create
+// after adding the address in the onboarding only the provider profile will create
 export interface CreateProviderProfileProps {
     userId: string;
 };

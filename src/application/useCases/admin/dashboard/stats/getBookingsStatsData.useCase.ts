@@ -1,8 +1,8 @@
-import { IBookingQueries } from "../../../queries/IBooking.queries";
-import { toAppError } from "../../../../shared/error/handleUnknownError";
-import { GetBookingsDataInput, GetBookingsDataOutput } from "../../../dtos/admin.dto";
+import { IBookingQueries } from "../../../../queries/IBooking.queries";
+import { toAppError } from "../../../../../shared/error/handleUnknownError";
+import { GetBookingsDataInput, GetBookingsDataOutput } from "../../../../dtos/admin.dto";
 
-export class GetBookingsDataUseCase {
+export class GetBookingsStatsDataUseCase {
     constructor(
         private bookingQueries: IBookingQueries
     ) { };

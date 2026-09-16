@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import { kafkaConfig } from "../../../config/env";
 import { generateId } from '../../../shared/utils/generateId';
 import { ERROR_CODES, IdType } from '../../../shared/utils/types';
-import { getDateAfterMonths } from "../../../shared/utils/dateTime";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { AppError, NotFoundError } from "../../../shared/error/appError";
 import { notificationContentMap } from "../../../shared/utils/constants";
@@ -34,14 +33,19 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
 
     async execute(input: ProviderCreatePaymentSuccessEventInput): Promise<void> {
         const session = await mongoose.startSession();
-        session.startTransaction();
         try {
+            session.startTransaction();
             const {
                 subscriptionId,
                 paymentId,
-                planDuration,
-                providerId
+                isTrial,
+                planName,
+                providerId,
+                currentPeriodEnd,
+                currentPeriodStart
             } = input;
+
+            const isTrialBoolean: boolean = isTrial === "true";
 
             const provider = await this.userRepository.findById(providerId);
             if (!provider) {
@@ -60,7 +64,18 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
             }
 
             providerProfile.pushSubscriptionId(subscriptionId);
-            await this.providerProfileRepository.update(providerProfile, session);
+            if(isTrialBoolean) {
+                providerProfile.trialUsed();
+            }
+            const updatedProviderProfile = await this.providerProfileRepository.update(providerProfile, session);
+            if (!updatedProviderProfile) {
+                throw new AppError(
+                    "Internal server error.",
+                    500,
+                    true,
+                    ERROR_CODES.INTERNAL_ERROR
+                )
+            }
 
             const subscription = await this.subscriptionRepository.findById(subscriptionId);
             if (!subscription) {
@@ -78,15 +93,21 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
                 );
             }
 
-            const endDate = getDateAfterMonths(planDuration);
-
             subscription.subscriptionPaymentSuccess({
                 paymentId,
-                startDate: new Date(),
-                endDate,
+                startDate: currentPeriodStart,
+                endDate: currentPeriodEnd,
             });
 
-            await this.subscriptionRepository.update(subscription, session);
+            const updatedSubscription = await this.subscriptionRepository.update(subscription, session);
+            if(!updatedSubscription) {
+                throw new AppError(
+                    'Internal server error',
+                    500,
+                    true,
+                    ERROR_CODES.INTERNAL_ERROR
+                )
+            }
 
             if (provider.referredBy) {
                 const referral = await this.referralRepository.findByReferrerAndReferredUser(provider.referredBy, provider._id);
@@ -155,31 +176,37 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
                     socketData: {
                         userId: provider._id,
                         subscribedPlan: plan.planName,
-                        startDate: subscription.startDate,
-                        endDate: subscription.endDate,
+                        startDate: updatedSubscription.startDate,
+                        endDate: updatedSubscription.endDate,
                         subscriptionStatus: subscription.subscriptionStatus
                     },
                     emailData: {
                         email: provider.email,
                         name: provider.username,
                         subscribedPlan: plan.planName,
-                        startDate: subscription.startDate,
-                        endDate: subscription.endDate
+                        startDate: updatedSubscription.startDate,
+                        endDate: updatedSubscription.endDate
                     },
                     notificationData: {
                         userId: provider._id,
                         pushNotification: provider.allowPushNotification ?? false,
                         title: notificationContentMap.planSubscribed.title,
-                        body: notificationContentMap.planSubscribed.body()
+                        body: notificationContentMap.planSubscribed.body(
+                            planName,
+                            isTrialBoolean,
+                            currentPeriodEnd
+                        )
                     }
                 }
             });
             await session.commitTransaction();
         } catch (error) {
-            await session.abortTransaction();
+            if (session.inTransaction()) {
+                await session.abortTransaction();
+            }
             throw toAppError(error, "Failed to update subscription");
         } finally {
-            session.endSession();
+            await session.endSession();
         };
     };
 };

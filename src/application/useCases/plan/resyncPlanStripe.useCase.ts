@@ -4,6 +4,7 @@ import {
     NotFoundError,
 } from "../../../shared/error/appError";
 import { ERROR_CODES } from "../../../shared/utils/types";
+import { PlanName } from "../../../domain/enums/plan.enum";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { StripeSyncStatus } from "../../../domain/contracts/plan.contract";
 import { ResyncStripePlanInput, ResyncStripePlanOutput } from "../../dtos/plan.dto";
@@ -31,6 +32,12 @@ export class ResyncPlanStripeUseCase {
             if (!plan.isStripeSyncPending()) {
                 throw new BadRequestError(
                     "Only pending Stripe plans can be resynced."
+                );
+            }
+            
+            if(plan.planName === PlanName.TRIAL) {
+                throw new BadRequestError(
+                    "Trial plan can't resync to stripe."
                 );
             }
 
@@ -64,7 +71,7 @@ export class ResyncPlanStripeUseCase {
             }
 
             return {
-                planId,
+                _id: updatedPlan._id,
                 stripePlanDetails: updatedPlan.stripePlanDetails,
                 stripeSync: updatedPlan.stripeSync
             }

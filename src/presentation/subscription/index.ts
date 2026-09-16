@@ -14,6 +14,6 @@ export const getSubscriptionDetailsUseCase = new GetSubscriptionDetailsUseCase(s
 
 export const trialSubscriptionUseCase = new TrialSubscriptionUseCase(userRepository, providerProfileRepository, subscriptionRepository, planRepository, kafkaProducer);
 
-export const subscriptionCheckoutUseCase = new SubscriptionCheckoutUseCase(planRepository, userRepository, providerProfileRepository, subscriptionRepository, paymentServiceClient);
+export const subscriptionCheckoutUseCase = new SubscriptionCheckoutUseCase(planRepository, providerProfileRepository, subscriptionRepository, paymentServiceClient);
 
 export const getSubscribedPlanUseCase = new GetSubscribedPlanUseCase(providerProfileRepository, subscriptionQueries);

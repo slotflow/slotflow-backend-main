@@ -5,8 +5,8 @@ import { formatUtcDateTime } from "../../../shared/utils/dateTime";
 import { toAppError } from '../../../shared/error/handleUnknownError';
 import { notificationContentMap } from "../../../shared/utils/constants";
 import { NotificationType, Role } from "../../../domain/enums/common.enum";
-import { BadRequestError, NotFoundError } from '../../../shared/error/appError';
-import { ProviderChangeBookingAppointmentStatusInput } from '../../dtos/booking.dto';
+import { AppError, BadRequestError, NotFoundError } from '../../../shared/error/appError';
+import { ProviderChangeBookingAppointmentStatusInput, ProviderChangeBookingAppointmentStatusOutput } from '../../dtos/booking.dto';
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IGoogleTokenService } from "../../../domain/interfaces/services/IGoogleToken.service";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
@@ -21,7 +21,7 @@ export class ChangeBookingStatusUseCase {
         private readonly kafkaProducer: IKafkaProducerAdapter,
     ) { };
 
-    async execute(input: ProviderChangeBookingAppointmentStatusInput): Promise<void> {
+    async execute(input: ProviderChangeBookingAppointmentStatusInput): Promise<ProviderChangeBookingAppointmentStatusOutput> {
         try {
             const { bookingId, appointmentStatus, providerId } = input;
             if (!bookingId || !appointmentStatus || !providerId) {
@@ -64,7 +64,15 @@ export class ChangeBookingStatusUseCase {
 
             booking.updateAppointmentStatus({ appointmentStatus });
 
-            await this.bookingRepository.update(booking);
+            const updatedBooking = await this.bookingRepository.update(booking);
+            if (!updatedBooking) {
+                throw new AppError(
+                    "Failed to update booking.",
+                    500,
+                    true,
+                    ERROR_CODES.INTERNAL_ERROR
+                );
+            }
 
             const { date, time } = formatUtcDateTime(booking.appointmentDate);
 
@@ -148,6 +156,11 @@ export class ChangeBookingStatusUseCase {
                     }
                 });
             };
+
+            return {
+                _id: updatedBooking?._id,
+                appointmentStatus: updatedBooking?.appointmentStatus
+            }
 
         } catch (error: unknown) {
             throw toAppError(error, "Failed to change booking status");

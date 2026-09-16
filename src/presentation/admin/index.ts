@@ -1,16 +1,22 @@
 import { bookingQueries, subscriptionQueries, userQueries } from "../../infrastructure/queriesImpls";
-import { GetUserDataUseCase } from "../../application/useCases/admin/dashboard/getUsersData.useCase";
-import { GetAdminGraphDataUseCase } from "../../application/useCases/admin/dashboard/getGraphData.useCase";
-import { GetBookingsDataUseCase } from "../../application/useCases/admin/dashboard/getBookingsData.useCase";
-import { GetProviderDataUseCase } from "../../application/useCases/admin/dashboard/getProvidersData.useCase";
-import { GetSubscriptionDataUseCase } from "../../application/useCases/admin/dashboard/getSubscriptionData.useCase";
+import { GetUserStatsDataUseCase } from "../../application/useCases/admin/dashboard/stats/getUsersStatsData.useCase";
+import { GetAdminBookingsChartDataUseCase } from "../../application/useCases/admin/dashboard/chartData/getBookingsChartData.useCase";
+import { GetBookingsStatsDataUseCase } from "../../application/useCases/admin/dashboard/stats/getBookingsStatsData.useCase";
+import { GetProviderStatsDataUseCase } from "../../application/useCases/admin/dashboard/stats/getProvidersStatsData.useCase";
+import { GetSubscriptionStatsDataUseCase } from "../../application/useCases/admin/dashboard/stats/getSubscriptionStatsData.useCase";
+import { GetRoleBasedChartDataUseCase } from "../../application/useCases/admin/dashboard/chartData/getRoleBasedChartData.useCase";
+import { GetSubscriptionsChartDataUseCase } from "../../application/useCases/admin/dashboard/chartData/getSubscriptionsChartData.useCase";
 
-export const getUserDataUseCase = new GetUserDataUseCase(userQueries);
+export const getUserStatsDataUseCase = new GetUserStatsDataUseCase(userQueries);
 
-export const getProviderDataUseCase = new GetProviderDataUseCase(userQueries);
+export const getProviderStatsDataUseCase = new GetProviderStatsDataUseCase(userQueries);
 
-export const getSubscriptionDataUseCase = new GetSubscriptionDataUseCase(subscriptionQueries);
+export const getSubscriptionStatsDataUseCase = new GetSubscriptionStatsDataUseCase(subscriptionQueries);
 
-export const getBookingsDataUseCase = new GetBookingsDataUseCase(bookingQueries);
+export const getBookingsStatsDataUseCase = new GetBookingsStatsDataUseCase(bookingQueries);
 
-export const getAdminGraphDataUseCase = new GetAdminGraphDataUseCase();
+export const getAdminBookingsChartDataUseCase = new GetAdminBookingsChartDataUseCase(bookingQueries);
+
+export const getRoleBasedChartDataUseCase = new GetRoleBasedChartDataUseCase(userQueries);
+
+export const getSubscriptionsChartDataUseCase = new GetSubscriptionsChartDataUseCase(subscriptionQueries);

@@ -2,7 +2,7 @@ import { log } from "../../shared/logger/logger";
 import { Role } from "../../domain/enums/common.enum";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
-import { DecodedUser } from "../../application/dtos/common.dto";
+import { AuthUser } from "../../application/dtos/common.dto";
 import { validateProviderIdSchema } from "../../shared/zod/base.zod";
 import { userGetProvidersServicesSchema } from "../../shared/zod/providerService.zod";
 import { GetProviderServicesUseCase } from "../../application/useCases/providerService/getProviderService.useCase";
@@ -27,7 +27,7 @@ class ProviderServiceController {
 
     async createServiceDetails(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             const { ...serviceData } = providerCreateServiceDetailsSchema.parse({ ...req.body });
             await this.createProviderServiceUseCase.execute({
                 ...serviceData,
@@ -44,7 +44,7 @@ class ProviderServiceController {
 
     async getServiceDetails(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
 
             let filter: {
                 providerId: string;

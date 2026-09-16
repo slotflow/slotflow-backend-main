@@ -1,5 +1,4 @@
 import z from "zod";
-import { changeBlockStatusSchema } from "./common.zod";
 import { PlanName } from "../../domain/enums/plan.enum";
 import { descriptionRegex, objectIdRegex } from "../utils/regex";
 
@@ -41,6 +40,7 @@ export const createPlanSchema = z.object({
 // Change plan block status schema
 export const changePlanBlockStatusSchema = z.object({
     planId: z.string().regex(objectIdRegex, "Invalid planId"),
-}).merge(changeBlockStatusSchema);
+    isBlocked: z.boolean()
+});
 
 export const updatePlanSchema = createPlanSchema.partial();

@@ -3,7 +3,7 @@ import { Role } from "../../domain/enums/common.enum";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { preboardingSchema } from "../../shared/zod/auth.zod";
-import { DecodedUser } from "../../application/dtos/common.dto";
+import { AuthUser } from "../../application/dtos/common.dto";
 import { adminUserBlockStatusSchema } from "../../shared/zod/admin.zod";
 import { GetUsersUseCase } from "../../application/useCases/user/getUsers.useCase";
 import { PreBoardingUseCase } from "../../application/useCases/user/preBoarding.useCase";
@@ -45,7 +45,7 @@ class UserController {
 
     async getProfileDetails(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             if (user.role === Role.USER) {
                 const result = await this.getUserProfileDetailsUseCase.execute({ userId: user.id, isAdmin: false });
                 sendResponse(res, result);
@@ -63,7 +63,7 @@ class UserController {
 
     async updateProfileImage(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             const { s3FileKey } = userUpdateFileSchema.parse(req.body);
             const result = await this.updateUserProfileImageUseCase.execute({ userId: user.id, profileImage: s3FileKey });
             sendResponse(res, result, "Profile image updated successfully");
@@ -75,7 +75,7 @@ class UserController {
 
     async updateUserInfo(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             const { phone, username } = userUpdateInfoSchema.parse({
                 ...req.body
             });
@@ -89,7 +89,7 @@ class UserController {
 
     async updatePushNotification(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             const { allowPushNotification } = userUpdatePushNotificationSchema.parse({
                 ...req.body
             });
@@ -103,7 +103,7 @@ class UserController {
 
     async getUsers(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             if (user.role === Role.ADMIN) {
                 const { page, limit } = paginationSchema.parse(req.query);
                 const result = await this.getUsersUseCase.execute({ page, limit });
@@ -120,13 +120,13 @@ class UserController {
 
     async changeUserBlockStatus(req: Request, res: Response, next: NextFunction) {
         try {
-            const { blockStatus, userId } = adminUserBlockStatusSchema.parse({
+            const { isBlocked, userId } = adminUserBlockStatusSchema.parse({
                 userId: req.params.userId,
-                blockStatus: req.body.blockStatus
+                isBlocked: req.body.isBlocked
             });
             const result = await this.changeUserBlockStatusUseCase.execute({
                 userId,
-                isBlocked: blockStatus
+                isBlocked
             });
             sendResponse(res, result, `Successfully ${result.isBlocked ? "blocked" : "unblocked"} user`);
         } catch (error) {
@@ -137,7 +137,7 @@ class UserController {
 
     async preBoarding(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             const { role, whereDidHearAboutUs, referralCode } = preboardingSchema.parse(req.body);
             const result = await this.preBoardingUseCase.execute({ 
                 _id: user.id, 
@@ -154,7 +154,7 @@ class UserController {
 
     async updatePassword(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             const validatedData = userUpdatePasswordSchema.parse(req.body);
             await this.updatePasswordUseCase.execute({
                 ...validatedData,
@@ -169,7 +169,7 @@ class UserController {
 
     async checkStripeAccountStatus(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             const result = await this.checkStripeAccountStatusUseCase.execute({ userId: user.id });
             sendResponse(res, result);
         } catch (error) {

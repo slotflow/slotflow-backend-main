@@ -24,8 +24,10 @@ export class ChangePlanBlockStatusUseCase {
                 );
             }
 
-            if (plan.isBlocked === isBlocked) {
-                isBlocked ? plan.unblock() : plan.block();
+            if (isBlocked) {
+                plan.block();
+            } else {
+                plan.unblock();
             };
 
             const updatedPlan = await this.planRepository.update(plan);
@@ -38,7 +40,7 @@ export class ChangePlanBlockStatusUseCase {
                 );
             }
 
-            return { planId, isBlocked: updatedPlan.isBlocked };
+            return { _id: updatedPlan._id, isBlocked: updatedPlan.isBlocked };
         } catch (error: unknown) {
             throw toAppError(error, "Failed to chnage plan block status");
         };

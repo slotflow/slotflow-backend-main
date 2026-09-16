@@ -18,16 +18,22 @@ router.get('/',
     planController.getPlans
 );
 
-router.get('/:planId', 
-    authMiddleware, 
-    authorize(Role.ADMIN),
-    planController.getPlanDetails
-);
-
 router.patch('/:planId/block', 
     authMiddleware, 
     authorize(Role.ADMIN),
     planController.changePlanBlockStatus
+);
+
+router.post('/:planId/resync',
+    authMiddleware,
+    authorize(Role.ADMIN),
+    planController.resyncStripePlan
+);
+
+router.get('/:planId', 
+    authMiddleware, 
+    authorize(Role.ADMIN),
+    planController.getPlanDetails
 );
 
 router.patch('/:planId',
@@ -35,11 +41,5 @@ router.patch('/:planId',
     authorize(Role.ADMIN),
     planController.updatePlan
 );
-
-router.post('/:planId/resync',
-    authMiddleware,
-    authorize(Role.ADMIN),
-    planController.resyncStripePlan
-)
 
 export default router;

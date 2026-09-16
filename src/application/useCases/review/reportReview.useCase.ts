@@ -1,6 +1,6 @@
-import { RepostReviewInput } from "../../dtos/review.dto";
 import { ERROR_CODES } from "../../../shared/utils/types";
 import { toAppError } from "../../../shared/error/handleUnknownError";
+import { ReportReviewInput, ReportReviewOutput } from "../../dtos/review.dto";
 import { AppError, BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { IReviewRepository } from "../../../domain/interfaces/repositories/IReview.repository";
 
@@ -9,10 +9,10 @@ export class ReportReviewUseCase {
         private readonly reviewRepository: IReviewRepository,
     ) { };
 
-    async execute(input: RepostReviewInput): Promise<boolean> {
+    async execute(input: ReportReviewInput): Promise<ReportReviewOutput> {
         try {
-            const { providerId, reviewId } = input;
-            if(!reviewId || !providerId) {
+            const { providerId, reviewId, reported } = input;
+            if (!reviewId || !providerId) {
                 throw new BadRequestError();
             }
 
@@ -28,14 +28,14 @@ export class ReportReviewUseCase {
                 throw new BadRequestError();
             };
 
-            if (review.reported) {
-                review.unreport();
-            } else {
+            if (reported) {
                 review.report()
+            } else {
+                review.unreport();
             };
 
             const updatedReview = await this.reviewRepository.update(review);
-            if(!updatedReview) {
+            if (!updatedReview) {
                 throw new AppError(
                     "Failed to update review",
                     500,
@@ -44,7 +44,10 @@ export class ReportReviewUseCase {
                 );
             }
 
-            return updatedReview.reported;
+            return {
+                _id: updatedReview._id,
+                reported: updatedReview.reported
+            };
         } catch (error: unknown) {
             throw toAppError(error, "Failed to report review");
         };

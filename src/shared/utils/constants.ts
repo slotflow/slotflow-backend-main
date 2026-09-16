@@ -74,36 +74,19 @@ export const notificationContentMap: Record<string, {
   },
   planSubscribed: {
     title: "Plan Subscribed",
-    body: () =>
-      `Your subscription has been Confirmed.`
+   body: (planName: string, isTrial: boolean, endDate: Date) => {
+      const formattedDate = new Date(endDate).toLocaleDateString();
+      if (isTrial) {
+        return `Your free trial for the ${planName} plan has been activated. It will end on ${formattedDate}.`;
+      }
+      return `Your subscription for the ${planName} plan has been confirmed until ${formattedDate}.`;
+    }
   },
   gotAnAppointment: {
     title: "Got an Appointment",
     body: (appointmentDate: string) =>
       `You have got an appointment for ${appointmentDate}.`
   },
-  stripeAccountStatusUpdated: {
-    title: "Stripe Account Status",
-    body: (accountStatus: StripeAccountStatus) => {
-      switch (accountStatus) {
-        case StripeAccountStatus.PENDING:
-          return `Your stripe account activation is pending.`;
-        case StripeAccountStatus.RESTRICTED:
-          return `Your stripe account is restricted.`;
-        case StripeAccountStatus.ACTIVE:
-          return `Your stripe account is now active. You can now receive payments`;
-        case StripeAccountStatus.REVOKED:
-          return `Your stripe application has been revoked.`;
-        default:
-          return "Your stripe account status has been updated.";
-      }
-    }
-  },
-  stripeAccountCreated: {
-    title: "Stripeonboarding completed",
-    body: () =>
-      `Your stripe account has been created successfully. You can receive payments once your account status will be activated`
-  }
 };
 
 export const daysOfWeek: string[] = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];

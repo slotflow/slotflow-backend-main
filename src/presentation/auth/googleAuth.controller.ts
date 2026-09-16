@@ -6,6 +6,7 @@ import { NextFunction, Request, Response } from "express";
 import { appConfig, serviceConfig } from "../../config/env";
 import { roleValidationSchema } from "../../shared/zod/base.zod";
 import { GoogleAuthOrchestratorUseCase } from "../../application/useCases/auth/googleAuthOrchestrate.useCase";
+import { GoogleOAuthUser } from "../../application/dtos/common.dto";
 
 class GoogleAuthController {
     constructor(
@@ -39,7 +40,7 @@ class GoogleAuthController {
 
     async googleAuthCallback(req: Request, res: Response, next: NextFunction) {
         try {
-            passport.authenticate("google", { session: false }, async (err, user, info) => {
+            passport.authenticate("google", { session: false }, async (err, user: GoogleOAuthUser, info) => {
 
                 if (err || !user) {
                     if (info.connectOnly) {
@@ -66,7 +67,7 @@ class GoogleAuthController {
                     role,
                     connectOnly: user.connectOnly,
                     image: user.image,
-                    userId: user.id,
+                    userId: user.userId,
                     accessToken: user.googleAccessToken,
                     refreshToken: user.googleRefreshToken,
                     expiryDate,

@@ -14,7 +14,7 @@ export class StripePlanService implements IStripePlanService {
         const product = await this.stripe.products.create({
             name: `SlotFlow ${params.planName}`,
             description: params.description,
-            tax_code: "txcd_10000000",
+            tax_code: "txcd_10202000",
             marketing_features: marketingFeatures,
             metadata: {
                 maxBookingPerMonth: params.maxBookingPerMonth.toString(),
@@ -28,6 +28,7 @@ export class StripePlanService implements IStripePlanService {
             recurring: {
                 interval: "month",
             },
+            tax_behavior: 'inclusive'
         });
 
         const yearlyPrice = await this.stripe.prices.create({
@@ -37,6 +38,7 @@ export class StripePlanService implements IStripePlanService {
             recurring: {
                 interval: "year",
             },
+            tax_behavior: 'inclusive'
         });
 
         return {
@@ -49,7 +51,6 @@ export class StripePlanService implements IStripePlanService {
     async updatePlan(params: UpdateStripePlanInput): Promise<UpdateStripePlanOutput> {
         const { productId, planName, description, features, maxBookingPerMonth, monthlyPrice, yearlyPrice } = params;
 
-        // 1. Update Product Details on Stripe
         const productUpdatePayload: Stripe.ProductUpdateParams = {};
 
         if (planName) productUpdatePayload.name = `SlotFlow ${planName}`;

@@ -70,6 +70,7 @@ export interface ProviderProfileDTO {
   trustedBySlotflow: boolean;
   identityProof: string | null;
   serviceProof: string | null;
+  hasUsedTrial: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -199,15 +200,15 @@ export interface ReviewDTO {
 
 // **** REFERRAL INTERFACE
 export interface ReferralDTO {
-    _id: string;
-    referrerUserId: string;
-    refereeUserId: string;
-    referralCode: string;
-    status: ReferralStatus;
-    rewardGiven: boolean;
-    completedAt?: Date;
-    createdAt: Date;
-    updatedAt: Date;
+  _id: string;
+  referrerUserId: string;
+  refereeUserId: string;
+  referralCode: string;
+  status: ReferralStatus;
+  rewardGiven: boolean;
+  completedAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 
@@ -275,7 +276,7 @@ export interface ApiPaginationInput {
 }
 
 // Table data output
-export interface TableData<T>{
+export interface TableData<T> {
   totalPages?: number;
   currentPage?: number;
   totalCount?: number;
@@ -434,27 +435,31 @@ export interface FrontendAvailabilityUpdatedSlots extends Omit<Availability, "sl
 }
 
 // used in auth controller
-export interface DecodedUser {
+export interface AuthUser {
   id: string;
   role: Role;
-  googleAccessToken?: string;
-  googleRefreshToken?: string;
-  googleId?: string;
-  email?: string;
-  name?: string;
-  image: string | null;
-  connectOnly?: boolean;
-  exp?: number;
-  iat?: number;
-  userId?: string;
+  email: string;
+  name: string;
 };
+
+export interface GoogleOAuthUser {
+  googleAccessToken: string;
+  googleRefreshToken: string;
+  googleId: string;
+  email: string;
+  name: string;
+  image: string | null;
+  role: Role;
+  connectOnly: boolean;
+  userId: string; // Present if linking account
+}
 
 // used in count query
 export type CountResult = { count: number };
 
 // GetGoogleCalendarUseCase usecase input output
 export interface GetGoogleCalendarInput {
-    userId: string;
+  userId: string;
 }
 export type GetGoogleCalendarOutput = Array<GetEventsFromCalendarProps>;
 
@@ -474,4 +479,16 @@ export interface MiniCardData {
   percentage: number;
   days: number;
   chartData: MiniChartData[];
+}
+
+//
+export interface StatMetric {
+  value: number;
+  trend: string;
+}
+
+//
+export interface CommonDateInput {
+  startDate: Date;
+  endDate: Date;
 }

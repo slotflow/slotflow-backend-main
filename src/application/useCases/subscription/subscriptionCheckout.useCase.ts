@@ -1,40 +1,32 @@
 import dayjs from "dayjs";
 import { ERROR_CODES } from "../../../shared/utils/types";
+import { PlanName } from "../../../domain/enums/plan.enum";
 import { PaymentFor } from "../../../domain/enums/payment.enum";
-import { getNumberOfMonths } from "../../../shared/utils/dateTime";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { Subscription } from "../../../domain/entities/subscription.entity";
-import { SubscriptionStatus } from "../../../domain/enums/subscription.enum";
-import { SubscriptionCreateSessionIdInput } from "../../dtos/subscription.dto";
 import { AppError, BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
-import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
+import { BillingCycle, SubscriptionStatus } from "../../../domain/enums/subscription.enum";
 import { IPaymentServiceClient } from "../../../domain/interfaces/clients/IPaymentService.client";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
+import { SubscriptionCreateSessionIdInput, SubscriptionCreateSessionIdOutput } from "../../dtos/subscription.dto";
 
 export class SubscriptionCheckoutUseCase {
     constructor(
         private planRepository: IPlanRepository,
-        private userRepository: IUserRepository,
         private providerProfileRepository: IProviderProfileRepository,
         private subscriptionRepository: ISubscriptionRepository,
         private paymentServiceClient: IPaymentServiceClient,
     ) { };
 
-    async execute(input: SubscriptionCreateSessionIdInput): Promise<string> {
+    async execute(input: SubscriptionCreateSessionIdInput): Promise<SubscriptionCreateSessionIdOutput> {
         try {
-            const { providerId, planId, billingCycle } = input;
-            if (!providerId || !planId || !billingCycle) {
-                throw new BadRequestError();
-            }
+            const { providerId, planId, billingCycle, email, name, role } = input;
+            console.log("input : ",input);
 
-            const provider = await this.userRepository.findById(providerId);
-            if (!provider) {
-                throw new NotFoundError(
-                    "User not found.",
-                    ERROR_CODES.USER_NOT_FOUND
-                );
+            if (!providerId || !planId || !billingCycle || !email || !name || !role) {
+                throw new BadRequestError();
             }
 
             const providerProfile = await this.providerProfileRepository.findByUserId(providerId);
@@ -46,6 +38,7 @@ export class SubscriptionCheckoutUseCase {
             }
 
             const plan = await this.planRepository.findById(planId);
+
             if (!plan) {
                 throw new NotFoundError(
                     "Plan not found.",
@@ -53,15 +46,17 @@ export class SubscriptionCheckoutUseCase {
                 );
             }
 
-            const providerLastSubscriptionsId = providerProfile.subscription.at(-1);
-            if (providerLastSubscriptionsId) {
-                const subscription = await this.subscriptionRepository.findById(providerLastSubscriptionsId!);
+
+            const providerLastSubscriptionId = providerProfile.subscriptions.at(-1);
+            if (providerLastSubscriptionId) {
+                const subscription = await this.subscriptionRepository.findById(providerLastSubscriptionId!);
                 if (subscription?.subscriptionStatus === SubscriptionStatus.ACTIVE) {
                     throw new BadRequestError(
                         "Your subscription is already active.",
                         ERROR_CODES.SUBSCRIPTION_ALREADY_LIVE
                     );
                 }
+
                 const isSubscriptionExpired = dayjs().isAfter(dayjs(subscription?.endDate), "day");
                 if (!isSubscriptionExpired) {
                     throw new BadRequestError(
@@ -74,10 +69,10 @@ export class SubscriptionCheckoutUseCase {
             const subscription = await this.subscriptionRepository.create(
                 Subscription.createInitialData({
                     providerId,
-                    subscriptionPlanId: planId,
+                    subscriptionPlanId: plan._id.toString(),
                 })
             );
-            if(!subscription) {
+            if (!subscription) {
                 throw new AppError(
                     "Failed to create subscription.",
                     500,
@@ -86,25 +81,44 @@ export class SubscriptionCheckoutUseCase {
                 );
             }
 
-            const months: number = getNumberOfMonths(billingCycle);
+            const price: number = billingCycle === BillingCycle.MONTHLY ? plan.monthlyPrice : plan.yearlyPrice;
+            const priceId: string | undefined = billingCycle === BillingCycle.MONTHLY ? plan.stripePlanDetails?.monthlyPriceId : plan.stripePlanDetails?.yearlyPriceId;
+            const isTrial: boolean = plan.planName === PlanName.PROFESSIONAL && !providerProfile.hasUsedTrial;
+            const trialPeriodDaysToApply: number = (isTrial && !providerProfile.hasUsedTrial) ? plan.trialDays : 0;
+
+            if (!priceId) {
+                throw new AppError(
+                    "Plan not found.",
+                    404,
+                    true,
+                    ERROR_CODES.PLAN_NOT_FOUND
+                );
+            }
 
             const { data } = await this.paymentServiceClient.createSubscriptionCheckoutSession({
-                subscriptionId: subscription._id.toString(),
-                providerId,
-                planName: plan.planName,
-                description: plan.description,
-                billingCycle,
-                planDuration: months,
-                unitAmount: plan.price,
-                paymentFor: PaymentFor.PROVIDER_SUBSCRIPTION,
-                paymentDate: new Date(),
-                name: provider.username,
-                email: provider.email,
-                initialAmount: plan.price * months,
-                stripeCustomerId: provider.stripeCustomerId
+                subscriptionData: {
+                    subscriptionId: subscription._id.toString(),
+                    planName: plan.planName,
+                    billingCycle,
+                    unitAmount: price,
+                    paymentFor: PaymentFor.PROVIDER_SUBSCRIPTION,
+                    paymentDate: new Date(),
+                    priceId,
+                    trialPeriodDays: trialPeriodDaysToApply,
+                    alreadyUsedTrial: providerProfile.hasUsedTrial,
+                    isTrial
+                },
+                user: {
+                    email,
+                    id: providerId,
+                    name,
+                    role
+                }
             });
 
-            return data;
+            return {
+                sessionId: data
+            };
         } catch (error: unknown) {
             throw toAppError(error, "Failed to checkout");
         }

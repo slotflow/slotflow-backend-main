@@ -11,7 +11,7 @@ export const presignedUrlSchema = z.object({
 
 // change block status validation schema
 export const changeBlockStatusSchema = z.object({
-  blockStatus: z.boolean(),
+  isBlocked: z.boolean(),
 });
 
 // start and end date validation schema

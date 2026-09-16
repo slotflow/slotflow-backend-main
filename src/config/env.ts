@@ -101,7 +101,6 @@ export const kafkaConfig = {
             googleCalendarFailed: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_FAILED"),
             providerSubscriptionPaymentSuccess: validator.requireEnv("KAFKA_PROVIDER_SUBSCRIPTION_PAYMENT_SUCCESS"),
             userBookingPaymentSuccess: validator.requireEnv("KAFKA_USER_BOOKING_PAYMENT_SUCCESS"),
-            stripeAccountCreated: validator.requireEnv("KAFKA_STRIPE_ACCOUNT_CREATED"),
             stripeCustomerCreated: validator.requireEnv("KAFKA_STRIPE_CUSTOMER_CREATED"),
             stripeAccountUpdateStatus: validator.requireEnv("KAFKA_STRIPE_ACCOUNT_UPDATE_STATUS"),
         },
@@ -124,12 +123,10 @@ export const kafkaConfig = {
 
             // MBS -> NS
             gotAnAppointment: validator.requireEnv("KAFKA_GOT_AN_APPOINTMENT"),
-            stripeAccountLinked: validator.requireEnv("KAFKA_STRIPE_ACCOUNT_LINKED"),
             
             // MBS -> NS, SS
             slotBooked: validator.requireEnv("KAFKA_SLOT_BOOKED"),
             planSubscribed: validator.requireEnv("KAFKA_PLAN_SUBSCRIBED"),
-            stripeAccountStatusUpdated: validator.requireEnv("KAFKA_STRIPE_ACCOUNT_STATUS_UPDATED"),
 
         },
     },

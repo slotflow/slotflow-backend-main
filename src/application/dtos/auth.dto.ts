@@ -74,6 +74,8 @@ export interface LoginOutput {
         stripeAccountStatus: UserDTO["stripeAccountStatus"]
         stripeCustomerId: UserDTO["stripeCustomerId"];
         allowPushNotification: UserDTO["allowPushNotification"];
+
+        hasUsedTrial?: ProviderProfileDTO['hasUsedTrial'];
     }
 }
 

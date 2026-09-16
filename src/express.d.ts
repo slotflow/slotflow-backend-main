@@ -1,13 +1,14 @@
 import { Role } from "./domain/enums/role.enum";
-import { DecodedUser } from "./application/dtos/common.dto";
+import { AuthUser } from "./application/dtos/common.dto";
 
 // Extend the Request interface
 declare global {
     namespace Express {
-        interface User extends DecodedUser { }
+        interface User extends AuthUser, Partial<GoogleOAuthUser> { }
+
         interface Request {
             user: User;
-        };
+        }
     };
 };
 

@@ -18,6 +18,7 @@ import { AdminVerificationStatus } from "../../../domain/enums/adminVerification
 import { ProviderGetOwnProfileDetailsInput, ProviderGetOwnProfileDetailsOutput } from "../../dtos/user.dto";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 
+// need to split to different files
 export class ProviderGetProfileDetailsUseCase {
   constructor(
     private readonly userQueries: IUserQueries,

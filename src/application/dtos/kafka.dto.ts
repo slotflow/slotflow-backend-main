@@ -219,20 +219,6 @@ export interface SendUpdatePasswordEvent {
   notificationData: SendNotificationCommon;
 }
 
-// send stripe account status updated event
-export interface SendStripeAccountStatusUpdatedEvent {
-  socketData: {
-    userId: string;
-    accountStatus: StripeAccountStatus;
-  }
-  notificationData: SendNotificationCommon;
-}
-
-// send stipe account linked event
-export interface SendStripeAccountLinkedEvent {
-  notificationData: SendNotificationCommon;
-}
-
 
 
 // **** subscribing events
@@ -251,34 +237,19 @@ export interface CreateGoogleCalendarEventFailedInput {
   error: string;
 }
 
-// consume stripe account created event
-export interface StripeAccountCreatedEventInput {
-  userId: string;
-  stripeAccountId: string;
-}
-
-// consume stripe account update status event
-export interface StripeAccountUpdateStatusEventInput {
-  userId: string;
-  accountStatus: StripeAccountStatus;
-}
-
 // used in update booking after payment success event
 export interface UpdateBookingAfterPaymentSuccessEventInput {
   bookingId: string;
   paymentId: string;
 }
 
-// consume stripe customer created event
-export interface UpdateStripeCustomerCreatedConsumeEventInput {
-  userId: string;
-  stripeCustomerId: string;
-}
-
 // send provider create payment success event
 export interface ProviderCreatePaymentSuccessEventInput {
   subscriptionId: string;
   paymentId: string;
-  planDuration: number;
   providerId: string;
+  isTrial: string;
+  planName: string;
+  currentPeriodStart: Date;
+  currentPeriodEnd: Date;
 };

@@ -4,7 +4,7 @@ import { ERROR_CODES } from "../../shared/utils/types";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { BadRequestError } from "../../shared/error/appError";
-import { DecodedUser } from "../../application/dtos/common.dto";
+import { AuthUser } from "../../application/dtos/common.dto";
 import { GetBookingsUseCase } from "../../application/useCases/booking/getBookings.useCase";
 import { CheckBookingUseCase } from "../../application/useCases/booking/checkBooking.useCase";
 import { CancelBookingUseCase } from "../../application/useCases/booking/cancelBooking.useCase";
@@ -39,7 +39,7 @@ class BookingController {
 
     async getBookings(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser
+            const user = req.user as AuthUser
             if(!user) throw new BadRequestError("User not found", ERROR_CODES.USER_NOT_FOUND);
 
             const filter: {
@@ -76,7 +76,7 @@ class BookingController {
 
     async validateRoomId(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             if(!user) throw new BadRequestError("User not found", ERROR_CODES.USER_NOT_FOUND);
             const { bookingId, roomId } = validateRoomIdSchema.parse({
                 ...req.params,
@@ -108,7 +108,7 @@ class BookingController {
 
     async checkBooking(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             const result = await this.checkBookingUseCase.execute({
                 userId: user.id,
             });
@@ -120,7 +120,7 @@ class BookingController {
 
     async bookingCheckout(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             const { date, providerId, selectedServiceMode, slotId } = bookingCheckoutViaStripeSchema.parse({
                 ...req.body
             });
@@ -139,16 +139,16 @@ class BookingController {
 
     async cancelBooking(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             const { bookingId, reason } = cancelBookingSchema.parse({
                 bookingId: req.params.bookingId
             });
-            await this.cancelBookingUseCase.execute({
+            const result = await this.cancelBookingUseCase.execute({
                 userId: user.id,
                 bookingId,
                 reason
             });
-            sendResponse(res, null, "Booking cancelled");
+            sendResponse(res, result, "Booking cancelled successfully.");
         } catch (error) {
             next(error);
         };
@@ -156,7 +156,7 @@ class BookingController {
 
     async joinOrLeftRoom(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             const { joined, roomId, joinedTime, leftCallTime } = validateJoinRoomSchema.parse({
                 roomId: req.params.roomId,
                 ...req.body,
@@ -176,13 +176,13 @@ class BookingController {
 
     async updateBookingAppointmentStatus(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             const { appointmentStatus, bookingId } = changeBookingStatusSchema.parse({
                 ...req.params,
                 ...req.body,
             });
-            await this.changeBookingStatusUseCase.execute({ bookingId, appointmentStatus, providerId: user.id });
-            sendResponse(res, null, "Booking status updated successfully");
+            const result = await this.changeBookingStatusUseCase.execute({ bookingId, appointmentStatus, providerId: user.id });
+            sendResponse(res, result, "Booking status updated successfully");
         } catch (error) {
             next(error);
         };

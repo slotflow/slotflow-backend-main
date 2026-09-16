@@ -26,10 +26,11 @@ export class ProviderProfile {
             isProofsVerified: false,
             serviceId: null,
             serviceAvailabilityId: null,
-            subscription: [],
+            subscriptions: [],
             trustedBySlotflow: false,
             identityProof: null,
             serviceProof: null,
+            hasUsedTrial: false,
             createdAt: new Date(),
             updatedAt: new Date(),
         });
@@ -43,8 +44,8 @@ export class ProviderProfile {
         return this.props.isAdminVerified;
     }
 
-    get subscription(): string[] {
-        return this.props.subscription;
+    get subscriptions(): string[] {
+        return this.props.subscriptions;
     }
 
     get trustedBySlotflow(): boolean {
@@ -89,6 +90,10 @@ export class ProviderProfile {
 
     get serviceProof(): string | null {
         return this.props.serviceProof;
+    }
+
+    get hasUsedTrial(): boolean {
+        return this.props.hasUsedTrial;
     }
 
     get createdAt(): Date {
@@ -182,7 +187,12 @@ export class ProviderProfile {
     }
 
     pushSubscriptionId(subscriptionId: string) {
-        this.props.subscription.push(subscriptionId);
+        this.props.subscriptions.push(subscriptionId);
+        this.touch();
+    }
+
+    trialUsed() {
+        this.props.hasUsedTrial = true;
         this.touch();
     }
 }

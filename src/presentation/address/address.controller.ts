@@ -3,7 +3,7 @@ import { ERROR_CODES } from "../../shared/utils/types";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { BadRequestError } from "../../shared/error/appError";
-import { DecodedUser } from "../../application/dtos/common.dto";
+import { AuthUser } from "../../application/dtos/common.dto";
 import { getAddressUseCase, updateAddressUseCase, userCreateAddressUseCase } from ".";
 import { GetAddressUseCase } from "../../application/useCases/address/getAddress.useCase";
 import { UpdateAddressUseCase } from "../../application/useCases/address/updateAddress.useCase";
@@ -23,7 +23,7 @@ class AddressController {
 
     async getAddress(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             const { providerId, userId } = getAddressSchema.parse(req.params);
 
             const isMyAddress = !providerId && !userId;
@@ -44,7 +44,7 @@ class AddressController {
 
     async createAddress(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             const validatedData = createAddressSchema.parse({
                 ...req.body,
             });

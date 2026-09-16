@@ -1,10 +1,10 @@
 import { TableData } from "../dtos/common.dto";
-import { UserDataView, UserDataQuery, UsersQuery, UsersView, ProvidersQuery, ProvidersView, ProviderByIdView, ProviderByIdQuery, ProviderStatsQuery, ProviderStatsView } from "../dtos/user.dto";
+import { UserStatsDataView, UserStatsDataQuery, UsersQuery, UsersView, ProvidersQuery, ProvidersView, ProviderByIdView, ProviderByIdQuery, ProviderStatsDataQuery, ProviderStatsDataView, UserChartDataQuery, UserChartDataView } from "../dtos/user.dto";
 
 
 export interface IUserQueries {
 
-    findStats(query: UserDataQuery): Promise<UserDataView>;
+    findStats(query: UserStatsDataQuery): Promise<UserStatsDataView>;
 
     findUsers(query: UsersQuery): Promise<TableData<UsersView>>;
 
@@ -12,6 +12,8 @@ export interface IUserQueries {
 
     findProviderById(query: ProviderByIdQuery): Promise<ProviderByIdView>;
 
-    findproviderStats(query: ProviderStatsQuery): Promise<ProviderStatsView>;
+    findproviderStats(query: ProviderStatsDataQuery): Promise<ProviderStatsDataView>;
+
+    findAdminDashboardUserChartData(query: UserChartDataQuery): Promise<UserChartDataView>;
 
 }

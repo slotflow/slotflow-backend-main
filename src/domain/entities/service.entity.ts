@@ -57,7 +57,7 @@ export class Service {
         this.touch();
     }
 
-    updateService(props: UpdateServiceProps) {
+    update(props: UpdateServiceProps) {
         this.props = {
             ...this.props,
             ...props,

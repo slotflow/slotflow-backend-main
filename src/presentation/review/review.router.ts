@@ -38,7 +38,7 @@ router.patch('/:reviewId/report',
 router.patch("/:reviewId/block",
     authMiddleware,
     authorize(Role.ADMIN),
-    reviewController.toggleReviewBlockStatus
+    reviewController.changeReviewBlockStatus
 );
 
 export default router;

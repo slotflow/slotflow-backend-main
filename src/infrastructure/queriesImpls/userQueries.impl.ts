@@ -1,27 +1,174 @@
 import { Types } from "mongoose";
 import { UserModel } from "../models/user.model";
 import { Role } from "../../domain/enums/common.enum";
+import { TableData } from "../../application/dtos/common.dto";
 import { getStartAndEndDate } from "../../shared/utils/dateTime";
 import { IUserQueries } from "../../application/queries/IUser.queries";
-import { CountResult, TableData } from "../../application/dtos/common.dto";
-import { UserDataQuery, UserDataView, UsersQuery, UsersView, ProvidersQuery, ProvidersView, ProviderByIdQuery, ProviderByIdView, ProviderStatsQuery, ProviderStatsView } from "../../application/dtos/user.dto";
+import { formatStatMetric } from "../../shared/utils/formatStatMetric";
+import { calculatePreviousPeriod } from "../../shared/utils/calculatePreviosPeriod";
+import { UserStatsDataQuery, UserStatsDataView, UsersQuery, UsersView, ProvidersQuery, ProvidersView, ProviderByIdQuery, ProviderByIdView, ProviderStatsDataQuery, ProviderStatsDataView, UserChartDataQuery, UserChartDataView } from "../../application/dtos/user.dto";
 
 export class UserQueriesImpl implements IUserQueries {
 
-    async findStats(query: UserDataQuery): Promise<UserDataView> {
+    async findStats(query: UserStatsDataQuery): Promise<UserStatsDataView> {
         const { startDate, endDate } = getStartAndEndDate(query.startDate, query.endDate);
-        const dateFilter = { createdAt: { $gte: startDate, $lte: endDate } };
+        const { previousStartDate, previousEndDate } = calculatePreviousPeriod(startDate, endDate);
 
-        const [totalUsers, blockedUsers] = await Promise.all([
-            UserModel.countDocuments(dateFilter),
-            UserModel.countDocuments({ isBlocked: true, ...dateFilter }),
+        interface AggregationFacetResult {
+            totalUsers: number;
+            blockedUsers: number;
+            newUsers: number;
+            returningUsers: number;
+        }
+
+        interface AggregationResult {
+            current: AggregationFacetResult[];
+            previous: AggregationFacetResult[];
+        }
+
+        const [result] = await UserModel.aggregate<AggregationResult>([
+            {
+                $match: {
+                    role: Role.USER,
+                    $or: [
+                        { createdAt: { $lte: endDate } },
+                        { updatedAt: { $gte: previousStartDate, $lte: endDate } }
+                    ]
+                }
+            },
+            {
+                $facet: {
+                    current: [
+                        {
+                            $group: {
+                                _id: null,
+                                totalUsers: {
+                                    $sum: {
+                                        $cond: [
+                                            { $and: [{ $gte: ['$createdAt', startDate] }, { $lte: ['$createdAt', endDate] }] },
+                                            1,
+                                            0
+                                        ]
+                                    }
+                                },
+                                blockedUsers: {
+                                    $sum: {
+                                        $cond: [
+                                            {
+                                                $and: [
+                                                    { $eq: ['$isBlocked', true] },
+                                                    { $gte: ['$createdAt', startDate] },
+                                                    { $lte: ['$createdAt', endDate] }
+                                                ]
+                                            },
+                                            1,
+                                            0
+                                        ]
+                                    }
+                                },
+                                newUsers: {
+                                    $sum: {
+                                        $cond: [
+                                            { $and: [{ $gte: ['$createdAt', startDate] }, { $lte: ['$createdAt', endDate] }] },
+                                            1,
+                                            0
+                                        ]
+                                    }
+                                },
+                                returningUsers: {
+                                    $sum: {
+                                        $cond: [
+                                            {
+                                                $and: [
+                                                    { $lt: ['$createdAt', startDate] },
+                                                    { $gte: ['$updatedAt', startDate] },
+                                                    { $lte: ['$updatedAt', endDate] }
+                                                ]
+                                            },
+                                            1,
+                                            0
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    previous: [
+                        {
+                            $group: {
+                                _id: null,
+                                totalUsers: {
+                                    $sum: {
+                                        $cond: [
+                                            { $and: [{ $gte: ['$createdAt', previousStartDate] }, { $lte: ['$createdAt', previousEndDate] }] },
+                                            1,
+                                            0
+                                        ]
+                                    }
+                                },
+                                blockedUsers: {
+                                    $sum: {
+                                        $cond: [
+                                            {
+                                                $and: [
+                                                    { $eq: ['$isBlocked', true] },
+                                                    { $gte: ['$createdAt', previousStartDate] },
+                                                    { $lte: ['$createdAt', previousEndDate] }
+                                                ]
+                                            },
+                                            1,
+                                            0
+                                        ]
+                                    }
+                                },
+                                newUsers: {
+                                    $sum: {
+                                        $cond: [
+                                            { $and: [{ $gte: ['$createdAt', previousStartDate] }, { $lte: ['$createdAt', previousEndDate] }] },
+                                            1,
+                                            0
+                                        ]
+                                    }
+                                },
+                                returningUsers: {
+                                    $sum: {
+                                        $cond: [
+                                            {
+                                                $and: [
+                                                    { $lt: ['$createdAt', previousStartDate] },
+                                                    { $gte: ['$updatedAt', previousStartDate] },
+                                                    { $lte: ['$updatedAt', previousEndDate] }
+                                                ]
+                                            },
+                                            1,
+                                            0
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
         ]);
 
-        return {
-            totalUsers,
-            blockedUsers,
+        const defaultStats: AggregationFacetResult = {
+            totalUsers: 0,
+            blockedUsers: 0,
+            newUsers: 0,
+            returningUsers: 0,
         };
-    };
+
+        const current = result?.current[0] || defaultStats;
+        const previous = result?.previous[0] || defaultStats;
+
+        return {
+            totalUsers: formatStatMetric(current.totalUsers, previous.totalUsers),
+            blockedUsers: formatStatMetric(current.blockedUsers, previous.blockedUsers),
+            NewUsers: formatStatMetric(current.newUsers, previous.newUsers),
+            ReturningUsers: formatStatMetric(current.returningUsers, previous.returningUsers),
+        };
+    }
 
     async findUsers(query: UsersQuery): Promise<TableData<UsersView>> {
         const { page, limit } = query;
@@ -57,7 +204,7 @@ export class UserQueriesImpl implements IUserQueries {
             UserModel.aggregate([
                 {
                     $match: {
-                        $or : [ {
+                        $or: [{
                             role: Role.PROVIDER,
                         },
                         {
@@ -171,83 +318,135 @@ export class UserQueriesImpl implements IUserQueries {
         return result[0] || null;
     }
 
-    async findproviderStats(query: ProviderStatsQuery): Promise<ProviderStatsView> {
-        const { startDate, endDate } = getStartAndEndDate(
-            query.startDate,
-            query.endDate
-        );
+    async findproviderStats(query: ProviderStatsDataQuery): Promise<ProviderStatsDataView> {
+        const { startDate, endDate } = getStartAndEndDate(query.startDate, query.endDate);
+        const { previousStartDate, previousEndDate } = calculatePreviousPeriod(startDate, endDate);
 
-        const result = await UserModel.aggregate([
+        const [result] = await UserModel.aggregate([
             {
                 $match: {
-                    role: "PROVIDER",
-                    createdAt: { $gte: startDate, $lte: endDate },
-                },
-            },
-            {
-                $lookup: {
-                    from: "providerprofiles",
-                    localField: "_id",
-                    foreignField: "userId",
-                    as: "profile",
-                },
-            },
-            {
-                $unwind: {
-                    path: "$profile",
-                    preserveNullAndEmptyArrays: true,
-                },
+                    role: Role.PROVIDER,
+                    createdAt: { $gte: previousStartDate, $lte: endDate }
+                }
             },
             {
                 $facet: {
-                    totalProviders: [{ $count: "count" }],
-
-                    adminVerifiedProviders: [
-                        { $match: { "profile.isAdminVerified": true } },
-                        { $count: "count" },
+                    current: [
+                        { $match: { createdAt: { $gte: startDate, $lte: endDate } } },
+                        {
+                            $lookup: {
+                                from: "providerprofiles",
+                                localField: "_id",
+                                foreignField: "userId",
+                                as: "profile"
+                            }
+                        },
+                        { $unwind: { path: "$profile", preserveNullAndEmptyArrays: true } },
+                        {
+                            $group: {
+                                _id: null,
+                                totalProviders: { $sum: 1 },
+                                adminVerifiedProviders: { $sum: { $cond: [{ $eq: ["$profile.isAdminVerified", true] }, 1, 0] } },
+                                blockedProviders: { $sum: { $cond: [{ $eq: ["$isBlocked", true] }, 1, 0] } },
+                                slotflowTrustedProviders: { $sum: { $cond: [{ $eq: ["$profile.trustedBySlotflow", true] }, 1, 0] } }
+                            }
+                        }
                     ],
+                    previous: [
+                        { $match: { createdAt: { $gte: previousStartDate, $lte: previousEndDate } } },
+                        {
+                            $lookup: {
+                                from: "providerprofiles",
+                                localField: "_id",
+                                foreignField: "userId",
+                                as: "profile"
+                            }
+                        },
+                        { $unwind: { path: "$profile", preserveNullAndEmptyArrays: true } },
+                        {
+                            $group: {
+                                _id: null,
+                                totalProviders: { $sum: 1 },
+                                adminVerifiedProviders: { $sum: { $cond: [{ $eq: ["$profile.isAdminVerified", true] }, 1, 0] } },
+                                blockedProviders: { $sum: { $cond: [{ $eq: ["$isBlocked", true] }, 1, 0] } },
+                                slotflowTrustedProviders: { $sum: { $cond: [{ $eq: ["$profile.trustedBySlotflow", true] }, 1, 0] } }
+                            }
+                        }
+                    ]
+                }
+            }
+        ]);
 
-                    blockedProviders: [
-                        { $match: { isBlocked: true } },
-                        { $count: "count" },
-                    ],
+        const defaultStats = {
+            totalProviders: 0,
+            adminVerifiedProviders: 0,
+            blockedProviders: 0,
+            slotflowTrustedProviders: 0,
 
-                    addressAddedProviders: [
-                        { $match: { addressId: { $ne: null } } },
-                        { $count: "count" },
-                    ],
+        };
 
-                    serviceAddedProviders: [
-                        { $match: { "profile.serviceId": { $ne: null } } },
-                        { $count: "count" },
-                    ],
+        const current = result?.current[0] || defaultStats;
+        const previous = result?.previous[0] || defaultStats;
 
-                    availabilityAddedProviders: [
-                        { $match: { "profile.serviceAvailabilityId": { $ne: null } } },
-                        { $count: "count" },
-                    ],
+        return {
+            totalProviders: formatStatMetric(current.totalProviders, previous.totalProviders),
+            adminVerifiedProviders: formatStatMetric(current.adminVerifiedProviders, previous.adminVerifiedProviders),
+            blockedProviders: formatStatMetric(current.blockedProviders, previous.blockedProviders),
+            addressAddedProviders: formatStatMetric(current.addressAddedProviders, previous.addressAddedProviders),
+            serviceAddedProviders: formatStatMetric(current.serviceAddedProviders, previous.serviceAddedProviders),
+            availabilityAddedProviders: formatStatMetric(current.availabilityAddedProviders, previous.availabilityAddedProviders),
+            slotflowTrustedProviders: formatStatMetric(current.slotflowTrustedProviders, previous.slotflowTrustedProviders),
+        };
+    }
 
-                    slotflowTrustedProviders: [
-                        { $match: { "profile.trustedBySlotflow": true } },
-                        { $count: "count" },
-                    ],
+    async findAdminDashboardUserChartData(query: UserChartDataQuery): Promise<UserChartDataView> {
+        const { startDate, endDate } = getStartAndEndDate(query.startDate, query.endDate);
+        const { role } = query;
+        const stats = await UserModel.aggregate([
+            {
+                $match: {
+                    role: role,
+                    updatedAt: { $gte: startDate, $lte: endDate },
+                },
+            },
+            {
+                $project: {
+                    createdAtDate: {
+                        $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
+                    },
+                    updatedAtDate: {
+                        $dateToString: { format: "%Y-%m-%d", date: "$updatedAt" },
+                    },
+                },
+            },
+            {
+                $group: {
+                    _id: "$updatedAtDate",
+                    newUsers: {
+                        $sum: {
+                            $cond: [{ $eq: ["$createdAtDate", "$updatedAtDate"] }, 1, 0],
+                        },
+                    },
+                    returningUsers: {
+                        $sum: {
+                            $cond: [{ $ne: ["$createdAtDate", "$updatedAtDate"] }, 1, 0],
+                        },
+                    },
+                },
+            },
+            { $sort: { _id: 1 } },
+            {
+                $project: {
+                    _id: 0,
+                    date: "$_id",
+                    newUsers: 1,
+                    returningUsers: 1,
                 },
             },
         ]);
+        console.log("stats : ", stats);
 
-        const stats = result[0];
-
-        const getCount = (arr: CountResult[]) => arr?.[0]?.count || 0;
-
-        return {
-            totalProviders: getCount(stats.totalProviders),
-            adminVerifiedProviders: getCount(stats.adminVerifiedProviders),
-            blockedProviders: getCount(stats.blockedProviders),
-            addressAddedProviders: getCount(stats.addressAddedProviders),
-            serviceAddedProviders: getCount(stats.serviceAddedProviders),
-            availabilityAddedProviders: getCount(stats.availabilityAddedProviders),
-            slotflowTrustedProviders: getCount(stats.slotflowTrustedProviders),
-        };
+        return stats;
     }
 
 }

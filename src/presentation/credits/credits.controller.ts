@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { sendResponse } from "../../shared/utils/response";
-import { DecodedUser } from "../../application/dtos/common.dto";
+import { AuthUser } from "../../application/dtos/common.dto";
 import { startAndEndDateSchema } from "../../shared/zod/common.zod";
 import { getCreditDetailsUseCase, getCreditTransactionsUseCase } from ".";
 import { getCreditTransactionsSchema } from "../../shared/zod/credit.zod";
@@ -18,7 +18,7 @@ class CreditController {
 
     async getCreditAccountDetails(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             const validatedData = startAndEndDateSchema.parse(req.query);
             const result = await this.getCreditDetailsUseCase.execute({
                 ...validatedData,
@@ -32,7 +32,7 @@ class CreditController {
 
     async getCreditTransactions(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             const validatedData = getCreditTransactionsSchema.parse(req.query);
             const result = await this.getCreditTransactionsUseCase.execute({
                 ...validatedData,

@@ -66,6 +66,7 @@ export class LoginUseCase {
                 email: email,
                 role: user.role,
                 userId: user._id,
+                name: user.username
             });
 
             let signedProfileImageUrl: string | null = null;

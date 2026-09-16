@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 import { kafkaConfig } from "../../../config/env";
+import { PlanName } from '../../../domain/enums/plan.enum';
 import { generateId } from '../../../shared/utils/generateId';
 import { ERROR_CODES, IdType } from '../../../shared/utils/types';
-import { TrialSubscriptionInput } from '../../dtos/subscription.dto';
 import { toAppError } from '../../../shared/error/handleUnknownError';
 import { notificationContentMap } from "../../../shared/utils/constants";
 import { Subscription } from "../../../domain/entities/subscription.entity";
@@ -10,12 +10,14 @@ import { EventEnvelope, SendProviderTrialSubscriptionEvent } from "../../dtos/ka
 import { AppError, BadRequestError, NotFoundError } from '../../../shared/error/appError';
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
+import { TrialSubscriptionInput, TrialSubscriptionOutput } from '../../dtos/subscription.dto';
 import { SubscriptionStatus, SubscriptionValidity } from "../../../domain/enums/subscription.enum";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 import { getDateAfterDays, getUtcDateRange, isSubscriptionExpired } from "../../../shared/utils/dateTime";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
 import { IProviderProfileRepository } from '../../../domain/interfaces/repositories/IProviderProfile.repository';
 
+// TODO REMOVE
 export class TrialSubscriptionUseCase {
     constructor(
         private userRepository: IUserRepository,
@@ -25,7 +27,7 @@ export class TrialSubscriptionUseCase {
         private kafkaProducer: IKafkaProducerAdapter
     ) { };
 
-    async execute(input: TrialSubscriptionInput): Promise<void> {
+    async execute(input: TrialSubscriptionInput): Promise<TrialSubscriptionOutput> {
         const session = await mongoose.startSession();
         session.startTransaction();
         try {
@@ -53,7 +55,15 @@ export class TrialSubscriptionUseCase {
             const providerSubscriptions = providerProfile.subscription;
             if (providerSubscriptions.length > 0) {
                 const providerLastSubscriptionId = providerSubscriptions.pop();
-                const subscription = await this.subscriptionRepository.findById(providerLastSubscriptionId!);
+                if (!providerLastSubscriptionId) {
+                    throw new AppError(
+                        "Internal server error",
+                        500,
+                        true,
+                        ERROR_CODES.INTERNAL_ERROR
+                    );
+                }
+                const subscription = await this.subscriptionRepository.findById(providerLastSubscriptionId);
                 if (subscription) {
                     const isExpired = isSubscriptionExpired(subscription.endDate);
                     if (!isExpired) {
@@ -65,7 +75,7 @@ export class TrialSubscriptionUseCase {
                 }
             };
 
-            const trialPlan = await this.planRepository.findByNameOrPrice("TRIAL", 0);
+            const trialPlan = await this.planRepository.findByName("TRIAL");
             if (!trialPlan) {
                 throw new NotFoundError(
                     "No trial plan found.",
@@ -80,7 +90,7 @@ export class TrialSubscriptionUseCase {
             if (alreadyUsedTrial) {
                 throw new BadRequestError(
                     "Trial already used. Please choose a paid plan.",
-                    ERROR_CODES.SUBSCRIPTION_ALREADY_LIVE
+                    ERROR_CODES.INVALID_REQUEST
                 );
             }
 
@@ -88,17 +98,17 @@ export class TrialSubscriptionUseCase {
                 providerId,
                 subscriptionPlanId: trialPlanId,
                 startDate: new Date(),
-                endDate: getDateAfterDays(SubscriptionValidity.SEVEN_DAYS),
+                endDate: getDateAfterDays(14),
                 subscriptionStatus: SubscriptionStatus.ACTIVE,
             });
 
             const subscription = await this.subscriptionRepository.create(subscriptionData, session);
             if (!subscription) {
                 throw new AppError(
-                    "Failed to create subscription",
+                    "Internal server error",
                     500,
                     true,
-                    ERROR_CODES.DB_CONNECTION_FAILED
+                    ERROR_CODES.INTERNAL_ERROR
                 );
             }
 
@@ -106,10 +116,10 @@ export class TrialSubscriptionUseCase {
             const updatedProfile = await this.providerProfileRepository.update(providerProfile, session);
             if (!updatedProfile) {
                 throw new AppError(
-                    "Failed to update provider profile",
+                    "Internal server error",
                     500,
                     true,
-                    ERROR_CODES.DB_CONNECTION_FAILED
+                    ERROR_CODES.INTERNAL_ERROR
                 );
             }
 
@@ -136,11 +146,19 @@ export class TrialSubscriptionUseCase {
                 }
             });
             session.commitTransaction();
+
+            return {
+                _id: subscription._id,
+                startDate: subscription.startDate,
+                endDate: subscription.endDate,
+                subscribedPlan: PlanName.TRIAL,
+                subscriptionStatus: subscription.subscriptionStatus
+            }
         } catch (error: unknown) {
             await session.abortTransaction();
             throw toAppError(error, "Failed to activate trail subscription");
         } finally {
-            session.endSession()
+            session.endSession();
         }
     };
 };

@@ -1,5 +1,5 @@
 import { TableData } from "../dtos/common.dto";
-import { MySubscriptionQuery, MySubscriptionView, SubscribedPlanQuery, SubscriptionDetailsQuery, SubscriptionDetailsView, SubscriptionsQuery, SubscriptionStatsForAdminQuery, SubscriptionStatsForAdminView, SubscriptionsView } from "../dtos/subscription.dto";
+import { MySubscriptionQuery, MySubscriptionView, SubscribedPlanQuery, SubscriptionAnalyticsQuery, SubscriptionAnalyticsView, SubscriptionDetailsQuery, SubscriptionDetailsView, SubscriptionsQuery, SubscriptionStatsDataQuery, SubscriptionStatsDataView, SubscriptionsView } from "../dtos/subscription.dto";
 
 export interface ISubscriptionQueries {
 
@@ -9,10 +9,12 @@ export interface ISubscriptionQueries {
 
     findDetails(query: SubscriptionDetailsQuery): Promise<SubscriptionDetailsView | null>;
 
-    findStatsForAdminDashboard(query: SubscriptionStatsForAdminQuery): Promise<SubscriptionStatsForAdminView>;
+    findStatsForAdminDashboard(query: SubscriptionStatsDataQuery): Promise<SubscriptionStatsDataView>;
 
     findSubscriptionsForUpdatinStatus(): Promise<boolean>;
 
     findMySubscritpion(query: MySubscriptionQuery): Promise<MySubscriptionView | null>;
+
+    findAnalyticsForAdminDashboard(query: SubscriptionAnalyticsQuery): Promise<SubscriptionAnalyticsView>;
 
 };

@@ -5,7 +5,7 @@ import { GetReviewsUseCase } from "../../application/useCases/review/getReviews.
 import { ReportReviewUseCase } from "../../application/useCases/review/reportReview.useCase";
 import { DeleteReviewUseCase } from "../../application/useCases/review/deleteReview.useCase";
 import { CreateReviewUseCase } from "../../application/useCases/review/createReview.useCase";
-import { ToggleReviewBlockStatusUseCase } from "../../application/useCases/review/toggleReviewBlockStatus.useCase";
+import { ToggleReviewBlockStatusUseCase } from "../../application/useCases/review/changeReviewBlockStatus.useCase";
 
 export const getReviewsUseCase = new GetReviewsUseCase(reviewQueries, signedUrlService);
 

@@ -1,8 +1,8 @@
+import { CommonDateInput } from "./common.dto";
 import { Role } from "../../domain/enums/common.enum";
-import { GetStatsDataCommonInput } from "./admin.dto";
 import { ServiceMode } from "../../domain/enums/service.enum";
-import { ApiPaginationInput, Availability, BookingDTO, ParticipantPresence, PlanDTO, TimeSlotForClientOutput, UserDTO } from "./common.dto";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
+import { ApiPaginationInput, Availability, BookingDTO, ParticipantPresence, StatMetric, TimeSlotForClientOutput, UserDTO } from "./common.dto";
 
 //// **** booking queries dtos **** ////
 
@@ -65,13 +65,13 @@ export interface BookingStatsForProviderQuery {
   startDate: Date;
   endDate: Date;
 }
-export interface BookingStatsForProviderView {
-  totalAppointments: number;
-  completedAppointments: number;
-  missedAppointments: number;
-  cancelledAppointmentsByUser: number;
-  rejectedAppointmentsByProvider: number;
-  todaysAppointments: number;
+export interface BookingStatsForProviderView extends Record<string, StatMetric | undefined> {
+  totalAppointments: StatMetric;
+  completedAppointments: StatMetric;
+  missedAppointments: StatMetric;
+  cancelledAppointmentsByUser: StatMetric;
+  rejectedAppointmentsByProvider: StatMetric;
+  todaysAppointments: StatMetric;
 }
 
 // 5. findGraphDataForProviderDashboard method parameter and return type / interface
@@ -120,13 +120,13 @@ export interface BookingGraphStatsForProviderView {
 }
 
 // 6. findStatsDataForAdminDashboard method parameter and return type / interface
-export interface BookingsStatsForAdminQuery extends GetStatsDataCommonInput { }
-export interface BookingsStatsForAdminView {
-  totalAppointments: number;
-  completedAppointments: number;
-  cancelledAppointments: number;
-  missedAppointments: number;
-  rejectedAppointments: number;
+export interface BookingsStatsDataAdminQuery extends CommonDateInput { }
+export interface BookingsStatsDataAdminView extends Record<string, StatMetric | undefined> {
+  totalAppointments: StatMetric;
+  completedAppointments: StatMetric;
+  cancelledAppointments: StatMetric;
+  missedAppointments: StatMetric;
+  rejectedAppointments: StatMetric;
 };
 
 
@@ -149,19 +149,24 @@ export interface UserAppointmentBookingViaStripeInput {
   date: Date
 }
 
-// user canncel booking usecase input
+
+// user canncel booking usecase input and output
 export interface UserCancelBookingInput {
   userId: UserDTO["_id"];
   bookingId: BookingDTO["_id"];
   reason?: string;
 }
+export type UserCancelBookingOutput = Pick<BookingDTO, "_id" | "appointmentStatus">;
 
-// provider change booking appointment status usecase input
+
+// provider change booking appointment status usecase input and output
 export interface ProviderChangeBookingAppointmentStatusInput {
   bookingId: BookingDTO["_id"];
   providerId: UserDTO["_id"];
   appointmentStatus: AppointmentStatus;
 };
+export type ProviderChangeBookingAppointmentStatusOutput = Pick<BookingDTO, "_id" | "appointmentStatus">;
+
 
 // check booking usecase input
 export interface CheckBookingInput {
@@ -181,7 +186,7 @@ export interface UpdateBookingOnlineTrackInput extends ParticipantPresence {
   role: Role;
   roomId: BookingDTO["videoCallRoomId"];
 }
-export type UpdateBookingOnlineTrackOutput = Pick<Availability, "duration">;
+export type UpdateBookingOnlineTrackOutput = Pick<Availability, "duration"> & Pick<BookingDTO, "videoCallRoomId">;
 
 // validate join room usecase input and output
 export interface ValidateJoinRoomInput {

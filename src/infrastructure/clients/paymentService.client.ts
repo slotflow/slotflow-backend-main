@@ -4,6 +4,7 @@ import { log } from "../../shared/logger/logger";
 import { ERROR_CODES } from "../../shared/utils/types";
 import { AppError, BadRequestError } from "../../shared/error/appError";
 import { CheckStripeAccountStatusInput, CheckStripeAccountStatusOutput, CreateBookingCheckoutSessionInput, CreateBookingCheckoutSessionOutput, CreateSubscriptionCheckoutSessionInput, CreateSubscriptionCheckoutSessionOutput, IPaymentServiceClient, ProcessRefundInput, ProcessRefundOutput } from "../../domain/interfaces/clients/IPaymentService.client";
+import { buildUserHeaders } from "../../shared/utils/headerPropagation";
 
 export class PaymentServiceClient implements IPaymentServiceClient {
 
@@ -18,10 +19,17 @@ export class PaymentServiceClient implements IPaymentServiceClient {
 
   async createSubscriptionCheckoutSession(input: CreateSubscriptionCheckoutSessionInput): Promise<CreateSubscriptionCheckoutSessionOutput> {
     try {
-      const { data } = await this.http.post<CreateSubscriptionCheckoutSessionOutput>(
+      const result = await this.http.post<CreateSubscriptionCheckoutSessionOutput>(
         "/subscription/checkout/session",
-        input
+        input.subscriptionData,
+        {
+          headers: buildUserHeaders(input.user)
+        }
       );
+
+      console.log("result : ",result);
+      
+      const { data } = result;
 
       if (!data.data) {
         log.error("Invalid response from Payment Service");

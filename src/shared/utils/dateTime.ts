@@ -1,4 +1,3 @@
-import { BillingCycle } from "../../domain/enums/subscription.enum";
 import dayjs from "../config/dayjs";
 import { FormattedDateTime } from "./types";
 
@@ -32,10 +31,6 @@ export const getDateAfterDays = (days: number): Date => {
 export const getDateAfterMonths = (months: number): Date => {
   return dayjs().add(months, "months").toDate();
 }
-
-export const getNumberOfMonths = (billingCycle: BillingCycle): number => {
-  return billingCycle === BillingCycle.MONTHLY ? 1 : 12;
-};
 
 export const getNumberOfTotalDays = (numberOfMonths: number): number => {
   return numberOfMonths * 30

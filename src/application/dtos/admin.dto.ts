@@ -1,58 +1,75 @@
-import { UserDataQuery, UserDataView } from "./user.dto";
-import { ProviderProfileDTO, ReviewDTO, UserDTO } from "./common.dto";
-import { SubscriptionStatsForAdminQuery, SubscriptionStatsForAdminView } from "./subscription.dto";
+import { CommonDateInput, ProviderProfileDTO, ReviewDTO, UserDTO } from "./common.dto";
+import { BookingsStatsDataAdminQuery, BookingsStatsDataAdminView } from "./booking.dto";
+import { SubscriptionStatsDataQuery, SubscriptionStatsDataView } from "./subscription.dto";
+import { ProviderStatsDataQuery, ProviderStatsDataView, UserChartDataQuery, UserChartDataView, UserStatsDataQuery, UserStatsDataView } from "./user.dto";
 
 //// **** admin dtos **** ////
 
-// GetStatsDataCommon usecase input output
-export interface GetStatsDataCommonInput {
-    startDate: Date;
-    endDate: Date;
-}
+// GetUserData usecase input output
+export type GetUserStatsDataInput = UserStatsDataQuery;
+export type GetUserStatsDataOutput = UserStatsDataView;
+
+
+// GetProviderData usecase input output
+export type GetProviderDataInput = ProviderStatsDataQuery; 
+export type GetProviderDataOutput = ProviderStatsDataView; 
+
+
+// GetSubscriptionData usecase input output
+export type GetSubscriptionStatsDataInput = SubscriptionStatsDataQuery;
+export type GetSubscriptionStatsDataOutput = SubscriptionStatsDataView;
+
 
 // GetBookingsData usecase input output
-export interface GetBookingsDataInput extends GetStatsDataCommonInput { }
-export interface GetBookingsDataOutput {
-    totalAppointments: number;
-    completedAppointments: number;
-    cancelledAppointments: number;
-    missedAppointments: number;
-    rejectedAppointments: number;
-};
+export type GetBookingsDataInput = BookingsStatsDataAdminQuery;
+export type GetBookingsDataOutput = BookingsStatsDataAdminView ;
 
-// AdminApproveProvider usecase input
+
+// AdminApproveProvider usecase input output
 export interface AdminApproveProviderInput {
     providerId: UserDTO["_id"];
-};
+}
+export type AdminApproveProviderOutput = Pick<UserDTO, "_id"> & Pick<ProviderProfileDTO, "isAdminVerified" | "adminVerificationStatus">;
 
-// AdminRejectProvider usecase input
+
+// Reject provider ( by admin )
 export type AdminRejectProviderInput = Pick<ProviderProfileDTO, "verificationRejectionReason" | "isAddressVerified" | "isServiceDetailsVerified" | "isAvailabilityVerified" | "isProofsVerified"> & {
     providerId: UserDTO["_id"];
 };
+export type AdminRejectProviderOutput = Pick<UserDTO, "_id"> & Pick<
+  ProviderProfileDTO,
+  | 'isAddressVerified'
+  | 'isServiceDetailsVerified'
+  | 'isAvailabilityVerified'
+  | 'isProofsVerified'
+>;
 
-// AdminChangeProviderBlockStatus usecase input output
+
+// Change provider block status ( by admin )
 export interface AdminChangeProviderBlockStatusInput {
     providerId: UserDTO["_id"];
     isBlocked: UserDTO["isBlocked"];
 };
-export type AdminChangeProviderBlockStatusOutput = AdminChangeProviderBlockStatusInput;
+export type AdminChangeProviderBlockStatusOutput = Pick<UserDTO, "_id" | "isBlocked">;
 
-// AdminChangeProviderTrustTag usecase input output
+
+// Change provider trust tag ( by admin )
 export interface AdminChangeProviderTrustTagInput {
     providerId: UserDTO["_id"];
     trustedBySlotflow: ProviderProfileDTO["trustedBySlotflow"];
 };
-export type AdminChangeProviderTrustTagOutput = AdminChangeProviderTrustTagInput;
+export type AdminChangeProviderTrustTagOutput = Pick<UserDTO, "_id"> & Pick<ProviderProfileDTO, "trustedBySlotflow">;
+
 
 // ToggleReviewBlockStatus usecase input output
-export interface ToggleReviewBlockStatusInput {
+export interface ChangeReviewBlockStatusInput {
     reviewId: ReviewDTO["_id"];
     isBlocked: ReviewDTO["isBlocked"];
 };
-export type ToggleReviewBlockStatusOutput = ToggleReviewBlockStatusInput;
+export type ChangeReviewBlockStatusOutput = Pick<ReviewDTO, "_id" | "isBlocked">;
 
 // GetGraphData usecase input output
-export interface GetGraphDataInput extends GetStatsDataCommonInput { }
+export interface GetGraphDataInput extends CommonDateInput { }
 export interface GetGraphDataOutput {
     appointmentsOvertimeChartData: Array<{
         date: string;
@@ -90,22 +107,6 @@ export interface GetGraphDataOutput {
     }>;
 }
 
-// GetProviderData usecase input output
-export interface GetProviderDataInput extends GetStatsDataCommonInput { }
-export interface GetProviderDataOutput {
-    totalProviders: number;
-    adminVerifiedProviders: number;
-    blockedProviders: number;
-    addressAddedProviders: number;
-    serviceAddedProviders: number;
-    availabilityAddedProviders: number;
-    slotflowTrustedProviders: number;
-};
-
-// GetSubscriptionData usecase input output
-export type GetSubscriptionDataInput = SubscriptionStatsForAdminQuery;
-export type GetSubscriptionDataOutput = SubscriptionStatsForAdminView;
-
-// GetUserData usecase input output
-export type GetUserDataInput = UserDataQuery;
-export type GetUserDataOutput = UserDataView;
+// get user chart data
+export type GetUserChartDataInput = UserChartDataQuery; 
+export type GetUserChartDataOutput = UserChartDataView;

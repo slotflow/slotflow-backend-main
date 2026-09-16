@@ -43,8 +43,10 @@ export class ChangeProviderTrustTagUseCase {
                 );
             }
 
-            if (providerProfile.trustedBySlotflow === trustedBySlotflow) {
-                trustedBySlotflow ? providerProfile.revokeTrustBadge() : providerProfile.grantTrustBadge();
+            if (trustedBySlotflow) {
+                providerProfile.grantTrustBadge();
+            } else {
+                providerProfile.revokeTrustBadge();
             };
 
             const updatedProviderProfile = await this.providerProfileRepository.update(providerProfile);
@@ -75,7 +77,7 @@ export class ChangeProviderTrustTagUseCase {
                 },
             });
 
-            return { providerId, trustedBySlotflow: updatedProviderProfile.trustedBySlotflow };
+            return { _id: providerId, trustedBySlotflow: updatedProviderProfile.trustedBySlotflow };
         } catch (error: unknown) {
             throw toAppError(error, "Failed to change provider trust tag status");
         };

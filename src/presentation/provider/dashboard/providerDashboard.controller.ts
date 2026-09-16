@@ -1,7 +1,7 @@
 import { log } from "../../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../../shared/utils/response";
-import { DecodedUser } from "../../../application/dtos/common.dto";
+import { AuthUser } from "../../../application/dtos/common.dto";
 import { startAndEndDateSchema } from "../../../shared/zod/common.zod";
 import { getProviderGraphDataUseCase, getProviderStatsUseCase } from "..";
 import { providerValidateDashboardDataSchema } from "../../../shared/zod/provider.zod";
@@ -19,7 +19,7 @@ class ProviderDashboardController {
 
     async getDashboardStats(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             const validatedData = startAndEndDateSchema.parse(req.query);
             const result = await this.getProviderStatsUseCase.execute({
                 providerId: user.id,
@@ -34,7 +34,7 @@ class ProviderDashboardController {
 
     async getDashboardGraphData(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             const { subscription, endDate, startDate } = providerValidateDashboardDataSchema.parse(req.query);
             const result = await this.getProviderGraphDataUseCase.execute({
                 providerId: user.id,

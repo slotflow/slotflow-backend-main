@@ -96,7 +96,7 @@ export class UpdateBookingOnlineTrakingUseCase {
             }
 
             const user = await this.userRepository.findById(booking.userId, session);
-            if(!user) {
+            if (!user) {
                 throw new AppError(
                     "Internal server error",
                     500,
@@ -163,7 +163,7 @@ export class UpdateBookingOnlineTrakingUseCase {
             }
 
             await session.commitTransaction();
-            return { duration: serviceAvailability.duration };
+            return { duration: serviceAvailability.duration, videoCallRoomId: updatedBooking.videoCallRoomId };
         } catch (error: unknown) {
             await session.abortTransaction();
             throw toAppError(error, "Failed to update booking");

@@ -32,8 +32,10 @@ export class ChangeUserBlockStatusUseCase {
                 );
             }
 
-            if (user.isBlocked === isBlocked) {
-                isBlocked ? user.unblock() : user.block();
+            if (isBlocked) {
+                user.block();
+            } else {
+                user.unblock();
             };
 
             const updatedUser = await this.userRepository.update(user);
@@ -72,7 +74,7 @@ export class ChangeUserBlockStatusUseCase {
                 }
             });
 
-            return { userId, isBlocked: updatedUser.isBlocked };
+            return { _id: userId, isBlocked: updatedUser.isBlocked };
         } catch (error: unknown) {
             throw toAppError(error, "Failed to change user block status");
         };

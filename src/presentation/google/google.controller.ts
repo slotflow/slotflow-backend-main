@@ -2,7 +2,7 @@ import passport from "passport";
 import { getGoogleCalendarUseCase } from ".";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
-import { DecodedUser } from "../../application/dtos/common.dto";
+import { AuthUser } from "../../application/dtos/common.dto";
 import { connectGoogleSchema } from "../../shared/zod/auth.zod";
 import { GetGoogleCalendarUseCase } from "../../application/useCases/common/getGoogleCalendar.useCase";
 
@@ -16,7 +16,7 @@ class GoogleController {
 
     async getUserEvents(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             const result = await this.getGoogleCalendarUseCase.execute({userId: user.id });
             sendResponse(res, result);
         } catch (error) {
@@ -26,7 +26,7 @@ class GoogleController {
 
     async connectGoogle(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             const { connectOnly, role } = connectGoogleSchema.parse({
                 connectOnly: true,
                 role: user.role,

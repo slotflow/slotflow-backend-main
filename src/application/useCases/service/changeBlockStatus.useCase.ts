@@ -24,9 +24,11 @@ export class ChangeServiceBlockStatusUseCase {
                 );
             }
 
-            if (service.isBlocked !== isBlocked) {
-                isBlocked ? service.block() : service.unblock();
-            };
+            if (isBlocked) {
+                service.block();
+            } else {
+                service.unblock();
+            }
 
             const updatedService = await this.seriveRepository.update(service);
             if (!updatedService) {
@@ -38,7 +40,7 @@ export class ChangeServiceBlockStatusUseCase {
                 );
             }
 
-            return { serviceId, isBlocked: updatedService.isBlocked };
+            return { _id: updatedService._id, isBlocked: updatedService.isBlocked };
         } catch (error: unknown) {
             throw toAppError(error, "Failed to change service block status");
         };

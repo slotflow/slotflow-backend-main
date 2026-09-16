@@ -2,7 +2,7 @@ import { Role } from "../../domain/enums/common.enum";
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../shared/utils/response";
 import { paginationSchema } from "../../shared/zod/base.zod";
-import { DecodedUser } from "../../application/dtos/common.dto";
+import { AuthUser } from "../../application/dtos/common.dto";
 import { GetPlansUseCase } from "../../application/useCases/plan/getPlans.useCase";
 import { CreatePlanUseCase } from "../../application/useCases/plan/createPlan.useCase";
 import { UpdatePlanUseCase } from "../../application/useCases/plan/updatePlan.useCase";
@@ -31,7 +31,7 @@ class PlanController {
 
     async getPlans(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             const { page, limit } = paginationSchema.parse(req.query);
 
             let filter: {
@@ -67,11 +67,11 @@ class PlanController {
 
     async changePlanBlockStatus(req: Request, res: Response, next: NextFunction) {
         try {
-            const { blockStatus, planId } = changePlanBlockStatusSchema.parse({
+            const { isBlocked, planId } = changePlanBlockStatusSchema.parse({
                 planId: req.params.planId,
-                blockStatus: req.body.blockStatus
+                blockStatus: req.body.isBlocked
             });
-            const result = await this.changePlanBlockStatusUseCase.execute({ planId, isBlocked: blockStatus });
+            const result = await this.changePlanBlockStatusUseCase.execute({ planId, isBlocked });
             sendResponse(res, result, `plan ${result.isBlocked ? "blocked" : "unblocked"} successfully`);
         } catch (error) {
             next(error);
@@ -80,6 +80,7 @@ class PlanController {
 
     async resyncStripePlan(req: Request, res: Response, next: NextFunction) {
         try {
+            console.log("resync");
             const { planId } = validatePlanIdSchema.parse({
                 planId: req.params.planId
             });
