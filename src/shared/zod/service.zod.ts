@@ -1,6 +1,6 @@
 import z from "zod";
 import { paginationSchema } from "./base.zod";
-import { objectIdRegex, serviceNameRegex } from "../utils/regex";
+import { objectIdRegex, serviceNameRegex } from "../utils/constants/regex";
 import { ServiceCategory } from "../../domain/enums/service.enum";
 
 // ServiceId validation schemas

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { Role } from "../../../domain/enums/common.enum";
-import { generateId } from "../../../shared/utils/generateId";
-import { ERROR_CODES, IdType } from "../../../shared/utils/types";
+import { generateId } from "../../../shared/utils/helpers/generateId";
+import { ERROR_CODES, IdType } from "../../../shared/utils/types/enums";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { CreditAccount } from "../../../domain/entities/creditAccount.entity";
 import { CreditTransaction } from "../../../domain/entities/creditTransaction.entity";

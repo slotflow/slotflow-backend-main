@@ -10,8 +10,6 @@ export interface ProviderServiceProps {
     serviceExperienceYears: number,
     serviceExperience: string,
     serviceType: ServiceType,
-    // TODO Remove
-    // serviceMode: ServiceMode,
     tags: string[] | [],
     requirements: string[] | [],
     videoUrl: string | null,

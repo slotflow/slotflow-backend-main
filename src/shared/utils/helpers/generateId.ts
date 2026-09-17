@@ -1,9 +1,10 @@
 import { v4 as uuidv4 } from "uuid";
-import { PREFIX_MAP } from "./constants";
 import { formatName } from "./formatName";
-import { AppError } from "../error/appError";
+import { GenerateId } from "../types/types";
+import { AppError } from "../../error/appError";
+import { PREFIX_MAP } from "../constants/constant";
 import { generateBase62 } from "./generateRefString";
-import { ERROR_CODES, GenerateId, IdType } from "./types";
+import { ERROR_CODES, IdType } from "../types/enums";
 
 export const generateId = (input: GenerateId): string => {
     const { type, options } = input;

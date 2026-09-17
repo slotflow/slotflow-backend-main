@@ -1,4 +1,4 @@
-import { ERROR_CODES } from "../../../shared/utils/types";
+import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { ChangePushNotificationInput } from "../../dtos/user.dto";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { AppError, BadRequestError, NotFoundError } from "../../../shared/error/appError";

@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import figlet from "figlet";
-import { appConfig } from "../../config/env";
+import { appConfig } from "../../../config/env";
 
 export const printText = () => {
     try {

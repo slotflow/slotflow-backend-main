@@ -1,7 +1,7 @@
 import { log } from "../../shared/logger/logger";
 import { Role } from "../../domain/enums/common.enum";
 import { NextFunction, Request, Response } from "express";
-import { sendResponse } from "../../shared/utils/response";
+import { sendResponse } from "../../shared/utils/helpers/response";
 import { AuthUser } from "../../application/dtos/common.dto";
 import { validateProviderIdSchema } from "../../shared/zod/base.zod";
 import { userGetProvidersServicesSchema } from "../../shared/zod/providerService.zod";

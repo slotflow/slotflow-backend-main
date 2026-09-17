@@ -1,6 +1,6 @@
 import { Redis } from "@upstash/redis";
 import { log } from "../../shared/logger/logger";
-import { ERROR_CODES } from "../../shared/utils/types";
+import { ERROR_CODES } from "../../shared/utils/types/enums";
 import { awsConfig, redisConfig } from "../../config/env";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";

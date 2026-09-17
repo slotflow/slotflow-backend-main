@@ -1,5 +1,5 @@
-import { ERROR_CODES } from "../../../shared/utils/types";
 import { CreateServiceInput } from "../../dtos/service.dto";
+import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { Service } from "../../../domain/entities/service.entity";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { AppError, BadRequestError } from "../../../shared/error/appError";

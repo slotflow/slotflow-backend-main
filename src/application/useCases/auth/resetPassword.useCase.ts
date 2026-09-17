@@ -1,10 +1,9 @@
 import { kafkaConfig } from "../../../config/env";
 import { ResetPasswordInput } from "../../dtos/auth.dto";
-import { generateId } from '../../../shared/utils/generateId';
 import { IJWT } from '../../../domain/interfaces/security/IJwt';
-import { ERROR_CODES, IdType } from '../../../shared/utils/types';
+import { generateId } from '../../../shared/utils/helpers/generateId';
 import { toAppError } from '../../../shared/error/handleUnknownError';
-import { notificationContentMap } from '../../../shared/utils/constants';
+import { ERROR_CODES, IdType } from '../../../shared/utils/types/enums';
 import { EventEnvelope, SendResetPasswordEvent } from "../../dtos/kafka.dto";
 import { IPasswordHasher } from "../../../domain/interfaces/security/IPasswordHasher";
 import { AppError, BadRequestError, NotFoundError } from '../../../shared/error/appError';
@@ -62,12 +61,6 @@ export class ResetPasswordUseCase {
                         email: user.email,
                         name: user.username,
                     },
-                    notificationData: {
-                        userId: user._id,
-                        pushNotification: user.allowPushNotification ?? false,
-                        title: notificationContentMap.resetPassword.title,
-                        body: notificationContentMap.resetPassword.body(),
-                    }
                 }
             });
 

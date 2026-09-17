@@ -1,6 +1,6 @@
 import { log } from "../../shared/logger/logger";
 import { Role } from "../../domain/enums/common.enum";
-import { ERROR_CODES } from "../../shared/utils/types";
+import { ERROR_CODES } from "../../shared/utils/types/enums";
 import { NextFunction, Request, Response } from "express";
 import { cacheService } from "../../infrastructure/services";
 import { AuthUser } from "../../application/dtos/common.dto";

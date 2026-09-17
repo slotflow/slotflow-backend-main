@@ -1,14 +1,14 @@
 import { kafkaConfig } from "../../../config/env";
-import { generateId } from '../../../shared/utils/generateId';
-import { ERROR_CODES, IdType } from '../../../shared/utils/types';
+import { generateId } from '../../../shared/utils/helpers/generateId';
 import { toAppError } from '../../../shared/error/handleUnknownError';
-import { notificationContentMap } from "../../../shared/utils/constants";
+import { ERROR_CODES, IdType } from '../../../shared/utils/types/enums';
 import { BadRequestError, NotFoundError } from '../../../shared/error/appError';
 import { EventEnvelope, SendAccountBlockStatusEvent } from "../../dtos/kafka.dto";
 import { ICacheService } from "../../../domain/interfaces/services/ICache.service";
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 import { AdminChangeProviderBlockStatusInput, AdminChangeProviderBlockStatusOutput } from "../../dtos/admin.dto";
+import { notificationType } from "../../../shared/utils/constants/constant";
 
 export class ChangeProviderBlockStatusUseCase {
     constructor(
@@ -65,9 +65,8 @@ export class ChangeProviderBlockStatusUseCase {
                     },
                     notificationData: {
                         userId: provider._id,
-                        pushNotification: provider.allowPushNotification ?? false,
-                        title: notificationContentMap.accountBlockStatus.title,
-                        body: notificationContentMap.accountBlockStatus.body(updatedProvider.isBlocked),
+                        isBlocked: updatedProvider.isBlocked.toString(),
+                        notificationType: notificationType.ACCOUNT_ACTIVITY
                     },
                 },
             });

@@ -1,10 +1,6 @@
-import { Dayjs } from "dayjs";
+import { dateFormats } from "../constants/constant";
 
-// formatted date time
-export interface FormattedDateTime {
-  date: string;
-  time: string;
-}
+
 
 export enum ERROR_CODES {
   // COMMON
@@ -89,7 +85,6 @@ export enum ERROR_CODES {
   PLAN_ALREADY_EXIST = "PLAN_ALREADY_EXIST",
 };
 
-export type ErrorCode = typeof ERROR_CODES[keyof typeof ERROR_CODES];
 
 export enum IdType {
   EVENT = "EVENT",
@@ -101,18 +96,3 @@ export enum IdType {
   CREDIT_TRANSACTION = "CREDIT_TRANSACTION"
 }
 
-export interface GenerateId {
-  type: IdType;
-  options?: {
-    name?: string;
-  }
-}
-
-export interface DateRangeResult {
-  start: Dayjs;
-  end: Dayjs;
-  days: number;
-  duration: number;
-  prevStart: Dayjs;
-  prevEnd: Dayjs;
-}

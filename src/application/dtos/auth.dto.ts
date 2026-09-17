@@ -54,7 +54,6 @@ export interface LoginOutput {
         phone: UserDTO["phone"];
         profileImage: UserDTO["profileImage"];
         isAddressAdded: boolean;
-
         isServiceDetailsAdded?: boolean;
         isServiceAvailabilityAdded?: boolean;
         isProofSubmitted?: {
@@ -69,12 +68,7 @@ export interface LoginOutput {
         providerSubscription?: string;
         verificationRejectionReason?: ProviderProfileDTO["verificationRejectionReason"],
         adminVerificationStatus?: ProviderProfileDTO["adminVerificationStatus"],
-
-        googleConnected: UserDTO["googleConnected"];
-        stripeAccountStatus: UserDTO["stripeAccountStatus"]
-        stripeCustomerId: UserDTO["stripeCustomerId"];
         allowPushNotification: UserDTO["allowPushNotification"];
-
         hasUsedTrial?: ProviderProfileDTO['hasUsedTrial'];
     }
 }
@@ -132,12 +126,6 @@ export interface GoogleAuthOrchestrationOutput {
         providerSubscription?: string;
         verificationRejectionReason?: ProviderProfileDTO["verificationRejectionReason"],
         adminVerificationStatus?: ProviderProfileDTO["adminVerificationStatus"],
-
-        googleId: UserDTO["googleId"];
-        googleConnected: UserDTO["googleConnected"];
-        stripeAccountStatus: UserDTO["stripeAccountStatus"]
-        stripeAccountId: UserDTO["stripeAccountId"];
-        stripeCustomerId: UserDTO["stripeCustomerId"];
         allowPushNotification: UserDTO["allowPushNotification"];
     }
 }

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { ERROR_CODES } from "../../../shared/utils/types";
 import { CreateAddressInput } from "../../dtos/address.dto";
+import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { Address } from "../../../domain/entities/address.entity";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { AppError, BadRequestError, NotFoundError } from "../../../shared/error/appError";

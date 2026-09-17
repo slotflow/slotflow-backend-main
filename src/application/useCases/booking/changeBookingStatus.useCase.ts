@@ -1,16 +1,17 @@
 import { kafkaConfig } from "../../../config/env";
-import { generateId } from '../../../shared/utils/generateId';
-import { ERROR_CODES, IdType } from '../../../shared/utils/types';
-import { formatUtcDateTime } from "../../../shared/utils/dateTime";
+import { Role } from "../../../domain/enums/common.enum";
+import { formatDate } from "../../../shared/utils/helpers/dateTime";
 import { toAppError } from '../../../shared/error/handleUnknownError';
-import { notificationContentMap } from "../../../shared/utils/constants";
-import { NotificationType, Role } from "../../../domain/enums/common.enum";
+import { generateId } from '../../../shared/utils/helpers/generateId';
+import { ERROR_CODES, IdType } from '../../../shared/utils/types/enums';
+import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
+import { dateFormats, notificationType } from "../../../shared/utils/constants/constant";
 import { AppError, BadRequestError, NotFoundError } from '../../../shared/error/appError';
-import { ProviderChangeBookingAppointmentStatusInput, ProviderChangeBookingAppointmentStatusOutput } from '../../dtos/booking.dto';
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IGoogleTokenService } from "../../../domain/interfaces/services/IGoogleToken.service";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
+import { ProviderChangeBookingAppointmentStatusInput, ProviderChangeBookingAppointmentStatusOutput } from '../../dtos/booking.dto';
 import { EventEnvelope, CreateGoogleCalendarEvent, SendAppointmentStatusChangeForProviderEvent, SendAppointmentStatusChangeForUserEvent } from "../../dtos/kafka.dto";
 
 export class ChangeBookingStatusUseCase {
@@ -74,8 +75,6 @@ export class ChangeBookingStatusUseCase {
                 );
             }
 
-            const { date, time } = formatUtcDateTime(booking.appointmentDate);
-
             await this.kafkaProducer.publish<EventEnvelope<SendAppointmentStatusChangeForUserEvent>>(kafkaConfig.topics.pub.providerAppointmentStatusForUser, {
                 eventId: generateId({ type: IdType.EVENT }),
                 attempt: 1,
@@ -85,16 +84,15 @@ export class ChangeBookingStatusUseCase {
                     emailData: {
                         email: user.email,
                         name: user.username,
-                        appointmentDate: date,
+                        appointmentDate: formatDate(booking.appointmentDate, dateFormats.SHORT),
+                        appointmentTime: formatDate(booking.appointmentDate, dateFormats.TIME_12H_LOWER),
                         appointmentMode: booking.appointmentMode,
                         appointmentStatus: booking.appointmentStatus,
-                        appointmentTime: time,
                     },
                     notificationData: {
                         userId: user._id,
-                        pushNotification: user.allowPushNotification ?? false,
-                        title: notificationContentMap.appointmentStatusChangeForUser.title,
-                        body: notificationContentMap.appointmentStatusChangeForUser.body(booking.appointmentStatus),
+                        appointmentStatus: booking.appointmentStatus,
+                        notificationType: notificationType.ACCOUNT_ACTIVITY
                     }
                 }
             });
@@ -107,21 +105,16 @@ export class ChangeBookingStatusUseCase {
                 payload: {
                     notificationData: {
                         userId: provider._id,
-                        pushNotification: provider.allowPushNotification ?? false,
-                        title: notificationContentMap.appointmentStatusChangeForProvider.title,
-                        body: notificationContentMap.appointmentStatusChangeForProvider.body(booking.appointmentStatus),
-                        data: {
-                            appointmentDate: date,
-                            appointmentMode: booking.appointmentMode,
-                            appointmentStatus: booking.appointmentStatus,
-                            appointmentTime: time,
-                            notificationType: NotificationType.APPOINTMENT,
-                        }
+                        appointmentDate: formatDate(booking.appointmentDate, dateFormats.SHORT),
+                        appointmentTime: formatDate(booking.appointmentDate, dateFormats.TIME_12H_LOWER),
+                        appointmentMode: booking.appointmentMode,
+                        appointmentStatus: booking.appointmentStatus,
+                        notificationType: notificationType.ACCOUNT_ACTIVITY
                     }
                 }
             });
 
-            if (userAccessToken) {
+            if (userAccessToken && updatedBooking.appointmentStatus === AppointmentStatus.CONFIRMED) {
                 await this.kafkaProducer.publish<EventEnvelope<CreateGoogleCalendarEvent>>(kafkaConfig.topics.pub.createGoogleCalendarEvent, {
                     eventId: generateId({ type: IdType.EVENT }),
                     occurredAt: new Date().toString(),
@@ -129,17 +122,17 @@ export class ChangeBookingStatusUseCase {
                     maxAttempts: 2,
                     payload: {
                         calendarData: {
-                            bookingId: booking._id,
+                            bookingId: updatedBooking._id,
                             role: Role.USER,
                             accessToken: userAccessToken,
-                            appointmentDate: booking.appointmentDate,
-                            appointmentStatus: booking.appointmentStatus,
+                            appointmentDate: updatedBooking.appointmentDate,
+                            appointmentStatus: updatedBooking.appointmentStatus,
                         }
                     }
                 });
             };
 
-            if (providerAccessToken) {
+            if (providerAccessToken && updatedBooking.appointmentStatus === AppointmentStatus.CONFIRMED) {
                 await this.kafkaProducer.publish<EventEnvelope<CreateGoogleCalendarEvent>>(kafkaConfig.topics.pub.createGoogleCalendarEvent, {
                     eventId: generateId({ type: IdType.EVENT }),
                     occurredAt: new Date().toString(),
@@ -147,11 +140,11 @@ export class ChangeBookingStatusUseCase {
                     maxAttempts: 2,
                     payload: {
                         calendarData: {
-                            bookingId: booking._id,
+                            bookingId: updatedBooking._id,
                             role: Role.PROVIDER,
                             accessToken: providerAccessToken,
-                            appointmentDate: booking.appointmentDate,
-                            appointmentStatus: booking.appointmentStatus,
+                            appointmentDate: updatedBooking.appointmentDate,
+                            appointmentStatus: updatedBooking.appointmentStatus,
                         }
                     }
                 });

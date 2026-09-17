@@ -1,12 +1,12 @@
 import { kafkaConfig } from '../../../config/env';
-import { IdType } from '../../../shared/utils/types';
 import { ResendOtpOutput } from '../../dtos/auth.dto';
-import { generateId } from '../../../shared/utils/generateId';
+import { IdType } from '../../../shared/utils/types/enums';
 import { OtpPurpose } from '../../../domain/enums/common.enum';
 import { IJWT } from '../../../domain/interfaces/security/IJwt';
 import { BadRequestError } from '../../../shared/error/appError';
 import { EventEnvelope, SendOtpEvent } from '../../dtos/kafka.dto';
 import { toAppError } from '../../../shared/error/handleUnknownError';
+import { generateId } from '../../../shared/utils/helpers/generateId';
 import { IOTPService } from '../../../domain/interfaces/services/IOtp.service';
 import { IKafkaProducerAdapter } from '../../../domain/interfaces/messaging/IKafkaProducerAdapter';
 

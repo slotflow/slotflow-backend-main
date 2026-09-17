@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { log } from '../../shared/logger/logger';
-import { ERROR_CODES } from '../../shared/utils/types';
+import { ERROR_CODES } from '../../shared/utils/types/enums';
 import { AppError, BadRequestError } from '../../shared/error/appError';
 import { IPasswordHasher } from '../../domain/interfaces/security/IPasswordHasher';
 

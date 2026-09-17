@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import { aesConfig } from "../../config/env";
-import { ERROR_CODES } from "../../shared/utils/types";
+import { ERROR_CODES } from "../../shared/utils/types/enums";
 import { AppError, BadRequestError } from "../../shared/error/appError";
 import { IAesEncryptionService } from "../../domain/interfaces/services/IAesEncryption.service";
 

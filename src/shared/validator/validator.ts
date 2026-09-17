@@ -1,10 +1,7 @@
-import dayjs from "dayjs";
 import { Types } from 'mongoose';
-import customParseFormat from "dayjs/plugin/customParseFormat.js";
 import { validateEmail, validateOtp, validatePassword, validateUsername } from '@codebymk/validator';
-import { addressLineRegex, countryRegex, districtRegex, landMarkRegex, phoneRegex, pincodeRegex, placeRegex, stateRegex } from "../utils/regex";
-
-dayjs.extend(customParseFormat);
+import { addressLineRegex, countryRegex, districtRegex, landMarkRegex, phoneRegex, pincodeRegex, placeRegex, stateRegex } from "../utils/constants/regex";
+import { isBefore, isValid, parse } from 'date-fns';
 
 export class Validator {
 
@@ -173,19 +170,20 @@ export class Validator {
     }
 
     static validateTiming(endTime: string, startTime: string): void {
-        const format = "hh:mm A";
+        // 'hh:mm a' matches '09:30 AM' or '02:15 PM' in date-fns
+        const format = "hh:mm a";
 
-        const start = dayjs(startTime, format);
-        const end = dayjs(endTime, format);
+        const referenceDate = new Date();
+        const start = parse(startTime, format, referenceDate);
+        const end = parse(endTime, format, referenceDate);
 
-        if (!start.isValid() || !end.isValid()) {
+        if (!isValid(start) || !isValid(end)) {
             throw new Error("Invalid time format.");
         }
 
-        if (!start.isBefore(end)) {
-            throw new Error("Start time is greater than endTime.")
+        if (!isBefore(start, end)) {
+            throw new Error("Start time is greater than endTime.");
         }
-
     }
 
     static validateModes(modes: string[]): void {

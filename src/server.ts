@@ -5,7 +5,7 @@ import { log } from './shared/logger/logger';
 import { initOtel } from './app/init/otel.init';
 import { initKafka } from './app/init/kafka.init';
 import { initCronJobs } from './app/init/cron.init';
-import { printText } from './shared/utils/printText';
+import { printText } from './shared/utils/helpers/printText';
 import { initPassport } from './app/init/passport.init';
 import { setupGracefulShutdown } from './app/init/shutdown';
 

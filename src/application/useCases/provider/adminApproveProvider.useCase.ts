@@ -1,16 +1,16 @@
 import mongoose from 'mongoose';
 import { kafkaConfig } from "../../../config/env";
-import { generateId } from '../../../shared/utils/generateId';
+import { generateId } from '../../../shared/utils/helpers/generateId';
 import { AdminApproveProviderInput, AdminApproveProviderOutput } from "../../dtos/admin.dto";
-import { ERROR_CODES, IdType } from '../../../shared/utils/types';
+import { ERROR_CODES, IdType } from '../../../shared/utils/types/enums';
 import { toAppError } from '../../../shared/error/handleUnknownError';
-import { notificationContentMap } from "../../../shared/utils/constants";
 import { AppError, BadRequestError, NotFoundError } from '../../../shared/error/appError';
 import { EventEnvelope, SendAdminProviderReviewEvent } from "../../dtos/kafka.dto";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { AdminVerificationStatus } from "../../../domain/enums/adminVerificationStatus.enum";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
+import { notificationType } from '../../../shared/utils/constants/constant';
 
 export class AdminApproveProviderUseCase {
     constructor(
@@ -77,12 +77,6 @@ export class AdminApproveProviderUseCase {
                         email: provider.email,
                         name: provider.username,
                         status: AdminVerificationStatus.APPROVED,
-                    },
-                    notificationData: {
-                        userId: provider._id,
-                        pushNotification: provider.allowPushNotification ?? false,
-                        title: notificationContentMap.adminProviderReview.title,
-                        body: notificationContentMap.adminProviderReview.body(AdminVerificationStatus.APPROVED),
                     },
                 },
             });

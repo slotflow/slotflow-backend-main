@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { HearAboutUsOptionValue, Role } from "../../domain/enums/common.enum";
-import { addressLineRegex, cityRegex, countryRegex, districtRegex, landMarkRegex, objectIdRegex, phoneRegex, pincodeRegex, placeRegex, sessionIdRegex, stateRegex, usernameRegex } from "../utils/regex";
+import { addressLineRegex, cityRegex, countryRegex, districtRegex, landMarkRegex, objectIdRegex, phoneRegex, pincodeRegex, placeRegex, sessionIdRegex, stateRegex, usernameRegex } from "../utils/constants/regex";
 
 // Base ID validation schemas
 export const validateUserIdSchema = z.object({

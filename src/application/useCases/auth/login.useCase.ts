@@ -1,7 +1,7 @@
 import { Role } from "../../../domain/enums/common.enum";
-import { ERROR_CODES } from "../../../shared/utils/types";
 import { PlanName } from "../../../domain/enums/plan.enum";
 import { LoginInput, LoginOutput } from "../../dtos/auth.dto";
+import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { IJWT } from "../../../domain/interfaces/security/IJwt";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { AuthResponseBuilder } from "../../services/AuthResponseBuilder";

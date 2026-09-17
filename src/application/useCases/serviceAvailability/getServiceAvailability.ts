@@ -1,5 +1,5 @@
-import dayjs from '../../../shared/config/dayjs';
-import { ERROR_CODES } from '../../../shared/utils/types';
+import { ERROR_CODES } from '../../../shared/utils/types/enums';
+import { differenceInMinutes, format, parse } from 'date-fns';
 import { toAppError } from '../../../shared/error/handleUnknownError';
 import { BadRequestError, NotFoundError } from '../../../shared/error/appError';
 import { IServiceAvailabilityQueries } from "../../queries/IServiceAvailability.queries";
@@ -19,8 +19,9 @@ export class GetServiceAvailabilityUseCase {
         throw new BadRequestError();
       }
 
-      const currentDateTime = dayjs();
-      const selectedDate = dayjs(date).format('YYYY-MM-DD');
+      const currentDateTime = new Date();
+      const parsedDate = date instanceof Date ? date : new Date(date);
+      const selectedDateStr = format(parsedDate, 'yyyy-MM-dd');
 
       const providerProfile = await this.providerProfileRepository.findByUserId(providerId);
       if (!providerProfile) {
@@ -36,16 +37,18 @@ export class GetServiceAvailabilityUseCase {
       if (!availability) return null;
 
       const updatedSlots = availability.slots.map((slot) => {
-        const slotDateTime = dayjs(`${selectedDate} ${slot.time}`, 'YYYY-MM-DD hh:mm A');
-        const isWithin2Hours = slotDateTime.diff(currentDateTime, 'minute') < 120;
+        const slotDateTime = parse(
+          `${selectedDateStr} ${slot.time}`,
+          'yyyy-MM-dd hh:mm a',
+          new Date()
+        );
+        const minutesUntilSlot = differenceInMinutes(slotDateTime, currentDateTime);
+        const isWithin2Hours = minutesUntilSlot < 120;
         return {
           ...slot,
           available: slot.available && !isWithin2Hours
         }
       });
-
-      console.log("availability  : ", availability);
-      console.log("updatedSlots : ",updatedSlots);
 
       return { ...availability, slots: updatedSlots };
     } catch (error: unknown) {

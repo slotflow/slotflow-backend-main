@@ -1,9 +1,9 @@
 import { ZodError } from "zod";
 import { log } from "../../shared/logger/logger";
 import { AppError } from "../../shared/error/appError";
-import { ERROR_CODES } from "../../shared/utils/types";
+import { ERROR_CODES } from "../../shared/utils/types/enums";
 import { NextFunction, Request, Response } from "express";
-import { isNamedError } from "../../shared/utils/isNameError";
+import { isNamedError } from "../../shared/utils/helpers/isNameError";
 
 export const errorHandler = (
     err: unknown,

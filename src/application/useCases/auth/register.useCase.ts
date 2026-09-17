@@ -1,12 +1,12 @@
 import { kafkaConfig } from '../../../config/env';
-import { generateId } from '../../../shared/utils/generateId';
 import { OtpPurpose } from '../../../domain/enums/common.enum';
 import { IJWT } from '../../../domain/interfaces/security/IJwt';
 import { BadRequestError } from '../../../shared/error/appError';
-import { ERROR_CODES, IdType } from '../../../shared/utils/types';
 import { EventEnvelope, SendOtpEvent } from '../../dtos/kafka.dto';
 import { RegisterInput, RegisterOutput } from '../../dtos/auth.dto';
+import { generateId } from '../../../shared/utils/helpers/generateId';
 import { toAppError } from '../../../shared/error/handleUnknownError';
+import { ERROR_CODES, IdType } from '../../../shared/utils/types/enums';
 import { IOTPService } from '../../../domain/interfaces/services/IOtp.service';
 import { IPasswordHasher } from '../../../domain/interfaces/security/IPasswordHasher';
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';

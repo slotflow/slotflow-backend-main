@@ -1,15 +1,18 @@
 import mongoose from "mongoose";
 import {
-    CreditChartKeys,
-    CreditMainChartData,
-    GetCreditAccountDetailsView,
-    GetCreditAccountDetailsQuery,
+  CreditChartKeys,
+  CreditMainChartData,
+  GetCreditAccountDetailsView,
+  GetCreditAccountDetailsQuery,
 } from "../../application/dtos/credits.dto";
-import { calcPercentage } from "../../shared/utils/getPercentage";
+import { isBefore, isSameDay, addDays } from 'date-fns';
+import { formatDate } from "../../shared/utils/helpers/dateTime";
+import { calcPercentage } from "../../shared/utils/helpers/getPercentage";
 import { CreditAccountModel } from "../models/creditAccount.model";
+import { dateFormats } from "../../shared/utils/constants/constant";
 import { AggregateCountResult } from "../../application/dtos/common.dto";
 import { CreditTransactionModel } from "../models/creditTransaction.model";
-import { getDateRangeMetrics } from "../../shared/utils/getDateRangeMetrics";
+import { getDateRangeMetrics } from "../../shared/utils/helpers/getDateRangeMetrics";
 import { ICreditAccountQueries } from "../../application/queries/ICreditAccount.queries";
 import { CreditTransactionStatus, CreditTransactionType } from "../../domain/enums/creditTransaction.enum";
 
@@ -32,8 +35,8 @@ export class CreditAccountQueriesImpl implements ICreditAccountQueries {
           userId: userObjectId,
           status: CreditTransactionStatus.SUCCESS,
           createdAt: {
-            $gte: start.toDate(),
-            $lte: end.toDate(),
+            $gte: start,
+            $lte: end,
           },
         },
       },
@@ -57,8 +60,8 @@ export class CreditAccountQueriesImpl implements ICreditAccountQueries {
           userId: userObjectId,
           status: CreditTransactionStatus.SUCCESS,
           createdAt: {
-            $gte: prevStart.toDate(),
-            $lte: prevEnd.toDate(),
+            $gte: prevStart,
+            $lte: prevEnd,
           },
         },
       },
@@ -91,57 +94,57 @@ export class CreditAccountQueriesImpl implements ICreditAccountQueries {
     const balancePrev = totalPrev - spentPrev;
 
     const chartAgg = await CreditTransactionModel.aggregate([
-        {
-          $match: {
-            userId: userObjectId,
-            status: CreditTransactionStatus.SUCCESS,
-            createdAt: {
-              $gte: start.toDate(),
-              $lte: end.toDate(),
-            },
+      {
+        $match: {
+          userId: userObjectId,
+          status: CreditTransactionStatus.SUCCESS,
+          createdAt: {
+            $gte: start,
+            $lte: end,
           },
         },
-        {
-          $group: {
-            _id: {
-              date: {
-                $dateToString: {
-                  format: "%Y-%m-%d",
-                  date: "$createdAt",
-                },
-              },
-            },
-            totalCredits: {
-              $sum: {
-                $cond: [
-                  { $eq: ["$type", CreditTransactionType.CREDIT] },
-                  "$credits",
-                  0,
-                ],
-              },
-            },
-            spentCredits: {
-              $sum: {
-                $cond: [
-                  { $eq: ["$type", CreditTransactionType.DEBIT] },
-                  "$credits",
-                  0,
-                ],
+      },
+      {
+        $group: {
+          _id: {
+            date: {
+              $dateToString: {
+                format: "%Y-%m-%d",
+                date: "$createdAt",
               },
             },
           },
-        },
-        {
-          $addFields: {
-            balanceCredits: {
-              $subtract: ["$totalCredits", "$spentCredits"],
+          totalCredits: {
+            $sum: {
+              $cond: [
+                { $eq: ["$type", CreditTransactionType.CREDIT] },
+                "$credits",
+                0,
+              ],
+            },
+          },
+          spentCredits: {
+            $sum: {
+              $cond: [
+                { $eq: ["$type", CreditTransactionType.DEBIT] },
+                "$credits",
+                0,
+              ],
             },
           },
         },
-        {
-          $sort: { "_id.date": 1 },
+      },
+      {
+        $addFields: {
+          balanceCredits: {
+            $subtract: ["$totalCredits", "$spentCredits"],
+          },
         },
-      ]);
+      },
+      {
+        $sort: { "_id.date": 1 },
+      },
+    ]);
 
     const rawChartData: CreditMainChartData[] = chartAgg.map((item) => ({
       date: item._id.date,
@@ -158,8 +161,8 @@ export class CreditAccountQueriesImpl implements ICreditAccountQueries {
 
     let currentDate = start;
 
-    while (currentDate.isBefore(end) || currentDate.isSame(end)) {
-      const dateStr = currentDate.format("YYYY-MM-DD");
+    while (isBefore(currentDate, end) || isSameDay(currentDate, end)) {
+      const dateStr = formatDate(currentDate, dateFormats.ISO_DATE);
 
       filledChartData.push(
         dateMap.get(dateStr) || {
@@ -170,7 +173,7 @@ export class CreditAccountQueriesImpl implements ICreditAccountQueries {
         }
       );
 
-      currentDate = currentDate.add(1, "day");
+      currentDate = addDays(currentDate, 1);
     }
 
     const buildMiniChart = (key: CreditChartKeys) => {

@@ -16,24 +16,14 @@ export class AuthResponseBuilder {
       uid: user._id,
       username: user.username,
       email: user.email,
-
       role: user.role,
       onboardingType: user.onboardingType,
       onboardingStatus: user.onboardingStatus,
-
       isBlocked: user.isBlocked,
       isLoggedIn: true,
-
       phone: user.phone,
       profileImage: user.profileImage,
-
       isAddressAdded: !!user.addressId,
-
-      googleConnected: user.googleConnected,
-
-      stripeAccountStatus: user.stripeAccountStatus,
-      stripeCustomerId: user.stripeCustomerId,
-
       allowPushNotification: user.allowPushNotification,
     };
   }
@@ -49,18 +39,13 @@ export class AuthResponseBuilder {
         identityProof: !!providerProfile?.identityProof,
         serviceProof: !!providerProfile?.serviceProof,
       },
-
       isAddressVerified: providerProfile?.isAddressVerified ?? false,
-      isServiceDetailsVerified:
-        providerProfile?.isServiceDetailsVerified ?? false,
-      isAvailabilityVerified:
-        providerProfile?.isAvailabilityVerified ?? false,
+      isServiceDetailsVerified: providerProfile?.isServiceDetailsVerified ?? false,
+      isAvailabilityVerified: providerProfile?.isAvailabilityVerified ?? false,
       isProofsVerified: providerProfile?.isProofsVerified ?? false,
       isAdminVerified: providerProfile?.isAdminVerified ?? false,
-
       providerSubscription,
-      verificationRejectionReason:
-        providerProfile?.verificationRejectionReason ?? null,
+      verificationRejectionReason: providerProfile?.verificationRejectionReason ?? null,
       adminVerificationStatus: providerProfile?.adminVerificationStatus,
       hasUsedTrial: providerProfile?.hasUsedTrial ?? false,
     };

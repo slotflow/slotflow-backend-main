@@ -1,4 +1,4 @@
-import { ERROR_CODES } from "../../../shared/utils/types";
+import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { NotFoundError, AppError, BadRequestError } from "../../../shared/error/appError";
 import { IReviewRepository } from "../../../domain/interfaces/repositories/IReview.repository";

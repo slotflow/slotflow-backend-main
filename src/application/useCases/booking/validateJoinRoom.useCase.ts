@@ -1,7 +1,7 @@
 import { isSameDay, startOfDay } from "date-fns";
 import { Role } from "../../../domain/enums/common.enum";
-import { ERROR_CODES } from "../../../shared/utils/types";
 import { ValidateJoinRoomInput } from "../../dtos/booking.dto";
+import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
 import { BadRequestError, ForbiddenError, NotFoundError } from "../../../shared/error/appError";

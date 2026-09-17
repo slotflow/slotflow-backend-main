@@ -3,15 +3,15 @@ import {
     AdminChangeProviderTrustTagOutput,
 } from "../../dtos/admin.dto";
 import { kafkaConfig } from "../../../config/env";
-import { generateId } from "../../../shared/utils/generateId";
-import { ERROR_CODES, IdType } from "../../../shared/utils/types";
+import { generateId } from "../../../shared/utils/helpers/generateId";
 import { toAppError } from "../../../shared/error/handleUnknownError";
-import { notificationContentMap } from "../../../shared/utils/constants";
+import { ERROR_CODES, IdType } from "../../../shared/utils/types/enums";
 import { BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { EventEnvelope, SendAccountTrustStatusEvent } from "../../dtos/kafka.dto";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
+import { notificationType } from "../../../shared/utils/constants/constant";
 
 export class ChangeProviderTrustTagUseCase {
     constructor(
@@ -70,9 +70,8 @@ export class ChangeProviderTrustTagUseCase {
                     },
                     notificationData: {
                         userId: provider._id,
-                        pushNotification: provider.allowPushNotification ?? false,
-                        title: notificationContentMap.accountTrustStatus.title,
-                        body: notificationContentMap.accountTrustStatus.body(updatedProviderProfile.trustedBySlotflow),
+                        isTrusted: updatedProviderProfile.trustedBySlotflow.toString(),
+                        notificationType: notificationType.ACCOUNT_ACTIVITY
                     },
                 },
             });

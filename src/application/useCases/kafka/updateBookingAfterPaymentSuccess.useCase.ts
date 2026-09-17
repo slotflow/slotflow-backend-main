@@ -1,13 +1,14 @@
 import { kafkaConfig } from "../../../config/env";
-import { generateId } from "../../../shared/utils/generateId";
-import { ERROR_CODES, IdType } from "../../../shared/utils/types";
+import { formatDate } from "../../../shared/utils/helpers/dateTime";
 import { toAppError } from "../../../shared/error/handleUnknownError";
-import { notificationContentMap } from "../../../shared/utils/constants";
+import { generateId } from "../../../shared/utils/helpers/generateId";
+import { ERROR_CODES, IdType } from "../../../shared/utils/types/enums";
 import { AppError, NotFoundError } from "../../../shared/error/appError";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
 import { UpdateBookingAfterPaymentSuccessEventInput } from "../../dtos/kafka.dto";
+import { dateFormats, notificationType } from "../../../shared/utils/constants/constant";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { BookingSavedEvent, EventEnvelope, GotAnAppointmentEvent } from "../../dtos/kafka.dto";
+import { SlotBookedEvent, EventEnvelope, GotAnAppointmentEvent } from "../../dtos/kafka.dto";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 
@@ -61,8 +62,7 @@ export class UpdateBookingAfterPaymentSuccessUseCase {
             }
 
             if (user) {
-
-                await this.kafkaProducer.publish<EventEnvelope<BookingSavedEvent>>(
+                await this.kafkaProducer.publish<EventEnvelope<SlotBookedEvent>>(
                     kafkaConfig.topics.pub.slotBooked,
                     {
                         eventId: generateId({ type: IdType.EVENT }),
@@ -73,15 +73,17 @@ export class UpdateBookingAfterPaymentSuccessUseCase {
                             emailData: {
                                 email: user.email,
                                 name: user.username,
-                                appointmentDate: booking.appointmentDate,
+                                appointmentDate: formatDate(booking.appointmentDate, dateFormats.WITH_TIME),
                                 appointmentMode: booking.appointmentMode,
                                 appointmentStatus: booking.appointmentStatus,
+                                providerName: provider.username
                             },
                             notificationData: {
                                 userId: user._id,
-                                pushNotification: user.allowPushNotification ?? false,
-                                title: notificationContentMap.slotBooked.title,
-                                body: notificationContentMap.slotBooked.body(booking.appointmentDate.toDateString()),
+                                appointmentDate: formatDate(booking.appointmentDate, dateFormats.FULL),
+                                appointmentTime: formatDate(booking.appointmentDate, dateFormats.TIME_12H),
+                                providerName: provider.username,
+                                notificationType: notificationType.ACCOUNT_ACTIVITY,
                             }
                         }
                     }
@@ -100,15 +102,17 @@ export class UpdateBookingAfterPaymentSuccessUseCase {
                             emailData: {
                                 email: provider.email,
                                 name: provider.username,
-                                appointmentDate: booking.appointmentDate,
+                                appointmentDate: formatDate(booking.appointmentDate, dateFormats.WITH_TIME),
                                 appointmentMode: booking.appointmentMode,
                                 appointmentStatus: booking.appointmentStatus,
+                                customerName: user.username,
                             },
                             notificationData: {
                                 userId: provider._id,
-                                pushNotification: provider.allowPushNotification ?? false,
-                                title: notificationContentMap.gotAnAppointment.title,
-                                body: notificationContentMap.gotAnAppointment.body(booking.appointmentDate.toDateString()),
+                                appointmentDate: formatDate(booking.appointmentDate, dateFormats.FULL),
+                                appointmentTime: formatDate(booking.appointmentDate, dateFormats.TIME_12H),
+                                customerName: user.username,
+                                notificationType: notificationType.ACCOUNT_ACTIVITY,
                             }
                         }
                     }

@@ -1,14 +1,14 @@
-import { generateId } from '../../../shared/utils/generateId';
 import { PaymentFor } from "../../../domain/enums/payment.enum";
-import { ERROR_CODES, IdType } from '../../../shared/utils/types';
 import { Booking } from "../../../domain/entities/booking.entity";
 import { FindProviderServiceOutput } from "../../dtos/common.dto";
 import { toAppError } from '../../../shared/error/handleUnknownError';
+import { generateId } from '../../../shared/utils/helpers/generateId';
+import { ERROR_CODES, IdType } from '../../../shared/utils/types/enums';
 import { UserAppointmentBookingViaStripeInput } from '../../dtos/booking.dto';
-import { AppError, BadRequestError, NotFoundError } from '../../../shared/error/appError';
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
 import { IProviderServiceQueries } from "../../queries/IProviderService.queries";
 import { IServiceAvailabilityQueries } from "../../queries/IServiceAvailability.queries";
+import { AppError, BadRequestError, NotFoundError } from '../../../shared/error/appError';
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { IPaymentServiceClient } from "../../../domain/interfaces/clients/IPaymentService.client";

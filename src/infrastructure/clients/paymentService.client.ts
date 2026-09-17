@@ -1,10 +1,10 @@
 import axios, { AxiosInstance } from "axios";
 import { serviceConfig } from "../../config/env";
 import { log } from "../../shared/logger/logger";
-import { ERROR_CODES } from "../../shared/utils/types";
+import { ERROR_CODES } from "../../shared/utils/types/enums";
 import { AppError, BadRequestError } from "../../shared/error/appError";
-import { CheckStripeAccountStatusInput, CheckStripeAccountStatusOutput, CreateBookingCheckoutSessionInput, CreateBookingCheckoutSessionOutput, CreateSubscriptionCheckoutSessionInput, CreateSubscriptionCheckoutSessionOutput, IPaymentServiceClient, ProcessRefundInput, ProcessRefundOutput } from "../../domain/interfaces/clients/IPaymentService.client";
-import { buildUserHeaders } from "../../shared/utils/headerPropagation";
+import { buildUserHeaders } from "../../shared/utils/helpers/headerPropagation";
+import { CreateBookingCheckoutSessionInput, CreateBookingCheckoutSessionOutput, CreateSubscriptionCheckoutSessionInput, CreateSubscriptionCheckoutSessionOutput, IPaymentServiceClient, ProcessRefundInput, ProcessRefundOutput } from "../../domain/interfaces/clients/IPaymentService.client";
 
 export class PaymentServiceClient implements IPaymentServiceClient {
 
@@ -96,30 +96,6 @@ export class PaymentServiceClient implements IPaymentServiceClient {
     } catch (error: unknown) {
       log.error("processRefund, Payment Service unavailable", error as Error);
       this.handleError(error, "processRefund");
-    }
-  }
-
-  async checkStripeAccountStatus(input: CheckStripeAccountStatusInput): Promise<CheckStripeAccountStatusOutput> {
-    try {
-      const { data } = await this.http.get<CheckStripeAccountStatusOutput>(
-        `/stripe/account/status/${input.accoundId}`
-      );
-
-      if (!data) {
-        log.error("Invalid response from Payment Service");
-
-        throw new AppError(
-          "Invalid response from Payment Service",
-          502,
-          false,
-          ERROR_CODES.PAYMENT_INVALID_RESPONSE
-        );
-      };
-
-      return data;
-    } catch (error: unknown) {
-      log.error("checkStripeAccountStatus, Payment Service unavailable", error as Error);
-      this.handleError(error, "checkStripeAccountStatus");
     }
   }
 

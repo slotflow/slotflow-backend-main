@@ -1,8 +1,8 @@
 import { appConfig } from '../../config/env';
 import { log } from '../../shared/logger/logger';
-import { ERROR_CODES } from '../../shared/utils/types';
+import { ERROR_CODES } from '../../shared/utils/types/enums';
 import { NextFunction, Request, Response } from 'express';
-import { sendResponse } from '../../shared/utils/response';
+import { sendResponse } from '../../shared/utils/helpers/response';
 import { UnauthorizedError } from '../../shared/error/appError';
 import { LoginUseCase } from '../../application/useCases/auth/login.useCase';
 import { RegisterUseCase } from '../../application/useCases/auth/register.useCase';

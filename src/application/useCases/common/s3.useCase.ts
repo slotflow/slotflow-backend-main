@@ -5,8 +5,8 @@ import { toAppError } from "../../../shared/error/handleUnknownError";
 import { DeleteObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
 import { CreateFileUploadPresignedUrlOutput, CreateFileSignedUrlInput, CreateFileUploadPresignedUrlInput } from "../../dtos/common.dto";
-import { generateId } from "../../../shared/utils/generateId";
-import { IdType } from "../../../shared/utils/types";
+import { generateId } from "../../../shared/utils/helpers/generateId";
+import { IdType } from "../../../shared/utils/types/enums";
 
 export class CreateFileUploadPresignedUrlUseCase {
     constructor(

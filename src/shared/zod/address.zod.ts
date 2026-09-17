@@ -1,5 +1,5 @@
 import z from "zod";
-import { objectIdRegex } from "../utils/regex";
+import { objectIdRegex } from "../utils/constants/regex";
 import { addressSchema, validateUserIdSchema } from "./base.zod";
 
 // Create address validation schema

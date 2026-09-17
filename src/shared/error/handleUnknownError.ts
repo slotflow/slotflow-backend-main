@@ -1,5 +1,5 @@
 import { AppError } from "./appError";
-import { ERROR_CODES } from "../utils/types";
+import { ERROR_CODES } from "../utils/types/enums";
 
 export function toAppError(
     error: unknown,

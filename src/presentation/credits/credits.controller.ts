@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { sendResponse } from "../../shared/utils/response";
+import { sendResponse } from "../../shared/utils/helpers/response";
 import { AuthUser } from "../../application/dtos/common.dto";
 import { startAndEndDateSchema } from "../../shared/zod/common.zod";
 import { getCreditDetailsUseCase, getCreditTransactionsUseCase } from ".";

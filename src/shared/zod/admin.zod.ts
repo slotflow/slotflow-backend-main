@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { verificationRejectionReasonRegex } from "../utils/regex";
+import { verificationRejectionReasonRegex } from "../utils/constants/regex";
 import { changeBlockStatusSchema, startAndEndDateSchema } from "./common.zod";
 import { validateUserIdSchema, validateProviderIdSchema, roleValidationSchema } from "./base.zod";
 

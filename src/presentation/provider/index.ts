@@ -6,7 +6,6 @@ import { cacheService, signedUrlService } from "../../infrastructure/services";
 import { AdminProviderListUseCase } from "../../application/useCases/provider/getProviders.useCase";
 import { GetProviderStatsUseCase } from "../../application/useCases/provider/dashboard/getStats.useCase";
 import { GetProviderProofsUseCase } from "../../application/useCases/common/getProviderProofs.useCase";
-import { TrialSubscriptionUseCase } from "../../application/useCases/subscription/trailSubscription.useCase";
 import { GetProviderGraphDataUseCase } from "../../application/useCases/provider/dashboard/getGraphData.useCase";
 import { GetSubscribedPlanUseCase } from "../../application/useCases/subscription/getSubscribedPlan.useCase";
 import { AdminRejectProviderUseCase } from "../../application/useCases/provider/adminRejectProvider.useCase";
@@ -41,8 +40,7 @@ export const provideDeleteIdentityProofUseCase = new ProvideDeleteIdentityProofU
 export const getServiceAvailabilityUseCase = new GetServiceAvailabilityUseCase(providerProfileRepository, serviceAvailabilityQueries);
 
 // provider subscription controller dependency injection
-export const trialSubscriptionUseCase = new TrialSubscriptionUseCase(userRepository, providerProfileRepository, subscriptionRepository, planRepository, kafkaProducer);
-export const subscriptionCheckoutUseCase = new SubscriptionCheckoutUseCase(planRepository, userRepository, providerProfileRepository, subscriptionRepository, paymentServiceClient);
+export const subscriptionCheckoutUseCase = new SubscriptionCheckoutUseCase(planRepository, providerProfileRepository, subscriptionRepository, paymentServiceClient);
 export const getSubscribedPlanUseCase = new GetSubscribedPlanUseCase(providerProfileRepository, subscriptionQueries);
 
 // admin provider controller dependency injection

@@ -3,7 +3,7 @@ import {
     BadRequestError,
     NotFoundError,
 } from "../../../shared/error/appError";
-import { ERROR_CODES } from "../../../shared/utils/types";
+import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { PlanName } from "../../../domain/enums/plan.enum";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { StripeSyncStatus } from "../../../domain/contracts/plan.contract";

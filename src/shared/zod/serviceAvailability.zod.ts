@@ -1,5 +1,5 @@
 import z from "zod";
-import { timeRegex } from "../utils/regex";
+import { timeRegex } from "../utils/constants/regex";
 import { Day } from "../../domain/enums/common.enum";
 import { ServiceMode } from "../../domain/enums/service.enum";
 import { dateSchema, validateProviderIdSchema } from "./base.zod";

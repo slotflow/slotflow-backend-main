@@ -3,7 +3,7 @@ import {
     updateInfoSchema,
     s3FileKeySchema,
 } from "./base.zod";
-import { strongPasswordRegex } from "../utils/regex";
+import { strongPasswordRegex } from "../utils/constants/regex";
 
 // User update file schema
 export const userUpdateFileSchema = s3FileKeySchema;

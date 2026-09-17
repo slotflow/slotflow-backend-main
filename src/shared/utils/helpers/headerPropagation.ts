@@ -1,6 +1,6 @@
 import { Request } from "express";
-import { Role } from "../../domain/enums/common.enum";
-import { AuthUser } from "../../application/dtos/common.dto";
+import { Role } from "../../../domain/enums/common.enum";
+import { AuthUser } from "../../../application/dtos/common.dto";
 
 export const buildUserHeaders = (user: AuthUser): Record<string, string> => {
     return {

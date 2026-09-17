@@ -1,13 +1,13 @@
 import { kafkaConfig } from "../../../config/env";
 import { UpdatePasswordInput } from "../../dtos/user.dto";
-import { generateId } from "../../../shared/utils/generateId";
-import { ERROR_CODES, IdType } from "../../../shared/utils/types";
+import { generateId } from "../../../shared/utils/helpers/generateId";
 import { toAppError } from "../../../shared/error/handleUnknownError";
-import { notificationContentMap } from "../../../shared/utils/constants";
+import { ERROR_CODES, IdType } from "../../../shared/utils/types/enums";
+import { notificationType } from "../../../shared/utils/constants/constant";
 import { EventEnvelope, SendUpdatePasswordEvent } from "../../dtos/kafka.dto";
 import { IPasswordHasher } from "../../../domain/interfaces/security/IPasswordHasher";
-import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { AppError, BadRequestError, NotFoundError } from "../../../shared/error/appError";
+import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 
 export class UpdatePasswordUseCase {
@@ -71,20 +71,18 @@ export class UpdatePasswordUseCase {
                 )
             }
 
-            await this.kafkaProducer.publish<EventEnvelope<SendUpdatePasswordEvent>>(kafkaConfig.topics.pub.passwordReset, {
-                            eventId: generateId({ type: IdType.EVENT }),
-                            attempt: 1,
-                            maxAttempts: 1,
-                            occurredAt: new Date().toISOString(),
-                            payload: {
-                                notificationData: {
-                                    userId: user._id,
-                                    pushNotification: user.allowPushNotification ?? false,
-                                    title: notificationContentMap.passwordUpdate.title,
-                                    body: notificationContentMap.passwordUpdate.body(),
-                                }
-                            }
-                        });
+            await this.kafkaProducer.publish<EventEnvelope<SendUpdatePasswordEvent>>(kafkaConfig.topics.pub.passwordUpdate, {
+                eventId: generateId({ type: IdType.EVENT }),
+                attempt: 1,
+                maxAttempts: 1,
+                occurredAt: new Date().toISOString(),
+                payload: {
+                    notificationData: {
+                        userId: user._id,
+                        notificationType: notificationType.ACCOUNT_ACTIVITY
+                    }
+                }
+            });
 
         } catch (error: unknown) {
             throw toAppError(error, "Failed to update password");

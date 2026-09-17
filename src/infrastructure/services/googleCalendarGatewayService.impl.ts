@@ -1,9 +1,9 @@
 import { google } from "googleapis";
-import { ERROR_CODES } from "../../shared/utils/types";
-import { EventData } from "../../shared/utils/constants";
+import { ERROR_CODES } from "../../shared/utils/types/enums";
 import { AppError, UnauthorizedError } from "../../shared/error/appError";
 import { IGoogleCalendarGatewayService } from "../../domain/interfaces/services/IGoogleCalendarGateway.service";
 import { CreateGoogleCalendarEventInput, UpdateGoogleCalendarEventInput, AddEventToCalendarProps, GetEventsFromCalendarProps } from "../../application/dtos/common.dto";
+import { EventData } from "../../shared/utils/constants/constant";
 
 export class GoogleCalendarGatewayServiceImpl implements IGoogleCalendarGatewayService {
 

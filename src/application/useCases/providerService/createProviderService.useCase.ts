@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { ERROR_CODES } from "../../../shared/utils/types";
+import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { CreateProviderServiceInput } from "../../dtos/providerService.dto";
 import { ProviderService } from "../../../domain/entities/providerService.entity";

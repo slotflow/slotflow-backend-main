@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { ERROR_CODES } from "../../../shared/utils/types";
+import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { User } from "../../../domain/entities/user.entity";
 import { Referral } from "../../../domain/entities/referral.entity";
 import { toAppError } from "../../../shared/error/handleUnknownError";

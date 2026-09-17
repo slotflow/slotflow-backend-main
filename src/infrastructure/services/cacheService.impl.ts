@@ -2,7 +2,7 @@ import { Redis } from "@upstash/redis";
 import { redisConfig } from "../../config/env";
 import { log } from "../../shared/logger/logger";
 import { AppError } from "../../shared/error/appError";
-import { ERROR_CODES } from "../../shared/utils/types";
+import { ERROR_CODES } from "../../shared/utils/types/enums";
 import { ICacheService } from "../../domain/interfaces/services/ICache.service";
 
 export class CacheServiceImpl implements ICacheService {

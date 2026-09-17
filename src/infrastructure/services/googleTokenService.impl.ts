@@ -1,5 +1,5 @@
 import { log } from "../../shared/logger/logger";
-import { ERROR_CODES } from "../../shared/utils/types";
+import { ERROR_CODES } from "../../shared/utils/types/enums";
 import { AppError, NotFoundError, UnauthorizedError } from "../../shared/error/appError";
 import { IGoogleTokenService } from "../../domain/interfaces/services/IGoogleToken.service";
 import { IAesEncryptionService } from "../../domain/interfaces/services/IAesEncryption.service";

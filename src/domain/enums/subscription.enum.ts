@@ -4,7 +4,7 @@ export enum SubscriptionStatus {
     CANCELLED = "CANCELLED",
     PENDING = "PENDING",
     PAST_DUE = "PAST_DUE",
-    FAILED = "FAILED",
+    PAYMENT_FAILED = "PAYMENT_FAILED",
 };
 
 // need to remove

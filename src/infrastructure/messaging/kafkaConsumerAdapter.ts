@@ -1,5 +1,5 @@
 import { log } from "../../shared/logger/logger";
-import { ERROR_CODES } from "../../shared/utils/types";
+import { ERROR_CODES } from "../../shared/utils/types/enums";
 import { AppError } from "../../shared/error/appError";
 import { Kafka, Consumer, ConsumerCrashEvent } from "kafkajs";
 import { MessageHandler } from "../../application/dtos/kafka.dto";

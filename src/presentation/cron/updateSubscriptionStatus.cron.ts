@@ -1,5 +1,6 @@
-import dayjs from "dayjs";
 import { log } from "../../shared/logger/logger";
+import { formatDate } from "../../shared/utils/helpers/dateTime";
+import { dateFormats } from "../../shared/utils/constants/constant";
 import { UpdateSubscriptionStatusUseCase } from "../../application/useCases/cronJob/updateSubscriptionStatus.useCase";
 
 export class UpdateSubscriptionStatusCron {
@@ -33,7 +34,7 @@ export class UpdateSubscriptionStatusCron {
   }
 
   private async run(): Promise<void> {
-    const today = dayjs().format("YYYY-MM-DD");
+    const today =  formatDate(new Date, dateFormats.ISO_DATE);
 
     if (this.lastRunDate === today) {
       log.info("[CRON] Subscription status already updated today. Skipping.");

@@ -1,5 +1,5 @@
 import { CreateReviewInput } from "../../dtos/review.dto";
-import { ERROR_CODES } from "../../../shared/utils/types";
+import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { Review } from "../../../domain/entities/review.entity";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { AppError, BadRequestError } from "../../../shared/error/appError";

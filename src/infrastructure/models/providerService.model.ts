@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
 import { ServiceType, ServiceMode } from "../../domain/enums/service.enum";
-import { serviceDescriptionRegex, serviceExperienceRegex, serviceNameRegex } from "../../shared/utils/regex";
+import { serviceDescriptionRegex, serviceExperienceRegex, serviceNameRegex } from "../../shared/utils/constants/regex";
 
 export interface IProviderService extends Document {
   _id: Types.ObjectId;
@@ -12,8 +12,6 @@ export interface IProviderService extends Document {
   serviceExperienceYears: number;
   serviceExperience: string;
   serviceType: ServiceType;
-  // TODO Remove
-  // serviceMode: ServiceMode;
   tags: string[] | [];
   maxParticipants: number;
   isGroupService: boolean;
@@ -87,14 +85,6 @@ const ProviderServiceSchema = new Schema<IProviderService>(
       enum: Object.values(ServiceType),
       required: [true, "Service type is required"],
     },
-
-    // TODO Remove
-    // serviceMode: {
-    //   type: String,
-    //   enum: Object.values(ServiceMode),
-    //   required: [true, "Service mode is required"],
-    // },
-
     tags: {
       type: [String],
       default: [],

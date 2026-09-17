@@ -1,4 +1,4 @@
-import { ERROR_CODES } from "../../../shared/utils/types";
+import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { AppError, BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { UpdateAddressInput, UpdateAddressOutput } from "../../dtos/address.dto";

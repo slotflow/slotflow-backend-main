@@ -12,7 +12,6 @@ import { ChangeUserBlockStatusUseCase } from "../../application/useCases/user/ch
 import { UpdateUserProfileInfoUseCase } from "../../application/useCases/user/updateUserProfileInfo.useCase";
 import { ChangePushNotificationUseCase } from "../../application/useCases/user/changePushNotification.useCase";
 import { UpdateUserProfileImageUseCase } from "../../application/useCases/user/updateUserProfileImage.useCase";
-import { CheckStripeAccountStatusUseCase } from "../../application/useCases/user/checkStripeAccountStatus.useCase";
 import { providerProfileRepository, referralRepository, userRepository } from "../../infrastructure/repositoryImpls";
 
 export const updateUserProfileInfoUseCase = new UpdateUserProfileInfoUseCase(userRepository);
@@ -32,5 +31,3 @@ export const getUsersUseCase = new GetUsersUseCase(userQueries);
 export const preBoardingUseCase = new PreBoardingUseCase(userRepository, providerProfileRepository, referralRepository);
 
 export const updatePasswordUseCase = new UpdatePasswordUseCase(userRepository, passwordHasher, kafkaProducer);
-
-export const checkStripeAccountStatusUseCase = new CheckStripeAccountStatusUseCase(userRepository, paymentServiceClient);

@@ -28,8 +28,6 @@ export class GetProviderServicesUseCase {
                 videoUrl: service.videoUrl,
                 portfolioUrl:service.portfolioUrl,
                 serviceType: service.serviceType,
-                // TODO Remove
-                // serviceMode: service.serviceMode,
                 requirements: service.requirements,
                 maxParticipants: service.maxParticipants,
                 isGroupService: service.isGroupService,

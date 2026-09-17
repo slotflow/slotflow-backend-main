@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { roleValidationSchema } from './base.zod';
-import { strongPasswordRegex, usernameRegex } from '../utils/regex';
+import { strongPasswordRegex, usernameRegex } from '../utils/constants/regex';
 import { HearAboutUsOptionValue } from '../../domain/enums/common.enum';
 
 // Regist controller zod validation

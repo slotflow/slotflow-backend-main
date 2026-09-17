@@ -1,4 +1,4 @@
-import dayjs from "../../../shared/config/dayjs";
+import { isSameDay } from "date-fns";
 import { CheckBookingInput } from "../../dtos/booking.dto";
 import { BadRequestError } from "../../../shared/error/appError";
 import { toAppError } from "../../../shared/error/handleUnknownError";
@@ -22,7 +22,7 @@ export class CheckBookingUseCase {
                 return false;
             }
 
-            const isToday = dayjs(booking.createdAt).isSame(dayjs(), "day");
+            const isToday = isSameDay(new Date(booking.createdAt), new Date());
             if (
                 isToday &&
                 booking.paymentId &&

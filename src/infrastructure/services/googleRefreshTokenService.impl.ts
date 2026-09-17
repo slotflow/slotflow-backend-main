@@ -1,5 +1,5 @@
 import { googleClientConfig } from "../../config/env";
-import { ERROR_CODES } from "../../shared/utils/types";
+import { ERROR_CODES } from "../../shared/utils/types/enums";
 import { AppError, UnauthorizedError } from "../../shared/error/appError";
 import { IGoogleRefreshTokenService } from "../../domain/interfaces/services/IGoogleRefreshToken.service";
 

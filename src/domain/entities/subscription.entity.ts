@@ -73,7 +73,7 @@ export class Subscription {
     };
 
     subscriptionPaymentFailed() {
-        this.props.subscriptionStatus = SubscriptionStatus.FAILED;
+        this.props.subscriptionStatus = SubscriptionStatus.PAYMENT_FAILED;
         this.touch();
     };
 

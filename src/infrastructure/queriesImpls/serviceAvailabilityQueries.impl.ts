@@ -1,5 +1,5 @@
 import { FilterQuery, Types } from "mongoose";
-import { daysOfWeek } from "../../shared/utils/constants";
+import { daysOfWeek } from "../../shared/utils/constants/constant";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { ServiceAvailabilityModel } from "../models/serviceAvailability.model";
 import { IServiceAvailabilityQueries } from "../../application/queries/IServiceAvailability.queries";

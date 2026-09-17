@@ -13,8 +13,6 @@ type FindProviderService = Pick<ProviderServiceDTO,
 "servicePrice" | 
 "serviceExperience" | 
 "serviceType" | 
-// TODO Remove
-// "serviceMode" | 
 "requirements" | 
 "maxParticipants" | 
 "isGroupService" | 
@@ -67,8 +65,6 @@ export type UpdateProviderServiceQuery = Pick<ProviderServiceDTO,
 "isGroupService" | 
 "maxParticipants" | 
 "serviceExperience" |
-// TODO Remove 
-// "serviceMode" | 
 "serviceType" | 
 "tags"
 > & Partial<Pick<ProviderServiceDTO, "videoUrl" | "requirements">>;
@@ -98,13 +94,13 @@ export type CreateProviderServiceInput = Pick<ProviderServiceDTO,
 "serviceId" | 
 "serviceDescription" | 
 "serviceExperience" | 
-// TODO Remove
-// "serviceMode" | 
+"serviceExperienceYears" | 
 "serviceName" | 
 "servicePrice" | 
 "serviceType" | 
 "tags" | 
-"videoUrl"
+"videoUrl" | 
+"portfolioUrl"
 >;
 
 // get provider service input and output
@@ -122,8 +118,6 @@ export type UpdateProviderServiceInput = Pick<ProviderServiceDTO,
 "isGroupService" | 
 "maxParticipants" | 
 "serviceExperience" |
-// TODO Remove 
-// "serviceMode" | 
 "serviceType" | 
 "tags" |
 "portfolioUrl" |

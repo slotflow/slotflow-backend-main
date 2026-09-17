@@ -1,7 +1,7 @@
 import { Kafka, Producer } from "kafkajs";
 import { log } from "../../shared/logger/logger";
 import { AppError } from "../../shared/error/appError";
-import { ERROR_CODES } from "../../shared/utils/types";
+import { ERROR_CODES } from "../../shared/utils/types/enums";
 import { IKafkaProducerAdapter } from "../../domain/interfaces/messaging/IKafkaProducerAdapter";
 
 export class KafkaProducerAdapter implements IKafkaProducerAdapter {
@@ -31,7 +31,7 @@ export class KafkaProducerAdapter implements IKafkaProducerAdapter {
 
     async publish<T>(topic: string, input: T): Promise<void> {
         try {
-            const payload = JSON.stringify(input); // may throw
+            const payload = JSON.stringify(input);
 
             await this.producer.send({
                 topic,

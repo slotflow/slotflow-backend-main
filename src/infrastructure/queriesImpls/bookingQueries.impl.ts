@@ -1,13 +1,13 @@
-import dayjs from "dayjs";
 import { FilterQuery, Types } from "mongoose";
 import { Role } from "../../domain/enums/common.enum";
 import { BookingModel } from "../models/booking.model";
-import { getStartAndEndDate } from "../../shared/utils/dateTime";
-import { formatStatMetric } from "../../shared/utils/formatStatMetric";
+import { addDays, startOfDay, subDays } from 'date-fns';
+import { getStartAndEndDate } from "../../shared/utils/helpers/dateTime";
+import { formatStatMetric } from "../../shared/utils/helpers/formatStatMetric";
 import { TableData, BookingDTO } from "../../application/dtos/common.dto";
 import { IBookingQueries } from "../../application/queries/IBooking.queries";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
-import { calculatePreviousPeriod } from "../../shared/utils/calculatePreviosPeriod";
+import { calculatePreviousPeriod } from "../../shared/utils/helpers/calculatePreviosPeriod";
 import { BookingDetailsQuery, BookingDetailsView, BookingGraphStatsForProviderQuery, BookingGraphStatsForProviderView, BookingsBaseView, BookingsQuery, BookingsStatsDataAdminQuery, BookingsStatsDataAdminView, BookingStatsForProviderQuery, BookingStatsForProviderView, BookingsView, BookingUsersForChatQuery, BookingUsersForChatView, OnlineBookingsViewForProvider, OnlineBookingsViewForUser } from "../../application/dtos/booking.dto";
 
 export class BookingQueriesImpl implements IBookingQueries {
@@ -726,8 +726,8 @@ async findStatsDataForProviderDashboard(query: BookingStatsForProviderQuery): Pr
                 $match: {
                     ...matchFilter,
                     appointmentDate: {
-                        $gte: dayjs().subtract(1, 'day').startOf('day').toDate(),
-                        $lte: dayjs().add(1, 'day').startOf('day').toDate(),
+                        $gte: startOfDay(subDays(new Date(), 1)),
+                        $lte: startOfDay(addDays(new Date(), 1)),
                     },
                 }
             },

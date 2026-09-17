@@ -1,14 +1,14 @@
 import { log } from "../../../shared/logger/logger";
 import { Role } from "../../../domain/enums/common.enum";
-import { CreateGoogleCalendarEventSuccessInput } from "../../dtos/kafka.dto";
+import { GoogleCalendarCreateEventSuccessInput } from "../../dtos/kafka.dto";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 
-export class GoogleCalendarSuccessUseCases {
+export class GoogleCalendarCreateEventSuccessUseCases {
     constructor(
         private readonly bookingRepository: IBookingRepository
     ) { };
 
-    async execute(input: CreateGoogleCalendarEventSuccessInput): Promise<void> {
+    async execute(input: GoogleCalendarCreateEventSuccessInput): Promise<void> {
         try {
             const { bookingId, role, eventId } = input;
 
@@ -30,7 +30,7 @@ export class GoogleCalendarSuccessUseCases {
                 await this.bookingRepository.update(booking);
             };
         } catch (error) {
-            log.error("GoogleCalendarSuccessUseCases.execute error", error as Error);
+            log.error("GoogleCalendarCreateEventSuccessUseCases error", error as Error);
         };
     };
 };

@@ -1,14 +1,15 @@
 import mongoose from "mongoose";
 import { kafkaConfig } from "../../../config/env";
-import { generateId } from '../../../shared/utils/generateId';
-import { ERROR_CODES, IdType } from '../../../shared/utils/types';
+import { formatDate } from "../../../shared/utils/helpers/dateTime";
+import { generateId } from '../../../shared/utils/helpers/generateId';
 import { toAppError } from "../../../shared/error/handleUnknownError";
+import { ERROR_CODES, IdType } from '../../../shared/utils/types/enums';
 import { AppError, NotFoundError } from "../../../shared/error/appError";
-import { notificationContentMap } from "../../../shared/utils/constants";
-import { ProviderCreatePaymentSuccessEventInput } from "../../dtos/kafka.dto";
 import { CreditAccount } from "../../../domain/entities/creditAccount.entity";
+import { ProviderSubscriptionPaymentSuccessEventInput } from "../../dtos/kafka.dto";
 import { CreditTransaction } from "../../../domain/entities/creditTransaction.entity";
 import { EventEnvelope, ProviderSubscriptionUpdatedEvent } from "../../dtos/kafka.dto";
+import { dateFormats, notificationType } from "../../../shared/utils/constants/constant";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
@@ -31,7 +32,7 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
         private readonly creditTransactionRepository: ICreditTransactionRepository
     ) { };
 
-    async execute(input: ProviderCreatePaymentSuccessEventInput): Promise<void> {
+    async execute(input: ProviderSubscriptionPaymentSuccessEventInput): Promise<void> {
         const session = await mongoose.startSession();
         try {
             session.startTransaction();
@@ -39,7 +40,6 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
                 subscriptionId,
                 paymentId,
                 isTrial,
-                planName,
                 providerId,
                 currentPeriodEnd,
                 currentPeriodStart
@@ -178,24 +178,23 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
                         subscribedPlan: plan.planName,
                         startDate: updatedSubscription.startDate,
                         endDate: updatedSubscription.endDate,
-                        subscriptionStatus: subscription.subscriptionStatus
+                        subscriptionStatus: subscription.subscriptionStatus,
+                        hasUsedTrial: providerProfile.hasUsedTrial,
                     },
                     emailData: {
                         email: provider.email,
                         name: provider.username,
                         subscribedPlan: plan.planName,
-                        startDate: updatedSubscription.startDate,
-                        endDate: updatedSubscription.endDate
+                        isTrial,
+                        startDate: formatDate(updatedSubscription.startDate, dateFormats.WITH_FULL_TIME),
+                        endDate: formatDate(updatedSubscription.endDate, dateFormats.WITH_FULL_TIME),
                     },
                     notificationData: {
                         userId: provider._id,
-                        pushNotification: provider.allowPushNotification ?? false,
-                        title: notificationContentMap.planSubscribed.title,
-                        body: notificationContentMap.planSubscribed.body(
-                            planName,
-                            isTrialBoolean,
-                            currentPeriodEnd
-                        )
+                        planName: plan.planName,
+                        isTrial,
+                        currentPeriodEnd: formatDate(currentPeriodEnd, dateFormats.WITH_TIME),
+                        notificationType: notificationType.ACCOUNT_ACTIVITY
                     }
                 }
             });

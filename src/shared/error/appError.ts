@@ -1,4 +1,4 @@
-import { ERROR_CODES } from "../utils/types";
+import { ERROR_CODES } from "../utils/types/enums";
 
 export class AppError extends Error {
     constructor(

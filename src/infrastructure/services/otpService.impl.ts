@@ -2,7 +2,7 @@ import { Redis } from '@upstash/redis';
 import { redisConfig } from '../../config/env';
 import { log } from '../../shared/logger/logger';
 import { generateOTP } from 'otp-generator-module';
-import { ERROR_CODES } from '../../shared/utils/types';
+import { ERROR_CODES } from '../../shared/utils/types/enums';
 import { IOTPService } from '../../domain/interfaces/services/IOtp.service';
 import { AppError, BadRequestError, UnauthorizedError } from '../../shared/error/appError';
 

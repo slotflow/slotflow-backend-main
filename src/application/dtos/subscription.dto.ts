@@ -100,19 +100,6 @@ export interface SubscriptionCreateSessionIdOutput {
 }
 
 
-// trialSubscription usecase input output
-export interface TrialSubscriptionInput {
-    providerId: string;
-}
-export interface TrialSubscriptionOutput {
-    subscribedPlan: PlanName,
-    startDate: Date,
-    endDate: Date,
-    subscriptionStatus: SubscriptionStatus,
-    _id: string;
-}
-
-
 // getSubscriptions usecase input output
 export interface GetSubscriptionsInput extends ApiPaginationInput {
     providerId?: UserDTO["_id"];

@@ -2,10 +2,10 @@ import { Types } from "mongoose";
 import { UserModel } from "../models/user.model";
 import { Role } from "../../domain/enums/common.enum";
 import { TableData } from "../../application/dtos/common.dto";
-import { getStartAndEndDate } from "../../shared/utils/dateTime";
+import { getStartAndEndDate } from "../../shared/utils/helpers/dateTime";
 import { IUserQueries } from "../../application/queries/IUser.queries";
-import { formatStatMetric } from "../../shared/utils/formatStatMetric";
-import { calculatePreviousPeriod } from "../../shared/utils/calculatePreviosPeriod";
+import { formatStatMetric } from "../../shared/utils/helpers/formatStatMetric";
+import { calculatePreviousPeriod } from "../../shared/utils/helpers/calculatePreviosPeriod";
 import { UserStatsDataQuery, UserStatsDataView, UsersQuery, UsersView, ProvidersQuery, ProvidersView, ProviderByIdQuery, ProviderByIdView, ProviderStatsDataQuery, ProviderStatsDataView, UserChartDataQuery, UserChartDataView } from "../../application/dtos/user.dto";
 
 export class UserQueriesImpl implements IUserQueries {

@@ -1,4 +1,4 @@
-import { ERROR_CODES } from "../../../shared/utils/types";
+import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { PlanName } from "../../../domain/enums/plan.enum";
 import { Plan } from "../../../domain/entities/plan.entity";
 import { toAppError } from "../../../shared/error/handleUnknownError";

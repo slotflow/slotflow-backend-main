@@ -27,13 +27,6 @@ router.post('/checkout/session',
     subscriptionController.subscriptionCheckout
 );
 
-// provider subscribe to trial plan
-router.post('/trial',
-    authMiddleware,
-    authorize(Role.PROVIDER),
-    subscriptionController.subscribeToTrialPlan
-);
-
 // admin or provider get subscription details
 router.get('/:subscriptionId',
     authMiddleware,

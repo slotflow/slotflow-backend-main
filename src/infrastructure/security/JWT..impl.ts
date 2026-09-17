@@ -1,7 +1,7 @@
 import { jwtConfig } from "../../config/env";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { log } from "../../shared/logger/logger";
-import { ERROR_CODES } from "../../shared/utils/types";
+import { ERROR_CODES } from "../../shared/utils/types/enums";
 import { IJWT } from "../../domain/interfaces/security/IJwt";
 import { JwtClaims } from "../../domain/commands/jwt.commands";
 import { AppError, BadRequestError, UnauthorizedError } from "../../shared/error/appError";

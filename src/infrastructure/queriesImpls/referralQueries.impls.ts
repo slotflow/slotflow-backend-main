@@ -1,15 +1,17 @@
-import dayjs from "dayjs";
 import mongoose from "mongoose";
 import {
     ReferralChartKeys,
-    GetReferralDetailsQuery,
     GetReferralDetailsView,
+    GetReferralDetailsQuery,
 } from "../../application/dtos/referral.dto";
+import { addDays, isBefore, isSameDay } from "date-fns";
+import { formatDate } from "../../shared/utils/helpers/dateTime";
 import { ReferralModel } from "../models/referral.model";
+import { calcPercentage } from "../../shared/utils/helpers/getPercentage";
+import { dateFormats } from "../../shared/utils/constants/constant";
 import { AggregateCountResult } from "../../application/dtos/common.dto";
-import { getDateRangeMetrics } from "../../shared/utils/getDateRangeMetrics";
+import { getDateRangeMetrics } from "../../shared/utils/helpers/getDateRangeMetrics";
 import { IReferralQueries } from "../../application/queries/IReferral.queries";
-import { calcPercentage } from "../../shared/utils/getPercentage";
 
 export class ReferralQueriesImpl implements IReferralQueries{
 
@@ -23,8 +25,8 @@ export class ReferralQueriesImpl implements IReferralQueries{
         $match: {
           referrerUserId: userObjectId,
           createdAt: {
-            $gte: start.toDate(),
-            $lte: end.toDate(),
+            $gte: start,
+            $lte: end,
           },
         },
       },
@@ -57,8 +59,8 @@ export class ReferralQueriesImpl implements IReferralQueries{
         $match: {
           referrerUserId: userObjectId,
           createdAt: {
-            $gte: prevStart.toDate(),
-            $lte: prevEnd.toDate(),
+            $gte: prevStart,
+            $lte: prevEnd,
           },
         },
       },
@@ -108,8 +110,8 @@ export class ReferralQueriesImpl implements IReferralQueries{
         $match: {
           referrerUserId: userObjectId,
           createdAt: {
-            $gte: start.toDate(),
-            $lte: end.toDate(),
+            $gte: start,
+            $lte: end,
           },
         },
       },
@@ -172,10 +174,10 @@ export class ReferralQueriesImpl implements IReferralQueries{
     let currentDate = start;
 
     while (
-      currentDate.isBefore(end) ||
-      currentDate.isSame(end)
+      isBefore(currentDate, end) ||
+  isSameDay(currentDate, end)
     ) {
-      const dateStr = currentDate.format("YYYY-MM-DD");
+      const dateStr = formatDate(currentDate, dateFormats.ISO_DATE);
 
       filledChartData.push(
         dateMap.get(dateStr) || {
@@ -187,7 +189,7 @@ export class ReferralQueriesImpl implements IReferralQueries{
         }
       );
 
-      currentDate = currentDate.add(1, "day");
+      currentDate = addDays(currentDate, 1);
     }
 
     const buildMiniChart = (key: ReferralChartKeys) => {

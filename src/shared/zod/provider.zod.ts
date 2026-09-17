@@ -4,7 +4,7 @@ import { PlanName } from "../../domain/enums/plan.enum";
 import { ServiceType } from "../../domain/enums/service.enum";
 import { paginationSchema, s3FileKeySchema } from "./base.zod";
 import { BillingCycle } from "../../domain/enums/subscription.enum";
-import { objectIdRegex, serviceDescriptionRegex, serviceExperienceRegex, serviceNameRegex } from "../utils/regex";
+import { objectIdRegex, serviceDescriptionRegex, serviceExperienceRegex, serviceNameRegex } from "../utils/constants/regex";
 
 // Provider id with pagination validation schema
 export const providerIdWithPaginationSchema = z.object({
@@ -54,9 +54,6 @@ export const serviceDetailsSchema = z.object({
     serviceId: z.string().regex(objectIdRegex, "Invalid serviceId"),
 
     serviceType: z.enum(ServiceType),
-
-    // TODO Remove
-    // serviceMode: z.nativeEnum(ServiceMode),
 
     maxParticipants: z
         .number()

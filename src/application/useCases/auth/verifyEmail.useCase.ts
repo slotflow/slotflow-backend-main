@@ -1,5 +1,5 @@
-import { ERROR_CODES } from "../../../shared/utils/types";
 import { IJWT } from "../../../domain/interfaces/security/IJwt";
+import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { VerifyEmailInput, VerifyEmailOutput } from "../../dtos/auth.dto";
 import { IOTPService } from "../../../domain/interfaces/services/IOtp.service";

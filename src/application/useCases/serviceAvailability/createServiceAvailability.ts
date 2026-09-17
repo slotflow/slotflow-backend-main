@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { ERROR_CODES } from "../../../shared/utils/types";
+import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { CreateServiceAvailabilityInput } from "../../dtos/serviceAvailability.dto";
 import { ServiceAvailability } from "../../../domain/entities/serviceAvailability.entity";

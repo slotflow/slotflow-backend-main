@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { BASE36 } from "./constants";
+import { BASE36 } from "../constants/constant";
 
 export const generateBase62 = (length: number): string => {
     let result = "";

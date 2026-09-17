@@ -1,13 +1,12 @@
 import { kafkaConfig } from "../../../config/env";
 import { PlanName } from "../../../domain/enums/plan.enum";
 import { User } from "../../../domain/entities/user.entity";
-import { generateId } from "../../../shared/utils/generateId";
 import { IJWT } from "../../../domain/interfaces/security/IJwt";
-import { ERROR_CODES, IdType } from '../../../shared/utils/types';
 import { AppConnect, Role } from "../../../domain/enums/common.enum";
 import { toAppError } from '../../../shared/error/handleUnknownError';
+import { generateId } from "../../../shared/utils/helpers/generateId";
+import { ERROR_CODES, IdType } from '../../../shared/utils/types/enums';
 import { Credential } from "../../../domain/entities/credential.entity";
-import { notificationContentMap } from "../../../shared/utils/constants";
 import { AuthResponseBuilder } from '../../services/AuthResponseBuilder';
 import { AppError, BadRequestError } from '../../../shared/error/appError';
 import { ProviderProfile } from '../../../domain/entities/providerProfile.entity';
@@ -18,6 +17,7 @@ import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKaf
 import { IAesEncryptionService } from "../../../domain/interfaces/services/IAesEncryption.service";
 import { ICredentialRepository } from "../../../domain/interfaces/repositories/ICredentialRepository";
 import { IProviderProfileRepository } from '../../../domain/interfaces/repositories/IProviderProfile.repository';
+import { notificationType } from "../../../shared/utils/constants/constant";
 
 export class GoogleAuthOrchestratorUseCase {
     constructor(
@@ -184,11 +184,8 @@ export class GoogleAuthOrchestratorUseCase {
                             },
                             notificationData: {
                                 userId: user._id,
-                                pushNotification: user.allowPushNotification ?? false,
-                                title: notificationContentMap.appConnect.title,
-                                body: notificationContentMap.appConnect.body(
-                                    AppConnect.GOOGLE
-                                ),
+                                appName: AppConnect.GOOGLE,
+                                notificationType: notificationType.ACCOUNT_ACTIVITY
                             },
                         },
                     });

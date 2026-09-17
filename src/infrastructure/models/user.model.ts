@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
-import { HearAboutUsOptionValue, OnboardingStatus, Role, StripeAccountStatus } from '../../domain/enums/common.enum';
+import { HearAboutUsOptionValue, OnboardingStatus, Role } from '../../domain/enums/common.enum';
 
 export interface IUser extends Document {
   _id: Types.ObjectId;
@@ -15,9 +15,6 @@ export interface IUser extends Document {
   addressId: Types.ObjectId;
   googleConnected: boolean;
   googleId: string;
-  stripeAccountStatus: StripeAccountStatus;
-  stripeAccountId: string | null;
-  stripeCustomerId: string | null;
   allowPushNotification: boolean;
   whereDidHearAboutUs: HearAboutUsOptionValue;
   referralCode: string | null;
@@ -97,20 +94,6 @@ const UserSchema = new Schema<IUser>({
     required: function (): boolean {
       return !this.password;
     }
-  },
-  stripeAccountStatus: {
-    type: String,
-    enum: Object.values(StripeAccountStatus),
-    default: StripeAccountStatus.NOT_CONNECTED,
-    required: true,
-  },
-  stripeAccountId: {
-    type: String,
-    default: null
-  },
-  stripeCustomerId: {
-    type: String,
-    default: null
   },
   allowPushNotification: {
     type: Boolean,

@@ -1,5 +1,5 @@
 import { CommonDateInput } from "./common.dto";
-import { Role, StripeAccountStatus } from "../../domain/enums/common.enum";
+import { Role } from "../../domain/enums/common.enum";
 import { UserDTO, ServiceDTO, ProviderServiceDTO, ProviderProfileDTO, ApiPaginationInput, StatMetric } from "./common.dto";
 
 //// ****  user queries parameter and return type **** ////
@@ -84,8 +84,6 @@ type FindProviderServiceProps = Pick<ProviderServiceDTO,
     "serviceExperience" |
     "videoUrl" |
     "serviceType" |
-    // TODO Remove 
-    // "serviceMode" | 
     "requirements" |
     "maxParticipants" |
     "isGroupService"
@@ -159,12 +157,4 @@ export interface UpdatePasswordInput {
     userId: UserDTO["_id"];
     currentPassword: string;
     newPassword: string;
-}
-
-// CheckStripeAccountStatus usecase input output
-export interface CheckStripeAccountStatusInput {
-    userId: UserDTO["_id"];
-}
-export interface CheckStripeAccountStatusOutput {
-    accountStatus: StripeAccountStatus;
 }

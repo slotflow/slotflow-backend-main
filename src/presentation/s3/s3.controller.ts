@@ -1,6 +1,6 @@
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
-import { sendResponse } from "../../shared/utils/response";
+import { sendResponse } from "../../shared/utils/helpers/response";
 import { createFileSignedUrlUseCase, createFileUploadPresignedUrlUseCase } from ".";
 import { presignedUrlSchema } from "../../shared/zod/common.zod";
 import { CreateFileSignedUrlUseCase, CreateFileUploadPresignedUrlUseCase } from "../../application/useCases/common/s3.useCase";

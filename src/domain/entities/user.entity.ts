@@ -1,4 +1,4 @@
-import { OnboardingStatus, Role, StripeAccountStatus } from "../enums/common.enum";
+import { OnboardingStatus, Role } from "../enums/common.enum";
 import { UserProps } from "../contracts/user.contract";
 import { ChangePasswordProps, ChangeProfileImageProps, ChangeProfileInfoProps, CreateGoogleUserProps, CreateLocalUserProps, LinkGoogleAccountProps, UpdatePushNotificationProps, CompletePreBoardingProps } from "../commands/user.commands";
 
@@ -39,9 +39,6 @@ export class User {
             phone: null,
             googleConnected: false,
             googleId: null,
-            stripeAccountStatus: StripeAccountStatus.NOT_CONNECTED,
-            stripeAccountId: null,
-            stripeCustomerId: null,
             createdAt: new Date(),
             updatedAt: new Date(),
         })
@@ -60,15 +57,12 @@ export class User {
             profileImage: props.profileImage,
             googleConnected: true,
             googleId: props.googleId,
-            stripeAccountStatus: StripeAccountStatus.NOT_CONNECTED,
             allowPushNotification: false,
             whereDidHearAboutUs: null,
             referralCode: props.referralCode,
             referredBy: null,
             addressId: null,
             phone: null,
-            stripeAccountId: null,
-            stripeCustomerId: null,
             createdAt: new Date(),
             updatedAt: new Date(),
         })
@@ -122,18 +116,6 @@ export class User {
 
     get googleId(): string | null {
         return this.props.googleId;
-    }
-
-    get stripeAccountStatus(): StripeAccountStatus {
-        return this.props.stripeAccountStatus;
-    }
-
-    get stripeAccountId(): string | null {
-        return this.props.stripeAccountId;
-    }
-
-    get stripeCustomerId(): string | null {
-        return this.props.stripeCustomerId;
     }
 
     get addressId(): string | null {
@@ -222,28 +204,6 @@ export class User {
 
     attachAddress(addressId: string) {
         this.props.addressId = addressId;
-        this.touch();
-    }
-
-    linkStripeAccount(stripeAccountId: string) {
-        this.ensureNotBlocked("update stripe account");
-
-        this.props.stripeAccountId = stripeAccountId;
-        this.props.stripeAccountStatus = StripeAccountStatus.PENDING;
-        this.touch();
-    }
-
-    updateStripeAccountStatus(stripeAccountStatus: StripeAccountStatus) {
-        this.ensureNotBlocked("update stripe account status");
-
-        this.props.stripeAccountStatus = stripeAccountStatus;
-        this.touch();
-    }
-
-    linkStripeCustomer(stripeCustomerId: string) {
-        this.ensureNotBlocked("update stripe customer");
-
-        this.props.stripeCustomerId = stripeCustomerId;
         this.touch();
     }
 

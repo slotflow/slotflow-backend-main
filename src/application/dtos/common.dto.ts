@@ -1,12 +1,12 @@
 import { PlanName } from "../../domain/enums/plan.enum";
-import { Day, HearAboutUsOptionValue, OnboardingStatus, ReferralStatus, Role, StripeAccountStatus } from "../../domain/enums/common.enum";
 import { GeoLocation } from "../../domain/contracts/address.contract";
 import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
-import { ServiceCategory, ServiceMode, ServiceType } from "../../domain/enums/service.enum";
-import { CreditTransactionSource, CreditTransactionStatus, CreditTransactionType } from "../../domain/enums/creditTransaction.enum";
 import { StripePlanDetails, StripeSyncStatus } from "../../domain/contracts/plan.contract";
+import { ServiceCategory, ServiceMode, ServiceType } from "../../domain/enums/service.enum";
+import { Day, HearAboutUsOptionValue, OnboardingStatus, ReferralStatus, Role } from "../../domain/enums/common.enum";
+import { CreditTransactionSource, CreditTransactionStatus, CreditTransactionType } from "../../domain/enums/creditTransaction.enum";
 
 // **** ENTITY INTERFACES FOR APPLICATION LAYER **** \\
 
@@ -43,9 +43,6 @@ export interface UserDTO {
   addressId: string | null;
   googleConnected: boolean;
   googleId: string | null;
-  stripeAccountStatus: StripeAccountStatus;
-  stripeAccountId: string | null;
-  stripeCustomerId: string | null;
   allowPushNotification: boolean | null;
   whereDidHearAboutUs: HearAboutUsOptionValue;
   referralCode: string | null;
@@ -149,8 +146,6 @@ export interface ProviderServiceDTO {
   serviceExperienceYears: number,
   serviceExperience: string,
   serviceType: ServiceType,
-  // TODO Remove
-  // serviceMode: ServiceMode,
   tags: string[] | [],
   requirements: string[] | [],
   videoUrl: string | null,
@@ -492,3 +487,12 @@ export interface CommonDateInput {
   startDate: Date;
   endDate: Date;
 }
+
+// Notification channels
+export type NotificationChannel = 'email' | 'push' | 'in_app';
+
+// Notification Type
+export type NotificationType =
+  | 'account_activity'
+  | 'system_updates'
+  | 'promotional_updates';

@@ -1,4 +1,4 @@
-import { ERROR_CODES } from "../../../shared/utils/types";
+import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { RefundFor, RefundReason } from "../../../domain/enums/payment.enum";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
@@ -52,9 +52,16 @@ export class CancelBookingUseCase {
                 );
             }
 
+            if (booking.appointmentStatus === AppointmentStatus.CONFIRMED) {
+                throw new BadRequestError(
+                    "Booking already cancelled",
+                    ERROR_CODES.INVALID_REQUEST
+                );
+            }
+
             if (booking.appointmentStatus === AppointmentStatus.COMPLETED) {
                 throw new BadRequestError(
-                    "Appointment already completed",
+                    "Confirmed appointments cant cancel",
                     ERROR_CODES.INVALID_REQUEST
                 );
             }

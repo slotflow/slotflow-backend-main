@@ -1,5 +1,5 @@
-import dayjs from "dayjs";
-import { ERROR_CODES } from "../../../shared/utils/types";
+import { isAfter, startOfDay } from "date-fns";
+import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { PlanName } from "../../../domain/enums/plan.enum";
 import { PaymentFor } from "../../../domain/enums/payment.enum";
 import { toAppError } from "../../../shared/error/handleUnknownError";
@@ -23,7 +23,7 @@ export class SubscriptionCheckoutUseCase {
     async execute(input: SubscriptionCreateSessionIdInput): Promise<SubscriptionCreateSessionIdOutput> {
         try {
             const { providerId, planId, billingCycle, email, name, role } = input;
-            console.log("input : ",input);
+            console.log("input : ", input);
 
             if (!providerId || !planId || !billingCycle || !email || !name || !role) {
                 throw new BadRequestError();
@@ -50,6 +50,15 @@ export class SubscriptionCheckoutUseCase {
             const providerLastSubscriptionId = providerProfile.subscriptions.at(-1);
             if (providerLastSubscriptionId) {
                 const subscription = await this.subscriptionRepository.findById(providerLastSubscriptionId!);
+                if (!subscription) {
+                    throw new AppError(
+                        "Failed to create subscription.",
+                        500,
+                        true,
+                        ERROR_CODES.INTERNAL_ERROR
+                    );
+                }
+
                 if (subscription?.subscriptionStatus === SubscriptionStatus.ACTIVE) {
                     throw new BadRequestError(
                         "Your subscription is already active.",
@@ -57,7 +66,10 @@ export class SubscriptionCheckoutUseCase {
                     );
                 }
 
-                const isSubscriptionExpired = dayjs().isAfter(dayjs(subscription?.endDate), "day");
+                const isSubscriptionExpired = isAfter(
+                    startOfDay(new Date()),
+                    startOfDay(new Date(subscription?.endDate))
+                );
                 if (!isSubscriptionExpired) {
                     throw new BadRequestError(
                         "Your subscription is already active.",
@@ -98,7 +110,6 @@ export class SubscriptionCheckoutUseCase {
             const { data } = await this.paymentServiceClient.createSubscriptionCheckoutSession({
                 subscriptionData: {
                     subscriptionId: subscription._id.toString(),
-                    planName: plan.planName,
                     billingCycle,
                     unitAmount: price,
                     paymentFor: PaymentFor.PROVIDER_SUBSCRIPTION,

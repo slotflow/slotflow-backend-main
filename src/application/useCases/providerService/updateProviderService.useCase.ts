@@ -40,8 +40,6 @@ export class UpdateProviderServiceUseCase {
                 servicePrice: service.servicePrice,
                 serviceExperience: service.serviceExperience,
                 serviceType: service.serviceType,
-                // TODO Remove
-                // serviceMode: service.serviceMode,
                 tags: service.tags,
                 requirements: service.requirements,
                 videoUrl: service.videoUrl,

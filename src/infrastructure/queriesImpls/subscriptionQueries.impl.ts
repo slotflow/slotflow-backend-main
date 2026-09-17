@@ -1,10 +1,10 @@
 import { PlanName } from "../../domain/enums/plan.enum";
 import { SubscriptionModel } from "../models/subscription.model";
-import { getStartAndEndDate } from "../../shared/utils/dateTime";
-import { formatStatMetric } from "../../shared/utils/formatStatMetric";
+import { getStartAndEndDate } from "../../shared/utils/helpers/dateTime";
+import { formatStatMetric } from "../../shared/utils/helpers/formatStatMetric";
 import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 import { PlanNameOnly, TableData } from "../../application/dtos/common.dto";
-import { calculatePreviousPeriod } from "../../shared/utils/calculatePreviosPeriod";
+import { calculatePreviousPeriod } from "../../shared/utils/helpers/calculatePreviosPeriod";
 import { ISubscriptionQueries } from "../../application/queries/ISubscription.queries";
 import { MySubscriptionQuery, MySubscriptionView, SubscribedPlanQuery, SubscriptionDetailsQuery, SubscriptionDetailsView, SubscriptionsQuery, SubscriptionStatsDataQuery, SubscriptionStatsDataView, SubscriptionsView, PopulatedPlan, SubscriptionAnalyticsQuery, SubscriptionAnalyticsView } from "../../application/dtos/subscription.dto";
 

@@ -1,6 +1,6 @@
 import z from "zod";
 import { PlanName } from "../../domain/enums/plan.enum";
-import { descriptionRegex, objectIdRegex } from "../utils/regex";
+import { descriptionRegex, objectIdRegex } from "../utils/constants/regex";
 
 // Plan id validation schemas
 export const validatePlanIdSchema = z.object({

@@ -8,7 +8,7 @@ import {
   ProviderUpdateIdentityProofResponse,
 } from "../../dtos/providerProfile.dto";
 import { awsConfig } from "../../../config/env";
-import { ERROR_CODES } from "../../../shared/utils/types";
+import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { IUserQueries } from "../../queries/IUser.queries";
 import { DeleteObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { toAppError } from "../../../shared/error/handleUnknownError";

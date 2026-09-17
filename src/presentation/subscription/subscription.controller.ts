@@ -1,29 +1,26 @@
 import { log } from "../../shared/logger/logger";
 import { Role } from "../../domain/enums/common.enum";
 import { NextFunction, Request, Response } from "express";
-import { sendResponse } from "../../shared/utils/response";
+import { sendResponse } from "../../shared/utils/helpers/response";
 import { AuthUser } from "../../application/dtos/common.dto";
 import { validateSubscriptionIdSchema } from "../../shared/zod/base.zod";
 import { GetSubscriptionsUseCase } from "../../application/useCases/subscription/getSubscriptions.useCase";
 import { providerIdWithPaginationSchema, providerPlanSubscribeSchema } from "../../shared/zod/provider.zod";
-import { TrialSubscriptionUseCase } from "../../application/useCases/subscription/trailSubscription.useCase";
 import { GetSubscribedPlanUseCase } from "../../application/useCases/subscription/getSubscribedPlan.useCase";
 import { SubscriptionCheckoutUseCase } from "../../application/useCases/subscription/subscriptionCheckout.useCase";
 import { GetSubscriptionDetailsUseCase } from "../../application/useCases/subscription/getSubscriptionDetails.useCase";
-import { getSubscribedPlanUseCase, getSubscriptionDetailsUseCase, getSubscriptionsUseCase, subscriptionCheckoutUseCase, trialSubscriptionUseCase } from ".";
+import { getSubscribedPlanUseCase, getSubscriptionDetailsUseCase, getSubscriptionsUseCase, subscriptionCheckoutUseCase } from ".";
 
 class SubscriptionController {
     constructor(
         private readonly getSubscriptionsUseCase: GetSubscriptionsUseCase,
         private readonly getSubscriptionDetailsUseCase: GetSubscriptionDetailsUseCase,
         private readonly subscriptionCheckoutUseCase: SubscriptionCheckoutUseCase,
-        private readonly trialSubscriptionUseCase: TrialSubscriptionUseCase,
         private readonly getSubscribedPlanUseCase: GetSubscribedPlanUseCase
     ) {
         this.getSubscriptions = this.getSubscriptions.bind(this);
         this.getSubscriptionDetails = this.getSubscriptionDetails.bind(this);
         this.subscriptionCheckout = this.subscriptionCheckout.bind(this);
-        this.subscribeToTrialPlan = this.subscribeToTrialPlan.bind(this);
         this.getSubscribedPlan = this.getSubscribedPlan.bind(this);
     };
 
@@ -81,17 +78,6 @@ class SubscriptionController {
         };
     };
 
-    async subscribeToTrialPlan(req: Request, res: Response, next: NextFunction) {
-        try {
-            const user = req.user as AuthUser;
-            const result = await this.trialSubscriptionUseCase.execute({ providerId: user.id });
-            sendResponse(res, result, "Your trial plan is on live");
-        } catch (error) {
-            log.error("subscribeToTrialPlan failed", error as Error);
-            next(error);
-        };
-    };
-
     async getSubscribedPlan(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as AuthUser;
@@ -108,6 +94,5 @@ export const subscriptionController = new SubscriptionController(
     getSubscriptionsUseCase,
     getSubscriptionDetailsUseCase,
     subscriptionCheckoutUseCase,
-    trialSubscriptionUseCase,
     getSubscribedPlanUseCase
 );

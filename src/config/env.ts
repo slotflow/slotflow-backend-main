@@ -97,37 +97,40 @@ export const kafkaConfig = {
         dlqTopic: validator.requireEnv("KAFKA_DLQ_TOPIC"),
 
         sub: {
-            googleCalendarSuccess: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_SUCCESS"),
-            googleCalendarFailed: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_FAILED"),
+            googleCalendarCreateEventSuccess: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_CREATE_EVENT_SUCCESS"),
+            googleCalendarCreateEventFailed: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_CREATE_EVENT_FAILED"),
             providerSubscriptionPaymentSuccess: validator.requireEnv("KAFKA_PROVIDER_SUBSCRIPTION_PAYMENT_SUCCESS"),
+            providerSubscriptionPaymentFailed: validator.requireEnv("KAFKA_PROVIDER_SUBSCRIPTION_PAYMENT_FAILED"),
             userBookingPaymentSuccess: validator.requireEnv("KAFKA_USER_BOOKING_PAYMENT_SUCCESS"),
-            stripeCustomerCreated: validator.requireEnv("KAFKA_STRIPE_CUSTOMER_CREATED"),
-            stripeAccountUpdateStatus: validator.requireEnv("KAFKA_STRIPE_ACCOUNT_UPDATE_STATUS"),
         },
-        
+
         pub: {
-            // MBS -> NS
+            // MBS -> NS [ email ]
             sendOtp: validator.requireEnv("KAFKA_SEND_OTP"),
             registerSuccess: validator.requireEnv("KAFKA_REGISTER_SUCCESS"),
             passwordReset: validator.requireEnv("KAFKA_PASSWORD_RESET"),
-            passwordUpdate: validator.requireEnv("KAFKA_PASSWORD_UPDATE"),
+
+            // MBS -> NS [ email and notification ]
             adminProviderReview: validator.requireEnv("KAFKA_ADMIN_PROVIDER_REVIEW"),
             accountBlockStatus: validator.requireEnv("KAFKA_ACCOUNT_BLOCK_STATUS"),
             accountTrustStatus: validator.requireEnv("KAFKA_ACCOUNT_TRUST_STATUS"),
             providerAppointmentStatusForUser: validator.requireEnv("KAFKA_PROVIDER_APPOINTMENT_STATUS_FOR_USER"),
-            providerAppointmentStatusForProvider: validator.requireEnv("KAFKA_PROVIDER_APPOINTMENT_STATUS_FOR_PROVIDER"),
             appConnect: validator.requireEnv("KAFKA_APP_CONNECT"),
-            providerTrialSubscription: validator.requireEnv("KAFKA_PROVIDER_TRIAL_SUBSCRIPTION"),
+            gotAnAppointment: validator.requireEnv("KAFKA_GOT_AN_APPOINTMENT"),
+
+            // MBS -> NS [ notification ]
+            providerAppointmentStatusForProvider: validator.requireEnv("KAFKA_PROVIDER_APPOINTMENT_STATUS_FOR_PROVIDER"),
+            passwordUpdate: validator.requireEnv("KAFKA_PASSWORD_UPDATE"),
+
+            // MBS -> NS [ calendar ]
             createGoogleCalendarEvent: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_EVENT_CREATE"),
+
+            // TODO implement: update the calendar when resheduling is happens MBS -> NS [ calendar ]
             updateGoogleCalendarEvent: validator.requireEnv("KAFKA_GOOGLE_CALENDAR_EVENT_UPDATE"),
 
-            // MBS -> NS
-            gotAnAppointment: validator.requireEnv("KAFKA_GOT_AN_APPOINTMENT"),
-            
             // MBS -> NS, SS
-            slotBooked: validator.requireEnv("KAFKA_SLOT_BOOKED"),
             planSubscribed: validator.requireEnv("KAFKA_PLAN_SUBSCRIBED"),
-
+            slotBooked: validator.requireEnv("KAFKA_SLOT_BOOKED"),
         },
     },
 };

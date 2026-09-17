@@ -1,6 +1,6 @@
 import { Role } from "../../domain/enums/common.enum";
 import { NextFunction, Request, Response } from "express";
-import { sendResponse } from "../../shared/utils/response";
+import { sendResponse } from "../../shared/utils/helpers/response";
 import { paginationSchema } from "../../shared/zod/base.zod";
 import { AuthUser } from "../../application/dtos/common.dto";
 import { GetPlansUseCase } from "../../application/useCases/plan/getPlans.useCase";

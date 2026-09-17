@@ -1,5 +1,5 @@
 import z from "zod";
-import { objectIdRegex } from "../utils/regex";
+import { objectIdRegex } from "../utils/constants/regex";
 import { Boolean } from "../../domain/enums/common.enum";
 import { ServiceMode } from "../../domain/enums/service.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";

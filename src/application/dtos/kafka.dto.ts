@@ -3,7 +3,8 @@ import { PlanName } from "../../domain/enums/plan.enum";
 import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
-import { AppConnect, NotificationType, OtpPurpose, Role, StripeAccountStatus } from "../../domain/enums/common.enum";
+import { AppConnect, OtpPurpose, Role } from "../../domain/enums/common.enum";
+import { NotificationType } from "./common.dto";
 
 // **** KAFKA COMMON DTOS
 
@@ -63,6 +64,12 @@ export interface ProcessEventWrapperInput {
   payloadExtractor: (payload: MBSSubKafkaEventPayload) => any;
 }
 
+// Notification data common interface
+interface CommonNotificationEventInput {
+    userId: string;
+    notificationType: NotificationType;
+}
+
 
 
 
@@ -76,8 +83,7 @@ export interface SendAdminProviderReviewEvent {
   emailData: SendEmailCommon & {
     status: AdminVerificationStatus;
     reason?: string;
-  },
-  notificationData: SendNotificationCommon;
+  }
 }
 
 // send account block status event
@@ -85,8 +91,7 @@ export interface SendAccountBlockStatusEvent {
   emailData: SendEmailCommon & {
     blocked: boolean;
     reason?: string;
-  },
-  notificationData: SendNotificationCommon;
+  }
 }
 
 // send account trust status event
@@ -95,7 +100,9 @@ export interface SendAccountTrustStatusEvent {
     trusted: boolean;
     reason?: string;
   },
-  notificationData: SendNotificationCommon;
+  notificationData: CommonNotificationEventInput & {
+    isTrusted: string;
+  };
 }
 
 // send appointment status change event for user
@@ -106,29 +113,19 @@ export interface SendAppointmentStatusChangeForUserEvent {
     appointmentMode: string;
     appointmentStatus: AppointmentStatus;
   },
-  notificationData: SendNotificationCommon,
+  notificationData: CommonNotificationEventInput & {
+    appointmentStatus: string;
+  },
 }
 
 // send appointment status change event for provider
 export interface SendAppointmentStatusChangeForProviderEvent {
-  notificationData: SendNotificationCommon & {
-    data: {
-      appointmentDate: string;
-      appointmentTime: string;
-      appointmentMode: string;
-      appointmentStatus: AppointmentStatus;
-      notificationType: NotificationType;
-    };
+  notificationData: CommonNotificationEventInput & {
+    appointmentDate: string;
+    appointmentTime: string;
+    appointmentMode: string;
+    appointmentStatus: AppointmentStatus;
   }
-}
-
-// send provider trial subscription event
-export interface SendProviderTrialSubscriptionEvent {
-  emailData: SendEmailCommon & {
-    startDate: string;
-    endDate: string;
-  };
-  notificationData: SendNotificationCommon;
 }
 
 // send provider subscription updated event
@@ -139,27 +136,38 @@ export interface ProviderSubscriptionUpdatedEvent {
     startDate: Date;
     endDate: Date;
     subscriptionStatus: SubscriptionStatus;
+    hasUsedTrial: boolean;
   },
   emailData: {
     email: string;
     name: string;
     subscribedPlan: PlanName;
-    startDate: Date;
-    endDate: Date;
+    startDate: string;
+    endDate: string;
+    isTrial: string;
   },
-  notificationData: SendNotificationCommon;
+  notificationData: CommonNotificationEventInput & {
+    planName: string;
+    isTrial: string;
+    currentPeriodEnd: string;
+  };
 }
 
 // booking saved event
-export interface BookingSavedEvent {
+export interface SlotBookedEvent {
   emailData: {
     email: string;
     name: string;
-    appointmentDate: Date;
+    appointmentDate: string;
     appointmentMode: string;
-    appointmentStatus: AppointmentStatus
+    appointmentStatus: AppointmentStatus,
+    providerName: string;
   },
-  notificationData: SendNotificationCommon;
+  notificationData: CommonNotificationEventInput & {
+    appointmentDate: string;
+    appointmentTime: string;
+    providerName: string;
+  };
 }
 
 // got an appointment event
@@ -167,30 +175,26 @@ export interface GotAnAppointmentEvent {
   emailData: {
     email: string;
     name: string;
-    appointmentDate: Date;
+    appointmentDate: string;
     appointmentMode: string;
     appointmentStatus: AppointmentStatus
+    customerName: string;
   },
-  notificationData: SendNotificationCommon
-}
-
-// create google calendar event
-export interface CreateGoogleCalendarEvent {
-  calendarData: {
-    bookingId: string;
-    role: Role;
-    accessToken: string;
-    appointmentDate: Date;
-    appointmentStatus: AppointmentStatus;
+  notificationData: CommonNotificationEventInput & {
+    appointmentDate: string;
+    appointmentTime: string;
+    customerName: string;
   }
-};
+}
 
 // send app connect event
 export interface SendAppConnectEvent {
   emailData: SendEmailCommon & {
     appConnect: AppConnect;
   },
-  notificationData: SendNotificationCommon
+  notificationData: CommonNotificationEventInput & {
+    appName: string;
+  }
 }
 
 // send welcome event
@@ -211,27 +215,38 @@ export interface SendOtpEvent {
 // send reset password
 export interface SendResetPasswordEvent {
   emailData: SendEmailCommon;
-  notificationData: SendNotificationCommon;
 };
 
 // send update password
 export interface SendUpdatePasswordEvent {
-  notificationData: SendNotificationCommon;
+  notificationData: CommonNotificationEventInput & {
+  };
 }
+
+// create google calendar event
+export interface CreateGoogleCalendarEvent {
+  calendarData: {
+    bookingId: string;
+    role: Role;
+    accessToken: string;
+    appointmentDate: Date;
+    appointmentStatus: AppointmentStatus;
+  }
+};
 
 
 
 // **** subscribing events
 
 // create google calendar event success result
-export interface CreateGoogleCalendarEventSuccessInput {
+export interface GoogleCalendarCreateEventSuccessInput {
   bookingId: string;
   role: Role;
   eventId: string;
 }
 
 // create google calendar event failed result
-export interface CreateGoogleCalendarEventFailedInput {
+export interface GoogleCalendarCreateEventEventFailedInput {
   bookingId: string;
   role: Role;
   error: string;
@@ -243,13 +258,17 @@ export interface UpdateBookingAfterPaymentSuccessEventInput {
   paymentId: string;
 }
 
-// send provider create payment success event
-export interface ProviderCreatePaymentSuccessEventInput {
+// send provider subscription payment success event
+export interface ProviderSubscriptionPaymentSuccessEventInput {
   subscriptionId: string;
   paymentId: string;
   providerId: string;
   isTrial: string;
-  planName: string;
   currentPeriodStart: Date;
   currentPeriodEnd: Date;
+};
+
+// send provider subscription payment failed event
+export interface ProviderSubscriptionPaymentFailedEventInput {
+  subscriptionId: string;
 };

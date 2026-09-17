@@ -1,6 +1,6 @@
 import z from "zod";
 import { paginationSchema } from "./base.zod";
-import { objectIdRegex } from "../utils/regex";
+import { objectIdRegex } from "../utils/constants/regex";
 
 // Get reviews schema
 export const getReviewsSchema = z.object({

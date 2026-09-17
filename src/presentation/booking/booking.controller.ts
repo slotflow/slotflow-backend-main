@@ -1,8 +1,7 @@
-import { log } from "../../shared/logger/logger";
 import { Role } from "../../domain/enums/common.enum";
-import { ERROR_CODES } from "../../shared/utils/types";
+import { ERROR_CODES } from "../../shared/utils/types/enums";
 import { NextFunction, Request, Response } from "express";
-import { sendResponse } from "../../shared/utils/response";
+import { sendResponse } from "../../shared/utils/helpers/response";
 import { BadRequestError } from "../../shared/error/appError";
 import { AuthUser } from "../../application/dtos/common.dto";
 import { GetBookingsUseCase } from "../../application/useCases/booking/getBookings.useCase";
