@@ -76,7 +76,7 @@ export class LoginUseCase {
 
             let providerProfile: ProviderProfile | null = null;
             let providerSubscription: PlanName = PlanName.NO_SUBSCRIPTION;
-            const isProviderFlow = user.onboardingType === Role.PROVIDER ;
+            const isProviderFlow = user.onboardingType === Role.PROVIDER;
 
             if (isProviderFlow) {
                 providerProfile = await this.providerProfileRepository.findByUserId(user._id);
@@ -101,15 +101,7 @@ export class LoginUseCase {
                         profileImage: signedProfileImageUrl
                     },
                 };
-            } else if(user.role === Role.USER) {
-                return {
-                    token,
-                    user: {
-                        ...baseUser,
-                        profileImage: signedProfileImageUrl
-                    },
-                };
-            } else if(user.role === Role.ADMIN) {
+            } else if(user.role === Role.USER || user.role === Role.ADMIN) {
                 return {
                     token,
                     user: {

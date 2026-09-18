@@ -1,238 +1,177 @@
+import mongoose from "mongoose";
 import { kafkaConfig } from "../../../config/env";
+import { Role } from "../../../domain/enums/common.enum";
 import { PlanName } from "../../../domain/enums/plan.enum";
 import { User } from "../../../domain/entities/user.entity";
 import { IJWT } from "../../../domain/interfaces/security/IJwt";
-import { AppConnect, Role } from "../../../domain/enums/common.enum";
 import { toAppError } from '../../../shared/error/handleUnknownError';
 import { generateId } from "../../../shared/utils/helpers/generateId";
+import { EventEnvelope, SendWelcomeEvent } from "../../dtos/kafka.dto";
 import { ERROR_CODES, IdType } from '../../../shared/utils/types/enums';
-import { Credential } from "../../../domain/entities/credential.entity";
 import { AuthResponseBuilder } from '../../services/AuthResponseBuilder';
 import { AppError, BadRequestError } from '../../../shared/error/appError';
+import { CreditAccount } from "../../../domain/entities/creditAccount.entity";
 import { ProviderProfile } from '../../../domain/entities/providerProfile.entity';
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { EventEnvelope, SendAppConnectEvent, SendWelcomeEvent } from "../../dtos/kafka.dto";
 import { GoogleAuthOrchestrationInput, GoogleAuthOrchestrationOutput } from "../../dtos/auth.dto";
 import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
-import { IAesEncryptionService } from "../../../domain/interfaces/services/IAesEncryption.service";
-import { ICredentialRepository } from "../../../domain/interfaces/repositories/ICredentialRepository";
+import { ICreditAccountRepository } from "../../../domain/interfaces/repositories/ICreditAccount.repository";
 import { IProviderProfileRepository } from '../../../domain/interfaces/repositories/IProviderProfile.repository';
-import { notificationType } from "../../../shared/utils/constants/constant";
 
 export class GoogleAuthOrchestratorUseCase {
     constructor(
         private readonly userRepository: IUserRepository,
         private readonly providerProfileRepository: IProviderProfileRepository,
-        private readonly credentialRepository: ICredentialRepository,
-        private readonly aesEncryption: IAesEncryptionService,
         private readonly jwtService: IJWT,
         private readonly kafkaProducer: IKafkaProducerAdapter,
-        private readonly authResponseBuilder: AuthResponseBuilder
+        private readonly authResponseBuilder: AuthResponseBuilder,
+        private readonly creditAccountRepository: ICreditAccountRepository
     ) { };
 
     async execute(input: GoogleAuthOrchestrationInput): Promise<GoogleAuthOrchestrationOutput> {
+        const session = await mongoose.startSession();
+        session.startTransaction();
         try {
             const {
-                connectOnly,
-                role,
-                userId,
                 email,
                 googleId,
                 name,
                 image,
-                accessToken,
-                expiryDate,
-                refreshToken,
+
             } = input;
 
-            let user: User | null = null;
-            let providerProfile: ProviderProfile | null = null;
-            let token: string | undefined;
+            if (!email || !googleId || !name) {
+                throw new AppError(
+                    'Invalid Google authentication payload',
+                    400,
+                    true,
+                    ERROR_CODES.INVALID_REQUEST
+                );
+            }
 
-            if (!connectOnly) {
-                if (!role || !email || !googleId || !name) {
-                    throw new BadRequestError(
-                        "Invalid request",
-                        ERROR_CODES.INVALID_REQUEST
-                    );
-                }
-                user =
-                    (await this.userRepository.findByGoogleId(googleId)) ??
-                    (await this.userRepository.findByEmail(email));
+            let user: User | null = await this.userRepository.findByGoogleId(googleId);
+            if (!user) {
+                user = await this.userRepository.findByEmail(email);
+            }
+
+            let isNewUser = false;
+            if (!user) {
+                isNewUser = true;
 
                 const referralCode = generateId({
                     type: IdType.REFERRAL,
                     options: { name }
                 });
 
-                if (!user) {
-                    const userData = User.createGoogle({
-                        username: name,
-                        email,
-                        googleId,
-                        profileImage: image ?? "",
-                        referralCode
-                    });
-                    user = await this.userRepository.create(userData);
-                }
+                const userData = User.createGoogle({
+                    username: name,
+                    email,
+                    googleId,
+                    profileImage: image ?? "",
+                    referralCode
+                });
 
+                user = await this.userRepository.create(userData, session);
                 if (!user) {
                     throw new AppError(
-                        "Internal server error",
+                        "Failed to create Google user account",
                         500,
                         true,
                         ERROR_CODES.INTERNAL_ERROR
-                    )
-                };
-
-                if (role === Role.PROVIDER) {
-                    providerProfile = await this.providerProfileRepository.findByUserId(user._id);
-
-                    if (!providerProfile) {
-                        const newProfile = ProviderProfile.create({
-                            userId: user._id,
-                        });
-                        providerProfile =
-                            await this.providerProfileRepository.create(newProfile);
-                    }
-                }
-
-                token = await this.jwtService.generateToken({
-                    email,
-                    userId: user._id,
-                    role,
-                });
-            } else {
-                if (!userId || !role) {
-                    throw new BadRequestError(
-                        "Invalid request",
-                        ERROR_CODES.INVALID_REQUEST
                     );
                 }
 
-                user = await this.userRepository.findById(userId);
-                if (!user) throw new BadRequestError("User not found");
+                const creditAccount = await this.creditAccountRepository.create(
+                    CreditAccount.create({ userId: user._id }),
+                    session
+                );
 
+                if (!creditAccount) {
+                    throw new AppError(
+                        "Failed to initialize user credit account",
+                        500,
+                        true,
+                        ERROR_CODES.INTERNAL_ERROR
+                    );
+                }
+            } else if (!user.googleId) {
                 user.linkGoogleAccount({
-                    googleId,
+                    googleId: googleId,
                     googleConnected: true,
                 });
-
-                user = await this.userRepository.update(user);
+                await this.userRepository.update(user, session);
             }
 
-            if (!user) {
-                throw new BadRequestError(
-                    "Invalid request",
-                    ERROR_CODES.INVALID_REQUEST
-                );
-            }
+            await session.commitTransaction();
+            session.endSession();
 
-            if (!accessToken || !expiryDate || !refreshToken) {
-                throw new BadRequestError(
-                    "Invalid request",
-                    ERROR_CODES.INVALID_REQUEST
-                );
-            }
-
-            const encryptedAccessToken =
-                await this.aesEncryption.encrypt(accessToken);
-            const encryptedRefreshToken =
-                await this.aesEncryption.encrypt(refreshToken);
-
-            const existingCredential =
-                await this.credentialRepository.findByUserId(
-                    userId ?? user._id
-                );
-
-            if (existingCredential) {
-                existingCredential.updateCredential({
-                    accessToken: encryptedAccessToken,
-                    refreshToken: encryptedRefreshToken,
-                    expiryDate,
+            if (isNewUser) {
+                await this.kafkaProducer.publish<EventEnvelope<SendWelcomeEvent>>(
+                    kafkaConfig.topics.pub.registerSuccess,
+                    {
+                        eventId: generateId({ type: IdType.EVENT }),
+                        attempt: 1,
+                        maxAttempts: 1,
+                        occurredAt: new Date().toISOString(),
+                        payload: {
+                            emailData: {
+                                email,
+                                name,
+                                role: user.role,
+                            },
+                        }
+                    }
+                ).catch((err) => {
+                    console.error("Failed to publish welcome event to Kafka:", err);
                 });
-                await this.credentialRepository.update(existingCredential);
-            } else {
-                const credentials = Credential.create({
-                    accessToken: encryptedAccessToken,
-                    refreshToken: encryptedRefreshToken,
-                    expiryDate,
-                    userId: userId ?? user._id,
-                });
-                await this.credentialRepository.create(credentials);
-                console.log("credetials : ",credentials)
             }
 
+            const token = await this.jwtService.generateToken({
+                email: user.email,
+                role: user.role,
+                userId: user._id,
+                name: user.username
+            });
+
+            let providerProfile: ProviderProfile | null = null;
             let providerSubscription: PlanName = PlanName.NO_SUBSCRIPTION;
+            const isProviderFlow = user.onboardingType === Role.PROVIDER;
 
-            if (user.role === Role.PROVIDER && providerProfile) {
-                providerSubscription = await this.authResponseBuilder.resolveSubscription(providerProfile);
-            }
-
-            if (!user.googleConnected) {
-                if (connectOnly) {
-                    await this.kafkaProducer.publish<EventEnvelope<SendAppConnectEvent>>(kafkaConfig.topics.pub.appConnect, {
-                        eventId: generateId({ type: IdType.EVENT }),
-                        attempt: 1,
-                        maxAttempts: 1,
-                        occurredAt: new Date().toISOString(),
-                        payload: {
-                            emailData: {
-                                email: user.email,
-                                name: user.username,
-                                appConnect: AppConnect.GOOGLE,
-                            },
-                            notificationData: {
-                                userId: user._id,
-                                appName: AppConnect.GOOGLE,
-                                notificationType: notificationType.ACCOUNT_ACTIVITY
-                            },
-                        },
-                    });
-                } else {
-                    await this.kafkaProducer.publish<EventEnvelope<SendWelcomeEvent>>(kafkaConfig.topics.pub.registerSuccess, {
-                        eventId: generateId({ type: IdType.EVENT }),
-                        attempt: 1,
-                        maxAttempts: 1,
-                        occurredAt: new Date().toISOString(),
-                        payload: {
-                            emailData: {
-                                email: user.email,
-                                name: user.username,
-                                role,
-                            },
-                        },
-                    });
+            if (isProviderFlow) {
+                providerProfile = await this.providerProfileRepository.findByUserId(user._id);
+                if (providerProfile) {
+                    providerSubscription = await this.authResponseBuilder.resolveSubscription(
+                        providerProfile
+                    );
                 }
             }
 
-            if (connectOnly) {
+            const baseUser = this.authResponseBuilder.buildBaseUser(user);
+
+            if (isProviderFlow) {
                 return {
                     token,
                     user: {
-                        googleId,
-                        googleConnected: true,
+                        ...baseUser,
+                        ...this.authResponseBuilder.buildProviderFields(
+                            providerProfile,
+                            providerSubscription,
+                        ),
                     },
                 };
             }
-
-            const baseUser = this.authResponseBuilder.buildBaseUser(user);
 
             return {
                 token,
                 user: {
                     ...baseUser,
-                    ...this.authResponseBuilder.buildProviderFields(
-                        providerProfile,
-                        providerSubscription
-                    ),
-                    googleId,
-                    googleConnected: true,
                 },
             };
-
         } catch (error: unknown) {
-            throw toAppError(error, "Failed to authenticate user");
-        };
-    };
-};
+            await session.abortTransaction();
+            throw toAppError(error, "Failed to verify otp");
+        } finally {
+            session.endSession();
+        }
+    }
+}

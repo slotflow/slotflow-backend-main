@@ -444,9 +444,6 @@ export interface GoogleOAuthUser {
   email: string;
   name: string;
   image: string | null;
-  role: Role;
-  connectOnly: boolean;
-  userId: string; // Present if linking account
 }
 
 // used in count query

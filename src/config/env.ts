@@ -10,6 +10,7 @@ export const appConfig = {
     nodeEnv: validator.requireEnv("NODE_ENV"),
     isDev: validator.requireEnv("NODE_ENV") === "development",
     serviceName: validator.requireEnv("SERVICE_NAME"),
+    authCallbackUrl: validator.requireEnv("CLIENT_CALLBACK_URL_DEV"),
 };
 
 export const mongodbConfig = {

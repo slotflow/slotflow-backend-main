@@ -62,3 +62,8 @@ export const preboardingSchema = z.object({
   whereDidHearAboutUs: z.enum(HearAboutUsOptionValue),
   referralCode: z.string().startsWith("SF_REF").min(12).max(15).optional()
 }).merge(roleValidationSchema);
+
+// google auth /auth/google state for redicting route
+export const googleAuthSchema = z.object({
+  redirectingRoute: z.enum(['login', 'register'])
+})

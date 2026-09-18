@@ -1,9 +1,9 @@
 import passport from "passport";
 import { getGoogleCalendarUseCase } from ".";
 import { NextFunction, Request, Response } from "express";
-import { sendResponse } from "../../shared/utils/helpers/response";
 import { AuthUser } from "../../application/dtos/common.dto";
 import { connectGoogleSchema } from "../../shared/zod/auth.zod";
+import { sendResponse } from "../../shared/utils/helpers/response";
 import { GetGoogleCalendarUseCase } from "../../application/useCases/common/getGoogleCalendar.useCase";
 
 class GoogleController {
@@ -37,8 +37,6 @@ class GoogleController {
                     "openid",
                     "profile",
                     "email",
-                    // "https://www.googleapis.com/auth/calendar.events.owned",
-                    // "https://www.googleapis.com/auth/calendar.events.owned.readonly",
                     "https://www.googleapis.com/auth/calendar",
                     "https://www.googleapis.com/auth/calendar.events",
                 ],

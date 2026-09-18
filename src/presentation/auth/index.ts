@@ -1,15 +1,15 @@
 import { kafkaProducer } from "../../infrastructure/messaging";
 import { jwtService, passwordHasher } from "../../infrastructure/security";
 import { LoginUseCase } from "../../application/useCases/auth/login.useCase";
+import { otpService, signedUrlService } from "../../infrastructure/services";
 import { RegisterUseCase } from "../../application/useCases/auth/register.useCase";
 import { ResendOtpUseCase } from "../../application/useCases/auth/resendOtp.useCase";
 import { VerifyOTPUseCase } from "../../application/useCases/auth/verifyOtp.useCase";
 import { AuthResponseBuilder } from "../../application/services/AuthResponseBuilder";
 import { VerifyEmailUseCase } from "../../application/useCases/auth/verifyEmail.useCase";
 import { ResetPasswordUseCase } from "../../application/useCases/auth/resetPassword.useCase";
-import { aesEncryptionService, otpService, signedUrlService } from "../../infrastructure/services";
 import { GoogleAuthOrchestratorUseCase } from "../../application/useCases/auth/googleAuthOrchestrate.useCase";
-import { credentialRepository, creditAccountRepository, planRepository, providerProfileRepository, subscriptionRepository, userRepository } from "../../infrastructure/repositoryImpls";
+import { creditAccountRepository, planRepository, providerProfileRepository, subscriptionRepository, userRepository } from "../../infrastructure/repositoryImpls";
 
 const authResponseBuilder = new AuthResponseBuilder(subscriptionRepository, planRepository);
 
@@ -27,4 +27,4 @@ export const resetPasswordUseCase = new ResetPasswordUseCase(userRepository, pas
 export const loginUseCase = new LoginUseCase(userRepository, providerProfileRepository, signedUrlService, jwtService, passwordHasher, authResponseBuilder);
 
 // google auth controller dependency injection
-export const googleAuthOrchestratorUseCase = new GoogleAuthOrchestratorUseCase(userRepository, providerProfileRepository, credentialRepository, aesEncryptionService, jwtService, kafkaProducer, authResponseBuilder);
+export const googleAuthOrchestratorUseCase = new GoogleAuthOrchestratorUseCase(userRepository, providerProfileRepository, jwtService, kafkaProducer, authResponseBuilder, creditAccountRepository);

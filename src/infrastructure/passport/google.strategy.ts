@@ -1,5 +1,7 @@
 import passport from "passport";
+import { log } from "../../shared/logger/logger";
 import { googleClientConfig } from "../../config/env";
+import { GoogleOAuthUser } from "../../application/dtos/common.dto";
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { IGooglePassportStrategy } from "../../domain/interfaces/passport/IGooglePassportStratergy";
 
@@ -19,21 +21,17 @@ export class GooglePassportStrategyImpl implements IGooglePassportStrategy {
         },
         async (req, accessToken, refreshToken, profile, done) => {
           try {
-            const state = req.query.state
-              ? JSON.parse(req.query.state as string)
-              : {};
 
-            return done(null, {
+            const userPayload: GoogleOAuthUser = {
               googleAccessToken: accessToken,
               googleRefreshToken: refreshToken,
               googleId: profile.id,
-              email: profile.emails?.[0].value || "",
+              email: profile.emails?.[0]?.value || "",
               name: profile.displayName || "",
               image: profile.photos?.[0]?.value || null,
-              role: state.role,
-              connectOnly: state.connectOnly,
-              userId: state.userId ?? undefined,
-            }, {});
+            };
+
+            return done(null, userPayload);
 
           } catch (err) {
             return done(err);

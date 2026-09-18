@@ -87,13 +87,8 @@ export interface GoogleAuthOrchestrationInput {
     email: string;
     name: string;
     image: string | null;
-    role: Role;
-    connectOnly: boolean;
-    userId: string | null;
-    accessToken: string;
-    refreshToken: string;
-    expiryDate: Date;
 }
+
 export interface GoogleAuthOrchestrationOutput {
     token?: string;
     user: {
