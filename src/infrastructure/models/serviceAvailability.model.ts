@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
 import { ServiceMode } from "../../domain/enums/service.enum";
-import { Availability } from "../../domain/contracts/serviceAvailability.contract";
+import { Availability } from "../../domain/commands/serviceAvailability.commands";
 
 export interface IServiceAvailability extends Document {
   _id: Types.ObjectId,

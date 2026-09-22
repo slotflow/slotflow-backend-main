@@ -5,3 +5,9 @@ export enum PlanName {
   ENTERPRISE = "ENTERPRISE",
   NO_SUBSCRIPTION = "NO_SUBSCRIPTION"
 };
+
+
+export enum StripeSyncStatus {
+    PENDING = "pending",
+    SYNCED = "synced",
+}

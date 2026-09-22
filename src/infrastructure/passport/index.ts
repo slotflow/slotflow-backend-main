@@ -1,4 +1,4 @@
-import { GooglePassportStrategyImpl } from "./google.strategy";
-import { IGooglePassportStrategy } from "../../domain/interfaces/passport/IGooglePassportStratergy";
+import { GooglePassportStrategyImpl } from "./googlePassport.strategy.impl";
+import { IGooglePassportStrategy } from "../../application/interfaces/passport/IGooglePassport.stratergy";
 
 export const googlePassportStrategy: IGooglePassportStrategy = new GooglePassportStrategyImpl();

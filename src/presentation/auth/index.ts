@@ -1,17 +1,14 @@
 import { kafkaProducer } from "../../infrastructure/messaging";
 import { jwtService, passwordHasher } from "../../infrastructure/security";
 import { LoginUseCase } from "../../application/useCases/auth/login.useCase";
-import { otpService, signedUrlService } from "../../infrastructure/services";
 import { RegisterUseCase } from "../../application/useCases/auth/register.useCase";
 import { ResendOtpUseCase } from "../../application/useCases/auth/resendOtp.useCase";
 import { VerifyOTPUseCase } from "../../application/useCases/auth/verifyOtp.useCase";
-import { AuthResponseBuilder } from "../../application/services/AuthResponseBuilder";
 import { VerifyEmailUseCase } from "../../application/useCases/auth/verifyEmail.useCase";
 import { ResetPasswordUseCase } from "../../application/useCases/auth/resetPassword.useCase";
+import { authResponseBuilder, otpService, signedUrlService } from "../../infrastructure/services";
 import { GoogleAuthOrchestratorUseCase } from "../../application/useCases/auth/googleAuthOrchestrate.useCase";
-import { creditAccountRepository, planRepository, providerProfileRepository, subscriptionRepository, userRepository } from "../../infrastructure/repositoryImpls";
-
-const authResponseBuilder = new AuthResponseBuilder(subscriptionRepository, planRepository);
+import { creditAccountRepository, providerProfileRepository, userRepository } from "../../infrastructure/repository";
 
 // auth controller dependency injection
 export const resendOtpUseCase = new ResendOtpUseCase(otpService, kafkaProducer, jwtService);

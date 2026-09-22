@@ -1,6 +1,6 @@
 import { BadRequestError } from "../../../shared/error/appError";
 import { toAppError } from "../../../shared/error/handleUnknownError";
-import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
+import { ISignedUrlService } from "../../interfaces/services/ISignedUrl.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { AdminGetProviderDetailsInput, AdminGetProviderDetailsOutput } from "../../dtos/user.dto";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";

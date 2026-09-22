@@ -4,9 +4,9 @@ import { toAppError } from '../../../shared/error/handleUnknownError';
 import { ERROR_CODES, IdType } from '../../../shared/utils/types/enums';
 import { BadRequestError, NotFoundError } from '../../../shared/error/appError';
 import { EventEnvelope, SendAccountBlockStatusEvent } from "../../dtos/kafka.dto";
-import { ICacheService } from "../../../domain/interfaces/services/ICache.service";
+import { ICacheService } from "../../interfaces/services/ICache.service";
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
-import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
+import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
 import { AdminChangeProviderBlockStatusInput, AdminChangeProviderBlockStatusOutput } from "../../dtos/admin.dto";
 import { notificationType } from "../../../shared/utils/constants/constant";
 
@@ -62,11 +62,6 @@ export class ChangeProviderBlockStatusUseCase {
                         blocked: updatedProvider.isBlocked,
                         email: provider.email,
                         name: provider.username,
-                    },
-                    notificationData: {
-                        userId: provider._id,
-                        isBlocked: updatedProvider.isBlocked.toString(),
-                        notificationType: notificationType.ACCOUNT_ACTIVITY
                     },
                 },
             });

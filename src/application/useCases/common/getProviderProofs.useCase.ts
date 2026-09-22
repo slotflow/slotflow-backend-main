@@ -2,7 +2,7 @@ import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { GetProviderProofsInput, GetProviderProofsOutput } from "../../dtos/user.dto";
-import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
+import { ISignedUrlService } from "../../interfaces/services/ISignedUrl.service";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 
 export class GetProviderProofsUseCase {

@@ -1,5 +1,5 @@
 import { toAppError } from "../../../shared/error/handleUnknownError";
-import { ICreditAccountQueries } from "../../queries/ICreditAccount.queries";
+import { ICreditAccountQueries } from "../../interfaces/queries/ICreditAccount.queries";
 import { GetCreditAccountDetailsInput, GetCreditAccountDetailsOutput } from "../../dtos/credits.dto";
 
 export class GetCreditDetailsUseCase {

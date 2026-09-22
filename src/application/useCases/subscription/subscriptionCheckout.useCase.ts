@@ -7,7 +7,7 @@ import { Subscription } from "../../../domain/entities/subscription.entity";
 import { AppError, BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { BillingCycle, SubscriptionStatus } from "../../../domain/enums/subscription.enum";
-import { IPaymentServiceClient } from "../../../domain/interfaces/clients/IPaymentService.client";
+import { IPaymentServiceClient } from "../../interfaces/clients/IPaymentService.client";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 import { SubscriptionCreateSessionIdInput, SubscriptionCreateSessionIdOutput } from "../../dtos/subscription.dto";

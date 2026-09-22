@@ -1,7 +1,4 @@
-export type GeoLocation = {
-    type: "Point";
-    coordinates: [number, number];
-};
+import { GeoLocation } from "../commands/address.commands";
 
 export interface AddressProps {
     _id: string,

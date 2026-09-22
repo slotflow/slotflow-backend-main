@@ -29,16 +29,6 @@ export const PREFIX_MAP: Record<IdType, string> = {
 
 export const BASE36 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-// used as the Event data
-export enum EventData {
-  eventTitle = "Slotflow Appointment",
-  eventAddBorderColor = "#635bff",
-  eventAddTextColor = "#ffffff",
-  eventCancelBorderColor = "#ff0000",
-  eventCancelTextColor = "#ffffff",
-  eventTimeZone = "Asia/Kolkata",
-};
-
 export const notificationChannel = {
   EMAIL: 'email',
   PUSH: 'push',

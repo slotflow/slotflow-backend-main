@@ -3,18 +3,18 @@ import { kafkaConfig } from "../../../config/env";
 import { Role } from "../../../domain/enums/common.enum";
 import { PlanName } from "../../../domain/enums/plan.enum";
 import { User } from "../../../domain/entities/user.entity";
-import { IJWT } from "../../../domain/interfaces/security/IJwt";
+import { IJWT } from "../../interfaces/security/IJwt.service";
 import { toAppError } from '../../../shared/error/handleUnknownError';
 import { generateId } from "../../../shared/utils/helpers/generateId";
 import { EventEnvelope, SendWelcomeEvent } from "../../dtos/kafka.dto";
 import { ERROR_CODES, IdType } from '../../../shared/utils/types/enums';
-import { AuthResponseBuilder } from '../../services/AuthResponseBuilder';
 import { AppError, BadRequestError } from '../../../shared/error/appError';
 import { CreditAccount } from "../../../domain/entities/creditAccount.entity";
 import { ProviderProfile } from '../../../domain/entities/providerProfile.entity';
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
+import { IAuthResponseBuilder } from "../../interfaces/services/IAuthResponseBuilder.service";
 import { GoogleAuthOrchestrationInput, GoogleAuthOrchestrationOutput } from "../../dtos/auth.dto";
-import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
+import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
 import { ICreditAccountRepository } from "../../../domain/interfaces/repositories/ICreditAccount.repository";
 import { IProviderProfileRepository } from '../../../domain/interfaces/repositories/IProviderProfile.repository';
 
@@ -24,7 +24,7 @@ export class GoogleAuthOrchestratorUseCase {
         private readonly providerProfileRepository: IProviderProfileRepository,
         private readonly jwtService: IJWT,
         private readonly kafkaProducer: IKafkaProducerAdapter,
-        private readonly authResponseBuilder: AuthResponseBuilder,
+        private readonly authResponseBuilder: IAuthResponseBuilder,
         private readonly creditAccountRepository: ICreditAccountRepository
     ) { };
 

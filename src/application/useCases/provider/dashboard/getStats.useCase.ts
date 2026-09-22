@@ -1,4 +1,4 @@
-import { IBookingQueries } from "../../../queries/IBooking.queries";
+import { IBookingQueries } from "../../../interfaces/queries/IBooking.queries";
 import { BadRequestError } from "../../../../shared/error/appError";
 import { toAppError } from "../../../../shared/error/handleUnknownError";
 import { GetProviderStatsInput, GetProviderStatsOutput } from "../../../dtos/provider.dto";

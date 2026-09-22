@@ -1,5 +1,5 @@
-import { creditAccountQueries } from "../../infrastructure/queriesImpls";
-import { creditTransactionRepository } from "../../infrastructure/repositoryImpls";
+import { creditAccountQueries } from "../../infrastructure/queries";
+import { creditTransactionRepository } from "../../infrastructure/repository";
 import { GetCreditTransactionsUseCase } from "../../application/useCases/credits/getCreditTransactions.useCase";
 import { GetCreditDetailsUseCase } from "../../application/useCases/credits/getCreditDetails.useCase";
 

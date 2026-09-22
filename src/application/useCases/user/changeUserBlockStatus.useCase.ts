@@ -3,10 +3,10 @@ import { generateId } from '../../../shared/utils/helpers/generateId';
 import { toAppError } from '../../../shared/error/handleUnknownError';
 import { ERROR_CODES, IdType } from '../../../shared/utils/types/enums';
 import { EventEnvelope, SendAccountBlockStatusEvent } from "../../dtos/kafka.dto";
-import { ICacheService } from "../../../domain/interfaces/services/ICache.service";
+import { ICacheService } from "../../interfaces/services/ICache.service";
 import { AppError, BadRequestError, NotFoundError } from '../../../shared/error/appError';
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
+import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
 import { ChangeUserIsBlockedStatusInput, ChangeUserIsBlockedStatusOutput } from '../../dtos/user.dto';
 import { notificationType } from "../../../shared/utils/constants/constant";
 
@@ -65,11 +65,6 @@ export class ChangeUserBlockStatusUseCase {
                         name: user.username,
                         blocked: updatedUser.isBlocked,
                     },
-                    notificationData: {
-                        userId: user._id,
-                        isBlocked: updatedUser.isBlocked.toString(),
-                        notificationType: notificationType.ACCOUNT_ACTIVITY
-                    }
                 }
             });
 

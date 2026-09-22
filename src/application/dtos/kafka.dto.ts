@@ -1,12 +1,14 @@
 import { KafkaMessage } from "kafkajs";
+import { NotificationType } from "./common.dto";
 import { PlanName } from "../../domain/enums/plan.enum";
 import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
-import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
 import { AppConnect, OtpPurpose, Role } from "../../domain/enums/common.enum";
-import { NotificationType } from "./common.dto";
+import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
 
-// **** KAFKA COMMON DTOS
+/**
+ * KAFKA COMMON DTOS
+ */
 
 // kafka client adapter props
 export interface KafkaClientAdapterProps {
@@ -74,9 +76,11 @@ interface CommonNotificationEventInput {
 
 
 
-//// **** KAFKA EVENTS PAYLOAD **** ////
+/**
+ * KAFKA EVENTS PAYLOAD
+ */
 
-// **** publishing events
+// publishing events
 
 // send admin provider review event
 export interface SendAdminProviderReviewEvent {
@@ -228,15 +232,14 @@ export interface CreateGoogleCalendarEvent {
   calendarData: {
     bookingId: string;
     role: Role;
-    accessToken: string;
+    userId: string;
     appointmentDate: Date;
     appointmentStatus: AppointmentStatus;
   }
 };
 
 
-
-// **** subscribing events
+// subscribing events
 
 // create google calendar event success result
 export interface GoogleCalendarCreateEventSuccessInput {

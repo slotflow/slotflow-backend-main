@@ -2,14 +2,14 @@ import { Role } from "../../../domain/enums/common.enum";
 import { PlanName } from "../../../domain/enums/plan.enum";
 import { LoginInput, LoginOutput } from "../../dtos/auth.dto";
 import { ERROR_CODES } from "../../../shared/utils/types/enums";
-import { IJWT } from "../../../domain/interfaces/security/IJwt";
+import { IJWT } from "../../interfaces/security/IJwt.service";
 import { toAppError } from "../../../shared/error/handleUnknownError";
-import { AuthResponseBuilder } from "../../services/AuthResponseBuilder";
 import { ProviderProfile } from "../../../domain/entities/providerProfile.entity";
 import { BadRequestError, UnauthorizedError } from "../../../shared/error/appError";
-import { IPasswordHasher } from "../../../domain/interfaces/security/IPasswordHasher";
-import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
+import { IPasswordHasher } from "../../interfaces/security/IPasswordHasher.service";
+import { ISignedUrlService } from "../../interfaces/services/ISignedUrl.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
+import { IAuthResponseBuilder } from "../../interfaces/services/IAuthResponseBuilder.service";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 
 export class LoginUseCase {
@@ -19,7 +19,7 @@ export class LoginUseCase {
         private readonly signedUrlService: ISignedUrlService,
         private readonly jwtService: IJWT,
         private readonly passwordHasher: IPasswordHasher,
-        private readonly authResponseBuilder: AuthResponseBuilder
+        private readonly authResponseBuilder: IAuthResponseBuilder
     ) { };
 
     async execute(input: LoginInput): Promise<LoginOutput> {

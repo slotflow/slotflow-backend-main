@@ -3,7 +3,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { BadRequestError } from "../../../shared/error/appError";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { DeleteObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
+import { ISignedUrlService } from "../../interfaces/services/ISignedUrl.service";
 import { CreateFileUploadPresignedUrlOutput, CreateFileSignedUrlInput, CreateFileUploadPresignedUrlInput } from "../../dtos/common.dto";
 import { generateId } from "../../../shared/utils/helpers/generateId";
 import { IdType } from "../../../shared/utils/types/enums";

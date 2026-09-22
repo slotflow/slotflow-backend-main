@@ -1,4 +1,4 @@
-import { IUserQueries } from "../../../../queries/IUser.queries";
+import { IUserQueries } from "../../../../interfaces/queries/IUser.queries";
 import { toAppError } from "../../../../../shared/error/handleUnknownError";
 import { GetUserStatsDataInput, GetUserStatsDataOutput } from "../../../../dtos/admin.dto";
 

@@ -1,5 +1,5 @@
-import { referralQueries } from "../../infrastructure/queriesImpls";
-import { referralRepository } from "../../infrastructure/repositoryImpls";
+import { referralQueries } from "../../infrastructure/queries";
+import { referralRepository } from "../../infrastructure/repository";
 import { GetReferralsListUseCase } from "../../application/useCases/referral/getReferralsList.useCase";
 import { GetReferralDetailsUseCase } from "../../application/useCases/referral/getReferralDetails.useCase";
 

@@ -1,11 +1,9 @@
 import passport from "passport";
 import { log } from "../../shared/logger/logger";
 import { googleAuthOrchestratorUseCase } from ".";
-import { Role } from "../../domain/enums/common.enum";
 import { NextFunction, Request, Response } from "express";
-import { appConfig, serviceConfig } from "../../config/env";
-import { googleAuthSchema } from "../../shared/zod/auth.zod";
 import { GoogleOAuthUser } from "../../application/dtos/common.dto";
+import { appConfig, callbackConfig, serviceConfig } from "../../config/env";
 import { GoogleAuthOrchestratorUseCase } from "../../application/useCases/auth/googleAuthOrchestrate.useCase";
 
 class GoogleAuthController {
@@ -38,7 +36,7 @@ class GoogleAuthController {
         try {
             passport.authenticate("google", { session: false }, async (err, user: GoogleOAuthUser, info) => {
 
-                let fallbackRoute = appConfig.authCallbackUrl;
+                let fallbackRoute = callbackConfig.authUrl;
                 if (err || !user) {
                     const errorPayload = {
                         success: false,

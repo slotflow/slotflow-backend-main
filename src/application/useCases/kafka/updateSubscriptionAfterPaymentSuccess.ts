@@ -12,7 +12,7 @@ import { EventEnvelope, ProviderSubscriptionUpdatedEvent } from "../../dtos/kafk
 import { dateFormats, notificationType } from "../../../shared/utils/constants/constant";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
-import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
+import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
 import { IReferralRepository } from "../../../domain/interfaces/repositories/IReferral.repository";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
 import { ICreditAccountRepository } from "../../../domain/interfaces/repositories/ICreditAccount.repository";

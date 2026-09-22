@@ -9,11 +9,11 @@ import {
 } from "../../dtos/providerProfile.dto";
 import { awsConfig } from "../../../config/env";
 import { ERROR_CODES } from "../../../shared/utils/types/enums";
-import { IUserQueries } from "../../queries/IUser.queries";
+import { IUserQueries } from "../../interfaces/queries/IUser.queries";
 import { DeleteObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { AppError, BadRequestError, NotFoundError } from "../../../shared/error/appError";
-import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
+import { ISignedUrlService } from "../../interfaces/services/ISignedUrl.service";
 import { AdminVerificationStatus } from "../../../domain/enums/adminVerificationStatus.enum";
 import { ProviderGetOwnProfileDetailsInput, ProviderGetOwnProfileDetailsOutput } from "../../dtos/user.dto";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";

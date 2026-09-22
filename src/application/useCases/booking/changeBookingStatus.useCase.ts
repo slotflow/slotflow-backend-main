@@ -7,10 +7,9 @@ import { ERROR_CODES, IdType } from '../../../shared/utils/types/enums';
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
 import { dateFormats, notificationType } from "../../../shared/utils/constants/constant";
 import { AppError, BadRequestError, NotFoundError } from '../../../shared/error/appError';
+import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { IGoogleTokenService } from "../../../domain/interfaces/services/IGoogleToken.service";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
-import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
 import { ProviderChangeBookingAppointmentStatusInput, ProviderChangeBookingAppointmentStatusOutput } from '../../dtos/booking.dto';
 import { EventEnvelope, CreateGoogleCalendarEvent, SendAppointmentStatusChangeForProviderEvent, SendAppointmentStatusChangeForUserEvent } from "../../dtos/kafka.dto";
 
@@ -18,7 +17,6 @@ export class ChangeBookingStatusUseCase {
     constructor(
         private readonly bookingRepository: IBookingRepository,
         private readonly userRepository: IUserRepository,
-        private readonly googleTokenService: IGoogleTokenService,
         private readonly kafkaProducer: IKafkaProducerAdapter,
     ) { };
 
@@ -51,16 +49,6 @@ export class ChangeBookingStatusUseCase {
                     "Provider not found",
                     ERROR_CODES.USER_NOT_FOUND
                 );
-            }
-
-            let userAccessToken: string | null = null;
-            if (user.googleConnected) {
-                userAccessToken = await this.googleTokenService.getAccessToken(user._id);
-            }
-
-            let providerAccessToken: string | null = null;
-            if (provider.googleConnected) {
-                providerAccessToken = await this.googleTokenService.getAccessToken(providerId);
             }
 
             booking.updateAppointmentStatus({ appointmentStatus });
@@ -114,7 +102,7 @@ export class ChangeBookingStatusUseCase {
                 }
             });
 
-            if (userAccessToken && updatedBooking.appointmentStatus === AppointmentStatus.CONFIRMED) {
+            if (updatedBooking.appointmentStatus === AppointmentStatus.CONFIRMED) {
                 await this.kafkaProducer.publish<EventEnvelope<CreateGoogleCalendarEvent>>(kafkaConfig.topics.pub.createGoogleCalendarEvent, {
                     eventId: generateId({ type: IdType.EVENT }),
                     occurredAt: new Date().toString(),
@@ -122,9 +110,9 @@ export class ChangeBookingStatusUseCase {
                     maxAttempts: 2,
                     payload: {
                         calendarData: {
+                            userId: updatedBooking.userId,
                             bookingId: updatedBooking._id,
                             role: Role.USER,
-                            accessToken: userAccessToken,
                             appointmentDate: updatedBooking.appointmentDate,
                             appointmentStatus: updatedBooking.appointmentStatus,
                         }
@@ -132,7 +120,7 @@ export class ChangeBookingStatusUseCase {
                 });
             };
 
-            if (providerAccessToken && updatedBooking.appointmentStatus === AppointmentStatus.CONFIRMED) {
+            if (updatedBooking.appointmentStatus === AppointmentStatus.CONFIRMED) {
                 await this.kafkaProducer.publish<EventEnvelope<CreateGoogleCalendarEvent>>(kafkaConfig.topics.pub.createGoogleCalendarEvent, {
                     eventId: generateId({ type: IdType.EVENT }),
                     occurredAt: new Date().toString(),
@@ -140,9 +128,9 @@ export class ChangeBookingStatusUseCase {
                     maxAttempts: 2,
                     payload: {
                         calendarData: {
+                            userId: updatedBooking.userId,
                             bookingId: updatedBooking._id,
                             role: Role.PROVIDER,
-                            accessToken: providerAccessToken,
                             appointmentDate: updatedBooking.appointmentDate,
                             appointmentStatus: updatedBooking.appointmentStatus,
                         }

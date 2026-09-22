@@ -1,6 +1,6 @@
 import { signedUrlService } from "../../infrastructure/services";
-import { providerServiceQueries } from "../../infrastructure/queriesImpls";
-import { providerProfileRepository, providerServiceRepository } from "../../infrastructure/repositoryImpls";
+import { providerServiceQueries } from "../../infrastructure/queries";
+import { providerProfileRepository, providerServiceRepository } from "../../infrastructure/repository";
 import { GetProviderServicesUseCase } from "../../application/useCases/providerService/getProviderService.useCase";
 import { GetProvidersServicesUseCase } from "../../application/useCases/providerService/getProvidersServices.useCase";
 import { CreateProviderServiceUseCase } from "../../application/useCases/providerService/createProviderService.useCase";

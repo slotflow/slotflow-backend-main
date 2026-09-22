@@ -2,16 +2,16 @@ import mongoose from "mongoose";
 import { kafkaConfig } from "../../../config/env";
 import { OTPVerificationInput } from "../../dtos/auth.dto";
 import { User } from "../../../domain/entities/user.entity";
-import { IJWT } from '../../../domain/interfaces/security/IJwt';
+import { IJWT } from '../../interfaces/security/IJwt.service';
 import { toAppError } from '../../../shared/error/handleUnknownError';
 import { generateId } from '../../../shared/utils/helpers/generateId';
 import { EventEnvelope, SendWelcomeEvent } from "../../dtos/kafka.dto";
 import { ERROR_CODES, IdType } from '../../../shared/utils/types/enums';
 import { AppError, BadRequestError } from '../../../shared/error/appError';
 import { CreditAccount } from "../../../domain/entities/creditAccount.entity";
-import { IOTPService } from "../../../domain/interfaces/services/IOtp.service";
+import { IOTPService } from "../../interfaces/services/IOtp.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
+import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
 import { ICreditAccountRepository } from "../../../domain/interfaces/repositories/ICreditAccount.repository";
 
 export class VerifyOTPUseCase {

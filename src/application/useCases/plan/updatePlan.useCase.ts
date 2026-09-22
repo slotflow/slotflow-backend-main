@@ -4,7 +4,7 @@ import { toAppError } from "../../../shared/error/handleUnknownError";
 import { UpdatePlanInput, UpdatePlanOutput } from "../../dtos/plan.dto";
 import { AppError, BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
-import { IStripePlanService } from "../../../domain/interfaces/services/IStripePlan.service";
+import { IStripePlanService } from "../../interfaces/services/IStripePlan.service";
 
 export class UpdatePlanUseCase {
     constructor(

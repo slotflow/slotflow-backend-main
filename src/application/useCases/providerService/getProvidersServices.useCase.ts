@@ -1,6 +1,6 @@
 import { toAppError } from "../../../shared/error/handleUnknownError";
-import { IProviderServiceQueries } from "../../queries/IProviderService.queries";
-import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
+import { IProviderServiceQueries } from "../../interfaces/queries/IProviderService.queries";
+import { ISignedUrlService } from "../../interfaces/services/ISignedUrl.service";
 import { GetProvidersServicesInput, GetProvidersServicesOutput } from "../../dtos/providerService.dto";
 
 export class GetProvidersServicesUseCase {

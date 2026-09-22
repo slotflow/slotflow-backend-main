@@ -1,4 +1,4 @@
-import { serviceRepository } from "../../infrastructure/repositoryImpls";
+import { serviceRepository } from "../../infrastructure/repository";
 import { GetServicesUseCase } from "../../application/useCases/service/getServices.useCase";
 import { CreateServiceUseCase } from "../../application/useCases/service/createService.useCase";
 import { UpdateServiceUseCase } from "../../application/useCases/service/updateService.useCase";

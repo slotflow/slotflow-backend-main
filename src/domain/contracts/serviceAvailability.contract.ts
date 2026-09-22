@@ -1,26 +1,4 @@
-import { Day } from "../enums/common.enum";
-import { ServiceMode } from "../enums/service.enum";
-
-export interface TimeSlot {
-    time: string,
-};
-
-export interface TimeSlotForClientOutput {
-    _id: string,
-    time: string,
-    available: boolean,
-    occupied?: boolean,
-};
-
-export interface Availability {
-    day: Day,
-    isAvailable: boolean,
-    duration?: number,
-    startTime?: string,
-    endTime?: string,
-    modes?: ServiceMode[],
-    slots?: TimeSlot[],
-};
+import { Availability } from "../commands/serviceAvailability.commands";
 
 export interface ServiceAvailabilityProps {
     _id: string,

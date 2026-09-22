@@ -1,6 +1,6 @@
 import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { toAppError } from "../../../shared/error/handleUnknownError";
-import { ISubscriptionQueries } from "../../queries/ISubscription.queries";
+import { ISubscriptionQueries } from "../../interfaces/queries/ISubscription.queries";
 import { BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { GetSubscribedPlanInput, GetSubscribedPlanOutput } from "../../dtos/subscription.dto";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";

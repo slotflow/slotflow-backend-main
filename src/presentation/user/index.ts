@@ -2,7 +2,7 @@ import { kafkaProducer } from "../../infrastructure/messaging";
 import { passwordHasher } from "../../infrastructure/security";
 import { paymentServiceClient } from "../../infrastructure/clients";
 import { cacheService, signedUrlService } from "../../infrastructure/services";
-import { bookingQueries, userQueries } from "../../infrastructure/queriesImpls";
+import { bookingQueries, userQueries } from "../../infrastructure/queries";
 import { GetUsersUseCase } from "../../application/useCases/user/getUsers.useCase";
 import { PreBoardingUseCase } from "../../application/useCases/user/preBoarding.useCase";
 import { UpdatePasswordUseCase } from "../../application/useCases/user/updatePassword.useCase";
@@ -12,7 +12,7 @@ import { ChangeUserBlockStatusUseCase } from "../../application/useCases/user/ch
 import { UpdateUserProfileInfoUseCase } from "../../application/useCases/user/updateUserProfileInfo.useCase";
 import { ChangePushNotificationUseCase } from "../../application/useCases/user/changePushNotification.useCase";
 import { UpdateUserProfileImageUseCase } from "../../application/useCases/user/updateUserProfileImage.useCase";
-import { providerProfileRepository, referralRepository, userRepository } from "../../infrastructure/repositoryImpls";
+import { providerProfileRepository, referralRepository, userRepository } from "../../infrastructure/repository";
 
 export const updateUserProfileInfoUseCase = new UpdateUserProfileInfoUseCase(userRepository);
 

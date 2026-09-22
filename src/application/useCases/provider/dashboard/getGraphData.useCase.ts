@@ -1,8 +1,8 @@
-import { IBookingQueries } from "../../../queries/IBooking.queries";
+import { IBookingQueries } from "../../../interfaces/queries/IBooking.queries";
 import { BadRequestError } from "../../../../shared/error/appError";
 import { toAppError } from "../../../../shared/error/handleUnknownError";
 import { GetProviderGraphDataInput, GetProviderGraphDataOutput } from "../../../dtos/provider.dto";
-import { ISubscriptionMapping } from "../../../../domain/interfaces/helper/ISubscriptionMapping.helper";
+import { ISubscriptionMapping } from "../../../interfaces/helper/ISubscriptionMapping.helper";
 
 
 export class GetProviderGraphDataUseCase {

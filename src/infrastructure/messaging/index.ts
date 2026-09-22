@@ -1,9 +1,9 @@
 import { kafkaClient } from "./kafka";
 import { kafkaConfig } from "../../config/env";
-import { KafkaConsumerAdapter } from "./kafkaConsumerAdapter";
-import { KafkaProducerAdapter } from "./kafkaProducerAdapter";
-import { IKafkaConsumerAdapter } from "../../domain/interfaces/messaging/IKafkaConsumerAdapter";
-import { IKafkaProducerAdapter } from "../../domain/interfaces/messaging/IKafkaProducerAdapter";
+import { KafkaConsumerAdapter } from "./kafkaConsumer.adapter.impl";
+import { KafkaProducerAdapter } from "./kafkaProducer.adapter.impl";
+import { IKafkaConsumerAdapter } from "../../application/interfaces/messaging/IKafkaConsumer.adapter";
+import { IKafkaProducerAdapter } from "../../application/interfaces/messaging/IKafkaProducer.adapter";
 
 // Kafka single consumer
 export const kafkaConsumer: IKafkaConsumerAdapter = new KafkaConsumerAdapter(

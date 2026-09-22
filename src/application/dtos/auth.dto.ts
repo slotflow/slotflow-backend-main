@@ -1,33 +1,41 @@
-import { OnboardingStatus, Role } from "../../domain/enums/common.enum";
+import { PlanName } from "../../domain/enums/plan.enum";
 import { ProviderProfileDTO, UserDTO } from "./common.dto";
+import { OnboardingStatus, Role } from "../../domain/enums/common.enum";
 
-//// **** auth dtos **** ////
+/**
+ * Auth common dtos
+ */
 
-// Register usecase input output
+
+/**
+ * Auth usecase dtos
+ */
+
+// Register
 export interface RegisterInput {
     username: UserDTO["username"];
     email: UserDTO["email"];
     password: string;
 }
-
 export interface RegisterOutput {
     token: string
 }
 
 
-// OTP Verification usecase input
+// OTP Verification
 export interface OTPVerificationInput {
     token: string;
     otp: string;
 }
 
 
-// ResendOtp usecase output
+// ResendOtp
 export interface ResendOtpOutput {
     token: string;
 }
 
-// VerifyEmail usecase input output
+
+// VerifyEmail
 export interface VerifyEmailInput {
     email: UserDTO["email"];
 }
@@ -35,7 +43,8 @@ export interface VerifyEmailOutput {
     token: string;
 }
 
-// Login usecase input output
+
+// Login
 export interface LoginInput {
     email: UserDTO["email"];
     password: string;
@@ -74,27 +83,23 @@ export interface LoginOutput {
 }
 
 
-// UpdatePassword usecase output
+// UpdatePassword
 export interface ResetPasswordInput {
     token: string;
     password: string;
 }
 
 
-// GoogleAuthOrchestration usecase input output
+// GoogleAuthOrchestration
 export interface GoogleAuthOrchestrationInput {
     googleId: string;
     email: string;
     name: string;
     image: string | null;
 }
-
 export interface GoogleAuthOrchestrationOutput {
     token?: string;
     user: {
-        googleId: string;
-        googleConnected: boolean;
-    } | {
         uid: UserDTO["_id"];
         username: UserDTO["username"];
         email: UserDTO["email"];
@@ -113,6 +118,7 @@ export interface GoogleAuthOrchestrationOutput {
             identityProof: boolean;
             serviceProof: boolean;
         };
+
         isAddressVerified?: ProviderProfileDTO["isAddressVerified"],
         isServiceDetailsVerified?: ProviderProfileDTO["isServiceDetailsVerified"],
         isAvailabilityVerified?: ProviderProfileDTO["isAvailabilityVerified"],
@@ -122,5 +128,52 @@ export interface GoogleAuthOrchestrationOutput {
         verificationRejectionReason?: ProviderProfileDTO["verificationRejectionReason"],
         adminVerificationStatus?: ProviderProfileDTO["adminVerificationStatus"],
         allowPushNotification: UserDTO["allowPushNotification"];
+        hasUsedTrial?: ProviderProfileDTO['hasUsedTrial'];
     }
+}
+
+
+
+
+
+/**
+ * Auth service dtos
+ */
+
+// Base user response
+export interface BaseUserResponse {
+    uid: UserDTO['_id'];
+    username: UserDTO['username'];
+    email: UserDTO['email'];
+    role: UserDTO['role'];
+    onboardingType: UserDTO['onboardingType'];
+    onboardingStatus: UserDTO['onboardingStatus'];
+    isBlocked: UserDTO['isBlocked'];
+    isLoggedIn: boolean;
+    phone: UserDTO['phone'];
+    profileImage: UserDTO['profileImage'];
+    isAddressAdded: boolean;
+    allowPushNotification: UserDTO['allowPushNotification'];
+}
+
+// Provider prrof status
+export interface ProviderProofStatus {
+    identityProof: boolean;
+    serviceProof: boolean;
+}
+
+// Provider ( user with rpvider role ) response
+export interface ProviderFieldsResponse {
+    isServiceDetailsAdded: boolean;
+    isServiceAvailabilityAdded: boolean;
+    isProofSubmitted?: ProviderProofStatus;
+    isAddressVerified?: ProviderProfileDTO["isAddressVerified"],
+    isServiceDetailsVerified?: ProviderProfileDTO["isServiceDetailsVerified"],
+    isAvailabilityVerified?: ProviderProfileDTO["isAvailabilityVerified"],
+    isProofsVerified?: ProviderProfileDTO["isProofsVerified"],
+    isAdminVerified?: ProviderProfileDTO["isAdminVerified"],
+    providerSubscription?: string;
+    verificationRejectionReason?: ProviderProfileDTO["verificationRejectionReason"],
+    adminVerificationStatus?: ProviderProfileDTO["adminVerificationStatus"],
+    hasUsedTrial: ProviderProfileDTO['hasUsedTrial'];
 }

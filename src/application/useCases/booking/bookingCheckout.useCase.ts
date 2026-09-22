@@ -6,12 +6,12 @@ import { generateId } from '../../../shared/utils/helpers/generateId';
 import { ERROR_CODES, IdType } from '../../../shared/utils/types/enums';
 import { UserAppointmentBookingViaStripeInput } from '../../dtos/booking.dto';
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
-import { IProviderServiceQueries } from "../../queries/IProviderService.queries";
-import { IServiceAvailabilityQueries } from "../../queries/IServiceAvailability.queries";
+import { IProviderServiceQueries } from "../../interfaces/queries/IProviderService.queries";
+import { IServiceAvailabilityQueries } from "../../interfaces/queries/IServiceAvailability.queries";
 import { AppError, BadRequestError, NotFoundError } from '../../../shared/error/appError';
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
-import { IPaymentServiceClient } from "../../../domain/interfaces/clients/IPaymentService.client";
+import { IPaymentServiceClient } from "../../interfaces/clients/IPaymentService.client";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 
 export class BookingCheckoutUseCase {

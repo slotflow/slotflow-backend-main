@@ -1,16 +1,15 @@
 import { kafkaProducer } from "../../infrastructure/messaging";
-import { googleTokenService } from "../../infrastructure/services";
 import { paymentServiceClient } from "../../infrastructure/clients";
-import { bookingRepository, creditAccountRepository, creditTransactionRepository, providerProfileRepository, referralRepository, userRepository } from "../../infrastructure/repositoryImpls";
 import { GetBookingsUseCase } from "../../application/useCases/booking/getBookings.useCase";
 import { CheckBookingUseCase } from "../../application/useCases/booking/checkBooking.useCase";
 import { CancelBookingUseCase } from "../../application/useCases/booking/cancelBooking.useCase";
 import { BookingCheckoutUseCase } from "../../application/useCases/booking/bookingCheckout.useCase";
-import { GetBookingDetailsUsecase } from "../../application/useCases/booking/getBookingDetails.useCase";
 import { ValidateJoinRoomUsecase } from "../../application/useCases/booking/validateJoinRoom.useCase";
+import { GetBookingDetailsUsecase } from "../../application/useCases/booking/getBookingDetails.useCase";
 import { ChangeBookingStatusUseCase } from "../../application/useCases/booking/changeBookingStatus.useCase";
-import { bookingQueries, providerServiceQueries, serviceAvailabilityQueries } from "../../infrastructure/queriesImpls";
+import { bookingQueries, providerServiceQueries, serviceAvailabilityQueries } from "../../infrastructure/queries";
 import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/booking/updateBookingOnlineTracking.useCase";
+import { bookingRepository, creditAccountRepository, creditTransactionRepository, providerProfileRepository, referralRepository, userRepository } from "../../infrastructure/repository";
 
 export const getBookingsUseCase = new GetBookingsUseCase(bookingQueries);
 
@@ -26,4 +25,4 @@ export const cancelBookingUseCase = new CancelBookingUseCase(userRepository, boo
 
 export const updateBookingOnlineTrakingUseCase = new UpdateBookingOnlineTrakingUseCase(bookingRepository, serviceAvailabilityQueries, userRepository, referralRepository, creditAccountRepository, creditTransactionRepository);
 
-export const changeBookingStatusUseCase = new ChangeBookingStatusUseCase(bookingRepository, userRepository, googleTokenService, kafkaProducer);
+export const changeBookingStatusUseCase = new ChangeBookingStatusUseCase(bookingRepository, userRepository, kafkaProducer);

@@ -1,4 +1,4 @@
-import { addressRepository, userRepository } from "../../infrastructure/repositoryImpls";
+import { addressRepository, userRepository } from "../../infrastructure/repository";
 import { GetAddressUseCase } from "../../application/useCases/address/getAddress.useCase";
 import { UpdateAddressUseCase } from "../../application/useCases/address/updateAddress.useCase";
 import { UserCreateAddressUseCase } from "../../application/useCases/address/userCreateAddress.useCase";

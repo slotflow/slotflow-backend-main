@@ -1,6 +1,6 @@
 import { BadRequestError } from "../../../shared/error/appError";
 import { toAppError } from "../../../shared/error/handleUnknownError";
-import { ISubscriptionQueries } from "../../queries/ISubscription.queries";
+import { ISubscriptionQueries } from "../../interfaces/queries/ISubscription.queries";
 import { GetSubscriptionDetailsInput, GetSubscriptionDetailsOutput } from "../../dtos/subscription.dto";
 
 export class GetSubscriptionDetailsUseCase {

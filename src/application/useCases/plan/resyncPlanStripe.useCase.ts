@@ -4,12 +4,11 @@ import {
     NotFoundError,
 } from "../../../shared/error/appError";
 import { ERROR_CODES } from "../../../shared/utils/types/enums";
-import { PlanName } from "../../../domain/enums/plan.enum";
+import { PlanName, StripeSyncStatus } from "../../../domain/enums/plan.enum";
 import { toAppError } from "../../../shared/error/handleUnknownError";
-import { StripeSyncStatus } from "../../../domain/contracts/plan.contract";
 import { ResyncStripePlanInput, ResyncStripePlanOutput } from "../../dtos/plan.dto";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
-import { IStripePlanService } from "../../../domain/interfaces/services/IStripePlan.service";
+import { IStripePlanService } from "../../interfaces/services/IStripePlan.service";
 
 export class ResyncPlanStripeUseCase {
     constructor(

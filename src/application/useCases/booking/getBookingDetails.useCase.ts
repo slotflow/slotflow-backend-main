@@ -1,5 +1,5 @@
 import { BadRequestError } from "../../../shared/error/appError";
-import { IBookingQueries } from "../../queries/IBooking.queries";
+import { IBookingQueries } from "../../interfaces/queries/IBooking.queries";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { GetBookingDetailsInput, GetBookingDetailsOutput } from "../../dtos/booking.dto";
 

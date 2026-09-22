@@ -1,7 +1,7 @@
 import { BadRequestError } from "../../../shared/error/appError";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
+import { ISignedUrlService } from "../../interfaces/services/ISignedUrl.service";
 import { GetUserProfileDetailsInput, GetUserProfileDetailsOutput } from "../../dtos/user.dto";
 
 export class GetUserProfileDetailsUseCase {

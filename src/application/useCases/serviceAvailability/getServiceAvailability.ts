@@ -2,7 +2,7 @@ import { ERROR_CODES } from '../../../shared/utils/types/enums';
 import { differenceInMinutes, format, parse } from 'date-fns';
 import { toAppError } from '../../../shared/error/handleUnknownError';
 import { BadRequestError, NotFoundError } from '../../../shared/error/appError';
-import { IServiceAvailabilityQueries } from "../../queries/IServiceAvailability.queries";
+import { IServiceAvailabilityQueries } from "../../interfaces/queries/IServiceAvailability.queries";
 import { GetServiceAvailabilityInput, GetServiceAvailabilityOutput } from "../../dtos/serviceAvailability.dto";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 

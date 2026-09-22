@@ -5,7 +5,7 @@ import { ERROR_CODES, IdType } from "../../../shared/utils/types/enums";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { CreditAccount } from "../../../domain/entities/creditAccount.entity";
 import { CreditTransaction } from "../../../domain/entities/creditTransaction.entity";
-import { IServiceAvailabilityQueries } from "../../queries/IServiceAvailability.queries";
+import { IServiceAvailabilityQueries } from "../../interfaces/queries/IServiceAvailability.queries";
 import { AppError, BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";

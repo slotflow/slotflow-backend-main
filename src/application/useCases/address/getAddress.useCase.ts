@@ -2,7 +2,7 @@ import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { BadRequestError } from "../../../shared/error/appError";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { GetAddressInput, GetAddressOutput } from "../../dtos/address.dto";
-import { AddressRepositoryImpl } from "../../../infrastructure/repositoryImpls/address.repository.impl";
+import { AddressRepositoryImpl } from "../../../infrastructure/repository/address.repository.impl";
 
 export class GetAddressUseCase {
     constructor(

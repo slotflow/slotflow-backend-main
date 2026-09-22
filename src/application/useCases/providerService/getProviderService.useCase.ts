@@ -1,6 +1,6 @@
 import { BadRequestError } from "../../../shared/error/appError";
 import { toAppError } from "../../../shared/error/handleUnknownError";
-import { IProviderServiceQueries } from "../../queries/IProviderService.queries";
+import { IProviderServiceQueries } from "../../interfaces/queries/IProviderService.queries";
 import { GetProviderServiceInput, GetProviderServiceOuput } from "../../dtos/providerService.dto";
 
 export class GetProviderServicesUseCase {

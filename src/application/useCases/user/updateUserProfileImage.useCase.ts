@@ -2,7 +2,7 @@ import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { AppError, BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
+import { ISignedUrlService } from "../../interfaces/services/ISignedUrl.service";
 import { UpdateUserProfileImageOutput, UpdateUserProfileImageInput } from "../../dtos/user.dto";
 
 export class UpdateUserProfileImageUseCase {

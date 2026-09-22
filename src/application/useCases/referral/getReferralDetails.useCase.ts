@@ -1,4 +1,4 @@
-import { IReferralQueries } from "../../queries/IReferral.queries";
+import { IReferralQueries } from "../../interfaces/queries/IReferral.queries";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { GetReferralDetailsInput, GetReferralDetailsOutput } from "../../dtos/referral.dto";
 

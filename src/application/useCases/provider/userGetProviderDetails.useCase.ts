@@ -1,8 +1,8 @@
 import { ERROR_CODES } from "../../../shared/utils/types/enums";
-import { IUserQueries } from "../../queries/IUser.queries";
+import { IUserQueries } from "../../interfaces/queries/IUser.queries";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { BadRequestError, NotFoundError } from "../../../shared/error/appError";
-import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
+import { ISignedUrlService } from "../../interfaces/services/ISignedUrl.service";
 import { UserGetServiceProviderDetailsInput, UserGetServiceProviderDetailsOutput } from "../../dtos/user.dto";
 
 export class UserGetProviderDetailsUseCase {

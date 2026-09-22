@@ -1,5 +1,5 @@
-import { serviceAvailabilityQueries } from "../../infrastructure/queriesImpls";
-import { providerProfileRepository, serviceAvailabilityRepository } from "../../infrastructure/repositoryImpls";
+import { serviceAvailabilityQueries } from "../../infrastructure/queries";
+import { providerProfileRepository, serviceAvailabilityRepository } from "../../infrastructure/repository";
 import { GetServiceAvailabilityUseCase } from "../../application/useCases/serviceAvailability/getServiceAvailability";
 import { CreateServiceAvailabilitiesUseCase } from "../../application/useCases/serviceAvailability/createServiceAvailability";
 

@@ -5,7 +5,7 @@ import { GoogleCalendarCreateEventSuccessUseCases } from "../../application/useC
 import { UpdateBookingAfterPaymentSuccessUseCase } from "../../application/useCases/kafka/updateBookingAfterPaymentSuccess.useCase";
 import { UpdateSubscriptionAfterPaymentFailedUseCase } from "../../application/useCases/kafka/updateSubscriptionAfterPaymentFailed";
 import { UpdateSubscriptionAfterPaymentSuccessUseCase } from "../../application/useCases/kafka/updateSubscriptionAfterPaymentSuccess";
-import { bookingRepository, creditAccountRepository, creditTransactionRepository, planRepository, processedEventRepository, providerProfileRepository, referralRepository, subscriptionRepository, userRepository } from "../../infrastructure/repositoryImpls";
+import { bookingRepository, creditAccountRepository, creditTransactionRepository, planRepository, processedEventRepository, providerProfileRepository, referralRepository, subscriptionRepository, userRepository } from "../../infrastructure/repository";
 
 export const processEventWrapperUseCase = new ProcessEventWrapperUseCase(processedEventRepository, kafkaProducer);
 

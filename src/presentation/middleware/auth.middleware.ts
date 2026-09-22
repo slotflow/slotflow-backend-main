@@ -4,7 +4,7 @@ import { ERROR_CODES } from "../../shared/utils/types/enums";
 import { NextFunction, Request, Response } from "express";
 import { cacheService } from "../../infrastructure/services";
 import { AuthUser } from "../../application/dtos/common.dto";
-import { userRepository } from "../../infrastructure/repositoryImpls";
+import { userRepository } from "../../infrastructure/repository";
 import { ForbiddenError, UnauthorizedError } from "../../shared/error/appError";
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {

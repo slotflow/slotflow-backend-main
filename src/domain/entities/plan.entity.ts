@@ -1,6 +1,6 @@
-import { PlanName } from "../enums/plan.enum";
-import { CreatePlanProps, UpdatePlanProps } from "../commands/plan.commands";
-import { PlanProps, StripePlanDetails, StripeSyncStatus } from "../contracts/plan.contract";
+import { PlanProps } from "../contracts/plan.contract";
+import { PlanName, StripeSyncStatus } from "../enums/plan.enum";
+import { CreatePlanProps, StripePlanDetails, UpdatePlanProps } from "../commands/plan.commands";
 
 export class Plan {
     private props: PlanProps;

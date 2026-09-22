@@ -6,7 +6,7 @@ import { UserCancelBookingInput, UserCancelBookingOutput } from "../../dtos/book
 import { AppError, BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
-import { IPaymentServiceClient } from "../../../domain/interfaces/clients/IPaymentService.client";
+import { IPaymentServiceClient } from "../../interfaces/clients/IPaymentService.client";
 
 export class CancelBookingUseCase {
     constructor(

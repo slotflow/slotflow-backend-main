@@ -1,6 +1,6 @@
 import { signedUrlService } from "../../infrastructure/services";
-import { reviewQueries } from "../../infrastructure/queriesImpls";
-import { reviewRepository } from "../../infrastructure/repositoryImpls";
+import { reviewQueries } from "../../infrastructure/queries";
+import { reviewRepository } from "../../infrastructure/repository";
 import { GetReviewsUseCase } from "../../application/useCases/review/getReviews.useCase";
 import { ReportReviewUseCase } from "../../application/useCases/review/reportReview.useCase";
 import { DeleteReviewUseCase } from "../../application/useCases/review/deleteReview.useCase";

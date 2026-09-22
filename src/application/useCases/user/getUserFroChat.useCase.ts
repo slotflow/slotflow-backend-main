@@ -1,8 +1,8 @@
 import { Role } from "../../../domain/enums/common.enum";
-import { IBookingQueries } from "../../queries/IBooking.queries";
+import { IBookingQueries } from "../../interfaces/queries/IBooking.queries";
 import { BadRequestError } from "../../../shared/error/appError";
 import { toAppError } from "../../../shared/error/handleUnknownError";
-import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
+import { ISignedUrlService } from "../../interfaces/services/ISignedUrl.service";
 import { GetUserForChatSidebarInput, GetUserForChatSidebarOutput } from "../../dtos/user.dto";
 
 export class GetUserForChatSidebarUseCase {

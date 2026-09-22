@@ -1,5 +1,5 @@
 import { stripePlanService } from "../../infrastructure/services";
-import { planRepository } from "../../infrastructure/repositoryImpls";
+import { planRepository } from "../../infrastructure/repository";
 import { GetPlansUseCase } from "../../application/useCases/plan/getPlans.useCase";
 import { CreatePlanUseCase } from "../../application/useCases/plan/createPlan.useCase";
 import { UpdatePlanUseCase } from "../../application/useCases/plan/updatePlan.useCase";

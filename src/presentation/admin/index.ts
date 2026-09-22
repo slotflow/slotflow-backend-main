@@ -1,4 +1,4 @@
-import { bookingQueries, subscriptionQueries, userQueries } from "../../infrastructure/queriesImpls";
+import { bookingQueries, subscriptionQueries, userQueries } from "../../infrastructure/queries";
 import { GetUserStatsDataUseCase } from "../../application/useCases/admin/dashboard/stats/getUsersStatsData.useCase";
 import { GetAdminBookingsChartDataUseCase } from "../../application/useCases/admin/dashboard/chartData/getBookingsChartData.useCase";
 import { GetBookingsStatsDataUseCase } from "../../application/useCases/admin/dashboard/stats/getBookingsStatsData.useCase";

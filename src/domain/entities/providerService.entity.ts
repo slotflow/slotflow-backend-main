@@ -1,4 +1,4 @@
-import { ServiceMode, ServiceType } from '../enums/service.enum';
+import { ServiceType } from '../enums/service.enum';
 import { ProviderServiceProps } from '../contracts/providerService.contract';
 import { CreateProviderServiceProps, UpdateProviderServiceProps } from '../commands/providerService.commands';
 

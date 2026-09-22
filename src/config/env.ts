@@ -10,8 +10,11 @@ export const appConfig = {
     nodeEnv: validator.requireEnv("NODE_ENV"),
     isDev: validator.requireEnv("NODE_ENV") === "development",
     serviceName: validator.requireEnv("SERVICE_NAME"),
-    authCallbackUrl: validator.requireEnv("CLIENT_CALLBACK_URL_DEV"),
 };
+
+export const callbackConfig = {
+    authUrl: appConfig.isDev ? validator.requireEnv("AUTH_CALLBACK_URL_DEV") : validator.requireEnv("AUTH_CALLBACK_URL"),
+}
 
 export const mongodbConfig = {
     mongoUri: appConfig.isDev ? validator.requireEnv("MONGO_URI_DEV") : validator.requireEnv("MONGO_URI"),
@@ -59,7 +62,7 @@ export const redisConfig = {
 export const googleClientConfig = {
     googleClientId: validator.requireEnv("GOOGLE_CLIENT_ID"),
     googleClientSecret: validator.requireEnv("GOOGLE_CLIENT_SECRET"),
-    googleCallbackUrl: validator.requireEnv("GOOGLE_CALLBACK_URL_DEV"),
+    googleCallbackUrl: appConfig.isDev ? validator.requireEnv("GOOGLE_CALLBACK_URL_DEV") : validator.requireEnv("GOOGLE_CALLBACK_URL"),
 };
 
 export const aesConfig = {

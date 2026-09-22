@@ -1,6 +1,6 @@
 import { TableData } from "../../dtos/common.dto";
 import { toAppError } from "../../../shared/error/handleUnknownError";
-import { ISubscriptionQueries } from "../../queries/ISubscription.queries";
+import { ISubscriptionQueries } from "../../interfaces/queries/ISubscription.queries";
 import { GetSubscriptionsInput, GetSubscriptionsOutput } from "../../dtos/subscription.dto";
 
 export class GetSubscriptionsUseCase {

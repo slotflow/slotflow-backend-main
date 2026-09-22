@@ -9,7 +9,7 @@ import { ERROR_CODES, IdType } from "../../../shared/utils/types/enums";
 import { BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { EventEnvelope, SendAccountTrustStatusEvent } from "../../dtos/kafka.dto";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
+import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 import { notificationType } from "../../../shared/utils/constants/constant";
 

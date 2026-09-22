@@ -1,8 +1,8 @@
-import { IJWT } from "../../../domain/interfaces/security/IJwt";
+import { IJWT } from "../../interfaces/security/IJwt.service";
 import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { VerifyEmailInput, VerifyEmailOutput } from "../../dtos/auth.dto";
-import { IOTPService } from "../../../domain/interfaces/services/IOtp.service";
+import { IOTPService } from "../../interfaces/services/IOtp.service";
 import { BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 

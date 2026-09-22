@@ -1,14 +1,14 @@
 import { kafkaConfig } from "../../../config/env";
 import { ResetPasswordInput } from "../../dtos/auth.dto";
-import { IJWT } from '../../../domain/interfaces/security/IJwt';
+import { IJWT } from '../../interfaces/security/IJwt.service';
 import { generateId } from '../../../shared/utils/helpers/generateId';
 import { toAppError } from '../../../shared/error/handleUnknownError';
 import { ERROR_CODES, IdType } from '../../../shared/utils/types/enums';
 import { EventEnvelope, SendResetPasswordEvent } from "../../dtos/kafka.dto";
-import { IPasswordHasher } from "../../../domain/interfaces/security/IPasswordHasher";
+import { IPasswordHasher } from "../../interfaces/security/IPasswordHasher.service";
 import { AppError, BadRequestError, NotFoundError } from '../../../shared/error/appError';
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
+import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
 
 export class ResetPasswordUseCase {
     constructor(

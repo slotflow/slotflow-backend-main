@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
-import { ServiceType, ServiceMode } from "../../domain/enums/service.enum";
+import { ServiceType } from "../../domain/enums/service.enum";
 import { serviceDescriptionRegex, serviceExperienceRegex, serviceNameRegex } from "../../shared/utils/constants/regex";
 
 export interface IProviderService extends Document {

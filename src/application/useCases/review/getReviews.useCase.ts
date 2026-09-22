@@ -1,9 +1,9 @@
 import { TableData } from "../../dtos/common.dto";
-import { IReviewQueries } from "../../queries/IReview.queries";
+import { IReviewQueries } from "../../interfaces/queries/IReview.queries";
 import { BadRequestError } from "../../../shared/error/appError";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { GetReviewsInput, GetReviewsOutput } from "../../dtos/review.dto";
-import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrl.service";
+import { ISignedUrlService } from "../../interfaces/services/ISignedUrl.service";
 
 export class GetReviewsUseCase {
     constructor(

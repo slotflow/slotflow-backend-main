@@ -1,9 +1,9 @@
-import { PlanName } from "../../domain/enums/plan.enum";
-import { GeoLocation } from "../../domain/contracts/address.contract";
-import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
+import { JwtPayload } from "jsonwebtoken";
+import { PlanName, StripeSyncStatus } from "../../domain/enums/plan.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
+import { PaymentFor, RefundFor, RefundReason } from "../../domain/enums/payment.enum";
+import { BillingCycle, SubscriptionStatus } from "../../domain/enums/subscription.enum";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
-import { StripePlanDetails, StripeSyncStatus } from "../../domain/contracts/plan.contract";
 import { ServiceCategory, ServiceMode, ServiceType } from "../../domain/enums/service.enum";
 import { Day, HearAboutUsOptionValue, OnboardingStatus, ReferralStatus, Role } from "../../domain/enums/common.enum";
 import { CreditTransactionSource, CreditTransactionStatus, CreditTransactionType } from "../../domain/enums/creditTransaction.enum";
@@ -11,6 +11,11 @@ import { CreditTransactionSource, CreditTransactionStatus, CreditTransactionType
 // **** ENTITY INTERFACES FOR APPLICATION LAYER **** \\
 
 // **** ADDRESS INTERFACE
+export type GeoLocation = {
+    type: "Point";
+    coordinates: [number, number];
+};
+
 export interface AddressDTO {
   _id: string,
   userId: string,
@@ -117,6 +122,11 @@ export interface CredentialDTO {
 }
 
 // **** PLAN INTERFACE
+export interface StripePlanDetailsDTO {
+  productId: string;
+  monthlyPriceId: string;
+  yearlyPriceId: string;
+}
 export interface PlanDTO {
   _id: string,
   planName: PlanName,
@@ -127,7 +137,7 @@ export interface PlanDTO {
   maxBookingPerMonth: number,
   adVisibility: boolean,
   isBlocked: boolean,
-  stripePlanDetails: StripePlanDetails | null;
+  stripePlanDetails: StripePlanDetailsDTO | null;
   stripeSync: StripeSyncStatus;
   hasTrial: boolean;
   trialDays: number;
@@ -278,113 +288,6 @@ export interface TableData<T> {
   items?: T
 };
 
-// Google Event
-interface GoogleCalendarEventsPropsForBackend {
-  start: {
-    dateTime: string,
-    timeZone: string,
-  };
-  end: {
-    dateTime: string,
-    timeZone: string,
-  };
-}
-
-// used in add event to calendar usecase
-interface CombinedStartAndEndProps {
-  start: {
-    dateTime: string,
-    date: string,
-    timeZone: string,
-  } | string;
-  end: {
-    dateTime: string,
-    date: string,
-    timeZone: string,
-  } | string;
-}
-
-// used in add event to calendar usecase
-export interface GoogleCalendarEvent extends Partial<BookingDTO> {
-  id: string;
-  iCalUID?: string;
-  kind?: string;
-  eventType?: string;
-
-  summary?: string;
-  description?: string;
-
-  start: {
-    dateTime?: string,
-    date?: string,
-    timeZone?: string,
-  } | string;
-  end: {
-    dateTime?: string,
-    date?: string,
-    timeZone?: string,
-  } | string;
-
-  created?: string;
-  updated?: string;
-
-  htmlLink?: string;
-  status?: string;
-
-  creator?: {
-    email: string;
-    self?: boolean;
-  };
-
-  organizer?: {
-    email: string;
-    self?: boolean;
-  };
-
-  reminders?: {
-    useDefault: boolean;
-    overrides?: {
-      method: string;
-      minutes: number;
-    }[];
-  };
-
-  sequence?: number;
-  etag?: string;
-
-  extendedProperties?: {
-    private: {
-      bookingStatus?: string;
-      bookingId?: string;
-      title?: string;
-      backgroundColor?: string;
-      textColor?: string;
-    },
-  },
-};
-
-// used in add event to calendar usecase
-export type AddEventToCalendarProps = Pick<GoogleCalendarEvent, "summary" | "description" | "extendedProperties"> & GoogleCalendarEventsPropsForBackend;
-
-// used in get events from calendar usecase
-export type GetEventsFromCalendarProps = Pick<GoogleCalendarEvent, "id" | "summary" | "description" | "creator" | "organizer" | "iCalUID" | "reminders" | "eventType" | "extendedProperties"> & CombinedStartAndEndProps;
-
-// used in update google calendar event usecase
-export interface UpdateGoogleCalendarEventInput {
-  eventId: string,
-  appointmentDate: BookingDTO["appointmentDate"],
-  appointmentStatus: BookingDTO["appointmentStatus"],
-  accessToken: string,
-}
-
-// used in create google calendar event usecase
-export interface CreateGoogleCalendarEventInput {
-  appointmentDate: BookingDTO["appointmentDate"],
-  appointmentStatus: BookingDTO["appointmentStatus"],
-  slotDuration: number,
-  accessToken: CredentialDTO["accessToken"];
-}
-
 // used in create file upload presigned url usecase input output
 export interface CreateFileUploadPresignedUrlInput {
   fileName: string;
@@ -449,13 +352,6 @@ export interface GoogleOAuthUser {
 // used in count query
 export type CountResult = { count: number };
 
-// GetGoogleCalendarUseCase usecase input output
-export interface GetGoogleCalendarInput {
-  userId: string;
-}
-export type GetGoogleCalendarOutput = Array<GetEventsFromCalendarProps>;
-
-
 // queries
 
 export type AggregateCountResult = { count: number };
@@ -493,3 +389,88 @@ export type NotificationType =
   | 'account_activity'
   | 'system_updates'
   | 'promotional_updates';
+
+
+
+
+
+/**
+ * JWT Service dtos
+ */
+
+export interface JwtClaims extends JwtPayload {
+  userId?: string;
+  email?: string;
+  name?: string;
+  password?: string;
+  role?: Role;
+}
+
+
+
+
+
+/**
+ * Payment Client Service dtos
+ */
+
+export interface CreateSubscriptionCheckoutSessionInput {
+  subscriptionData: {
+    subscriptionId: string;
+    billingCycle: BillingCycle;
+    paymentFor: PaymentFor;
+    paymentDate: Date;
+    priceId: string;
+    unitAmount: number;
+    trialPeriodDays?: number;
+    alreadyUsedTrial: boolean;
+    isTrial: boolean;
+  },
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    role: Role;
+  }
+}
+
+export interface CreateSubscriptionCheckoutSessionOutput {
+  status: boolean;
+  message: string;
+  data: string;
+}
+
+export interface CreateBookingCheckoutSessionInput {
+  serviceName: string;
+  description: string;
+  unitAmount: number;
+  providerId: string;
+  slotDuration: number;
+  selectedServiceMode: string;
+  bookingId: string;
+  userId: string;
+  paymentFor: PaymentFor;
+  userEmail: string;
+  userName: string;
+  initialAmount: number;
+  pushNotification: boolean;
+}
+
+export interface CreateBookingCheckoutSessionOutput {
+  status: boolean;
+  message: string;
+  data: string;
+}
+
+export interface ProcessRefundInput {
+  bookingId: string;
+  paymentId: string;
+  refundFor: RefundFor;
+  refundReason: RefundReason;
+  reasonInDetail: string;
+}
+
+export interface ProcessRefundOutput {
+  success: boolean;
+  message: string;
+}

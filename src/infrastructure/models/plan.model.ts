@@ -1,6 +1,6 @@
-import { PlanName } from "../../domain/enums/plan.enum";
 import mongoose, { Document, Schema, Types } from "mongoose";
-import { StripePlanDetails, StripeSyncStatus } from "../../domain/contracts/plan.contract";
+import { StripePlanDetails } from "../../domain/commands/plan.commands";
+import { PlanName, StripeSyncStatus } from "../../domain/enums/plan.enum";
 
 export interface IPlan extends Document {
     _id: Types.ObjectId;

@@ -5,7 +5,7 @@ import { toAppError } from "../../../shared/error/handleUnknownError";
 import { CreatePlanInput, CreatePlanOutput } from "../../dtos/plan.dto";
 import { AppError, BadRequestError } from "../../../shared/error/appError";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
-import { IStripePlanService } from "../../../domain/interfaces/services/IStripePlan.service";
+import { IStripePlanService } from "../../interfaces/services/IStripePlan.service";
 
 export class CreatePlanUseCase {
     constructor(

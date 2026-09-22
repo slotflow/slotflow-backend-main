@@ -5,10 +5,10 @@ import { toAppError } from "../../../shared/error/handleUnknownError";
 import { ERROR_CODES, IdType } from "../../../shared/utils/types/enums";
 import { notificationType } from "../../../shared/utils/constants/constant";
 import { EventEnvelope, SendUpdatePasswordEvent } from "../../dtos/kafka.dto";
-import { IPasswordHasher } from "../../../domain/interfaces/security/IPasswordHasher";
+import { IPasswordHasher } from "../../interfaces/security/IPasswordHasher.service";
 import { AppError, BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
+import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
 
 export class UpdatePasswordUseCase {
     constructor(

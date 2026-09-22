@@ -1,6 +1,6 @@
 import { UpdateBookingStatusCron } from "./updateBookingsStatus.cron";
 import { UpdateSubscriptionStatusCron } from "./updateSubscriptionStatus.cron";
-import { bookingQueries, subscriptionQueries } from "../../infrastructure/queriesImpls";
+import { bookingQueries, subscriptionQueries } from "../../infrastructure/queries";
 import { UpdateBookingStatusUseCase } from "../../application/useCases/cronJob/updateBookingStatus.useCase";
 import { UpdateSubscriptionStatusUseCase } from "../../application/useCases/cronJob/updateSubscriptionStatus.useCase";
 

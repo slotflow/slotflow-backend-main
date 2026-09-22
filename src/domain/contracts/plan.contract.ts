@@ -1,15 +1,5 @@
-import { PlanName } from "../enums/plan.enum";
-
-export interface StripePlanDetails {
-    productId: string;
-    monthlyPriceId: string;
-    yearlyPriceId: string;
-}
-
-export enum StripeSyncStatus {
-    PENDING = "pending",
-    SYNCED = "synced",
-}
+import { StripePlanDetails } from "../commands/plan.commands";
+import { PlanName, StripeSyncStatus } from "../enums/plan.enum";
 
 export interface PlanProps {
     _id: string;
