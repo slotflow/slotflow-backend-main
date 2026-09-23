@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { kafkaConfig } from "../../../config/env";
-import { formatDate } from "../../../shared/utils/helpers/dateTime";
+import { formatDate } from "../../../shared/utils/helpers/formatDate";
 import { generateId } from '../../../shared/utils/helpers/generateId';
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { ERROR_CODES, IdType } from '../../../shared/utils/types/enums';
@@ -171,7 +171,7 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
                 eventId: generateId({ type: IdType.EVENT }),
                 attempt: 1,
                 maxAttempts: 1,
-                occurredAt: new Date().toISOString(),
+                occurredAt: new Date(),
                 payload: {
                     socketData: {
                         userId: provider._id,

@@ -1,5 +1,5 @@
 import { kafkaConfig } from "../../../config/env";
-import { formatDate } from "../../../shared/utils/helpers/dateTime";
+import { formatDate } from "../../../shared/utils/helpers/formatDate";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { generateId } from "../../../shared/utils/helpers/generateId";
 import { ERROR_CODES, IdType } from "../../../shared/utils/types/enums";
@@ -68,7 +68,7 @@ export class UpdateBookingAfterPaymentSuccessUseCase {
                         eventId: generateId({ type: IdType.EVENT }),
                         attempt: 1,
                         maxAttempts: 3,
-                        occurredAt: new Date().toISOString(),
+                        occurredAt: new Date(),
                         payload: {
                             emailData: {
                                 email: user.email,
@@ -97,7 +97,7 @@ export class UpdateBookingAfterPaymentSuccessUseCase {
                         eventId: generateId({ type: IdType.EVENT }),
                         attempt: 1,
                         maxAttempts: 3,
-                        occurredAt: new Date().toISOString(),
+                        occurredAt: new Date(),
                         payload: {
                             emailData: {
                                 email: provider.email,

@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 import { UserModel } from "../models/user.model";
 import { Role } from "../../domain/enums/common.enum";
 import { TableData } from "../../application/dtos/common.dto";
-import { getStartAndEndDate } from "../../shared/utils/helpers/dateTime";
+import { getStartAndEndDate } from "../../shared/utils/helpers/getStartAndEndDate";
 import { IUserQueries } from "../../application/interfaces/queries/IUser.queries";
 import { formatStatMetric } from "../../shared/utils/helpers/formatStatMetric";
 import { calculatePreviousPeriod } from "../../shared/utils/helpers/calculatePreviosPeriod";

@@ -2,7 +2,7 @@ import { FilterQuery, Types } from "mongoose";
 import { Role } from "../../domain/enums/common.enum";
 import { BookingModel } from "../models/booking.model";
 import { addDays, startOfDay, subDays } from 'date-fns';
-import { getStartAndEndDate } from "../../shared/utils/helpers/dateTime";
+import { getStartAndEndDate } from "../../shared/utils/helpers/getStartAndEndDate";
 import { formatStatMetric } from "../../shared/utils/helpers/formatStatMetric";
 import { TableData, BookingDTO } from "../../application/dtos/common.dto";
 import { IBookingQueries } from "../../application/interfaces/queries/IBooking.queries";

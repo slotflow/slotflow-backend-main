@@ -1,6 +1,6 @@
 import { ClientSession } from 'mongoose';
 import { User } from '../../domain/entities/user.entity';
-import { getStartAndEndDate } from '../../shared/utils/helpers/dateTime';
+import { getStartAndEndDate } from '../../shared/utils/helpers/getStartAndEndDate';
 import { CreditTransactionModel } from '../models/creditTransaction.model';
 import { CreditTransactionMapper } from '../mappers/creditTransaction.mapper';
 import { CreditTransaction } from '../../domain/entities/creditTransaction.entity';

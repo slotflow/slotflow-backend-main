@@ -3,7 +3,7 @@ import { serviceConfig } from "../../config/env";
 import { log } from "../../shared/logger/logger";
 import { ERROR_CODES } from "../../shared/utils/types/enums";
 import { AppError, BadRequestError } from "../../shared/error/appError";
-import { buildUserHeaders } from "../../shared/utils/helpers/headerPropagation";
+import { buildUserHeaders } from "../../shared/utils/helpers/buildReqUserHeader";
 import { CreateBookingCheckoutSessionInput, CreateBookingCheckoutSessionOutput, CreateSubscriptionCheckoutSessionInput, CreateSubscriptionCheckoutSessionOutput, IPaymentServiceClient, ProcessRefundInput, ProcessRefundOutput } from "../../application/interfaces/clients/IPaymentService.client";
 
 export class PaymentServiceClient implements IPaymentServiceClient {

@@ -36,7 +36,7 @@ export class ResendOtpUseCase {
         eventId: generateId({ type: IdType.EVENT }),
         attempt: 1,
         maxAttempts: 1,
-        occurredAt: new Date().toISOString(),
+        occurredAt: new Date(),
         payload: {
           emailData: {
             email: email,

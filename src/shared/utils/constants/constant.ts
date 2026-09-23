@@ -27,8 +27,6 @@ export const PREFIX_MAP: Record<IdType, string> = {
   [IdType.CREDIT_TRANSACTION]: "sf_crtsn"
 } as const;
 
-export const BASE36 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
 export const notificationChannel = {
   EMAIL: 'email',
   PUSH: 'push',

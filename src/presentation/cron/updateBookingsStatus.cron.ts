@@ -1,5 +1,5 @@
 import { log } from "../../shared/logger/logger";
-import { formatDate } from "../../shared/utils/helpers/dateTime";
+import { formatDate } from "../../shared/utils/helpers/formatDate";
 import { dateFormats } from "../../shared/utils/constants/constant";
 import { UpdateBookingStatusUseCase } from "../../application/useCases/cronJob/updateBookingStatus.useCase";
 

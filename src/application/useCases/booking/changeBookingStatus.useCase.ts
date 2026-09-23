@@ -1,6 +1,6 @@
 import { kafkaConfig } from "../../../config/env";
 import { Role } from "../../../domain/enums/common.enum";
-import { formatDate } from "../../../shared/utils/helpers/dateTime";
+import { formatDate } from "../../../shared/utils/helpers/formatDate";
 import { toAppError } from '../../../shared/error/handleUnknownError';
 import { generateId } from '../../../shared/utils/helpers/generateId';
 import { ERROR_CODES, IdType } from '../../../shared/utils/types/enums';
@@ -67,7 +67,7 @@ export class ChangeBookingStatusUseCase {
                 eventId: generateId({ type: IdType.EVENT }),
                 attempt: 1,
                 maxAttempts: 2,
-                occurredAt: new Date().toISOString(),
+                occurredAt: new Date(),
                 payload: {
                     emailData: {
                         email: user.email,
@@ -89,7 +89,7 @@ export class ChangeBookingStatusUseCase {
                 eventId: generateId({ type: IdType.EVENT }),
                 attempt: 1,
                 maxAttempts: 2,
-                occurredAt: new Date().toISOString(),
+                occurredAt: new Date(),
                 payload: {
                     notificationData: {
                         userId: provider._id,
@@ -105,7 +105,7 @@ export class ChangeBookingStatusUseCase {
             if (updatedBooking.appointmentStatus === AppointmentStatus.CONFIRMED) {
                 await this.kafkaProducer.publish<EventEnvelope<CreateGoogleCalendarEvent>>(kafkaConfig.topics.pub.createGoogleCalendarEvent, {
                     eventId: generateId({ type: IdType.EVENT }),
-                    occurredAt: new Date().toString(),
+                    occurredAt: new Date(),
                     attempt: 1,
                     maxAttempts: 2,
                     payload: {
@@ -123,7 +123,7 @@ export class ChangeBookingStatusUseCase {
             if (updatedBooking.appointmentStatus === AppointmentStatus.CONFIRMED) {
                 await this.kafkaProducer.publish<EventEnvelope<CreateGoogleCalendarEvent>>(kafkaConfig.topics.pub.createGoogleCalendarEvent, {
                     eventId: generateId({ type: IdType.EVENT }),
-                    occurredAt: new Date().toString(),
+                    occurredAt: new Date(),
                     attempt: 1,
                     maxAttempts: 2,
                     payload: {

@@ -5,7 +5,7 @@ import {
     GetReferralDetailsQuery,
 } from "../../application/dtos/referral.dto";
 import { addDays, isBefore, isSameDay } from "date-fns";
-import { formatDate } from "../../shared/utils/helpers/dateTime";
+import { formatDate } from "../../shared/utils/helpers/formatDate";
 import { ReferralModel } from "../models/referral.model";
 import { calcPercentage } from "../../shared/utils/helpers/getPercentage";
 import { dateFormats } from "../../shared/utils/constants/constant";

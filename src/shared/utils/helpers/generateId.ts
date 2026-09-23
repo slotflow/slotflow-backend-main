@@ -1,9 +1,8 @@
 import { v4 as uuidv4 } from "uuid";
-import { formatName } from "./formatName";
 import { GenerateId } from "../types/types";
 import { AppError } from "../../error/appError";
 import { PREFIX_MAP } from "../constants/constant";
-import { generateBase62 } from "./generateRefString";
+import { generateBase62 } from "./generateRnadomStr";
 import { ERROR_CODES, IdType } from "../types/enums";
 
 export const generateId = (input: GenerateId): string => {
@@ -31,7 +30,11 @@ export const generateId = (input: GenerateId): string => {
             );
         }
 
-        const formattedName = formatName(name);
+        const formattedName = name.trim()
+        .split(" ")[0]
+        .replace(/[^a-zA-Z0-9]/g, "")
+        .slice(0,8)
+        .toUpperCase();
         const randomPart = generateBase62(7);
 
         return `${prefix}${formattedName}${randomPart}`;

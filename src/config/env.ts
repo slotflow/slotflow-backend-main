@@ -119,7 +119,6 @@ export const kafkaConfig = {
             accountBlockStatus: validator.requireEnv("KAFKA_ACCOUNT_BLOCK_STATUS"),
             accountTrustStatus: validator.requireEnv("KAFKA_ACCOUNT_TRUST_STATUS"),
             providerAppointmentStatusForUser: validator.requireEnv("KAFKA_PROVIDER_APPOINTMENT_STATUS_FOR_USER"),
-            appConnect: validator.requireEnv("KAFKA_APP_CONNECT"),
             gotAnAppointment: validator.requireEnv("KAFKA_GOT_AN_APPOINTMENT"),
 
             // MBS -> NS [ notification ]

@@ -6,7 +6,7 @@ import {
   GetCreditAccountDetailsQuery,
 } from "../../application/dtos/credits.dto";
 import { isBefore, isSameDay, addDays } from 'date-fns';
-import { formatDate } from "../../shared/utils/helpers/dateTime";
+import { formatDate } from "../../shared/utils/helpers/formatDate";
 import { calcPercentage } from "../../shared/utils/helpers/getPercentage";
 import { CreditAccountModel } from "../models/creditAccount.model";
 import { dateFormats } from "../../shared/utils/constants/constant";

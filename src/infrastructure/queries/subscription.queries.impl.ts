@@ -1,6 +1,6 @@
 import { PlanName } from "../../domain/enums/plan.enum";
 import { SubscriptionModel } from "../models/subscription.model";
-import { getStartAndEndDate } from "../../shared/utils/helpers/dateTime";
+import { getStartAndEndDate } from "../../shared/utils/helpers/getStartAndEndDate";
 import { formatStatMetric } from "../../shared/utils/helpers/formatStatMetric";
 import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 import { PlanNameOnly, TableData } from "../../application/dtos/common.dto";

@@ -1,9 +1,9 @@
 import { KafkaMessage } from "kafkajs";
 import { NotificationType } from "./common.dto";
 import { PlanName } from "../../domain/enums/plan.enum";
+import { OtpPurpose, Role } from "../../domain/enums/common.enum";
 import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
-import { AppConnect, OtpPurpose, Role } from "../../domain/enums/common.enum";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
 
 /**
@@ -34,7 +34,7 @@ export interface DqMetaData {
 // event envelope
 export interface EventEnvelope<MBSSubKafkaEventPayload, M = DqMetaData> {
   eventId: string;
-  occurredAt: string;
+  occurredAt: Date;
   attempt: number;
   maxAttempts: number;
   payload: MBSSubKafkaEventPayload;
@@ -188,16 +188,6 @@ export interface GotAnAppointmentEvent {
     appointmentDate: string;
     appointmentTime: string;
     customerName: string;
-  }
-}
-
-// send app connect event
-export interface SendAppConnectEvent {
-  emailData: SendEmailCommon & {
-    appConnect: AppConnect;
-  },
-  notificationData: CommonNotificationEventInput & {
-    appName: string;
   }
 }
 
