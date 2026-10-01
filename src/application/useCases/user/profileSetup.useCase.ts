@@ -1,9 +1,11 @@
 import mongoose from "mongoose";
-import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { User } from "../../../domain/entities/user.entity";
+import { IJWT } from "../../interfaces/security/IJwt.service";
 import { Referral } from "../../../domain/entities/referral.entity";
 import { toAppError } from "../../../shared/error/handleUnknownError";
-import { PreBoardingInput, PreBoardingOutput } from "../../dtos/user.dto";
+import { generateId } from "../../../shared/utils/helpers/generateId";
+import { ERROR_CODES, IdType } from "../../../shared/utils/types/enums";
+import { ProfileSetupInput, ProfileSetupOutput } from "../../dtos/user.dto";
 import { HearAboutUsOptionValue, Role } from "../../../domain/enums/common.enum";
 import { ProviderProfile } from "../../../domain/entities/providerProfile.entity";
 import { AppError, BadRequestError, NotFoundError } from "../../../shared/error/appError";
@@ -11,25 +13,26 @@ import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.r
 import { IReferralRepository } from "../../../domain/interfaces/repositories/IReferral.repository";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 
-export class PreBoardingUseCase {
+export class ProfileSetupUseCase {
     constructor(
         private readonly userRepository: IUserRepository,
         private readonly providerProfile: IProviderProfileRepository,
-        private readonly referralRepository: IReferralRepository
+        private readonly referralRepository: IReferralRepository,
+        private readonly jwtService: IJWT,
     ) { };
 
-    async execute(input: PreBoardingInput): Promise<PreBoardingOutput> {
+    async execute(input: ProfileSetupInput): Promise<ProfileSetupOutput> {
         const session = await mongoose.startSession();
         session.startTransaction();
         try {
-            const { _id: userId, role, referralCode, whereDidHearAboutUs } = input;
+            const { _id: userId, role, referralCode, whereDidHearAboutUs, username } = input;
             if (!userId || !role) {
                 throw new BadRequestError()
             }
 
-            if(whereDidHearAboutUs === HearAboutUsOptionValue.REFERRAL && !referralCode) {
+            if (whereDidHearAboutUs === HearAboutUsOptionValue.REFERRAL && !referralCode) {
                 throw new BadRequestError(
-                    "Referral code is required when whereDidHearAboutUs is REFERRAL", 
+                    "Referral code is required when whereDidHearAboutUs is REFERRAL",
                 );
             }
 
@@ -42,19 +45,19 @@ export class PreBoardingUseCase {
             }
 
             let referrer: User | null = null;
-            if(referralCode) {
+            if (referralCode) {
                 referrer = await this.userRepository.findByReferralCode(referralCode);
-                if(referrer?._id === userId) {
+                if (referrer?._id === userId) {
                     throw new BadRequestError("Cannot use your own referral code")
                 }
-                if(referrer) {
+                if (referrer) {
                     const referral = Referral.create({
                         referralCode,
                         refereeUserId: userId,
                         referrerUserId: referrer._id
                     });
                     const newReferral = await this.referralRepository.create(referral, session);
-                    if(!newReferral) {
+                    if (!newReferral) {
                         throw new AppError(
                             "Failed to create referral",
                             500,
@@ -65,10 +68,18 @@ export class PreBoardingUseCase {
                 }
             }
 
-            user.completePreBoarding({ 
-                role ,
+            const authUserReferralCode = generateId({
+                type: IdType.REFERRAL, options: {
+                    name: username!
+                }
+            },);
+
+            user.completeProfileSetup({
+                role,
                 referredBy: referrer?._id,
-                whereDidHearAboutUs
+                whereDidHearAboutUs,
+                username,
+                referralCode: authUserReferralCode
             });
 
             const updatedUser = await this.userRepository.update(user, session);
@@ -87,7 +98,7 @@ export class PreBoardingUseCase {
                 if (!existProfile) {
                     providerProfile = ProviderProfile.create({ userId })
                     await this.providerProfile.create(providerProfile, session);
-                    if(!providerProfile) {
+                    if (!providerProfile) {
                         throw new AppError(
                             "Failed to create provider profile",
                             500,
@@ -98,16 +109,25 @@ export class PreBoardingUseCase {
                 }
             }
 
+            const token = await this.jwtService.generateToken({
+                email: user.email,
+                role: user.role,
+                userId: user._id,
+                name: user.username,
+                timeZone: user.timeZone
+            });
+
             await session.commitTransaction();
             return {
                 onboardingType: updatedUser.onboardingType,
                 onboardingStatus: updatedUser.onboardingStatus,
-                adminVerificationStatus: (role === Role.PROVIDER && providerProfile) ? providerProfile.adminVerificationStatus : null
+                adminVerificationStatus: (role === Role.PROVIDER && providerProfile) ? providerProfile.adminVerificationStatus : null,
+                token,
             };
 
         } catch (error: unknown) {
             await session.abortTransaction();
-            throw toAppError(error, "Failed to preboard user");
+            throw toAppError(error, "Failed to complete profile setup.");
         } finally {
             session.endSession()
         }

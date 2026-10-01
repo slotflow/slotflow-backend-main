@@ -17,7 +17,7 @@ router.get('/',
 router.post('/',
     authMiddleware,
     authorize(Role.ADMIN),
-    serviceController.createService
+    serviceController.createServices
 );
 
 // admin block service

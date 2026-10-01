@@ -27,15 +27,11 @@ const CredentialSchema = new Schema<ICredential>({
     expiryDate: {
         type: Date,
         required: true
-    },
-    createdAt: {
-        type: Date,
-        required: true
-    },
-    updatedAt: {
-        type: Date,
-        required: true
     }
-});
+},
+    {
+        timestamps: true,
+    }
+);
 
 export const CredentialModel = model<ICredential>("Credential", CredentialSchema);

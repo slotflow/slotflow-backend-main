@@ -1,29 +1,33 @@
-import { ProviderProfileDTO, UserDTO } from "./common.dto";
+import { UserProps } from "../../domain/contracts/user.contract";
+import { ProviderProfileProps } from "../../domain/contracts/providerProfile.contract";
 
-//// **** providerProfile dtos **** ////
+/**
+ * Provider profile usecase dtos
+ */
 
-// ProviderUpdateIdentityProof usecase input output
-export type ProviderUpdateIdentityProofRequest = Pick<ProviderProfileDTO, "identityProof"> & {
-    providerId: UserDTO["_id"];
+
+// ProviderUpdateIdentityProof
+export type ProviderUpdateIdentityProofRequest = Pick<ProviderProfileProps, "identityProof"> & {
+    providerId: UserProps["_id"];
 }
-export type ProviderUpdateIdentityProofResponse = ProviderProfileDTO["identityProof"];
+export type ProviderUpdateIdentityProofResponse = ProviderProfileProps["identityProof"];
 
 
-// ProviderUpdateServiceProof usecase input output
-export type ProviderUpdateServiceProofRequest = Pick<ProviderProfileDTO, "serviceProof"> & {
-    providerId: UserDTO["_id"];
+// ProviderUpdateServiceProof 
+export type ProviderUpdateServiceProofRequest = Pick<ProviderProfileProps, "serviceProof"> & {
+    providerId: UserProps["_id"];
 }
-export type ProviderUpdateServiceProofResponse = ProviderProfileDTO["serviceProof"];
+export type ProviderUpdateServiceProofResponse = ProviderProfileProps["serviceProof"];
 
 
-// ProviderAdminApproval usecase input output
+// ProviderAdminApproval 
 export interface ProviderAdminApprovalRequest {
-    providerId: UserDTO["_id"];
+    providerId: UserProps["_id"];
 }
-export type ProviderAdminApprovalResponse = Pick<ProviderProfileDTO, "adminVerificationStatus">;
+export type ProviderAdminApprovalResponse = Pick<ProviderProfileProps, "adminVerificationStatus">;
 
 
-// ProviderDeleteProof usecase input output
+// ProviderDeleteProof 
 export interface ProviderDeleteProofRequest {
-    providerId: UserDTO["_id"];
+    providerId: UserProps["_id"];
 }

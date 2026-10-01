@@ -38,17 +38,4 @@ export class SubscriptionRepositoryImpl implements ISubscriptionRepository {
         return doc ? SubscriptionMapper.toDomain(doc) : null;
     }
 
-    async getFirstPaidSubscriptionByUserId(userId: string): Promise<Subscription | null> {
-        const doc = await SubscriptionModel.findOne({
-            providerId: userId,
-            subscriptionStatus: SubscriptionStatus.ACTIVE
-        }).populate("subscriptionPlanId").sort({ createdAt: 1 });
-        if (!doc) return null;
-        const plan = doc.subscriptionPlanId as any;
-        if (plan.planName === PlanName.TRIAL) {
-            return null;
-        }
-        return SubscriptionMapper.toDomain(doc);
-    }
-
 };

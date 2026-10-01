@@ -14,14 +14,15 @@ export class ProviderService {
     };
 
     static create(props: CreateProviderServiceProps): ProviderService {
+        const now = new Date();
         return new ProviderService({
             _id: "",
             ...props,
             requirements: props.requirements ?? null,
             videoUrl: props.videoUrl ?? null,
             portfolioUrl: props.portfolioUrl ?? null,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            createdAt: now,
+            updatedAt: now,
         })
     };
 

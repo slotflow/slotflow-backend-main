@@ -40,7 +40,7 @@ export class ResendOtpUseCase {
         payload: {
           emailData: {
             email: email,
-            name: username || email,
+            name: username,
             otp,
             purpose: OtpPurpose.REGISTRATION
           }

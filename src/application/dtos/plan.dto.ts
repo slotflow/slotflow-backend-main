@@ -1,49 +1,51 @@
-import { ApiPaginationInput, PlanDTO, StripePlanDetailsDTO } from "./common.dto";
+import { ApiPaginationInput } from "./common.dto";
+import { PlanProps } from "../../domain/contracts/plan.contract";
+import { StripePlanDetails } from "../../domain/commands/plan.commands";
 
 /**
  * Plan usecase dtos
  */
 
 // Create plan
-export type CreatePlanInput = Pick<PlanDTO, "planName" | "description" | "monthlyPrice" | "yearlyPrice" | "features" | "maxBookingPerMonth" | "adVisibility" | "hasTrial" | "trialDays">;
-export type CreatePlanOutput = Omit<PlanDTO, "createdAt" | "updatedAt">;
+export type CreatePlanInput = Pick<PlanProps, "planName" | "description" | "monthlyPrice" | "yearlyPrice" | "features" | "maxBookingPerMonth" | "adVisibility" | "hasTrial" | "trialDays">;
+export type CreatePlanOutput = Omit<PlanProps, "createdAt" | "updatedAt">;
 
 
 // Get plans ( by admin )
 export interface GetPlansInput extends ApiPaginationInput {
   isProvider: boolean;
 }
-export type GetPlansOutput = Array<Pick<PlanDTO, "_id" | "planName" | "isBlocked" | "monthlyPrice" | "yearlyPrice">> & Partial<Pick<PlanDTO, "maxBookingPerMonth" | "adVisibility" | "features" | "description" | "stripeSync">>;
+export type GetPlansOutput = Array<Pick<PlanProps, "_id" | "planName" | "isBlocked" | "monthlyPrice" | "yearlyPrice">> & Partial<Pick<PlanProps, "maxBookingPerMonth" | "adVisibility" | "features" | "description" | "stripeSync">>;
 
 
 // Change plan block status
 export type ChangePlanBlockStatusInput = {
-  planId: PlanDTO['_id'];
-} & Pick<PlanDTO, "isBlocked">;
-export type ChangePlanBlockStatusOutput = Pick<PlanDTO, "_id" | "isBlocked">;
+  planId: PlanProps['_id'];
+} & Pick<PlanProps, "isBlocked">;
+export type ChangePlanBlockStatusOutput = Pick<PlanProps, "_id" | "isBlocked">;
 
 
 // Get plans ( by provider )
-export type ProviderGetPlansOutput = Array<Pick<PlanDTO, "_id" | "planName" | "monthlyPrice" | "yearlyPrice" | "features" | "description">> | [];
+export type ProviderGetPlansOutput = Array<Pick<PlanProps, "_id" | "planName" | "monthlyPrice" | "yearlyPrice" | "features" | "description">> | [];
 
 
 // Resync plan with stripe
 export type ResyncStripePlanInput = {
-  planId: PlanDTO["_id"];
+  planId: PlanProps["_id"];
 };
-export type ResyncStripePlanOutput = Pick<PlanDTO, "_id" | "stripePlanDetails" | "stripeSync">;
+export type ResyncStripePlanOutput = Pick<PlanProps, "_id" | "stripePlanDetails" | "stripeSync">;
 
 
 // Get plan details
 export type GetPlanDetailsInput = {
-  planId: PlanDTO["_id"];
+  planId: PlanProps["_id"];
 };
-export type GetPlanDetailsOutput = Omit<PlanDTO, "createdAt" | "updatedAt">;
+export type GetPlanDetailsOutput = Omit<PlanProps, "createdAt" | "updatedAt">;
 
 
 // Update plan
 export type UpdatePlanInput = Partial<Pick<
-  PlanDTO,
+  PlanProps,
   | 'planName'
   | 'description'
   | 'monthlyPrice'
@@ -54,9 +56,9 @@ export type UpdatePlanInput = Partial<Pick<
   | 'hasTrial'
   | 'trialDays'
 >> & {
-  planId: PlanDTO["_id"];
+  planId: PlanProps["_id"];
 }
-export type UpdatePlanOutput = Omit<PlanDTO, "createdAt" | "updatedAt">;
+export type UpdatePlanOutput = Omit<PlanProps, "createdAt" | "updatedAt">;
 
 
 
@@ -66,8 +68,10 @@ export type UpdatePlanOutput = Omit<PlanDTO, "createdAt" | "updatedAt">;
  * Stripe plan service dtos
  */
 
+
+// Create stripe plan
 export type CreateStripePlanInput = Pick<
-  PlanDTO,
+  PlanProps,
   | "planName"
   | "description"
   | "monthlyPrice"
@@ -75,31 +79,31 @@ export type CreateStripePlanInput = Pick<
   | "features"
   | "maxBookingPerMonth"
 >;
+export type CreateStripePlanOutput = StripePlanDetails;
 
-export type CreateStripePlanOutput = StripePlanDetailsDTO;
 
+// Update stripe plan
 export type UpdateStripePlanInput = Partial<
   Pick<
-    PlanDTO,
+    PlanProps,
     | "planName"
     | "description"
     | "features"
     | "maxBookingPerMonth"
   >
 > & {
-  productId: StripePlanDetailsDTO["productId"];
+  productId: StripePlanDetails["productId"];
   monthlyPrice?: {
-    amount: PlanDTO["monthlyPrice"];
-    oldPriceId?: StripePlanDetailsDTO["monthlyPriceId"];
+    amount: PlanProps["monthlyPrice"];
+    oldPriceId?: StripePlanDetails["monthlyPriceId"];
   };
   yearlyPrice?: {
-    amount: PlanDTO["yearlyPrice"];
-    oldPriceId?: StripePlanDetailsDTO["yearlyPriceId"];
+    amount: PlanProps["yearlyPrice"];
+    oldPriceId?: StripePlanDetails["yearlyPriceId"];
   };
 };
-
 export type UpdateStripePlanOutput = {
-  productId: StripePlanDetailsDTO["productId"];
-  monthlyPriceId?: StripePlanDetailsDTO["monthlyPriceId"];
-  yearlyPriceId?: StripePlanDetailsDTO["yearlyPriceId"];
+  productId: StripePlanDetails["productId"];
+  monthlyPriceId?: StripePlanDetails["monthlyPriceId"];
+  yearlyPriceId?: StripePlanDetails["yearlyPriceId"];
 };

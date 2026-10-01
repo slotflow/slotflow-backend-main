@@ -14,12 +14,13 @@ export class Service {
     }
 
     static create(props: CreateServiceProps): Service {
+        const now = new Date();
         return new Service({
             _id: "",
             ...props,
             isBlocked: false,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            createdAt: now,
+            updatedAt: now,
         })
     }
 

@@ -1,10 +1,16 @@
 import { CommonDateInput } from "./common.dto";
 import { Role } from "../../domain/enums/common.enum";
-import { UserDTO, ServiceDTO, ProviderServiceDTO, ProviderProfileDTO, ApiPaginationInput, StatMetric } from "./common.dto";
+import { ApiPaginationInput, StatMetric } from "./common.dto";
+import { UserProps } from "../../domain/contracts/user.contract";
+import { ServiceProps } from "../../domain/contracts/service.contract";
+import { ProviderProfileProps } from "../../domain/contracts/providerProfile.contract";
+import { ProviderServiceProps } from "../../domain/contracts/providerService.contract";
 
-//// ****  user queries parameter and return type **** ////
+/**
+ * User queries dtos
+ */
 
-// 1. findStats method parameter and return
+// findStats method 
 export interface UserStatsDataQuery extends CommonDateInput { }
 export interface UserStatsDataView extends Record<string, StatMetric | undefined> {
     totalUsers: StatMetric;
@@ -13,21 +19,25 @@ export interface UserStatsDataView extends Record<string, StatMetric | undefined
     ReturningUsers?: StatMetric;
 }
 
-// 2. findUsers method parameter and return
+
+// findUsers method 
 export interface UsersQuery extends ApiPaginationInput { };
-export type UsersView = Array<Pick<UserDTO, "_id" | "username" | "email" | "isBlocked">>;
+export type UsersView = Array<Pick<UserProps, "_id" | "username" | "email" | "isBlocked">>;
 
-// 3. findProviders method parameter and return
+
+// findProviders method 
 export interface ProvidersQuery extends ApiPaginationInput { };
-export type ProvidersView = Array<Pick<UserDTO, "_id" | "username" | "email" | "isBlocked"> & Pick<ProviderProfileDTO, "adminVerificationStatus" | "isAdminVerified" | "trustedBySlotflow">>;
+export type ProvidersView = Array<Pick<UserProps, "_id" | "username" | "email" | "isBlocked"> & Pick<ProviderProfileProps, "adminVerificationStatus" | "isAdminVerified" | "trustedBySlotflow">>;
 
-// 4. findProviderById method parameter and return
+
+// findProviderById method 
 export interface ProviderByIdQuery {
-    providerId: UserDTO["_id"];
+    providerId: UserProps["_id"];
 }
-export type ProviderByIdView = Pick<UserDTO, "username" | "email" | "isBlocked" | "profileImage" | "phone" | "createdAt" | "referralCode"> & Pick<ProviderProfileDTO, "isAdminVerified" | "trustedBySlotflow" | "adminVerificationStatus" | "isAddressVerified" | "isAvailabilityVerified" | "isProofsVerified" | "isServiceDetailsVerified"> | null;
+export type ProviderByIdView = Pick<UserProps, "username" | "email" | "isBlocked" | "profileImage" | "phone" | "createdAt" | "referralCode"> & Pick<ProviderProfileProps, "isAdminVerified" | "trustedBySlotflow" | "adminVerificationStatus" | "isAddressVerified" | "isAvailabilityVerified" | "isProofsVerified" | "isServiceDetailsVerified"> | null;
 
-// 5. findProviderStats method parameter and return
+
+// findProviderStats method 
 export interface ProviderStatsDataQuery extends CommonDateInput { };
 export interface ProviderStatsDataView extends Record<string, StatMetric | undefined> {
     totalProviders: StatMetric;
@@ -36,7 +46,8 @@ export interface ProviderStatsDataView extends Record<string, StatMetric | undef
     slotflowTrustedProviders: StatMetric;
 };
 
-// 6. findNewVsReturningUserStats method parameter and return
+
+// findNewVsReturningUserStats method 
 export type UserChartDataQuery = CommonDateInput & {
     role: Role;
  };
@@ -50,34 +61,28 @@ export type UserChartDataView = Array<{
 
 
 
+/**
+ * User usecase dtos
+ */
 
-
-
-
-//// ****  user useCase dtos **** ////
-
-// UpdateUserProfileImage usecase input output
-export type UpdateUserProfileImageInput = Pick<UserDTO, "profileImage"> & {
-    userId: UserDTO["_id"],
+// UpdateUserProfileImage 
+export type UpdateUserProfileImageInput = Pick<UserProps, "profileImage"> & {
+    userId: UserProps["_id"],
 }
-export type UpdateUserProfileImageOutput = UserDTO["profileImage"];
+export type UpdateUserProfileImageOutput = UserProps["profileImage"];
 
-// UpdateUserProfileInfo usecase input output
+
+// UpdateUserProfileInfo 
 export interface UpdateUserProfileInfoInput {
-    userId: UserDTO["_id"];
-    username: UserDTO["username"];
-    phone: UserDTO["phone"];
+    userId: UserProps["_id"];
+    username: UserProps["username"];
+    phone: UserProps["phone"];
 }
-export type UpdateUserProfileInfoOutput = Pick<UserDTO, "username" | "phone">
+export type UpdateUserProfileInfoOutput = Pick<UserProps, "username" | "phone">
 
-// ChangePushNotification usecase input output
-export interface ChangePushNotificationInput {
-    userId: UserDTO["_id"];
-    allowPushNotification: boolean;
-};
 
-// FindProviderService usecase input
-type FindProviderServiceProps = Pick<ProviderServiceDTO,
+// FindProviderService 
+type FindProviderServiceProps = Pick<ProviderServiceProps,
     "serviceName" |
     "serviceDescription" |
     "servicePrice" |
@@ -89,72 +94,83 @@ type FindProviderServiceProps = Pick<ProviderServiceDTO,
     "isGroupService"
 >;
 export interface FindProviderServiceOutput extends FindProviderServiceProps {
-    service: Pick<ServiceDTO, "serviceName">
+    service: Pick<ServiceProps, "serviceName">
 }
 
-// Used as the request interface of admin get user profile details
+
+// Admin get user profile details
 export interface GetUserProfileDetailsInput {
-    userId: UserDTO["_id"];
+    userId: UserProps["_id"];
     isAdmin: boolean;
 }
-// Used as the response type of admin get user profile details
-export type GetUserProfileDetailsOutput = Pick<UserDTO, "username" | "phone" | "isBlocked" | "email" | "createdAt" | "profileImage"> & Partial<Pick<UserDTO, "referralCode">> | null;
+export type GetUserProfileDetailsOutput = Pick<UserProps, "username" | "phone" | "isBlocked" | "email" | "createdAt" | "profileImage"> & Partial<Pick<UserProps, "referralCode">> | null;
 
-// Used as the request interface of admin change block status of user  
+
+// Admin change block status of user  
 export type ChangeUserIsBlockedStatusInput = {
-    userId: UserDTO["_id"];
-} & Pick<UserDTO, "isBlocked">;
-// Used as the response type of admin change user block status
-export type ChangeUserIsBlockedStatusOutput = Pick<UserDTO, "_id" | "isBlocked">;
+    userId: UserProps["_id"];
+} & Pick<UserProps, "isBlocked">;
+export type ChangeUserIsBlockedStatusOutput = Pick<UserProps, "_id" | "isBlocked">;
 
-export type PreBoardingInput = Pick<UserDTO, "role" | "_id"> & {
-    whereDidHearAboutUs: UserDTO["whereDidHearAboutUs"];
+
+// User / Provider profile setup ( preboarding )
+export type ProfileSetupInput = Pick<UserProps, "role" | "_id" | "username"> & {
+    whereDidHearAboutUs: UserProps["whereDidHearAboutUs"];
     referralCode?: string;
 };
-export type PreBoardingOutput = Pick<UserDTO, "onboardingType" | "onboardingStatus"> & {
-    adminVerificationStatus: ProviderProfileDTO["adminVerificationStatus"] | null
+export type ProfileSetupOutput = Pick<UserProps, "onboardingType" | "onboardingStatus"> & {
+    adminVerificationStatus: ProviderProfileProps["adminVerificationStatus"] | null,
+    token: string;
 };
 
-// GetUsers usecase input output
+
+// GetUsers
 export type GetUsersOutput = UsersView
 
-// GetProviders usecase input output
-export type GetProvidersOutput = Array<Pick<UserDTO, "_id" | "username" | "email" | "isBlocked"> & Pick<ProviderProfileDTO, "adminVerificationStatus" | "isAdminVerified" | "trustedBySlotflow">>;
 
-// ProviderGetOwnProfileDetails usecase input output
+// GetProviders
+export type GetProvidersOutput = Array<Pick<UserProps, "_id" | "username" | "email" | "isBlocked"> & Pick<ProviderProfileProps, "adminVerificationStatus" | "isAdminVerified" | "trustedBySlotflow">>;
+
+
+// ProviderGetOwnProfileDetails 
 export interface ProviderGetOwnProfileDetailsInput {
-    providerId: UserDTO["_id"];
+    providerId: UserProps["_id"];
 }
-export type ProviderGetOwnProfileDetailsOutput = Pick<UserDTO, "username" | "email" | "isBlocked" | "phone" | "createdAt" | "referralCode" | "profileImage"> & Pick<ProviderProfileDTO, "isAdminVerified" | "trustedBySlotflow" | "adminVerificationStatus" | "isAddressVerified" | "isAvailabilityVerified" | "isProofsVerified" | "isServiceDetailsVerified"> | null;
+export type ProviderGetOwnProfileDetailsOutput = Pick<UserProps, "username" | "email" | "isBlocked" | "phone" | "createdAt" | "referralCode" | "profileImage"> & Pick<ProviderProfileProps, "isAdminVerified" | "trustedBySlotflow" | "adminVerificationStatus" | "isAddressVerified" | "isAvailabilityVerified" | "isProofsVerified" | "isServiceDetailsVerified"> | null;
 
-// UserGetServiceProviderDetails usecase input output
+
+// UserGetServiceProviderDetails 
 export interface UserGetServiceProviderDetailsInput {
     providerId: string;
 }
-export type UserGetServiceProviderDetailsOutput = Pick<UserDTO, "username" | "email" | "phone" | "profileImage"> & Pick<ProviderProfileDTO, "trustedBySlotflow">;
+export type UserGetServiceProviderDetailsOutput = Pick<UserProps, "username" | "email" | "phone" | "profileImage"> & Pick<ProviderProfileProps, "trustedBySlotflow">;
 
-// GetUserForChatSidebarUseCase usecase input output
+
+// GetUserForChatSidebarUseCase 
 export interface GetUserForChatSidebarInput {
-    userId: UserDTO["_id"];
+    userId: UserProps["_id"];
     role: Role;
 }
-export type GetUserForChatSidebarOutput = Array<Pick<UserDTO, "_id" | "username" | "profileImage">> | [];
+export type GetUserForChatSidebarOutput = Array<Pick<UserProps, "_id" | "username" | "profileImage">> | [];
 
-// AdminGetProviderDetails usecase input output
+
+// AdminGetProviderDetails 
 export interface AdminGetProviderDetailsInput {
-    providerId: UserDTO["_id"];
+    providerId: UserProps["_id"];
 }
-export type AdminGetProviderDetailsOutput = Pick<UserDTO, "_id" | "username" | "email" | "phone" | "createdAt" | "profileImage" | "isBlocked"> & Pick<ProviderProfileDTO, "adminVerificationStatus" | "isAddressVerified" | "isAdminVerified" | "isAvailabilityVerified" | "isProofsVerified" | "isServiceDetailsVerified" | "trustedBySlotflow"> | null;
+export type AdminGetProviderDetailsOutput = Pick<UserProps, "_id" | "username" | "email" | "phone" | "createdAt" | "profileImage" | "isBlocked"> & Pick<ProviderProfileProps, "adminVerificationStatus" | "isAddressVerified" | "isAdminVerified" | "isAvailabilityVerified" | "isProofsVerified" | "isServiceDetailsVerified" | "trustedBySlotflow"> | null;
 
-// GetProviderProofs usecase input output
+
+// GetProviderProofs 
 export interface GetProviderProofsInput {
-    providerId: UserDTO["_id"];
+    providerId: UserProps["_id"];
 };
-export type GetProviderProofsOutput = Pick<ProviderProfileDTO, "identityProof" | "serviceProof">;
+export type GetProviderProofsOutput = Pick<ProviderProfileProps, "identityProof" | "serviceProof">;
 
-// UpdatePassword usecase input
+
+// UpdatePassword 
 export interface UpdatePasswordInput {
-    userId: UserDTO["_id"];
+    userId: UserProps["_id"];
     currentPassword: string;
     newPassword: string;
 }

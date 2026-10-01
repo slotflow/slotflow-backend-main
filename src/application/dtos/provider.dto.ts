@@ -1,11 +1,13 @@
-import { UserDTO } from "./common.dto";
 import { PlanName } from "../../domain/enums/plan.enum";
+import { UserProps } from "../../domain/contracts/user.contract";
 
-//// **** provider dtos **** ////
+/**
+ * Provider usecase dtos
+ */
 
 // GetProviderStats usecase input output
 export interface GetProviderStatsInput {
-    providerId: UserDTO["_id"];
+    providerId: UserProps["_id"];
     startDate: Date;
     endDate: Date;
 }
@@ -18,9 +20,10 @@ export interface GetProviderStatsOutput {
     todaysAppointments: number;
 }
 
+
 // GetProviderGraphData usecase input output
 export interface GetProviderGraphDataInput {
-    providerId: UserDTO["_id"];
+    providerId: UserProps["_id"];
     subscription: PlanName;
     startDate: Date;
     endDate: Date;

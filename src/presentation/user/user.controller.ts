@@ -2,41 +2,39 @@ import { log } from "../../shared/logger/logger";
 import { Role } from "../../domain/enums/common.enum";
 import { NextFunction, Request, Response } from "express";
 import { AuthUser } from "../../application/dtos/common.dto";
-import { preboardingSchema } from "../../shared/zod/auth.zod";
+import { profileSetupSchema } from "../../shared/zod/auth.zod";
 import { sendResponse } from "../../shared/utils/helpers/response";
+import { cookieOptions } from "../../shared/utils/constants/constant";
 import { adminUserBlockStatusSchema } from "../../shared/zod/admin.zod";
 import { GetUsersUseCase } from "../../application/useCases/user/getUsers.useCase";
 import { paginationSchema, validateUserIdSchema } from "../../shared/zod/base.zod";
-import { PreBoardingUseCase } from "../../application/useCases/user/preBoarding.useCase";
+import { ProfileSetupUseCase } from "../../application/useCases/user/profileSetup.useCase";
 import { UpdatePasswordUseCase } from "../../application/useCases/user/updatePassword.useCase";
 import { GetUserProfileDetailsUseCase } from "../../application/useCases/user/getUserProfile.useCase";
 import { GetUserForChatSidebarUseCase } from "../../application/useCases/user/getUserFroChat.useCase";
 import { UpdateUserProfileInfoUseCase } from "../../application/useCases/user/updateUserProfileInfo.useCase";
 import { ChangeUserBlockStatusUseCase } from "../../application/useCases/user/changeUserBlockStatus.useCase";
-import { ChangePushNotificationUseCase } from "../../application/useCases/user/changePushNotification.useCase";
 import { UpdateUserProfileImageUseCase } from "../../application/useCases/user/updateUserProfileImage.useCase";
-import { userUpdateFileSchema, userUpdateInfoSchema, userUpdatePasswordSchema, userUpdatePushNotificationSchema } from "../../shared/zod/user.zod";
-import { changePushNotificationUseCase, changeUserBlockStatusUseCase, getUserProfileDetailsUseCase, getUsersUseCase, getUserForChatSidebarUseCase, preBoardingUseCase, updateUserProfileImageUseCase, updateUserProfileInfoUseCase, updatePasswordUseCase } from ".";
+import { userUpdateFileSchema, userUpdateInfoSchema, userUpdatePasswordSchema } from "../../shared/zod/user.zod";
+import { changeUserBlockStatusUseCase, getUserProfileDetailsUseCase, getUsersUseCase, getUserForChatSidebarUseCase, profileSetupUseCase, updateUserProfileImageUseCase, updateUserProfileInfoUseCase, updatePasswordUseCase } from ".";
 
 class UserController {
     constructor(
         private readonly updateUserProfileImageUseCase: UpdateUserProfileImageUseCase,
         private readonly updateUserProfileInfoUseCase: UpdateUserProfileInfoUseCase,
-        private readonly changePushNotificationUseCase: ChangePushNotificationUseCase,
         private readonly getUsersUseCase: GetUsersUseCase,
         private readonly changeUserBlockStatusUseCase: ChangeUserBlockStatusUseCase,
         private readonly getUserProfileDetailsUseCase: GetUserProfileDetailsUseCase,
         private readonly getUserForChatSidebarUseCase: GetUserForChatSidebarUseCase,
-        private readonly preBoardingUseCase: PreBoardingUseCase,
+        private readonly profileSetupUseCase: ProfileSetupUseCase,
         private readonly updatePasswordUseCase: UpdatePasswordUseCase,
     ) {
         this.getProfileDetails = this.getProfileDetails.bind(this);
         this.updateProfileImage = this.updateProfileImage.bind(this);
         this.updateUserInfo = this.updateUserInfo.bind(this);
-        this.updatePushNotification = this.updatePushNotification.bind(this);
         this.getUsers = this.getUsers.bind(this);
         this.changeUserBlockStatus = this.changeUserBlockStatus.bind(this);
-        this.preBoarding = this.preBoarding.bind(this);
+        this.profileSetup = this.profileSetup.bind(this);
         this.updatePassword = this.updatePassword.bind(this);
     };
 
@@ -84,20 +82,6 @@ class UserController {
         };
     };
 
-    async updatePushNotification(req: Request, res: Response, next: NextFunction) {
-        try {
-            const user = req.user as AuthUser;
-            const { allowPushNotification } = userUpdatePushNotificationSchema.parse({
-                ...req.body
-            });
-            const result = await this.changePushNotificationUseCase.execute({ userId: user.id, allowPushNotification });
-            sendResponse(res, result, "Push notification updated successfully");
-        } catch (error) {
-            log.error("updatePushNotification failed", error as Error);
-            next(error);
-        };
-    };
-
     async getUsers(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as AuthUser;
@@ -132,19 +116,18 @@ class UserController {
         };
     };
 
-    async preBoarding(req: Request, res: Response, next: NextFunction) {
+    async profileSetup(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as AuthUser;
-            const { role, whereDidHearAboutUs, referralCode } = preboardingSchema.parse(req.body);
-            const result = await this.preBoardingUseCase.execute({ 
+            const validatedData = profileSetupSchema.parse(req.body);
+            const result = await this.profileSetupUseCase.execute({ 
+                ...validatedData,
                 _id: user.id, 
-                role,
-                whereDidHearAboutUs,
-                referralCode
             });
+            res.cookie("token", result.token, cookieOptions);
             sendResponse(res, result, "Setup completed successfully");
         } catch (error) {
-            log.error("preBoardingUseCase failed", error as Error);
+            log.error("profileSetupUseCase failed", error as Error);
             next(error);
         };
     };
@@ -169,11 +152,10 @@ class UserController {
 export const userController = new UserController(
     updateUserProfileImageUseCase,
     updateUserProfileInfoUseCase,
-    changePushNotificationUseCase,
     getUsersUseCase,
     changeUserBlockStatusUseCase,
     getUserProfileDetailsUseCase,
     getUserForChatSidebarUseCase,
-    preBoardingUseCase,
+    profileSetupUseCase,
     updatePasswordUseCase,
 );

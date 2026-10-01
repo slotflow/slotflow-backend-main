@@ -13,14 +13,15 @@ export class Credential {
     };
 
     static create(props: CreateCredentialProps): Credential {
+        const now = new Date();
         return new Credential({
             _id: "",
             accessToken: props.accessToken,
             expiryDate: props.expiryDate,
             refreshToken: props.refreshToken,
             userId: props.userId,
-            createdAt: new Date(),
-            updatedAt: new Date()
+            createdAt: now,
+            updatedAt: now,
         });
     };
 

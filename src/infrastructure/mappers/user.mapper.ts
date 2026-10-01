@@ -7,7 +7,7 @@ export class UserMapper {
     static toDomain(doc: IUser): User {
         return new User({
             _id: doc._id.toString(),
-            username: doc.username,
+            username: doc.username ?? null,
             email: doc.email,
             password: doc.password ?? null,
             role: doc.role,
@@ -19,10 +19,10 @@ export class UserMapper {
             addressId: doc.addressId ? doc.addressId.toString() : null,
             googleConnected: doc.googleConnected,
             googleId: doc.googleId ?? null,
-            allowPushNotification: doc.allowPushNotification,
             whereDidHearAboutUs: doc.whereDidHearAboutUs,
             referralCode: doc.referralCode ?? null,
             referredBy: doc.referredBy ?? null,
+            timeZone: doc.timeZone ?? null,
             createdAt: doc.createdAt,
             updatedAt: doc.updatedAt,
         });
@@ -44,10 +44,10 @@ export class UserMapper {
             addressId: props.addressId ? new Types.ObjectId(props.addressId) : null,
             googleConnected: props.googleConnected,
             googleId: props.googleId,
-            allowPushNotification: props.allowPushNotification,
             whereDidHearAboutUs: props.whereDidHearAboutUs,
             referralCode: props.referralCode,
             referredBy: props.referredBy,
+            timeZone: props.timeZone,
             createdAt: props.createdAt,
             updatedAt: props.updatedAt,
         };

@@ -103,22 +103,18 @@ const PlanSchema = new Schema<IPlan>({
         enum: Object.values(StripeSyncStatus),
         required: [true, "Stripe sync status is required"],
     },
-    hasTrial:  {
+    hasTrial: {
         type: Boolean,
         required: true
     },
     trialDays: {
         type: Number,
         required: true
-    },
-    createdAt: {
-        type: Date,
-        required: true
-    },
-    updatedAt: {
-        type: Date,
-        required: true
     }
-});
+},
+    {
+        timestamps: true,
+    }
+);
 
 export const PlanModel = mongoose.model<IPlan>('Plan', PlanSchema)

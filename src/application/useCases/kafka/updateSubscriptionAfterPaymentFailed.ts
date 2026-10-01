@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import { ERROR_CODES } from '../../../shared/utils/types/enums';
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { AppError, NotFoundError } from "../../../shared/error/appError";
@@ -11,9 +10,7 @@ export class UpdateSubscriptionAfterPaymentFailedUseCase {
     ) { };
 
     async execute(input: ProviderSubscriptionPaymentFailedEventInput): Promise<void> {
-        const session = await mongoose.startSession();
         try {
-            session.startTransaction();
             const {
                 subscriptionId,
             } = input;
@@ -29,7 +26,7 @@ export class UpdateSubscriptionAfterPaymentFailedUseCase {
 
             subscription.subscriptionPaymentFailed();
 
-            const updatedSubscription = await this.subscriptionRepository.update(subscription, session);
+            const updatedSubscription = await this.subscriptionRepository.update(subscription);
             if (!updatedSubscription) {
                 throw new AppError(
                     'Internal server error',
@@ -39,14 +36,8 @@ export class UpdateSubscriptionAfterPaymentFailedUseCase {
                 )
             }
 
-            await session.commitTransaction();
         } catch (error) {
-            if (session.inTransaction()) {
-                await session.abortTransaction();
-            }
             throw toAppError(error, "Failed to update subscription");
-        } finally {
-            await session.endSession();
-        };
+        }
     };
 };

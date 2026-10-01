@@ -1,13 +1,16 @@
+import { MiniCardData } from "./common.dto";
+import { UserProps } from "../../domain/contracts/user.contract";
+import { CreditAccountProps } from "../../domain/contracts/creditAccount.contract";
+import { CreditTransactionProps } from "../../domain/contracts/creditTransation.contract";
 import { CreditTransactionSource, CreditTransactionStatus, CreditTransactionType } from "../../domain/enums/creditTransaction.enum";
-import { CreditAccountDTO, CreditTransactionDTO, MiniCardData, UserDTO } from "./common.dto";
 
-//// **** credits  dtos **** ////
+/**
+ * Credit queries dtos
+ */
 
-//// **** credits queries query and view **** ////
-
-// 1. GetCreditAccountDetails method query and view 
+// GetCreditAccountDetails method 
 export interface GetCreditAccountDetailsQuery {
-  userId: UserDTO["_id"]
+  userId: UserProps["_id"]
   startDate: Date;
   endDate: Date;
 }
@@ -17,7 +20,7 @@ export interface CreditMainChartData {
   spentCredits: number;
   balanceCredits: number;
 }
-export type GetCreditAccountDetailsView = Pick<CreditAccountDTO, "isActive"> & {
+export type GetCreditAccountDetailsView = Pick<CreditAccountProps, "isActive"> & {
   totalCredits: MiniCardData;
   spentCredits: MiniCardData;
   balanceCredits: MiniCardData
@@ -32,15 +35,18 @@ export type CreditChartKeys =
 
 
 
-//// **** credits usecases input output **** ////
+/**
+ * Credit usecase dtos
+ */
 
-// 1. GetCreditAccountDetails method input output 
+// GetCreditAccountDetails method  
 export type GetCreditAccountDetailsInput = GetCreditAccountDetailsQuery;
 export type GetCreditAccountDetailsOutput = GetCreditAccountDetailsView;
 
-// 2. GetCreditTransactions method input output 
+
+// GetCreditTransactions method 
 export interface GetCreditTransactionsInput {
-  userId: UserDTO["_id"];
+  userId: UserProps["_id"];
   startDate: Date;
   endDate: Date;
   page: number;
@@ -49,4 +55,4 @@ export interface GetCreditTransactionsInput {
   type?: CreditTransactionType;
   source?: CreditTransactionSource;
 }
-export type GetCreditTransactionsOutput = Pick<CreditTransactionDTO, "status" | "type" | "source" | "credits" | "balanceAfter">;
+export type GetCreditTransactionsOutput = Pick<CreditTransactionProps, "status" | "type" | "source" | "credits" | "balanceAfter">;

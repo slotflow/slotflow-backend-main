@@ -62,15 +62,11 @@ const ReviewSchema: Schema<IReview> = new Schema<IReview>(
         isBlocked: {
             type: Boolean,
             default: false,
-        },
-        createdAt: {
-            type: Date,
-            required: true
-        },
-        updatedAt: {
-            type: Date,
-            required: true
         }
-    });
+    },
+    {
+        timestamps: true,
+    }
+);
 
 export const ReviewModel: Model<IReview> = mongoose.model<IReview>("Review", ReviewSchema);

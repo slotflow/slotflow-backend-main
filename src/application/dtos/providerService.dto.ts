@@ -1,13 +1,19 @@
+import { UserProps } from "../../domain/contracts/user.contract";
 import { ServiceCategory } from "../../domain/enums/service.enum";
-import { AddressDTO, ProviderProfileDTO, ProviderServiceDTO, ServiceDTO, UserDTO } from "./common.dto";
+import { AddressProps } from "../../domain/contracts/address.contract";
+import { ServiceProps } from "../../domain/contracts/service.contract";
+import { ProviderProfileProps } from "../../domain/contracts/providerProfile.contract";
+import { ProviderServiceProps } from "../../domain/contracts/providerService.contract";
 
-//// **** booking queries dtos **** ////
+/**
+ * Provider service queries dtos
+ */
 
-// 1. findByProviderId method parameter and return type / interface
+// findByProviderId method 
 export interface ProviderServiceByProviderIdQuery {
-    providerId: UserDTO["_id"];
+    providerId: UserProps["_id"];
 }
-type FindProviderService = Pick<ProviderServiceDTO, 
+type FindProviderService = Pick<ProviderServiceProps, 
 "serviceName" | 
 "serviceDescription" | 
 "servicePrice" | 
@@ -25,11 +31,12 @@ export interface ProviderServiceByProviderIdView extends FindProviderService {
     tags: string[] | [];
 }
 
-// 2. findProvidersCardDataForUsers method parameter and return type / interface
+
+// findProvidersCardDataForUsers method 
 export interface ProviderServiceByServiceIdsQuery {
     serviceIds?: string[];
     categories?: ServiceCategory[];
-    location?: AddressDTO["location"];
+    location?: AddressProps["location"];
     maxPrice?: number;
     minPrice?: number;
     slotflowTrusted?: boolean;
@@ -38,25 +45,26 @@ export interface ProviderServiceByServiceIdsQuery {
     limit?: number;
 };
 export interface ProviderServiceByServiceIds {
-    _id: ProviderServiceDTO["_id"];
+    _id: ProviderServiceProps["_id"];
     provider: {
-        _id: ProviderServiceDTO["providerId"];
-        username: UserDTO["username"];
-        profileImage: UserDTO["profileImage"];
-        trustedBySlotflow: ProviderProfileDTO["trustedBySlotflow"];
+        _id: ProviderServiceProps["providerId"];
+        username: UserProps["username"];
+        profileImage: UserProps["profileImage"];
+        trustedBySlotflow: ProviderProfileProps["trustedBySlotflow"];
     },
     serviceDetails: {
-        serviceId: ProviderServiceDTO["serviceId"];
-        service: ServiceDTO["serviceName"];
-        serviceCategory: ServiceDTO["serviceCategory"];
-        serviceName: ProviderServiceDTO["serviceName"];
-        servicePrice: ProviderServiceDTO["servicePrice"];
+        serviceId: ProviderServiceProps["serviceId"];
+        service: ServiceProps["serviceName"];
+        serviceCategory: ServiceProps["serviceCategory"];
+        serviceName: ProviderServiceProps["serviceName"];
+        servicePrice: ProviderServiceProps["servicePrice"];
     }
 }
 export type ProviderServiceByServiceIdsView = Array<ProviderServiceByServiceIds>;
 
-// 3. updateProviderService method parameter and return type / interface
-export type UpdateProviderServiceQuery = Pick<ProviderServiceDTO, 
+
+// updateProviderService method 
+export type UpdateProviderServiceQuery = Pick<ProviderServiceProps, 
 "_id" | 
 "serviceId" | 
 "serviceName" | 
@@ -67,26 +75,24 @@ export type UpdateProviderServiceQuery = Pick<ProviderServiceDTO,
 "serviceExperience" |
 "serviceType" | 
 "tags"
-> & Partial<Pick<ProviderServiceDTO, "videoUrl" | "requirements">>;
+> & Partial<Pick<ProviderServiceProps, "videoUrl" | "requirements">>;
 export type UpdateProviderServiceView = ProviderServiceByProviderIdView | null;
 
 
 
 
 
+/**
+ * Provider service usecase dtos
+ */
 
-
-
-
-
-//// **** providerService usecase dtos **** ////
-
-// get providers services input output
+// get providers services 
 export type GetProvidersServicesInput = ProviderServiceByServiceIdsQuery;
 export type GetProvidersServicesOutput = ProviderServiceByServiceIdsView;
 
-// create provider service input
-export type CreateProviderServiceInput = Pick<ProviderServiceDTO, 
+
+// create provider service 
+export type CreateProviderServiceInput = Pick<ProviderServiceProps, 
 "isGroupService" | 
 "maxParticipants" | 
 "providerId" | 
@@ -103,14 +109,16 @@ export type CreateProviderServiceInput = Pick<ProviderServiceDTO,
 "portfolioUrl"
 >;
 
-// get provider service input and output
+
+// get provider service 
 export interface GetProviderServiceInput {
-    providerId: UserDTO["_id"];
+    providerId: UserProps["_id"];
 }
 export type GetProviderServiceOuput = ProviderServiceByProviderIdView | null;
 
-// update provider service input and output
-export type UpdateProviderServiceInput = Pick<ProviderServiceDTO, 
+
+// update provider service 
+export type UpdateProviderServiceInput = Pick<ProviderServiceProps, 
 "serviceId" | 
 "serviceName" | 
 "serviceDescription" | 
@@ -122,8 +130,8 @@ export type UpdateProviderServiceInput = Pick<ProviderServiceDTO,
 "tags" |
 "portfolioUrl" |
 "serviceExperienceYears"
-> & Partial<Pick<ProviderServiceDTO, "videoUrl" | "requirements">> & {
-    providerServiceId: ProviderServiceDTO["_id"];
+> & Partial<Pick<ProviderServiceProps, "videoUrl" | "requirements">> & {
+    providerServiceId: ProviderServiceProps["_id"];
 };
 export type UpdateProviderServiceOutput = ProviderServiceByProviderIdView | null;
 

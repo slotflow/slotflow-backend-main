@@ -1,278 +1,11 @@
 import { JwtPayload } from "jsonwebtoken";
-import { PlanName, StripeSyncStatus } from "../../domain/enums/plan.enum";
-import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
+import { Role } from "../../domain/enums/common.enum";
+import { TimeZone } from "../../domain/commands/user.commands";
+import { PlanProps } from "../../domain/contracts/plan.contract";
+import { BillingCycle } from "../../domain/enums/subscription.enum";
 import { PaymentFor, RefundFor, RefundReason } from "../../domain/enums/payment.enum";
-import { BillingCycle, SubscriptionStatus } from "../../domain/enums/subscription.enum";
-import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
-import { ServiceCategory, ServiceMode, ServiceType } from "../../domain/enums/service.enum";
-import { Day, HearAboutUsOptionValue, OnboardingStatus, ReferralStatus, Role } from "../../domain/enums/common.enum";
-import { CreditTransactionSource, CreditTransactionStatus, CreditTransactionType } from "../../domain/enums/creditTransaction.enum";
-
-// **** ENTITY INTERFACES FOR APPLICATION LAYER **** \\
-
-// **** ADDRESS INTERFACE
-export type GeoLocation = {
-    type: "Point";
-    coordinates: [number, number];
-};
-
-export interface AddressDTO {
-  _id: string,
-  userId: string,
-  addressLine: string,
-  landmark: string,
-  phone: string,
-  place: string,
-  city: string,
-  district: string,
-  pincode: string,
-  state: string,
-  country: string,
-  location: GeoLocation,
-  createdAt: Date,
-  updatedAt: Date,
-}
-
-// **** USER INTERFACE
-export interface UserDTO {
-  _id: string;
-  username: string;
-  email: string;
-  password: string | null;
-  role: Role;
-  onboardingType: Role | null;
-  onboardingStatus: OnboardingStatus;
-  isBlocked: boolean;
-  phone: string | null;
-  profileImage: string | null;
-  addressId: string | null;
-  googleConnected: boolean;
-  googleId: string | null;
-  allowPushNotification: boolean | null;
-  whereDidHearAboutUs: HearAboutUsOptionValue;
-  referralCode: string | null;
-  createdAt: Date;
-  updatedAt: Date
-}
-
-// **** PROVIDER PROFILE INTERFACE
-export interface ProviderProfileDTO {
-  _id: string;
-  userId: string;
-  isAdminVerified: boolean;
-  verificationRejectionReason: string | null;
-  adminVerificationStatus: AdminVerificationStatus;
-  isAddressVerified: boolean;
-  isServiceDetailsVerified: boolean;
-  isAvailabilityVerified: boolean;
-  isProofsVerified: boolean;
-  serviceId: string | null;
-  serviceAvailabilityId: string | null;
-  subscription: string[];
-  trustedBySlotflow: boolean;
-  identityProof: string | null;
-  serviceProof: string | null;
-  hasUsedTrial: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-// **** BOOKING INTERFACE
-export interface BookingDTO {
-  _id: string,
-  serviceProviderId: string,
-  userId: string,
-  appointmentDate: Date,
-  appointmentTime: string,
-  appointmentMode: string,
-  appointmentStatus: AppointmentStatus,
-  slotId: string,
-  paymentId: string | null,
-  videoCallRoomId: string | null,
-  googleEventId: string | null,
-  onlineTrack: {
-    user: ParticipantPresence;
-    provider: ParticipantPresence;
-  },
-  statusTrack: statusTrack[],
-  createdAt: Date,
-  updatedAt: Date,
-}
-
-export interface ParticipantPresence {
-  joined: boolean;
-  joinedTime: Date | null;
-  leftCallTime: Date | null;
-}
-
-export interface statusTrack {
-  appointmentStatus: AppointmentStatus;
-  time: Date;
-}
-
-// **** CREDENTIAL INTERFACE
-export interface CredentialDTO {
-  _id: string,
-  userId: string,
-  accessToken: string,
-  refreshToken: string,
-  expiryDate: Date,
-  createdAt: Date,
-  updatedAt: Date,
-}
-
-// **** PLAN INTERFACE
-export interface StripePlanDetailsDTO {
-  productId: string;
-  monthlyPriceId: string;
-  yearlyPriceId: string;
-}
-export interface PlanDTO {
-  _id: string,
-  planName: PlanName,
-  description: string,
-  monthlyPrice: number;
-  yearlyPrice: number;
-  features: string[],
-  maxBookingPerMonth: number,
-  adVisibility: boolean,
-  isBlocked: boolean,
-  stripePlanDetails: StripePlanDetailsDTO | null;
-  stripeSync: StripeSyncStatus;
-  hasTrial: boolean;
-  trialDays: number;
-  createdAt: Date,
-  updatedAt: Date,
-}
-
-// **** PROVIDERSERVICE INTERFACE
-export interface ProviderServiceDTO {
-  _id: string,
-  providerId: string,
-  serviceId: ServiceDTO["_id"],
-  serviceName: string,
-  serviceDescription: string,
-  servicePrice: number,
-  serviceExperienceYears: number,
-  serviceExperience: string,
-  serviceType: ServiceType,
-  tags: string[] | [],
-  requirements: string[] | [],
-  videoUrl: string | null,
-  portfolioUrl: string | null,
-  maxParticipants: number,
-  isGroupService: boolean,
-  createdAt: Date,
-  updatedAt: Date,
-}
-
-// **** SERVICE INTERFACE
-export interface ServiceDTO {
-  _id: string,
-  serviceName: string,
-  serviceCategory: ServiceCategory,
-  isBlocked: boolean,
-  createdAt: Date,
-  updatedAt: Date,
-};
-
-// **** SUBSCRIPTION INTERFACE
-export interface SubscriptionDTO {
-  _id: string,
-  providerId: string,
-  subscriptionPlanId: string,
-  startDate: Date,
-  endDate: Date,
-  subscriptionStatus: SubscriptionStatus,
-  paymentId: string | null,
-  createdAt: Date,
-  updatedAt: Date,
-}
-
-// **** REVIEW INTERFACE
-export interface ReviewDTO {
-  _id: string,
-  userId: string,
-  providerId: string,
-  bookingId: string,
-  reviewText: string,
-  rating: number,
-  reported: boolean,
-  isBlocked: boolean,
-  createdAt: Date,
-  updatedAt: Date,
-}
-
-// **** REFERRAL INTERFACE
-export interface ReferralDTO {
-  _id: string;
-  referrerUserId: string;
-  refereeUserId: string;
-  referralCode: string;
-  status: ReferralStatus;
-  rewardGiven: boolean;
-  completedAt?: Date;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-
-// **** CREDITTRANSACTION INTERFACE
-export interface CreditTransactionDTO {
-  _id: string;
-  accountId: string;
-  userId: string;
-  type: CreditTransactionType;
-  credits: number;
-  balanceAfter: number;
-  source: CreditTransactionSource;
-  status: CreditTransactionStatus;
-  referenceId?: string; // subscriptionId or appointment / bookingId
-  idempotencyKey?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-// **** CREDITACCOUNT INTERFACE
-export interface CreditAccountDTO {
-  _id: string;
-  userId: string;
-  balance: number;
-  isActive: boolean;
-  version: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-// **** SERVICEAVAILABILITY INTERFACE AND ITS SUPPORTS
-export interface TimeSlot {
-  time: string,
-};
-
-export interface TimeSlotForClientOutput {
-  _id: string,
-  time: string,
-  available: boolean,
-  occupied?: boolean,
-};
-
-export interface Availability {
-  day: Day,
-  isAvailable: boolean,
-  duration?: number,
-  startTime?: string,
-  endTime?: string,
-  modes?: ServiceMode[],
-  slots?: TimeSlot[],
-};
-
-export interface ServiceAvailabilityDTO {
-  _id: string,
-  providerId: string,
-  availabilities: Availability[],
-  createdAt: Date,
-  updatedAt: Date,
-};
+import { ProviderServiceProps } from "../../domain/contracts/providerService.contract";
+import { Availability, TimeSlot } from "../../domain/commands/serviceAvailability.commands";
 
 // common api pagination input
 export interface ApiPaginationInput {
@@ -305,16 +38,24 @@ export interface CreateFileSignedUrlInput {
 };
 
 // used in find provider service usecase
-type FindProviderServiceProps = Omit<ProviderServiceDTO, "service" | "updatedAt" | "createdAt">;
+type FindProviderServiceProps = Omit<ProviderServiceProps, "service" | "updatedAt" | "createdAt">;
 export interface FindProviderServiceOutput extends FindProviderServiceProps {
   service: { serviceName: string }
 }
 
 // used in create service availability usecase
 export interface PlanNameOnly {
-  subscriptionPlanId: {
-    planName: PlanDTO["planName"];
+  subscribedPlanId: {
+    planName: PlanProps["planName"];
   }
+}
+
+//
+export interface TimeSlotForClientOutput {
+  _id: string,
+    time: string,
+    available: boolean,
+    occupied?: boolean,
 }
 
 // used in create service availability usecase
@@ -338,6 +79,7 @@ export interface AuthUser {
   role: Role;
   email: string;
   name: string;
+  timeZone: TimeZone;
 };
 
 export interface GoogleOAuthUser {
@@ -401,9 +143,10 @@ export type NotificationType =
 export interface JwtClaims extends JwtPayload {
   userId?: string;
   email?: string;
-  name?: string;
+  name?: string | null;
   password?: string;
   role?: Role;
+  timeZone?: TimeZone | null;
 }
 
 
@@ -414,6 +157,7 @@ export interface JwtClaims extends JwtPayload {
  * Payment Client Service dtos
  */
 
+// Create subscription checkout
 export interface CreateSubscriptionCheckoutSessionInput {
   subscriptionData: {
     subscriptionId: string;
@@ -433,35 +177,38 @@ export interface CreateSubscriptionCheckoutSessionInput {
     role: Role;
   }
 }
-
 export interface CreateSubscriptionCheckoutSessionOutput {
   status: boolean;
   message: string;
   data: string;
 }
 
-export interface CreateBookingCheckoutSessionInput {
-  serviceName: string;
-  description: string;
-  unitAmount: number;
-  providerId: string;
-  slotDuration: number;
-  selectedServiceMode: string;
-  bookingId: string;
-  userId: string;
-  paymentFor: PaymentFor;
-  userEmail: string;
-  userName: string;
-  initialAmount: number;
-  pushNotification: boolean;
-}
 
+// Create booking checkout
+export interface CreateBookingCheckoutSessionInput {
+  bookingData: {
+    serviceName: string;
+    description: string;
+    unitAmount: number;
+    providerId: string;
+    bookingId: string;
+    paymentFor: PaymentFor;
+  }
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    role: Role;
+  }
+}
 export interface CreateBookingCheckoutSessionOutput {
   status: boolean;
   message: string;
   data: string;
 }
 
+
+// Create refund
 export interface ProcessRefundInput {
   bookingId: string;
   paymentId: string;
@@ -469,7 +216,6 @@ export interface ProcessRefundInput {
   refundReason: RefundReason;
   reasonInDetail: string;
 }
-
 export interface ProcessRefundOutput {
   success: boolean;
   message: string;

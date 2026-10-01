@@ -2,6 +2,7 @@ import { kafkaProducer } from "../../infrastructure/messaging";
 import { ProcessEventWrapperUseCase } from "../../application/useCases/kafka/processEventWrapper.useCase";
 import { GoogleCalendarCreateEventFailedUseCases } from "../../application/useCases/kafka/googleCalendarFailed.useCase";
 import { GoogleCalendarCreateEventSuccessUseCases } from "../../application/useCases/kafka/googleCalendarSuccess.useCase";
+import { UpdateBookingAfterPaymentFailedUseCase } from "../../application/useCases/kafka/updateBookingAfterPaymentFailed.useCase";
 import { UpdateBookingAfterPaymentSuccessUseCase } from "../../application/useCases/kafka/updateBookingAfterPaymentSuccess.useCase";
 import { UpdateSubscriptionAfterPaymentFailedUseCase } from "../../application/useCases/kafka/updateSubscriptionAfterPaymentFailed";
 import { UpdateSubscriptionAfterPaymentSuccessUseCase } from "../../application/useCases/kafka/updateSubscriptionAfterPaymentSuccess";
@@ -15,4 +16,5 @@ export const handler = {
     providerSubscriptionPaymentSuccess: new UpdateSubscriptionAfterPaymentSuccessUseCase(subscriptionRepository, userRepository, providerProfileRepository, kafkaProducer, planRepository, referralRepository, creditAccountRepository, creditTransactionRepository),
     providerSubscriptionPaymentFailed: new UpdateSubscriptionAfterPaymentFailedUseCase(subscriptionRepository),
     userBookingPaymentSuccess: new UpdateBookingAfterPaymentSuccessUseCase(bookingRepository, kafkaProducer, userRepository),
+    userBookingPaymentFailed: new UpdateBookingAfterPaymentFailedUseCase(bookingRepository),
 };

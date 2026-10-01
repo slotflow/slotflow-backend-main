@@ -42,18 +42,12 @@ const ReferralSchema = new Schema<IReferral>({
     completedAt: {
         type: Date,
         default: null
-    },
-    createdAt: {
-        type: Date,
-        required: true,
-        default: new Date()
-    },
-    updatedAt: {
-        type: Date,
-        required: true,
-        default: new Date()
     }
-});
+},
+    {
+        timestamps: true,
+    }
+);
 
 // Index for querying referrals by referrer or referred user
 ReferralSchema.index({ referrerUserId: 1 });

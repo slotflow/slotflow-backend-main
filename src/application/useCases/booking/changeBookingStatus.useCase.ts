@@ -1,23 +1,28 @@
 import { kafkaConfig } from "../../../config/env";
 import { Role } from "../../../domain/enums/common.enum";
+import { ServiceMode } from "../../../domain/enums/service.enum";
 import { formatDate } from "../../../shared/utils/helpers/formatDate";
 import { toAppError } from '../../../shared/error/handleUnknownError';
 import { generateId } from '../../../shared/utils/helpers/generateId';
 import { ERROR_CODES, IdType } from '../../../shared/utils/types/enums';
+import { formatString } from "../../../shared/utils/helpers/formatString";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
+import { createGoogleMapsUrl } from "../../../shared/utils/helpers/createGooglemapLink";
 import { dateFormats, notificationType } from "../../../shared/utils/constants/constant";
 import { AppError, BadRequestError, NotFoundError } from '../../../shared/error/appError';
 import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
+import { IAddressRepository } from "../../../domain/interfaces/repositories/IAddress.repository";
 import { ProviderChangeBookingAppointmentStatusInput, ProviderChangeBookingAppointmentStatusOutput } from '../../dtos/booking.dto';
-import { EventEnvelope, CreateGoogleCalendarEvent, SendAppointmentStatusChangeForProviderEvent, SendAppointmentStatusChangeForUserEvent } from "../../dtos/kafka.dto";
+import { EventEnvelope, CreateGoogleCalendarEvent, SendAppointmentStatusChangeForProviderEvent, SendAppointmentStatusChangeForUserEvent, ProviderAddressForUser } from "../../dtos/kafka.dto";
 
 export class ChangeBookingStatusUseCase {
     constructor(
         private readonly bookingRepository: IBookingRepository,
         private readonly userRepository: IUserRepository,
         private readonly kafkaProducer: IKafkaProducerAdapter,
+        private readonly addressRepository: IAddressRepository,
     ) { };
 
     async execute(input: ProviderChangeBookingAppointmentStatusInput): Promise<ProviderChangeBookingAppointmentStatusOutput> {
@@ -63,6 +68,19 @@ export class ChangeBookingStatusUseCase {
                 );
             }
 
+            const providerAddress = await this.addressRepository.findByUserId(providerId);
+            const formattedAddress: ProviderAddressForUser = providerAddress
+                ? {
+                    addressLine: providerAddress.addressLine,
+                    landmark: providerAddress.landmark,
+                    city: providerAddress.city,
+                    state: providerAddress.state,
+                    pincode: providerAddress.pincode,
+                    location: providerAddress.location,
+                    googleMapsUrl: createGoogleMapsUrl(providerAddress.location),
+                }
+                : null;
+
             await this.kafkaProducer.publish<EventEnvelope<SendAppointmentStatusChangeForUserEvent>>(kafkaConfig.topics.pub.providerAppointmentStatusForUser, {
                 eventId: generateId({ type: IdType.EVENT }),
                 attempt: 1,
@@ -71,16 +89,18 @@ export class ChangeBookingStatusUseCase {
                 payload: {
                     emailData: {
                         email: user.email,
-                        name: user.username,
+                        name: user.username ?? undefined,
                         appointmentDate: formatDate(booking.appointmentDate, dateFormats.SHORT),
                         appointmentTime: formatDate(booking.appointmentDate, dateFormats.TIME_12H_LOWER),
-                        appointmentMode: booking.appointmentMode,
+                        appointmentMode: formatString(booking.appointmentMode),
                         appointmentStatus: booking.appointmentStatus,
+                        address: booking.appointmentMode === ServiceMode.OFFLINE ? formattedAddress : null,
                     },
                     notificationData: {
                         userId: user._id,
                         appointmentStatus: booking.appointmentStatus,
-                        notificationType: notificationType.ACCOUNT_ACTIVITY
+                        notificationType: notificationType.ACCOUNT_ACTIVITY,
+                        address: booking.appointmentMode === ServiceMode.OFFLINE ? formattedAddress : null,
                     }
                 }
             });
@@ -115,6 +135,7 @@ export class ChangeBookingStatusUseCase {
                             role: Role.USER,
                             appointmentDate: updatedBooking.appointmentDate,
                             appointmentStatus: updatedBooking.appointmentStatus,
+                            slotDuration: booking.sessionDuration,
                         }
                     }
                 });
@@ -133,6 +154,7 @@ export class ChangeBookingStatusUseCase {
                             role: Role.PROVIDER,
                             appointmentDate: updatedBooking.appointmentDate,
                             appointmentStatus: updatedBooking.appointmentStatus,
+                            slotDuration: booking.sessionDuration,
                         }
                     }
                 });

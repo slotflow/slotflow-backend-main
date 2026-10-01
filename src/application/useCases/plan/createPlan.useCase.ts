@@ -1,11 +1,11 @@
-import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { PlanName } from "../../../domain/enums/plan.enum";
 import { Plan } from "../../../domain/entities/plan.entity";
+import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { CreatePlanInput, CreatePlanOutput } from "../../dtos/plan.dto";
 import { AppError, BadRequestError } from "../../../shared/error/appError";
-import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { IStripePlanService } from "../../interfaces/services/IStripePlan.service";
+import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 
 export class CreatePlanUseCase {
     constructor(
@@ -119,7 +119,6 @@ export class CreatePlanUseCase {
             const { createdAt, updatedAt, ...planData } = newPlanResult.getProps();
             return planData;
         } catch (error: unknown) {
-            console.log("errrrr : ", error);
             throw toAppError(error, "Failed to create plan");
         };
     };

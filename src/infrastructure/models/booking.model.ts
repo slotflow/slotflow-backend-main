@@ -12,6 +12,9 @@ export interface IBooking extends Document {
     appointmentMode: string,
     appointmentStatus: AppointmentStatus,
     slotId: Types.ObjectId,
+    sessionStartTime: Date;
+    sessionEndTime: Date;
+    sessionDuration: number;
     paymentId: Types.ObjectId | null,
     videoCallRoomId: string | null,
     googleEventId: string,
@@ -101,6 +104,18 @@ const BookingSchema = new Schema<IBooking>({
         ref: "ServiceAvailability.slots",
         required: true
     },
+    sessionStartTime: {
+        type: Date,
+        required: true,
+    },
+    sessionEndTime: {
+        type: Date,
+        required: true,
+    },
+    sessionDuration: {
+        type: Number,
+        required: true,
+    },
     paymentId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Payment"
@@ -124,16 +139,12 @@ const BookingSchema = new Schema<IBooking>({
     statusTrack: {
         type: [StatusTrackSchema],
         default: [],
-    },
-    createdAt: {
-        type: Date,
-        required: true
-    },
-    updatedAt: {
-        type: Date,
-        required: true
     }
-});
+},
+    {
+        timestamps: true,
+    }
+);
 
 BookingSchema.index({ appointmentDate: 1, slotId: 1, serviceProviderId: 1 });
 

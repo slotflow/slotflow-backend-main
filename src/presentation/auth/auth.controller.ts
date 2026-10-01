@@ -1,30 +1,31 @@
 import { appConfig } from '../../config/env';
 import { log } from '../../shared/logger/logger';
-import { ERROR_CODES } from '../../shared/utils/types/enums';
 import { NextFunction, Request, Response } from 'express';
-import { sendResponse } from '../../shared/utils/helpers/response';
+import { ERROR_CODES } from '../../shared/utils/types/enums';
 import { UnauthorizedError } from '../../shared/error/appError';
+import { sendResponse } from '../../shared/utils/helpers/response';
+import { cookieOptions } from '../../shared/utils/constants/constant';
 import { LoginUseCase } from '../../application/useCases/auth/login.useCase';
 import { RegisterUseCase } from '../../application/useCases/auth/register.useCase';
 import { ResendOtpUseCase } from '../../application/useCases/auth/resendOtp.useCase';
-import { VerifyOTPUseCase } from '../../application/useCases/auth/verifyOtp.useCase';
 import { VerifyEmailUseCase } from '../../application/useCases/auth/verifyEmail.useCase';
 import { ResetPasswordUseCase } from '../../application/useCases/auth/resetPassword.useCase';
-import { loginUseCase, registerUseCase, resendOtpUseCase, resetPasswordUseCase, verifyEmailUseCase, verifyOTPUseCase } from '.';
+import { RegisterOtpVerificationUseCase } from '../../application/useCases/auth/registerOtpVerification.useCase';
 import { loginSchema, otpVerificationSchema, registerSchema, updatePasswordSchema, verifyEmailSchema } from '../../shared/zod/auth.zod';
+import { loginUseCase, registerUseCase, resendOtpUseCase, resetPasswordUseCase, verifyEmailUseCase, registerOtpVerificationUseCase } from '.';
 
 class AuthController {
 
   constructor(
     private readonly registerUseCase: RegisterUseCase,
-    private readonly verifyOTPUseCase: VerifyOTPUseCase,
+    private readonly registerOtpVerificationUseCase: RegisterOtpVerificationUseCase,
     private readonly resendOtpUseCase: ResendOtpUseCase,
     private readonly verifyEmailUseCase: VerifyEmailUseCase,
     private readonly loginUseCase: LoginUseCase,
     private readonly resetPasswordUseCase: ResetPasswordUseCase,
   ) {
     this.register = this.register.bind(this);
-    this.verifyOTP = this.verifyOTP.bind(this);
+    this.registerOtpVerification = this.registerOtpVerification.bind(this);
     this.resendOtp = this.resendOtp.bind(this);
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
@@ -36,12 +37,7 @@ class AuthController {
     try {
       const validateData = registerSchema.parse(req.body);
       const result = await this.registerUseCase.execute({ ...validateData });
-      res.cookie("token", result.token, {
-        maxAge: 2 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
-        sameSite: appConfig.nodeEnv === 'development' ? 'lax' : 'none',
-        secure: appConfig.nodeEnv !== 'development'
-      });
+      res.cookie("token", result.token, cookieOptions);
       sendResponse(res, null, "An OTP has been sent to your email");
     } catch (error) {
       log.error("RegisterUseCase failed", error as Error);
@@ -49,15 +45,15 @@ class AuthController {
     };
   };
 
-  async verifyOTP(req: Request, res: Response, next: NextFunction) {
+  async registerOtpVerification(req: Request, res: Response, next: NextFunction) {
     try {
       const { token } = req.cookies;
       if (!token) throw new UnauthorizedError("Token is required", ERROR_CODES.UNAUTHORIZED);
       const validateData = otpVerificationSchema.parse(req.body);
-      await this.verifyOTPUseCase.execute({ ...validateData, token });
+      await this.registerOtpVerificationUseCase.execute({ ...validateData, token });
       sendResponse(res, null, "OTP verified successfully");
     } catch (error) {
-      log.error("verifyOTP controller failed", error as Error);
+      log.error("registerOtpVerification controller failed", error as Error);
       next(error)
     };
   };
@@ -78,12 +74,7 @@ class AuthController {
     try {
       const validateData = verifyEmailSchema.parse(req.body);
       const result = await this.verifyEmailUseCase.execute({ ...validateData });
-      res.cookie("token", result.token, {
-        maxAge: 2 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
-        sameSite: appConfig.nodeEnv === 'development' ? 'lax' : 'none',
-        secure: appConfig.nodeEnv !== 'development'
-      });
+      res.cookie("token", result.token, cookieOptions);
       sendResponse(res, null, "Otp has been sent to your email");
     } catch (error) {
       log.error("verifyEmail controller failed", error as Error);
@@ -96,12 +87,7 @@ class AuthController {
       const validateData = loginSchema.parse(req.body);
       const result = await this.loginUseCase.execute({ ...validateData });
       const { token, ...user } = result;
-      res.cookie("token", token, {
-        maxAge: 2 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
-        sameSite: appConfig.nodeEnv === 'development' ? 'lax' : 'none',
-        secure: appConfig.nodeEnv !== 'development'
-      });
+      res.cookie("token", token, cookieOptions);
       sendResponse(res, user, "Login successfully");
     } catch (error) {
       log.error("login failed", error as Error);
@@ -137,7 +123,7 @@ class AuthController {
 
 export const authController = new AuthController(
   registerUseCase,
-  verifyOTPUseCase,
+  registerOtpVerificationUseCase,
   resendOtpUseCase,
   verifyEmailUseCase,
   loginUseCase,

@@ -32,8 +32,9 @@ class ProviderServiceController {
             await this.createProviderServiceUseCase.execute({
                 ...serviceData,
                 providerId: user.id,
-                requirements: serviceData.requirements ?? null,
-                videoUrl: serviceData.videoUrl ?? null
+                requirements: serviceData.requirements ?? [],
+                videoUrl: serviceData.videoUrl ?? null,
+                portfolioUrl: serviceData.portfolioUrl ?? null
             });
             sendResponse(res, null, "Service details saved successfully", true, 201);
         } catch (error) {
@@ -79,6 +80,8 @@ class ProviderServiceController {
             const result = await this.updateProviderServiceUseCase.execute({
                 ...serviceData,
                 providerServiceId,
+                videoUrl: serviceData.videoUrl ?? null,
+                portfolioUrl: serviceData.portfolioUrl ?? null,
             });
             sendResponse(res, result, "Service details updated successfully");
         } catch (error) {

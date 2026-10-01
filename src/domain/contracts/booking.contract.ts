@@ -10,6 +10,9 @@ export interface BookingProps {
     appointmentMode: string,
     appointmentStatus: AppointmentStatus,
     slotId: string,
+    sessionStartTime: Date;
+    sessionEndTime: Date;
+    sessionDuration: number;
     paymentId: string | null,
     videoCallRoomId: string | null,
     googleEventId: string | null,

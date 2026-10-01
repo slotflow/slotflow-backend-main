@@ -6,6 +6,7 @@ export class Referral {
     constructor(private props: ReferralProps) {}
 
     static create(input: CreateReferralProps): Referral {
+        const now = new Date();
         const referral = new Referral({
             _id: "",
             referrerUserId: input.referrerUserId,
@@ -13,8 +14,8 @@ export class Referral {
             referralCode: input.referralCode,
             status: ReferralStatus.PENDING,
             rewardGiven: false,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            createdAt: now,
+            updatedAt: now,
         });
         return referral;
     }

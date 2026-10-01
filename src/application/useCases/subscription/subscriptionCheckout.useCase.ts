@@ -1,16 +1,17 @@
 import { isAfter, startOfDay } from "date-fns";
-import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { PlanName } from "../../../domain/enums/plan.enum";
 import { PaymentFor } from "../../../domain/enums/payment.enum";
+import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { Subscription } from "../../../domain/entities/subscription.entity";
+import { IPaymentServiceClient } from "../../interfaces/clients/IPaymentService.client";
 import { AppError, BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { BillingCycle, SubscriptionStatus } from "../../../domain/enums/subscription.enum";
-import { IPaymentServiceClient } from "../../interfaces/clients/IPaymentService.client";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 import { SubscriptionCreateSessionIdInput, SubscriptionCreateSessionIdOutput } from "../../dtos/subscription.dto";
+import mongoose from "mongoose";
 
 export class SubscriptionCheckoutUseCase {
     constructor(
@@ -21,9 +22,10 @@ export class SubscriptionCheckoutUseCase {
     ) { };
 
     async execute(input: SubscriptionCreateSessionIdInput): Promise<SubscriptionCreateSessionIdOutput> {
+        const session = await mongoose.startSession();
+        session.startTransaction();
         try {
             const { providerId, planId, billingCycle, email, name, role } = input;
-            console.log("input : ", input);
 
             if (!providerId || !planId || !billingCycle || !email || !name || !role) {
                 throw new BadRequestError();
@@ -66,9 +68,16 @@ export class SubscriptionCheckoutUseCase {
                     );
                 }
 
+                if (!subscription?.currentPeriodEnd) {
+                    throw new BadRequestError(
+                        "Your subscription data is missing.",
+                        ERROR_CODES.INVALID_REQUEST
+                    );
+                }
+
                 const isSubscriptionExpired = isAfter(
                     startOfDay(new Date()),
-                    startOfDay(new Date(subscription?.endDate))
+                    startOfDay(new Date(subscription?.currentPeriodEnd))
                 );
                 if (!isSubscriptionExpired) {
                     throw new BadRequestError(
@@ -81,8 +90,9 @@ export class SubscriptionCheckoutUseCase {
             const subscription = await this.subscriptionRepository.create(
                 Subscription.createInitialData({
                     providerId,
-                    subscriptionPlanId: plan._id.toString(),
-                })
+                    subscribedPlanId: plan._id.toString(),
+                }),
+                session
             );
             if (!subscription) {
                 throw new AppError(
@@ -109,7 +119,7 @@ export class SubscriptionCheckoutUseCase {
 
             const { data } = await this.paymentServiceClient.createSubscriptionCheckoutSession({
                 subscriptionData: {
-                    subscriptionId: subscription._id.toString(),
+                    subscriptionId: subscription._id,
                     billingCycle,
                     unitAmount: price,
                     paymentFor: PaymentFor.PROVIDER_SUBSCRIPTION,
@@ -127,11 +137,15 @@ export class SubscriptionCheckoutUseCase {
                 }
             });
 
+            await session.commitTransaction();
             return {
                 sessionId: data
             };
         } catch (error: unknown) {
+            await session.abortTransaction();
             throw toAppError(error, "Failed to checkout");
+        } finally {
+            session.endSession()
         }
     }
 };

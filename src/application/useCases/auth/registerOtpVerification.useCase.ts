@@ -1,20 +1,20 @@
 import mongoose from "mongoose";
 import { kafkaConfig } from "../../../config/env";
-import { OTPVerificationInput } from "../../dtos/auth.dto";
 import { User } from "../../../domain/entities/user.entity";
 import { IJWT } from '../../interfaces/security/IJwt.service';
+import { RegisterOTPVerificationInput } from "../../dtos/auth.dto";
+import { IOTPService } from "../../interfaces/services/IOtp.service";
 import { toAppError } from '../../../shared/error/handleUnknownError';
 import { generateId } from '../../../shared/utils/helpers/generateId';
 import { EventEnvelope, SendWelcomeEvent } from "../../dtos/kafka.dto";
 import { ERROR_CODES, IdType } from '../../../shared/utils/types/enums';
 import { AppError, BadRequestError } from '../../../shared/error/appError';
 import { CreditAccount } from "../../../domain/entities/creditAccount.entity";
-import { IOTPService } from "../../interfaces/services/IOtp.service";
-import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
+import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { ICreditAccountRepository } from "../../../domain/interfaces/repositories/ICreditAccount.repository";
 
-export class VerifyOTPUseCase {
+export class RegisterOtpVerificationUseCase {
   constructor(
     private readonly userRepository: IUserRepository,
     private readonly otpService: IOTPService,
@@ -23,7 +23,7 @@ export class VerifyOTPUseCase {
     private readonly creditAccountRepository: ICreditAccountRepository
   ) { };
 
-  async execute(input: OTPVerificationInput): Promise<void> {
+  async execute(input: RegisterOTPVerificationInput): Promise<void> {
     const session = await mongoose.startSession();
     session.startTransaction();
     try {
@@ -32,8 +32,8 @@ export class VerifyOTPUseCase {
         throw new BadRequestError();
       }
 
-      const { email, username, password } = await this.jwtService.verifyToken(token);
-      if (!email || !username || !password) {
+      const { email, password, timeZone } = await this.jwtService.verifyToken(token);
+      if (!email || !password) {
         throw new BadRequestError();
       }
 
@@ -48,17 +48,20 @@ export class VerifyOTPUseCase {
       const isValidOTP = await this.otpService.verifyOtp(email, otp);
       if (!isValidOTP) throw new BadRequestError("Invalid OTP");
 
-      const referralCode = generateId({
-        type: IdType.REFERRAL,
-        options: { name: username }
-      });
+      if(!timeZone) {
+        throw new AppError(
+            "Internal server error",
+            500,
+            true,
+            ERROR_CODES.INTERNAL_ERROR
+          )
+      }
 
       if (!existingUser) {
         const newUser = await this.userRepository.create(User.createLocal({
           email,
-          username,
           password,
-          referralCode
+          timeZone
         }), session);
 
         if (!newUser) {
@@ -90,8 +93,6 @@ export class VerifyOTPUseCase {
           payload: {
             emailData: {
               email: newUser.email,
-              name: newUser.username,
-              role: newUser.role,
             },
           }
         })

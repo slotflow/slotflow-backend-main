@@ -444,7 +444,6 @@ export class UserQueriesImpl implements IUserQueries {
                 },
             },
         ]);
-        console.log("stats : ", stats);
 
         return stats;
     }

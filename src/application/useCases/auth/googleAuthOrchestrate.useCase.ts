@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { kafkaConfig } from "../../../config/env";
 import { Role } from "../../../domain/enums/common.enum";
+import { AppError } from '../../../shared/error/appError';
 import { PlanName } from "../../../domain/enums/plan.enum";
 import { User } from "../../../domain/entities/user.entity";
 import { IJWT } from "../../interfaces/security/IJwt.service";
@@ -8,13 +9,12 @@ import { toAppError } from '../../../shared/error/handleUnknownError';
 import { generateId } from "../../../shared/utils/helpers/generateId";
 import { EventEnvelope, SendWelcomeEvent } from "../../dtos/kafka.dto";
 import { ERROR_CODES, IdType } from '../../../shared/utils/types/enums';
-import { AppError, BadRequestError } from '../../../shared/error/appError';
 import { CreditAccount } from "../../../domain/entities/creditAccount.entity";
 import { ProviderProfile } from '../../../domain/entities/providerProfile.entity';
+import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IAuthResponseBuilder } from "../../interfaces/services/IAuthResponseBuilder.service";
 import { GoogleAuthOrchestrationInput, GoogleAuthOrchestrationOutput } from "../../dtos/auth.dto";
-import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
 import { ICreditAccountRepository } from "../../../domain/interfaces/repositories/ICreditAccount.repository";
 import { IProviderProfileRepository } from '../../../domain/interfaces/repositories/IProviderProfile.repository';
 
@@ -37,7 +37,7 @@ export class GoogleAuthOrchestratorUseCase {
                 googleId,
                 name,
                 image,
-
+                timeZone
             } = input;
 
             if (!email || !googleId || !name) {
@@ -68,7 +68,8 @@ export class GoogleAuthOrchestratorUseCase {
                     email,
                     googleId,
                     profileImage: image ?? "",
-                    referralCode
+                    referralCode,
+                    timeZone
                 });
 
                 user = await this.userRepository.create(userData, session);
@@ -117,20 +118,25 @@ export class GoogleAuthOrchestratorUseCase {
                             emailData: {
                                 email,
                                 name,
-                                role: user.role,
                             },
                         }
                     }
-                ).catch((err) => {
-                    console.error("Failed to publish welcome event to Kafka:", err);
-                });
-            }
+                )
 
+            if (!user.username) {
+                throw new AppError(
+                    "Failed to the user",
+                    500,
+                    true,
+                    ERROR_CODES.INTERNAL_ERROR
+                );
+            }
             const token = await this.jwtService.generateToken({
                 email: user.email,
                 role: user.role,
                 userId: user._id,
-                name: user.username
+                name: user.username,
+                timeZone: user.timeZone,
             });
 
             let providerProfile: ProviderProfile | null = null;

@@ -33,7 +33,7 @@ class AddressController {
 
             const result = await this.getAddressUseCase.execute({
                 userId: targetId as string,
-                isMyAddress
+                isMyAddress,
             });
             sendResponse(res, result);
         } catch (error) {

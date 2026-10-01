@@ -2,10 +2,10 @@ import { ERROR_CODES } from "../utils/types/enums";
 
 export class AppError extends Error {
     constructor(
-        public message: string,
+        public message: string = "Internal server error",
         public statusCode: number = 500,
         public isOperational: boolean = true,
-        public errorCode?: ERROR_CODES
+        public errorCode: ERROR_CODES = ERROR_CODES.INTERNAL_ERROR
     ) {
         super(message);
         this.name = this.constructor.name;

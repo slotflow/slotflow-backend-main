@@ -120,15 +120,18 @@ class BookingController {
     async bookingCheckout(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as AuthUser;
-            const { date, providerId, selectedServiceMode, slotId } = bookingCheckoutViaStripeSchema.parse({
+            const validatedDate = bookingCheckoutViaStripeSchema.parse({
                 ...req.body
             });
             const result = await this.bookingCheckoutUseCase.execute({
                 userId: user.id,
-                providerId,
-                slotId,
-                selectedServiceMode,
-                date: new Date(date),
+                providerId: validatedDate.providerId,
+                slotId: validatedDate.slotId,
+                selectedServiceMode: validatedDate.selectedServiceMode,
+                date: validatedDate.date,
+                email: user.email,
+                name: user.name,
+                role: user.role
             });
             sendResponse(res, result);
         } catch (error) {

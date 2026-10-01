@@ -1,25 +1,47 @@
 import { FilterQuery, Types } from "mongoose";
+import { fromZonedTime, toZonedTime } from "date-fns-tz";
 import { daysOfWeek } from "../../shared/utils/constants/constant";
+import { TimeSlotForClientOutput } from "../../application/dtos/common.dto";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { ServiceAvailabilityModel } from "../models/serviceAvailability.model";
+import { ServiceAvailabilityProps } from "../../domain/contracts/serviceAvailability.contract";
 import { IServiceAvailabilityQueries } from "../../application/interfaces/queries/IServiceAvailability.queries";
-import { ServiceAvailabilityDTO, TimeSlotForClientOutput } from "../../application/dtos/common.dto";
 import { ServiceAvailabilityQuery, ServiceAvailabilityView } from "../../application/dtos/serviceAvailability.dto";
 
 export class ServiceAvailabilityQueriesImpl implements IServiceAvailabilityQueries {
 
     async findByProviderId(query: ServiceAvailabilityQuery): Promise<ServiceAvailabilityView> {
         const { date, availabilityId, providerId } = query;
-        const startOfDay = new Date(date);
-        startOfDay.setHours(0, 0, 0, 0);
+        // const startOfDay = new Date(date);
+        // startOfDay.setHours(0, 0, 0, 0);
+        // console.log("startOfDay : ",startOfDay);
 
-        const endOfDay = new Date(date);
-        endOfDay.setHours(23, 59, 59, 999);
+        // const endOfDay = new Date(date);
+        // endOfDay.setHours(23, 59, 59, 999);
+        // console.log("endOfDay : ",endOfDay);
 
-        const targetDay = daysOfWeek[date.getDay()];
+        // const targetDay = daysOfWeek[date.getDay()];
+        // const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
+        // console.log("targetDay : ",targetDay);
+        // console.log("fifteenMinutesAgo : ",fifteenMinutesAgo);
+
+        // const matchFilter: FilterQuery<ServiceAvailabilityDTO> = {};
+        // if (availabilityId) matchFilter._id = new Types.ObjectId(availabilityId);
+        // if (providerId) matchFilter.providerId = new Types.ObjectId(providerId);
+
+        const dateStr = typeof date === 'string' 
+            ? date 
+            : date.toISOString().split('T')[0];
+
+        const startOfDay = fromZonedTime(`${dateStr} 00:00:00.000`, 'Asia/Kolkata');
+        const endOfDay = fromZonedTime(`${dateStr} 23:59:59.999`, 'Asia/Kolkata');
+
+        const istDate = toZonedTime(startOfDay, 'Asia/Kolkata');
+        const targetDay = daysOfWeek[istDate.getDay()];
+
         const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
 
-        const matchFilter: FilterQuery<ServiceAvailabilityDTO> = {};
+        const matchFilter: FilterQuery<ServiceAvailabilityProps> = {};
         if (availabilityId) matchFilter._id = new Types.ObjectId(availabilityId);
         if (providerId) matchFilter.providerId = new Types.ObjectId(providerId);
 

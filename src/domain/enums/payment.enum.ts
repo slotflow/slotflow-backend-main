@@ -20,10 +20,16 @@ export enum PaymentStatus {
     REFUNDED = "REFUNDED",
 };
 
+export enum RefundStatus {
+    PENDING = "PENDING",
+    SUCCESS = "SUCCEEDED",
+    FAILED = "FAILED",
+}
+
 export enum RefundReason {
-    DUPLICATE= "duplicate",
-    FRAUDUKENT= "fraudulent",
-    REQUESTED_BY_CUSTOMER= "requested_by_customer"
+    DUPLICATE = "duplicate",
+    FRAUDULENT = "fraudulent",
+    REQUESTED_BY_CUSTOMER = "requested_by_customer"
 }
 
 export enum RefundFor {

@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
-import { GeoLocation } from "../../domain/contracts/address.contract";
+import { GeoLocation } from "../../domain/commands/address.commands";
 import { addressLineRegex, cityRegex, countryRegex, districtRegex, landMarkRegex, phoneRegex, pincodeRegex, placeRegex, stateRegex } from '../../shared/utils/constants/regex';
 
 export interface IAddress extends Document {
@@ -105,15 +105,11 @@ const addressSchema = new Schema<IAddress>({
             },
         },
     },
-    createdAt: {
-        type: Date,
-        required: true
-    },
-    updatedAt: {
-        type: Date,
-        required: true
+},
+    {
+        timestamps: true,
     }
-});
+);
 
 addressSchema.index({ location: "2dsphere" });
 

@@ -12,7 +12,7 @@ export class GetProvidersServicesUseCase {
   async execute(input: GetProvidersServicesInput): Promise<GetProvidersServicesOutput | null> {
     try {
       const { serviceIds, categories, location, maxPrice, minPrice, slotflowTrusted, skip, limit } = input;
-
+      
       const providers = await this.providerServiceQueries.findProvidersCardDataForUsers({
         serviceIds: serviceIds ?? [],
         categories: categories ?? [],

@@ -14,6 +14,7 @@ export class ProcessedEvent {
     };
 
     static create(props: CreateProcessedEventProps): ProcessedEvent {
+        const now = new Date();
         return new ProcessedEvent({
             eventId: props.eventId,
             topic: props.topic,
@@ -22,8 +23,8 @@ export class ProcessedEvent {
             retryCount: props.retryCount,
             maxRetry: props.maxRetry,
             payload: props.payload,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            createdAt: now,
+            updatedAt: now,
         });
     }
 

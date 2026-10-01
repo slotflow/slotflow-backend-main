@@ -1,5 +1,5 @@
-import { Availability, ServiceAvailabilityProps } from "../contracts/serviceAvailability.contract";
-import { CreateServiceAvailabilityProps, UpdateServiceAvailabilityProps } from "../commands/serviceAvailability.commands";
+import { ServiceAvailabilityProps } from "../contracts/serviceAvailability.contract";
+import { Availability, CreateServiceAvailabilityProps, UpdateServiceAvailabilityProps } from "../commands/serviceAvailability.commands";
 
 export class ServiceAvailability {
     private props: ServiceAvailabilityProps;
@@ -13,6 +13,7 @@ export class ServiceAvailability {
     };
 
     static create(props: CreateServiceAvailabilityProps): ServiceAvailability {
+        const now = new Date();
         return new ServiceAvailability({
             _id: "",
             providerId: props.providerId,
@@ -25,8 +26,8 @@ export class ServiceAvailability {
                 modes: availability.isAvailable ? availability.modes : undefined,
                 slots: availability.isAvailable ? availability.slots : undefined,
             })),
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            createdAt: now,
+            updatedAt: now,
         });
     };
 

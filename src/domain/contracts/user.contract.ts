@@ -1,9 +1,10 @@
+import { TimeZone } from "../commands/user.commands";
 import { HearAboutUsOptionValue, OnboardingStatus, Role } from "../enums/common.enum";
 
 export interface UserProps {
     _id: string
 
-    username: string;
+    username: string | null;
     email: string;
     password: string | null;
 
@@ -19,10 +20,11 @@ export interface UserProps {
     googleConnected: boolean;
     googleId: string | null;
 
-    allowPushNotification: boolean;
     whereDidHearAboutUs: HearAboutUsOptionValue | null;
     referralCode: string | null;
     referredBy: string | null;
+
+    timeZone: TimeZone | null;
 
     createdAt: Date,
     updatedAt: Date

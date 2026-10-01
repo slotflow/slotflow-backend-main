@@ -10,9 +10,9 @@ import { ProviderSubscriptionPaymentSuccessEventInput } from "../../dtos/kafka.d
 import { CreditTransaction } from "../../../domain/entities/creditTransaction.entity";
 import { EventEnvelope, ProviderSubscriptionUpdatedEvent } from "../../dtos/kafka.dto";
 import { dateFormats, notificationType } from "../../../shared/utils/constants/constant";
-import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
+import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
+import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IReferralRepository } from "../../../domain/interfaces/repositories/IReferral.repository";
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
 import { ICreditAccountRepository } from "../../../domain/interfaces/repositories/ICreditAccount.repository";
@@ -42,7 +42,10 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
                 isTrial,
                 providerId,
                 currentPeriodEnd,
-                currentPeriodStart
+                currentPeriodStart,
+                cancelAt,
+                cancelAtPeriodEnd,
+                lastEventAt
             } = input;
 
             const isTrialBoolean: boolean = isTrial === "true";
@@ -67,6 +70,7 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
             if(isTrialBoolean) {
                 providerProfile.trialUsed();
             }
+            
             const updatedProviderProfile = await this.providerProfileRepository.update(providerProfile, session);
             if (!updatedProviderProfile) {
                 throw new AppError(
@@ -85,7 +89,7 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
                 );
             }
 
-            const plan = await this.planRepository.findById(subscription.subscriptionPlanId);
+            const plan = await this.planRepository.findById(subscription.subscribedPlanId);
             if (!plan) {
                 throw new NotFoundError(
                     "Plan not found",
@@ -95,8 +99,11 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
 
             subscription.subscriptionPaymentSuccess({
                 paymentId,
-                startDate: currentPeriodStart,
-                endDate: currentPeriodEnd,
+                currentPeriodStart,
+                currentPeriodEnd,
+                cancelAt,
+                cancelAtPeriodEnd,
+                lastEventAt
             });
 
             const updatedSubscription = await this.subscriptionRepository.update(subscription, session);
@@ -176,8 +183,8 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
                     socketData: {
                         userId: provider._id,
                         subscribedPlan: plan.planName,
-                        startDate: updatedSubscription.startDate,
-                        endDate: updatedSubscription.endDate,
+                        currentPeriodStart: updatedSubscription.currentPeriodStart,
+                        currentPeriodEnd: updatedSubscription.currentPeriodEnd,
                         subscriptionStatus: subscription.subscriptionStatus,
                         hasUsedTrial: providerProfile.hasUsedTrial,
                     },
@@ -186,8 +193,8 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
                         name: provider.username,
                         subscribedPlan: plan.planName,
                         isTrial,
-                        startDate: formatDate(updatedSubscription.startDate, dateFormats.WITH_FULL_TIME),
-                        endDate: formatDate(updatedSubscription.endDate, dateFormats.WITH_FULL_TIME),
+                        startDate: formatDate(updatedSubscription.currentPeriodStart, dateFormats.WITH_TIME),
+                        endDate: formatDate(updatedSubscription.currentPeriodEnd, dateFormats.WITH_TIME),
                     },
                     notificationData: {
                         userId: provider._id,

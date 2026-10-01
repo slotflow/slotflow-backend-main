@@ -118,7 +118,6 @@ export class UpdatePlanUseCase {
             const { createdAt, updatedAt, ...planData } = updatedPlan.getProps();
             return planData;
         } catch (error: unknown) {
-            console.log("errrrr : ", error);
             throw toAppError(error, "Failed to create plan");
         };
     };

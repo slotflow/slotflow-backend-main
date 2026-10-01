@@ -7,10 +7,10 @@ import { addressController } from "../address/address.controller";
 
 const router = Router();
 
-router.patch('/me/preboarding',
+router.patch('/me/profile-setup',
     authMiddleware,
     authorize(Role.USER),
-    userController.preBoarding
+    userController.profileSetup
 )
 
 // user get profile details
@@ -33,13 +33,6 @@ router.patch('/me',
     authorize(Role.USER),
     userController.updateUserInfo
 );
-
-// user update push notification
-router.patch('/me/notification-settings',
-    authMiddleware,
-    authorize(Role.USER),
-    userController.updatePushNotification
-)
 
 // admin get user address
 router.get('/:userId/address',

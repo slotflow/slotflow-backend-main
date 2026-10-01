@@ -90,7 +90,6 @@ class DashboardController {
         try {
             const validatedData = adminGetRoleBasedChartData.parse(req.query);
             const result = await this.getRoleBasedChartDataUseCase.execute(validatedData);
-            console.log("result : ",result);
             sendResponse(res, result);
         } catch (error) {
             log.error("getUserChartData failed", error as Error);

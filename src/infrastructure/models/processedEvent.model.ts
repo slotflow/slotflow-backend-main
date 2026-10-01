@@ -43,15 +43,11 @@ const ProcessedEventSchema = new Schema<IProcessedEvent>({
     payload: {
         type: String,
         required: true,
-    },
-    createdAt: {
-        type: Date,
-        required: true
-    },
-    updatedAt: {
-        type: Date,
-        required: true
     }
-});
+},
+    {
+        timestamps: true,
+    }
+);
 
 export const ProcessedEventModel = mongoose.model<IProcessedEvent>('ProcessedEvent', ProcessedEventSchema);

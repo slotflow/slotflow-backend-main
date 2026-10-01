@@ -1,29 +1,20 @@
-import { PlanName } from "../../domain/enums/plan.enum";
-import { ProviderProfileDTO, UserDTO } from "./common.dto";
-import { OnboardingStatus, Role } from "../../domain/enums/common.enum";
-
-/**
- * Auth common dtos
- */
-
+import { UserProps } from "../../domain/contracts/user.contract";
+import { ProviderProfileProps } from "../../domain/contracts/providerProfile.contract";
+import { TimeZone } from "../../domain/commands/user.commands";
 
 /**
  * Auth usecase dtos
  */
 
 // Register
-export interface RegisterInput {
-    username: UserDTO["username"];
-    email: UserDTO["email"];
-    password: string;
-}
+export type RegisterInput = Pick<UserProps, "email" | 'password' | "timeZone">;
 export interface RegisterOutput {
     token: string
 }
 
 
 // OTP Verification
-export interface OTPVerificationInput {
+export interface RegisterOTPVerificationInput {
     token: string;
     otp: string;
 }
@@ -37,7 +28,7 @@ export interface ResendOtpOutput {
 
 // VerifyEmail
 export interface VerifyEmailInput {
-    email: UserDTO["email"];
+    email: UserProps["email"];
 }
 export interface VerifyEmailOutput {
     token: string;
@@ -46,39 +37,44 @@ export interface VerifyEmailOutput {
 
 // Login
 export interface LoginInput {
-    email: UserDTO["email"];
+    email: UserProps["email"];
     password: string;
 }
 export interface LoginOutput {
     token: string;
-    user: {
-        uid: UserDTO["_id"];
-        username: UserDTO["username"];
-        email: UserDTO["email"];
-        role: UserDTO["role"];
-        onboardingType: Role | null;
-        onboardingStatus: OnboardingStatus;
-        isBlocked: UserDTO["isBlocked"];
+    user: Pick<UserProps,
+        | "username"
+        | "email"
+        | "role"
+        | "onboardingType"
+        | "onboardingStatus"
+        | "isBlocked"
+        | "phone"
+        | "profileImage"
+    > &
+    Partial<Pick<ProviderProfileProps,
+        | "isAddressVerified"
+        | "isServiceDetailsVerified"
+        | "isAvailabilityVerified"
+        | "isProofsVerified"
+        | "isAdminVerified"
+        | "verificationRejectionReason"
+        | "adminVerificationStatus"
+        | "hasUsedTrial"
+    >> &
+    {
+        uid: UserProps["_id"];
         isLoggedIn: boolean;
-        phone: UserDTO["phone"];
-        profileImage: UserDTO["profileImage"];
         isAddressAdded: boolean;
+
         isServiceDetailsAdded?: boolean;
         isServiceAvailabilityAdded?: boolean;
         isProofSubmitted?: {
             identityProof: boolean;
             serviceProof: boolean;
         };
-        isAddressVerified?: ProviderProfileDTO["isAddressVerified"],
-        isServiceDetailsVerified?: ProviderProfileDTO["isServiceDetailsVerified"],
-        isAvailabilityVerified?: ProviderProfileDTO["isAvailabilityVerified"],
-        isProofsVerified?: ProviderProfileDTO["isProofsVerified"],
-        isAdminVerified?: ProviderProfileDTO["isAdminVerified"],
+
         providerSubscription?: string;
-        verificationRejectionReason?: ProviderProfileDTO["verificationRejectionReason"],
-        adminVerificationStatus?: ProviderProfileDTO["adminVerificationStatus"],
-        allowPushNotification: UserDTO["allowPushNotification"];
-        hasUsedTrial?: ProviderProfileDTO['hasUsedTrial'];
     }
 }
 
@@ -96,21 +92,34 @@ export interface GoogleAuthOrchestrationInput {
     email: string;
     name: string;
     image: string | null;
+    timeZone: TimeZone;
 }
 export interface GoogleAuthOrchestrationOutput {
     token?: string;
-    user: {
-        uid: UserDTO["_id"];
-        username: UserDTO["username"];
-        email: UserDTO["email"];
-        role: UserDTO["role"];
-        onboardingType: Role | null;
-        onboardingStatus: OnboardingStatus;
-        isBlocked: UserDTO["isBlocked"];
-        isLoggedIn: boolean;
-        phone: UserDTO["phone"];
-        profileImage: UserDTO["profileImage"];
+    user: Pick<UserProps,
+        | "username"
+        | "email"
+        | "role"
+        | "onboardingType"
+        | "onboardingStatus"
+        | "isBlocked"
+        | "phone"
+        | "profileImage"
+    > &
+    Partial<Pick<ProviderProfileProps,
+        | "isAddressVerified"
+        | "isServiceDetailsVerified"
+        | "isAvailabilityVerified"
+        | "isProofsVerified"
+        | "isAdminVerified"
+        | "verificationRejectionReason"
+        | "adminVerificationStatus"
+        | "hasUsedTrial"
+    >> &
+    {
+        uid: UserProps["_id"];
         isAddressAdded: boolean;
+        isLoggedIn: boolean;
 
         isServiceDetailsAdded?: boolean;
         isServiceAvailabilityAdded?: boolean;
@@ -119,16 +128,7 @@ export interface GoogleAuthOrchestrationOutput {
             serviceProof: boolean;
         };
 
-        isAddressVerified?: ProviderProfileDTO["isAddressVerified"],
-        isServiceDetailsVerified?: ProviderProfileDTO["isServiceDetailsVerified"],
-        isAvailabilityVerified?: ProviderProfileDTO["isAvailabilityVerified"],
-        isProofsVerified?: ProviderProfileDTO["isProofsVerified"],
-        isAdminVerified?: ProviderProfileDTO["isAdminVerified"],
         providerSubscription?: string;
-        verificationRejectionReason?: ProviderProfileDTO["verificationRejectionReason"],
-        adminVerificationStatus?: ProviderProfileDTO["adminVerificationStatus"],
-        allowPushNotification: UserDTO["allowPushNotification"];
-        hasUsedTrial?: ProviderProfileDTO['hasUsedTrial'];
     }
 }
 
@@ -141,20 +141,20 @@ export interface GoogleAuthOrchestrationOutput {
  */
 
 // Base user response
-export interface BaseUserResponse {
-    uid: UserDTO['_id'];
-    username: UserDTO['username'];
-    email: UserDTO['email'];
-    role: UserDTO['role'];
-    onboardingType: UserDTO['onboardingType'];
-    onboardingStatus: UserDTO['onboardingStatus'];
-    isBlocked: UserDTO['isBlocked'];
-    isLoggedIn: boolean;
-    phone: UserDTO['phone'];
-    profileImage: UserDTO['profileImage'];
-    isAddressAdded: boolean;
-    allowPushNotification: UserDTO['allowPushNotification'];
-}
+export type BaseUserResponse = Pick<UserProps,
+    "username"
+    | "email"
+    | "role"
+    | "onboardingType"
+    | "onboardingStatus"
+    | "isBlocked"
+    | "phone"
+    | "profileImage"> & {
+        uid: UserProps['_id'];
+        isLoggedIn: boolean;
+        isAddressAdded: boolean;
+    }
+
 
 // Provider prrof status
 export interface ProviderProofStatus {
@@ -162,18 +162,20 @@ export interface ProviderProofStatus {
     serviceProof: boolean;
 }
 
+
 // Provider ( user with rpvider role ) response
-export interface ProviderFieldsResponse {
+export type ProviderFieldsResponse = Pick<ProviderProfileProps,
+    | "isAddressVerified"
+    | "isServiceDetailsVerified"
+    | "isAvailabilityVerified"
+    | "isProofsVerified"
+    | "isAdminVerified"
+    | "verificationRejectionReason"
+    | "adminVerificationStatus"
+    | "hasUsedTrial"
+> & {
     isServiceDetailsAdded: boolean;
     isServiceAvailabilityAdded: boolean;
     isProofSubmitted?: ProviderProofStatus;
-    isAddressVerified?: ProviderProfileDTO["isAddressVerified"],
-    isServiceDetailsVerified?: ProviderProfileDTO["isServiceDetailsVerified"],
-    isAvailabilityVerified?: ProviderProfileDTO["isAvailabilityVerified"],
-    isProofsVerified?: ProviderProfileDTO["isProofsVerified"],
-    isAdminVerified?: ProviderProfileDTO["isAdminVerified"],
     providerSubscription?: string;
-    verificationRejectionReason?: ProviderProfileDTO["verificationRejectionReason"],
-    adminVerificationStatus?: ProviderProfileDTO["adminVerificationStatus"],
-    hasUsedTrial: ProviderProfileDTO['hasUsedTrial'];
 }

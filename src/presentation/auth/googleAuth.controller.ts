@@ -16,6 +16,7 @@ class GoogleAuthController {
 
     async googleAuth(req: Request, res: Response, next: NextFunction) {
         try {
+            const timeZoneQuery = req.query.timeZone as string;
             passport.authenticate("google", {
                 scope: [
                     "openid",
@@ -25,6 +26,7 @@ class GoogleAuthController {
                 accessType: "offline",
                 prompt: "consent",
                 session: false,
+                state: timeZoneQuery || "",
             })(req, res, next);
         } catch (error) {
             log.error("googleAuth failed", error as Error);
@@ -47,11 +49,21 @@ class GoogleAuthController {
                     return res.redirect(`${serviceConfig.frontendUrl}${fallbackRoute}?response=${redirectData}`);
                 }
 
+                let timeZoneData = null;
+                if (req.query.state) {
+                    try {
+                        timeZoneData = JSON.parse(decodeURIComponent(req.query.state as string));
+                    } catch (parseError) {
+                        timeZoneData = req.query.state;
+                    }
+                }
+
                 const { token, user: googleUser } = await this.googleAuthOrchestratorUseCase.execute({
                     email: user.email,
                     googleId: user.googleId,
                     name: user.name,
                     image: user.image,
+                    timeZone: timeZoneData,
                 });
 
                 res.cookie("token", token, {

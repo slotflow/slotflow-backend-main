@@ -5,14 +5,15 @@ export class CreditAccount {
     constructor(private props: CreditAccountProps) {}
 
     static create(props: CreateCreditAccountProps): CreditAccount {
+        const now = new Date();
         return new CreditAccount({
             _id: "",
             userId: props.userId,
             balance: 0,
             isActive: true,
             version: 1,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            createdAt: now,
+            updatedAt: now,
         });
     }
 

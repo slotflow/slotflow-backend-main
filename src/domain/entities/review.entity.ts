@@ -13,13 +13,14 @@ export class Review {
     };
 
     static create(props: CreateReviewDProps): Review {
+        const now = new Date();
         return new Review({
             _id: "",
             ...props,
             isBlocked: false,
             reported: false,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            createdAt: now,
+            updatedAt: now,
         })
     };
 

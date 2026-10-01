@@ -1,6 +1,6 @@
-import { OnboardingStatus, Role } from "../enums/common.enum";
 import { UserProps } from "../contracts/user.contract";
-import { ChangePasswordProps, ChangeProfileImageProps, ChangeProfileInfoProps, CreateGoogleUserProps, CreateLocalUserProps, LinkGoogleAccountProps, UpdatePushNotificationProps, CompletePreBoardingProps } from "../commands/user.commands";
+import { OnboardingStatus, Role } from "../enums/common.enum";
+import { ChangePasswordProps, ChangeProfileImageProps, ChangeProfileInfoProps, CreateGoogleUserProps, CreateLocalUserProps, LinkGoogleAccountProps, CompleteProfileSetupProps, TimeZone } from "../commands/user.commands";
 
 export class User {
 
@@ -21,30 +21,32 @@ export class User {
     }
 
     static createLocal(props: CreateLocalUserProps): User {
+        const now = new Date();
         return new User({
             _id: "",
-            username: props.username,
+            username: null,
             email: props.email,
             password: props.password,
             role: Role.USER,
             onboardingType: null,
             onboardingStatus: OnboardingStatus.NOT_STARTED,
             isBlocked: false,
-            allowPushNotification: false,
             whereDidHearAboutUs: null,
-            referralCode: props.referralCode,
+            referralCode: null,
             referredBy: null,
             addressId: null,
             profileImage: null,
             phone: null,
             googleConnected: false,
             googleId: null,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            timeZone: props.timeZone,
+            createdAt: now,
+            updatedAt: now,
         })
     }
 
     static createGoogle(props: CreateGoogleUserProps): User {
+        const now = new Date();
         return new User({
             _id: "",
             username: props.username,
@@ -57,14 +59,14 @@ export class User {
             profileImage: props.profileImage,
             googleId: props.googleId,
             googleConnected: true,
-            allowPushNotification: false,
             whereDidHearAboutUs: null,
             referralCode: props.referralCode,
             referredBy: null,
             addressId: null,
             phone: null,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            timeZone: props.timeZone,
+            createdAt: now,
+            updatedAt: now,
         })
     }
 
@@ -74,7 +76,7 @@ export class User {
         return this.props._id;
     }
 
-    get username(): string {
+    get username(): string | null {
         return this.props.username;
     }
 
@@ -122,16 +124,16 @@ export class User {
         return this.props.addressId;
     }
 
-    get allowPushNotification(): boolean {
-        return this.props.allowPushNotification;
-    };
-
     get referralCode(): string | null {
         return this.props.referralCode;
     }
 
     get referredBy(): string | null {
         return this.props.referredBy;
+    }
+
+    get timeZone(): TimeZone | null {
+        return this.props.timeZone;
     }
 
     get createdAt(): Date {
@@ -180,11 +182,6 @@ export class User {
         this.touch();
     }
 
-    updatePushNotification(props: UpdatePushNotificationProps) {
-        this.props.allowPushNotification = props.allowPushNotification;
-        this.touch();
-    }
-
     linkGoogleAccount(props: LinkGoogleAccountProps) {
         this.ensureNotBlocked("update google data");
 
@@ -207,8 +204,8 @@ export class User {
         this.touch();
     }
 
-    completePreBoarding(props: CompletePreBoardingProps) {
-        const { role } = props;
+    completeProfileSetup(props: CompleteProfileSetupProps) {
+        const { role, whereDidHearAboutUs, referredBy } = props;
         if (role === Role.USER) {
             this.props.onboardingType = Role.USER;
             this.props.onboardingStatus = OnboardingStatus.APPROVED;
@@ -216,11 +213,11 @@ export class User {
             this.props.onboardingType = Role.PROVIDER;
             this.props.onboardingStatus = OnboardingStatus.IN_PROGRESS;
         }
-        if(props.whereDidHearAboutUs) {
-            this.props.whereDidHearAboutUs = props.whereDidHearAboutUs;
+        if(whereDidHearAboutUs) {
+            this.props.whereDidHearAboutUs = whereDidHearAboutUs;
         }
-        if(props.referredBy) {
-            this.props.referredBy = props.referredBy;
+        if(referredBy) {
+            this.props.referredBy = referredBy;
         }
         this.touch();
     }

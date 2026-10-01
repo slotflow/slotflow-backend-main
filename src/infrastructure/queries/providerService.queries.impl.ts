@@ -116,7 +116,7 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
                                     $and: [
                                         { $eq: ["$providerId", "$$providerId"] },
                                         { $eq: ["$subscriptionStatus", SubscriptionStatus.ACTIVE] },
-                                        { $gt: ["$endDate", now] }
+                                        { $gt: ["$currentPeriodEnd", now] }
                                     ]
                                 }
                             }
@@ -130,46 +130,16 @@ export class ProviderServiceQueriesImpl implements IProviderServiceQueries {
             { $unwind: "$activeSubscription" }
         );
 
-        // if (hasValidPriceRange) {
-        //     pipeline.push(
-        //         {
-        //             $lookup: {
-        //                 from: "providerServices",
-        //                 let: { providerId: "$user._id" },
-        //                 pipeline: [
-        //                     {
-        //                         $match: {
-        //                             $expr: {
-        //                                 $and: [
-        //                                     { $eq: ["$providerId", "$$providerId"] },
-        //                                     { $lte: ["$servicePrice", maxPrice] },
-        //                                     { $gte: ["$servicePrice", minPrice] }
-        //                                 ]
-        //                             }
-        //                         }
-        //                     }
-        //                 ],
-        //                 as: "providerServices"
-        //             }
-        //         },
-        //         {
-        //             $match: {
-        //                 $expr: { $gt: [{ $size: "$providerServices" }, 0] }
-        //             }
-        //         }
-        //     );
-        // }
-
         if (hasValidPriceRange) {
-    pipeline.push({
-        $match: {
-            servicePrice: {
-                $gte: minPrice,
-                $lte: maxPrice
-            }
+            pipeline.push({
+                $match: {
+                    servicePrice: {
+                        $gte: minPrice,
+                        $lte: maxPrice
+                    }
+                }
+            });
         }
-    });
-}
 
         if (location?.coordinates?.length === 2) {
             pipeline.push(

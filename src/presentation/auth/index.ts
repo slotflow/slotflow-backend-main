@@ -3,7 +3,7 @@ import { jwtService, passwordHasher } from "../../infrastructure/security";
 import { LoginUseCase } from "../../application/useCases/auth/login.useCase";
 import { RegisterUseCase } from "../../application/useCases/auth/register.useCase";
 import { ResendOtpUseCase } from "../../application/useCases/auth/resendOtp.useCase";
-import { VerifyOTPUseCase } from "../../application/useCases/auth/verifyOtp.useCase";
+import { RegisterOtpVerificationUseCase } from "../../application/useCases/auth/registerOtpVerification.useCase";
 import { VerifyEmailUseCase } from "../../application/useCases/auth/verifyEmail.useCase";
 import { ResetPasswordUseCase } from "../../application/useCases/auth/resetPassword.useCase";
 import { authResponseBuilder, otpService, signedUrlService } from "../../infrastructure/services";
@@ -15,7 +15,7 @@ export const resendOtpUseCase = new ResendOtpUseCase(otpService, kafkaProducer, 
 
 export const verifyEmailUseCase = new VerifyEmailUseCase(userRepository, otpService, jwtService);
 
-export const verifyOTPUseCase = new VerifyOTPUseCase(userRepository, otpService, kafkaProducer, jwtService, creditAccountRepository);
+export const registerOtpVerificationUseCase = new RegisterOtpVerificationUseCase(userRepository, otpService, kafkaProducer, jwtService, creditAccountRepository);
 
 export const registerUseCase = new RegisterUseCase(userRepository, otpService, jwtService, passwordHasher, kafkaProducer);
 

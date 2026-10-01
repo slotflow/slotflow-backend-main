@@ -1,13 +1,13 @@
 import { kafkaConfig } from '../../../config/env';
-import { OtpPurpose } from '../../../domain/enums/common.enum';
 import { IJWT } from '../../interfaces/security/IJwt.service';
+import { OtpPurpose } from '../../../domain/enums/common.enum';
 import { BadRequestError } from '../../../shared/error/appError';
 import { EventEnvelope, SendOtpEvent } from '../../dtos/kafka.dto';
 import { RegisterInput, RegisterOutput } from '../../dtos/auth.dto';
+import { IOTPService } from '../../interfaces/services/IOtp.service';
 import { generateId } from '../../../shared/utils/helpers/generateId';
 import { toAppError } from '../../../shared/error/handleUnknownError';
 import { ERROR_CODES, IdType } from '../../../shared/utils/types/enums';
-import { IOTPService } from '../../interfaces/services/IOtp.service';
 import { IPasswordHasher } from '../../interfaces/security/IPasswordHasher.service';
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { IKafkaProducerAdapter } from '../../interfaces/messaging/IKafkaProducer.adapter';
@@ -24,8 +24,8 @@ export class RegisterUseCase {
 
   async execute(input: RegisterInput): Promise<RegisterOutput> {
     try {
-      const { username, email, password } = input;
-      if (!username || !email || !password) {
+      const { email, password, timeZone } = input;
+      if (!email || !password || !timeZone) {
         throw new BadRequestError()
       }
 
@@ -39,7 +39,11 @@ export class RegisterUseCase {
 
       const hashedPassword = await this.passwordHasher.hashPassword(password);
 
-      const token = await this.jwtService.generateToken({ email, username, password: hashedPassword });
+      const token = await this.jwtService.generateToken({ 
+        email, 
+        password: hashedPassword,
+        timeZone
+      });
 
       const otp = await this.otpService.setOtp(email);
 
@@ -51,7 +55,6 @@ export class RegisterUseCase {
         payload: {
           emailData: {
             email,
-            name: username,
             otp,
             purpose: OtpPurpose.REGISTRATION
           },

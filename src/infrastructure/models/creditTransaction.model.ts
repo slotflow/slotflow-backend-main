@@ -64,18 +64,12 @@ const CreditTransactionSchema = new Schema<ICreditTransaction>({
         unique: true,
         sparse: true,
         index: true
-    },
-    createdAt: {
-        type: Date,
-        required: true,
-        default: new Date()
-    },
-    updatedAt: {
-        type: Date,
-        required: true,
-        default: new Date()
     }
-});
+},
+    {
+        timestamps: true,
+    }
+);
 
 CreditTransactionSchema.index({ accountId: 1, createdAt: -1 });
 CreditTransactionSchema.index({ userId: 1, createdAt: -1 });

@@ -1,7 +1,7 @@
 import { CalendarStatus, Role } from "../enums/common.enum";
 import { BookingProps } from "../contracts/booking.contract";
 import { AppointmentStatus } from "../enums/appointmentStatus.enum";
-import { CreateBookingProps, statusTrack, UpdateAppointmentProps, CalendarData, OnlineTrack, CreateCalendarProps, FailedCalendarProps, UpdateBookingAfterPaymentProps } from "../commands/booking.commands";
+import { CreateBookingProps, statusTrack, UpdateAppointmentProps, CalendarData, OnlineTrack, CreateCalendarProps, FailedCalendarProps, UpdateBookingAfterPaymentSuccessProps } from "../commands/booking.commands";
 
 export class Booking {
 
@@ -16,6 +16,7 @@ export class Booking {
     };
 
     static create(props: CreateBookingProps): Booking {
+        const now = new Date();
         return new Booking({
             _id: "",
             appointmentDate: props.appointmentDate,
@@ -24,6 +25,9 @@ export class Booking {
             appointmentTime: props.appointmentTime,
             serviceProviderId: props.serviceProviderId,
             slotId: props.slotId,
+            sessionStartTime: props.sessionStartTime,
+            sessionEndTime: props.sessionEndTime,
+            sessionDuration: props.sessionDuration,
             statusTrack: props.statusTrack,
             userId: props.userId,
             videoCallRoomId: props.videoCallRoomId,
@@ -31,8 +35,8 @@ export class Booking {
             googleEventId: null,
             paymentId: null,
             onlineTrack: null,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            createdAt: now,
+            updatedAt: now,
         })
     };
 
@@ -108,6 +112,16 @@ export class Booking {
         return this.props.calendarData
     };
 
+    get sessionStartTime(): Date {
+        return this.props.sessionStartTime;
+    };
+    get sessionEndTime(): Date {
+        return this.props.sessionEndTime;
+    };
+    get sessionDuration(): number {
+        return this.props.sessionDuration;
+    };
+
     get createdAt(): Date {
         return this.props.createdAt;
     };
@@ -118,11 +132,20 @@ export class Booking {
         return { ...this.props };
     };
 
-    updateBookingAfterPayment(props: UpdateBookingAfterPaymentProps) {
+    updateBookingAfterPaymentSuccess(props: UpdateBookingAfterPaymentSuccessProps) {
         this.props.paymentId = props.paymentId;
-        this.props.appointmentStatus = props.appointmentStatus;
+        this.props.appointmentStatus = AppointmentStatus.BOOKED
         this.props.statusTrack.push({
-            appointmentStatus: props.appointmentStatus,
+            appointmentStatus:  AppointmentStatus.BOOKED,
+            time: new Date(),
+        });
+        this.touch();
+    };
+
+    updateBookingAfterPaymentFailed() {
+        this.props.appointmentStatus = AppointmentStatus.PAYMENT_FAILED
+        this.props.statusTrack.push({
+            appointmentStatus:  AppointmentStatus.PAYMENT_FAILED,
             time: new Date(),
         });
         this.touch();

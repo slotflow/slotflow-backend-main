@@ -1,5 +1,23 @@
 import { IdType } from "../types/enums";
+import { Day } from "../../../domain/enums/common.enum";
 import { NotificationChannel, NotificationType } from "../../../application/dtos/common.dto";
+import { appConfig } from "../../../config/env";
+
+// time zone default constant
+export const defaultTimezone: string = "Asia/Kolkata";
+
+// cookies options
+export const cookieOptions: {
+  maxAge: number;
+  httpOnly: boolean;
+  sameSite: 'none' | 'lax' | 'strict';
+  secure: boolean;
+} = {
+  maxAge: 2 * 24 * 60 * 60 * 1000,
+  httpOnly: true,
+  sameSite: appConfig.nodeEnv === 'development' ? 'lax' : 'none',
+  secure: appConfig.nodeEnv !== 'development'
+}
 
 //
 export const dateFormats = {
@@ -15,7 +33,15 @@ export const dateFormats = {
   RANGE_FULL: 'LLL dd, yyyy',            // Sep 16, 2026
 } as const;
 
-export const daysOfWeek: string[] = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+export const daysOfWeek: Day[] = [
+  Day.SUNDAY,
+  Day.MONDAY,
+  Day.TUESDAY,
+  Day.WEDNESDAY,
+  Day.THURSDAY,
+  Day.FRIDAY,
+  Day.SATURDAY
+];
 
 export const PREFIX_MAP: Record<IdType, string> = {
   [IdType.EVENT]: "sf_evt_",

@@ -94,15 +94,11 @@ const ProviderProfileSchema = new Schema<IProviderProfile>({
     hasUsedTrial: {
         type: Boolean,
         default: false,
-    },
-    createdAt: {
-        type: Date,
-        required: true
-    },
-    updatedAt: {
-        type: Date,
-        required: true
     }
-});
+},
+    {
+        timestamps: true,
+    }
+);
 
 export const ProviderProfileModel = mongoose.model<IProviderProfile>('ProviderProfile', ProviderProfileSchema);

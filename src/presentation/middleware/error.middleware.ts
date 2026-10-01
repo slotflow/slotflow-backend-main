@@ -1,8 +1,8 @@
 import { ZodError } from "zod";
 import { log } from "../../shared/logger/logger";
 import { AppError } from "../../shared/error/appError";
-import { ERROR_CODES } from "../../shared/utils/types/enums";
 import { NextFunction, Request, Response } from "express";
+import { ERROR_CODES } from "../../shared/utils/types/enums";
 import { isNamedError } from "../../shared/utils/helpers/isNameError";
 
 export const errorHandler = (
@@ -67,11 +67,6 @@ export const errorHandler = (
             err as Error
         );
     }
-
-    console.log("success : ",success);
-    console.log("message : ",message);
-    console.log("errorCode : ",errorCode);
-    console.log("errors : ",errors);
 
     res.status(statusCode).json({
         success,

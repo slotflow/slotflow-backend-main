@@ -6,5 +6,6 @@ export const buildUserHeaders = (user: AuthUser): Record<string, string> => {
         "x-user-role": user.role,
         "x-user-email": encodeURIComponent(user.email || ""),
         "x-user-name": encodeURIComponent(user.name || ""),
+        "x-user-timeZone": encodeURIComponent(user.timeZone || ""),
     };
 };

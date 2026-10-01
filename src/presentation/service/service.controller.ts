@@ -21,7 +21,7 @@ class ServiceController {
         private readonly updateServiceUseCase: UpdateServiceUseCase
     ) {
         this.getServices = this.getServices.bind(this);
-        this.createService = this.createService.bind(this);
+        this.createServices = this.createServices.bind(this);
         this.changeServiceBlockStatus = this.changeServiceBlockStatus.bind(this);
         this.updateService = this.updateService.bind(this);
     };
@@ -43,7 +43,7 @@ class ServiceController {
         };
     };
 
-    async createService(req: Request, res: Response, next: NextFunction) {
+    async createServices(req: Request, res: Response, next: NextFunction) {
         try {
             const { serviceCategory, serviceNames } = adminCreateServiceSchema.parse(req.body);
             const result = await this.createServicesUseCase.execute({

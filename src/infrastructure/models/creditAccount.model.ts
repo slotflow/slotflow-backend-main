@@ -33,18 +33,12 @@ const CreditAccountSchema = new Schema<ICreditAccount>({
         type: Number,
         required: true,
         default: 1
-    },
-    createdAt: {
-        type: Date,
-        required: true,
-        default: new Date()
-    },
-    updatedAt: {
-        type: Date,
-        required: true,
-        default: new Date()
     }
-});
+},
+    {
+        timestamps: true,
+    }
+);
 
 CreditAccountSchema.index({ isActive: 1 });
 

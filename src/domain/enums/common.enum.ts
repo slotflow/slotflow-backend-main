@@ -4,11 +4,6 @@ export enum Role {
     PROVIDER = "PROVIDER",
 };
 
-export enum Boolean {
-    TRUE = "true",
-    FALSE = "false"
-};
-
 export enum FileType {
     PNG="image/png",
     JPEG="image/jpeg",
@@ -16,14 +11,14 @@ export enum FileType {
 };
 
 export enum Day {
-    SUNDAY = "Sunday",
-    MONDAY = "Monday",
-    TUESDAY = "Tuesday",
-    WEDNESDAY = "Wednesday",
-    THURSDAY = "Thursday",
-    FRIDAY = "Friday",
-    SATURDAY = "Saturday",
-};
+  SUNDAY = 'SUNDAY',
+  MONDAY = 'MONDAY',
+  TUESDAY = 'TUESDAY',
+  WEDNESDAY = 'WEDNESDAY',
+  THURSDAY = 'THURSDAY',
+  FRIDAY = 'FRIDAY',
+  SATURDAY = 'SATURDAY',
+}
 
 export enum AppConnect {
     GOOGLE = "GOOGLE",
@@ -53,16 +48,16 @@ export enum EventStatus {
 }
 
 export enum HearAboutUsOptionValue {
-  GOOGLE = "google",
-  REFERRAL = "referral",
-  YOUTUBE = "youtube",
-  LINKEDIN = "linkedin",
-  TWITTER = "twitter",
-  INSTAGRAM = "instagram",
-  WHATSAPP = "whatsapp",
-  FACEBOOK = "facebook",
-  THREADS = "threads",
-  OTHER = "other",
+  GOOGLE = 'GOOGLE',
+  REFERRAL = 'REFERRAL',
+  YOUTUBE = 'YOUTUBE',
+  LINKEDIN = 'LINKEDIN',
+  TWITTER = 'TWITTER',
+  INSTAGRAM = 'INSTAGRAM',
+  WHATSAPP = 'WHATSAPP',
+  FACEBOOK = 'FACEBOOK',
+  THREADS = 'THREADS',
+  OTHER = 'OTHER',
 }
 
 export enum OnboardingStatus {

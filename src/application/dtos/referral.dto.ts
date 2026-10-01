@@ -1,22 +1,24 @@
+import { MiniCardData } from "./common.dto";
 import { ReferralStatus } from "../../domain/enums/common.enum";
-import { MiniCardData, ReferralDTO, UserDTO } from "./common.dto";
+import { UserProps } from "../../domain/contracts/user.contract";
+import { ReferralProps } from "../../domain/contracts/referral.contract";
 
-//
-
-// queries
+/**
+ * Referral queries dtos
+ */
 
 // findReferralDetails query and view
 export interface GetReferralDetailsQuery {
-    userId: UserDTO["_id"];
+    userId: UserProps["_id"];
     startDate: Date;
     endDate: Date;
 }
 export interface MainChartData {
-  date: string;
-  totalReferrals: number;
-  completedReferrals: number;
-  pendingReferrals: number;
-  rewardedReferrals: number;
+    date: string;
+    totalReferrals: number;
+    completedReferrals: number;
+    pendingReferrals: number;
+    rewardedReferrals: number;
 }
 export interface GetReferralDetailsView {
     totalReferrals: MiniCardData;
@@ -36,17 +38,20 @@ export type ReferralChartKeys =
 
 
 
-// usecases
+/**
+ * Referral usecase dtos 
+ */
 
-// getReferralDetails usecase inpout and output
+// getReferralDetails 
 export type GetReferralDetailsInput = GetReferralDetailsQuery;
 export type GetReferralDetailsOutput = GetReferralDetailsView;
 
-// getReferralsList usecase input and output
+
+// getReferralsList 
 export interface GetReferralListInput {
     page: number;
     limit: number;
-    referrerUserId: UserDTO["_id"];
+    referrerUserId: UserProps["_id"];
     status?: ReferralStatus;
 }
-export type GetReferralsListOutput = Pick<ReferralDTO, "_id" | "status" | "createdAt" | "completedAt" | "rewardGiven">
+export type GetReferralsListOutput = Pick<ReferralProps, "_id" | "status" | "createdAt" | "completedAt" | "rewardGiven">

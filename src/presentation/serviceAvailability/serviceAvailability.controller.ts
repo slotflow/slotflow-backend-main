@@ -22,7 +22,6 @@ class ServiceAvailabilityController {
     async createServiceAvailability(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as AuthUser;
-            console.log("req.body : ",req.body);
             const availabilities = createServiceAvailabilitySchema.parse(req.body);
             if (!availabilities || availabilities.length === 0) {
                 throw new BadRequestError(

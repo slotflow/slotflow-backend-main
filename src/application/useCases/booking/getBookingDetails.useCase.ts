@@ -18,8 +18,6 @@ export class GetBookingDetailsUsecase {
             const result = await this.bookingQueries.findDetails({ bookingId });
             if (!result) return null;
 
-            console.log("result : ",result);
-
             return result;
         } catch (error: unknown) {
             throw toAppError(error, "Failed to get booking details");

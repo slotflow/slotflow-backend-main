@@ -1,10 +1,10 @@
 import { FilterQuery } from "mongoose";
 import { ReviewModel } from "../models/review.model";
 import { Role } from "../../domain/enums/common.enum";
-import { Review } from "../../domain/entities/review.entity";
-import { ReviewDTO, TableData } from "../../application/dtos/common.dto";
-import { IReviewQueries } from "../../application/interfaces/queries/IReview.queries";
+import { TableData } from "../../application/dtos/common.dto";
+import { ReviewProps } from "../../domain/contracts/review.contract";
 import { GetReviewsQuery, GetReviewsView } from "../../application/dtos/review.dto";
+import { IReviewQueries } from "../../application/interfaces/queries/IReview.queries";
 
 export class ReviewQueriesImpl implements IReviewQueries {
 
@@ -13,7 +13,7 @@ export class ReviewQueriesImpl implements IReviewQueries {
 
         const skip = (page - 1) * limit;
 
-        const filter: FilterQuery<ReviewDTO> = {};
+        const filter: FilterQuery<ReviewProps> = {};
 
         if (role === Role.USER && userId) {
             filter.userId = userId;

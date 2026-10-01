@@ -1,45 +1,39 @@
-import { HearAboutUsOptionValue, Role } from "../enums/common.enum";
+import { UserProps } from "../contracts/user.contract";
 
-export type CreateLocalUserProps = {
-  username: string;
-  email: string;
-  password: string;
-  referralCode: string;
-  referredBy?: string;
-};
+export type CreateLocalUserProps = Pick<
+    UserProps,
+    "email" | "timeZone"
+> &
+    Required<Pick<UserProps, "password">> &
+    Partial<Pick<UserProps, "referredBy">>;
 
-export type CreateGoogleUserProps = {
-  username: string;
-  email: string;
-  googleId: string;
-  profileImage: string;
-  referralCode: string;
-};
+export type CreateGoogleUserProps = Pick<
+    UserProps,
+    "username" | "email" | "timeZone"
+> &
+    Required<Pick<UserProps, "googleId" | "profileImage" | "referralCode">>;
 
-export type ChangeProfileInfoProps = {
-  username?: string;
-  phone?: string;
-};
+export type ChangeProfileInfoProps = Partial<
+    Pick<UserProps, "username" | "phone">
+>;
 
-export type ChangePasswordProps = {
-  password: string;
-};
+export type ChangePasswordProps = Required<Pick<UserProps, "password">>;
 
-export type LinkGoogleAccountProps = {
-  googleId: string;
-  googleConnected: boolean;
-};
+export type LinkGoogleAccountProps = Pick<UserProps, "googleConnected"> &
+    Required<Pick<UserProps, "googleId">>;
 
-export type ChangeProfileImageProps = {
-  profileImage?: string;
-};
+export type ChangeProfileImageProps = Partial<
+    Pick<UserProps, "profileImage">
+>;
 
-export type UpdatePushNotificationProps = {
-  allowPushNotification: boolean;
-};
+export type CompleteProfileSetupProps = Pick<UserProps, "role" | "username" | "referralCode"> &
+    Required<Pick<UserProps, "whereDidHearAboutUs">> &
+    Partial<Pick<UserProps, "referredBy">>;
 
-export type CompletePreBoardingProps = {
-  role: Role;
-  whereDidHearAboutUs: HearAboutUsOptionValue;
-  referredBy?: string;
-};
+export interface TimeZone {
+    value: string;
+    label: string;
+    offset: number;
+    abbrev: string;
+    altName: string;
+}

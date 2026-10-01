@@ -4,17 +4,18 @@ import { log } from "../../shared/logger/logger";
 import { ERROR_CODES } from "../../shared/utils/types/enums";
 import { AppError, BadRequestError } from "../../shared/error/appError";
 import { buildUserHeaders } from "../../shared/utils/helpers/buildReqUserHeader";
-import { CreateBookingCheckoutSessionInput, CreateBookingCheckoutSessionOutput, CreateSubscriptionCheckoutSessionInput, CreateSubscriptionCheckoutSessionOutput, IPaymentServiceClient, ProcessRefundInput, ProcessRefundOutput } from "../../application/interfaces/clients/IPaymentService.client";
+import { IPaymentServiceClient } from "../../application/interfaces/clients/IPaymentService.client";
+import { CreateBookingCheckoutSessionInput, CreateBookingCheckoutSessionOutput, CreateSubscriptionCheckoutSessionInput, CreateSubscriptionCheckoutSessionOutput, ProcessRefundInput, ProcessRefundOutput } from "../../application/dtos/common.dto";
 
 export class PaymentServiceClient implements IPaymentServiceClient {
 
   private readonly http: AxiosInstance;
 
   constructor(baseUrl: string = serviceConfig.paymentServiceUrl) {
-      this.http = axios.create({
-        baseURL: baseUrl,
-        timeout: 5000,
-      });
+    this.http = axios.create({
+      baseURL: baseUrl,
+      timeout: 5000,
+    });
   };
 
   async createSubscriptionCheckoutSession(input: CreateSubscriptionCheckoutSessionInput): Promise<CreateSubscriptionCheckoutSessionOutput> {
@@ -27,8 +28,6 @@ export class PaymentServiceClient implements IPaymentServiceClient {
         }
       );
 
-      console.log("result : ",result);
-      
       const { data } = result;
 
       if (!data.data) {
@@ -51,12 +50,17 @@ export class PaymentServiceClient implements IPaymentServiceClient {
 
   async createBookingCheckoutSession(input: CreateBookingCheckoutSessionInput): Promise<CreateBookingCheckoutSessionOutput> {
     try {
-      const { data } = await this.http.post<CreateBookingCheckoutSessionOutput>(
+      const result = await this.http.post<CreateBookingCheckoutSessionOutput>(
         "/booking/checkout/session",
-        input
+        input.bookingData,
+        {
+          headers: buildUserHeaders(input.user)
+        }
       );
 
-      if (!data?.data) {
+      const { data } = result;
+
+      if (!data.data) {
         log.error("Invalid response from Payment Service");
 
         throw new AppError(

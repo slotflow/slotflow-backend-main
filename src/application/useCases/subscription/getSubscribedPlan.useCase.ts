@@ -25,6 +25,7 @@ export class GetSubscribedPlanUseCase {
                     ERROR_CODES.PROVIDER_PROFILE_NOT_FOUND
                 );
             }
+
             if (!providerProfile.subscriptions.length) {
                 throw new NotFoundError(
                     "Subsctiption not found.",
@@ -43,8 +44,8 @@ export class GetSubscribedPlanUseCase {
             return {
                 providerId,
                 subscribedPlan: result.subscribedPlan,
-                startDate: result.startDate,
-                endDate: result.endDate,
+                currentPeriodStart: result.currentPeriodStart,
+                currentPeriodEnd: result.currentPeriodEnd,
                 subscriptionStatus: result.subscriptionStatus
             };
         } catch (error: unknown) {

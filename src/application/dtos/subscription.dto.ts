@@ -1,36 +1,41 @@
 import { CommonDateInput } from "./common.dto";
-import { PlanName } from "../../domain/enums/plan.enum";
-import { BillingCycle, SubscriptionStatus } from "../../domain/enums/subscription.enum";
-import { ApiPaginationInput, PlanDTO, StatMetric, SubscriptionDTO, UserDTO } from "./common.dto";
 import { Role } from "../../domain/enums/common.enum";
+import { PlanName } from "../../domain/enums/plan.enum";
+import { ApiPaginationInput, StatMetric } from "./common.dto";
+import { UserProps } from "../../domain/contracts/user.contract";
+import { PlanProps } from "../../domain/contracts/plan.contract";
+import { BillingCycle } from "../../domain/enums/subscription.enum";
+import { SubscriptionProps } from "../../domain/contracts/subscription.contract";
 
-//// **** subscription queries parameter and return **** ////
+/**
+ * subscription queries dtos
+ */
 
-// findAll method parameter and return
+// findAll method 
 export interface SubscriptionsQuery extends ApiPaginationInput {
-    providerId?: UserDTO["_id"];
+    providerId?: UserProps["_id"];
 }
-export type SubscriptionsView = Array<Pick<SubscriptionDTO, "_id" | "startDate" | "endDate" | "subscriptionStatus"> & Pick<PlanDTO, "planName">>;
+export type SubscriptionsView = Array<Pick<SubscriptionProps, "_id" | "currentPeriodStart" | "currentPeriodEnd" | "subscriptionStatus"> & Pick<PlanProps, "planName">>;
 
 
-// 2. findSubscribedPlan method parameter
+// findSubscribedPlan method 
 export interface SubscribedPlanQuery {
-    subscriptionId: SubscriptionDTO["_id"];
+    subscriptionId: SubscriptionProps["_id"];
 }
 
 
-// 3. findDetails method parameter and return
+// findDetails method 
 export interface SubscriptionDetailsQuery {
-    subscriptionId: SubscriptionDTO["_id"];
+    subscriptionId: SubscriptionProps["_id"];
 }
-type SubscriptionProps = Pick<SubscriptionDTO, "startDate" | "endDate" | "subscriptionStatus" | "createdAt">;
-type PlanProps = Pick<PlanDTO, "planName" | "adVisibility" | "maxBookingPerMonth">;
-export interface SubscriptionDetailsView extends SubscriptionProps {
-    subscriptionPlanId: PlanProps,
+type SubscriptionDetailsProps = Pick<SubscriptionProps, "_id" | "cancelAt" | "cancelAtPeriodEnd" | "currentPeriodStart" | "currentPeriodEnd" | "subscriptionStatus" | "createdAt">;
+type PlanDetailsProps = Pick<PlanProps, "planName" | "adVisibility" | "maxBookingPerMonth">;
+export interface SubscriptionDetailsView extends SubscriptionDetailsProps {
+    subscribedPlanId: PlanDetailsProps,
 }
 
 
-// 4. findStatsForAdminDashboard method parameter and return
+// findStatsForAdminDashboard method 
 export interface SubscriptionStatsDataQuery extends CommonDateInput { }
 export interface SubscriptionStatsDataView extends Record<string, StatMetric | undefined> {
     activeSubscriptions: StatMetric;
@@ -42,20 +47,16 @@ export interface SubscriptionStatsDataView extends Record<string, StatMetric | u
 };
 
 
-// 5. findMySubscritpion method parameter and return
+// findMySubscritpion method 
 export interface MySubscriptionQuery {
-    subscriptionId: SubscriptionDTO["_id"];
+    subscriptionId: SubscriptionProps["_id"];
 }
-export interface MySubscriptionView {
-    providerId: string;
+export type MySubscriptionView = {
     subscribedPlan: PlanName;
-    startDate: Date;
-    endDate: Date;
-    subscriptionStatus: SubscriptionStatus
-};
+} & Pick<SubscriptionProps, "providerId" | "currentPeriodStart" | "currentPeriodEnd" | "subscriptionStatus">;
 
 
-// 6. findAnalayticsForAdminDashboard method parameter and return
+// findAnalayticsForAdminDashboard method 
 export interface SubscriptionAnalyticsQuery extends CommonDateInput { }
 export type SubscriptionAnalyticsView = Array<{
     status: string;
@@ -66,27 +67,18 @@ export type SubscriptionAnalyticsView = Array<{
 
 
 
+/**
+ * subscription usecases dtos
+ */
 
-
-
-
-
-//// **** subscription usecases input output **** ////
-
-// getSubscribedPlan usecase input output
+// getSubscribedPlan 
 export interface GetSubscribedPlanInput {
-    providerId: UserDTO["_id"]
+    providerId: UserProps["_id"]
 };
-export interface GetSubscribedPlanOutput {
-    providerId: string;
-    subscribedPlan: PlanName;
-    startDate: Date;
-    endDate: Date;
-    subscriptionStatus: SubscriptionStatus
-};
+export type GetSubscribedPlanOutput = MySubscriptionView;
 
 
-// createSubscriptionSessionId usecase input output
+// createSubscriptionSessionId 
 export interface SubscriptionCreateSessionIdInput {
     providerId: string;
     planId: string;
@@ -100,19 +92,19 @@ export interface SubscriptionCreateSessionIdOutput {
 }
 
 
-// getSubscriptions usecase input output
+// getSubscriptions 
 export interface GetSubscriptionsInput extends ApiPaginationInput {
-    providerId?: UserDTO["_id"];
+    providerId?: UserProps["_id"];
 }
-export type GetSubscriptionsOutput = Array<Pick<SubscriptionDTO, "_id" | "startDate" | "endDate" | "subscriptionStatus"> & Pick<PlanDTO, "planName">>;
+export type GetSubscriptionsOutput = Array<Pick<SubscriptionProps, "_id" | "currentPeriodStart" | "currentPeriodEnd" | "subscriptionStatus"> & Pick<PlanProps, "planName">>;
 
 
-// getSubscriptionDetails usecase input output
+// getSubscriptionDetails 
 export type GetSubscriptionDetailsInput = SubscriptionDetailsQuery;
 export type GetSubscriptionDetailsOutput = SubscriptionDetailsView;
 
 
-// getSubscriptionsChartData usecase input outpue
+// getSubscriptionsChartData 
 export type GetSubscriptionsChartDataInput = SubscriptionAnalyticsQuery;
 export type GetSubscriptionsChartDataOutput = SubscriptionAnalyticsView;
 
@@ -127,7 +119,7 @@ export type GetSubscriptionsChartDataOutput = SubscriptionAnalyticsView;
 
 // Support types
 export interface PopulatedPlan {
-    subscriptionPlanId: {
+    subscribedPlanId: {
         planName: PlanName;
     }
 }

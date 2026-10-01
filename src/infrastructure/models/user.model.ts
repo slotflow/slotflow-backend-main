@@ -1,9 +1,10 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
+import { TimeZone } from '../../domain/commands/user.commands';
 import { HearAboutUsOptionValue, OnboardingStatus, Role } from '../../domain/enums/common.enum';
 
 export interface IUser extends Document {
   _id: Types.ObjectId;
-  username: string;
+  username: string | null;
   email: string;
   password: string;
   role: Role;
@@ -15,20 +16,31 @@ export interface IUser extends Document {
   addressId: Types.ObjectId;
   googleConnected: boolean;
   googleId: string;
-  allowPushNotification: boolean;
   whereDidHearAboutUs: HearAboutUsOptionValue;
   referralCode: string | null;
   referredBy: string | null;
+  timeZone: TimeZone | null;
   createdAt: Date;
   updatedAt: Date;
 };
 
+const TimeZoneSchema = new Schema<TimeZone>(
+  {
+    value: { type: String, required: true, default: "Asia/Kolkata" },
+    label: { type: String, required: true, default: "(GMT+5:30) Chennai, Kolkata, Mumbai, New Delhi" },
+    offset: { type: Number, required: true, default: 5.5 },
+    abbrev: { type: String, required: true, default: "IST" },
+    altName: { type: String, required: true, default: "India Standard Time" },
+  },
+  { _id: false }
+);
+
 const UserSchema = new Schema<IUser>({
   username: {
     type: String,
-    required: [true, "Username is required"],
     minlength: [4, "Username must be at least 4 characters"],
     maxlength: [30, "Username must be at most 30 characters"],
+    default: null,
     trim: true,
     match: [/^[a-zA-Z\s]{4,30}$/, "Invalid username"],
   },
@@ -95,10 +107,6 @@ const UserSchema = new Schema<IUser>({
       return !this.password;
     }
   },
-  allowPushNotification: {
-    type: Boolean,
-    default: null
-  },
   whereDidHearAboutUs: {
     type: String,
     enum: Object.values(HearAboutUsOptionValue),
@@ -112,14 +120,21 @@ const UserSchema = new Schema<IUser>({
     type: String,
     default: null
   },
-  createdAt: {
-    type: Date,
-    required: true
-  },
-  updatedAt: {
-    type: Date,
-    required: true
+  timeZone: {
+    type: TimeZoneSchema,
+    required: true,
+    default: () => ({
+      value: "Asia/Kolkata",
+      label: "(GMT+5:30) Chennai, Kolkata, Mumbai, New Delhi",
+      offset: 5.5,
+      abbrev: "IST",
+      altName: "India Standard Time",
+    }),
   }
-});
+},
+  {
+    timestamps: true,
+  }
+);
 
 export const UserModel = mongoose.model<IUser>('User', UserSchema);

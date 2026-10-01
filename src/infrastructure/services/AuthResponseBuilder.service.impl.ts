@@ -27,7 +27,6 @@ export class AuthResponseBuilderImpl implements IAuthResponseBuilder {
       phone: user.phone,
       profileImage: user.profileImage,
       isAddressAdded: !!user.addressId,
-      allowPushNotification: user.allowPushNotification,
     };
   }
 
@@ -49,7 +48,7 @@ export class AuthResponseBuilderImpl implements IAuthResponseBuilder {
       isAdminVerified: providerProfile?.isAdminVerified ?? false,
       providerSubscription,
       verificationRejectionReason: providerProfile?.verificationRejectionReason ?? null,
-      adminVerificationStatus: providerProfile?.adminVerificationStatus,
+      adminVerificationStatus: providerProfile?.adminVerificationStatus!,
       hasUsedTrial: providerProfile?.hasUsedTrial ?? false,
     };
   }
@@ -73,12 +72,12 @@ export class AuthResponseBuilderImpl implements IAuthResponseBuilder {
     const now = new Date();
     const isActive =
       subscription.subscriptionStatus === SubscriptionStatus.ACTIVE &&
-      new Date(subscription.endDate) > now;
+      new Date(subscription.currentPeriodEnd!) > now;
 
     if (!isActive) return PlanName.NO_SUBSCRIPTION;
 
     const plan = await this.planRepository.findById(
-      subscription.subscriptionPlanId
+      subscription.subscribedPlanId
     );
 
     return plan?.planName || PlanName.NO_SUBSCRIPTION;

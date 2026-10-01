@@ -14,6 +14,7 @@ export class Plan {
     }
 
     static create(props: CreatePlanProps): Plan {
+        const now = new Date();
         return new Plan({
             _id: "",
             adVisibility: props.adVisibility,
@@ -28,8 +29,8 @@ export class Plan {
             isBlocked: false,
             hasTrial: props.hasTrial,
             trialDays: props.trialDays,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            createdAt: now,
+            updatedAt: now,
         })
     }
 

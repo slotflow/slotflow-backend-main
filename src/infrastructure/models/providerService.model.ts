@@ -122,16 +122,11 @@ const ProviderServiceSchema = new Schema<IProviderService>(
       type: String,
       match: [/^https?:\/\/.+/, "Invalid potfolio URL format"],
       default: null,
-    },
-
-    createdAt: {
-      type: Date,
-      required: true
-    },
-    updatedAt: {
-      type: Date,
-      required: true
     }
-  });
+  },
+  {
+    timestamps: true,
+  }
+);
 
 export const ProviderServiceModel = mongoose.model<IProviderService>("ProviderService", ProviderServiceSchema);

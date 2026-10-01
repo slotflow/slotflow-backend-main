@@ -14,6 +14,7 @@ export class ProviderProfile {
     }
 
     static create(props: CreateProviderProfileProps): ProviderProfile {
+        const now = new Date();
         return new ProviderProfile({
             _id: "",
             userId: props.userId,
@@ -31,8 +32,8 @@ export class ProviderProfile {
             identityProof: null,
             serviceProof: null,
             hasUsedTrial: false,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            createdAt: now,
+            updatedAt: now,
         });
     }
 

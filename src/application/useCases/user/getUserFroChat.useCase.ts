@@ -1,14 +1,14 @@
 import { Role } from "../../../domain/enums/common.enum";
-import { IBookingQueries } from "../../interfaces/queries/IBooking.queries";
 import { BadRequestError } from "../../../shared/error/appError";
 import { toAppError } from "../../../shared/error/handleUnknownError";
+import { IBookingQueries } from "../../interfaces/queries/IBooking.queries";
 import { ISignedUrlService } from "../../interfaces/services/ISignedUrl.service";
 import { GetUserForChatSidebarInput, GetUserForChatSidebarOutput } from "../../dtos/user.dto";
 
 export class GetUserForChatSidebarUseCase {
     constructor(
-        private signedUrlService: ISignedUrlService,
-        private bookingQueries: IBookingQueries,
+        private readonly signedUrlService: ISignedUrlService,
+        private readonly bookingQueries: IBookingQueries,
     ) { };
 
     async execute(input: GetUserForChatSidebarInput): Promise<GetUserForChatSidebarOutput> {
@@ -20,7 +20,7 @@ export class GetUserForChatSidebarUseCase {
 
             const result = await this.bookingQueries.findUsersforChatSideBar({
                 userId,
-                role: role === Role.PROVIDER ? Role.USER : Role.PROVIDER
+                role
             });
 
             if (!result) {

@@ -9,7 +9,7 @@ import { GetBookingDetailsUsecase } from "../../application/useCases/booking/get
 import { ChangeBookingStatusUseCase } from "../../application/useCases/booking/changeBookingStatus.useCase";
 import { bookingQueries, providerServiceQueries, serviceAvailabilityQueries } from "../../infrastructure/queries";
 import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/booking/updateBookingOnlineTracking.useCase";
-import { bookingRepository, creditAccountRepository, creditTransactionRepository, providerProfileRepository, referralRepository, userRepository } from "../../infrastructure/repository";
+import { addressRepository, bookingRepository, creditAccountRepository, creditTransactionRepository, providerProfileRepository, referralRepository, userRepository } from "../../infrastructure/repository";
 
 export const getBookingsUseCase = new GetBookingsUseCase(bookingQueries);
 
@@ -19,10 +19,10 @@ export const getBookingDetailsUsecase = new GetBookingDetailsUsecase(bookingQuer
 
 export const checkBookingUseCase = new CheckBookingUseCase(bookingRepository);
 
-export const bookingCheckoutUseCase = new BookingCheckoutUseCase(bookingRepository, providerProfileRepository, providerServiceQueries, serviceAvailabilityQueries, userRepository, paymentServiceClient);
+export const bookingCheckoutUseCase = new BookingCheckoutUseCase(bookingRepository, providerProfileRepository, providerServiceQueries, serviceAvailabilityQueries, paymentServiceClient);
 
 export const cancelBookingUseCase = new CancelBookingUseCase(userRepository, bookingRepository, paymentServiceClient);
 
 export const updateBookingOnlineTrakingUseCase = new UpdateBookingOnlineTrakingUseCase(bookingRepository, serviceAvailabilityQueries, userRepository, referralRepository, creditAccountRepository, creditTransactionRepository);
 
-export const changeBookingStatusUseCase = new ChangeBookingStatusUseCase(bookingRepository, userRepository, kafkaProducer);
+export const changeBookingStatusUseCase = new ChangeBookingStatusUseCase(bookingRepository, userRepository, kafkaProducer, addressRepository);

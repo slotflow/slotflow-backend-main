@@ -11,6 +11,4 @@ export interface ISubscriptionRepository {
 
     getLatestSubscriptionByUserId(userId: string): Promise<Subscription | null>;
 
-    getFirstPaidSubscriptionByUserId(userId: string): Promise<Subscription | null>;
-
 }

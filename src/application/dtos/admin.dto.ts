@@ -1,43 +1,48 @@
-import { CommonDateInput, ProviderProfileDTO, ReviewDTO, UserDTO } from "./common.dto";
+import { CommonDateInput } from "./common.dto";
+import { UserProps } from "../../domain/contracts/user.contract";
+import { ReviewProps } from "../../domain/contracts/review.contract";
+import { ProviderProfileProps } from "../../domain/contracts/providerProfile.contract";
 import { BookingsStatsDataAdminQuery, BookingsStatsDataAdminView } from "./booking.dto";
 import { SubscriptionStatsDataQuery, SubscriptionStatsDataView } from "./subscription.dto";
 import { ProviderStatsDataQuery, ProviderStatsDataView, UserChartDataQuery, UserChartDataView, UserStatsDataQuery, UserStatsDataView } from "./user.dto";
 
-//// **** admin dtos **** ////
+/**
+ * Admin usecase dtos
+ */
 
-// GetUserData usecase input output
+// GetUserData
 export type GetUserStatsDataInput = UserStatsDataQuery;
 export type GetUserStatsDataOutput = UserStatsDataView;
 
 
-// GetProviderData usecase input output
+// GetProviderData
 export type GetProviderDataInput = ProviderStatsDataQuery; 
 export type GetProviderDataOutput = ProviderStatsDataView; 
 
 
-// GetSubscriptionData usecase input output
+// GetSubscriptionData
 export type GetSubscriptionStatsDataInput = SubscriptionStatsDataQuery;
 export type GetSubscriptionStatsDataOutput = SubscriptionStatsDataView;
 
 
-// GetBookingsData usecase input output
+// GetBookingsData
 export type GetBookingsDataInput = BookingsStatsDataAdminQuery;
 export type GetBookingsDataOutput = BookingsStatsDataAdminView ;
 
 
-// AdminApproveProvider usecase input output
+// AdminApproveProvider
 export interface AdminApproveProviderInput {
-    providerId: UserDTO["_id"];
+    providerId: UserProps["_id"];
 }
-export type AdminApproveProviderOutput = Pick<UserDTO, "_id"> & Pick<ProviderProfileDTO, "isAdminVerified" | "adminVerificationStatus">;
+export type AdminApproveProviderOutput = Pick<UserProps, "_id"> & Pick<ProviderProfileProps, "isAdminVerified" | "adminVerificationStatus">;
 
 
 // Reject provider ( by admin )
-export type AdminRejectProviderInput = Pick<ProviderProfileDTO, "verificationRejectionReason" | "isAddressVerified" | "isServiceDetailsVerified" | "isAvailabilityVerified" | "isProofsVerified"> & {
-    providerId: UserDTO["_id"];
+export type AdminRejectProviderInput = Pick<ProviderProfileProps, "verificationRejectionReason" | "isAddressVerified" | "isServiceDetailsVerified" | "isAvailabilityVerified" | "isProofsVerified"> & {
+    providerId: UserProps["_id"];
 };
-export type AdminRejectProviderOutput = Pick<UserDTO, "_id"> & Pick<
-  ProviderProfileDTO,
+export type AdminRejectProviderOutput = Pick<UserProps, "_id"> & Pick<
+  ProviderProfileProps,
   | 'isAddressVerified'
   | 'isServiceDetailsVerified'
   | 'isAvailabilityVerified'
@@ -46,29 +51,27 @@ export type AdminRejectProviderOutput = Pick<UserDTO, "_id"> & Pick<
 
 
 // Change provider block status ( by admin )
-export interface AdminChangeProviderBlockStatusInput {
-    providerId: UserDTO["_id"];
-    isBlocked: UserDTO["isBlocked"];
+export type AdminChangeProviderBlockStatusInput = Pick<UserProps, "isBlocked"> & {
+    providerId: UserProps["_id"];
 };
-export type AdminChangeProviderBlockStatusOutput = Pick<UserDTO, "_id" | "isBlocked">;
+export type AdminChangeProviderBlockStatusOutput = Pick<UserProps, "_id" | "isBlocked">;
 
 
 // Change provider trust tag ( by admin )
-export interface AdminChangeProviderTrustTagInput {
-    providerId: UserDTO["_id"];
-    trustedBySlotflow: ProviderProfileDTO["trustedBySlotflow"];
+export type AdminChangeProviderTrustTagInput = Pick<ProviderProfileProps, "trustedBySlotflow"> & {
+    providerId: UserProps["_id"];
 };
-export type AdminChangeProviderTrustTagOutput = Pick<UserDTO, "_id"> & Pick<ProviderProfileDTO, "trustedBySlotflow">;
+export type AdminChangeProviderTrustTagOutput = Pick<UserProps, "_id"> & Pick<ProviderProfileProps, "trustedBySlotflow">;
 
 
-// ToggleReviewBlockStatus usecase input output
-export interface ChangeReviewBlockStatusInput {
-    reviewId: ReviewDTO["_id"];
-    isBlocked: ReviewDTO["isBlocked"];
+// ToggleReviewBlockStatus
+export type ChangeReviewBlockStatusInput = Pick<ReviewProps, "isBlocked"> & {
+    reviewId: ReviewProps["_id"];
 };
-export type ChangeReviewBlockStatusOutput = Pick<ReviewDTO, "_id" | "isBlocked">;
+export type ChangeReviewBlockStatusOutput = Pick<ReviewProps, "_id" | "isBlocked">;
 
-// GetGraphData usecase input output
+
+// GetGraphData
 export interface GetGraphDataInput extends CommonDateInput { }
 export interface GetGraphDataOutput {
     appointmentsOvertimeChartData: Array<{

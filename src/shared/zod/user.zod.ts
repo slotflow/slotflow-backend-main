@@ -11,11 +11,6 @@ export const userUpdateFileSchema = s3FileKeySchema;
 // User update info schema
 export const userUpdateInfoSchema = updateInfoSchema;
 
-// User update push notification schema
-export const userUpdatePushNotificationSchema = z.object({
-    allowPushNotification: z.boolean(),
-});
-
 // user update password schema
 export const userUpdatePasswordSchema = z.object({
     currentPassword: z.string().regex(strongPasswordRegex, "Invalid current password"),

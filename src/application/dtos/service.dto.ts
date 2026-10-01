@@ -1,36 +1,40 @@
-import { ApiPaginationInput, ServiceDTO } from "./common.dto";
+import { ApiPaginationInput } from "./common.dto";
+import { ServiceProps } from "../../domain/contracts/service.contract";
 
-//// **** service dtos **** ////
+/**
+ * Service usecase dtos
+ */
 
 // Get service
 export interface GetServiceInput extends ApiPaginationInput { }
-export type GetServiceOutput = Array<Pick<ServiceDTO, "_id" | "serviceName" | "isBlocked" | "serviceCategory">> | [];
+export type GetServiceOutput = Array<Pick<ServiceProps, "_id" | "serviceName" | "isBlocked" | "serviceCategory">> | [];
 
 
 // Create service
-export type CreateServiceInput = Pick<ServiceDTO, "serviceName" | "serviceCategory">;
+export type CreateServiceInput = Pick<ServiceProps, "serviceName" | "serviceCategory">;
 export type CreateServicesInput = {
-  serviceCategory: ServiceDTO["serviceCategory"];
+  serviceCategory: ServiceProps["serviceCategory"];
   serviceNames: string[];
 };
+export type CreateServicesOutput = Array<Pick<ServiceProps, "serviceCategory" | "serviceName" | "_id" | "isBlocked">> 
 
 
 // Change service block status
 export type ChangeServiceBlockStatusInput = {
-  serviceId: ServiceDTO["_id"];
-} & Pick<ServiceDTO, 'isBlocked'>;
-export type ChangeServiceBlockStatusOutput = Pick<ServiceDTO, "_id" | "isBlocked">
+  serviceId: ServiceProps["_id"];
+} & Pick<ServiceProps, 'isBlocked'>;
+export type ChangeServiceBlockStatusOutput = Pick<ServiceProps, "_id" | "isBlocked">
 
 
 // Get services by category
 export interface GetServicesByCategoryInput {
-  categories: Array<ServiceDTO["serviceCategory"]>;
+  categories: Array<ServiceProps["serviceCategory"]>;
 };
-export type GetServicesByCategoryOutput = Array<Pick<ServiceDTO, "_id" | "serviceName">> | null;
+export type GetServicesByCategoryOutput = Array<Pick<ServiceProps, "_id" | "serviceName">> | null;
 
 
 // Update service
 export type UpdateServiceInput = {
-  serviceId: ServiceDTO["_id"];
-} & Pick<ServiceDTO, 'serviceCategory' | 'isBlocked' | 'serviceName'>;
-export type UpdateServiceOutput = Pick<ServiceDTO, '_id' | 'serviceCategory' | 'isBlocked' | 'serviceName'>;
+  serviceId: ServiceProps["_id"];
+} & Pick<ServiceProps, 'serviceCategory' | 'isBlocked' | 'serviceName'>;
+export type UpdateServiceOutput = Pick<ServiceProps, '_id' | 'serviceCategory' | 'isBlocked' | 'serviceName'>;

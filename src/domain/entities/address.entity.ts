@@ -1,5 +1,5 @@
-import { AddressProps, GeoLocation } from "../contracts/address.contract";
-import { CreateAddressProps, UpdateAddressProps } from "../commands/address.commands";
+import { AddressProps } from "../contracts/address.contract";
+import { CreateAddressProps, GeoLocation, UpdateAddressProps } from "../commands/address.commands";
 
 export class Address {
     private props: AddressProps;
@@ -13,6 +13,7 @@ export class Address {
     };
 
     static create(props: CreateAddressProps): Address {
+        const now = new Date();
         return new Address({
             _id: "",
             addressLine: props.addressLine,
@@ -26,8 +27,8 @@ export class Address {
             place: props.place,
             state: props.state,
             userId: props.userId,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            createdAt: now,
+            updatedAt: now,
         });
     }
 

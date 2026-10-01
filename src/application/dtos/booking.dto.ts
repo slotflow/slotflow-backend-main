@@ -1,23 +1,28 @@
 import { CommonDateInput } from "./common.dto";
 import { Role } from "../../domain/enums/common.enum";
 import { ServiceMode } from "../../domain/enums/service.enum";
+import { UserProps } from "../../domain/contracts/user.contract";
+import { BookingProps } from "../../domain/contracts/booking.contract";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
-import { ApiPaginationInput, Availability, BookingDTO, ParticipantPresence, StatMetric, TimeSlotForClientOutput, UserDTO } from "./common.dto";
+import { ApiPaginationInput, Availability,  StatMetric, TimeSlotForClientOutput } from "./common.dto";
+import { ParticipantPresence } from "../../domain/commands/booking.commands";
 
-//// **** booking queries dtos **** ////
+/**
+ * Booking queries dtos
+ */
 
-// 1. findAll method parameter and return types / interface
+// findAll method 
 export interface BookingsQuery extends ApiPaginationInput {
   online: boolean;
   role: Role;
-  userId?: UserDTO["_id"];
-  serviceProviderId?: UserDTO["_id"];
+  userId?: UserProps["_id"];
+  serviceProviderId?: UserProps["_id"];
 }
 export type BookingsView = BookingsBaseView | OnlineBookingsViewForProvider | OnlineBookingsViewForUser;
-export type BookingsBaseView = Array<Pick<BookingDTO, "_id" | "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "videoCallRoomId" | "serviceProviderId">>;
+export type BookingsBaseView = Array<Pick<BookingProps, "_id" | "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "videoCallRoomId" | "serviceProviderId">>;
 export type OnlineBookingsViewForProvider = Array<
   Pick<
-    BookingDTO,
+    BookingProps,
     | "_id"
     | "appointmentDate"
     | "appointmentStatus"
@@ -25,12 +30,12 @@ export type OnlineBookingsViewForProvider = Array<
     | "videoCallRoomId"
     | "createdAt"
   > & {
-    userId: Pick<UserDTO, "username">;
+    userId: Pick<UserProps, "username">;
   }
 >;
 export type OnlineBookingsViewForUser = Array<
   Pick<
-    BookingDTO,
+    BookingProps,
     | "_id"
     | "appointmentDate"
     | "appointmentStatus"
@@ -38,30 +43,32 @@ export type OnlineBookingsViewForUser = Array<
     | "videoCallRoomId"
     | "createdAt"
   > & {
-    serviceProviderId: Pick<UserDTO, "username">;
+    serviceProviderId: Pick<UserProps, "username">;
   }
 >;
 
 
-// 2. findDetails method parameter and return type / interface
+// findDetails method
 export interface BookingDetailsQuery {
-  bookingId: BookingDTO["_id"];
+  bookingId: BookingProps["_id"];
 }
-export interface BookingDetailsView extends Pick<BookingDTO, "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "onlineTrack" | "statusTrack" | "videoCallRoomId"> {
-  userId: Pick<UserDTO, "username" | "email">;
-  serviceProviderId: Pick<UserDTO, "username" | "email">;
+export interface BookingDetailsView extends Pick<BookingProps, "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "onlineTrack" | "statusTrack" | "videoCallRoomId"> {
+  userId: Pick<UserProps, "username" | "email">;
+  serviceProviderId: Pick<UserProps, "username" | "email">;
 };
 
-// 3. findUsersforChatSideBar method parameter and return type / interface
-export interface BookingUsersForChatQuery {
-  userId: UserDTO["_id"];
-  role: Role; // need to send the opposite role
-}
-export type BookingUsersForChatView = Array<Pick<UserDTO, "_id" | "username" | "profileImage">>;
 
-// 4. findStatsDataForProviderDashboard method parameter and return type / interface
+// findUsersforChatSideBar method 
+export type BookingUsersForChatQuery = Pick<UserProps, "role"> & {
+  userId: UserProps["_id"];
+  // need to send the opposite role
+}
+export type BookingUsersForChatView = Array<Pick<UserProps, "_id" | "username" | "profileImage">>;
+
+
+// findStatsDataForProviderDashboard method 
 export interface BookingStatsForProviderQuery {
-  providerId: UserDTO["_id"];
+  providerId: UserProps["_id"];
   startDate: Date;
   endDate: Date;
 }
@@ -74,10 +81,11 @@ export interface BookingStatsForProviderView extends Record<string, StatMetric |
   todaysAppointments: StatMetric;
 }
 
-// 5. findGraphDataForProviderDashboard method parameter and return type / interface
+
+// findGraphDataForProviderDashboard method
 export interface BookingGraphStatsForProviderQuery {
   subscriptionGuard?: number;
-  providerId?: UserDTO["_id"];
+  providerId?: UserProps["_id"];
   startDate: Date;
   endDate: Date;
   isAdmin: boolean;
@@ -119,7 +127,8 @@ export interface BookingGraphStatsForProviderView {
   }>;
 }
 
-// 6. findStatsDataForAdminDashboard method parameter and return type / interface
+
+// findStatsDataForAdminDashboard method 
 export interface BookingsStatsDataAdminQuery extends CommonDateInput { }
 export interface BookingsStatsDataAdminView extends Record<string, StatMetric | undefined> {
   totalAppointments: StatMetric;
@@ -133,65 +142,72 @@ export interface BookingsStatsDataAdminView extends Record<string, StatMetric | 
 
 
 
+/**
+ * Booking usecase dtos
+ */
 
-
-
-
-
-//// **** booking usecase dtos **** ////
-
-// user appointment booking via stripe creating session id usecase input
+// user appointment booking via stripe creating session id
 export interface UserAppointmentBookingViaStripeInput {
-  userId: UserDTO["_id"];
-  providerId: UserDTO["_id"];
+  userId: UserProps["_id"];
+  providerId: UserProps["_id"];
   slotId: TimeSlotForClientOutput["_id"];
   selectedServiceMode: ServiceMode;
-  date: Date
+  date: string;
+  email: string;
+  name: string;
+  role: Role;
+}
+export interface UserAppointmentBookingViaStripeOutput {
+  sessionId: string;
 }
 
 
-// user canncel booking usecase input and output
+// user canncel booking
 export interface UserCancelBookingInput {
-  userId: UserDTO["_id"];
-  bookingId: BookingDTO["_id"];
+  userId: UserProps["_id"];
+  bookingId: BookingProps["_id"];
   reason?: string;
 }
-export type UserCancelBookingOutput = Pick<BookingDTO, "_id" | "appointmentStatus">;
+export type UserCancelBookingOutput = Pick<BookingProps, "_id" | "appointmentStatus">;
 
 
-// provider change booking appointment status usecase input and output
+// provider change booking appointment status
 export interface ProviderChangeBookingAppointmentStatusInput {
-  bookingId: BookingDTO["_id"];
-  providerId: UserDTO["_id"];
+  bookingId: BookingProps["_id"];
+  providerId: UserProps["_id"];
   appointmentStatus: AppointmentStatus;
 };
-export type ProviderChangeBookingAppointmentStatusOutput = Pick<BookingDTO, "_id" | "appointmentStatus">;
+export type ProviderChangeBookingAppointmentStatusOutput = Pick<BookingProps, "_id" | "appointmentStatus">;
 
 
-// check booking usecase input
+// check booking
 export interface CheckBookingInput {
-  userId: UserDTO["_id"];
+  userId: UserProps["_id"];
 }
 
-// get booking details usecase input and output
+
+// get booking details 
 export type GetBookingDetailsInput = BookingDetailsQuery;
 export type GetBookingDetailsOutput = BookingDetailsView;
 
-// get bookings usecase input and output
+
+// get bookings
 export type GetBookingsInput = BookingsQuery;
 export type GetBookingsOutput = BookingsView;
 
-// update booking online tracking usecase input and output
+
+// update booking online tracking
 export interface UpdateBookingOnlineTrackInput extends ParticipantPresence {
   role: Role;
-  roomId: BookingDTO["videoCallRoomId"];
+  roomId: BookingProps["videoCallRoomId"];
 }
-export type UpdateBookingOnlineTrackOutput = Pick<Availability, "duration"> & Pick<BookingDTO, "videoCallRoomId">;
+export type UpdateBookingOnlineTrackOutput = Pick<Availability, "duration"> & Pick<BookingProps, "videoCallRoomId">;
 
-// validate join room usecase input and output
+
+// validate join room 
 export interface ValidateJoinRoomInput {
   role: Role;
-  bookingId: BookingDTO["_id"];
-  roomId: BookingDTO["videoCallRoomId"];
-  userId: UserDTO["_id"];
+  bookingId: BookingProps["_id"];
+  roomId: BookingProps["videoCallRoomId"];
+  userId: UserProps["_id"];
 };

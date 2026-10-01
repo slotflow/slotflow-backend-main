@@ -1,6 +1,6 @@
 import { SubscriptionStatus } from "../enums/subscription.enum";
 import { SubscriptionProps } from "../contracts/subscription.contract";
-import { CreateSubscriptionInitialProps, CreateSubscriptionProps, SubscriptionPaymentSuccessProps } from "../commands/subscription.commands";
+import { CreateSubscriptionInitialProps, SubscriptionPaymentSuccessProps } from "../commands/subscription.commands";
 
 export class Subscription {
     private props: SubscriptionProps;
@@ -14,56 +14,70 @@ export class Subscription {
     };
 
     static createInitialData(props: CreateSubscriptionInitialProps): Subscription {
+        const now = new Date();
         return new Subscription({
             _id: "",
-            ...props,
-            startDate: null,
-            endDate: null,
-            subscriptionStatus: SubscriptionStatus.PENDING,
+            providerId: props.providerId,
+            subscribedPlanId: props.subscribedPlanId,
+            subscriptionStatus: SubscriptionStatus.INCOMPLETE,
+            currentPeriodStart: null,
+            currentPeriodEnd: null,
+            cancelAtPeriodEnd: false,
+            cancelAt: null,
+            lastEventAt: now,
             paymentId: null,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            createdAt: now,
+            updatedAt: now,
         })
     }
-
-    static create(props: CreateSubscriptionProps) {
-        return new Subscription({
-            _id: "",
-            ...props,
-            startDate: props.startDate,
-            endDate: props.endDate,
-            subscriptionStatus: props.subscriptionStatus,
-            paymentId: null,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        })
-    };
 
     // Getters
     get _id(): string {
         return this.props._id;
-    };
+    }
+
+    get providerId(): string {
+        return this.props.providerId;
+    }
+
+    get subscribedPlanId(): string {
+        return this.props.subscribedPlanId;
+    }
+
+    get currentPeriodStart(): Date | null {
+        return this.props.currentPeriodStart;
+    }
+
+    get currentPeriodEnd(): Date | null {
+        return this.props.currentPeriodEnd;
+    }
 
     get subscriptionStatus(): SubscriptionStatus {
         return this.props.subscriptionStatus;
-    };
+    }
 
-    get endDate(): Date {
-        if (!this.props.endDate) {
-            throw new Error("No endDate found");
-        }
-        return this.props.endDate;
-    };
+    get cancelAtPeriodEnd(): boolean | null {
+        return this.props.cancelAtPeriodEnd;
+    }
 
-    get startDate(): Date {
-        if (!this.props.startDate) {
-            throw new Error("No startDate found");
-        }
-        return this.props.startDate;
-    };
+    get cancelAt(): Date | null {
+        return this.props.cancelAt;
+    }
 
-    get subscriptionPlanId(): string {
-        return this.props.subscriptionPlanId;
+    get lastEventAt(): Date | null {
+        return this.props.lastEventAt;
+    }
+
+    get paymentId(): string | null {
+        return this.props.paymentId;
+    }
+
+    get createdAt(): Date {
+        return this.props.createdAt;
+    }
+
+    get updatedAt(): Date {
+        return this.props.updatedAt;
     }
 
     // Business Methods
@@ -79,9 +93,12 @@ export class Subscription {
 
     subscriptionPaymentSuccess(props: SubscriptionPaymentSuccessProps) {
         this.props.subscriptionStatus = SubscriptionStatus.ACTIVE;
-        this.props.startDate = props.startDate;
-        this.props.endDate = props.endDate;
+        this.props.currentPeriodStart = props.currentPeriodStart;
+        this.props.currentPeriodEnd = props.currentPeriodEnd;
         this.props.paymentId = props.paymentId;
+        this.props.cancelAtPeriodEnd = props.cancelAtPeriodEnd;
+        this.props.cancelAt = props.cancelAt;
+        this.props.lastEventAt = props.lastEventAt;
         this.touch();
     };
 }

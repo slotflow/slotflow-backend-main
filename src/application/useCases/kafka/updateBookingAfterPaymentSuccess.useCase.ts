@@ -4,13 +4,12 @@ import { toAppError } from "../../../shared/error/handleUnknownError";
 import { generateId } from "../../../shared/utils/helpers/generateId";
 import { ERROR_CODES, IdType } from "../../../shared/utils/types/enums";
 import { AppError, NotFoundError } from "../../../shared/error/appError";
-import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
 import { UpdateBookingAfterPaymentSuccessEventInput } from "../../dtos/kafka.dto";
 import { dateFormats, notificationType } from "../../../shared/utils/constants/constant";
+import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { SlotBookedEvent, EventEnvelope, GotAnAppointmentEvent } from "../../dtos/kafka.dto";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
-import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
 
 export class UpdateBookingAfterPaymentSuccessUseCase {
     constructor(
@@ -31,9 +30,8 @@ export class UpdateBookingAfterPaymentSuccessUseCase {
                 )
             }
 
-            booking.updateBookingAfterPayment({
+            booking.updateBookingAfterPaymentSuccess({
                 paymentId,
-                appointmentStatus: AppointmentStatus.BOOKED,
             });
 
             const updatedBooking = await this.bookingRepository.update(booking);

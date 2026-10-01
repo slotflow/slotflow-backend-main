@@ -1,12 +1,16 @@
-import { FrontendAvailabilityForOutput, FrontendAvailabilityForClientInput, ServiceAvailabilityDTO, UserDTO } from "./common.dto";
+import { UserProps } from "../../domain/contracts/user.contract";
+import { ServiceAvailabilityProps } from "../../domain/contracts/serviceAvailability.contract";
+import { FrontendAvailabilityForOutput, FrontendAvailabilityForClientInput } from "./common.dto";
 
-//// **** service availability queries parameter and return **** ////
+/**
+ * service availability queries dtos
+ */
 
-// 1. findByProviderId method parameter and return
+// findByProviderId method 
 export type ServiceAvailabilityQuery = {
-    providerId?: UserDTO["_id"];
-    availabilityId?: ServiceAvailabilityDTO["_id"];
-    date: Date;
+    providerId?: UserProps["_id"];
+    availabilityId?: ServiceAvailabilityProps["_id"];
+    date: string | Date;
 }
 export type ServiceAvailabilityView = FrontendAvailabilityForOutput | null;
 
@@ -14,21 +18,19 @@ export type ServiceAvailabilityView = FrontendAvailabilityForOutput | null;
 
 
 
+/**
+ * service availability usecase dtos
+ */
 
-
-
-
-
-//// **** service availability usecase input output **** ////
-
-// get provider service availability input output
+// get provider service availability 
 export interface GetServiceAvailabilityInput {
     providerId: string;
     date: Date;
 }
 export type GetServiceAvailabilityOutput = FrontendAvailabilityForOutput | null;
 
-// create service availability input
+
+// create service availability 
 export interface CreateServiceAvailabilityInput {
     providerId: string;
     availabilities: FrontendAvailabilityForClientInput[]

@@ -2,12 +2,13 @@ import { KafkaMessage } from "kafkajs";
 import { NotificationType } from "./common.dto";
 import { PlanName } from "../../domain/enums/plan.enum";
 import { OtpPurpose, Role } from "../../domain/enums/common.enum";
+import { AddressProps } from "../../domain/contracts/address.contract";
 import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
 
 /**
- * KAFKA COMMON DTOS
+ * Kafka common dtos
  */
 
 // kafka client adapter props
@@ -44,7 +45,7 @@ export interface EventEnvelope<MBSSubKafkaEventPayload, M = DqMetaData> {
 // send email common
 export interface SendEmailCommon {
   email: string;
-  name: string;
+  name?: string;
 }
 
 // send notification common
@@ -77,7 +78,7 @@ interface CommonNotificationEventInput {
 
 
 /**
- * KAFKA EVENTS PAYLOAD
+ * Kafka events payload
  */
 
 // publishing events
@@ -110,15 +111,23 @@ export interface SendAccountTrustStatusEvent {
 }
 
 // send appointment status change event for user
+export type ProviderAddressForUser = (Omit<
+  AddressProps,
+  '_id' | 'updatedAt' | 'createdAt' | 'userId' | "phone" | "place" | "district" | "country"
+> & {
+  googleMapsUrl?: string;
+}) | null;
 export interface SendAppointmentStatusChangeForUserEvent {
   emailData: SendEmailCommon & {
     appointmentDate: string;
     appointmentTime: string;
     appointmentMode: string;
     appointmentStatus: AppointmentStatus;
+    address?: ProviderAddressForUser;
   },
   notificationData: CommonNotificationEventInput & {
     appointmentStatus: string;
+    address?: ProviderAddressForUser;
   },
 }
 
@@ -137,8 +146,8 @@ export interface ProviderSubscriptionUpdatedEvent {
   socketData: {
     userId: string;
     subscribedPlan: PlanName;
-    startDate: Date;
-    endDate: Date;
+    currentPeriodStart: Date | null;
+    currentPeriodEnd: Date | null;
     subscriptionStatus: SubscriptionStatus;
     hasUsedTrial: boolean;
   },
@@ -193,9 +202,7 @@ export interface GotAnAppointmentEvent {
 
 // send welcome event
 export interface SendWelcomeEvent {
-  emailData: SendEmailCommon & {
-    role: Role;
-  }
+  emailData: SendEmailCommon;
 }
 
 // send otp event for registration and password update
@@ -225,6 +232,7 @@ export interface CreateGoogleCalendarEvent {
     userId: string;
     appointmentDate: Date;
     appointmentStatus: AppointmentStatus;
+    slotDuration: number;
   }
 };
 
@@ -251,6 +259,11 @@ export interface UpdateBookingAfterPaymentSuccessEventInput {
   paymentId: string;
 }
 
+// used in update booking after payment failed
+export interface UpdateBookingPaymentFailedEventInput {
+  bookingId: string;
+}
+
 // send provider subscription payment success event
 export interface ProviderSubscriptionPaymentSuccessEventInput {
   subscriptionId: string;
@@ -259,6 +272,9 @@ export interface ProviderSubscriptionPaymentSuccessEventInput {
   isTrial: string;
   currentPeriodStart: Date;
   currentPeriodEnd: Date;
+  cancelAtPeriodEnd: boolean;
+  cancelAt: Date;
+  lastEventAt: Date;
 };
 
 // send provider subscription payment failed event

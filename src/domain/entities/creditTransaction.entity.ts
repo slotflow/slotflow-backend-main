@@ -6,6 +6,7 @@ export class CreditTransaction {
     constructor(private props: CreditTransactionProps) {}
 
     static create(props: CreateCreditTransactionProps): CreditTransaction {
+        const now = new Date();
         return new CreditTransaction({
             _id: "",
             accountId: props.accountId,
@@ -17,8 +18,8 @@ export class CreditTransaction {
             status: CreditTransactionStatus.SUCCESS,
             referenceId: props.referenceId,
             idempotencyKey: props.idempotencyKey,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            createdAt: now,
+            updatedAt: now,
         });
     }
 

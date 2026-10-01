@@ -80,7 +80,6 @@ class PlanController {
 
     async resyncStripePlan(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log("resync");
             const { planId } = validatePlanIdSchema.parse({
                 planId: req.params.planId
             });

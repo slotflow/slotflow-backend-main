@@ -9,7 +9,7 @@ router.post('/signup',
 );
 
 router.post('/verify-otp', 
-    authController.verifyOTP
+    authController.registerOtpVerification
 );
 
 router.post('/resendOtp', 

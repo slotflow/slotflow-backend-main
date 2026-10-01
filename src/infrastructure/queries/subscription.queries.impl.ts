@@ -1,9 +1,9 @@
 import { PlanName } from "../../domain/enums/plan.enum";
 import { SubscriptionModel } from "../models/subscription.model";
-import { getStartAndEndDate } from "../../shared/utils/helpers/getStartAndEndDate";
-import { formatStatMetric } from "../../shared/utils/helpers/formatStatMetric";
 import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 import { PlanNameOnly, TableData } from "../../application/dtos/common.dto";
+import { formatStatMetric } from "../../shared/utils/helpers/formatStatMetric";
+import { getStartAndEndDate } from "../../shared/utils/helpers/getStartAndEndDate";
 import { calculatePreviousPeriod } from "../../shared/utils/helpers/calculatePreviosPeriod";
 import { ISubscriptionQueries } from "../../application/interfaces/queries/ISubscription.queries";
 import { MySubscriptionQuery, MySubscriptionView, SubscribedPlanQuery, SubscriptionDetailsQuery, SubscriptionDetailsView, SubscriptionsQuery, SubscriptionStatsDataQuery, SubscriptionStatsDataView, SubscriptionsView, PopulatedPlan, SubscriptionAnalyticsQuery, SubscriptionAnalyticsView } from "../../application/dtos/subscription.dto";
@@ -27,12 +27,12 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
                 _id: 1,
                 createdAt: 1,
                 providerId: 1,
-                startDate: 1,
-                endDate: 1,
+                currentPeriodStart: 1,
+                currentPeriodEnd: 1,
                 subscriptionStatus: 1,
             }).skip(skip).limit(limit)
                 .populate<PlanNameOnly>([{
-                    path: "subscriptionPlanId",
+                    path: "subscribedPlanId",
                     select: "planName"
                 }]).lean(),
             SubscriptionModel.countDocuments(),
@@ -41,10 +41,10 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
         return {
             items: subscriptions.map(sub => ({
                 _id: sub._id.toString(),
-                startDate: sub.startDate,
-                endDate: sub.endDate,
+                currentPeriodStart: sub.currentPeriodStart,
+                currentPeriodEnd: sub.currentPeriodEnd,
                 subscriptionStatus: sub.subscriptionStatus,
-                planName: sub.subscriptionPlanId.planName
+                planName: sub.subscribedPlanId.planName
             })),
             totalPages,
             currentPage: page,
@@ -54,29 +54,32 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
 
     async findSubscribedPlan(query: SubscribedPlanQuery): Promise<string | boolean> {
         const subscription = await SubscriptionModel.findById(query.subscriptionId)
-            .populate<PlanNameOnly>("subscriptionPlanId", { planName: 1, _id: 0 })
-            .select("subscriptionPlanId -_id")
+            .populate<PlanNameOnly>("subscribedPlanId", { planName: 1, _id: 0 })
+            .select("subscribedPlanId -_id")
             .lean();
-        return subscription ? subscription.subscriptionPlanId.planName : false;
+        return subscription ? subscription.subscribedPlanId.planName : false;
     }
 
     async findDetails(query: SubscriptionDetailsQuery): Promise<SubscriptionDetailsView | null> {
         const data = await SubscriptionModel.findById(query.subscriptionId)
-            .select("startDate endDate subscriptionStatus createdAt -_id")
+            .select("currentPeriodStart currentPeriodEnd cancelAt cancelAtPeriodEnd subscriptionStatus createdAt _id")
             .populate([{
-                path: "subscriptionPlanId",
+                path: "subscribedPlanId",
                 select: "-_id planName adVisibility maxBookingPerMonth"
             }]).lean<SubscriptionDetailsView>();
         if (!data) return null;
         return {
+            _id: data._id,
             createdAt: data.createdAt,
-            endDate: data.endDate,
-            startDate: data.startDate,
+            currentPeriodEnd: data.currentPeriodEnd,
+            currentPeriodStart: data.currentPeriodStart,
             subscriptionStatus: data.subscriptionStatus,
-            subscriptionPlanId: {
-                planName: data.subscriptionPlanId.planName,
-                adVisibility: data.subscriptionPlanId.adVisibility,
-                maxBookingPerMonth: data.subscriptionPlanId.maxBookingPerMonth,
+            cancelAt: data.cancelAt,
+            cancelAtPeriodEnd: data.cancelAtPeriodEnd,
+            subscribedPlanId: {
+                planName: data.subscribedPlanId.planName,
+                adVisibility: data.subscribedPlanId.adVisibility,
+                maxBookingPerMonth: data.subscribedPlanId.maxBookingPerMonth,
             },
 
         };
@@ -91,14 +94,14 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
                 $match: {
                     $or: [
                         { createdAt: { $gte: previousStartDate, $lte: endDate } },
-                        { subscriptionStatus: SubscriptionStatus.ACTIVE, endDate: { $gte: previousStartDate } }
+                        { subscriptionStatus: SubscriptionStatus.ACTIVE, currentPeriodEnd: { $gte: previousStartDate } }
                     ]
                 }
             },
             {
                 $lookup: {
                     from: "plans",
-                    localField: "subscriptionPlanId",
+                    localField: "subscribedPlanId",
                     foreignField: "_id",
                     as: "plan"
                 }
@@ -121,8 +124,8 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
                                             {
                                                 $and: [
                                                     { $eq: ["$subscriptionStatus", SubscriptionStatus.ACTIVE] },
-                                                    { $lte: ["$startDate", endDate] },
-                                                    { $gte: ["$endDate", startDate] }
+                                                    { $lte: ["$currentPeriodStart", endDate] },
+                                                    { $gte: ["$currentPeriodStart", startDate] }
                                                 ]
                                             },
                                             1,
@@ -218,8 +221,8 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
                                             {
                                                 $and: [
                                                     { $eq: ["$subscriptionStatus", SubscriptionStatus.ACTIVE] },
-                                                    { $lte: ["$startDate", previousEndDate] },
-                                                    { $gte: ["$endDate", previousStartDate] }
+                                                    { $lte: ["$currentPeriodStart", previousEndDate] },
+                                                    { $gte: ["$currentPeriodEnd", previousStartDate] }
                                                 ]
                                             },
                                             1,
@@ -337,7 +340,7 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
         const updated = await SubscriptionModel.updateMany(
             {
                 subscriptionStatus: SubscriptionStatus.ACTIVE,
-                endDate: { $lt: now }
+                currentPeriodEnd: { $lt: now }
             },
             {
                 $set: { subscriptionStatus: SubscriptionStatus.EXPIRED }
@@ -352,7 +355,7 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
             .findOne({ _id: query.subscriptionId })
             .sort({ createdAt: -1 })
             .populate<PopulatedPlan>({
-                path: "subscriptionPlanId",
+                path: "subscribedPlanId",
                 select: "planName"
             })
             .lean();
@@ -360,9 +363,9 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
 
         return {
             providerId: subscription.providerId.toString(),
-            subscribedPlan: subscription.subscriptionPlanId?.planName,
-            startDate: subscription.startDate,
-            endDate: subscription.endDate,
+            subscribedPlan: subscription.subscribedPlanId?.planName,
+            currentPeriodStart: subscription.currentPeriodStart,
+            currentPeriodEnd: subscription.currentPeriodEnd,
             subscriptionStatus: subscription.subscriptionStatus
         };
     };

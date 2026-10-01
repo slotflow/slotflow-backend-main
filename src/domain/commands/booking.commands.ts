@@ -35,7 +35,7 @@ export type UpdateEventIProps = Pick<BookingProps, "googleEventId">;
 
 export type UpdateAppointmentProps = Pick<BookingProps, "appointmentStatus">;
 
-export type UpdateBookingAfterPaymentProps = Pick<BookingProps, "paymentId" | "appointmentStatus">;
+export type UpdateBookingAfterPaymentSuccessProps = Pick<BookingProps, "paymentId">;
 
 export interface CreateCalendarProps {
     role: Role;

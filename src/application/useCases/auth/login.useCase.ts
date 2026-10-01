@@ -4,10 +4,10 @@ import { LoginInput, LoginOutput } from "../../dtos/auth.dto";
 import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { IJWT } from "../../interfaces/security/IJwt.service";
 import { toAppError } from "../../../shared/error/handleUnknownError";
+import { ISignedUrlService } from "../../interfaces/services/ISignedUrl.service";
 import { ProviderProfile } from "../../../domain/entities/providerProfile.entity";
 import { BadRequestError, UnauthorizedError } from "../../../shared/error/appError";
 import { IPasswordHasher } from "../../interfaces/security/IPasswordHasher.service";
-import { ISignedUrlService } from "../../interfaces/services/ISignedUrl.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IAuthResponseBuilder } from "../../interfaces/services/IAuthResponseBuilder.service";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
@@ -66,7 +66,8 @@ export class LoginUseCase {
                 email: email,
                 role: user.role,
                 userId: user._id,
-                name: user.username
+                name: user.username ?? user.email.split("@")[0],
+                timeZone: user.timeZone
             });
 
             let signedProfileImageUrl: string | null = null;
