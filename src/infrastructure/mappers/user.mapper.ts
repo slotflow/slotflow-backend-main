@@ -7,7 +7,7 @@ export class UserMapper {
     static toDomain(doc: IUser): User {
         return new User({
             _id: doc._id.toString(),
-            username: doc.username ?? null,
+            username: doc.username,
             email: doc.email,
             password: doc.password ?? null,
             role: doc.role,
@@ -22,7 +22,7 @@ export class UserMapper {
             whereDidHearAboutUs: doc.whereDidHearAboutUs,
             referralCode: doc.referralCode ?? null,
             referredBy: doc.referredBy ?? null,
-            timeZone: doc.timeZone ?? null,
+            timeZone: doc.timeZone,
             createdAt: doc.createdAt,
             updatedAt: doc.updatedAt,
         });

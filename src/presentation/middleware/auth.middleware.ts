@@ -6,6 +6,7 @@ import { cacheService } from "../../infrastructure/services";
 import { AuthUser } from "../../application/dtos/common.dto";
 import { TimeZone } from "../../domain/commands/user.commands";
 import { userRepository } from "../../infrastructure/repository";
+import { safeDecode } from "../../shared/utils/helpers/safeDecode";
 import { ForbiddenError, UnauthorizedError } from "../../shared/error/appError";
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
@@ -16,22 +17,36 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
     const email = req.headers["x-user-email"];
     const timeZone = req.headers["x-user-timezone"];
 
-    const normalizedUserId = Array.isArray(userId) ? userId[0] : userId;
-    const normalizedRole = Array.isArray(role) ? (role[0] as Role) : (role as Role);
-    const normalizedName = Array.isArray(name) ? (name[0] as string) : name;
-    const normalizedEmail = Array.isArray(email) ? (email[0] as string) : email;
-    let normalizedTimeZone: TimeZone | string | undefined;
+    const rawUserId = Array.isArray(userId) ? userId[0] : userId;
+    const rawRole = Array.isArray(role) ? role[0] : role;
+    const rawName = Array.isArray(name) ? name[0] : name;
+    const rawEmail = Array.isArray(email) ? email[0] : email;
     const rawTimeZone = Array.isArray(timeZone) ? timeZone[0] : timeZone;
 
+    const normalizedUserId = safeDecode(rawUserId);
+    const normalizedRole = safeDecode(rawRole) as Role | undefined;
+    const normalizedName = safeDecode(rawName);
+    const normalizedEmail = safeDecode(rawEmail);
+
+    let normalizedTimeZone: TimeZone | string | undefined;
     if (rawTimeZone) {
-      try {
-        normalizedTimeZone = JSON.parse(rawTimeZone) as TimeZone;
-      } catch {
-        normalizedTimeZone = rawTimeZone as unknown as TimeZone;
+      const decodedTimeZoneStr = safeDecode(rawTimeZone);
+      if (decodedTimeZoneStr) {
+        try {
+          normalizedTimeZone = JSON.parse(decodedTimeZoneStr) as TimeZone;
+        } catch {
+          normalizedTimeZone = decodedTimeZoneStr as unknown as TimeZone;
+        }
       }
     }
 
-    if (!normalizedUserId || !normalizedRole || !normalizedName || !normalizedEmail || !normalizedTimeZone) {
+    if (
+      !normalizedUserId ||
+      !normalizedRole ||
+      !normalizedName ||
+      !normalizedEmail ||
+      !normalizedTimeZone
+    ) {
       return next(
         new UnauthorizedError(
           "Invalid user identity headers",

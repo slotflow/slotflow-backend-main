@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { sendResponse } from "../../shared/utils/helpers/response";
 import { AuthUser } from "../../application/dtos/common.dto";
+import { sendResponse } from "../../shared/utils/helpers/response";
 import { startAndEndDateSchema } from "../../shared/zod/common.zod";
 import { getReferralDetailsUseCase, getReferralsListUseCase } from ".";
 import { getReferralsListSchema } from "../../shared/zod/referral.zod";
@@ -23,6 +23,7 @@ class ReferralController {
             const result = await this.getReferralDetailsUseCase.execute({
                 ...validatedData,
                 userId: user.id,
+                timeZone: user.timeZone.value
             });
             sendResponse(res, result);
         } catch (error) {

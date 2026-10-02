@@ -1,15 +1,17 @@
 import mongoose from "mongoose";
 import { Role } from "../../../domain/enums/common.enum";
 import { generateId } from "../../../shared/utils/helpers/generateId";
-import { ERROR_CODES, IdType } from "../../../shared/utils/types/enums";
 import { toAppError } from "../../../shared/error/handleUnknownError";
+import { formatDate } from "../../../shared/utils/helpers/formatDate";
+import { dateFormats } from "../../../shared/utils/constants/constant";
+import { ERROR_CODES, IdType } from "../../../shared/utils/types/enums";
 import { CreditAccount } from "../../../domain/entities/creditAccount.entity";
 import { CreditTransaction } from "../../../domain/entities/creditTransaction.entity";
-import { IServiceAvailabilityQueries } from "../../interfaces/queries/IServiceAvailability.queries";
 import { AppError, BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { IReferralRepository } from "../../../domain/interfaces/repositories/IReferral.repository";
+import { IServiceAvailabilityQueries } from "../../interfaces/queries/IServiceAvailability.queries";
 import { UpdateBookingOnlineTrackInput, UpdateBookingOnlineTrackOutput } from "../../dtos/booking.dto";
 import { ICreditAccountRepository } from "../../../domain/interfaces/repositories/ICreditAccount.repository";
 import { ICreditTransactionRepository } from "../../../domain/interfaces/repositories/ICreditTransaction.repository";
@@ -47,7 +49,25 @@ export class UpdateBookingOnlineTrakingUseCase {
                 );
             }
 
-            const serviceAvailability = await this.serviceAvailabilityQueries.findByProviderId({ date: new Date(), providerId: booking.serviceProviderId });
+            const provider = await this.userRepository.findById(booking.providerId, session);
+            if (!provider) {
+                throw new AppError(
+                    "Internal server error",
+                    500,
+                    true,
+                    ERROR_CODES.INTERNAL_ERROR
+                )
+            }
+
+            const serviceAvailability = await this.serviceAvailabilityQueries.findByProviderId({
+                date: formatDate({
+                    date: booking.appointmentDate,
+                    pattern: dateFormats.ISO_DATE,
+                    timeZone: provider.timeZone.value
+                }),
+                timeZone: provider.timeZone.value,
+                providerId: booking.serviceProviderId
+            });
             if (!serviceAvailability) {
                 throw new NotFoundError(
                     "Service not found",

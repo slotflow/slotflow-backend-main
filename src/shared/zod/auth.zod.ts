@@ -1,7 +1,8 @@
 import { z } from 'zod';
+import { timeZoneSchema } from './user.zod';
 import { roleValidationSchema } from './base.zod';
-import { strongPasswordRegex, usernameRegex } from '../utils/constants/regex';
 import { HearAboutUsOptionValue } from '../../domain/enums/common.enum';
+import { strongPasswordRegex, usernameRegex } from '../utils/constants/regex';
 
 // Regist controller zod validation
 export const registerSchema = z
@@ -12,13 +13,7 @@ export const registerSchema = z
       .min(8, "Password must be at least 8 characters")
       .max(50, "Password cannot exceed 50 characters")
       .regex(strongPasswordRegex, "Password must contain uppercase, lowercase, number & symbol"),
-    timeZone: z.object({
-      value: z.string(),
-      label: z.string(),
-      offset: z.number(),
-      abbrev: z.string(),
-      altName: z.string(),
-    }),
+    timeZone: timeZoneSchema,
   });
 
 // OTP Verification controller zod validation

@@ -71,15 +71,27 @@ export class UpdateBookingAfterPaymentSuccessUseCase {
                             emailData: {
                                 email: user.email,
                                 name: user.username,
-                                appointmentDate: formatDate(booking.appointmentDate, dateFormats.WITH_TIME),
+                                appointmentDate: formatDate({
+                                    date: booking.appointmentDate,
+                                    pattern: dateFormats.WITH_TIME,
+                                    timeZone: user.timeZone?.value
+                                }),
                                 appointmentMode: booking.appointmentMode,
                                 appointmentStatus: booking.appointmentStatus,
                                 providerName: provider.username
                             },
                             notificationData: {
                                 userId: user._id,
-                                appointmentDate: formatDate(booking.appointmentDate, dateFormats.FULL),
-                                appointmentTime: formatDate(booking.appointmentDate, dateFormats.TIME_12H),
+                                appointmentDate: formatDate({
+                                    date: booking.appointmentDate,
+                                    pattern: dateFormats.FULL,
+                                    timeZone: user.timeZone?.value
+                                }),
+                                appointmentTime: formatDate({
+                                    date: booking.appointmentDate,
+                                    pattern: dateFormats.TIME_12H,
+                                    timeZone: user.timeZone?.value
+                                }),
                                 providerName: provider.username,
                                 notificationType: notificationType.ACCOUNT_ACTIVITY,
                             }
@@ -100,15 +112,27 @@ export class UpdateBookingAfterPaymentSuccessUseCase {
                             emailData: {
                                 email: provider.email,
                                 name: provider.username,
-                                appointmentDate: formatDate(booking.appointmentDate, dateFormats.WITH_TIME),
+                                appointmentDate: formatDate({
+                                    date: booking.appointmentDate,
+                                    pattern: dateFormats.WITH_TIME,
+                                    timeZone: provider.timeZone?.value
+                                }),
                                 appointmentMode: booking.appointmentMode,
                                 appointmentStatus: booking.appointmentStatus,
                                 customerName: user.username,
                             },
                             notificationData: {
                                 userId: provider._id,
-                                appointmentDate: formatDate(booking.appointmentDate, dateFormats.FULL),
-                                appointmentTime: formatDate(booking.appointmentDate, dateFormats.TIME_12H),
+                                appointmentDate: formatDate({
+                                    date: booking.appointmentDate,
+                                    pattern: dateFormats.FULL,
+                                    timeZone: provider.timeZone?.value
+                                }),
+                                appointmentTime: formatDate({
+                                    date: booking.appointmentDate,
+                                    pattern: dateFormats.TIME_12H,
+                                    timeZone: provider.timeZone?.value
+                                }),
                                 customerName: user.username,
                                 notificationType: notificationType.ACCOUNT_ACTIVITY,
                             }

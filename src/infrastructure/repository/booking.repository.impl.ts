@@ -4,7 +4,6 @@ import { BookingMapper } from "../mappers/booking.mapper";
 import { Booking } from "../../domain/entities/booking.entity";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { IBookingRepository } from "../../domain/interfaces/repositories/IBooking.repository";
-import { fromZonedTime } from "date-fns-tz";
 
 export class BookingRepositoryImpl implements IBookingRepository {
 
@@ -19,14 +18,8 @@ export class BookingRepositoryImpl implements IBookingRepository {
         return doc ? BookingMapper.toDomain(doc) : null;
     };
 
-    async findByUserId(userId: string, date: string, time: string): Promise<Array<Booking> | null> {
-        const startOfDay = fromZonedTime(`${date} 00:00:00.000`, 'Asia/Kolkata');
-        const endOfDay = fromZonedTime(`${date} 23:59:59.999`, 'Asia/Kolkata');
-        // const startOfDay = new Date(date);
-        // startOfDay.setHours(0, 0, 0, 0);
+    async findByUserId(userId: string, startOfDay: Date, endOfDay: Date, time: string): Promise<Array<Booking> | null> {
 
-        // const endOfDay = new Date(date);
-        // endOfDay.setHours(23, 59, 59, 999);
         const docs = await BookingModel.find(
             {
                 userId,

@@ -69,7 +69,8 @@ class SubscriptionController {
                 billingCycle,
                 email: user.email,
                 name: user.name,
-                role: user.role
+                role: user.role,
+                timeZone: user.timeZone
             });
             sendResponse(res, result);
         } catch (error) {

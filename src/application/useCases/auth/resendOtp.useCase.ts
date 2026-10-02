@@ -1,8 +1,8 @@
 import { kafkaConfig } from '../../../config/env';
 import { ResendOtpOutput } from '../../dtos/auth.dto';
 import { IdType } from '../../../shared/utils/types/enums';
-import { OtpPurpose } from '../../../domain/enums/common.enum';
 import { IJWT } from '../../interfaces/security/IJwt.service';
+import { OtpPurpose } from '../../../domain/enums/common.enum';
 import { BadRequestError } from '../../../shared/error/appError';
 import { EventEnvelope, SendOtpEvent } from '../../dtos/kafka.dto';
 import { toAppError } from '../../../shared/error/handleUnknownError';
@@ -25,7 +25,7 @@ export class ResendOtpUseCase {
         throw new BadRequestError()
       }
 
-      const { email, username } = await this.jwtService.verifyToken(token);
+      const { email } = await this.jwtService.verifyToken(token);
       if (!email) {
         throw new BadRequestError()
       }
@@ -40,7 +40,6 @@ export class ResendOtpUseCase {
         payload: {
           emailData: {
             email: email,
-            name: username,
             otp,
             purpose: OtpPurpose.REGISTRATION
           }

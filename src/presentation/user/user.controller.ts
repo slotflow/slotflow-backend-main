@@ -12,11 +12,12 @@ import { ProfileSetupUseCase } from "../../application/useCases/user/profileSetu
 import { UpdatePasswordUseCase } from "../../application/useCases/user/updatePassword.useCase";
 import { GetUserProfileDetailsUseCase } from "../../application/useCases/user/getUserProfile.useCase";
 import { GetUserForChatSidebarUseCase } from "../../application/useCases/user/getUserFroChat.useCase";
+import { UpdateUserTimeZoneUseCase } from "../../application/useCases/user/updateUserTimeZone.useCase";
 import { UpdateUserProfileInfoUseCase } from "../../application/useCases/user/updateUserProfileInfo.useCase";
 import { ChangeUserBlockStatusUseCase } from "../../application/useCases/user/changeUserBlockStatus.useCase";
 import { UpdateUserProfileImageUseCase } from "../../application/useCases/user/updateUserProfileImage.useCase";
-import { userUpdateFileSchema, userUpdateInfoSchema, userUpdatePasswordSchema } from "../../shared/zod/user.zod";
-import { changeUserBlockStatusUseCase, getUserProfileDetailsUseCase, getUsersUseCase, getUserForChatSidebarUseCase, profileSetupUseCase, updateUserProfileImageUseCase, updateUserProfileInfoUseCase, updatePasswordUseCase } from ".";
+import { timeZoneSchema, userUpdateFileSchema, userUpdateInfoSchema, userUpdatePasswordSchema } from "../../shared/zod/user.zod";
+import { changeUserBlockStatusUseCase, getUserProfileDetailsUseCase, getUsersUseCase, getUserForChatSidebarUseCase, profileSetupUseCase, updateUserProfileImageUseCase, updateUserProfileInfoUseCase, updatePasswordUseCase, updateUserTimeZoneUseCase } from ".";
 
 class UserController {
     constructor(
@@ -28,6 +29,7 @@ class UserController {
         private readonly getUserForChatSidebarUseCase: GetUserForChatSidebarUseCase,
         private readonly profileSetupUseCase: ProfileSetupUseCase,
         private readonly updatePasswordUseCase: UpdatePasswordUseCase,
+        private readonly updateUserTimeZoneUseCase: UpdateUserTimeZoneUseCase
     ) {
         this.getProfileDetails = this.getProfileDetails.bind(this);
         this.updateProfileImage = this.updateProfileImage.bind(this);
@@ -36,6 +38,7 @@ class UserController {
         this.changeUserBlockStatus = this.changeUserBlockStatus.bind(this);
         this.profileSetup = this.profileSetup.bind(this);
         this.updatePassword = this.updatePassword.bind(this);
+        this.updateTimezone = this.updateTimezone.bind(this);
     };
 
     async getProfileDetails(req: Request, res: Response, next: NextFunction) {
@@ -90,7 +93,11 @@ class UserController {
                 const result = await this.getUsersUseCase.execute({ page, limit });
                 sendResponse(res, result);
             } else {
-                const result = await this.getUserForChatSidebarUseCase.execute({ userId: user.id, role: user.role });
+                const result = await this.getUserForChatSidebarUseCase.execute({
+                    userId: user.id,
+                    role: user.role,
+                    timeZone: user.timeZone.value
+                });
                 sendResponse(res, result);
             }
         } catch (error) {
@@ -120,9 +127,9 @@ class UserController {
         try {
             const user = req.user as AuthUser;
             const validatedData = profileSetupSchema.parse(req.body);
-            const result = await this.profileSetupUseCase.execute({ 
+            const result = await this.profileSetupUseCase.execute({
                 ...validatedData,
-                _id: user.id, 
+                _id: user.id,
             });
             res.cookie("token", result.token, cookieOptions);
             sendResponse(res, result, "Setup completed successfully");
@@ -140,9 +147,23 @@ class UserController {
                 ...validatedData,
                 userId: user.id
             });
-            sendResponse(res,null, "Password updated successfully");
+            sendResponse(res, null, "Password updated successfully");
         } catch (error) {
             log.error("updatePassword failed", error as Error);
+            next(error);
+        }
+    }
+
+    async updateTimezone(req: Request, res: Response, next: NextFunction) {
+        try {
+            const user = req.user as AuthUser;
+            const validatedData = timeZoneSchema.parse(req.body);
+            const result = await this.updateUserTimeZoneUseCase.execute({
+                timeZone: validatedData,
+                userId: user.id
+            });
+            sendResponse(res, result, "Timezone updated");
+        } catch (error) {
             next(error);
         }
     }
@@ -158,4 +179,5 @@ export const userController = new UserController(
     getUserForChatSidebarUseCase,
     profileSetupUseCase,
     updatePasswordUseCase,
+    updateUserTimeZoneUseCase
 );

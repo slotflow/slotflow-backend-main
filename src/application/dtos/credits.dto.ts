@@ -1,4 +1,4 @@
-import { MiniCardData } from "./common.dto";
+import { CommonDateInput, MiniCardData } from "./common.dto";
 import { UserProps } from "../../domain/contracts/user.contract";
 import { CreditAccountProps } from "../../domain/contracts/creditAccount.contract";
 import { CreditTransactionProps } from "../../domain/contracts/creditTransation.contract";
@@ -9,10 +9,9 @@ import { CreditTransactionSource, CreditTransactionStatus, CreditTransactionType
  */
 
 // GetCreditAccountDetails method 
-export interface GetCreditAccountDetailsQuery {
+export interface GetCreditAccountDetailsQuery extends CommonDateInput {
   userId: UserProps["_id"]
-  startDate: Date;
-  endDate: Date;
+  timeZone: string;
 }
 export interface CreditMainChartData {
   date: string;
@@ -45,14 +44,13 @@ export type GetCreditAccountDetailsOutput = GetCreditAccountDetailsView;
 
 
 // GetCreditTransactions method 
-export interface GetCreditTransactionsInput {
+export interface GetCreditTransactionsInput extends CommonDateInput {
   userId: UserProps["_id"];
-  startDate: Date;
-  endDate: Date;
   page: number;
   limit: number;
   status?: CreditTransactionStatus;
   type?: CreditTransactionType;
   source?: CreditTransactionSource;
+  timeZone?: string;
 }
 export type GetCreditTransactionsOutput = Pick<CreditTransactionProps, "status" | "type" | "source" | "credits" | "balanceAfter">;

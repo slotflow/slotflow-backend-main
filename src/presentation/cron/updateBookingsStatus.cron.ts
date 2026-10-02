@@ -4,7 +4,7 @@ import { dateFormats } from "../../shared/utils/constants/constant";
 import { UpdateBookingStatusUseCase } from "../../application/useCases/cronJob/updateBookingStatus.useCase";
 
 export class UpdateBookingStatusCron {
-    
+
   private lastRunDate: string | null = null;
   private readonly intervalMs: number;
   private intervalId: NodeJS.Timeout | null = null;
@@ -33,7 +33,11 @@ export class UpdateBookingStatusCron {
   }
 
   private async run(): Promise<void> {
-    const today =  formatDate(new Date(), dateFormats.ISO_DATE);
+
+    const today = formatDate({
+      date: new Date(),
+      pattern: dateFormats.ISO_DATE,
+    });
 
     if (this.lastRunDate === today) {
       log.info("[CRON] Booking status already updated today. Skipping.");

@@ -1,12 +1,12 @@
 import { ClientSession } from 'mongoose';
 import { User } from '../../domain/entities/user.entity';
-import { getStartAndEndDate } from '../../shared/utils/helpers/getStartAndEndDate';
+import { TableData } from '../../application/dtos/common.dto';
 import { CreditTransactionModel } from '../models/creditTransaction.model';
 import { CreditTransactionMapper } from '../mappers/creditTransaction.mapper';
 import { CreditTransaction } from '../../domain/entities/creditTransaction.entity';
+import { getDateRangeMetrics } from '../../shared/utils/helpers/getDateRangeMetrics';
 import { ICreditTransactionRepository } from '../../domain/interfaces/repositories/ICreditTransaction.repository';
 import { CreditTransactionSource, CreditTransactionStatus, CreditTransactionType } from '../../domain/enums/creditTransaction.enum';
-import { TableData } from '../../application/dtos/common.dto';
 
 export class CreditTransactionRepositoryImpl implements ICreditTransactionRepository {
     async create(transaction: CreditTransaction, session?: ClientSession): Promise<CreditTransaction | null> {
@@ -56,21 +56,27 @@ export class CreditTransactionRepositoryImpl implements ICreditTransactionReposi
         return docs.map(doc => CreditTransactionMapper.toDomain(doc));
     }
 
-    async findByUserIdWithFilters(
+    async findByUserIdWithFilters(data: {
         userId: string,
-        startDate: Date,
-        endDate: Date,
+        startDate: string,
+        endDate: string,
         page: number,
         limit: number,
         status?: CreditTransactionStatus,
         type?: CreditTransactionType,
-        source?: CreditTransactionSource
-    ): Promise<TableData<Array<CreditTransaction>>> {
+        source?: CreditTransactionSource,
+        timeZone?: string,
+    }): Promise<TableData<Array<CreditTransaction>>> {
+        const { page, limit, startDate, endDate, timeZone, userId, source, status, type } = data;
+
         const skip = (page - 1) * limit;
-        const { startDate: formatedStartDate, endDate: formatedEndDate } = getStartAndEndDate(
+
+        const { start, end } = getDateRangeMetrics({
             startDate,
-            endDate
-        );
+            endDate,
+            timeZone,
+        });
+
         const filter: {
             userId: User["_id"],
             createdAt: {
@@ -83,8 +89,8 @@ export class CreditTransactionRepositoryImpl implements ICreditTransactionReposi
         } = {
             userId,
             createdAt: {
-                $gte: formatedStartDate,
-                $lte: formatedEndDate
+                $gte: start,
+                $lte: end
             }
         };
 

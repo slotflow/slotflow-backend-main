@@ -3,8 +3,7 @@ import { SubscriptionModel } from "../models/subscription.model";
 import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 import { PlanNameOnly, TableData } from "../../application/dtos/common.dto";
 import { formatStatMetric } from "../../shared/utils/helpers/formatStatMetric";
-import { getStartAndEndDate } from "../../shared/utils/helpers/getStartAndEndDate";
-import { calculatePreviousPeriod } from "../../shared/utils/helpers/calculatePreviosPeriod";
+import { getDateRangeMetrics } from "../../shared/utils/helpers/getDateRangeMetrics";
 import { ISubscriptionQueries } from "../../application/interfaces/queries/ISubscription.queries";
 import { MySubscriptionQuery, MySubscriptionView, SubscribedPlanQuery, SubscriptionDetailsQuery, SubscriptionDetailsView, SubscriptionsQuery, SubscriptionStatsDataQuery, SubscriptionStatsDataView, SubscriptionsView, PopulatedPlan, SubscriptionAnalyticsQuery, SubscriptionAnalyticsView } from "../../application/dtos/subscription.dto";
 
@@ -86,15 +85,20 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
     }
 
     async findStatsForAdminDashboard(query: SubscriptionStatsDataQuery): Promise<SubscriptionStatsDataView> {
-        const { startDate, endDate } = getStartAndEndDate(query.startDate, query.endDate);
-        const { previousStartDate, previousEndDate } = calculatePreviousPeriod(startDate, endDate);
+        const { startDate, endDate, timeZone } = query;
+
+        const { start, end, prevStart, prevEnd } = getDateRangeMetrics({
+            startDate,
+            endDate,
+            timeZone,
+        });
 
         const [subscriptionStatsData] = await SubscriptionModel.aggregate([
             {
                 $match: {
                     $or: [
-                        { createdAt: { $gte: previousStartDate, $lte: endDate } },
-                        { subscriptionStatus: SubscriptionStatus.ACTIVE, currentPeriodEnd: { $gte: previousStartDate } }
+                        { createdAt: { $gte: prevStart, $lte: end } },
+                        { subscriptionStatus: SubscriptionStatus.ACTIVE, currentPeriodEnd: { $gte: prevStart } }
                     ]
                 }
             },
@@ -124,8 +128,8 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
                                             {
                                                 $and: [
                                                     { $eq: ["$subscriptionStatus", SubscriptionStatus.ACTIVE] },
-                                                    { $lte: ["$currentPeriodStart", endDate] },
-                                                    { $gte: ["$currentPeriodStart", startDate] }
+                                                    { $gte: ["$currentPeriodStart", start] },
+                                                    { $lte: ["$currentPeriodStart", end] },
                                                 ]
                                             },
                                             1,
@@ -138,8 +142,8 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
                                         $cond: [
                                             {
                                                 $and: [
-                                                    { $gte: ["$createdAt", startDate] },
-                                                    { $lte: ["$createdAt", endDate] },
+                                                    { $gte: ["$createdAt", start] },
+                                                    { $lte: ["$createdAt", end] },
                                                     { $eq: ["$subscriptionStatus", SubscriptionStatus.CANCELLED] }
                                                 ]
                                             },
@@ -153,8 +157,8 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
                                         $cond: [
                                             {
                                                 $and: [
-                                                    { $gte: ["$createdAt", startDate] },
-                                                    { $lte: ["$createdAt", endDate] },
+                                                    { $gte: ["$createdAt", start] },
+                                                    { $lte: ["$createdAt", end] },
                                                     { $eq: ["$plan.planName", PlanName.TRIAL] }
                                                 ]
                                             },
@@ -168,8 +172,8 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
                                         $cond: [
                                             {
                                                 $and: [
-                                                    { $gte: ["$createdAt", startDate] },
-                                                    { $lte: ["$createdAt", endDate] },
+                                                    { $gte: ["$createdAt", start] },
+                                                    { $lte: ["$createdAt", end] },
                                                     { $eq: ["$plan.planName", PlanName.STARTER] }
                                                 ]
                                             },
@@ -183,8 +187,8 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
                                         $cond: [
                                             {
                                                 $and: [
-                                                    { $gte: ["$createdAt", startDate] },
-                                                    { $lte: ["$createdAt", endDate] },
+                                                    { $gte: ["$createdAt", start] },
+                                                    { $lte: ["$createdAt", end] },
                                                     { $eq: ["$plan.planName", PlanName.PROFESSIONAL] }
                                                 ]
                                             },
@@ -198,8 +202,8 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
                                         $cond: [
                                             {
                                                 $and: [
-                                                    { $gte: ["$createdAt", startDate] },
-                                                    { $lte: ["$createdAt", endDate] },
+                                                    { $gte: ["$createdAt", start] },
+                                                    { $lte: ["$createdAt", end] },
                                                     { $eq: ["$plan.planName", PlanName.ENTERPRISE] }
                                                 ]
                                             },
@@ -221,8 +225,8 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
                                             {
                                                 $and: [
                                                     { $eq: ["$subscriptionStatus", SubscriptionStatus.ACTIVE] },
-                                                    { $lte: ["$currentPeriodStart", previousEndDate] },
-                                                    { $gte: ["$currentPeriodEnd", previousStartDate] }
+                                                    { $gte: ["$currentPeriodEnd", prevStart] },
+                                                    { $lte: ["$currentPeriodStart", prevEnd] },
                                                 ]
                                             },
                                             1,
@@ -235,8 +239,8 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
                                         $cond: [
                                             {
                                                 $and: [
-                                                    { $gte: ["$createdAt", previousStartDate] },
-                                                    { $lte: ["$createdAt", previousEndDate] },
+                                                    { $gte: ["$currentPeriodEnd", prevStart] },
+                                                    { $lte: ["$currentPeriodStart", prevEnd] },
                                                     { $eq: ["$subscriptionStatus", SubscriptionStatus.CANCELLED] }
                                                 ]
                                             },
@@ -250,8 +254,8 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
                                         $cond: [
                                             {
                                                 $and: [
-                                                    { $gte: ["$createdAt", previousStartDate] },
-                                                    { $lte: ["$createdAt", previousEndDate] },
+                                                    { $gte: ["$currentPeriodEnd", prevStart] },
+                                                    { $lte: ["$currentPeriodStart", prevEnd] },
                                                     { $eq: ["$plan.planName", PlanName.TRIAL] }
                                                 ]
                                             },
@@ -265,8 +269,8 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
                                         $cond: [
                                             {
                                                 $and: [
-                                                    { $gte: ["$createdAt", previousStartDate] },
-                                                    { $lte: ["$createdAt", previousEndDate] },
+                                                    { $gte: ["$currentPeriodEnd", prevStart] },
+                                                    { $lte: ["$currentPeriodStart", prevEnd] },
                                                     { $eq: ["$plan.planName", PlanName.STARTER] }
                                                 ]
                                             },
@@ -280,8 +284,8 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
                                         $cond: [
                                             {
                                                 $and: [
-                                                    { $gte: ["$createdAt", previousStartDate] },
-                                                    { $lte: ["$createdAt", previousEndDate] },
+                                                    { $gte: ["$currentPeriodEnd", prevStart] },
+                                                    { $lte: ["$currentPeriodStart", prevEnd] },
                                                     { $eq: ["$plan.planName", PlanName.PROFESSIONAL] }
                                                 ]
                                             },
@@ -295,8 +299,8 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
                                         $cond: [
                                             {
                                                 $and: [
-                                                    { $gte: ["$createdAt", previousStartDate] },
-                                                    { $lte: ["$createdAt", previousEndDate] },
+                                                    { $gte: ["$currentPeriodEnd", prevStart] },
+                                                    { $lte: ["$currentPeriodStart", prevEnd] },
                                                     { $eq: ["$plan.planName", PlanName.ENTERPRISE] }
                                                 ]
                                             },
@@ -371,28 +375,34 @@ export class SubscriptionQueriesImpl implements ISubscriptionQueries {
     };
 
     async findAnalyticsForAdminDashboard(query: SubscriptionAnalyticsQuery): Promise<SubscriptionAnalyticsView> {
-        const { startDate, endDate } = getStartAndEndDate(query.startDate, query.endDate);
-       
+        const { startDate, endDate, timeZone } = query;
+
+        const { start, end } = getDateRangeMetrics({
+            startDate,
+            endDate,
+            timeZone,
+        });
+
         const chartData = await SubscriptionModel.aggregate([
-        {
-            $match: {
-                createdAt: { $gte: startDate, $lte: endDate }
-            }
-        },
-        {
-            $group: {
-                _id: "$subscriptionStatus",
-                value: { $sum: 1 },
+            {
+                $match: {
+                    createdAt: { $gte: start, $lte: end }
+                }
             },
-        },
-        {
-            $project: {
-                _id: 0,
-                status: { $toLower: { $ifNull: ["$_id", "unknown"] } },
-                value: 1,
+            {
+                $group: {
+                    _id: "$subscriptionStatus",
+                    value: { $sum: 1 },
+                },
             },
-        },
-    ]);
+            {
+                $project: {
+                    _id: 0,
+                    status: { $toLower: { $ifNull: ["$_id", "unknown"] } },
+                    value: 1,
+                },
+            },
+        ]);
 
         return chartData;
     }

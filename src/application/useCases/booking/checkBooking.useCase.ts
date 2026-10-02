@@ -1,4 +1,4 @@
-import { isSameDay } from "date-fns";
+import { differenceInMinutes, isSameDay } from "date-fns";
 import { CheckBookingInput } from "../../dtos/booking.dto";
 import { BadRequestError } from "../../../shared/error/appError";
 import { toAppError } from "../../../shared/error/handleUnknownError";
@@ -22,9 +22,14 @@ export class CheckBookingUseCase {
                 return false;
             }
 
-            const isToday = isSameDay(new Date(booking.createdAt), new Date());
+            const now = new Date();
+            const createdAt = new Date(booking.createdAt);
+            const minutesElapsed = differenceInMinutes(now, createdAt);
+
+            const isWithinCheckoutWindow = minutesElapsed <= 15;
+
             if (
-                isToday &&
+                isWithinCheckoutWindow &&
                 booking.paymentId &&
                 booking.appointmentStatus === AppointmentStatus.BOOKED
             ) {
@@ -32,7 +37,6 @@ export class CheckBookingUseCase {
             }
 
             return false;
-
         } catch (error: unknown) {
             throw toAppError(error, "Failed to check booking");
         }

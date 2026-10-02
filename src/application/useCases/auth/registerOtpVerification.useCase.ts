@@ -48,17 +48,18 @@ export class RegisterOtpVerificationUseCase {
       const isValidOTP = await this.otpService.verifyOtp(email, otp);
       if (!isValidOTP) throw new BadRequestError("Invalid OTP");
 
-      if(!timeZone) {
+      if (!timeZone) {
         throw new AppError(
-            "Internal server error",
-            500,
-            true,
-            ERROR_CODES.INTERNAL_ERROR
-          )
+          "Internal server error",
+          500,
+          true,
+          ERROR_CODES.INTERNAL_ERROR
+        )
       }
 
       if (!existingUser) {
         const newUser = await this.userRepository.create(User.createLocal({
+          username: email.split("@")[0],
           email,
           password,
           timeZone

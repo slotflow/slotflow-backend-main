@@ -56,6 +56,27 @@ export class ChangeBookingStatusUseCase {
                 );
             }
 
+            const now = new Date();
+            if (
+                appointmentStatus === AppointmentStatus.COMPLETED &&
+                now < booking.sessionStartTime
+            ) {
+                throw new BadRequestError(
+                    "A future appointment cannot be marked completed",
+                    ERROR_CODES.INVALID_REQUEST
+                );
+            }
+
+            if (
+                appointmentStatus === AppointmentStatus.NOT_ATTENDED &&
+                now < booking.sessionEndTime
+            ) {
+                throw new BadRequestError(
+                    "An appointment cannot be marked not attended before it ends",
+                    ERROR_CODES.INVALID_REQUEST
+                );
+            }
+
             booking.updateAppointmentStatus({ appointmentStatus });
 
             const updatedBooking = await this.bookingRepository.update(booking);
@@ -81,6 +102,10 @@ export class ChangeBookingStatusUseCase {
                 }
                 : null;
 
+            const sessionStartTime: Date = booking.sessionStartTime ?? booking.appointmentDate;
+            const userTimeZone: string = user.timeZone?.value;
+            const providerTimeZone: string = provider.timeZone?.value;
+
             await this.kafkaProducer.publish<EventEnvelope<SendAppointmentStatusChangeForUserEvent>>(kafkaConfig.topics.pub.providerAppointmentStatusForUser, {
                 eventId: generateId({ type: IdType.EVENT }),
                 attempt: 1,
@@ -90,8 +115,16 @@ export class ChangeBookingStatusUseCase {
                     emailData: {
                         email: user.email,
                         name: user.username ?? undefined,
-                        appointmentDate: formatDate(booking.appointmentDate, dateFormats.SHORT),
-                        appointmentTime: formatDate(booking.appointmentDate, dateFormats.TIME_12H_LOWER),
+                        appointmentDate: formatDate({
+                            date: sessionStartTime,
+                            pattern: dateFormats.SHORT,
+                            timeZone: userTimeZone
+                        }),
+                        appointmentTime: formatDate({
+                            date: sessionStartTime,
+                            pattern: dateFormats.TIME_12H_LOWER,
+                            timeZone: userTimeZone
+                        }),
                         appointmentMode: formatString(booking.appointmentMode),
                         appointmentStatus: booking.appointmentStatus,
                         address: booking.appointmentMode === ServiceMode.OFFLINE ? formattedAddress : null,
@@ -113,8 +146,16 @@ export class ChangeBookingStatusUseCase {
                 payload: {
                     notificationData: {
                         userId: provider._id,
-                        appointmentDate: formatDate(booking.appointmentDate, dateFormats.SHORT),
-                        appointmentTime: formatDate(booking.appointmentDate, dateFormats.TIME_12H_LOWER),
+                        appointmentDate: formatDate({
+                            date: sessionStartTime,
+                            pattern: dateFormats.SHORT,
+                            timeZone: providerTimeZone
+                        }),
+                        appointmentTime: formatDate({
+                            date: sessionStartTime,
+                            pattern: dateFormats.TIME_12H_LOWER,
+                            timeZone: providerTimeZone
+                        }),
                         appointmentMode: booking.appointmentMode,
                         appointmentStatus: booking.appointmentStatus,
                         notificationType: notificationType.ACCOUNT_ACTIVITY

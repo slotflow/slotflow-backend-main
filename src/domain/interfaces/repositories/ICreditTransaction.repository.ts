@@ -1,7 +1,7 @@
 import { ClientSession } from 'mongoose';
+import { TableData } from '../../../application/dtos/common.dto';
 import { CreditTransaction } from '../../entities/creditTransaction.entity';
 import { CreditTransactionSource, CreditTransactionStatus, CreditTransactionType } from '../../enums/creditTransaction.enum';
-import { TableData } from '../../../application/dtos/common.dto';
 
 export interface ICreditTransactionRepository {
     create(transaction: CreditTransaction, session?: ClientSession): Promise<CreditTransaction | null>;
@@ -20,14 +20,15 @@ export interface ICreditTransactionRepository {
 
     findByStatus(status: CreditTransactionStatus): Promise<CreditTransaction[]>;
 
-    findByUserIdWithFilters(
-        userId: string,
-        startDate: Date,
-        endDate: Date,
-        page: number,
-        limit: number,
-        status?: CreditTransactionStatus,
-        type?: CreditTransactionType,
-        source?: CreditTransactionSource
-    ): Promise<TableData<Array<CreditTransaction>>>;
+    findByUserIdWithFilters(data: {
+        userId: string;
+        startDate: string;
+        endDate: string;
+        page: number;
+        limit: number;
+        status?: CreditTransactionStatus;
+        type?: CreditTransactionType;
+        source?: CreditTransactionSource;
+        timeZone?: string;
+    }): Promise<TableData<Array<CreditTransaction>>>;
 }

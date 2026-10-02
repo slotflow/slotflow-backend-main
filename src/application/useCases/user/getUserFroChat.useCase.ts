@@ -13,14 +13,15 @@ export class GetUserForChatSidebarUseCase {
 
     async execute(input: GetUserForChatSidebarInput): Promise<GetUserForChatSidebarOutput> {
         try {
-            const { userId, role } = input;
+            const { userId, role, timeZone } = input;
             if (!userId || !role) {
                 throw new BadRequestError();
             }
 
             const result = await this.bookingQueries.findUsersforChatSideBar({
                 userId,
-                role
+                role,
+                timeZone
             });
 
             if (!result) {

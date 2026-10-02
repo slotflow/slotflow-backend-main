@@ -72,7 +72,9 @@ export type ChangeReviewBlockStatusOutput = Pick<ReviewProps, "_id" | "isBlocked
 
 
 // GetGraphData
-export interface GetGraphDataInput extends CommonDateInput { }
+export interface GetGraphDataInput extends CommonDateInput {
+    timeZone: string;
+}
 export interface GetGraphDataOutput {
     appointmentsOvertimeChartData: Array<{
         date: string;

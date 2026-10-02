@@ -1,5 +1,4 @@
-import { fromZonedTime } from 'date-fns-tz';
-import { addMinutes, parse } from "date-fns";
+import { addMinutes } from "date-fns";
 import { PaymentFor } from "../../../domain/enums/payment.enum";
 import { Booking } from "../../../domain/entities/booking.entity";
 import { FindProviderServiceOutput } from "../../dtos/common.dto";
@@ -9,11 +8,15 @@ import { ERROR_CODES, IdType } from '../../../shared/utils/types/enums';
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
 import { IPaymentServiceClient } from "../../interfaces/clients/IPaymentService.client";
 import { AppError, BadRequestError, NotFoundError } from '../../../shared/error/appError';
+import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { IProviderServiceQueries } from "../../interfaces/queries/IProviderService.queries";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { IServiceAvailabilityQueries } from "../../interfaces/queries/IServiceAvailability.queries";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 import { UserAppointmentBookingViaStripeInput, UserAppointmentBookingViaStripeOutput } from '../../dtos/booking.dto';
+import { getDayBoundaryMetrics } from "../../../shared/utils/helpers/getDateRangeMetrics";
+import { defaultTimezone } from "../../../shared/utils/constants/constant";
+import { parseZonedSlotToUtc } from "../../../shared/utils/helpers/parseZonedSlotToUtc";
 
 export class BookingCheckoutUseCase {
     constructor(
@@ -21,12 +24,13 @@ export class BookingCheckoutUseCase {
         private readonly providerProfileRepository: IProviderProfileRepository,
         private readonly providerServiceQueries: IProviderServiceQueries,
         private readonly serviceAvailabilityQueries: IServiceAvailabilityQueries,
-        private readonly paymentServiceClient: IPaymentServiceClient
+        private readonly paymentServiceClient: IPaymentServiceClient,
+        private readonly userRepository: IUserRepository
     ) { };
 
     async execute(input: UserAppointmentBookingViaStripeInput): Promise<UserAppointmentBookingViaStripeOutput> {
         try {
-            const { userId, providerId, slotId, selectedServiceMode, date, email, name, role } = input;
+            const { userId, providerId, slotId, selectedServiceMode, date, email, name, role, timeZone } = input;
             if (!userId ||
                 !providerId ||
                 !slotId ||
@@ -38,6 +42,15 @@ export class BookingCheckoutUseCase {
             ) {
                 throw new BadRequestError();
             }
+
+            const provider = await this.userRepository.findById(providerId);
+            if (!provider) {
+                throw new NotFoundError(
+                    "provider not found",
+                    ERROR_CODES.USER_NOT_FOUND
+                );
+            }
+            const providerTimeZone = provider.timeZone?.value || defaultTimezone;
 
             const providerProfile = await this.providerProfileRepository.findByUserId(providerId);
             if (!providerProfile) {
@@ -75,7 +88,11 @@ export class BookingCheckoutUseCase {
                 );
             }
 
-            const providerServiceAvailability = await this.serviceAvailabilityQueries.findByProviderId({ date, availabilityId: providerProfile.serviceAvailabilityId });
+            const providerServiceAvailability = await this.serviceAvailabilityQueries.findByProviderId({
+                date,
+                timeZone: providerTimeZone,
+                availabilityId: providerProfile.serviceAvailabilityId
+            });
             if (!providerServiceAvailability) {
                 throw new NotFoundError(
                     "Availability not found",
@@ -106,18 +123,17 @@ export class BookingCheckoutUseCase {
             }
 
             const slotTime = selectedSlot[0].time;
+            const { start: startOfDay, end: endOfDay } = getDayBoundaryMetrics(date, providerTimeZone);
 
-            const existBooking = await this.bookingRepository.findByUserId(userId, date, slotTime);
+            const existBooking = await this.bookingRepository.findByUserId(userId, startOfDay, endOfDay, slotTime);
             if (existBooking && existBooking.length > 0) {
                 throw new BadRequestError(
                     "You already have an appointment at the same time",
                     ERROR_CODES.INVALID_REQUEST
                 );
             }
-            
-            const istDateTimeString = `${date} ${slotTime}`;
-            const parsedDate = parse(istDateTimeString, 'yyyy-MM-dd hh:mm a', new Date());
-            const sessionStartTime = fromZonedTime(parsedDate, 'Asia/Kolkata');
+
+            const sessionStartTime = parseZonedSlotToUtc(date, slotTime, providerTimeZone);
             const appointmentDate = sessionStartTime;
             const sessionEndTime = addMinutes(sessionStartTime, providerServiceAvailability.duration);
 
@@ -162,7 +178,8 @@ export class BookingCheckoutUseCase {
                     email,
                     id: userId,
                     name,
-                    role
+                    role,
+                    timeZone
                 }
             });
 

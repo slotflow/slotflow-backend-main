@@ -1,8 +1,9 @@
-import { ClientSession } from "mongoose";
+import { ClientSession, FilterQuery } from "mongoose";
 import { UserModel } from "../models/user.model";
 import { UserMapper } from "../mappers/user.mapper";
 import { User } from "../../domain/entities/user.entity";
 import { IUserRepository } from "../../domain/interfaces/repositories/IUser.repository";
+import { getDateRangeMetrics } from "../../shared/utils/helpers/getDateRangeMetrics";
 
 export class UserRepositoryImpl implements IUserRepository {
 
@@ -41,22 +42,6 @@ export class UserRepositoryImpl implements IUserRepository {
     async findByGoogleId(googleId: string): Promise<User | null> {
         const doc = await UserModel.findOne({ googleId });
         return doc ? UserMapper.toDomain(doc) : null;
-    };
-
-    async count(today?: boolean): Promise<number> {
-        if (!today) {
-            return UserModel.countDocuments();
-        }
-
-        const start = new Date();
-        start.setHours(0, 0, 0, 0);
-
-        const end = new Date();
-        end.setHours(23, 59, 59, 999);
-
-        return UserModel.countDocuments({
-            createdAt: { $gte: start, $lte: end },
-        });
     };
 
     async findByReferralCode(referralCode: string): Promise<User | null> {

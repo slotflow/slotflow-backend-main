@@ -9,7 +9,7 @@ import { isBefore, isSameDay, addDays } from 'date-fns';
 import { formatDate } from "../../shared/utils/helpers/formatDate";
 import { calcPercentage } from "../../shared/utils/helpers/getPercentage";
 import { CreditAccountModel } from "../models/creditAccount.model";
-import { dateFormats } from "../../shared/utils/constants/constant";
+import { dateFormats, defaultTimezone } from "../../shared/utils/constants/constant";
 import { AggregateCountResult } from "../../application/dtos/common.dto";
 import { CreditTransactionModel } from "../models/creditTransaction.model";
 import { getDateRangeMetrics } from "../../shared/utils/helpers/getDateRangeMetrics";
@@ -18,8 +18,14 @@ import { CreditTransactionStatus, CreditTransactionType } from "../../domain/enu
 
 export class CreditAccountQueriesImpl implements ICreditAccountQueries {
   async findCreditDetails(query: GetCreditAccountDetailsQuery): Promise<GetCreditAccountDetailsView> {
-    const { userId, startDate, endDate } = query;
-    const { days, start, end, prevStart, prevEnd } = getDateRangeMetrics(startDate, endDate);
+    const { userId, startDate, endDate, timeZone } = query;
+    const effectiveTimeZone = timeZone || defaultTimezone;
+
+    const { days, start, end, prevStart, prevEnd } = getDateRangeMetrics({
+      startDate,
+      endDate,
+      timeZone: effectiveTimeZone
+    });
     const userObjectId = new mongoose.Types.ObjectId(userId);
 
     const account = await CreditAccountModel.findOne({
@@ -111,6 +117,7 @@ export class CreditAccountQueriesImpl implements ICreditAccountQueries {
               $dateToString: {
                 format: "%Y-%m-%d",
                 date: "$createdAt",
+                timezone: effectiveTimeZone,
               },
             },
           },
@@ -162,7 +169,11 @@ export class CreditAccountQueriesImpl implements ICreditAccountQueries {
     let currentDate = start;
 
     while (isBefore(currentDate, end) || isSameDay(currentDate, end)) {
-      const dateStr = formatDate(currentDate, dateFormats.ISO_DATE);
+      const dateStr = formatDate({
+        date: currentDate,
+        pattern: dateFormats.ISO_DATE,
+        timeZone
+      });
 
       filledChartData.push(
         dateMap.get(dateStr) || {

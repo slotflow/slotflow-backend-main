@@ -17,6 +17,7 @@ export class ServiceAvailability {
         return new ServiceAvailability({
             _id: "",
             providerId: props.providerId,
+            timeZone: props.timeZone,
             availabilities: props.availabilities.map((availability) => ({
                 day: availability.day,
                 isAvailable: availability.isAvailable,
@@ -36,6 +37,10 @@ export class ServiceAvailability {
     get _id(): string {
         return this.props._id;
     };
+
+    get timeZone(): string {
+        return this.props.timeZone;
+    }
 
     get availabilities(): Availability[] {
         return this.props.availabilities;

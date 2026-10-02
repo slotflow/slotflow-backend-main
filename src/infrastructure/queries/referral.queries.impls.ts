@@ -1,23 +1,30 @@
 import mongoose from "mongoose";
 import {
-    ReferralChartKeys,
-    GetReferralDetailsView,
-    GetReferralDetailsQuery,
+  ReferralChartKeys,
+  GetReferralDetailsView,
+  GetReferralDetailsQuery,
 } from "../../application/dtos/referral.dto";
 import { addDays, isBefore, isSameDay } from "date-fns";
 import { formatDate } from "../../shared/utils/helpers/formatDate";
 import { ReferralModel } from "../models/referral.model";
 import { calcPercentage } from "../../shared/utils/helpers/getPercentage";
-import { dateFormats } from "../../shared/utils/constants/constant";
+import { dateFormats, defaultTimezone } from "../../shared/utils/constants/constant";
 import { AggregateCountResult } from "../../application/dtos/common.dto";
 import { getDateRangeMetrics } from "../../shared/utils/helpers/getDateRangeMetrics";
 import { IReferralQueries } from "../../application/interfaces/queries/IReferral.queries";
 
-export class ReferralQueriesImpl implements IReferralQueries{
+export class ReferralQueriesImpl implements IReferralQueries {
 
   async findReferralDetails(query: GetReferralDetailsQuery): Promise<GetReferralDetailsView> {
-    const { userId, startDate, endDate } = query;
-    const { days, end, prevEnd, prevStart, start } = getDateRangeMetrics(startDate, endDate)
+    const { userId, startDate, endDate, timeZone } = query;
+    const effectiveTimeZone = timeZone || defaultTimezone;
+
+    const { days, end, prevEnd, prevStart, start } = getDateRangeMetrics({
+      startDate,
+      endDate,
+      timeZone: effectiveTimeZone
+    });
+
     const userObjectId = new mongoose.Types.ObjectId(userId);
 
     const currentAgg = await ReferralModel.aggregate([
@@ -122,6 +129,7 @@ export class ReferralQueriesImpl implements IReferralQueries{
               $dateToString: {
                 format: "%Y-%m-%d",
                 date: "$createdAt",
+                timezone: effectiveTimeZone,
               },
             },
           },
@@ -175,9 +183,13 @@ export class ReferralQueriesImpl implements IReferralQueries{
 
     while (
       isBefore(currentDate, end) ||
-  isSameDay(currentDate, end)
+      isSameDay(currentDate, end)
     ) {
-      const dateStr = formatDate(currentDate, dateFormats.ISO_DATE);
+      const dateStr = formatDate({
+        date: currentDate,
+        pattern: dateFormats.ISO_DATE,
+        timeZone
+      });
 
       filledChartData.push(
         dateMap.get(dateStr) || {

@@ -18,8 +18,8 @@ export class CreateServiceAvailabilitiesUseCase {
         const session = await mongoose.startSession();
         session.startTransaction();
         try {
-            const { providerId, availabilities } = input;
-            if (!providerId || !availabilities || availabilities.length === 0) {
+            const { providerId, timeZone, availabilities } = input;
+            if (!providerId || !availabilities || !timeZone || availabilities.length === 0) {
                 throw new BadRequestError();
             }
 
@@ -40,6 +40,7 @@ export class CreateServiceAvailabilitiesUseCase {
 
             const serviceAvailabilityData = ServiceAvailability.create({
                 providerId,
+                timeZone,
                 availabilities: newAvailabilities
             });
 

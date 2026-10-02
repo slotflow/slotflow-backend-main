@@ -1,6 +1,7 @@
 import { FilterQuery, Types } from "mongoose";
-import { fromZonedTime, toZonedTime } from "date-fns-tz";
+import { toZonedTime } from "date-fns-tz";
 import { daysOfWeek } from "../../shared/utils/constants/constant";
+import { getDayBoundaryMetrics } from "../../shared/utils/helpers/getDateRangeMetrics";
 import { TimeSlotForClientOutput } from "../../application/dtos/common.dto";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { ServiceAvailabilityModel } from "../models/serviceAvailability.model";
@@ -11,33 +12,17 @@ import { ServiceAvailabilityQuery, ServiceAvailabilityView } from "../../applica
 export class ServiceAvailabilityQueriesImpl implements IServiceAvailabilityQueries {
 
     async findByProviderId(query: ServiceAvailabilityQuery): Promise<ServiceAvailabilityView> {
-        const { date, availabilityId, providerId } = query;
-        // const startOfDay = new Date(date);
-        // startOfDay.setHours(0, 0, 0, 0);
-        // console.log("startOfDay : ",startOfDay);
 
-        // const endOfDay = new Date(date);
-        // endOfDay.setHours(23, 59, 59, 999);
-        // console.log("endOfDay : ",endOfDay);
+        const { date, availabilityId, providerId, timeZone } = query;
+        const dateStr = typeof date === 'string' ? date : date.toISOString().split('T')[0];
 
-        // const targetDay = daysOfWeek[date.getDay()];
-        // const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
-        // console.log("targetDay : ",targetDay);
-        // console.log("fifteenMinutesAgo : ",fifteenMinutesAgo);
+        const { start: startOfDay, end: endOfDay } = getDayBoundaryMetrics(
+            dateStr,
+            timeZone
+        );
 
-        // const matchFilter: FilterQuery<ServiceAvailabilityDTO> = {};
-        // if (availabilityId) matchFilter._id = new Types.ObjectId(availabilityId);
-        // if (providerId) matchFilter.providerId = new Types.ObjectId(providerId);
-
-        const dateStr = typeof date === 'string' 
-            ? date 
-            : date.toISOString().split('T')[0];
-
-        const startOfDay = fromZonedTime(`${dateStr} 00:00:00.000`, 'Asia/Kolkata');
-        const endOfDay = fromZonedTime(`${dateStr} 23:59:59.999`, 'Asia/Kolkata');
-
-        const istDate = toZonedTime(startOfDay, 'Asia/Kolkata');
-        const targetDay = daysOfWeek[istDate.getDay()];
+        const zonedDate = toZonedTime(startOfDay, timeZone);
+        const targetDay = daysOfWeek[zonedDate.getDay()];
 
         const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
 

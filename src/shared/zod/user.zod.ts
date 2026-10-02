@@ -19,3 +19,11 @@ export const userUpdatePasswordSchema = z.object({
         .max(50, "New Password cannot exceed 50 characters")
         .regex(strongPasswordRegex, "New Password must contain uppercase, lowercase, number & symbol"),
 })
+
+export const timeZoneSchema = z.object({
+    value: z.string(),
+    label: z.string(),
+    offset: z.number(),
+    abbrev: z.string(),
+    altName: z.string(),
+});

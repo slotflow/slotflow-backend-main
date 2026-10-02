@@ -169,23 +169,7 @@ export class Validator {
         if (!duration || duration.trim().length === 0) throw new Error("Duration is required.");
     }
 
-    static validateTiming(endTime: string, startTime: string): void {
-        // 'hh:mm a' matches '09:30 AM' or '02:15 PM' in date-fns
-        const format = "hh:mm a";
-
-        const referenceDate = new Date();
-        const start = parse(startTime, format, referenceDate);
-        const end = parse(endTime, format, referenceDate);
-
-        if (!isValid(start) || !isValid(end)) {
-            throw new Error("Invalid time format.");
-        }
-
-        if (!isBefore(start, end)) {
-            throw new Error("Start time is greater than endTime.");
-        }
-    }
-
+ 
     static validateModes(modes: string[]): void {
         const validModes = ["online", "offline"];
 

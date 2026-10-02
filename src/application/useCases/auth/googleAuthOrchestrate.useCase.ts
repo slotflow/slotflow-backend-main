@@ -121,21 +121,27 @@ export class GoogleAuthOrchestratorUseCase {
                             },
                         }
                     }
-                )
-
-            if (!user.username) {
-                throw new AppError(
-                    "Failed to the user",
-                    500,
-                    true,
-                    ERROR_CODES.INTERNAL_ERROR
                 );
             }
+
+            user.updateName({
+                username: name
+            });
+
+            user.updateProfileImage({
+                profileImage: image
+            });
+
+            const updatedUser = await this.userRepository.update(user);
+            if (!updatedUser) {
+                throw new AppError();
+            }
+
             const token = await this.jwtService.generateToken({
                 email: user.email,
                 role: user.role,
                 userId: user._id,
-                name: user.username,
+                name: name,
                 timeZone: user.timeZone,
             });
 

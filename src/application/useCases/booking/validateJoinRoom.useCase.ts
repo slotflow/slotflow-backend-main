@@ -1,5 +1,5 @@
-import { isSameDay, startOfDay } from "date-fns";
 import { Role } from "../../../domain/enums/common.enum";
+import { subMinutes } from "date-fns";
 import { ValidateJoinRoomInput } from "../../dtos/booking.dto";
 import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { toAppError } from "../../../shared/error/handleUnknownError";
@@ -27,19 +27,17 @@ export class ValidateJoinRoomUsecase {
                 );
             }
 
-            const today = startOfDay(new Date());
-
-            if (!isSameDay(booking.appointmentDate, today)) {
-                throw new BadRequestError(
-                    "Booking is not scheduled for today",
-                    ERROR_CODES.INVALID_REQUEST
-                );
-            };
-
             if (booking.appointmentStatus !== AppointmentStatus.CONFIRMED) {
                 throw new BadRequestError(
                     "Booking is not confirmed",
                     ERROR_CODES.BOOKING_NOT_CONFIRMED
+                );
+            };
+
+            if (booking.videoCallRoomId !== roomId) {
+                throw new BadRequestError(
+                    "Invalid room ID for this booking",
+                    ERROR_CODES.INVALID_REQUEST
                 );
             };
 
@@ -61,9 +59,27 @@ export class ValidateJoinRoomUsecase {
                 throw new BadRequestError();
             };
 
-            if (booking.videoCallRoomId !== roomId) {
-                throw new BadRequestError();
-            };
+            // For testin we need to comment the below code
+
+            const now = new Date();
+            const sessionStartTime = new Date(booking.sessionStartTime);
+            const sessionEndTime = new Date(booking.sessionEndTime);
+            const earliestStartGraceMinutes: number = 15;
+            const earliestAllowedJoinTime = subMinutes(sessionStartTime, earliestStartGraceMinutes);
+
+            if (now < earliestAllowedJoinTime) {
+                throw new BadRequestError(
+                    `You can only join the call up to ${earliestStartGraceMinutes} minutes before the scheduled start time`,
+                    ERROR_CODES.INVALID_REQUEST
+                );
+            }
+
+            if (now > sessionEndTime) {
+                throw new BadRequestError(
+                    "This video call session has ended",
+                    ERROR_CODES.INVALID_REQUEST
+                );
+            }
 
         } catch (error: unknown) {
             throw toAppError(error, "Failed to validate room");

@@ -11,6 +11,7 @@ import { GetRoleBasedChartDataUseCase } from "../../../application/useCases/admi
 import { GetSubscriptionStatsDataUseCase } from "../../../application/useCases/admin/dashboard/stats/getSubscriptionStatsData.useCase";
 import { getAdminBookingsChartDataUseCase, getProviderStatsDataUseCase, getSubscriptionStatsDataUseCase, getUserStatsDataUseCase, getBookingsStatsDataUseCase, getRoleBasedChartDataUseCase, getSubscriptionsChartDataUseCase } from "..";
 import { GetSubscriptionsChartDataUseCase } from "../../../application/useCases/admin/dashboard/chartData/getSubscriptionsChartData.useCase";
+import { AuthUser } from "../../../application/dtos/common.dto";
 
 class DashboardController {
     constructor(
@@ -33,8 +34,12 @@ class DashboardController {
 
     async getUserStats(req: Request, res: Response, next: NextFunction) {
         try {
+            const user = req.user as AuthUser;
             const validatedData = startAndEndDateSchema.parse(req.query);
-            const result = await this.getUserStatsDataUseCase.execute(validatedData);
+            const result = await this.getUserStatsDataUseCase.execute({
+                ...validatedData,
+                timeZone: user.timeZone.value
+            });
             sendResponse(res, result);
         } catch (error) {
             log.error("getUserStats failed", error as Error);
@@ -44,8 +49,12 @@ class DashboardController {
 
     async getProviderStats(req: Request, res: Response, next: NextFunction) {
         try {
+            const user = req.user as AuthUser;
             const validatedData = startAndEndDateSchema.parse(req.query);
-            const result = await this.getProviderStatsDataUseCase.execute(validatedData);
+            const result = await this.getProviderStatsDataUseCase.execute({
+                ...validatedData,
+                timeZone: user.timeZone.value
+            });
             sendResponse(res, result);
         } catch (error) {
             log.error("getProviderStats failed", error as Error);
@@ -55,8 +64,12 @@ class DashboardController {
 
     async getSubscriptionStats(req: Request, res: Response, next: NextFunction) {
         try {
+            const user = req.user as AuthUser;
             const validatedData = startAndEndDateSchema.parse(req.query);
-            const result = await this.getSubscriptionStatsDataUseCase.execute(validatedData);
+            const result = await this.getSubscriptionStatsDataUseCase.execute({
+                ...validatedData,
+                timeZone: user.timeZone.value
+            });
             sendResponse(res, result);
         } catch (error) {
             log.error("getSubscriptionStats failed", error as Error);
@@ -66,8 +79,12 @@ class DashboardController {
 
     async getBookingssStats(req: Request, res: Response, next: NextFunction) {
         try {
+            const user = req.user as AuthUser;
             const validatedData = startAndEndDateSchema.parse(req.query);
-            const result = await this.getBookingsStatsDataUseCase.execute(validatedData);
+            const result = await this.getBookingsStatsDataUseCase.execute({
+                ...validatedData,
+                timeZone: user.timeZone.value
+            });
             sendResponse(res, result);
         } catch (error) {
             log.error("getBookingssStats failed", error as Error);
@@ -77,8 +94,12 @@ class DashboardController {
 
     async getBookingsChartData(req: Request, res: Response, next: NextFunction) {
         try {
+            const user = req.user as AuthUser;
             const validatedData = startAndEndDateSchema.parse(req.query);
-            const result = await this.getAdminBookingsChartDataUseCase.execute(validatedData);
+            const result = await this.getAdminBookingsChartDataUseCase.execute({
+                ...validatedData,
+                timeZone: user.timeZone.value,
+        });
             sendResponse(res, result);
         } catch (error) {
             log.error("getBookingsChartData failed", error as Error);
@@ -88,8 +109,12 @@ class DashboardController {
 
     async getUsersChartData(req: Request, res: Response, next: NextFunction) {
         try {
+            const user = req.user as AuthUser;
             const validatedData = adminGetRoleBasedChartData.parse(req.query);
-            const result = await this.getRoleBasedChartDataUseCase.execute(validatedData);
+            const result = await this.getRoleBasedChartDataUseCase.execute({
+                ...validatedData,
+                timeZone: user.timeZone.value
+            });
             sendResponse(res, result);
         } catch (error) {
             log.error("getUserChartData failed", error as Error);
@@ -99,8 +124,12 @@ class DashboardController {
 
     async getSubscriptionsChartData(req: Request, res: Response, next: NextFunction) {
         try {
+            const user = req.user as AuthUser;
             const validatedData = startAndEndDateSchema.parse(req.query);
-            const result = await this.getSubscriptionsChartDataUseCase.execute(validatedData);
+            const result = await this.getSubscriptionsChartDataUseCase.execute({
+                ...validatedData,
+                timeZone: user.timeZone.value
+            });
             sendResponse(res, result);
         } catch (error) {
             log.error("getSubscriptionsChartData failed", error as Error);

@@ -2,7 +2,7 @@ import { UserProps } from "../contracts/user.contract";
 
 export type CreateLocalUserProps = Pick<
     UserProps,
-    "email" | "timeZone"
+    "username" | "email" | "timeZone"
 > &
     Required<Pick<UserProps, "password">> &
     Partial<Pick<UserProps, "referredBy">>;
@@ -22,9 +22,11 @@ export type ChangePasswordProps = Required<Pick<UserProps, "password">>;
 export type LinkGoogleAccountProps = Pick<UserProps, "googleConnected"> &
     Required<Pick<UserProps, "googleId">>;
 
-export type ChangeProfileImageProps = Partial<
-    Pick<UserProps, "profileImage">
->;
+export type ChangeProfileImageProps = Pick<UserProps, "profileImage">;
+
+export type ChangeUsernameProps = Pick<UserProps, "username">;
+
+export type ChangeTimeZoneProps = Pick<UserProps, "timeZone">;
 
 export type CompleteProfileSetupProps = Pick<UserProps, "role" | "username" | "referralCode"> &
     Required<Pick<UserProps, "whereDidHearAboutUs">> &

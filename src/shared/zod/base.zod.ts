@@ -1,6 +1,7 @@
 import { z } from "zod";
-import { HearAboutUsOptionValue, Role } from "../../domain/enums/common.enum";
-import { addressLineRegex, cityRegex, countryRegex, districtRegex, landMarkRegex, objectIdRegex, phoneRegex, pincodeRegex, placeRegex, sessionIdRegex, stateRegex, usernameRegex } from "../utils/constants/regex";
+import { Role } from "../../domain/enums/common.enum";
+import { parseDate } from "../utils/helpers/parseDate";
+import { addressLineRegex, cityRegex, countryRegex, dateOnlyRegex, districtRegex, landMarkRegex, objectIdRegex, phoneRegex, pincodeRegex, placeRegex, sessionIdRegex, stateRegex, usernameRegex } from "../utils/constants/regex";
 
 // Base ID validation schemas
 export const validateUserIdSchema = z.object({
@@ -26,20 +27,39 @@ export const paginationSchema = z.object({
     limit: z.coerce.number().min(1, "Limit must be at least 1").max(100, "Limit must be at most 100").optional().default(10),
 });
 
-// Date validation schema
-export const dateSchema = z.preprocess(
-    (val) => {
-        if (val === undefined || val === null || val === "") {
-            return new Date();
-        }
-        if (typeof val === "string" || val instanceof String) {
-            const parsed = new Date(val as string);
-            if (!isNaN(parsed.getTime())) return parsed;
-        }
-        return val;
-    },
-    z.date()
+
+/**
+ * Date-Only String Schema ("YYYY-MM-DD")
+ * Keeps date-only values as validated string primitives for calendar/timezone-aware filters.
+ * Rejects invalid calendar dates (e.g., "2026-02-31").
+ */
+export const dateOnlySchema = z.string().refine(
+  (val) => {
+    if (!dateOnlyRegex.test(val)) return false;
+    try {
+      // Validate real calendar date (prevents rollover like Feb 31 -> March)
+      const parsed = parseDate(val);
+      return !isNaN(parsed.getTime());
+    } catch {
+      return false;
+    }
+  },
+  { message: "Invalid calendar date format. Expected YYYY-MM-DD." }
 );
+
+export const dateTimeSchema = z.preprocess((val) => {
+  if (val === undefined || val === null || val === "") {
+    return val; // Pass through to Zod so required/optional rules handle it cleanly
+  }
+  if (typeof val === "string" || typeof val === "number" || val instanceof Date) {
+    try {
+      return parseDate(val);
+    } catch {
+      return val; // Invalid parse returns original val to trigger Zod validation error
+    }
+  }
+  return val;
+}, z.date("Invalid datetime value provided."));
 
 // Address validation
 export const addressSchema = z.object({

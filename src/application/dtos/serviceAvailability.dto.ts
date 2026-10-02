@@ -11,6 +11,7 @@ export type ServiceAvailabilityQuery = {
     providerId?: UserProps["_id"];
     availabilityId?: ServiceAvailabilityProps["_id"];
     date: string | Date;
+    timeZone: string;
 }
 export type ServiceAvailabilityView = FrontendAvailabilityForOutput | null;
 
@@ -24,8 +25,8 @@ export type ServiceAvailabilityView = FrontendAvailabilityForOutput | null;
 
 // get provider service availability 
 export interface GetServiceAvailabilityInput {
+    date: string;
     providerId: string;
-    date: Date;
 }
 export type GetServiceAvailabilityOutput = FrontendAvailabilityForOutput | null;
 
@@ -33,5 +34,6 @@ export type GetServiceAvailabilityOutput = FrontendAvailabilityForOutput | null;
 // create service availability 
 export interface CreateServiceAvailabilityInput {
     providerId: string;
+    timeZone: string;
     availabilities: FrontendAvailabilityForClientInput[]
 }

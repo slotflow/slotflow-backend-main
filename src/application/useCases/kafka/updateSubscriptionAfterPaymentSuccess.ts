@@ -67,10 +67,10 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
             }
 
             providerProfile.pushSubscriptionId(subscriptionId);
-            if(isTrialBoolean) {
+            if (isTrialBoolean) {
                 providerProfile.trialUsed();
             }
-            
+
             const updatedProviderProfile = await this.providerProfileRepository.update(providerProfile, session);
             if (!updatedProviderProfile) {
                 throw new AppError(
@@ -107,7 +107,7 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
             });
 
             const updatedSubscription = await this.subscriptionRepository.update(subscription, session);
-            if(!updatedSubscription) {
+            if (!updatedSubscription) {
                 throw new AppError(
                     'Internal server error',
                     500,
@@ -173,6 +173,8 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
                 }
             }
 
+            const providerTimeZone: string = provider.timeZone?.value;
+
             await this.kafkaProducer.publish<EventEnvelope<ProviderSubscriptionUpdatedEvent>>(
                 kafkaConfig.topics.pub.planSubscribed, {
                 eventId: generateId({ type: IdType.EVENT }),
@@ -193,14 +195,26 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
                         name: provider.username,
                         subscribedPlan: plan.planName,
                         isTrial,
-                        startDate: formatDate(updatedSubscription.currentPeriodStart, dateFormats.WITH_TIME),
-                        endDate: formatDate(updatedSubscription.currentPeriodEnd, dateFormats.WITH_TIME),
+                        startDate: formatDate({
+                            date: updatedSubscription.currentPeriodStart,
+                            pattern: dateFormats.WITH_TIME,
+                            timeZone: providerTimeZone
+                        }),
+                        endDate: formatDate({
+                            date: updatedSubscription.currentPeriodEnd,
+                            pattern: dateFormats.WITH_TIME,
+                            timeZone: providerTimeZone
+                        }),
                     },
                     notificationData: {
                         userId: provider._id,
                         planName: plan.planName,
                         isTrial,
-                        currentPeriodEnd: formatDate(currentPeriodEnd, dateFormats.WITH_TIME),
+                        currentPeriodEnd: formatDate({
+                            date: currentPeriodEnd,
+                            pattern: dateFormats.WITH_TIME,
+                            timeZone: providerTimeZone
+                        }),
                         notificationType: notificationType.ACCOUNT_ACTIVITY
                     }
                 }

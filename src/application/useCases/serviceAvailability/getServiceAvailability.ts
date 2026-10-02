@@ -1,7 +1,10 @@
-import { ERROR_CODES } from '../../../shared/utils/types/enums';
 import { differenceInMinutes, format, parse } from 'date-fns';
+import { ERROR_CODES } from '../../../shared/utils/types/enums';
 import { toAppError } from '../../../shared/error/handleUnknownError';
+import { defaultTimezone } from '../../../shared/utils/constants/constant';
 import { BadRequestError, NotFoundError } from '../../../shared/error/appError';
+import { parseZonedSlotToUtc } from '../../../shared/utils/helpers/parseZonedSlotToUtc';
+import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
 import { IServiceAvailabilityQueries } from "../../interfaces/queries/IServiceAvailability.queries";
 import { GetServiceAvailabilityInput, GetServiceAvailabilityOutput } from "../../dtos/serviceAvailability.dto";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
@@ -9,7 +12,8 @@ import { IProviderProfileRepository } from "../../../domain/interfaces/repositor
 export class GetServiceAvailabilityUseCase {
   constructor(
     private readonly providerProfileRepository: IProviderProfileRepository,
-    private readonly serviceAvailabilityQueries: IServiceAvailabilityQueries
+    private readonly serviceAvailabilityQueries: IServiceAvailabilityQueries,
+    private readonly userRepository: IUserRepository
   ) { };
 
   async execute(input: GetServiceAvailabilityInput): Promise<GetServiceAvailabilityOutput> {
@@ -19,9 +23,13 @@ export class GetServiceAvailabilityUseCase {
         throw new BadRequestError();
       }
 
-      const currentDateTime = new Date();
-      const parsedDate = date instanceof Date ? date : new Date(date);
-      const selectedDateStr = format(parsedDate, 'yyyy-MM-dd');
+      const provider = await this.userRepository.findById(providerId);
+      if (!provider) {
+        throw new NotFoundError(
+          "User not found",
+          ERROR_CODES.USER_NOT_FOUND
+        );
+      }
 
       const providerProfile = await this.providerProfileRepository.findByUserId(providerId);
       if (!providerProfile) {
@@ -33,17 +41,22 @@ export class GetServiceAvailabilityUseCase {
 
       if (!providerProfile.serviceAvailabilityId) return null;
 
-      const availability = await this.serviceAvailabilityQueries.findByProviderId({ date, availabilityId: providerProfile.serviceAvailabilityId });
+      const providerTimeZone = provider.timeZone?.value || defaultTimezone;
+
+      const availability = await this.serviceAvailabilityQueries.findByProviderId({
+        date,
+        availabilityId: providerProfile.serviceAvailabilityId,
+        timeZone: providerTimeZone,
+      });
+
       if (!availability) return null;
 
       const updatedSlots = availability.slots.map((slot) => {
-        const slotDateTime = parse(
-          `${selectedDateStr} ${slot.time}`,
-          'yyyy-MM-dd hh:mm a',
-          new Date()
-        );
-        const minutesUntilSlot = differenceInMinutes(slotDateTime, currentDateTime);
+
+        const slotUtc = parseZonedSlotToUtc(date, slot.time, providerTimeZone);
+        const minutesUntilSlot = differenceInMinutes(slotUtc, new Date());
         const isWithin2Hours = minutesUntilSlot < 120;
+
         return {
           ...slot,
           available: slot.available && !isWithin2Hours

@@ -1,12 +1,13 @@
+import mongoose from "mongoose";
 import { ERROR_CODES } from "../../../shared/utils/types/enums";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { RefundFor, RefundReason } from "../../../domain/enums/payment.enum";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
+import { IPaymentServiceClient } from "../../interfaces/clients/IPaymentService.client";
 import { UserCancelBookingInput, UserCancelBookingOutput } from "../../dtos/booking.dto";
 import { AppError, BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
-import { IPaymentServiceClient } from "../../interfaces/clients/IPaymentService.client";
 
 export class CancelBookingUseCase {
     constructor(
@@ -16,6 +17,8 @@ export class CancelBookingUseCase {
     ) { };
 
     async execute(input: UserCancelBookingInput): Promise<UserCancelBookingOutput> {
+        const session = await mongoose.startSession();
+        session.startTransaction();
         try {
             const { userId, bookingId, reason } = input;
             if (!userId || !bookingId) {
@@ -54,7 +57,7 @@ export class CancelBookingUseCase {
 
             if (booking.appointmentStatus === AppointmentStatus.CONFIRMED) {
                 throw new BadRequestError(
-                    "Booking already cancelled",
+                    "Confirmed appointments cant cancel",
                     ERROR_CODES.INVALID_REQUEST
                 );
             }
@@ -88,7 +91,7 @@ export class CancelBookingUseCase {
                 refundReason: RefundReason.REQUESTED_BY_CUSTOMER
             });
 
-            if(!refundResult.success) {
+            if (!refundResult.success) {
                 throw new AppError(
                     "Failed to process refund",
                     500,
@@ -108,13 +111,18 @@ export class CancelBookingUseCase {
                 );
             }
 
+            await session.commitTransaction();
+
             return {
                 _id: updatedBooking._id,
                 appointmentStatus: updatedBooking.appointmentStatus
             }
 
         } catch (error) {
+            await session.abortTransaction();
             throw toAppError(error, "Failed to cancel booking");
+        } finally {
+            session.endSession();
         };
     };
 };

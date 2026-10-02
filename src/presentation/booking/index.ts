@@ -19,7 +19,7 @@ export const getBookingDetailsUsecase = new GetBookingDetailsUsecase(bookingQuer
 
 export const checkBookingUseCase = new CheckBookingUseCase(bookingRepository);
 
-export const bookingCheckoutUseCase = new BookingCheckoutUseCase(bookingRepository, providerProfileRepository, providerServiceQueries, serviceAvailabilityQueries, paymentServiceClient);
+export const bookingCheckoutUseCase = new BookingCheckoutUseCase(bookingRepository, providerProfileRepository, providerServiceQueries, serviceAvailabilityQueries, paymentServiceClient, userRepository);
 
 export const cancelBookingUseCase = new CancelBookingUseCase(userRepository, bookingRepository, paymentServiceClient);
 

@@ -13,8 +13,6 @@ export interface IUserRepository {
 
   findById(userId: string, session?: ClientSession): Promise<User | null>;
 
-  count(today?: boolean): Promise<number>;
-
   findByReferralCode(referralCode: string): Promise<User | null>;
 
 }

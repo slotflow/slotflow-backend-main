@@ -11,6 +11,7 @@ import { ChangeUserBlockStatusUseCase } from "../../application/useCases/user/ch
 import { UpdateUserProfileInfoUseCase } from "../../application/useCases/user/updateUserProfileInfo.useCase";
 import { UpdateUserProfileImageUseCase } from "../../application/useCases/user/updateUserProfileImage.useCase";
 import { providerProfileRepository, referralRepository, userRepository } from "../../infrastructure/repository";
+import { UpdateUserTimeZoneUseCase } from "../../application/useCases/user/updateUserTimeZone.useCase";
 
 export const updateUserProfileInfoUseCase = new UpdateUserProfileInfoUseCase(userRepository);
 
@@ -27,3 +28,5 @@ export const getUsersUseCase = new GetUsersUseCase(userQueries);
 export const profileSetupUseCase = new ProfileSetupUseCase(userRepository, providerProfileRepository, referralRepository, jwtService);
 
 export const updatePasswordUseCase = new UpdatePasswordUseCase(userRepository, passwordHasher, kafkaProducer);
+
+export const updateUserTimeZoneUseCase = new UpdateUserTimeZoneUseCase(userRepository);

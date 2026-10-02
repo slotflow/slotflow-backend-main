@@ -1,15 +1,21 @@
 import { FilterQuery, Types } from "mongoose";
+import { formatInTimeZone } from "date-fns-tz";
 import { Role } from "../../domain/enums/common.enum";
 import { BookingModel } from "../models/booking.model";
 import { TableData } from "../../application/dtos/common.dto";
-import { addDays, endOfDay, startOfDay, subDays } from 'date-fns';
-import { formatStatMetric } from "../../shared/utils/helpers/formatStatMetric";
-import { getStartAndEndDate } from "../../shared/utils/helpers/getStartAndEndDate";
-import { IBookingQueries } from "../../application/interfaces/queries/IBooking.queries"
-import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
-import { calculatePreviousPeriod } from "../../shared/utils/helpers/calculatePreviosPeriod";
-import { BookingDetailsQuery, BookingDetailsView, BookingGraphStatsForProviderQuery, BookingGraphStatsForProviderView, BookingsBaseView, BookingsQuery, BookingsStatsDataAdminQuery, BookingsStatsDataAdminView, BookingStatsForProviderQuery, BookingStatsForProviderView, BookingsView, BookingUsersForChatQuery, BookingUsersForChatView, OnlineBookingsViewForProvider, OnlineBookingsViewForUser } from "../../application/dtos/booking.dto";
 import { BookingProps } from "../../domain/contracts/booking.contract";
+import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
+import { formatStatMetric } from "../../shared/utils/helpers/formatStatMetric";
+import { defaultTimezone } from "../../shared/utils/constants/constant";
+import { getDateRangeMetrics, getDayBoundaryMetrics } from "../../shared/utils/helpers/getDateRangeMetrics";
+import { IBookingQueries } from "../../application/interfaces/queries/IBooking.queries"
+import { BookingDetailsQuery, BookingDetailsView, BookingGraphStatsForProviderQuery, BookingGraphStatsForProviderView, BookingsBaseView, BookingsQuery, BookingsStatsDataAdminQuery, BookingsStatsDataAdminView, BookingStatsForProviderQuery, BookingStatsForProviderView, BookingsView, BookingUsersForChatQuery, BookingUsersForChatView, OnlineBookingsViewForProvider, OnlineBookingsViewForUser } from "../../application/dtos/booking.dto";
+
+const shiftDateOnly = (dateString: string, days: number): string => {
+    const date = new Date(`${dateString}T00:00:00.000Z`);
+    date.setUTCDate(date.getUTCDate() + days);
+    return date.toISOString().slice(0, 10);
+};
 
 export class BookingQueriesImpl implements IBookingQueries {
 
@@ -154,18 +160,25 @@ export class BookingQueriesImpl implements IBookingQueries {
     }
 
     async findGraphDataForDashboard(query: BookingGraphStatsForProviderQuery): Promise<BookingGraphStatsForProviderView | null> {
-        const { providerId, subscriptionGuard, endDate, startDate, isAdmin } = query;
+        const { providerId, subscriptionGuard, endDate, startDate, isAdmin, timeZone } = query;
+        const effectiveTimeZone = timeZone || defaultTimezone;
 
         const matchFilter: FilterQuery<BookingProps> = {};
         const facet: Record<string, any> = {};
         const isProvider = !!providerId && !isAdmin;
         const guardLevel = isAdmin ? 3 : (subscriptionGuard ?? 0);
 
+        const { start, end } = getDateRangeMetrics({
+            startDate,
+            endDate,
+            timeZone: effectiveTimeZone
+        })
+
         if (isProvider) {
             matchFilter.serviceProviderId = new Types.ObjectId(providerId);
         }
 
-        matchFilter.createdAt = { $gte: startDate, $lte: endDate };
+        matchFilter.createdAt = { $gte: start, $lte: end };
 
 
         if (isProvider && (subscriptionGuard ?? 0) === 0) {
@@ -177,7 +190,7 @@ export class BookingQueriesImpl implements IBookingQueries {
                 {
                     $group: {
                         _id: {
-                            $dateToString: { format: "%Y-%m-%d", date: "$appointmentDate" },
+                            $dateToString: { format: "%Y-%m-%d", date: "$appointmentDate", timezone: effectiveTimeZone },
                         },
                         completed: {
                             $sum: {
@@ -211,7 +224,7 @@ export class BookingQueriesImpl implements IBookingQueries {
             facet.topBookingDaysChartData = [
                 {
                     $group: {
-                        _id: { $dateToString: { format: "%Y-%m-%d", date: "$appointmentDate" } },
+                        _id: { $dateToString: { format: "%Y-%m-%d", date: "$appointmentDate", timezone: effectiveTimeZone } },
                         count: { $sum: 1 },
                     },
                 },
@@ -226,7 +239,7 @@ export class BookingQueriesImpl implements IBookingQueries {
                 {
                     $group: {
                         _id: {
-                            date: { $dateToString: { format: "%Y-%m-%d", date: "$appointmentDate" } },
+                            date: { $dateToString: { format: "%Y-%m-%d", date: "$appointmentDate", timezone: effectiveTimeZone } },
                         },
                         online: {
                             $sum: { $cond: [{ $eq: ["$appointmentMode", "online"] }, 1, 0] },
@@ -252,7 +265,7 @@ export class BookingQueriesImpl implements IBookingQueries {
                 },
                 {
                     $project: {
-                        date: { $dateToString: { format: "%Y-%m-%d", date: "$firstAppointmentDate" } },
+                        date: { $dateToString: { format: "%Y-%m-%d", date: "$firstAppointmentDate", timezone: effectiveTimeZone } },
                     },
                 },
                 {
@@ -278,7 +291,7 @@ export class BookingQueriesImpl implements IBookingQueries {
                 {
                     $group: {
                         _id: {
-                            date: { $dateToString: { format: "%Y-%m-%d", date: "$appointmentDate" } },
+                            date: { $dateToString: { format: "%Y-%m-%d", date: "$appointmentDate", timezone: effectiveTimeZone } },
                             hour: "$appointmentTime",
                         },
                         bookings: { $sum: 1 },
@@ -341,15 +354,13 @@ export class BookingQueriesImpl implements IBookingQueries {
     }
 
     async findStatsDataForProviderDashboard(query: BookingStatsForProviderQuery): Promise<BookingStatsForProviderView> {
-        const { providerId } = query;
+        const { providerId, timeZone, startDate, endDate } = query;
 
-        const { startDate, endDate } = getStartAndEndDate(
-            query.startDate,
-            query.endDate,
-        );
-
-        const { previousStartDate, previousEndDate } =
-            calculatePreviousPeriod(startDate, endDate);
+        const { start, end, prevStart, prevEnd } = getDateRangeMetrics({
+            startDate,
+            endDate,
+            timeZone,
+        });
 
         interface AggregationFacetResult {
             totalAppointments: number;
@@ -370,14 +381,16 @@ export class BookingQueriesImpl implements IBookingQueries {
             serviceProviderId: new Types.ObjectId(providerId),
         };
 
-        const today = new Date();
-        today.setUTCHours(0, 0, 0, 0);
-
-        const tomorrow = new Date(today);
-        tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
-
-        const yesterday = new Date(today);
-        yesterday.setUTCDate(yesterday.getUTCDate() - 1);
+        const effectiveTimeZone = timeZone || defaultTimezone;
+        const todayDate = formatInTimeZone(new Date(), effectiveTimeZone, "yyyy-MM-dd");
+        const { start: todayStart, end: todayEnd } = getDayBoundaryMetrics(
+            todayDate,
+            effectiveTimeZone
+        );
+        const { start: yesterdayStart, end: yesterdayEnd } = getDayBoundaryMetrics(
+            shiftDateOnly(todayDate, -1),
+            effectiveTimeZone
+        );
 
         const [result] = await BookingModel.aggregate<AggregationResult>([
             {
@@ -390,8 +403,8 @@ export class BookingQueriesImpl implements IBookingQueries {
                         {
                             $match: {
                                 appointmentDate: {
-                                    $gte: startDate,
-                                    $lte: endDate,
+                                    $gte: start,
+                                    $lte: end,
                                 },
                             },
                         },
@@ -471,8 +484,8 @@ export class BookingQueriesImpl implements IBookingQueries {
                         {
                             $match: {
                                 appointmentDate: {
-                                    $gte: previousStartDate,
-                                    $lte: previousEndDate,
+                                    $gte: prevStart,
+                                    $lte: prevEnd,
                                 },
                             },
                         },
@@ -552,8 +565,8 @@ export class BookingQueriesImpl implements IBookingQueries {
                         {
                             $match: {
                                 appointmentDate: {
-                                    $gte: today,
-                                    $lt: tomorrow,
+                                    $gte: todayStart,
+                                    $lte: todayEnd,
                                 },
                             },
                         },
@@ -567,8 +580,8 @@ export class BookingQueriesImpl implements IBookingQueries {
                         {
                             $match: {
                                 appointmentDate: {
-                                    $gte: yesterday,
-                                    $lt: today,
+                                    $gte: yesterdayStart,
+                                    $lte: yesterdayEnd,
                                 },
                             },
                         },
@@ -605,22 +618,27 @@ export class BookingQueriesImpl implements IBookingQueries {
     }
 
     async findStatsDataForAdminDashboard(query: BookingsStatsDataAdminQuery): Promise<BookingsStatsDataAdminView> {
-        const { startDate, endDate } = getStartAndEndDate(query.startDate, query.endDate);
-        const { previousStartDate, previousEndDate } = calculatePreviousPeriod(startDate, endDate);
+        const { startDate, endDate, timeZone } = query;
+
+        const { start, end, prevStart, prevEnd } = getDateRangeMetrics({
+            startDate,
+            endDate,
+            timeZone,
+        });
 
         const [result] = await BookingModel.aggregate([
             {
                 $match: {
                     appointmentDate: {
-                        $gte: previousStartDate,
-                        $lte: endDate,
+                        $gte: prevStart,
+                        $lte: end,
                     },
                 },
             },
             {
                 $facet: {
                     current: [
-                        { $match: { appointmentDate: { $gte: startDate, $lte: endDate } } },
+                        { $match: { appointmentDate: { $gte: start, $lte: end } } },
                         {
                             $group: {
                                 _id: null,
@@ -641,7 +659,7 @@ export class BookingQueriesImpl implements IBookingQueries {
                         }
                     ],
                     previous: [
-                        { $match: { appointmentDate: { $gte: previousStartDate, $lte: previousEndDate } } },
+                        { $match: { appointmentDate: { $gte: prevStart, $lte: prevEnd } } },
                         {
                             $group: {
                                 _id: null,
@@ -687,23 +705,17 @@ export class BookingQueriesImpl implements IBookingQueries {
 
     async findTodaysBookingsForCronjob(): Promise<boolean> {
         const now = new Date();
-        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-
         const bookings = await BookingModel.updateMany(
             {
                 appointmentStatus: AppointmentStatus.CONFIRMED,
-                appointmentDate: {
-                    $gte: todayStart,
-                    $lt: todayEnd
-                }
+                sessionEndTime: { $lt: now }
             },
             {
                 $set: { appointmentStatus: AppointmentStatus.NOT_ATTENDED },
                 $push: {
                     statusTrack: {
                         appointmentStatus: AppointmentStatus.NOT_ATTENDED,
-                        time: new Date()
+                        time: now
                     }
                 }
             }
@@ -712,7 +724,7 @@ export class BookingQueriesImpl implements IBookingQueries {
     }
 
     async findUsersforChatSideBar(query: BookingUsersForChatQuery): Promise<BookingUsersForChatView> {
-        const { userId, role } = query;
+        const { userId, role, timeZone } = query;
 
         const matchFilter: FilterQuery<BookingProps> = {};
         let targetLookupField: string;
@@ -725,13 +737,24 @@ export class BookingQueriesImpl implements IBookingQueries {
             targetLookupField = "$userId";
         }
 
+        const effectiveTimeZone = timeZone || defaultTimezone;
+        const todayStr = formatInTimeZone(new Date(), effectiveTimeZone, 'yyyy-MM-dd');
+        const yesterdayStr = shiftDateOnly(todayStr, -1);
+        const tomorrowStr = shiftDateOnly(todayStr, 1);
+
+        const { start, end } = getDateRangeMetrics({
+            startDate: yesterdayStr,
+            endDate: tomorrowStr,
+            timeZone: effectiveTimeZone,
+        });
+
         const users = await BookingModel.aggregate([
             {
                 $match: {
                     ...matchFilter,
                     appointmentDate: {
-                        $gte: startOfDay(subDays(new Date(), 1)),
-                        $lte: endOfDay(addDays(new Date(), 1)),
+                        $gte: start,
+                        $lte: end,
                     },
                     appointmentStatus: AppointmentStatus.CONFIRMED
                 }

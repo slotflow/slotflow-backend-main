@@ -1,13 +1,15 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
 import { ServiceMode } from "../../domain/enums/service.enum";
+import { defaultTimezone } from "../../shared/utils/constants/constant";
 import { Availability } from "../../domain/commands/serviceAvailability.commands";
 
 export interface IServiceAvailability extends Document {
-  _id: Types.ObjectId,
-  providerId: Types.ObjectId,
-  availabilities: Availability[],
-  createdAt: Date,
-  updatedAt: Date,
+  _id: Types.ObjectId;
+  providerId: Types.ObjectId;
+  timeZone: string;
+  availabilities: Availability[];
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 const slotSchema = new Schema({
@@ -53,6 +55,7 @@ const availabilitySchema = new Schema({
 
 const serviceAvailabilitySchema = new Schema<IServiceAvailability>({
   providerId: { type: Schema.Types.ObjectId, ref: "Provider", required: true },
+  timeZone: { type: String, required: true, default: defaultTimezone },
   availabilities: [availabilitySchema]
 },
   {

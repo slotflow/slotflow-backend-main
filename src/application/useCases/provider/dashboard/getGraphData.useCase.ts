@@ -13,7 +13,7 @@ export class GetProviderGraphDataUseCase {
 
     async execute(input: GetProviderGraphDataInput): Promise<GetProviderGraphDataOutput> {
         try {
-            const { providerId, subscription, endDate, startDate, isAdmin } = input;
+            const { providerId, subscription, endDate, startDate, isAdmin, timeZone } = input;
             if (!providerId || !subscription) {
                 throw new BadRequestError();
             }
@@ -28,7 +28,8 @@ export class GetProviderGraphDataUseCase {
                 subscriptionGuard,
                 endDate,
                 startDate,
-                isAdmin
+                isAdmin,
+                timeZone
             });
 
             const dashboardGraphData: GetProviderGraphDataOutput = {

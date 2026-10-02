@@ -9,6 +9,7 @@ export class ServiceAvailabilityMapper {
             _id: doc._id.toString(),
             availabilities: doc.availabilities,
             providerId: doc.providerId.toString(),
+            timeZone: doc.timeZone,
             createdAt: doc.createdAt,
             updatedAt: doc.updatedAt,
         });
@@ -20,6 +21,7 @@ export class ServiceAvailabilityMapper {
         return {
             availabilities: props.availabilities,
             providerId: new Types.ObjectId(props.providerId),
+            timeZone: props.timeZone,
             createdAt: props.createdAt,
             updatedAt: props.updatedAt,
         };

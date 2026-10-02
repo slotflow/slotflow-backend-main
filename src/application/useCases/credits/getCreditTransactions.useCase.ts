@@ -10,16 +10,9 @@ export class GetCreditTransactionsUseCase {
     
     async execute(input: GetCreditTransactionsInput): Promise<TableData<Array<GetCreditTransactionsOutput>>> {
         try {
-            const result = await this.creditTransactionRepository.findByUserIdWithFilters(
-                input.userId,
-                input.startDate,
-                input.endDate,
-                input.page,
-                input.limit,
-                input.status,
-                input.type,
-                input.source
-            );
+            const result = await this.creditTransactionRepository.findByUserIdWithFilters({
+               ...input
+            });
 
             return {
                 items: result?.items?.map( t => ({

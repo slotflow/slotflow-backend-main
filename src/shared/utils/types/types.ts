@@ -9,6 +9,18 @@ export interface GenerateId {
   }
 }
 
+
+
+//
+export type DateInput = Date | string | number | null | undefined;
+export type DateFormatPattern = typeof dateFormats[keyof typeof dateFormats] | (string & {});
+
+// Calculate previous period helper props
+export interface CalculatePrevPeriodProps {
+  startDate: Date;
+  endDate: Date;
+}
+
 //
 export interface DateRangeResult {
   start: Date;
@@ -20,5 +32,15 @@ export interface DateRangeResult {
 }
 
 //
-export type DateInput = Date | string | number | null | undefined;
-export type DateFormatPattern = typeof dateFormats[keyof typeof dateFormats] | (string & {});
+export interface DateRangeProps {
+  startDate: Date | string,
+  endDate: Date | string,
+  timeZone?: string;
+}
+
+//
+export interface FormatDateProps {
+  date: DateInput;
+  pattern?: DateFormatPattern;
+  timeZone?: string;
+}

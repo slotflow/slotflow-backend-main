@@ -22,8 +22,9 @@ class ProviderDashboardController {
             const user = req.user as AuthUser;
             const validatedData = startAndEndDateSchema.parse(req.query);
             const result = await this.getProviderStatsUseCase.execute({
-                providerId: user.id,
                 ...validatedData,
+                providerId: user.id,
+                timeZone: user.timeZone.value
             });
             sendResponse(res, result);
         } catch (error) {
@@ -41,7 +42,8 @@ class ProviderDashboardController {
                 subscription,
                 endDate,
                 startDate,
-                isAdmin: false
+                isAdmin: false,
+                timeZone: user.timeZone.value
             });
             sendResponse(res, result);
         } catch (error) {

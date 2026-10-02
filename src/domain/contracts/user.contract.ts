@@ -4,7 +4,7 @@ import { HearAboutUsOptionValue, OnboardingStatus, Role } from "../enums/common.
 export interface UserProps {
     _id: string
 
-    username: string | null;
+    username: string;
     email: string;
     password: string | null;
 
@@ -24,7 +24,7 @@ export interface UserProps {
     referralCode: string | null;
     referredBy: string | null;
 
-    timeZone: TimeZone | null;
+    timeZone: TimeZone;
 
     createdAt: Date,
     updatedAt: Date

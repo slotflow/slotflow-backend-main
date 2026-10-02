@@ -119,8 +119,8 @@ export interface StatMetric {
 
 //
 export interface CommonDateInput {
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
 }
 
 // Notification channels
@@ -175,6 +175,7 @@ export interface CreateSubscriptionCheckoutSessionInput {
     name: string;
     email: string;
     role: Role;
+    timeZone: TimeZone;
   }
 }
 export interface CreateSubscriptionCheckoutSessionOutput {
@@ -199,6 +200,7 @@ export interface CreateBookingCheckoutSessionInput {
     name: string;
     email: string;
     role: Role;
+    timeZone: TimeZone;
   }
 }
 export interface CreateBookingCheckoutSessionOutput {

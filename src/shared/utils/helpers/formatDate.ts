@@ -1,21 +1,33 @@
-import {
-  format,
-  isValid,
-} from 'date-fns';
-import { dateFormats } from '../constants/constant';
-import { DateFormatPattern, DateInput } from '../types/types';
+import { isValid } from 'date-fns';
+import { parseDate } from './parseDate';
+import { formatInTimeZone } from 'date-fns-tz';
+import { FormatDateProps } from '../types/types';
+import { dateFormats, defaultTimezone } from '../constants/constant';
 
-export const formatDate = (
-  date: DateInput,
-  pattern: DateFormatPattern = dateFormats.SHORT
-): string => {
+/**
+ * Formats a date string, number, or Date instance into a specific pattern
+ * aligned with a target timezone.
+ *
+ */
+
+export const formatDate = (data: FormatDateProps): string => {
+  const {
+    date,
+    pattern = dateFormats.SHORT,
+    timeZone = defaultTimezone ?? 'Asia/Kolkata',
+  } = data;
+
   if (!date) return 'N/A';
 
-  const parsedDate = date instanceof Date ? date : new Date(date);
+  try {
+    const parsedDate = parseDate(date);
 
-  if (!isValid(parsedDate)) {
+    if (!isValid(parsedDate)) {
+      return 'N/A';
+    }
+
+    return formatInTimeZone(parsedDate, timeZone, pattern);
+  } catch {
     return 'N/A';
   }
-
-  return format(parsedDate, pattern);
 };

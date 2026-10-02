@@ -11,7 +11,9 @@ import { ProviderServiceProps } from "../../domain/contracts/providerService.con
  */
 
 // findStats method 
-export interface UserStatsDataQuery extends CommonDateInput { }
+export interface UserStatsDataQuery extends CommonDateInput {
+    timeZone: string;
+}
 export interface UserStatsDataView extends Record<string, StatMetric | undefined> {
     totalUsers: StatMetric;
     blockedUsers?: StatMetric;
@@ -38,7 +40,9 @@ export type ProviderByIdView = Pick<UserProps, "username" | "email" | "isBlocked
 
 
 // findProviderStats method 
-export interface ProviderStatsDataQuery extends CommonDateInput { };
+export interface ProviderStatsDataQuery extends CommonDateInput {
+    timeZone: string;
+};
 export interface ProviderStatsDataView extends Record<string, StatMetric | undefined> {
     totalProviders: StatMetric;
     adminVerifiedProviders: StatMetric;
@@ -48,9 +52,9 @@ export interface ProviderStatsDataView extends Record<string, StatMetric | undef
 
 
 // findNewVsReturningUserStats method 
-export type UserChartDataQuery = CommonDateInput & {
-    role: Role;
- };
+export type UserChartDataQuery = CommonDateInput & Pick<UserProps, "role"> & {
+    timeZone: string;
+};
 export type UserChartDataView = Array<{
   date: string;
   newUsers: number;
@@ -150,6 +154,7 @@ export type UserGetServiceProviderDetailsOutput = Pick<UserProps, "username" | "
 export interface GetUserForChatSidebarInput {
     userId: UserProps["_id"];
     role: Role;
+    timeZone: string;
 }
 export type GetUserForChatSidebarOutput = Array<Pick<UserProps, "_id" | "username" | "profileImage">> | [];
 
@@ -174,3 +179,10 @@ export interface UpdatePasswordInput {
     currentPassword: string;
     newPassword: string;
 }
+
+
+// Update user timezone
+export type UpdateUserTimeZoneInput = Pick<UserProps, "timeZone"> & {
+    userId: UserProps["_id"];
+}
+export type UpdateUserTimeZoneOutput = Pick<UserProps, "timeZone">;

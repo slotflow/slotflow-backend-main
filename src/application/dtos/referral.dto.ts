@@ -1,4 +1,4 @@
-import { MiniCardData } from "./common.dto";
+import { CommonDateInput, MiniCardData } from "./common.dto";
 import { ReferralStatus } from "../../domain/enums/common.enum";
 import { UserProps } from "../../domain/contracts/user.contract";
 import { ReferralProps } from "../../domain/contracts/referral.contract";
@@ -8,10 +8,9 @@ import { ReferralProps } from "../../domain/contracts/referral.contract";
  */
 
 // findReferralDetails query and view
-export interface GetReferralDetailsQuery {
+export interface GetReferralDetailsQuery extends CommonDateInput {
     userId: UserProps["_id"];
-    startDate: Date;
-    endDate: Date;
+    timeZone: string;
 }
 export interface MainChartData {
     date: string;

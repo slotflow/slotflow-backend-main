@@ -1,33 +1,26 @@
 import { PlanName } from "../../domain/enums/plan.enum";
 import { UserProps } from "../../domain/contracts/user.contract";
+import { BookingStatsForProviderView } from "./booking.dto";
+import { CommonDateInput } from "./common.dto";
 
 /**
  * Provider usecase dtos
  */
 
 // GetProviderStats usecase input output
-export interface GetProviderStatsInput {
+export interface GetProviderStatsInput extends CommonDateInput {
     providerId: UserProps["_id"];
-    startDate: Date;
-    endDate: Date;
+    timeZone: string;
 }
-export interface GetProviderStatsOutput {
-    totalAppointments: number;
-    completedAppointments: number;
-    missedAppointments: number;
-    cancelledAppointmentsByUser: number;
-    rejectedAppointmentsByProvider: number;
-    todaysAppointments: number;
-}
+export type GetProviderStatsOutput = BookingStatsForProviderView;
 
 
 // GetProviderGraphData usecase input output
-export interface GetProviderGraphDataInput {
+export interface GetProviderGraphDataInput extends CommonDateInput {
     providerId: UserProps["_id"];
     subscription: PlanName;
-    startDate: Date;
-    endDate: Date;
     isAdmin: boolean;
+    timeZone: string;
 }
 export interface GetProviderGraphDataOutput {
     appointmentsOvertimeChartData: Array<{

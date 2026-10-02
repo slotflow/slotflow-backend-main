@@ -1,4 +1,4 @@
-import { isAfter, startOfDay } from "date-fns";
+import mongoose from "mongoose";
 import { PlanName } from "../../../domain/enums/plan.enum";
 import { PaymentFor } from "../../../domain/enums/payment.enum";
 import { ERROR_CODES } from "../../../shared/utils/types/enums";
@@ -11,7 +11,6 @@ import { BillingCycle, SubscriptionStatus } from "../../../domain/enums/subscrip
 import { ISubscriptionRepository } from "../../../domain/interfaces/repositories/ISubscription.repository";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 import { SubscriptionCreateSessionIdInput, SubscriptionCreateSessionIdOutput } from "../../dtos/subscription.dto";
-import mongoose from "mongoose";
 
 export class SubscriptionCheckoutUseCase {
     constructor(
@@ -25,7 +24,7 @@ export class SubscriptionCheckoutUseCase {
         const session = await mongoose.startSession();
         session.startTransaction();
         try {
-            const { providerId, planId, billingCycle, email, name, role } = input;
+            const { providerId, planId, billingCycle, email, name, role, timeZone } = input;
 
             if (!providerId || !planId || !billingCycle || !email || !name || !role) {
                 throw new BadRequestError();
@@ -47,7 +46,6 @@ export class SubscriptionCheckoutUseCase {
                     ERROR_CODES.PLAN_NOT_FOUND
                 );
             }
-
 
             const providerLastSubscriptionId = providerProfile.subscriptions.at(-1);
             if (providerLastSubscriptionId) {
@@ -75,10 +73,9 @@ export class SubscriptionCheckoutUseCase {
                     );
                 }
 
-                const isSubscriptionExpired = isAfter(
-                    startOfDay(new Date()),
-                    startOfDay(new Date(subscription?.currentPeriodEnd))
-                );
+                const now = new Date();
+                const currentPeriodEnd = new Date(subscription?.currentPeriodEnd);
+                const isSubscriptionExpired = now.getTime() > currentPeriodEnd.getTime();
                 if (!isSubscriptionExpired) {
                     throw new BadRequestError(
                         "Your subscription is already active.",
@@ -133,7 +130,8 @@ export class SubscriptionCheckoutUseCase {
                     email,
                     id: providerId,
                     name,
-                    role
+                    role,
+                    timeZone
                 }
             });
 

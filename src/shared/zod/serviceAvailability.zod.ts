@@ -2,7 +2,8 @@ import z from "zod";
 import { timeRegex } from "../utils/constants/regex";
 import { Day } from "../../domain/enums/common.enum";
 import { ServiceMode } from "../../domain/enums/service.enum";
-import { dateSchema, validateProviderIdSchema } from "./base.zod";
+import { dateOnlySchema, validateProviderIdSchema } from "./base.zod";
+import { parseTimeToMinutes } from "../utils/helpers/parseTimeToMinutes";
 
 // Create service availability schema
 export const createServiceAvailabilitySchema = z.array(
@@ -59,11 +60,25 @@ export const createServiceAvailabilitySchema = z.array(
           message: "End time is required"
         });
       }
+
+      if (data.startTime && data.endTime) {
+        const startMin = parseTimeToMinutes(data.startTime);
+        const endMin = parseTimeToMinutes(data.endTime);
+
+        if (startMin !== null && endMin !== null && startMin >= endMin) {
+          ctx.addIssue({
+            path: ["endTime"],
+            code: z.ZodIssueCode.custom,
+            message: "End time must be after start time"
+          });
+        }
+      }
+
     }
   })
 );
 
 // Get service availability schema
 export const getServiceAvailabilitySchema = z.object({
-  date: dateSchema,
+  date: dateOnlySchema,
 }).merge(validateProviderIdSchema);

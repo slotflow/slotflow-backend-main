@@ -45,7 +45,7 @@ export interface EventEnvelope<MBSSubKafkaEventPayload, M = DqMetaData> {
 // send email common
 export interface SendEmailCommon {
   email: string;
-  name?: string;
+  name: string;
 }
 
 // send notification common
@@ -202,12 +202,16 @@ export interface GotAnAppointmentEvent {
 
 // send welcome event
 export interface SendWelcomeEvent {
-  emailData: SendEmailCommon;
+  emailData: {
+    email: string;
+    name?: string;
+  };
 }
 
 // send otp event for registration and password update
 export interface SendOtpEvent {
-  emailData: SendEmailCommon & {
+  emailData: {
+    email: string;
     otp: string;
     purpose: OtpPurpose;
   }

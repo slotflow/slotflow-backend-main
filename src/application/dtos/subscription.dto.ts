@@ -6,6 +6,7 @@ import { UserProps } from "../../domain/contracts/user.contract";
 import { PlanProps } from "../../domain/contracts/plan.contract";
 import { BillingCycle } from "../../domain/enums/subscription.enum";
 import { SubscriptionProps } from "../../domain/contracts/subscription.contract";
+import { TimeZone } from "../../domain/commands/user.commands";
 
 /**
  * subscription queries dtos
@@ -36,7 +37,9 @@ export interface SubscriptionDetailsView extends SubscriptionDetailsProps {
 
 
 // findStatsForAdminDashboard method 
-export interface SubscriptionStatsDataQuery extends CommonDateInput { }
+export interface SubscriptionStatsDataQuery extends CommonDateInput {
+    timeZone: string;
+}
 export interface SubscriptionStatsDataView extends Record<string, StatMetric | undefined> {
     activeSubscriptions: StatMetric;
     expiredSubscriptions: StatMetric;
@@ -57,7 +60,9 @@ export type MySubscriptionView = {
 
 
 // findAnalayticsForAdminDashboard method 
-export interface SubscriptionAnalyticsQuery extends CommonDateInput { }
+export interface SubscriptionAnalyticsQuery extends CommonDateInput {
+    timeZone: string;
+}
 export type SubscriptionAnalyticsView = Array<{
     status: string;
     value: number;
@@ -86,6 +91,7 @@ export interface SubscriptionCreateSessionIdInput {
     email: string;
     name: string;
     role: Role;
+    timeZone: TimeZone;
 }
 export interface SubscriptionCreateSessionIdOutput {
     sessionId: string;

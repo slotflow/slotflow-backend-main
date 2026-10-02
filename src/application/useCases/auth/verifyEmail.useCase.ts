@@ -1,8 +1,8 @@
 import { IJWT } from "../../interfaces/security/IJwt.service";
 import { ERROR_CODES } from "../../../shared/utils/types/enums";
+import { IOTPService } from "../../interfaces/services/IOtp.service";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { VerifyEmailInput, VerifyEmailOutput } from "../../dtos/auth.dto";
-import { IOTPService } from "../../interfaces/services/IOtp.service";
 import { BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 
@@ -28,7 +28,10 @@ export class VerifyEmailUseCase {
                 );
             }
 
-            const token = await this.jwtService.generateToken({ userId: user._id, email: user.email });
+            const token = await this.jwtService.generateToken({
+                userId: user._id,
+                email: user.email
+            });
 
             await this.optService.setOtp(email);
 

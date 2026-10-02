@@ -3,9 +3,11 @@ import { Role } from "../../domain/enums/common.enum";
 import { ServiceMode } from "../../domain/enums/service.enum";
 import { UserProps } from "../../domain/contracts/user.contract";
 import { BookingProps } from "../../domain/contracts/booking.contract";
-import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
-import { ApiPaginationInput, Availability,  StatMetric, TimeSlotForClientOutput } from "./common.dto";
 import { ParticipantPresence } from "../../domain/commands/booking.commands";
+import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
+import { Availability } from "../../domain/commands/serviceAvailability.commands";
+import { ApiPaginationInput, StatMetric, TimeSlotForClientOutput } from "./common.dto";
+import { TimeZone } from "../../domain/commands/user.commands";
 
 /**
  * Booking queries dtos
@@ -61,16 +63,16 @@ export interface BookingDetailsView extends Pick<BookingProps, "appointmentDate"
 // findUsersforChatSideBar method 
 export type BookingUsersForChatQuery = Pick<UserProps, "role"> & {
   userId: UserProps["_id"];
+  timeZone: string;
   // need to send the opposite role
 }
 export type BookingUsersForChatView = Array<Pick<UserProps, "_id" | "username" | "profileImage">>;
 
 
 // findStatsDataForProviderDashboard method 
-export interface BookingStatsForProviderQuery {
+export interface BookingStatsForProviderQuery extends CommonDateInput {
   providerId: UserProps["_id"];
-  startDate: Date;
-  endDate: Date;
+  timeZone: string;
 }
 export interface BookingStatsForProviderView extends Record<string, StatMetric | undefined> {
   totalAppointments: StatMetric;
@@ -83,12 +85,11 @@ export interface BookingStatsForProviderView extends Record<string, StatMetric |
 
 
 // findGraphDataForProviderDashboard method
-export interface BookingGraphStatsForProviderQuery {
+export interface BookingGraphStatsForProviderQuery extends CommonDateInput {
   subscriptionGuard?: number;
   providerId?: UserProps["_id"];
-  startDate: Date;
-  endDate: Date;
   isAdmin: boolean;
+  timeZone: string;
 }
 export interface BookingGraphStatsForProviderView {
   appointmentsOvertimeChartData: Array<{
@@ -129,7 +130,9 @@ export interface BookingGraphStatsForProviderView {
 
 
 // findStatsDataForAdminDashboard method 
-export interface BookingsStatsDataAdminQuery extends CommonDateInput { }
+export interface BookingsStatsDataAdminQuery extends CommonDateInput {
+  timeZone: string;
+}
 export interface BookingsStatsDataAdminView extends Record<string, StatMetric | undefined> {
   totalAppointments: StatMetric;
   completedAppointments: StatMetric;
@@ -156,6 +159,7 @@ export interface UserAppointmentBookingViaStripeInput {
   email: string;
   name: string;
   role: Role;
+  timeZone: TimeZone;
 }
 export interface UserAppointmentBookingViaStripeOutput {
   sessionId: string;

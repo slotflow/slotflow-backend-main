@@ -37,7 +37,7 @@ export const provideDeleteServiceProofUseCase = new ProvideDeleteServiceProofUse
 export const provideDeleteIdentityProofUseCase = new ProvideDeleteIdentityProofUseCase(s3Client, providerProfileRepository, signedUrlService);
 
 // provider service availability controller dependency injection
-export const getServiceAvailabilityUseCase = new GetServiceAvailabilityUseCase(providerProfileRepository, serviceAvailabilityQueries);
+export const getServiceAvailabilityUseCase = new GetServiceAvailabilityUseCase(providerProfileRepository, serviceAvailabilityQueries, userRepository);
 
 // provider subscription controller dependency injection
 export const subscriptionCheckoutUseCase = new SubscriptionCheckoutUseCase(planRepository, providerProfileRepository, subscriptionRepository, paymentServiceClient);

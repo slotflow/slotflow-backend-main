@@ -1,9 +1,9 @@
 import { Role } from "../../domain/enums/common.enum";
-import { ERROR_CODES } from "../../shared/utils/types/enums";
 import { NextFunction, Request, Response } from "express";
-import { sendResponse } from "../../shared/utils/helpers/response";
-import { BadRequestError } from "../../shared/error/appError";
+import { ERROR_CODES } from "../../shared/utils/types/enums";
 import { AuthUser } from "../../application/dtos/common.dto";
+import { BadRequestError } from "../../shared/error/appError";
+import { sendResponse } from "../../shared/utils/helpers/response";
 import { GetBookingsUseCase } from "../../application/useCases/booking/getBookings.useCase";
 import { CheckBookingUseCase } from "../../application/useCases/booking/checkBooking.useCase";
 import { CancelBookingUseCase } from "../../application/useCases/booking/cancelBooking.useCase";
@@ -131,7 +131,8 @@ class BookingController {
                 date: validatedDate.date,
                 email: user.email,
                 name: user.name,
-                role: user.role
+                role: user.role,
+                timeZone: user.timeZone
             });
             sendResponse(res, result);
         } catch (error) {

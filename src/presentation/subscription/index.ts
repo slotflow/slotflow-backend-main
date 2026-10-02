@@ -1,4 +1,3 @@
-import { kafkaProducer } from "../../infrastructure/messaging";
 import { paymentServiceClient } from "../../infrastructure/clients";
 import { subscriptionQueries } from "../../infrastructure/queries";
 import { GetSubscriptionsUseCase } from "../../application/useCases/subscription/getSubscriptions.useCase";

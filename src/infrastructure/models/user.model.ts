@@ -4,7 +4,7 @@ import { HearAboutUsOptionValue, OnboardingStatus, Role } from '../../domain/enu
 
 export interface IUser extends Document {
   _id: Types.ObjectId;
-  username: string | null;
+  username: string;
   email: string;
   password: string;
   role: Role;
@@ -19,7 +19,7 @@ export interface IUser extends Document {
   whereDidHearAboutUs: HearAboutUsOptionValue;
   referralCode: string | null;
   referredBy: string | null;
-  timeZone: TimeZone | null;
+  timeZone: TimeZone;
   createdAt: Date;
   updatedAt: Date;
 };

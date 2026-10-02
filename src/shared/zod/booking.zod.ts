@@ -2,7 +2,7 @@ import z from "zod";
 import { objectIdRegex } from "../utils/constants/regex";
 import { ServiceMode } from "../../domain/enums/service.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
-import { dateSchema, paginationSchema, validateProviderIdSchema } from "./base.zod";
+import { dateOnlySchema, dateTimeSchema, paginationSchema, validateProviderIdSchema } from "./base.zod";
 
 // BookingId validation schemas
 export const validateBookingIdSchema = z.object({
@@ -23,8 +23,7 @@ export const validateRoomIdSchema = z.object({
 // Booking checkout validation schemas
 export const bookingCheckoutViaStripeSchema = z.object({
   slotId: z.string().regex(objectIdRegex, "Invalid slot id"),
-  date: z.string()
-  .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format. Expected YYYY-MM-DD"),
+  date: dateOnlySchema,
   selectedServiceMode: z.nativeEnum(ServiceMode),
 }).merge(validateProviderIdSchema);
 
@@ -37,8 +36,16 @@ export const cancelBookingSchema = z.object({
 export const validateJoinRoomSchema = z.object({
   roomId: z.string(),
   joined: z.boolean(),
-  joinedTime: z.string().optional(),
-  leftCallTime: z.string().optional(),
+  joinedTime: dateTimeSchema.optional(),
+  leftCallTime: dateTimeSchema.optional(),
+}).refine(data => {
+    if (data.joined && !data.joinedTime && !data.leftCallTime) {
+        return false;
+    }
+    return true;
+}, {
+    message: "Either joinedTime or leftCallTime must be provided when joined is true",
+    path: ["joinedTime"]
 });
 
 // Change booking status validation schemas

@@ -22,7 +22,8 @@ class CreditController {
             const validatedData = startAndEndDateSchema.parse(req.query);
             const result = await this.getCreditDetailsUseCase.execute({
                 ...validatedData,
-                userId: user.id
+                userId: user.id,
+                timeZone: user.timeZone.value
             });
             sendResponse(res, result);
         } catch (error) {
@@ -37,6 +38,7 @@ class CreditController {
             const result = await this.getCreditTransactionsUseCase.execute({
                 ...validatedData,
                 userId: user.id,
+                timeZone: user.timeZone.value
             });
             sendResponse(res, result);
         } catch (error) {

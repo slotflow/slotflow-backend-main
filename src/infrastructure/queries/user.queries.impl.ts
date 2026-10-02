@@ -2,17 +2,22 @@ import { Types } from "mongoose";
 import { UserModel } from "../models/user.model";
 import { Role } from "../../domain/enums/common.enum";
 import { TableData } from "../../application/dtos/common.dto";
-import { getStartAndEndDate } from "../../shared/utils/helpers/getStartAndEndDate";
-import { IUserQueries } from "../../application/interfaces/queries/IUser.queries";
 import { formatStatMetric } from "../../shared/utils/helpers/formatStatMetric";
-import { calculatePreviousPeriod } from "../../shared/utils/helpers/calculatePreviosPeriod";
+import { defaultTimezone } from "../../shared/utils/constants/constant";
+import { IUserQueries } from "../../application/interfaces/queries/IUser.queries";
+import { getDateRangeMetrics } from "../../shared/utils/helpers/getDateRangeMetrics";
 import { UserStatsDataQuery, UserStatsDataView, UsersQuery, UsersView, ProvidersQuery, ProvidersView, ProviderByIdQuery, ProviderByIdView, ProviderStatsDataQuery, ProviderStatsDataView, UserChartDataQuery, UserChartDataView } from "../../application/dtos/user.dto";
 
 export class UserQueriesImpl implements IUserQueries {
 
     async findStats(query: UserStatsDataQuery): Promise<UserStatsDataView> {
-        const { startDate, endDate } = getStartAndEndDate(query.startDate, query.endDate);
-        const { previousStartDate, previousEndDate } = calculatePreviousPeriod(startDate, endDate);
+        const { startDate, endDate, timeZone } = query;
+
+        const { start, end, prevStart, prevEnd } = getDateRangeMetrics({
+            startDate,
+            endDate,
+            timeZone,
+        });
 
         interface AggregationFacetResult {
             totalUsers: number;
@@ -31,8 +36,8 @@ export class UserQueriesImpl implements IUserQueries {
                 $match: {
                     role: Role.USER,
                     $or: [
-                        { createdAt: { $lte: endDate } },
-                        { updatedAt: { $gte: previousStartDate, $lte: endDate } }
+                        { createdAt: { $lte: end } },
+                        { updatedAt: { $gte: prevStart, $lte: prevEnd } }
                     ]
                 }
             },
@@ -45,7 +50,7 @@ export class UserQueriesImpl implements IUserQueries {
                                 totalUsers: {
                                     $sum: {
                                         $cond: [
-                                            { $and: [{ $gte: ['$createdAt', startDate] }, { $lte: ['$createdAt', endDate] }] },
+                                            { $and: [{ $gte: ['$createdAt', start] }, { $lte: ['$createdAt', end] }] },
                                             1,
                                             0
                                         ]
@@ -57,8 +62,8 @@ export class UserQueriesImpl implements IUserQueries {
                                             {
                                                 $and: [
                                                     { $eq: ['$isBlocked', true] },
-                                                    { $gte: ['$createdAt', startDate] },
-                                                    { $lte: ['$createdAt', endDate] }
+                                                    { $gte: ['$createdAt', start] },
+                                                    { $lte: ['$createdAt', end] }
                                                 ]
                                             },
                                             1,
@@ -69,7 +74,7 @@ export class UserQueriesImpl implements IUserQueries {
                                 newUsers: {
                                     $sum: {
                                         $cond: [
-                                            { $and: [{ $gte: ['$createdAt', startDate] }, { $lte: ['$createdAt', endDate] }] },
+                                            { $and: [{ $gte: ['$createdAt', start] }, { $lte: ['$createdAt', end] }] },
                                             1,
                                             0
                                         ]
@@ -80,9 +85,9 @@ export class UserQueriesImpl implements IUserQueries {
                                         $cond: [
                                             {
                                                 $and: [
-                                                    { $lt: ['$createdAt', startDate] },
-                                                    { $gte: ['$updatedAt', startDate] },
-                                                    { $lte: ['$updatedAt', endDate] }
+                                                    { $lt: ['$createdAt', start] },
+                                                    { $gte: ['$updatedAt', start] },
+                                                    { $lte: ['$updatedAt', end] }
                                                 ]
                                             },
                                             1,
@@ -100,7 +105,7 @@ export class UserQueriesImpl implements IUserQueries {
                                 totalUsers: {
                                     $sum: {
                                         $cond: [
-                                            { $and: [{ $gte: ['$createdAt', previousStartDate] }, { $lte: ['$createdAt', previousEndDate] }] },
+                                            { $and: [{ $gte: ['$createdAt', prevStart] }, { $lte: ['$createdAt', prevEnd] }] },
                                             1,
                                             0
                                         ]
@@ -112,8 +117,8 @@ export class UserQueriesImpl implements IUserQueries {
                                             {
                                                 $and: [
                                                     { $eq: ['$isBlocked', true] },
-                                                    { $gte: ['$createdAt', previousStartDate] },
-                                                    { $lte: ['$createdAt', previousEndDate] }
+                                                    { $gte: ['$createdAt', prevStart] },
+                                                    { $lte: ['$createdAt', prevEnd] }
                                                 ]
                                             },
                                             1,
@@ -124,7 +129,7 @@ export class UserQueriesImpl implements IUserQueries {
                                 newUsers: {
                                     $sum: {
                                         $cond: [
-                                            { $and: [{ $gte: ['$createdAt', previousStartDate] }, { $lte: ['$createdAt', previousEndDate] }] },
+                                            { $and: [{ $gte: ['$createdAt', prevStart] }, { $lte: ['$createdAt', prevEnd] }] },
                                             1,
                                             0
                                         ]
@@ -135,9 +140,9 @@ export class UserQueriesImpl implements IUserQueries {
                                         $cond: [
                                             {
                                                 $and: [
-                                                    { $lt: ['$createdAt', previousStartDate] },
-                                                    { $gte: ['$updatedAt', previousStartDate] },
-                                                    { $lte: ['$updatedAt', previousEndDate] }
+                                                    { $lt: ['$createdAt', prevStart] },
+                                                    { $gte: ['$updatedAt', prevStart] },
+                                                    { $lte: ['$updatedAt', prevEnd] }
                                                 ]
                                             },
                                             1,
@@ -319,20 +324,25 @@ export class UserQueriesImpl implements IUserQueries {
     }
 
     async findproviderStats(query: ProviderStatsDataQuery): Promise<ProviderStatsDataView> {
-        const { startDate, endDate } = getStartAndEndDate(query.startDate, query.endDate);
-        const { previousStartDate, previousEndDate } = calculatePreviousPeriod(startDate, endDate);
+        const { startDate, endDate, timeZone } = query;
+
+        const { start, end, prevStart, prevEnd } = getDateRangeMetrics({
+            startDate,
+            endDate,
+            timeZone,
+        });
 
         const [result] = await UserModel.aggregate([
             {
                 $match: {
                     role: Role.PROVIDER,
-                    createdAt: { $gte: previousStartDate, $lte: endDate }
+                    createdAt: { $gte: prevStart, $lte: prevEnd }
                 }
             },
             {
                 $facet: {
                     current: [
-                        { $match: { createdAt: { $gte: startDate, $lte: endDate } } },
+                        { $match: { createdAt: { $gte: start, $lte: end } } },
                         {
                             $lookup: {
                                 from: "providerprofiles",
@@ -353,7 +363,7 @@ export class UserQueriesImpl implements IUserQueries {
                         }
                     ],
                     previous: [
-                        { $match: { createdAt: { $gte: previousStartDate, $lte: previousEndDate } } },
+                        { $match: { createdAt: { $gte: prevStart, $lte: prevEnd } } },
                         {
                             $lookup: {
                                 from: "providerprofiles",
@@ -400,22 +410,29 @@ export class UserQueriesImpl implements IUserQueries {
     }
 
     async findAdminDashboardUserChartData(query: UserChartDataQuery): Promise<UserChartDataView> {
-        const { startDate, endDate } = getStartAndEndDate(query.startDate, query.endDate);
-        const { role } = query;
+        const { startDate, endDate, timeZone, role } = query;
+        const effectiveTimeZone = timeZone || defaultTimezone;
+
+        const { start, end } = getDateRangeMetrics({
+            startDate,
+            endDate,
+            timeZone: effectiveTimeZone,
+        });
+
         const stats = await UserModel.aggregate([
             {
                 $match: {
                     role: role,
-                    updatedAt: { $gte: startDate, $lte: endDate },
+                    updatedAt: { $gte: start, $lte: end },
                 },
             },
             {
                 $project: {
                     createdAtDate: {
-                        $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
+                        $dateToString: { format: "%Y-%m-%d", date: "$createdAt", timezone: effectiveTimeZone },
                     },
                     updatedAtDate: {
-                        $dateToString: { format: "%Y-%m-%d", date: "$updatedAt" },
+                        $dateToString: { format: "%Y-%m-%d", date: "$updatedAt", timezone: effectiveTimeZone },
                     },
                 },
             },

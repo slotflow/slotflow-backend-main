@@ -34,7 +34,10 @@ export class UpdateSubscriptionStatusCron {
   }
 
   private async run(): Promise<void> {
-    const today =  formatDate(new Date, dateFormats.ISO_DATE);
+    const today = formatDate({
+      date: new Date(),
+      pattern: dateFormats.ISO_DATE,
+    });
 
     if (this.lastRunDate === today) {
       log.info("[CRON] Subscription status already updated today. Skipping.");

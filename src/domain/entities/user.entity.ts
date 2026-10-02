@@ -1,6 +1,6 @@
 import { UserProps } from "../contracts/user.contract";
 import { OnboardingStatus, Role } from "../enums/common.enum";
-import { ChangePasswordProps, ChangeProfileImageProps, ChangeProfileInfoProps, CreateGoogleUserProps, CreateLocalUserProps, LinkGoogleAccountProps, CompleteProfileSetupProps, TimeZone } from "../commands/user.commands";
+import { ChangePasswordProps, ChangeProfileImageProps, ChangeProfileInfoProps, CreateGoogleUserProps, CreateLocalUserProps, LinkGoogleAccountProps, CompleteProfileSetupProps, TimeZone, ChangeUsernameProps, ChangeTimeZoneProps } from "../commands/user.commands";
 
 export class User {
 
@@ -24,7 +24,7 @@ export class User {
         const now = new Date();
         return new User({
             _id: "",
-            username: null,
+            username: props.username,
             email: props.email,
             password: props.password,
             role: Role.USER,
@@ -76,7 +76,7 @@ export class User {
         return this.props._id;
     }
 
-    get username(): string | null {
+    get username(): string {
         return this.props.username;
     }
 
@@ -132,7 +132,7 @@ export class User {
         return this.props.referredBy;
     }
 
-    get timeZone(): TimeZone | null {
+    get timeZone(): TimeZone {
         return this.props.timeZone;
     }
 
@@ -192,7 +192,7 @@ export class User {
 
     updateProfileImage(props: ChangeProfileImageProps) {
         this.ensureNotBlocked("update profile image");
-        if(props.profileImage === undefined) {
+        if (props.profileImage === undefined) {
             throw new Error("Profile image is required");
         }
         this.props.profileImage = props.profileImage;
@@ -213,19 +213,28 @@ export class User {
             this.props.onboardingType = Role.PROVIDER;
             this.props.onboardingStatus = OnboardingStatus.IN_PROGRESS;
         }
-        if(whereDidHearAboutUs) {
+        if (whereDidHearAboutUs) {
             this.props.whereDidHearAboutUs = whereDidHearAboutUs;
         }
-        if(referredBy) {
+        if (referredBy) {
             this.props.referredBy = referredBy;
         }
         this.touch();
     }
-    
+
     approvedByAdmin() {
         this.props.role = Role.PROVIDER;
         this.props.onboardingStatus = OnboardingStatus.APPROVED;
         this.touch();
     }
 
+    updateName(props: ChangeUsernameProps) {
+        this.props.username = props.username;
+        this.touch();
+    }
+
+    updateTimeZone(props: ChangeTimeZoneProps) {
+        this.props.timeZone = props.timeZone;
+        this.touch();
+    }
 }
