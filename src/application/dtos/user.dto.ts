@@ -77,10 +77,8 @@ export type UpdateUserProfileImageOutput = UserProps["profileImage"];
 
 
 // UpdateUserProfileInfo 
-export interface UpdateUserProfileInfoInput {
+export type UpdateUserProfileInfoInput = Pick<UserProps, "username" | "phone" | "timeZone"> & {
     userId: UserProps["_id"];
-    username: UserProps["username"];
-    phone: UserProps["phone"];
 }
 export type UpdateUserProfileInfoOutput = Pick<UserProps, "username" | "phone">
 
@@ -179,10 +177,3 @@ export interface UpdatePasswordInput {
     currentPassword: string;
     newPassword: string;
 }
-
-
-// Update user timezone
-export type UpdateUserTimeZoneInput = Pick<UserProps, "timeZone"> & {
-    userId: UserProps["_id"];
-}
-export type UpdateUserTimeZoneOutput = Pick<UserProps, "timeZone">;

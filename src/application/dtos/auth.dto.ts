@@ -75,6 +75,8 @@ export interface LoginOutput {
         };
 
         providerSubscription?: string;
+
+        timeZone: string;
     }
 }
 
@@ -129,6 +131,8 @@ export interface GoogleAuthOrchestrationOutput {
         };
 
         providerSubscription?: string;
+
+        timeZone: string;
     }
 }
 
@@ -153,6 +157,7 @@ export type BaseUserResponse = Pick<UserProps,
         uid: UserProps['_id'];
         isLoggedIn: boolean;
         isAddressAdded: boolean;
+        timeZone: string;
     }
 
 

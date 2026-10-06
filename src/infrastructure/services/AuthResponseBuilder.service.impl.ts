@@ -27,6 +27,7 @@ export class AuthResponseBuilderImpl implements IAuthResponseBuilder {
       phone: user.phone,
       profileImage: user.profileImage,
       isAddressAdded: !!user.addressId,
+      timeZone: user.timeZone.value,
     };
   }
 

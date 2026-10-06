@@ -12,12 +12,11 @@ import { ProfileSetupUseCase } from "../../application/useCases/user/profileSetu
 import { UpdatePasswordUseCase } from "../../application/useCases/user/updatePassword.useCase";
 import { GetUserProfileDetailsUseCase } from "../../application/useCases/user/getUserProfile.useCase";
 import { GetUserForChatSidebarUseCase } from "../../application/useCases/user/getUserFroChat.useCase";
-import { UpdateUserTimeZoneUseCase } from "../../application/useCases/user/updateUserTimeZone.useCase";
 import { UpdateUserProfileInfoUseCase } from "../../application/useCases/user/updateUserProfileInfo.useCase";
 import { ChangeUserBlockStatusUseCase } from "../../application/useCases/user/changeUserBlockStatus.useCase";
 import { UpdateUserProfileImageUseCase } from "../../application/useCases/user/updateUserProfileImage.useCase";
-import { timeZoneSchema, userUpdateFileSchema, userUpdateInfoSchema, userUpdatePasswordSchema } from "../../shared/zod/user.zod";
-import { changeUserBlockStatusUseCase, getUserProfileDetailsUseCase, getUsersUseCase, getUserForChatSidebarUseCase, profileSetupUseCase, updateUserProfileImageUseCase, updateUserProfileInfoUseCase, updatePasswordUseCase, updateUserTimeZoneUseCase } from ".";
+import { userUpdateFileSchema, userUpdateInfoSchema, userUpdatePasswordSchema } from "../../shared/zod/user.zod";
+import { changeUserBlockStatusUseCase, getUserProfileDetailsUseCase, getUsersUseCase, getUserForChatSidebarUseCase, profileSetupUseCase, updateUserProfileImageUseCase, updateUserProfileInfoUseCase, updatePasswordUseCase } from ".";
 
 class UserController {
     constructor(
@@ -29,7 +28,6 @@ class UserController {
         private readonly getUserForChatSidebarUseCase: GetUserForChatSidebarUseCase,
         private readonly profileSetupUseCase: ProfileSetupUseCase,
         private readonly updatePasswordUseCase: UpdatePasswordUseCase,
-        private readonly updateUserTimeZoneUseCase: UpdateUserTimeZoneUseCase
     ) {
         this.getProfileDetails = this.getProfileDetails.bind(this);
         this.updateProfileImage = this.updateProfileImage.bind(this);
@@ -38,7 +36,6 @@ class UserController {
         this.changeUserBlockStatus = this.changeUserBlockStatus.bind(this);
         this.profileSetup = this.profileSetup.bind(this);
         this.updatePassword = this.updatePassword.bind(this);
-        this.updateTimezone = this.updateTimezone.bind(this);
     };
 
     async getProfileDetails(req: Request, res: Response, next: NextFunction) {
@@ -74,10 +71,15 @@ class UserController {
     async updateUserInfo(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user as AuthUser;
-            const { phone, username } = userUpdateInfoSchema.parse({
+            const { phone, username, timeZone } = userUpdateInfoSchema.parse({
                 ...req.body
             });
-            const result = await this.updateUserProfileInfoUseCase.execute({ userId: user.id, username, phone });
+            const result = await this.updateUserProfileInfoUseCase.execute({
+                userId: user.id,
+                username,
+                phone,
+                timeZone
+            });
             sendResponse(res, result, "Info updated successfully");
         } catch (error) {
             log.error("updateUserInfo failed", error as Error);
@@ -154,20 +156,6 @@ class UserController {
         }
     }
 
-    async updateTimezone(req: Request, res: Response, next: NextFunction) {
-        try {
-            const user = req.user as AuthUser;
-            const validatedData = timeZoneSchema.parse(req.body);
-            const result = await this.updateUserTimeZoneUseCase.execute({
-                timeZone: validatedData,
-                userId: user.id
-            });
-            sendResponse(res, result, "Timezone updated");
-        } catch (error) {
-            next(error);
-        }
-    }
-
 };
 
 export const userController = new UserController(
@@ -179,5 +167,4 @@ export const userController = new UserController(
     getUserForChatSidebarUseCase,
     profileSetupUseCase,
     updatePasswordUseCase,
-    updateUserTimeZoneUseCase
 );

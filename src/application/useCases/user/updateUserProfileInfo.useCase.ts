@@ -11,7 +11,7 @@ export class UpdateUserProfileInfoUseCase {
 
     async execute(input: UpdateUserProfileInfoInput): Promise<UpdateUserProfileInfoOutput> {
         try {
-            const { userId, username, phone } = input;
+            const { userId, username, phone, timeZone } = input;
             if (!userId || !username || !phone) {
                 throw new BadRequestError();
             }
@@ -28,6 +28,8 @@ export class UpdateUserProfileInfoUseCase {
                 phone: phone ?? undefined,
                 username: username ?? undefined
             });
+
+            user.updateTimeZone({ timeZone });
 
             const updatedUser = await this.userRepository.update(user);
             if (!updatedUser) {

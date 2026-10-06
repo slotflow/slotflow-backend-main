@@ -1,15 +1,24 @@
 import { z } from "zod";
 import {
-    updateInfoSchema,
     s3FileKeySchema,
 } from "./base.zod";
-import { strongPasswordRegex } from "../utils/constants/regex";
+import { phoneRegex, strongPasswordRegex, usernameRegex } from "../utils/constants/regex";
 
 // User update file schema
 export const userUpdateFileSchema = s3FileKeySchema;
 
 // User update info schema
-export const userUpdateInfoSchema = updateInfoSchema;
+export const userUpdateInfoSchema = z.object({
+    username: z.string().min(4).max(30).regex(usernameRegex, "Invalid username"),
+    phone: z.string().min(4).max(30).regex(phoneRegex, "Invalid phone number"),
+    timeZone: z.object({
+        value: z.string(),
+        label: z.string(),
+        offset: z.number(),
+        abbrev: z.string(),
+        altName: z.string(),
+    }),
+});
 
 // user update password schema
 export const userUpdatePasswordSchema = z.object({

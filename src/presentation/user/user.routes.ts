@@ -27,17 +27,10 @@ router.patch('/me/image',
     userController.updateProfileImage
 );
 
-// user / provider update timeZone
-router.patch('/me/timezone',
-    authMiddleware,
-    authorize(Role.USER, Role.PROVIDER),
-    userController.updateTimezone
-);
-
 // user update user info
 router.patch('/me',
     authMiddleware,
-    authorize(Role.USER),
+    authorize(Role.USER, Role.PROVIDER),
     userController.updateUserInfo
 );
 

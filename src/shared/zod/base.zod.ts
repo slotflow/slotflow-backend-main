@@ -125,12 +125,6 @@ export const addressSchema = z.object({
     }),
 });
 
-// Update info schema
-export const updateInfoSchema = z.object({
-    username: z.string().min(4).max(30).regex(usernameRegex, "Invalid username"),
-    phone: z.string().min(4).max(30).regex(phoneRegex, "Invalid phone number")
-});
-
 // S3 file key schema
 export const s3FileKeySchema = z.object({
     s3FileKey: z.string().min(1).max(500, "key is too long"),

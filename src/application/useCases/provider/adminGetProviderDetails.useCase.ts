@@ -30,6 +30,10 @@ export class AdminGetProviderDetailsUseCase {
                 signedProfileImageUrl = await this.signedUrlService.get(provider.profileImage);
             };
 
+            console.log("provider : ",provider);
+            console.log("providerProfile : ",providerProfile);
+
+
             return {
                 _id: provider._id,
                 username: provider.username,

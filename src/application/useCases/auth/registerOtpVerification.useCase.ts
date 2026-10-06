@@ -59,7 +59,7 @@ export class RegisterOtpVerificationUseCase {
 
       if (!existingUser) {
         const newUser = await this.userRepository.create(User.createLocal({
-          username: email.split("@")[0],
+          username:  email.split("@")[0].replace(/[^a-zA-Z]/g, ""),
           email,
           password,
           timeZone
