@@ -1,7 +1,6 @@
 import { IdType } from "../types/enums";
-import { Day } from "../../../domain/enums/common.enum";
-import { NotificationChannel, NotificationType } from "../../../application/dtos/common.dto";
 import { appConfig } from "../../../config/env";
+import { Day } from "../../../domain/enums/common.enum";
 
 // time zone default constant
 export const defaultTimezone: string = "Asia/Kolkata";
@@ -52,15 +51,3 @@ export const PREFIX_MAP: Record<IdType, string> = {
   [IdType.REFERRAL]: "sf_ref_",
   [IdType.CREDIT_TRANSACTION]: "sf_crtsn"
 } as const;
-
-export const notificationChannel = {
-  EMAIL: 'email',
-  PUSH: 'push',
-  IN_APP: 'in_app',
-} as const satisfies Record<string, NotificationChannel>;
-
-export const notificationType = {
-  ACCOUNT_ACTIVITY: 'account_activity',
-  SYSTEM_UPDATES: 'system_updates',
-  PROMOTIONAL_UPDATES: 'promotional_updates',
-} as const satisfies Record<string, NotificationType>;

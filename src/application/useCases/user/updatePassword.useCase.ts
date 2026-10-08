@@ -1,9 +1,9 @@
 import { kafkaConfig } from "../../../config/env";
 import { UpdatePasswordInput } from "../../dtos/user.dto";
+import { NotificationType } from "../../../domain/enums/common.enum";
 import { generateId } from "../../../shared/utils/helpers/generateId";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { ERROR_CODES, IdType } from "../../../shared/utils/types/enums";
-import { notificationType } from "../../../shared/utils/constants/constant";
 import { EventEnvelope, SendUpdatePasswordEvent } from "../../dtos/kafka.dto";
 import { IPasswordHasher } from "../../interfaces/security/IPasswordHasher.service";
 import { AppError, BadRequestError, NotFoundError } from "../../../shared/error/appError";
@@ -79,7 +79,7 @@ export class UpdatePasswordUseCase {
                 payload: {
                     notificationData: {
                         userId: user._id,
-                        notificationType: notificationType.ACCOUNT_ACTIVITY
+                        notificationType: NotificationType.ACCOUNT_ACTIVITY
                     }
                 }
             });

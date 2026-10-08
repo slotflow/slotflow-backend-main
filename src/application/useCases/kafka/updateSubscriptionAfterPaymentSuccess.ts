@@ -9,7 +9,7 @@ import { CreditAccount } from "../../../domain/entities/creditAccount.entity";
 import { ProviderSubscriptionPaymentSuccessEventInput } from "../../dtos/kafka.dto";
 import { CreditTransaction } from "../../../domain/entities/creditTransaction.entity";
 import { EventEnvelope, ProviderSubscriptionUpdatedEvent } from "../../dtos/kafka.dto";
-import { dateFormats, notificationType } from "../../../shared/utils/constants/constant";
+import { dateFormats } from "../../../shared/utils/constants/constant";
 import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
@@ -19,6 +19,7 @@ import { ICreditAccountRepository } from "../../../domain/interfaces/repositorie
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 import { ICreditTransactionRepository } from "../../../domain/interfaces/repositories/ICreditTransaction.repository";
 import { CreditTransactionSource, CreditTransactionType, RewardPoints } from "../../../domain/enums/creditTransaction.enum";
+import { NotificationType } from "../../../domain/enums/common.enum";
 
 export class UpdateSubscriptionAfterPaymentSuccessUseCase {
     constructor(
@@ -215,7 +216,7 @@ export class UpdateSubscriptionAfterPaymentSuccessUseCase {
                             pattern: dateFormats.WITH_TIME,
                             timeZone: providerTimeZone
                         }),
-                        notificationType: notificationType.ACCOUNT_ACTIVITY
+                        notificationType: NotificationType.ACCOUNT_ACTIVITY
                     }
                 }
             });

@@ -1,14 +1,14 @@
 import { kafkaConfig } from "../../../config/env";
-import { Role } from "../../../domain/enums/common.enum";
 import { ServiceMode } from "../../../domain/enums/service.enum";
 import { formatDate } from "../../../shared/utils/helpers/formatDate";
 import { toAppError } from '../../../shared/error/handleUnknownError';
 import { generateId } from '../../../shared/utils/helpers/generateId';
 import { ERROR_CODES, IdType } from '../../../shared/utils/types/enums';
+import { dateFormats } from "../../../shared/utils/constants/constant";
 import { formatString } from "../../../shared/utils/helpers/formatString";
+import { NotificationType, Role } from "../../../domain/enums/common.enum";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
 import { createGoogleMapsUrl } from "../../../shared/utils/helpers/createGooglemapLink";
-import { dateFormats, notificationType } from "../../../shared/utils/constants/constant";
 import { AppError, BadRequestError, NotFoundError } from '../../../shared/error/appError';
 import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
@@ -132,7 +132,7 @@ export class ChangeBookingStatusUseCase {
                     notificationData: {
                         userId: user._id,
                         appointmentStatus: booking.appointmentStatus,
-                        notificationType: notificationType.ACCOUNT_ACTIVITY,
+                        notificationType: NotificationType.ACCOUNT_ACTIVITY,
                         address: booking.appointmentMode === ServiceMode.OFFLINE ? formattedAddress : null,
                     }
                 }
@@ -158,7 +158,7 @@ export class ChangeBookingStatusUseCase {
                         }),
                         appointmentMode: booking.appointmentMode,
                         appointmentStatus: booking.appointmentStatus,
-                        notificationType: notificationType.ACCOUNT_ACTIVITY
+                        notificationType: NotificationType.ACCOUNT_ACTIVITY
                     }
                 }
             });

@@ -1,10 +1,9 @@
 import { KafkaMessage } from "kafkajs";
-import { NotificationType } from "./common.dto";
 import { PlanName } from "../../domain/enums/plan.enum";
-import { OtpPurpose, Role } from "../../domain/enums/common.enum";
 import { AddressProps } from "../../domain/contracts/address.contract";
 import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
+import { NotificationType, OtpPurpose, Role } from "../../domain/enums/common.enum";
 import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
 
 /**

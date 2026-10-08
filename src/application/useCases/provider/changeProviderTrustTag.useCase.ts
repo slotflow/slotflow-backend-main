@@ -11,7 +11,7 @@ import { EventEnvelope, SendAccountTrustStatusEvent } from "../../dtos/kafka.dto
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
-import { notificationType } from "../../../shared/utils/constants/constant";
+import { NotificationType } from "../../../domain/enums/common.enum";
 
 export class ChangeProviderTrustTagUseCase {
     constructor(
@@ -71,7 +71,7 @@ export class ChangeProviderTrustTagUseCase {
                     notificationData: {
                         userId: provider._id,
                         isTrusted: updatedProviderProfile.trustedBySlotflow.toString(),
-                        notificationType: notificationType.ACCOUNT_ACTIVITY
+                        notificationType: NotificationType.ACCOUNT_ACTIVITY
                     },
                 },
             });

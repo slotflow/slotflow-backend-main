@@ -10,7 +10,6 @@ import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.r
 import { AdminVerificationStatus } from "../../../domain/enums/adminVerificationStatus.enum";
 import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
-import { notificationType } from '../../../shared/utils/constants/constant';
 
 export class AdminApproveProviderUseCase {
     constructor(

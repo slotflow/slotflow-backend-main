@@ -5,11 +5,12 @@ import { generateId } from "../../../shared/utils/helpers/generateId";
 import { ERROR_CODES, IdType } from "../../../shared/utils/types/enums";
 import { AppError, NotFoundError } from "../../../shared/error/appError";
 import { UpdateBookingAfterPaymentSuccessEventInput } from "../../dtos/kafka.dto";
-import { dateFormats, notificationType } from "../../../shared/utils/constants/constant";
+import { dateFormats } from "../../../shared/utils/constants/constant";
 import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { SlotBookedEvent, EventEnvelope, GotAnAppointmentEvent } from "../../dtos/kafka.dto";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
+import { NotificationType } from "../../../domain/enums/common.enum";
 
 export class UpdateBookingAfterPaymentSuccessUseCase {
     constructor(
@@ -93,7 +94,7 @@ export class UpdateBookingAfterPaymentSuccessUseCase {
                                     timeZone: user.timeZone?.value
                                 }),
                                 providerName: provider.username,
-                                notificationType: notificationType.ACCOUNT_ACTIVITY,
+                                notificationType: NotificationType.ACCOUNT_ACTIVITY,
                             }
                         }
                     }
@@ -134,7 +135,7 @@ export class UpdateBookingAfterPaymentSuccessUseCase {
                                     timeZone: provider.timeZone?.value
                                 }),
                                 customerName: user.username,
-                                notificationType: notificationType.ACCOUNT_ACTIVITY,
+                                notificationType: NotificationType.ACCOUNT_ACTIVITY,
                             }
                         }
                     }

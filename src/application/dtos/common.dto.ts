@@ -123,17 +123,6 @@ export interface CommonDateInput {
   endDate: string;
 }
 
-// Notification channels
-export type NotificationChannel = 'email' | 'push' | 'in_app';
-
-// Notification Type
-export type NotificationType =
-  | 'account_activity'
-  | 'system_updates'
-  | 'promotional_updates';
-
-
-
 
 
 /**

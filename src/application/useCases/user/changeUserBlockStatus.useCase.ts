@@ -8,7 +8,6 @@ import { AppError, BadRequestError, NotFoundError } from '../../../shared/error/
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
 import { ChangeUserIsBlockedStatusInput, ChangeUserIsBlockedStatusOutput } from '../../dtos/user.dto';
-import { notificationType } from "../../../shared/utils/constants/constant";
 
 export class ChangeUserBlockStatusUseCase {
     constructor(
