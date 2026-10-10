@@ -21,7 +21,7 @@ export interface TableData<T> {
   items?: T;
 }
 
-// used in create file upload presigned url usecase input output
+// Create file upload presigned url usecase input output
 export interface CreateFileUploadPresignedUrlInput {
   fileName: string;
   fileType: string;
@@ -32,25 +32,25 @@ export interface CreateFileUploadPresignedUrlOutput {
   key: string;
 }
 
-// used in create file signed url usecase
+// Create file signed url usecase
 export interface CreateFileSignedUrlInput {
   key: string;
 }
 
-// used in find provider service usecase
+// Find provider service usecase
 type FindProviderServiceProps = Omit<ProviderServiceProps, "service" | "updatedAt" | "createdAt">;
 export interface FindProviderServiceOutput extends FindProviderServiceProps {
   service: { serviceName: string };
 }
 
-// used in create service availability usecase
+// Create service availability usecase
 export interface PlanNameOnly {
   subscribedPlanId: {
     planName: PlanProps["planName"];
   };
 }
 
-//
+// Availability time slot for client view
 export interface TimeSlotForClientOutput {
   _id: string;
   time: string;
@@ -58,22 +58,22 @@ export interface TimeSlotForClientOutput {
   occupied?: boolean;
 }
 
-// used in create service availability usecase
+// Create service availability usecase
 export interface FrontendAvailabilityForOutput extends Omit<Availability, "slots"> {
   slots: TimeSlotForClientOutput[];
 }
 
-// used in create service availability usecase
+// Create service availability usecase
 export interface FrontendAvailabilityForClientInput extends Omit<Availability, "slots"> {
   slots?: string[];
 }
 
-// used in create service availability usecase
+// Create service availability usecase
 export interface FrontendAvailabilityUpdatedSlots extends Omit<Availability, "slots"> {
   slots?: TimeSlot[];
 }
 
-// used in auth controller
+// Auth user
 export interface AuthUser {
   id: string;
   role: Role;
@@ -82,6 +82,7 @@ export interface AuthUser {
   timeZone: TimeZone;
 }
 
+// Google auth user
 export interface GoogleOAuthUser {
   googleAccessToken: string;
   googleRefreshToken: string;
@@ -91,19 +92,19 @@ export interface GoogleOAuthUser {
   image: string | null;
 }
 
-// used in count query
+// Count query result
 export type CountResult = { count: number };
 
-// queries
-
+// Aggregate count query result
 export type AggregateCountResult = { count: number };
 
-// Chart DTOS
+// Mini chart data
 export interface MiniChartData {
   date: string;
   value: number;
 }
 
+// Mini card data
 export interface MiniCardData {
   count: number;
   percentage: number;
@@ -111,13 +112,13 @@ export interface MiniCardData {
   chartData: MiniChartData[];
 }
 
-//
+// Stats metric data
 export interface StatMetric {
   value: number;
   trend: string;
 }
 
-//
+// Common date
 export interface CommonDateInput {
   startDate: string;
   endDate: string;
@@ -127,6 +128,7 @@ export interface CommonDateInput {
  * JWT Service dtos
  */
 
+// JWT custom payload
 export interface JwtClaims extends JwtPayload {
   userId?: string;
   email?: string;

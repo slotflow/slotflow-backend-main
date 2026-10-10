@@ -1,12 +1,12 @@
+import {
+  CreditTransactionType,
+  CreditTransactionSource,
+  CreditTransactionStatus,
+} from "../../domain/enums/creditTransaction.enum";
 import { CommonDateInput, MiniCardData } from "./common.dto";
 import { UserProps } from "../../domain/contracts/user.contract";
 import { CreditAccountProps } from "../../domain/contracts/creditAccount.contract";
 import { CreditTransactionProps } from "../../domain/contracts/creditTransation.contract";
-import {
-  CreditTransactionSource,
-  CreditTransactionStatus,
-  CreditTransactionType,
-} from "../../domain/enums/creditTransaction.enum";
 
 /**
  * Credit queries dtos

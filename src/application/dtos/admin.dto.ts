@@ -1,17 +1,17 @@
+import {
+  UserStatsDataView,
+  UserChartDataView,
+  UserChartDataQuery,
+  UserStatsDataQuery,
+  ProviderStatsDataQuery,
+  ProviderStatsDataView,
+} from "./user.dto";
 import { CommonDateInput } from "./common.dto";
 import { UserProps } from "../../domain/contracts/user.contract";
 import { ReviewProps } from "../../domain/contracts/review.contract";
 import { ProviderProfileProps } from "../../domain/contracts/providerProfile.contract";
 import { BookingsStatsDataAdminQuery, BookingsStatsDataAdminView } from "./booking.dto";
 import { SubscriptionStatsDataQuery, SubscriptionStatsDataView } from "./subscription.dto";
-import {
-  ProviderStatsDataQuery,
-  ProviderStatsDataView,
-  UserChartDataQuery,
-  UserChartDataView,
-  UserStatsDataQuery,
-  UserStatsDataView,
-} from "./user.dto";
 
 /**
  * Admin usecase dtos

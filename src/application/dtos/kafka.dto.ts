@@ -75,6 +75,32 @@ interface CommonNotificationEventInput {
   notificationType: NotificationType;
 }
 
+// kafka subscription events union
+export type MBSSubKafkaEventPayloadType =
+  | ProviderSubscriptionPaymentFailedEventInput
+  | ProviderSubscriptionPaymentSuccessEventInput
+  | UpdateBookingPaymentFailedEventInput
+  | UpdateBookingAfterPaymentSuccessEventInput
+  | GoogleCalendarCreateEventEventFailedInput
+  | GoogleCalendarCreateEventSuccessInput;
+
+// kafka subscription events mapper
+export type MBSSubKafkaEventPayloadMap = {
+  googleCalendarCreateEventSuccess: GoogleCalendarCreateEventSuccessInput;
+  googleCalendarCreateEventFailed: GoogleCalendarCreateEventEventFailedInput;
+  providerSubscriptionPaymentSuccess: ProviderSubscriptionPaymentSuccessEventInput;
+  providerSubscriptionPaymentFailed: ProviderSubscriptionPaymentFailedEventInput;
+  userBookingPaymentSuccess: UpdateBookingAfterPaymentSuccessEventInput;
+  userBookingPaymentFailed: UpdateBookingPaymentFailedEventInput;
+};
+
+// kafka subscription events handler map type
+export type HandlerMap = {
+  [K in keyof MBSSubKafkaEventPayloadMap]: {
+    execute: (input: MBSSubKafkaEventPayloadMap[K]) => Promise<void>;
+  };
+};
+
 /**
  * Kafka events payload
  */
@@ -283,26 +309,3 @@ export interface ProviderSubscriptionPaymentSuccessEventInput {
 export interface ProviderSubscriptionPaymentFailedEventInput {
   subscriptionId: string;
 }
-
-export type MBSSubKafkaEventPayloadType =
-  | ProviderSubscriptionPaymentFailedEventInput
-  | ProviderSubscriptionPaymentSuccessEventInput
-  | UpdateBookingPaymentFailedEventInput
-  | UpdateBookingAfterPaymentSuccessEventInput
-  | GoogleCalendarCreateEventEventFailedInput
-  | GoogleCalendarCreateEventSuccessInput;
-
-export type MBSSubKafkaEventPayloadMap = {
-  googleCalendarCreateEventSuccess: GoogleCalendarCreateEventSuccessInput;
-  googleCalendarCreateEventFailed: GoogleCalendarCreateEventEventFailedInput;
-  providerSubscriptionPaymentSuccess: ProviderSubscriptionPaymentSuccessEventInput;
-  providerSubscriptionPaymentFailed: ProviderSubscriptionPaymentFailedEventInput;
-  userBookingPaymentSuccess: UpdateBookingAfterPaymentSuccessEventInput;
-  userBookingPaymentFailed: UpdateBookingPaymentFailedEventInput;
-};
-
-export type HandlerMap = {
-  [K in keyof MBSSubKafkaEventPayloadMap]: {
-    execute: (input: MBSSubKafkaEventPayloadMap[K]) => Promise<void>;
-  };
-};
