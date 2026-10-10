@@ -10,7 +10,9 @@ class KafkaController {
   constructor(
     private readonly kafkaConsumer: IKafkaConsumerAdapter,
     private readonly processEventWrapperUseCase: ProcessEventWrapperUseCase,
-  ) {}
+  ) {
+    this.startListening = this.startListening.bind(this);
+  }
 
   private async register<K extends keyof HandlerMap>(topic: string, useCase: HandlerMap[K]) {
     await this.kafkaConsumer.subscribe(topic, async ({ message }) => {

@@ -18,7 +18,9 @@ export interface KafkaClientAdapterProps {
 }
 
 // backend-main service subscribing kafka event payload
-export interface MBSSubKafkaEventPayload<T extends MBSEventPayload = MBSEventPayload> {
+export interface MBSSubKafkaEventPayload<
+  T extends MBSSubKafkaEventPayloadType = MBSSubKafkaEventPayloadType,
+> {
   mbsData: T;
 }
 
@@ -59,7 +61,9 @@ export interface SendNotificationCommon {
 export type MessageHandler = (payload: KafkaClientAdapterProps) => Promise<void>;
 
 // process event wrapper input
-export interface ProcessEventWrapperInput<T extends MBSEventPayload = MBSEventPayload> {
+export interface ProcessEventWrapperInput<
+  T extends MBSSubKafkaEventPayloadType = MBSSubKafkaEventPayloadType,
+> {
   topic: string;
   eventData: EventEnvelope<MBSSubKafkaEventPayload<T>>;
   businessUseCase: { execute: (input: T) => Promise<void> };
@@ -280,7 +284,7 @@ export interface ProviderSubscriptionPaymentFailedEventInput {
   subscriptionId: string;
 }
 
-export type MBSEventPayload =
+export type MBSSubKafkaEventPayloadType =
   | ProviderSubscriptionPaymentFailedEventInput
   | ProviderSubscriptionPaymentSuccessEventInput
   | UpdateBookingPaymentFailedEventInput
@@ -288,7 +292,7 @@ export type MBSEventPayload =
   | GoogleCalendarCreateEventEventFailedInput
   | GoogleCalendarCreateEventSuccessInput;
 
-export type PayloadMap = {
+export type MBSSubKafkaEventPayloadMap = {
   googleCalendarCreateEventSuccess: GoogleCalendarCreateEventSuccessInput;
   googleCalendarCreateEventFailed: GoogleCalendarCreateEventEventFailedInput;
   providerSubscriptionPaymentSuccess: ProviderSubscriptionPaymentSuccessEventInput;
@@ -298,5 +302,7 @@ export type PayloadMap = {
 };
 
 export type HandlerMap = {
-  [K in keyof PayloadMap]: { execute: (input: PayloadMap[K]) => Promise<void> };
+  [K in keyof MBSSubKafkaEventPayloadMap]: {
+    execute: (input: MBSSubKafkaEventPayloadMap[K]) => Promise<void>;
+  };
 };

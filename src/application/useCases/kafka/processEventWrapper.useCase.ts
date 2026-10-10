@@ -1,16 +1,16 @@
+import {
+  DqMetaData,
+  EventEnvelope,
+  MBSSubKafkaEventPayload,
+  ProcessEventWrapperInput,
+  MBSSubKafkaEventPayloadType,
+} from "../../dtos/kafka.dto";
 import { log } from "../../../shared/logger/logger";
 import { appConfig, kafkaConfig } from "../../../config/env";
 import { EventStatus } from "../../../domain/enums/common.enum";
 import { ProcessedEvent } from "../../../domain/entities/processedEvent.entity";
 import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
 import { IProcessedEventRepository } from "../../../domain/interfaces/repositories/IProcessedEvent.repository";
-import {
-  DqMetaData,
-  EventEnvelope,
-  MBSEventPayload,
-  MBSSubKafkaEventPayload,
-  ProcessEventWrapperInput,
-} from "../../dtos/kafka.dto";
 
 export class ProcessEventWrapperUseCase {
   constructor(
@@ -18,7 +18,9 @@ export class ProcessEventWrapperUseCase {
     private kafkaProducer: IKafkaProducerAdapter,
   ) {}
 
-  async execute<T extends MBSEventPayload>(input: ProcessEventWrapperInput<T>): Promise<void> {
+  async execute<T extends MBSSubKafkaEventPayloadType>(
+    input: ProcessEventWrapperInput<T>,
+  ): Promise<void> {
     try {
       const { topic, eventData, businessUseCase } = input;
       const { eventId, attempt, maxAttempts } = eventData;
