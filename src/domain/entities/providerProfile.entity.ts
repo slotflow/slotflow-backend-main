@@ -1,199 +1,203 @@
 import { ProviderProfileProps } from "../contracts/providerProfile.contract";
 import { AdminVerificationStatus } from "../enums/adminVerificationStatus.enum";
-import { CreateProviderProfileProps, RejectVerificationProps, SubmitIdentityProofProps, SubmitServiceProofProps } from "../commands/providerProfile.commands";
+import {
+  CreateProviderProfileProps,
+  RejectVerificationProps,
+  SubmitIdentityProofProps,
+  SubmitServiceProofProps,
+} from "../commands/providerProfile.commands";
 
 export class ProviderProfile {
-    private props: ProviderProfileProps;
+  private props: ProviderProfileProps;
 
-    constructor(props: ProviderProfileProps) {
-        this.props = props;
+  constructor(props: ProviderProfileProps) {
+    this.props = props;
+  }
+
+  private touch() {
+    this.props.updatedAt = new Date();
+  }
+
+  static create(props: CreateProviderProfileProps): ProviderProfile {
+    const now = new Date();
+    return new ProviderProfile({
+      _id: "",
+      userId: props.userId,
+      isAdminVerified: false,
+      verificationRejectionReason: null,
+      adminVerificationStatus: AdminVerificationStatus.NOT_REQUESTED,
+      isAddressVerified: false,
+      isServiceDetailsVerified: false,
+      isAvailabilityVerified: false,
+      isProofsVerified: false,
+      serviceId: null,
+      serviceAvailabilityId: null,
+      subscriptions: [],
+      trustedBySlotflow: false,
+      identityProof: null,
+      serviceProof: null,
+      hasUsedTrial: false,
+      createdAt: now,
+      updatedAt: now,
+    });
+  }
+
+  get _id(): string {
+    return this.props._id;
+  }
+
+  get isAdminVerified(): boolean {
+    return this.props.isAdminVerified;
+  }
+
+  get subscriptions(): string[] {
+    return this.props.subscriptions;
+  }
+
+  get trustedBySlotflow(): boolean {
+    return this.props.trustedBySlotflow;
+  }
+
+  get adminVerificationStatus(): AdminVerificationStatus {
+    return this.props.adminVerificationStatus;
+  }
+
+  get verificationRejectionReason(): string | null {
+    return this.props.verificationRejectionReason;
+  }
+
+  get isAddressVerified(): boolean {
+    return this.props.isAddressVerified;
+  }
+
+  get isServiceDetailsVerified(): boolean {
+    return this.props.isServiceDetailsVerified;
+  }
+
+  get isAvailabilityVerified(): boolean {
+    return this.props.isAvailabilityVerified;
+  }
+
+  get isProofsVerified(): boolean {
+    return this.props.isProofsVerified;
+  }
+
+  get serviceId(): string | null {
+    return this.props.serviceId;
+  }
+
+  get serviceAvailabilityId(): string | null {
+    return this.props.serviceAvailabilityId;
+  }
+
+  get identityProof(): string | null {
+    return this.props.identityProof;
+  }
+
+  get serviceProof(): string | null {
+    return this.props.serviceProof;
+  }
+
+  get hasUsedTrial(): boolean {
+    return this.props.hasUsedTrial;
+  }
+
+  get createdAt(): Date {
+    return this.props.createdAt;
+  }
+
+  get updatedAt(): Date {
+    return this.props.updatedAt;
+  }
+
+  // Business Methods
+
+  getProps(): Readonly<ProviderProfileProps> {
+    return { ...this.props };
+  }
+
+  submitForAdminVerification() {
+    this.props.adminVerificationStatus = AdminVerificationStatus.REQUESTED;
+    this.props.verificationRejectionReason = null;
+    this.touch();
+  }
+
+  resubmitForAdminVerification() {
+    this.props.adminVerificationStatus = AdminVerificationStatus.RESUBMITTED;
+    this.props.verificationRejectionReason = null;
+    this.touch();
+  }
+
+  approveVerification() {
+    if (
+      this.props.adminVerificationStatus !== AdminVerificationStatus.REQUESTED &&
+      this.props.adminVerificationStatus !== AdminVerificationStatus.RESUBMITTED
+    ) {
+      throw new Error("Provider has not requested verification");
     }
 
-    private touch() {
-        this.props.updatedAt = new Date();
-    }
+    this.props.isAdminVerified = true;
+    this.props.verificationRejectionReason = null;
+    this.props.adminVerificationStatus = AdminVerificationStatus.APPROVED;
 
-    static create(props: CreateProviderProfileProps): ProviderProfile {
-        const now = new Date();
-        return new ProviderProfile({
-            _id: "",
-            userId: props.userId,
-            isAdminVerified: false,
-            verificationRejectionReason: null,
-            adminVerificationStatus: AdminVerificationStatus.NOT_REQUESTED,
-            isAddressVerified: false,
-            isServiceDetailsVerified: false,
-            isAvailabilityVerified: false,
-            isProofsVerified: false,
-            serviceId: null,
-            serviceAvailabilityId: null,
-            subscriptions: [],
-            trustedBySlotflow: false,
-            identityProof: null,
-            serviceProof: null,
-            hasUsedTrial: false,
-            createdAt: now,
-            updatedAt: now,
-        });
-    }
+    this.props.isAddressVerified = true;
+    this.props.isServiceDetailsVerified = true;
+    this.props.isAvailabilityVerified = true;
+    this.props.isProofsVerified = true;
 
-    get _id(): string {
-        return this.props._id;
-    }
+    this.touch();
+  }
 
-    get isAdminVerified(): boolean {
-        return this.props.isAdminVerified;
-    }
+  rejectVerification(props: RejectVerificationProps) {
+    this.props.isAdminVerified = false;
+    this.props.adminVerificationStatus = AdminVerificationStatus.REJECTED;
+    this.props.verificationRejectionReason = props.verificationRejectionReason;
 
-    get subscriptions(): string[] {
-        return this.props.subscriptions;
-    }
+    this.props.isAddressVerified = props.isAddressVerified;
+    this.props.isServiceDetailsVerified = props.isServiceDetailsVerified;
+    this.props.isAvailabilityVerified = props.isAvailabilityVerified;
+    this.props.isProofsVerified = props.isProofsVerified;
 
-    get trustedBySlotflow(): boolean {
-        return this.props.trustedBySlotflow;
-    }
+    this.touch();
+  }
 
-    get adminVerificationStatus(): AdminVerificationStatus {
-        return this.props.adminVerificationStatus;
-    }
+  grantTrustBadge() {
+    this.props.trustedBySlotflow = true;
+    this.touch();
+  }
 
-    get verificationRejectionReason(): string | null {
-        return this.props.verificationRejectionReason;
-    }
+  revokeTrustBadge() {
+    this.props.trustedBySlotflow = false;
+    this.touch();
+  }
 
-    get isAddressVerified(): boolean {
-        return this.props.isAddressVerified;
-    }
+  attachService(serviceId: string) {
+    this.props.serviceId = serviceId;
+    this.touch();
+  }
 
-    get isServiceDetailsVerified(): boolean {
-        return this.props.isServiceDetailsVerified;
-    }
+  attachServiceAvailability(serviceAvailabilityId: string) {
+    this.props.serviceAvailabilityId = serviceAvailabilityId;
+    this.touch();
+  }
 
-    get isAvailabilityVerified(): boolean {
-        return this.props.isAvailabilityVerified;
-    }
+  submitIdentityProof(props: SubmitIdentityProofProps) {
+    this.props.identityProof = props.identityProof;
+    this.touch();
+  }
 
-    get isProofsVerified(): boolean {
-        return this.props.isProofsVerified;
-    }
+  submitServiceProof(props: SubmitServiceProofProps) {
+    this.props.serviceProof = props.serviceProof;
+    this.touch();
+  }
 
-    get serviceId(): string | null {
-        return this.props.serviceId;
-    }
+  pushSubscriptionId(subscriptionId: string) {
+    this.props.subscriptions.push(subscriptionId);
+    this.touch();
+  }
 
-    get serviceAvailabilityId(): string | null {
-        return this.props.serviceAvailabilityId;
-    }
-
-    get identityProof(): string | null {
-        return this.props.identityProof;
-    }
-
-    get serviceProof(): string | null {
-        return this.props.serviceProof;
-    }
-
-    get hasUsedTrial(): boolean {
-        return this.props.hasUsedTrial;
-    }
-
-    get createdAt(): Date {
-        return this.props.createdAt;
-    };
-
-    get updatedAt(): Date {
-        return this.props.updatedAt;
-    };
-
-    // Business Methods
-
-    getProps(): Readonly<ProviderProfileProps> {
-        return { ...this.props }
-    };
-
-    submitForAdminVerification() {
-        this.props.adminVerificationStatus = AdminVerificationStatus.REQUESTED;
-        this.props.verificationRejectionReason = null;
-        this.touch();
-    };
-
-    resubmitForAdminVerification() {
-        this.props.adminVerificationStatus = AdminVerificationStatus.RESUBMITTED;
-        this.props.verificationRejectionReason = null;
-        this.touch();
-    };
-
-    approveVerification() {
-        if (
-            this.props.adminVerificationStatus !== AdminVerificationStatus.REQUESTED &&
-            this.props.adminVerificationStatus !== AdminVerificationStatus.RESUBMITTED
-        ) {
-            throw new Error("Provider has not requested verification");
-        };
-
-        this.props.isAdminVerified = true;
-        this.props.verificationRejectionReason = null;
-        this.props.adminVerificationStatus = AdminVerificationStatus.APPROVED;
-
-        this.props.isAddressVerified = true;
-        this.props.isServiceDetailsVerified = true;
-        this.props.isAvailabilityVerified = true;
-        this.props.isProofsVerified = true;
-
-        this.touch();
-    };
-
-    rejectVerification(props: RejectVerificationProps) {
-        this.props.isAdminVerified = false;
-        this.props.adminVerificationStatus = AdminVerificationStatus.REJECTED;
-        this.props.verificationRejectionReason = props.verificationRejectionReason;
-
-        this.props.isAddressVerified = props.isAddressVerified;
-        this.props.isServiceDetailsVerified = props.isServiceDetailsVerified;
-        this.props.isAvailabilityVerified = props.isAvailabilityVerified;
-        this.props.isProofsVerified = props.isProofsVerified;
-
-        this.touch();
-    };
-
-
-    grantTrustBadge() {
-        this.props.trustedBySlotflow = true;
-        this.touch();
-    }
-
-    revokeTrustBadge() {
-        this.props.trustedBySlotflow = false;
-        this.touch();
-    }
-
-    attachService(serviceId: string) {
-        this.props.serviceId = serviceId;
-        this.touch();
-    }
-
-    attachServiceAvailability(serviceAvailabilityId: string) {
-        this.props.serviceAvailabilityId = serviceAvailabilityId;
-        this.touch();
-    }
-
-    submitIdentityProof(props: SubmitIdentityProofProps) {
-        this.props.identityProof = props.identityProof;
-        this.touch();
-    }
-
-    submitServiceProof(props: SubmitServiceProofProps) {
-        this.props.serviceProof = props.serviceProof;
-        this.touch();
-    }
-
-    pushSubscriptionId(subscriptionId: string) {
-        this.props.subscriptions.push(subscriptionId);
-        this.touch();
-    }
-
-    trialUsed() {
-        this.props.hasUsedTrial = true;
-        this.touch();
-    }
+  trialUsed() {
+    this.props.hasUsedTrial = true;
+    this.touch();
+  }
 }

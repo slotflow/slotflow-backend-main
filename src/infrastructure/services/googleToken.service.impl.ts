@@ -7,92 +7,60 @@ import { IAesEncryptionService } from "../../application/interfaces/security/IAe
 import { IGoogleRefreshTokenService } from "../../application/interfaces/services/IGoogleRefreshToken.service";
 
 export class GoogleTokenServiceImpl implements IGoogleTokenService {
-    constructor(
-        private credentialRepository: ICredentialRepository,
-        private aesEncryption: IAesEncryptionService,
-        private IgoogleRefreshTokenService: IGoogleRefreshTokenService
-    ) { };
+  constructor(
+    private credentialRepository: ICredentialRepository,
+    private aesEncryption: IAesEncryptionService,
+    private IgoogleRefreshTokenService: IGoogleRefreshTokenService,
+  ) {}
 
-    async getAccessToken(userId: string): Promise<string> {
-        try {
+  async getAccessToken(userId: string): Promise<string> {
+    try {
+      if (!userId) {
+        throw new UnauthorizedError("User ID is required", ERROR_CODES.UNAUTHORIZED);
+      }
 
-            if (!userId) {
-                throw new UnauthorizedError(
-                    "User ID is required",
-                    ERROR_CODES.UNAUTHORIZED
-                );
-            }
+      const credentials = await this.credentialRepository.findByUserId(userId);
 
-            const credentials = await this.credentialRepository.findByUserId(userId);
+      if (!credentials) {
+        throw new NotFoundError("Google credentials not found", ERROR_CODES.CREDENTIAL_NOT_FOUND);
+      }
+      const now = new Date();
 
-            if (!credentials) {
-                throw new NotFoundError(
-                    "Google credentials not found",
-                    ERROR_CODES.CREDENTIAL_NOT_FOUND
-                );
-            }
-            const now = new Date();
+      if (credentials.accessToken && credentials.expiryDate && credentials.expiryDate > now) {
+        return await this.aesEncryption.decrypt(credentials.accessToken);
+      }
 
-            if (
-                credentials.accessToken &&
-                credentials.expiryDate &&
-                credentials.expiryDate > now
-            ) {
-                return await this.aesEncryption.decrypt(
-                    credentials.accessToken
-                );
-            }
+      if (!credentials.refreshToken) {
+        throw new UnauthorizedError("Refresh token missing", ERROR_CODES.TOKEN_MISSING);
+      }
 
-            if (!credentials.refreshToken) {
-                throw new UnauthorizedError(
-                    "Refresh token missing",
-                    ERROR_CODES.TOKEN_MISSING
-                );
-            }
+      const decryptedRefreshToken = await this.aesEncryption.decrypt(credentials.refreshToken);
 
+      const refreshed =
+        await this.IgoogleRefreshTokenService.refreshAccessToken(decryptedRefreshToken);
 
-            const decryptedRefreshToken =
-                await this.aesEncryption.decrypt(
-                    credentials.refreshToken
-                );
+      const encryptedAccessToken = await this.aesEncryption.encrypt(refreshed.accessToken);
 
-            const refreshed =
-                await this.IgoogleRefreshTokenService.refreshAccessToken(
-                    decryptedRefreshToken
-                );
+      const encryptedRefreshToken = refreshed.refreshToken
+        ? await this.aesEncryption.encrypt(refreshed.refreshToken)
+        : credentials.refreshToken;
 
-            const encryptedAccessToken =
-                await this.aesEncryption.encrypt(
-                    refreshed.accessToken
-                );
+      credentials.updateCredential({
+        accessToken: encryptedAccessToken,
+        refreshToken: encryptedRefreshToken,
+        expiryDate: new Date(Date.now() + refreshed.expiresIn * 1000),
+      });
 
-            const encryptedRefreshToken = refreshed.refreshToken
-                ? await this.aesEncryption.encrypt(refreshed.refreshToken)
-                : credentials.refreshToken;
+      await this.credentialRepository.update(credentials);
 
-            credentials.updateCredential({
-                accessToken: encryptedAccessToken,
-                refreshToken: encryptedRefreshToken,
-                expiryDate: new Date(Date.now() + refreshed.expiresIn * 1000
-                ),
-            });
+      return refreshed.accessToken;
+    } catch (error) {
+      log.error("GoogleTokenService failed", { error });
+      if (error instanceof AppError) {
+        throw error;
+      }
 
-            await this.credentialRepository.update(credentials);
-
-            return refreshed.accessToken;
-        } catch (error) {
-            log.error("GoogleTokenService failed", error as Error);
-            if (error instanceof AppError) {
-                throw error;
-            }
-
-            throw new AppError(
-                "Unable to get access token",
-                500,
-                false,
-                ERROR_CODES.INTERNAL_ERROR
-            );
-        }
-    };
-};
-
+      throw new AppError("Unable to get access token", 500, false, ERROR_CODES.INTERNAL_ERROR);
+    }
+  }
+}

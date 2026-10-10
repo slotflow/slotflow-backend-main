@@ -1,6 +1,10 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
 import { ServiceType } from "../../domain/enums/service.enum";
-import { serviceDescriptionRegex, serviceExperienceRegex, serviceNameRegex } from "../../shared/utils/constants/regex";
+import {
+  serviceDescriptionRegex,
+  serviceExperienceRegex,
+  serviceNameRegex,
+} from "../../shared/utils/constants/regex";
 
 export interface IProviderService extends Document {
   _id: Types.ObjectId;
@@ -20,7 +24,7 @@ export interface IProviderService extends Document {
   portfolioUrl: string | null;
   createdAt: Date;
   updatedAt: Date;
-};
+}
 
 const ProviderServiceSchema = new Schema<IProviderService>(
   {
@@ -41,20 +45,14 @@ const ProviderServiceSchema = new Schema<IProviderService>(
       required: [true, "Service name is required"],
       minlength: [4, "Service name must be at least 4 characters long"],
       maxlength: [50, "Service name must be at most 50 characters long"],
-      match: [
-        serviceNameRegex,
-        "Invalid service name. Only alphabets and spaces allowed.",
-      ],
+      match: [serviceNameRegex, "Invalid service name. Only alphabets and spaces allowed."],
     },
 
     serviceDescription: {
       type: String,
       required: [true, "Service description is required"],
       minlength: [10, "Service description must be at least 10 characters long"],
-      maxlength: [
-        500,
-        "Service description must be at most 500 characters long",
-      ],
+      maxlength: [500, "Service description must be at most 500 characters long"],
       match: [serviceDescriptionRegex, "Invalid service description format"],
     },
 
@@ -69,7 +67,7 @@ const ProviderServiceSchema = new Schema<IProviderService>(
       type: Number,
       min: [0, "Invalid service experience years"],
       max: [80, "Invalid service experience years"],
-      default: 0
+      default: 0,
     },
 
     serviceExperience: {
@@ -105,11 +103,11 @@ const ProviderServiceSchema = new Schema<IProviderService>(
       type: [String],
       validate: {
         validator: function (arr: string[]) {
-          return arr.every(item => item.length <= 500);
+          return arr.every((item) => item.length <= 500);
         },
-        message: "Each requirement cannot exceed 500 characters"
+        message: "Each requirement cannot exceed 500 characters",
       },
-      default: []
+      default: [],
     },
 
     videoUrl: {
@@ -122,11 +120,14 @@ const ProviderServiceSchema = new Schema<IProviderService>(
       type: String,
       match: [/^https?:\/\/.+/, "Invalid potfolio URL format"],
       default: null,
-    }
+    },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-export const ProviderServiceModel = mongoose.model<IProviderService>("ProviderService", ProviderServiceSchema);
+export const ProviderServiceModel = mongoose.model<IProviderService>(
+  "ProviderService",
+  ProviderServiceSchema,
+);

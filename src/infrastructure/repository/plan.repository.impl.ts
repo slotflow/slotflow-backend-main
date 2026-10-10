@@ -4,71 +4,76 @@ import { Plan } from "../../domain/entities/plan.entity";
 import { IPlanRepository } from "../../domain/interfaces/repositories/IPlan.repository";
 
 export class PlanRepositoryImpl implements IPlanRepository {
+  async create(plan: Plan): Promise<Plan | null> {
+    const persistence = PlanMapper.toPersistence(plan);
+    const doc = await PlanModel.create(persistence);
+    return doc ? PlanMapper.toDomain(doc) : null;
+  }
 
-    async create(plan: Plan): Promise<Plan | null> {
-        const persistence = PlanMapper.toPersistence(plan);
-        const doc = await PlanModel.create(persistence);
-        return doc ? PlanMapper.toDomain(doc) : null;
+  async findById(planId: string): Promise<Plan | null> {
+    const doc = await PlanModel.findById(planId);
+    return doc ? PlanMapper.toDomain(doc) : null;
+  }
+
+  async findByName(name: string): Promise<Plan | null> {
+    const doc = await PlanModel.findOne({ planName: name });
+    return doc ? PlanMapper.toDomain(doc) : null;
+  }
+
+  async update(plan: Plan): Promise<Plan | null> {
+    const persistence = PlanMapper.toPersistence(plan);
+
+    const doc = await PlanModel.findByIdAndUpdate(plan._id, { $set: persistence }, { new: true });
+
+    return doc ? PlanMapper.toDomain(doc) : null;
+  }
+
+  async findAll(
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<{ items: Array<Plan>; totalPages: number; currentPage: number; totalCount: number }> {
+    const skip = (page - 1) * limit;
+    const [plans, totalCount] = await Promise.all([
+      PlanModel.find(
+        {},
+        {
+          _id: 1,
+          adVisibility: 1,
+          isBlocked: 1,
+          features: 1,
+          description: 1,
+          maxBookingPerMonth: 1,
+          planName: 1,
+          monthlyPrice: 1,
+          yearlyPrice: 1,
+          stripeSync: 1,
+        },
+      )
+        .skip(skip)
+        .limit(limit),
+      PlanModel.countDocuments(),
+    ]);
+    const totalPages = Math.ceil(totalCount / limit);
+    return {
+      items: plans.map((plan) => PlanMapper.toDomain(plan)),
+      totalPages,
+      currentPage: page,
+      totalCount,
     };
+  }
 
-    async findById(planId: string): Promise<Plan | null> {
-        const doc = await PlanModel.findById(planId);
-        return doc ? PlanMapper.toDomain(doc) : null;
-    };
-
-    async findByName(name: string): Promise<Plan | null> {
-        const doc = await PlanModel.findOne({ planName: name });
-        return doc ? PlanMapper.toDomain(doc) : null;
-    };
-
-    async update(plan: Plan): Promise<Plan | null> {
-        const persistence = PlanMapper.toPersistence(plan);
-
-        const doc = await PlanModel.findByIdAndUpdate(
-            plan._id,
-            { $set: persistence },
-            { new: true }
-        );
-
-        return doc ? PlanMapper.toDomain(doc) : null;
-    };
-
-    async findAll(page: number = 1, limit: number = 10): Promise<{ items: Array<Plan>, totalPages: number; currentPage: number; totalCount: number; }> {
-        const skip = (page - 1) * limit;
-        const [plans, totalCount] = await Promise.all([
-            PlanModel.find({}, {
-                _id: 1,
-                adVisibility: 1,
-                isBlocked: 1,
-                features: 1,
-                description: 1,
-                maxBookingPerMonth: 1,
-                planName: 1,
-                monthlyPrice: 1,
-                yearlyPrice: 1,
-                stripeSync: 1,
-            }).skip(skip).limit(limit),
-            PlanModel.countDocuments(),
-        ]);
-        const totalPages = Math.ceil(totalCount / limit);
-        return {
-            items: plans.map(plan => PlanMapper.toDomain(plan)),
-            totalPages,
-            currentPage: page,
-            totalCount
-        };
-    };
-
-    async findAllForDisplay(): Promise<Array<Plan>> {
-        const plans = await PlanModel.find({}, {
-            _id: 1,
-            planName: 1,
-            monthlyPrice: 1,
-            yearlyPrice: 1,
-            features: 1,
-            description: 1
-        });
-        return plans.map(plan => PlanMapper.toDomain(plan));
-    };
-
-};
+  async findAllForDisplay(): Promise<Array<Plan>> {
+    const plans = await PlanModel.find(
+      {},
+      {
+        _id: 1,
+        planName: 1,
+        monthlyPrice: 1,
+        yearlyPrice: 1,
+        features: 1,
+        description: 1,
+      },
+    );
+    return plans.map((plan) => PlanMapper.toDomain(plan));
+  }
+}

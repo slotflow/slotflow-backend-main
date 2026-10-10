@@ -6,40 +6,26 @@ import { authMiddleware } from "../middleware/auth.middleware";
 
 const router = Router();
 
-router.post('/', 
-    authMiddleware, 
-    authorize(Role.ADMIN),
-    planController.createPlan
+router.post("/", authMiddleware, authorize(Role.ADMIN), planController.createPlan);
+
+router.get("/", authMiddleware, authorize(Role.ADMIN, Role.PROVIDER), planController.getPlans);
+
+router.patch(
+  "/:planId/block",
+  authMiddleware,
+  authorize(Role.ADMIN),
+  planController.changePlanBlockStatus,
 );
 
-router.get('/', 
-    authMiddleware, 
-    authorize(Role.ADMIN, Role.PROVIDER),
-    planController.getPlans
+router.post(
+  "/:planId/resync",
+  authMiddleware,
+  authorize(Role.ADMIN),
+  planController.resyncStripePlan,
 );
 
-router.patch('/:planId/block', 
-    authMiddleware, 
-    authorize(Role.ADMIN),
-    planController.changePlanBlockStatus
-);
+router.get("/:planId", authMiddleware, authorize(Role.ADMIN), planController.getPlanDetails);
 
-router.post('/:planId/resync',
-    authMiddleware,
-    authorize(Role.ADMIN),
-    planController.resyncStripePlan
-);
-
-router.get('/:planId', 
-    authMiddleware, 
-    authorize(Role.ADMIN),
-    planController.getPlanDetails
-);
-
-router.patch('/:planId',
-    authMiddleware,
-    authorize(Role.ADMIN),
-    planController.updatePlan
-);
+router.patch("/:planId", authMiddleware, authorize(Role.ADMIN), planController.updatePlan);
 
 export default router;

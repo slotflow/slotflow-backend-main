@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
 import { kafkaConfig } from "../../../config/env";
 import { User } from "../../../domain/entities/user.entity";
-import { IJWT } from '../../interfaces/security/IJwt.service';
+import { IJWT } from "../../interfaces/security/IJwt.service";
 import { RegisterOTPVerificationInput } from "../../dtos/auth.dto";
 import { IOTPService } from "../../interfaces/services/IOtp.service";
-import { toAppError } from '../../../shared/error/handleUnknownError';
-import { generateId } from '../../../shared/utils/helpers/generateId';
+import { toAppError } from "../../../shared/error/handleUnknownError";
+import { generateId } from "../../../shared/utils/helpers/generateId";
 import { EventEnvelope, SendWelcomeEvent } from "../../dtos/kafka.dto";
-import { ERROR_CODES, IdType } from '../../../shared/utils/types/enums';
-import { AppError, BadRequestError } from '../../../shared/error/appError';
+import { ERROR_CODES, IdType } from "../../../shared/utils/types/enums";
+import { AppError, BadRequestError } from "../../../shared/error/appError";
 import { CreditAccount } from "../../../domain/entities/creditAccount.entity";
 import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
@@ -20,8 +20,8 @@ export class RegisterOtpVerificationUseCase {
     private readonly otpService: IOTPService,
     private readonly kafkaProducer: IKafkaProducerAdapter,
     private readonly jwtService: IJWT,
-    private readonly creditAccountRepository: ICreditAccountRepository
-  ) { };
+    private readonly creditAccountRepository: ICreditAccountRepository,
+  ) {}
 
   async execute(input: RegisterOTPVerificationInput): Promise<void> {
     const session = await mongoose.startSession();
@@ -39,64 +39,55 @@ export class RegisterOtpVerificationUseCase {
 
       const existingUser = await this.userRepository.findByEmail(email);
       if (existingUser) {
-        throw new BadRequestError(
-          "Invalid credentials",
-          ERROR_CODES.INVALID_CREDENTIALS
-        );
+        throw new BadRequestError("Invalid credentials", ERROR_CODES.INVALID_CREDENTIALS);
       }
 
       const isValidOTP = await this.otpService.verifyOtp(email, otp);
       if (!isValidOTP) throw new BadRequestError("Invalid OTP");
 
       if (!timeZone) {
-        throw new AppError(
-          "Internal server error",
-          500,
-          true,
-          ERROR_CODES.INTERNAL_ERROR
-        )
+        throw new AppError("Internal server error", 500, true, ERROR_CODES.INTERNAL_ERROR);
       }
 
       if (!existingUser) {
-        const newUser = await this.userRepository.create(User.createLocal({
-          username:  email.split("@")[0].replace(/[^a-zA-Z]/g, ""),
-          email,
-          password,
-          timeZone
-        }), session);
+        const newUser = await this.userRepository.create(
+          User.createLocal({
+            username: email.split("@")[0].replace(/[^a-zA-Z]/g, ""),
+            email,
+            password,
+            timeZone,
+          }),
+          session,
+        );
 
         if (!newUser) {
-          throw new AppError(
-            "Internal server error",
-            500,
-            true,
-            ERROR_CODES.INTERNAL_ERROR
-          )
-        };
-
-        const creditAccount = await this.creditAccountRepository.create(CreditAccount.create({
-          userId: newUser._id
-        }), session);
-        if (!creditAccount) {
-          throw new AppError(
-            "Internal server error",
-            500,
-            true,
-            ERROR_CODES.INTERNAL_ERROR
-          )
+          throw new AppError("Internal server error", 500, true, ERROR_CODES.INTERNAL_ERROR);
         }
 
-        await this.kafkaProducer.publish<EventEnvelope<SendWelcomeEvent>>(kafkaConfig.topics.pub.registerSuccess, {
-          eventId: generateId({ type: IdType.EVENT }),
-          attempt: 1,
-          maxAttempts: 1,
-          occurredAt: new Date(),
-          payload: {
-            emailData: {
-              email: newUser.email,
+        const creditAccount = await this.creditAccountRepository.create(
+          CreditAccount.create({
+            userId: newUser._id,
+          }),
+          session,
+        );
+        if (!creditAccount) {
+          throw new AppError("Internal server error", 500, true, ERROR_CODES.INTERNAL_ERROR);
+        }
+
+        await this.kafkaProducer.publish<EventEnvelope<SendWelcomeEvent>>(
+          kafkaConfig.topics.pub.registerSuccess,
+          {
+            eventId: generateId({ type: IdType.EVENT }),
+            attempt: 1,
+            maxAttempts: 1,
+            occurredAt: new Date(),
+            payload: {
+              emailData: {
+                email: newUser.email,
+              },
             },
-          }
-        })
+          },
+        );
       }
       await session.commitTransaction();
     } catch (error: unknown) {

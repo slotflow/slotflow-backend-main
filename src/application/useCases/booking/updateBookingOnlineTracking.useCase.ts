@@ -12,183 +12,184 @@ import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.r
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 import { IReferralRepository } from "../../../domain/interfaces/repositories/IReferral.repository";
 import { IServiceAvailabilityQueries } from "../../interfaces/queries/IServiceAvailability.queries";
-import { UpdateBookingOnlineTrackInput, UpdateBookingOnlineTrackOutput } from "../../dtos/booking.dto";
+import {
+  UpdateBookingOnlineTrackInput,
+  UpdateBookingOnlineTrackOutput,
+} from "../../dtos/booking.dto";
 import { ICreditAccountRepository } from "../../../domain/interfaces/repositories/ICreditAccount.repository";
 import { ICreditTransactionRepository } from "../../../domain/interfaces/repositories/ICreditTransaction.repository";
-import { CreditTransactionSource, CreditTransactionType, RewardPoints } from "../../../domain/enums/creditTransaction.enum";
+import {
+  CreditTransactionSource,
+  CreditTransactionType,
+  RewardPoints,
+} from "../../../domain/enums/creditTransaction.enum";
 
 export class UpdateBookingOnlineTrakingUseCase {
-    constructor(
-        private readonly bookingRepository: IBookingRepository,
-        private readonly serviceAvailabilityQueries: IServiceAvailabilityQueries,
-        private readonly userRepository: IUserRepository,
-        private readonly referralRepository: IReferralRepository,
-        private readonly creditAccountRepository: ICreditAccountRepository,
-        private readonly creditTransactionRepository: ICreditTransactionRepository
-    ) { };
+  constructor(
+    private readonly bookingRepository: IBookingRepository,
+    private readonly serviceAvailabilityQueries: IServiceAvailabilityQueries,
+    private readonly userRepository: IUserRepository,
+    private readonly referralRepository: IReferralRepository,
+    private readonly creditAccountRepository: ICreditAccountRepository,
+    private readonly creditTransactionRepository: ICreditTransactionRepository,
+  ) {}
 
-    async execute(input: UpdateBookingOnlineTrackInput): Promise<UpdateBookingOnlineTrackOutput> {
-        const session = await mongoose.startSession();
-        session.startTransaction();
-        try {
-            const { joined, joinedTime, leftCallTime, role, roomId } = input;
+  async execute(input: UpdateBookingOnlineTrackInput): Promise<UpdateBookingOnlineTrackOutput> {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+      const { joined, joinedTime, leftCallTime, role, roomId } = input;
 
-            if (joined && (!joinedTime && !leftCallTime)) {
-                throw new BadRequestError();
+      if (joined && !joinedTime && !leftCallTime) {
+        throw new BadRequestError();
+      }
+
+      if (!role || !roomId) {
+        throw new BadRequestError();
+      }
+
+      const booking = await this.bookingRepository.findByRoomId(roomId, session);
+      if (!booking) {
+        throw new NotFoundError("Booking not found", ERROR_CODES.BOOKING_NOT_FOUND);
+      }
+
+      const provider = await this.userRepository.findById(booking.providerId, session);
+      if (!provider) {
+        throw new AppError("Internal server error", 500, true, ERROR_CODES.INTERNAL_ERROR);
+      }
+
+      const serviceAvailability = await this.serviceAvailabilityQueries.findByProviderId({
+        date: formatDate({
+          date: booking.appointmentDate,
+          pattern: dateFormats.ISO_DATE,
+          timeZone: provider.timeZone.value,
+        }),
+        timeZone: provider.timeZone.value,
+        providerId: booking.serviceProviderId,
+      });
+      if (!serviceAvailability) {
+        throw new NotFoundError("Service not found", ERROR_CODES.SERVICE_NOT_FOUND);
+      }
+
+      if (role === Role.PROVIDER) {
+        if (joined && joinedTime) {
+          if (!booking.onlineTrack.provider.joined && booking.onlineTrack.provider.joinedTime) {
+            booking.onlineTrack.provider.joined = true;
+            booking.onlineTrack.provider.joinedTime = joinedTime;
+          }
+        } else if (joined && leftCallTime) {
+          booking.onlineTrack.provider.leftCallTime = leftCallTime;
+          if (booking.onlineTrack.user.joined) {
+            if (booking.onlineTrack.user.joinedTime && booking.onlineTrack.user.leftCallTime) {
+              booking.completeAppointment();
             }
-
-            if (!role || !roomId) {
-                throw new BadRequestError();
+          }
+        }
+      } else if (role === Role.USER) {
+        if (joined && joinedTime) {
+          if (!booking.onlineTrack.user.joined && !booking.onlineTrack.user.joinedTime) {
+            booking.onlineTrack.user.joined = true;
+            booking.onlineTrack.user.joinedTime = joinedTime;
+          }
+        } else if (joined && leftCallTime) {
+          booking.onlineTrack.user.leftCallTime = leftCallTime;
+          if (booking.onlineTrack.provider.joined) {
+            if (
+              booking.onlineTrack.provider.joinedTime &&
+              booking.onlineTrack.provider.leftCallTime
+            ) {
+              booking.completeAppointment();
             }
+          }
+        }
+      }
 
-            const booking = await this.bookingRepository.findByRoomId(roomId, session);
-            if (!booking) {
-                throw new NotFoundError(
-                    "Booking not found",
-                    ERROR_CODES.BOOKING_NOT_FOUND
-                );
+      const updatedBooking = await this.bookingRepository.update(booking, session);
+      if (!updatedBooking) {
+        throw new AppError("Internal server error", 500, true, ERROR_CODES.INTERNAL_ERROR);
+      }
+
+      const user = await this.userRepository.findById(booking.userId, session);
+      if (!user) {
+        throw new AppError("Internal server error", 500, true, ERROR_CODES.INTERNAL_ERROR);
+      }
+
+      if (user.referredBy) {
+        const referral = await this.referralRepository.findByReferrerAndReferredUser(
+          user.referredBy,
+          user._id,
+        );
+        if (referral && !referral.rewardGiven) {
+          referral.completeReferral();
+          await this.referralRepository.update(referral, session);
+
+          let creditAccount = await this.creditAccountRepository.findByUserId(user._id, session);
+          if (!creditAccount) {
+            creditAccount = await this.creditAccountRepository.create(
+              CreditAccount.create({ userId: user._id }),
+              session,
+            );
+            if (!creditAccount) {
+              throw new AppError(
+                "Failed to create credit account",
+                500,
+                true,
+                ERROR_CODES.INTERNAL_ERROR,
+              );
             }
+          }
 
-            const provider = await this.userRepository.findById(booking.providerId, session);
-            if (!provider) {
-                throw new AppError(
-                    "Internal server error",
-                    500,
-                    true,
-                    ERROR_CODES.INTERNAL_ERROR
-                )
-            }
+          await this.creditAccountRepository.incrementBalance(
+            user._id,
+            RewardPoints.BOOKING,
+            session,
+          );
 
-            const serviceAvailability = await this.serviceAvailabilityQueries.findByProviderId({
-                date: formatDate({
-                    date: booking.appointmentDate,
-                    pattern: dateFormats.ISO_DATE,
-                    timeZone: provider.timeZone.value
-                }),
-                timeZone: provider.timeZone.value,
-                providerId: booking.serviceProviderId
-            });
-            if (!serviceAvailability) {
-                throw new NotFoundError(
-                    "Service not found",
-                    ERROR_CODES.SERVICE_NOT_FOUND
-                );
-            }
+          const updatedAccount = await this.creditAccountRepository.findByUserId(user._id, session);
 
-            if (role === Role.PROVIDER) {
-                if (joined && joinedTime) {
-                    if (!booking.onlineTrack.provider.joined && booking.onlineTrack.provider.joinedTime) {
-                        booking.onlineTrack.provider.joined = true;
-                        booking.onlineTrack.provider.joinedTime = joinedTime;
-                    }
-                } else if (joined && leftCallTime) {
-                    booking.onlineTrack.provider.leftCallTime = leftCallTime;
-                    if (booking.onlineTrack.user.joined) {
-                        if (booking.onlineTrack.user.joinedTime && booking.onlineTrack.user.leftCallTime) {
-                            booking.completeAppointment();
-                        };
-                    };
-                };
-            } else if (role === Role.USER) {
-                if (joined && joinedTime) {
-                    if (!booking.onlineTrack.user.joined && !booking.onlineTrack.user.joinedTime) {
-                        booking.onlineTrack.user.joined = true;
-                        booking.onlineTrack.user.joinedTime = joinedTime;
-                    }
-                } else if (joined && leftCallTime) {
-                    booking.onlineTrack.user.leftCallTime = leftCallTime;
-                    if (booking.onlineTrack.provider.joined) {
-                        if (booking.onlineTrack.provider.joinedTime && booking.onlineTrack.provider.leftCallTime) {
-                            booking.completeAppointment();
-                        };
-                    };
-                };
-            };
+          if (!updatedAccount) {
+            throw new AppError(
+              "Credit account not found after update",
+              500,
+              true,
+              ERROR_CODES.INTERNAL_ERROR,
+            );
+          }
 
-            const updatedBooking = await this.bookingRepository.update(booking, session);
-            if (!updatedBooking) {
-                throw new AppError(
-                    "Internal server error",
-                    500,
-                    true,
-                    ERROR_CODES.INTERNAL_ERROR
-                )
-            }
+          const newCreditTransaction = await this.creditTransactionRepository.create(
+            CreditTransaction.create({
+              accountId: updatedAccount._id,
+              balanceAfter: updatedAccount.balance,
+              credits: RewardPoints.BOOKING,
+              source: CreditTransactionSource.SUBSCRIPTION_DISCOUNT,
+              type: CreditTransactionType.CREDIT,
+              userId: user._id,
+              idempotencyKey: generateId({ type: IdType.CREDIT_TRANSACTION }),
+              referenceId: booking._id,
+            }),
+            session,
+          );
+          if (!newCreditTransaction) {
+            throw new AppError(
+              "Failed to create credit transation",
+              500,
+              true,
+              ERROR_CODES.INTERNAL_ERROR,
+            );
+          }
+        }
+      }
 
-            const user = await this.userRepository.findById(booking.userId, session);
-            if (!user) {
-                throw new AppError(
-                    "Internal server error",
-                    500,
-                    true,
-                    ERROR_CODES.INTERNAL_ERROR
-                )
-            }
-
-            if (user.referredBy) {
-                const referral = await this.referralRepository.findByReferrerAndReferredUser(user.referredBy, user._id);
-                if (referral && !referral.rewardGiven) {
-                    referral.completeReferral();
-                    await this.referralRepository.update(referral, session);
-
-                    let creditAccount = await this.creditAccountRepository.findByUserId(user._id, session);
-                    if (!creditAccount) {
-                        creditAccount = await this.creditAccountRepository.create(CreditAccount.create({ userId: user._id }), session);
-                        if (!creditAccount) {
-                            throw new AppError(
-                                "Failed to create credit account",
-                                500,
-                                true,
-                                ERROR_CODES.INTERNAL_ERROR
-                            )
-                        }
-                    }
-
-                    await this.creditAccountRepository.incrementBalance(
-                        user._id,
-                        RewardPoints.BOOKING,
-                        session
-                    );
-
-                    const updatedAccount = await this.creditAccountRepository.findByUserId(user._id, session);
-
-                    if (!updatedAccount) {
-                        throw new AppError(
-                            "Credit account not found after update",
-                            500,
-                            true,
-                            ERROR_CODES.INTERNAL_ERROR
-                        );
-                    }
-
-                    const newCreditTransaction = await this.creditTransactionRepository.create(CreditTransaction.create({
-                        accountId: updatedAccount._id,
-                        balanceAfter: updatedAccount.balance,
-                        credits: RewardPoints.BOOKING,
-                        source: CreditTransactionSource.SUBSCRIPTION_DISCOUNT,
-                        type: CreditTransactionType.CREDIT,
-                        userId: user._id,
-                        idempotencyKey: generateId({ type: IdType.CREDIT_TRANSACTION }),
-                        referenceId: booking._id
-                    }), session);
-                    if (!newCreditTransaction) {
-                        throw new AppError(
-                            "Failed to create credit transation",
-                            500,
-                            true,
-                            ERROR_CODES.INTERNAL_ERROR
-                        )
-                    }
-                }
-            }
-
-            await session.commitTransaction();
-            return { duration: serviceAvailability.duration, videoCallRoomId: updatedBooking.videoCallRoomId };
-        } catch (error: unknown) {
-            await session.abortTransaction();
-            throw toAppError(error, "Failed to update booking");
-        } finally {
-            session.endSession();
-        };
-    };
-};
+      await session.commitTransaction();
+      return {
+        duration: serviceAvailability.duration,
+        videoCallRoomId: updatedBooking.videoCallRoomId,
+      };
+    } catch (error: unknown) {
+      await session.abortTransaction();
+      throw toAppError(error, "Failed to update booking");
+    } finally {
+      session.endSession();
+    }
+  }
+}

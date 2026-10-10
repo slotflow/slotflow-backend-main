@@ -1,18 +1,22 @@
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { IProviderServiceQueries } from "../../interfaces/queries/IProviderService.queries";
 import { ISignedUrlService } from "../../interfaces/services/ISignedUrl.service";
-import { GetProvidersServicesInput, GetProvidersServicesOutput } from "../../dtos/providerService.dto";
+import {
+  GetProvidersServicesInput,
+  GetProvidersServicesOutput,
+} from "../../dtos/providerService.dto";
 
 export class GetProvidersServicesUseCase {
   constructor(
     private signedUrlService: ISignedUrlService,
-    private providerServiceQueries: IProviderServiceQueries
-  ) { };
+    private providerServiceQueries: IProviderServiceQueries,
+  ) {}
 
   async execute(input: GetProvidersServicesInput): Promise<GetProvidersServicesOutput | null> {
     try {
-      const { serviceIds, categories, location, maxPrice, minPrice, slotflowTrusted, skip, limit } = input;
-      
+      const { serviceIds, categories, location, maxPrice, minPrice, slotflowTrusted, skip, limit } =
+        input;
+
       const providers = await this.providerServiceQueries.findProvidersCardDataForUsers({
         serviceIds: serviceIds ?? [],
         categories: categories ?? [],
@@ -21,18 +25,18 @@ export class GetProvidersServicesUseCase {
         minPrice,
         slotflowTrusted: slotflowTrusted,
         skip,
-        limit
+        limit,
       });
       if (!providers) return null;
 
       const updatedProviders = await Promise.all(
         providers.map(async (provider) => {
-          let profileImageUrl = provider?.provider?.profileImage;
+          const profileImageUrl = provider?.provider?.profileImage;
 
           if (profileImageUrl) {
             const signedUrl = await this.signedUrlService.get(profileImageUrl);
             provider.provider.profileImage = signedUrl;
-          };
+          }
 
           return provider;
         }),
@@ -41,6 +45,6 @@ export class GetProvidersServicesUseCase {
       return updatedProviders;
     } catch (error: unknown) {
       throw toAppError(error, "Failed to get provider serices");
-    };
-  };
-};
+    }
+  }
+}

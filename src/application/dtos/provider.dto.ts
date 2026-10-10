@@ -9,58 +9,51 @@ import { CommonDateInput } from "./common.dto";
 
 // GetProviderStats usecase input output
 export interface GetProviderStatsInput extends CommonDateInput {
-    providerId: UserProps["_id"];
-    timeZone: string;
+  providerId: UserProps["_id"];
+  timeZone: string;
 }
 export type GetProviderStatsOutput = BookingStatsForProviderView;
 
-
 // GetProviderGraphData usecase input output
 export interface GetProviderGraphDataInput extends CommonDateInput {
-    providerId: UserProps["_id"];
-    subscription: PlanName;
-    isAdmin: boolean;
-    timeZone: string;
+  providerId: UserProps["_id"];
+  subscription: PlanName;
+  isAdmin: boolean;
+  timeZone: string;
 }
 export interface GetProviderGraphDataOutput {
-    appointmentsOvertimeChartData: Array<{
-        date: string;
-        completed: number;
-        missed: number;
-        cancelled: number;
-    }>;
+  appointmentsOvertimeChartData: Array<{
+    date: string;
+    completed: number;
+    missed: number;
+    cancelled: number;
+  }>;
 
-    peakBookingHoursChartData: Array<{
-        date: string;
-        hour: string;
-        bookings: number;
-    }>;
+  peakBookingHoursChartData: Array<{
+    date: string;
+    hour: string;
+    bookings: number;
+  }>;
 
-    appointmentModeChartData: Array<{
-        date: string;
-        online: number;
-        offline: number;
-    }>;
+  appointmentModeChartData: Array<{
+    date: string;
+    online: number;
+    offline: number;
+  }>;
 
-    completionBreakdownChartData: Array<{
-        status: 'completed' | 'missed' | 'cancelled' | 'rejected' | "confirmed" | "booked" | "pending";
-        value: number;
-    }>;
+  completionBreakdownChartData: Array<{
+    status: "completed" | "missed" | "cancelled" | "rejected" | "confirmed" | "booked" | "pending";
+    value: number;
+  }>;
 
-    newVsReturningUsersChartData: Array<{
-        date: string;
-        newUsers: number;
-        returningUsers: number;
-    }>;
+  newVsReturningUsersChartData: Array<{
+    date: string;
+    newUsers: number;
+    returningUsers: number;
+  }>;
 
-    topBookingDaysChartData: Array<{
-        day: string;
-        count: number;
-    }>;
+  topBookingDaysChartData: Array<{
+    day: string;
+    count: number;
+  }>;
 }
-
-
-
-
-
-

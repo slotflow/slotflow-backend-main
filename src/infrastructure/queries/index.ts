@@ -27,7 +27,8 @@ export const providerServiceQueries: IProviderServiceQueries = new ProviderServi
 export const reviewQueries: IReviewQueries = new ReviewQueriesImpl();
 
 // service availability queries instance
-export const serviceAvailabilityQueries: IServiceAvailabilityQueries = new ServiceAvailabilityQueriesImpl();
+export const serviceAvailabilityQueries: IServiceAvailabilityQueries =
+  new ServiceAvailabilityQueriesImpl();
 
 // subscription queries instance
 export const subscriptionQueries: ISubscriptionQueries = new SubscriptionQueriesImpl();

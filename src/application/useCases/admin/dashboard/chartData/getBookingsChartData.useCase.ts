@@ -3,29 +3,27 @@ import { toAppError } from "../../../../../shared/error/handleUnknownError";
 import { GetGraphDataInput, GetGraphDataOutput } from "../../../../dtos/admin.dto";
 
 export class GetAdminBookingsChartDataUseCase {
-    constructor(
-        private readonly bookingQueries: IBookingQueries
-    ) { }
+  constructor(private readonly bookingQueries: IBookingQueries) {}
 
-    async execute(input: GetGraphDataInput): Promise<GetGraphDataOutput> {
-        try {
-            const resultArray = await this.bookingQueries.findGraphDataForDashboard({
-                ...input,
-                isAdmin: true
-            });
+  async execute(input: GetGraphDataInput): Promise<GetGraphDataOutput> {
+    try {
+      const resultArray = await this.bookingQueries.findGraphDataForDashboard({
+        ...input,
+        isAdmin: true,
+      });
 
-            const dashboardGraphData: GetGraphDataOutput = {
-                appointmentsOvertimeChartData: resultArray?.appointmentsOvertimeChartData ?? [],
-                peakBookingHoursChartData: resultArray?.peakBookingHoursChartData ?? [],
-                appointmentModeChartData: resultArray?.appointmentModeChartData ?? [],
-                completionBreakdownChartData: resultArray?.completionBreakdownChartData ?? [],
-                newVsReturningUsersChartData: resultArray?.newVsReturningUsersChartData ?? [],
-                topBookingDaysChartData: resultArray?.topBookingDaysChartData ?? [],
-            }
+      const dashboardGraphData: GetGraphDataOutput = {
+        appointmentsOvertimeChartData: resultArray?.appointmentsOvertimeChartData ?? [],
+        peakBookingHoursChartData: resultArray?.peakBookingHoursChartData ?? [],
+        appointmentModeChartData: resultArray?.appointmentModeChartData ?? [],
+        completionBreakdownChartData: resultArray?.completionBreakdownChartData ?? [],
+        newVsReturningUsersChartData: resultArray?.newVsReturningUsersChartData ?? [],
+        topBookingDaysChartData: resultArray?.topBookingDaysChartData ?? [],
+      };
 
-            return dashboardGraphData;
-        } catch (error: unknown) {
-            throw toAppError(error, "Failed to fetch bookings chart data");
-        }
+      return dashboardGraphData;
+    } catch (error: unknown) {
+      throw toAppError(error, "Failed to fetch bookings chart data");
     }
+  }
 }

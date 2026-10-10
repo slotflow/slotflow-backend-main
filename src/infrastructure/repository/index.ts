@@ -43,7 +43,8 @@ export const credentialRepository: ICredentialRepository = new CredentialReposit
 export const planRepository: IPlanRepository = new PlanRepositoryImpl();
 
 // provider service repository instance
-export const providerServiceRepository: IProviderServiceRepository = new ProviderServiceRepositoryImpl();
+export const providerServiceRepository: IProviderServiceRepository =
+  new ProviderServiceRepositoryImpl();
 
 // review repository instance
 export const reviewRepository: IReviewRepository = new ReviewRepositoryImpl();
@@ -52,7 +53,8 @@ export const reviewRepository: IReviewRepository = new ReviewRepositoryImpl();
 export const serviceRepository: IServiceRepository = new ServiceRepositoryImpl();
 
 // service availability repository instance
-export const serviceAvailabilityRepository: IServiceAvailabilityRepository = new ServiceAvailabilityRepositoryImpl();
+export const serviceAvailabilityRepository: IServiceAvailabilityRepository =
+  new ServiceAvailabilityRepositoryImpl();
 
 // subscription repository instance
 export const subscriptionRepository: ISubscriptionRepository = new SubscriptionRepositoryImpl();
@@ -61,10 +63,12 @@ export const subscriptionRepository: ISubscriptionRepository = new SubscriptionR
 export const userRepository: IUserRepository = new UserRepositoryImpl();
 
 // provider profile repository instance
-export const providerProfileRepository: IProviderProfileRepository = new ProviderProfileRepositoryImpl();
+export const providerProfileRepository: IProviderProfileRepository =
+  new ProviderProfileRepositoryImpl();
 
 // processed event repository instance
-export const processedEventRepository: IProcessedEventRepository = new ProcessedEventRepositoryImpl();
+export const processedEventRepository: IProcessedEventRepository =
+  new ProcessedEventRepositoryImpl();
 
 // referral repository instance
 export const referralRepository: IReferralRepository = new ReferralRepositoryImpl();
@@ -73,4 +77,5 @@ export const referralRepository: IReferralRepository = new ReferralRepositoryImp
 export const creditAccountRepository: ICreditAccountRepository = new CreditAccountRepositoryImpl();
 
 // creditTransaction repository instance
-export const creditTransactionRepository: ICreditTransactionRepository = new CreditTransactionRepositoryImpl();
+export const creditTransactionRepository: ICreditTransactionRepository =
+  new CreditTransactionRepositoryImpl();

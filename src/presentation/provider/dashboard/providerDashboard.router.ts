@@ -6,16 +6,18 @@ import { providerDashboardController } from "./providerDashboard.controller";
 
 const router = Router();
 
-router.get("/graph",
-    authMiddleware,
-    authorize(Role.PROVIDER),
-    providerDashboardController.getDashboardGraphData
+router.get(
+  "/graph",
+  authMiddleware,
+  authorize(Role.PROVIDER),
+  providerDashboardController.getDashboardGraphData,
 );
 
-router.get("/analytics/stats",
-    authMiddleware,
-    authorize(Role.PROVIDER),
-    providerDashboardController.getDashboardStats
+router.get(
+  "/analytics/stats",
+  authMiddleware,
+  authorize(Role.PROVIDER),
+  providerDashboardController.getDashboardStats,
 );
 
 export default router;

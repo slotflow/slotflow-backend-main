@@ -7,87 +7,86 @@ import { appConfig, callbackConfig, serviceConfig } from "../../config/env";
 import { GoogleAuthOrchestratorUseCase } from "../../application/useCases/auth/googleAuthOrchestrate.useCase";
 
 class GoogleAuthController {
-    constructor(
-        private googleAuthOrchestratorUseCase: GoogleAuthOrchestratorUseCase,
-    ) {
-        this.googleAuth = this.googleAuth.bind(this);
-        this.googleAuthCallback = this.googleAuthCallback.bind(this);
-    };
+  constructor(private googleAuthOrchestratorUseCase: GoogleAuthOrchestratorUseCase) {
+    this.googleAuth = this.googleAuth.bind(this);
+    this.googleAuthCallback = this.googleAuthCallback.bind(this);
+  }
 
-    async googleAuth(req: Request, res: Response, next: NextFunction) {
-        try {
-            const timeZoneQuery = req.query.timeZone as string;
-            passport.authenticate("google", {
-                scope: [
-                    "openid",
-                    "profile",
-                    "email",
-                ],
-                accessType: "offline",
-                prompt: "consent",
-                session: false,
-                state: timeZoneQuery || "",
-            })(req, res, next);
-        } catch (error) {
-            log.error("googleAuth failed", error as Error);
-            next(error);
-        };
-    };
+  async googleAuth(req: Request, res: Response, next: NextFunction) {
+    try {
+      const timeZoneQuery = req.query.timeZone as string;
+      passport.authenticate("google", {
+        scope: ["openid", "profile", "email"],
+        accessType: "offline",
+        prompt: "consent",
+        session: false,
+        state: timeZoneQuery || "",
+      })(req, res, next);
+    } catch (error) {
+      log.error("googleAuth failed", { error });
+      next(error);
+    }
+  }
 
-    async googleAuthCallback(req: Request, res: Response, next: NextFunction) {
-        try {
-            passport.authenticate("google", { session: false }, async (err, user: GoogleOAuthUser, info) => {
+  async googleAuthCallback(req: Request, res: Response, next: NextFunction) {
+    try {
+      passport.authenticate(
+        "google",
+        { session: false },
+        async (err, user: GoogleOAuthUser, _info) => {
+          const fallbackRoute = callbackConfig.authUrl;
+          if (err || !user) {
+            const errorPayload = {
+              success: false,
+              error: "GOOGLE_AUTH_FAILED",
+            };
 
-                let fallbackRoute = callbackConfig.authUrl;
-                if (err || !user) {
-                    const errorPayload = {
-                        success: false,
-                        error: "GOOGLE_AUTH_FAILED",
-                    };
+            const redirectData = encodeURIComponent(JSON.stringify(errorPayload));
+            return res.redirect(
+              `${serviceConfig.frontendUrl}${fallbackRoute}?response=${redirectData}`,
+            );
+          }
 
-                    const redirectData = encodeURIComponent(JSON.stringify(errorPayload));
-                    return res.redirect(`${serviceConfig.frontendUrl}${fallbackRoute}?response=${redirectData}`);
-                }
+          let timeZoneData = null;
+          if (req.query.state) {
+            try {
+              timeZoneData = JSON.parse(decodeURIComponent(req.query.state as string));
+            } catch (parseError) {
+              log.error("Time zone parse error : ", { parseError });
+              timeZoneData = req.query.state;
+            }
+          }
 
-                let timeZoneData = null;
-                if (req.query.state) {
-                    try {
-                        timeZoneData = JSON.parse(decodeURIComponent(req.query.state as string));
-                    } catch (parseError) {
-                        timeZoneData = req.query.state;
-                    }
-                }
+          const { token, user: googleUser } = await this.googleAuthOrchestratorUseCase.execute({
+            email: user.email,
+            googleId: user.googleId,
+            name: user.name,
+            image: user.image,
+            timeZone: timeZoneData,
+          });
 
-                const { token, user: googleUser } = await this.googleAuthOrchestratorUseCase.execute({
-                    email: user.email,
-                    googleId: user.googleId,
-                    name: user.name,
-                    image: user.image,
-                    timeZone: timeZoneData,
-                });
+          res.cookie("token", token, {
+            maxAge: 2 * 24 * 60 * 60 * 1000,
+            httpOnly: true,
+            sameSite: appConfig.nodeEnv === "development" ? "lax" : "none",
+            secure: appConfig.nodeEnv !== "development",
+          });
 
-                res.cookie("token", token, {
-                    maxAge: 2 * 24 * 60 * 60 * 1000,
-                    httpOnly: true,
-                    sameSite: appConfig.nodeEnv === "development" ? "lax" : "none",
-                    secure: appConfig.nodeEnv !== "development",
-                });
+          const successPayload = {
+            success: true,
+            user: googleUser,
+          };
 
-                const successPayload = {
-                    success: true,
-                    user: googleUser,
-                };
+          const redirectData = JSON.stringify(successPayload);
+          return res.redirect(
+            `${serviceConfig.frontendUrl}${fallbackRoute}?response=${encodeURIComponent(redirectData)}`,
+          );
+        },
+      )(req, res);
+    } catch (error) {
+      next(error);
+    }
+  }
+}
 
-                const redirectData = JSON.stringify(successPayload);
-                return res.redirect(`${serviceConfig.frontendUrl}${fallbackRoute}?response=${encodeURIComponent(redirectData)}`);
-
-            })(req, res);
-        } catch (error) {
-            next(error);
-        };
-    };
-};
-
-export const googleAuthController = new GoogleAuthController(
-    googleAuthOrchestratorUseCase
-);
+export const googleAuthController = new GoogleAuthController(googleAuthOrchestratorUseCase);

@@ -8,11 +8,8 @@ import { IKafkaProducerAdapter } from "../../application/interfaces/messaging/IK
 // Kafka single consumer
 export const kafkaConsumer: IKafkaConsumerAdapter = new KafkaConsumerAdapter(
   kafkaClient,
-  kafkaConfig.groups.groupId
+  kafkaConfig.groups.groupId,
 );
 
 // Kafka Single producer
-export const kafkaProducer: IKafkaProducerAdapter = new KafkaProducerAdapter(
-  kafkaClient
-);
-
+export const kafkaProducer: IKafkaProducerAdapter = new KafkaProducerAdapter(kafkaClient);

@@ -29,10 +29,15 @@ export const otpService: IOTPService = new OTPServiceImpl(redisClient);
 export const aesEncryptionService: IAesEncryptionService = new AesEncryptionServiceImpl();
 
 // google refresh token service instance
-export const googleRefreshTokenService: IGoogleRefreshTokenService = new GoogleRefreshTokenServiceImpl();
+export const googleRefreshTokenService: IGoogleRefreshTokenService =
+  new GoogleRefreshTokenServiceImpl();
 
 // google token service instance
-export const googleTokenService: IGoogleTokenService = new GoogleTokenServiceImpl(credentialRepository, aesEncryptionService, googleRefreshTokenService);
+export const googleTokenService: IGoogleTokenService = new GoogleTokenServiceImpl(
+  credentialRepository,
+  aesEncryptionService,
+  googleRefreshTokenService,
+);
 
 // cache service instance
 export const cacheService: ICacheService = new CacheServiceImpl(redisClient);
@@ -41,4 +46,7 @@ export const cacheService: ICacheService = new CacheServiceImpl(redisClient);
 export const stripePlanService: IStripePlanService = new StripePlanServiceImpl(stripeClient);
 
 // auth response builder instance
-export const authResponseBuilder: IAuthResponseBuilder = new AuthResponseBuilderImpl(subscriptionRepository, planRepository);
+export const authResponseBuilder: IAuthResponseBuilder = new AuthResponseBuilderImpl(
+  subscriptionRepository,
+  planRepository,
+);

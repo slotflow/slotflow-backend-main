@@ -3,44 +3,45 @@ import { ProcessedEventProps } from "../contracts/processedEvent.contract";
 import { CreateProcessedEventProps } from "../commands/processedEvent.commands";
 
 export class ProcessedEvent {
-    private props: ProcessedEventProps;
+  private props: ProcessedEventProps;
 
-    constructor(props: ProcessedEventProps) {
-        this.props = props;
-    };
+  constructor(props: ProcessedEventProps) {
+    this.props = props;
+  }
 
-    private touch() {
-        this.props.updatedAt = new Date();
-    };
+  private touch() {
+    this.props.updatedAt = new Date();
+  }
 
-    static create(props: CreateProcessedEventProps): ProcessedEvent {
-        const now = new Date();
-        return new ProcessedEvent({
-            eventId: props.eventId,
-            topic: props.topic,
-            status: props.status,
-            processedAt: props.processedAt,
-            retryCount: props.retryCount,
-            maxRetry: props.maxRetry,
-            payload: props.payload,
-            createdAt: now,
-            updatedAt: now,
-        });
-    }
+  static create(props: CreateProcessedEventProps): ProcessedEvent {
+    const now = new Date();
+    return new ProcessedEvent({
+      _id: "",
+      eventId: props.eventId,
+      topic: props.topic,
+      status: props.status,
+      processedAt: props.processedAt,
+      retryCount: props.retryCount,
+      maxRetry: props.maxRetry,
+      payload: props.payload,
+      createdAt: now,
+      updatedAt: now,
+    });
+  }
 
-    // Business Methods
+  // Business Methods
 
-     getProps(): ProcessedEventProps {
-        return this.props;
-    };
+  getProps(): ProcessedEventProps {
+    return this.props;
+  }
 
-    markAsSuccess() {
-        this.props.status = EventStatus.SUCCESS;
-        this.touch();
-    }
+  markAsSuccess() {
+    this.props.status = EventStatus.SUCCESS;
+    this.touch();
+  }
 
-    markAsFailed() {
-        this.props.status = EventStatus.FAILED;
-        this.touch();
-    }
+  markAsFailed() {
+    this.props.status = EventStatus.FAILED;
+    this.touch();
+  }
 }

@@ -18,8 +18,8 @@ export interface KafkaClientAdapterProps {
 }
 
 // backend-main service subscribing kafka event payload
-export interface MBSSubKafkaEventPayload {
-  mbsData: any;
+export interface MBSSubKafkaEventPayload<T extends MBSEventPayload = MBSEventPayload> {
+  mbsData: T;
 }
 
 // dlq metadata
@@ -59,22 +59,17 @@ export interface SendNotificationCommon {
 export type MessageHandler = (payload: KafkaClientAdapterProps) => Promise<void>;
 
 // process event wrapper input
-export interface ProcessEventWrapperInput {
+export interface ProcessEventWrapperInput<T extends MBSEventPayload = MBSEventPayload> {
   topic: string;
-  eventData: EventEnvelope<MBSSubKafkaEventPayload>;
-  businessUseCase: { execute: (data: any) => Promise<void> };
-  payloadExtractor: (payload: MBSSubKafkaEventPayload) => any;
+  eventData: EventEnvelope<MBSSubKafkaEventPayload<T>>;
+  businessUseCase: { execute: (input: T) => Promise<void> };
 }
 
 // Notification data common interface
 interface CommonNotificationEventInput {
-    userId: string;
-    notificationType: NotificationType;
+  userId: string;
+  notificationType: NotificationType;
 }
-
-
-
-
 
 /**
  * Kafka events payload
@@ -87,7 +82,7 @@ export interface SendAdminProviderReviewEvent {
   emailData: SendEmailCommon & {
     status: AdminVerificationStatus;
     reason?: string;
-  }
+  };
 }
 
 // send account block status event
@@ -95,7 +90,7 @@ export interface SendAccountBlockStatusEvent {
   emailData: SendEmailCommon & {
     blocked: boolean;
     reason?: string;
-  }
+  };
 }
 
 // send account trust status event
@@ -103,19 +98,21 @@ export interface SendAccountTrustStatusEvent {
   emailData: SendEmailCommon & {
     trusted: boolean;
     reason?: string;
-  },
+  };
   notificationData: CommonNotificationEventInput & {
     isTrusted: string;
   };
 }
 
 // send appointment status change event for user
-export type ProviderAddressForUser = (Omit<
-  AddressProps,
-  '_id' | 'updatedAt' | 'createdAt' | 'userId' | "phone" | "place" | "district" | "country"
-> & {
-  googleMapsUrl?: string;
-}) | null;
+export type ProviderAddressForUser =
+  | (Omit<
+      AddressProps,
+      "_id" | "updatedAt" | "createdAt" | "userId" | "phone" | "place" | "district" | "country"
+    > & {
+      googleMapsUrl?: string;
+    })
+  | null;
 export interface SendAppointmentStatusChangeForUserEvent {
   emailData: SendEmailCommon & {
     appointmentDate: string;
@@ -123,11 +120,11 @@ export interface SendAppointmentStatusChangeForUserEvent {
     appointmentMode: string;
     appointmentStatus: AppointmentStatus;
     address?: ProviderAddressForUser;
-  },
+  };
   notificationData: CommonNotificationEventInput & {
     appointmentStatus: string;
     address?: ProviderAddressForUser;
-  },
+  };
 }
 
 // send appointment status change event for provider
@@ -137,7 +134,7 @@ export interface SendAppointmentStatusChangeForProviderEvent {
     appointmentTime: string;
     appointmentMode: string;
     appointmentStatus: AppointmentStatus;
-  }
+  };
 }
 
 // send provider subscription updated event
@@ -149,7 +146,7 @@ export interface ProviderSubscriptionUpdatedEvent {
     currentPeriodEnd: Date | null;
     subscriptionStatus: SubscriptionStatus;
     hasUsedTrial: boolean;
-  },
+  };
   emailData: {
     email: string;
     name: string;
@@ -157,7 +154,7 @@ export interface ProviderSubscriptionUpdatedEvent {
     startDate: string;
     endDate: string;
     isTrial: string;
-  },
+  };
   notificationData: CommonNotificationEventInput & {
     planName: string;
     isTrial: string;
@@ -172,9 +169,9 @@ export interface SlotBookedEvent {
     name: string;
     appointmentDate: string;
     appointmentMode: string;
-    appointmentStatus: AppointmentStatus,
+    appointmentStatus: AppointmentStatus;
     providerName: string;
-  },
+  };
   notificationData: CommonNotificationEventInput & {
     appointmentDate: string;
     appointmentTime: string;
@@ -189,14 +186,14 @@ export interface GotAnAppointmentEvent {
     name: string;
     appointmentDate: string;
     appointmentMode: string;
-    appointmentStatus: AppointmentStatus
+    appointmentStatus: AppointmentStatus;
     customerName: string;
-  },
+  };
   notificationData: CommonNotificationEventInput & {
     appointmentDate: string;
     appointmentTime: string;
     customerName: string;
-  }
+  };
 }
 
 // send welcome event
@@ -213,18 +210,17 @@ export interface SendOtpEvent {
     email: string;
     otp: string;
     purpose: OtpPurpose;
-  }
+  };
 }
 
 // send reset password
 export interface SendResetPasswordEvent {
   emailData: SendEmailCommon;
-};
+}
 
 // send update password
 export interface SendUpdatePasswordEvent {
-  notificationData: CommonNotificationEventInput & {
-  };
+  notificationData: CommonNotificationEventInput & {};
 }
 
 // create google calendar event
@@ -236,9 +232,8 @@ export interface CreateGoogleCalendarEvent {
     appointmentDate: Date;
     appointmentStatus: AppointmentStatus;
     slotDuration: number;
-  }
-};
-
+  };
+}
 
 // subscribing events
 
@@ -278,9 +273,30 @@ export interface ProviderSubscriptionPaymentSuccessEventInput {
   cancelAtPeriodEnd: boolean;
   cancelAt: Date;
   lastEventAt: Date;
-};
+}
 
 // send provider subscription payment failed event
 export interface ProviderSubscriptionPaymentFailedEventInput {
   subscriptionId: string;
+}
+
+export type MBSEventPayload =
+  | ProviderSubscriptionPaymentFailedEventInput
+  | ProviderSubscriptionPaymentSuccessEventInput
+  | UpdateBookingPaymentFailedEventInput
+  | UpdateBookingAfterPaymentSuccessEventInput
+  | GoogleCalendarCreateEventEventFailedInput
+  | GoogleCalendarCreateEventSuccessInput;
+
+export type PayloadMap = {
+  googleCalendarCreateEventSuccess: GoogleCalendarCreateEventSuccessInput;
+  googleCalendarCreateEventFailed: GoogleCalendarCreateEventEventFailedInput;
+  providerSubscriptionPaymentSuccess: ProviderSubscriptionPaymentSuccessEventInput;
+  providerSubscriptionPaymentFailed: ProviderSubscriptionPaymentFailedEventInput;
+  userBookingPaymentSuccess: UpdateBookingAfterPaymentSuccessEventInput;
+  userBookingPaymentFailed: UpdateBookingPaymentFailedEventInput;
+};
+
+export type HandlerMap = {
+  [K in keyof PayloadMap]: { execute: (input: PayloadMap[K]) => Promise<void> };
 };

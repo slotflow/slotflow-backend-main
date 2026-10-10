@@ -1,151 +1,165 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
 import { CalendarStatus } from "../../domain/enums/common.enum";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
-import { CalendarData, ParticipantPresence, statusTrack } from "../../domain/commands/booking.commands";
+import {
+  CalendarData,
+  ParticipantPresence,
+  statusTrack,
+} from "../../domain/commands/booking.commands";
 
 export interface IBooking extends Document {
-    _id: Types.ObjectId,
-    serviceProviderId: Types.ObjectId,
-    userId: Types.ObjectId,
-    appointmentDate: Date,
-    appointmentTime: string,
-    appointmentMode: string,
-    appointmentStatus: AppointmentStatus,
-    slotId: Types.ObjectId,
-    sessionStartTime: Date;
-    sessionEndTime: Date;
-    sessionDuration: number;
-    paymentId: Types.ObjectId | null,
-    videoCallRoomId: string | null,
-    googleEventId: string,
-    calendarData: CalendarData | null,
-    onlineTrack: {
-        user: ParticipantPresence;
-        provider: ParticipantPresence;
-    },
-    statusTrack: statusTrack[],
-    createdAt: Date,
-    updatedAt: Date,
-};
+  _id: Types.ObjectId;
+  serviceProviderId: Types.ObjectId;
+  userId: Types.ObjectId;
+  appointmentDate: Date;
+  appointmentTime: string;
+  appointmentMode: string;
+  appointmentStatus: AppointmentStatus;
+  slotId: Types.ObjectId;
+  sessionStartTime: Date;
+  sessionEndTime: Date;
+  sessionDuration: number;
+  paymentId: Types.ObjectId | null;
+  videoCallRoomId: string | null;
+  googleEventId: string;
+  calendarData: CalendarData | null;
+  onlineTrack: {
+    user: ParticipantPresence;
+    provider: ParticipantPresence;
+  };
+  statusTrack: statusTrack[];
+  createdAt: Date;
+  updatedAt: Date;
+}
 
-const ParticipantPresenceSchema = new Schema<ParticipantPresence>({
+const ParticipantPresenceSchema = new Schema<ParticipantPresence>(
+  {
     joined: { type: Boolean, default: false },
     joinedTime: { type: Date, default: null },
     leftCallTime: { type: Date, default: null },
-}, { _id: false });
+  },
+  { _id: false },
+);
 
-const StatusTrackSchema = new Schema<statusTrack>({
+const StatusTrackSchema = new Schema<statusTrack>(
+  {
     appointmentStatus: {
-        type: String,
-        enum: Object.values(AppointmentStatus),
-        required: true
+      type: String,
+      enum: Object.values(AppointmentStatus),
+      required: true,
     },
     time: {
-        type: Date,
-        required: true
-    }
-}, { _id: false })
+      type: Date,
+      required: true,
+    },
+  },
+  { _id: false },
+);
 
-const CalendarDataSchema = new Schema<CalendarData>({
+const CalendarDataSchema = new Schema<CalendarData>(
+  {
     user: {
-        calendarStatus: {
-            type: String,
-            enum: Object.values(CalendarStatus),
-            required: true
-        },
-        googleEventId: {
-            type: String,
-            required: true
-        }
+      calendarStatus: {
+        type: String,
+        enum: Object.values(CalendarStatus),
+        required: true,
+      },
+      googleEventId: {
+        type: String,
+        required: true,
+      },
     },
     provider: {
-        calendarStatus: {
-            type: String,
-            enum: Object.values(CalendarStatus),
-            required: true
-        },
-        googleEventId: {
-            type: String,
-            required: true
-        }
-    }
-}, { _id: false })
+      calendarStatus: {
+        type: String,
+        enum: Object.values(CalendarStatus),
+        required: true,
+      },
+      googleEventId: {
+        type: String,
+        required: true,
+      },
+    },
+  },
+  { _id: false },
+);
 
-const BookingSchema = new Schema<IBooking>({
+const BookingSchema = new Schema<IBooking>(
+  {
     serviceProviderId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
     userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
     appointmentDate: {
-        type: Date,
-        required: true
+      type: Date,
+      required: true,
     },
     appointmentTime: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     appointmentMode: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     appointmentStatus: {
-        type: String,
-        enum: Object.values(AppointmentStatus),
-        required: true
+      type: String,
+      enum: Object.values(AppointmentStatus),
+      required: true,
     },
     slotId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "ServiceAvailability.slots",
-        required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ServiceAvailability.slots",
+      required: true,
     },
     sessionStartTime: {
-        type: Date,
-        required: true,
+      type: Date,
+      required: true,
     },
     sessionEndTime: {
-        type: Date,
-        required: true,
+      type: Date,
+      required: true,
     },
     sessionDuration: {
-        type: Number,
-        required: true,
+      type: Number,
+      required: true,
     },
     paymentId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Payment"
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Payment",
     },
     videoCallRoomId: {
-        type: String,
-        default: null,
+      type: String,
+      default: null,
     },
     googleEventId: {
-        type: String,
-        default: null,
+      type: String,
+      default: null,
     },
     calendarData: {
-        type: CalendarDataSchema,
-        default: null,
+      type: CalendarDataSchema,
+      default: null,
     },
     onlineTrack: {
-        user: { type: ParticipantPresenceSchema, default: () => ({}) },
-        provider: { type: ParticipantPresenceSchema, default: () => ({}) },
+      user: { type: ParticipantPresenceSchema, default: () => ({}) },
+      provider: { type: ParticipantPresenceSchema, default: () => ({}) },
     },
     statusTrack: {
-        type: [StatusTrackSchema],
-        default: [],
-    }
-},
-    {
-        timestamps: true,
-    }
+      type: [StatusTrackSchema],
+      default: [],
+    },
+  },
+  {
+    timestamps: true,
+  },
 );
 
 BookingSchema.index({ appointmentDate: 1, slotId: 1, serviceProviderId: 1 });
 
-export const BookingModel = mongoose.model<IBooking>('Booking', BookingSchema);
+export const BookingModel = mongoose.model<IBooking>("Booking", BookingSchema);

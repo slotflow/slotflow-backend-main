@@ -9,52 +9,53 @@ import { GetProviderStatsUseCase } from "../../../application/useCases/provider/
 import { GetProviderGraphDataUseCase } from "../../../application/useCases/provider/dashboard/getGraphData.useCase";
 
 class ProviderDashboardController {
-    constructor(
-        private getProviderStatsUseCase: GetProviderStatsUseCase,
-        private getProviderGraphDataUseCase: GetProviderGraphDataUseCase,
-    ) {
-        this.getDashboardStats = this.getDashboardStats.bind(this);
-        this.getDashboardGraphData = this.getDashboardGraphData.bind(this);
-    };
+  constructor(
+    private getProviderStatsUseCase: GetProviderStatsUseCase,
+    private getProviderGraphDataUseCase: GetProviderGraphDataUseCase,
+  ) {
+    this.getDashboardStats = this.getDashboardStats.bind(this);
+    this.getDashboardGraphData = this.getDashboardGraphData.bind(this);
+  }
 
-    async getDashboardStats(req: Request, res: Response, next: NextFunction) {
-        try {
-            const user = req.user as AuthUser;
-            const validatedData = startAndEndDateSchema.parse(req.query);
-            const result = await this.getProviderStatsUseCase.execute({
-                ...validatedData,
-                providerId: user.id,
-                timeZone: user.timeZone.value
-            });
-            sendResponse(res, result);
-        } catch (error) {
-            log.error("getDashboardStats failed", error as Error);
-            next(error);
-        };
-    };
+  async getDashboardStats(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = req.user as AuthUser;
+      const validatedData = startAndEndDateSchema.parse(req.query);
+      const result = await this.getProviderStatsUseCase.execute({
+        ...validatedData,
+        providerId: user.id,
+        timeZone: user.timeZone.value,
+      });
+      sendResponse(res, result);
+    } catch (error) {
+      log.error("getDashboardStats failed", { error });
+      next(error);
+    }
+  }
 
-    async getDashboardGraphData(req: Request, res: Response, next: NextFunction) {
-        try {
-            const user = req.user as AuthUser;
-            const { subscription, endDate, startDate } = providerValidateDashboardDataSchema.parse(req.query);
-            const result = await this.getProviderGraphDataUseCase.execute({
-                providerId: user.id,
-                subscription,
-                endDate,
-                startDate,
-                isAdmin: false,
-                timeZone: user.timeZone.value
-            });
-            sendResponse(res, result);
-        } catch (error) {
-            log.error("getDashboardGraphData failed", error as Error);
-            next(error);
-        };
-    };
-
-};
+  async getDashboardGraphData(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = req.user as AuthUser;
+      const { subscription, endDate, startDate } = providerValidateDashboardDataSchema.parse(
+        req.query,
+      );
+      const result = await this.getProviderGraphDataUseCase.execute({
+        providerId: user.id,
+        subscription,
+        endDate,
+        startDate,
+        isAdmin: false,
+        timeZone: user.timeZone.value,
+      });
+      sendResponse(res, result);
+    } catch (error) {
+      log.error("getDashboardGraphData failed", { error });
+      next(error);
+    }
+  }
+}
 
 export const providerDashboardController = new ProviderDashboardController(
-    getProviderStatsUseCase,
-    getProviderGraphDataUseCase
+  getProviderStatsUseCase,
+  getProviderGraphDataUseCase,
 );

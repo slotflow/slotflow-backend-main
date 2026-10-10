@@ -13,15 +13,28 @@ import { TimeZone } from "../../domain/commands/user.commands";
  * Booking queries dtos
  */
 
-// findAll method 
+// findAll method
 export interface BookingsQuery extends ApiPaginationInput {
   online: boolean;
   role: Role;
   userId?: UserProps["_id"];
   serviceProviderId?: UserProps["_id"];
 }
-export type BookingsView = BookingsBaseView | OnlineBookingsViewForProvider | OnlineBookingsViewForUser;
-export type BookingsBaseView = Array<Pick<BookingProps, "_id" | "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "videoCallRoomId" | "serviceProviderId">>;
+export type BookingsView =
+  BookingsBaseView | OnlineBookingsViewForProvider | OnlineBookingsViewForUser;
+export type BookingsBaseView = Array<
+  Pick<
+    BookingProps,
+    | "_id"
+    | "appointmentDate"
+    | "appointmentMode"
+    | "appointmentStatus"
+    | "appointmentTime"
+    | "createdAt"
+    | "videoCallRoomId"
+    | "serviceProviderId"
+  >
+>;
 export type OnlineBookingsViewForProvider = Array<
   Pick<
     BookingProps,
@@ -49,27 +62,34 @@ export type OnlineBookingsViewForUser = Array<
   }
 >;
 
-
 // findDetails method
 export interface BookingDetailsQuery {
   bookingId: BookingProps["_id"];
 }
-export interface BookingDetailsView extends Pick<BookingProps, "appointmentDate" | "appointmentMode" | "appointmentStatus" | "appointmentTime" | "createdAt" | "onlineTrack" | "statusTrack" | "videoCallRoomId"> {
+export interface BookingDetailsView extends Pick<
+  BookingProps,
+  | "appointmentDate"
+  | "appointmentMode"
+  | "appointmentStatus"
+  | "appointmentTime"
+  | "createdAt"
+  | "onlineTrack"
+  | "statusTrack"
+  | "videoCallRoomId"
+> {
   userId: Pick<UserProps, "username" | "email">;
   serviceProviderId: Pick<UserProps, "username" | "email">;
-};
+}
 
-
-// findUsersforChatSideBar method 
+// findUsersforChatSideBar method
 export type BookingUsersForChatQuery = Pick<UserProps, "role"> & {
   userId: UserProps["_id"];
   timeZone: string;
   // need to send the opposite role
-}
+};
 export type BookingUsersForChatView = Array<Pick<UserProps, "_id" | "username" | "profileImage">>;
 
-
-// findStatsDataForProviderDashboard method 
+// findStatsDataForProviderDashboard method
 export interface BookingStatsForProviderQuery extends CommonDateInput {
   providerId: UserProps["_id"];
   timeZone: string;
@@ -82,7 +102,6 @@ export interface BookingStatsForProviderView extends Record<string, StatMetric |
   rejectedAppointmentsByProvider: StatMetric;
   todaysAppointments: StatMetric;
 }
-
 
 // findGraphDataForProviderDashboard method
 export interface BookingGraphStatsForProviderQuery extends CommonDateInput {
@@ -112,7 +131,7 @@ export interface BookingGraphStatsForProviderView {
   }>;
 
   completionBreakdownChartData: Array<{
-    status: 'completed' | 'missed' | 'cancelled' | 'rejected' | "confirmed" | "booked" | "pending";
+    status: "completed" | "missed" | "cancelled" | "rejected" | "confirmed" | "booked" | "pending";
     value: number;
   }>;
 
@@ -128,8 +147,7 @@ export interface BookingGraphStatsForProviderView {
   }>;
 }
 
-
-// findStatsDataForAdminDashboard method 
+// findStatsDataForAdminDashboard method
 export interface BookingsStatsDataAdminQuery extends CommonDateInput {
   timeZone: string;
 }
@@ -139,11 +157,7 @@ export interface BookingsStatsDataAdminView extends Record<string, StatMetric | 
   cancelledAppointments: StatMetric;
   missedAppointments: StatMetric;
   rejectedAppointments: StatMetric;
-};
-
-
-
-
+}
 
 /**
  * Booking usecase dtos
@@ -165,7 +179,6 @@ export interface UserAppointmentBookingViaStripeOutput {
   sessionId: string;
 }
 
-
 // user canncel booking
 export interface UserCancelBookingInput {
   userId: UserProps["_id"];
@@ -174,44 +187,42 @@ export interface UserCancelBookingInput {
 }
 export type UserCancelBookingOutput = Pick<BookingProps, "_id" | "appointmentStatus">;
 
-
 // provider change booking appointment status
 export interface ProviderChangeBookingAppointmentStatusInput {
   bookingId: BookingProps["_id"];
   providerId: UserProps["_id"];
   appointmentStatus: AppointmentStatus;
-};
-export type ProviderChangeBookingAppointmentStatusOutput = Pick<BookingProps, "_id" | "appointmentStatus">;
-
+}
+export type ProviderChangeBookingAppointmentStatusOutput = Pick<
+  BookingProps,
+  "_id" | "appointmentStatus"
+>;
 
 // check booking
 export interface CheckBookingInput {
   userId: UserProps["_id"];
 }
 
-
-// get booking details 
+// get booking details
 export type GetBookingDetailsInput = BookingDetailsQuery;
 export type GetBookingDetailsOutput = BookingDetailsView;
-
 
 // get bookings
 export type GetBookingsInput = BookingsQuery;
 export type GetBookingsOutput = BookingsView;
-
 
 // update booking online tracking
 export interface UpdateBookingOnlineTrackInput extends ParticipantPresence {
   role: Role;
   roomId: BookingProps["videoCallRoomId"];
 }
-export type UpdateBookingOnlineTrackOutput = Pick<Availability, "duration"> & Pick<BookingProps, "videoCallRoomId">;
+export type UpdateBookingOnlineTrackOutput = Pick<Availability, "duration"> &
+  Pick<BookingProps, "videoCallRoomId">;
 
-
-// validate join room 
+// validate join room
 export interface ValidateJoinRoomInput {
   role: Role;
   bookingId: BookingProps["_id"];
   roomId: BookingProps["videoCallRoomId"];
   userId: UserProps["_id"];
-};
+}

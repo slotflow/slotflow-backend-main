@@ -4,33 +4,27 @@ import { Credential } from "../../domain/entities/credential.entity";
 import { ICredentialRepository } from "../../domain/interfaces/repositories/ICredentialRepository";
 
 export class CredentialRepositoryImpl implements ICredentialRepository {
+  async create(credential: Credential): Promise<Credential | null> {
+    const persistence = CredentialMapper.toPersistence(credential);
+    const doc = await CredentialModel.create(persistence);
+    return doc ? CredentialMapper.toDomain(doc) : null;
+  }
 
-    async create(credential: Credential): Promise<Credential | null> {
-        const persistence = CredentialMapper.toPersistence(credential);
-        const doc = await CredentialModel.create(persistence);
-        return doc ? CredentialMapper.toDomain(doc) : null;
-    };
+  async findByUserId(userId: string): Promise<Credential | null> {
+    const doc = await CredentialModel.findOne({ userId });
+    return doc ? CredentialMapper.toDomain(doc) : null;
+  }
 
-    async findByUserId(userId: string): Promise<Credential | null> {
-        const doc = await CredentialModel.findOne({ userId });
-        return doc ? CredentialMapper.toDomain(doc) : null;
-    };
+  async update(credential: Credential): Promise<Credential | null> {
+    const persistence = CredentialMapper.toPersistence(credential);
 
-    async update(credential: Credential): Promise<Credential | null> {
-        const persistence = CredentialMapper.toPersistence(credential);
+    const doc = await CredentialModel.findByIdAndUpdate(credential._id, persistence, { new: true });
 
-        const doc = await CredentialModel.findByIdAndUpdate(
-            credential._id,
-            persistence,
-            { new: true }
-        );
+    return doc ? CredentialMapper.toDomain(doc) : null;
+  }
 
-        return doc ? CredentialMapper.toDomain(doc) : null;
-    };
-
-    async findById(credentialId: string): Promise<Credential | null> {
-        const doc = await CredentialModel.findById(credentialId);
-        return doc ? CredentialMapper.toDomain(doc) : null;
-    }
-
-};
+  async findById(credentialId: string): Promise<Credential | null> {
+    const doc = await CredentialModel.findById(credentialId);
+    return doc ? CredentialMapper.toDomain(doc) : null;
+  }
+}

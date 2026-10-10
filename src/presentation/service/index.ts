@@ -12,7 +12,9 @@ export const createServiceUseCase = new CreateServiceUseCase(serviceRepository);
 
 export const createServicesUseCase = new CreateServicesUseCase(serviceRepository);
 
-export const changeServiceBlockStatusUseCase = new ChangeServiceBlockStatusUseCase(serviceRepository)
+export const changeServiceBlockStatusUseCase = new ChangeServiceBlockStatusUseCase(
+  serviceRepository,
+);
 
 export const getServicesByCategoryUseCase = new GetServicesByCategoryUseCase(serviceRepository);
 

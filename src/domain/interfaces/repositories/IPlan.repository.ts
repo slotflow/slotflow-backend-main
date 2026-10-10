@@ -1,17 +1,18 @@
 import { Plan } from "../../entities/plan.entity";
 
 export interface IPlanRepository {
+  create(plan: Plan): Promise<Plan | null>;
 
-    create(plan: Plan): Promise<Plan | null>;
+  findById(planId: string): Promise<Plan | null>;
 
-    findById(planId: string): Promise<Plan | null>;
+  update(plan: Plan): Promise<Plan | null>;
 
-    update(plan: Plan): Promise<Plan | null>;
+  findByName(name: string): Promise<Plan | null>;
 
-    findByName(name: string): Promise<Plan | null>;
+  findAll(
+    page?: number,
+    limit?: number,
+  ): Promise<{ items: Array<Plan>; totalPages: number; currentPage: number; totalCount: number }>;
 
-    findAll(page?: number, limit?: number): Promise<{ items: Array<Plan>, totalPages: number; currentPage: number; totalCount: number; }>;
-
-    findAllForDisplay(): Promise<Array<Plan>>;
-
-};
+  findAllForDisplay(): Promise<Array<Plan>>;
+}

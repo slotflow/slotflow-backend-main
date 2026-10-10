@@ -6,13 +6,13 @@ import { IPlanRepository } from "../../domain/interfaces/repositories/IPlan.repo
 import { BaseUserResponse, ProviderFieldsResponse } from "../../application/dtos/auth.dto";
 import { ISubscriptionRepository } from "../../domain/interfaces/repositories/ISubscription.repository";
 import { IAuthResponseBuilder } from "../../application/interfaces/services/IAuthResponseBuilder.service";
+import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
 
 export class AuthResponseBuilderImpl implements IAuthResponseBuilder {
-
   constructor(
     private readonly subscriptionRepository: ISubscriptionRepository,
-    private readonly planRepository: IPlanRepository
-  ) { }
+    private readonly planRepository: IPlanRepository,
+  ) {}
 
   buildBaseUser(user: User): BaseUserResponse {
     return {
@@ -33,7 +33,7 @@ export class AuthResponseBuilderImpl implements IAuthResponseBuilder {
 
   buildProviderFields(
     providerProfile: ProviderProfile | null,
-    providerSubscription: PlanName
+    providerSubscription: PlanName,
   ): ProviderFieldsResponse {
     return {
       isServiceDetailsAdded: !!providerProfile?.serviceId,
@@ -49,14 +49,13 @@ export class AuthResponseBuilderImpl implements IAuthResponseBuilder {
       isAdminVerified: providerProfile?.isAdminVerified ?? false,
       providerSubscription,
       verificationRejectionReason: providerProfile?.verificationRejectionReason ?? null,
-      adminVerificationStatus: providerProfile?.adminVerificationStatus!,
+      adminVerificationStatus:
+        providerProfile?.adminVerificationStatus ?? AdminVerificationStatus.NOT_REQUESTED,
       hasUsedTrial: providerProfile?.hasUsedTrial ?? false,
     };
   }
 
-  async resolveSubscription(
-    providerProfile: ProviderProfile
-  ): Promise<PlanName> {
+  async resolveSubscription(providerProfile: ProviderProfile): Promise<PlanName> {
     const subscriptions = providerProfile.subscriptions;
 
     if (!Array.isArray(subscriptions) || subscriptions.length === 0) {
@@ -65,8 +64,7 @@ export class AuthResponseBuilderImpl implements IAuthResponseBuilder {
 
     const subscriptionId = subscriptions[subscriptions.length - 1];
 
-    const subscription =
-      await this.subscriptionRepository.findById(subscriptionId);
+    const subscription = await this.subscriptionRepository.findById(subscriptionId);
 
     if (!subscription) return PlanName.NO_SUBSCRIPTION;
 
@@ -77,9 +75,7 @@ export class AuthResponseBuilderImpl implements IAuthResponseBuilder {
 
     if (!isActive) return PlanName.NO_SUBSCRIPTION;
 
-    const plan = await this.planRepository.findById(
-      subscription.subscribedPlanId
-    );
+    const plan = await this.planRepository.findById(subscription.subscribedPlanId);
 
     return plan?.planName || PlanName.NO_SUBSCRIPTION;
   }

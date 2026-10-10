@@ -6,14 +6,12 @@ export interface GenerateId {
   type: IdType;
   options?: {
     name?: string;
-  }
+  };
 }
-
-
 
 //
 export type DateInput = Date | string | number | null | undefined;
-export type DateFormatPattern = typeof dateFormats[keyof typeof dateFormats] | (string & {});
+export type DateFormatPattern = (typeof dateFormats)[keyof typeof dateFormats] | (string & {});
 
 // Calculate previous period helper props
 export interface CalculatePrevPeriodProps {
@@ -33,8 +31,8 @@ export interface DateRangeResult {
 
 //
 export interface DateRangeProps {
-  startDate: Date | string,
-  endDate: Date | string,
+  startDate: Date | string;
+  endDate: Date | string;
   timeZone?: string;
 }
 

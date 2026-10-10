@@ -18,8 +18,8 @@ export interface TableData<T> {
   totalPages?: number;
   currentPage?: number;
   totalCount?: number;
-  items?: T
-};
+  items?: T;
+}
 
 // used in create file upload presigned url usecase input output
 export interface CreateFileUploadPresignedUrlInput {
@@ -30,37 +30,37 @@ export interface CreateFileUploadPresignedUrlInput {
 export interface CreateFileUploadPresignedUrlOutput {
   uploadUrl: string;
   key: string;
-};
+}
 
 // used in create file signed url usecase
 export interface CreateFileSignedUrlInput {
   key: string;
-};
+}
 
 // used in find provider service usecase
 type FindProviderServiceProps = Omit<ProviderServiceProps, "service" | "updatedAt" | "createdAt">;
 export interface FindProviderServiceOutput extends FindProviderServiceProps {
-  service: { serviceName: string }
+  service: { serviceName: string };
 }
 
 // used in create service availability usecase
 export interface PlanNameOnly {
   subscribedPlanId: {
     planName: PlanProps["planName"];
-  }
+  };
 }
 
 //
 export interface TimeSlotForClientOutput {
-  _id: string,
-    time: string,
-    available: boolean,
-    occupied?: boolean,
+  _id: string;
+  time: string;
+  available: boolean;
+  occupied?: boolean;
 }
 
 // used in create service availability usecase
 export interface FrontendAvailabilityForOutput extends Omit<Availability, "slots"> {
-  slots: TimeSlotForClientOutput[]
+  slots: TimeSlotForClientOutput[];
 }
 
 // used in create service availability usecase
@@ -80,7 +80,7 @@ export interface AuthUser {
   email: string;
   name: string;
   timeZone: TimeZone;
-};
+}
 
 export interface GoogleOAuthUser {
   googleAccessToken: string;
@@ -123,8 +123,6 @@ export interface CommonDateInput {
   endDate: string;
 }
 
-
-
 /**
  * JWT Service dtos
  */
@@ -137,10 +135,6 @@ export interface JwtClaims extends JwtPayload {
   role?: Role;
   timeZone?: TimeZone | null;
 }
-
-
-
-
 
 /**
  * Payment Client Service dtos
@@ -158,21 +152,20 @@ export interface CreateSubscriptionCheckoutSessionInput {
     trialPeriodDays?: number;
     alreadyUsedTrial: boolean;
     isTrial: boolean;
-  },
+  };
   user: {
     id: string;
     name: string;
     email: string;
     role: Role;
     timeZone: TimeZone;
-  }
+  };
 }
 export interface CreateSubscriptionCheckoutSessionOutput {
   status: boolean;
   message: string;
   data: string;
 }
-
 
 // Create booking checkout
 export interface CreateBookingCheckoutSessionInput {
@@ -183,21 +176,20 @@ export interface CreateBookingCheckoutSessionInput {
     providerId: string;
     bookingId: string;
     paymentFor: PaymentFor;
-  }
+  };
   user: {
     id: string;
     name: string;
     email: string;
     role: Role;
     timeZone: TimeZone;
-  }
+  };
 }
 export interface CreateBookingCheckoutSessionOutput {
   status: boolean;
   message: string;
   data: string;
 }
-
 
 // Create refund
 export interface ProcessRefundInput {

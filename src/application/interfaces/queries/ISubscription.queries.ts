@@ -1,20 +1,32 @@
 import { TableData } from "../../dtos/common.dto";
-import { MySubscriptionQuery, MySubscriptionView, SubscribedPlanQuery, SubscriptionAnalyticsQuery, SubscriptionAnalyticsView, SubscriptionDetailsQuery, SubscriptionDetailsView, SubscriptionsQuery, SubscriptionStatsDataQuery, SubscriptionStatsDataView, SubscriptionsView } from "../../dtos/subscription.dto";
+import {
+  MySubscriptionQuery,
+  MySubscriptionView,
+  SubscribedPlanQuery,
+  SubscriptionAnalyticsQuery,
+  SubscriptionAnalyticsView,
+  SubscriptionDetailsQuery,
+  SubscriptionDetailsView,
+  SubscriptionsQuery,
+  SubscriptionStatsDataQuery,
+  SubscriptionStatsDataView,
+  SubscriptionsView,
+} from "../../dtos/subscription.dto";
 
 export interface ISubscriptionQueries {
+  findAll(query: SubscriptionsQuery): Promise<TableData<SubscriptionsView>>;
 
-    findAll(query: SubscriptionsQuery): Promise<TableData<SubscriptionsView>>
+  findSubscribedPlan(query: SubscribedPlanQuery): Promise<string | boolean>;
 
-    findSubscribedPlan(query: SubscribedPlanQuery): Promise<string | boolean>;
+  findDetails(query: SubscriptionDetailsQuery): Promise<SubscriptionDetailsView | null>;
 
-    findDetails(query: SubscriptionDetailsQuery): Promise<SubscriptionDetailsView | null>;
+  findStatsForAdminDashboard(query: SubscriptionStatsDataQuery): Promise<SubscriptionStatsDataView>;
 
-    findStatsForAdminDashboard(query: SubscriptionStatsDataQuery): Promise<SubscriptionStatsDataView>;
+  findSubscriptionsForUpdatinStatus(): Promise<boolean>;
 
-    findSubscriptionsForUpdatinStatus(): Promise<boolean>;
+  findMySubscritpion(query: MySubscriptionQuery): Promise<MySubscriptionView | null>;
 
-    findMySubscritpion(query: MySubscriptionQuery): Promise<MySubscriptionView | null>;
-
-    findAnalyticsForAdminDashboard(query: SubscriptionAnalyticsQuery): Promise<SubscriptionAnalyticsView>;
-
-};
+  findAnalyticsForAdminDashboard(
+    query: SubscriptionAnalyticsQuery,
+  ): Promise<SubscriptionAnalyticsView>;
+}

@@ -5,7 +5,7 @@ import {
   GetCreditAccountDetailsView,
   GetCreditAccountDetailsQuery,
 } from "../../application/dtos/credits.dto";
-import { isBefore, isSameDay, addDays } from 'date-fns';
+import { isBefore, isSameDay, addDays } from "date-fns";
 import { formatDate } from "../../shared/utils/helpers/formatDate";
 import { calcPercentage } from "../../shared/utils/helpers/getPercentage";
 import { CreditAccountModel } from "../models/creditAccount.model";
@@ -14,17 +14,22 @@ import { AggregateCountResult } from "../../application/dtos/common.dto";
 import { CreditTransactionModel } from "../models/creditTransaction.model";
 import { getDateRangeMetrics } from "../../shared/utils/helpers/getDateRangeMetrics";
 import { ICreditAccountQueries } from "../../application/interfaces/queries/ICreditAccount.queries";
-import { CreditTransactionStatus, CreditTransactionType } from "../../domain/enums/creditTransaction.enum";
+import {
+  CreditTransactionStatus,
+  CreditTransactionType,
+} from "../../domain/enums/creditTransaction.enum";
 
 export class CreditAccountQueriesImpl implements ICreditAccountQueries {
-  async findCreditDetails(query: GetCreditAccountDetailsQuery): Promise<GetCreditAccountDetailsView> {
+  async findCreditDetails(
+    query: GetCreditAccountDetailsQuery,
+  ): Promise<GetCreditAccountDetailsView> {
     const { userId, startDate, endDate, timeZone } = query;
     const effectiveTimeZone = timeZone || defaultTimezone;
 
     const { days, start, end, prevStart, prevEnd } = getDateRangeMetrics({
       startDate,
       endDate,
-      timeZone: effectiveTimeZone
+      timeZone: effectiveTimeZone,
     });
     const userObjectId = new mongoose.Types.ObjectId(userId);
 
@@ -123,20 +128,12 @@ export class CreditAccountQueriesImpl implements ICreditAccountQueries {
           },
           totalCredits: {
             $sum: {
-              $cond: [
-                { $eq: ["$type", CreditTransactionType.CREDIT] },
-                "$credits",
-                0,
-              ],
+              $cond: [{ $eq: ["$type", CreditTransactionType.CREDIT] }, "$credits", 0],
             },
           },
           spentCredits: {
             $sum: {
-              $cond: [
-                { $eq: ["$type", CreditTransactionType.DEBIT] },
-                "$credits",
-                0,
-              ],
+              $cond: [{ $eq: ["$type", CreditTransactionType.DEBIT] }, "$credits", 0],
             },
           },
         },
@@ -160,9 +157,7 @@ export class CreditAccountQueriesImpl implements ICreditAccountQueries {
       balanceCredits: item.balanceCredits,
     }));
 
-    const dateMap = new Map(
-      rawChartData.map((d) => [d.date, d])
-    );
+    const dateMap = new Map(rawChartData.map((d) => [d.date, d]));
 
     const filledChartData: CreditMainChartData[] = [];
 
@@ -172,7 +167,7 @@ export class CreditAccountQueriesImpl implements ICreditAccountQueries {
       const dateStr = formatDate({
         date: currentDate,
         pattern: dateFormats.ISO_DATE,
-        timeZone
+        timeZone,
       });
 
       filledChartData.push(
@@ -181,7 +176,7 @@ export class CreditAccountQueriesImpl implements ICreditAccountQueries {
           totalCredits: 0,
           spentCredits: 0,
           balanceCredits: 0,
-        }
+        },
       );
 
       currentDate = addDays(currentDate, 1);

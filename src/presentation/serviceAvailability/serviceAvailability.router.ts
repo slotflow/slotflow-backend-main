@@ -7,17 +7,19 @@ import { serviceAvailabilityController } from "./serviceAvailability.controller"
 const router = Router();
 
 // provider create their service availability
-router.post('/',
-    authMiddleware,
-    authorize(Role.PROVIDER, Role.USER),
-    serviceAvailabilityController.createServiceAvailability
+router.post(
+  "/",
+  authMiddleware,
+  authorize(Role.PROVIDER, Role.USER),
+  serviceAvailabilityController.createServiceAvailability,
 );
 
 // provider get their service availability
-router.get('/me',
-    authMiddleware,
-    authorize(Role.PROVIDER, Role.USER),
-    serviceAvailabilityController.getServiceAvailability
+router.get(
+  "/me",
+  authMiddleware,
+  authorize(Role.PROVIDER, Role.USER),
+  serviceAvailabilityController.getServiceAvailability,
 );
 
 export default router;

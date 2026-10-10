@@ -10,10 +10,27 @@
   "scripts": {
     "predev": "npx kill-port 4000",
     "dev": "tsx watch src/server.ts",
-    "lint": "eslint \"src/**/*.ts\" --max-warnings=0",
+    "lint:check": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format:check": "prettier --check .",
+    "format:fix": "prettier --write .",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "type:check": "tsc --noEmit",
     "build": "tsc",
     "start": "node dist/server.js",
-    "bundle": "tsup src/server.ts --format esm --dts --out-dir dist-bundle"
+    "bundle": "tsup src/server.ts --format esm --dts --out-dir dist-bundle",
+    "validate": "tsc --noEmit && pnpm lint:check && pnpm format:check && pnpm build",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,mjs,cjs,ts,mts,cts}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.758.0",
@@ -44,6 +61,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "figlet": "^1.11.0",
+    "gaxios": "^8.2.0",
     "googleapis": "^160.0.0",
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
@@ -59,6 +77,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/bcryptjs": "^2.4.6",
     "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.19",
@@ -68,10 +87,18 @@
     "@types/passport": "^1.0.17",
     "@types/passport-google-oauth20": "^2.0.16",
     "@types/validator": "^13.12.2",
+    "eslint": "^10.12.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.13.0",
+    "husky": "^9.1.7",
+    "kill-port": "^2.0.1",
     "otp-generator-module": "^1.0.2",
+    "prettier": "^3.9.10",
     "ts-node": "^10.9.2",
     "tsup": "^8.5.0",
     "tsx": "^4.20.3",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.71.1",
+    "vitest": "^5.0.3"
   }
 }

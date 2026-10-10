@@ -8,20 +8,55 @@ import { VerifyEmailUseCase } from "../../application/useCases/auth/verifyEmail.
 import { ResetPasswordUseCase } from "../../application/useCases/auth/resetPassword.useCase";
 import { authResponseBuilder, otpService, signedUrlService } from "../../infrastructure/services";
 import { GoogleAuthOrchestratorUseCase } from "../../application/useCases/auth/googleAuthOrchestrate.useCase";
-import { creditAccountRepository, providerProfileRepository, userRepository } from "../../infrastructure/repository";
+import {
+  creditAccountRepository,
+  providerProfileRepository,
+  userRepository,
+} from "../../infrastructure/repository";
 
 // auth controller dependency injection
 export const resendOtpUseCase = new ResendOtpUseCase(otpService, kafkaProducer, jwtService);
 
 export const verifyEmailUseCase = new VerifyEmailUseCase(userRepository, otpService, jwtService);
 
-export const registerOtpVerificationUseCase = new RegisterOtpVerificationUseCase(userRepository, otpService, kafkaProducer, jwtService, creditAccountRepository);
+export const registerOtpVerificationUseCase = new RegisterOtpVerificationUseCase(
+  userRepository,
+  otpService,
+  kafkaProducer,
+  jwtService,
+  creditAccountRepository,
+);
 
-export const registerUseCase = new RegisterUseCase(userRepository, otpService, jwtService, passwordHasher, kafkaProducer);
+export const registerUseCase = new RegisterUseCase(
+  userRepository,
+  otpService,
+  jwtService,
+  passwordHasher,
+  kafkaProducer,
+);
 
-export const resetPasswordUseCase = new ResetPasswordUseCase(userRepository, passwordHasher, kafkaProducer, jwtService);
+export const resetPasswordUseCase = new ResetPasswordUseCase(
+  userRepository,
+  passwordHasher,
+  kafkaProducer,
+  jwtService,
+);
 
-export const loginUseCase = new LoginUseCase(userRepository, providerProfileRepository, signedUrlService, jwtService, passwordHasher, authResponseBuilder);
+export const loginUseCase = new LoginUseCase(
+  userRepository,
+  providerProfileRepository,
+  signedUrlService,
+  jwtService,
+  passwordHasher,
+  authResponseBuilder,
+);
 
 // google auth controller dependency injection
-export const googleAuthOrchestratorUseCase = new GoogleAuthOrchestratorUseCase(userRepository, providerProfileRepository, jwtService, kafkaProducer, authResponseBuilder, creditAccountRepository);
+export const googleAuthOrchestratorUseCase = new GoogleAuthOrchestratorUseCase(
+  userRepository,
+  providerProfileRepository,
+  jwtService,
+  kafkaProducer,
+  authResponseBuilder,
+  creditAccountRepository,
+);

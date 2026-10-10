@@ -1,5 +1,3 @@
 export interface IGoogleTokenService {
-
-    getAccessToken(userId: string): Promise<string>;
-
-};
+  getAccessToken(userId: string): Promise<string>;
+}

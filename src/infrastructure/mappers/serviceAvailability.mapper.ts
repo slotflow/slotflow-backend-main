@@ -3,27 +3,26 @@ import { IServiceAvailability } from "../models/serviceAvailability.model";
 import { ServiceAvailability } from "../../domain/entities/serviceAvailability.entity";
 
 export class ServiceAvailabilityMapper {
+  static toDomain(doc: IServiceAvailability): ServiceAvailability {
+    return new ServiceAvailability({
+      _id: doc._id.toString(),
+      availabilities: doc.availabilities,
+      providerId: doc.providerId.toString(),
+      timeZone: doc.timeZone,
+      createdAt: doc.createdAt,
+      updatedAt: doc.updatedAt,
+    });
+  }
 
-    static toDomain(doc: IServiceAvailability): ServiceAvailability {
-        return new ServiceAvailability({
-            _id: doc._id.toString(),
-            availabilities: doc.availabilities,
-            providerId: doc.providerId.toString(),
-            timeZone: doc.timeZone,
-            createdAt: doc.createdAt,
-            updatedAt: doc.updatedAt,
-        });
-    }
+  static toPersistence(entity: ServiceAvailability) {
+    const props = entity.getProps();
 
-    static toPersistence(entity: ServiceAvailability) {
-        const props = entity.getProps();
-
-        return {
-            availabilities: props.availabilities,
-            providerId: new Types.ObjectId(props.providerId),
-            timeZone: props.timeZone,
-            createdAt: props.createdAt,
-            updatedAt: props.updatedAt,
-        };
-    }
+    return {
+      availabilities: props.availabilities,
+      providerId: new Types.ObjectId(props.providerId),
+      timeZone: props.timeZone,
+      createdAt: props.createdAt,
+      updatedAt: props.updatedAt,
+    };
+  }
 }

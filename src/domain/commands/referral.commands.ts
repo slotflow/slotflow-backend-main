@@ -1,19 +1,19 @@
 import { ReferralStatus } from "../enums/common.enum";
 
 export type CreateReferralProps = {
-    referrerUserId: string;
-    refereeUserId: string;
-    referralCode: string;
+  referrerUserId: string;
+  refereeUserId: string;
+  referralCode: string;
 };
 
 export type CompleteReferralProps = {
-    referralId: string;
+  referralId: string;
 };
 
 export type RewardReferralProps = {
-    referralId: string;
+  referralId: string;
 };
 
 export type UpdateReferralStatusProps = {
-    status: ReferralStatus;
+  status: ReferralStatus;
 };

@@ -4,31 +4,31 @@ import { GetCreditTransactionsInput, GetCreditTransactionsOutput } from "../../d
 import { ICreditTransactionRepository } from "../../../domain/interfaces/repositories/ICreditTransaction.repository";
 
 export class GetCreditTransactionsUseCase {
-    constructor(
-        private readonly creditTransactionRepository: ICreditTransactionRepository
-    ) {}
-    
-    async execute(input: GetCreditTransactionsInput): Promise<TableData<Array<GetCreditTransactionsOutput>>> {
-        try {
-            const result = await this.creditTransactionRepository.findByUserIdWithFilters({
-               ...input
-            });
+  constructor(private readonly creditTransactionRepository: ICreditTransactionRepository) {}
 
-            return {
-                items: result?.items?.map( t => ({
-                _id: t._id,
-                status: t.status,
-                type: t.type,
-                source: t.source,
-                credits: t.credits,
-                balanceAfter: t.balanceAfter,
-            })),    
-            currentPage: result.currentPage,
-            totalCount: result.totalCount,
-            totalPages: result.totalPages
-        };
-        } catch (error: unknown) {
-            throw toAppError(error, "Failed to fetch credit transactions");
-        }
+  async execute(
+    input: GetCreditTransactionsInput,
+  ): Promise<TableData<Array<GetCreditTransactionsOutput>>> {
+    try {
+      const result = await this.creditTransactionRepository.findByUserIdWithFilters({
+        ...input,
+      });
+
+      return {
+        items: result?.items?.map((t) => ({
+          _id: t._id,
+          status: t.status,
+          type: t.type,
+          source: t.source,
+          credits: t.credits,
+          balanceAfter: t.balanceAfter,
+        })),
+        currentPage: result.currentPage,
+        totalCount: result.totalCount,
+        totalPages: result.totalPages,
+      };
+    } catch (error: unknown) {
+      throw toAppError(error, "Failed to fetch credit transactions");
     }
+  }
 }

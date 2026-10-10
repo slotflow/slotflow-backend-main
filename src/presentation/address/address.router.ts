@@ -7,24 +7,27 @@ import { authMiddleware } from "../middleware/auth.middleware";
 const router = Router();
 
 // user or provider get their own address
-router.get("/me",
-    authMiddleware,
-    authorize(Role.PROVIDER, Role.USER),
-    addressController.getAddress
+router.get(
+  "/me",
+  authMiddleware,
+  authorize(Role.PROVIDER, Role.USER),
+  addressController.getAddress,
 );
 
 // user or provider create their address
-router.post('/',
-    authMiddleware,
-    authorize(Role.PROVIDER, Role.USER),
-    addressController.createAddress
+router.post(
+  "/",
+  authMiddleware,
+  authorize(Role.PROVIDER, Role.USER),
+  addressController.createAddress,
 );
 
 // user or provider update their address
-router.patch('/:addressId',
-    authMiddleware,
-    authorize(Role.PROVIDER, Role.USER),
-    addressController.updateAddress
+router.patch(
+  "/:addressId",
+  authMiddleware,
+  authorize(Role.PROVIDER, Role.USER),
+  addressController.updateAddress,
 );
 
 export default router;

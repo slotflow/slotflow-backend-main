@@ -1,6 +1,6 @@
 import {
-    AdminChangeProviderTrustTagInput,
-    AdminChangeProviderTrustTagOutput,
+  AdminChangeProviderTrustTagInput,
+  AdminChangeProviderTrustTagOutput,
 } from "../../dtos/admin.dto";
 import { kafkaConfig } from "../../../config/env";
 import { generateId } from "../../../shared/utils/helpers/generateId";
@@ -14,72 +14,67 @@ import { IProviderProfileRepository } from "../../../domain/interfaces/repositor
 import { NotificationType } from "../../../domain/enums/common.enum";
 
 export class ChangeProviderTrustTagUseCase {
-    constructor(
-        private readonly userRepository: IUserRepository,
-        private readonly providerProfileRepository: IProviderProfileRepository,
-        private readonly kafkaProducer: IKafkaProducerAdapter
-    ) { };
+  constructor(
+    private readonly userRepository: IUserRepository,
+    private readonly providerProfileRepository: IProviderProfileRepository,
+    private readonly kafkaProducer: IKafkaProducerAdapter,
+  ) {}
 
-    async execute(input: AdminChangeProviderTrustTagInput): Promise<AdminChangeProviderTrustTagOutput> {
-        try {
-            const { providerId, trustedBySlotflow } = input;
-            if (!providerId) {
-                throw new BadRequestError()
-            }
+  async execute(
+    input: AdminChangeProviderTrustTagInput,
+  ): Promise<AdminChangeProviderTrustTagOutput> {
+    try {
+      const { providerId, trustedBySlotflow } = input;
+      if (!providerId) {
+        throw new BadRequestError();
+      }
 
-            const provider = await this.userRepository.findById(providerId);
-            if (!provider) {
-                throw new NotFoundError(
-                    "User not found.",
-                    ERROR_CODES.USER_NOT_FOUND
-                );
-            }
+      const provider = await this.userRepository.findById(providerId);
+      if (!provider) {
+        throw new NotFoundError("User not found.", ERROR_CODES.USER_NOT_FOUND);
+      }
 
-            const providerProfile = await this.providerProfileRepository.findByUserId(providerId);
-            if (!providerProfile) {
-                throw new NotFoundError(
-                    "Profile not found.",
-                    ERROR_CODES.PROVIDER_PROFILE_NOT_FOUND
-                );
-            }
+      const providerProfile = await this.providerProfileRepository.findByUserId(providerId);
+      if (!providerProfile) {
+        throw new NotFoundError("Profile not found.", ERROR_CODES.PROVIDER_PROFILE_NOT_FOUND);
+      }
 
-            if (trustedBySlotflow) {
-                providerProfile.grantTrustBadge();
-            } else {
-                providerProfile.revokeTrustBadge();
-            };
+      if (trustedBySlotflow) {
+        providerProfile.grantTrustBadge();
+      } else {
+        providerProfile.revokeTrustBadge();
+      }
 
-            const updatedProviderProfile = await this.providerProfileRepository.update(providerProfile);
-            if (!updatedProviderProfile) {
-                throw new NotFoundError(
-                    "Provider not found",
-                    ERROR_CODES.USER_NOT_FOUND
-                );
-            }
+      const updatedProviderProfile = await this.providerProfileRepository.update(providerProfile);
+      if (!updatedProviderProfile) {
+        throw new NotFoundError("Provider not found", ERROR_CODES.USER_NOT_FOUND);
+      }
 
-            await this.kafkaProducer.publish<EventEnvelope<SendAccountTrustStatusEvent>>(kafkaConfig.topics.pub.accountTrustStatus, {
-                eventId: generateId({ type: IdType.EVENT }),
-                attempt: 1,
-                maxAttempts: 1,
-                occurredAt: new Date(),
-                payload: {
-                    emailData: {
-                        email: provider.email,
-                        name: provider.username,
-                        trusted: updatedProviderProfile.trustedBySlotflow,
-                    },
-                    notificationData: {
-                        userId: provider._id,
-                        isTrusted: updatedProviderProfile.trustedBySlotflow.toString(),
-                        notificationType: NotificationType.ACCOUNT_ACTIVITY
-                    },
-                },
-            });
+      await this.kafkaProducer.publish<EventEnvelope<SendAccountTrustStatusEvent>>(
+        kafkaConfig.topics.pub.accountTrustStatus,
+        {
+          eventId: generateId({ type: IdType.EVENT }),
+          attempt: 1,
+          maxAttempts: 1,
+          occurredAt: new Date(),
+          payload: {
+            emailData: {
+              email: provider.email,
+              name: provider.username,
+              trusted: updatedProviderProfile.trustedBySlotflow,
+            },
+            notificationData: {
+              userId: provider._id,
+              isTrusted: updatedProviderProfile.trustedBySlotflow.toString(),
+              notificationType: NotificationType.ACCOUNT_ACTIVITY,
+            },
+          },
+        },
+      );
 
-            return { _id: providerId, trustedBySlotflow: updatedProviderProfile.trustedBySlotflow };
-        } catch (error: unknown) {
-            throw toAppError(error, "Failed to change provider trust tag status");
-        };
-    };
-};
-
+      return { _id: providerId, trustedBySlotflow: updatedProviderProfile.trustedBySlotflow };
+    } catch (error: unknown) {
+      throw toAppError(error, "Failed to change provider trust tag status");
+    }
+  }
+}

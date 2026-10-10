@@ -3,88 +3,88 @@ import { ReferralProps } from "../contracts/referral.contract";
 import { CreateReferralProps, UpdateReferralStatusProps } from "../commands/referral.commands";
 
 export class Referral {
-    constructor(private props: ReferralProps) {}
+  constructor(private props: ReferralProps) {}
 
-    static create(input: CreateReferralProps): Referral {
-        const now = new Date();
-        const referral = new Referral({
-            _id: "",
-            referrerUserId: input.referrerUserId,
-            refereeUserId: input.refereeUserId,
-            referralCode: input.referralCode,
-            status: ReferralStatus.PENDING,
-            rewardGiven: false,
-            createdAt: now,
-            updatedAt: now,
-        });
-        return referral;
-    }
+  static create(input: CreateReferralProps): Referral {
+    const now = new Date();
+    const referral = new Referral({
+      _id: "",
+      referrerUserId: input.referrerUserId,
+      refereeUserId: input.refereeUserId,
+      referralCode: input.referralCode,
+      status: ReferralStatus.PENDING,
+      rewardGiven: false,
+      createdAt: now,
+      updatedAt: now,
+    });
+    return referral;
+  }
 
-    static fromPersistence(props: ReferralProps): Referral {
-        return new Referral(props);
-    }
+  static fromPersistence(props: ReferralProps): Referral {
+    return new Referral(props);
+  }
 
-    // Getters
-    get _id(): string {
-        return this.props._id;
-    }
+  // Getters
+  get _id(): string {
+    return this.props._id;
+  }
 
-    get referrerUserId(): string {
-        return this.props.referrerUserId;
-    }
+  get referrerUserId(): string {
+    return this.props.referrerUserId;
+  }
 
-    get refereeUserId(): string {
-        return this.props.refereeUserId;
-    }
+  get refereeUserId(): string {
+    return this.props.refereeUserId;
+  }
 
-    get referralCode(): string {
-        return this.props.referralCode;
-    }
+  get referralCode(): string {
+    return this.props.referralCode;
+  }
 
-    get status(): ReferralStatus {
-        return this.props.status;
-    }
+  get status(): ReferralStatus {
+    return this.props.status;
+  }
 
-    get rewardGiven(): boolean {
-        return this.props.rewardGiven;
-    }
+  get rewardGiven(): boolean {
+    return this.props.rewardGiven;
+  }
 
-    get createdAt(): Date {
-        return this.props.createdAt;
-    }
+  get createdAt(): Date {
+    return this.props.createdAt;
+  }
 
-    get completedAt(): Date | undefined {
-        return this.props.completedAt;
-    }
+  get completedAt(): Date | undefined {
+    return this.props.completedAt;
+  }
 
-    get updatedAt(): Date {
-        return this.props.updatedAt;
-    }
+  get updatedAt(): Date {
+    return this.props.updatedAt;
+  }
 
-    // Methods
-    completeReferral(): void {
-        this.props.status = ReferralStatus.COMPLETED;
-        this.props.completedAt = new Date();
-        this.touch();
-    }
+  // Methods
+  completeReferral(): void {
+    this.props.status = ReferralStatus.COMPLETED;
+    this.props.completedAt = new Date();
+    this.touch();
+  }
 
-    rewardReferral(): void {
-        this.props.status = ReferralStatus.REWARDED;
-        this.props.rewardGiven = true;
-        this.touch();
-    }
+  rewardReferral(): void {
+    this.props.status = ReferralStatus.REWARDED;
+    this.props.rewardGiven = true;
+    this.touch();
+  }
 
-    updateStatus(props: UpdateReferralStatusProps): void {
-        this.props.status = props.status;
-        this.touch();
-    }
+  updateStatus(props: UpdateReferralStatusProps): void {
+    this.props.status = props.status;
+    this.touch();
+  }
 
-    private touch(): void {
-        this.props.updatedAt = new Date();
-    }
+  private touch(): void {
+    this.props.updatedAt = new Date();
+  }
 
-    // Get persistence props
-    getPersistenceProps(): ReferralProps {
-        return { ...this.props };
-    }
+  // Get persistence props
+  getPersistenceProps(): ReferralProps {
+    return { ...this.props };
+  }
 }

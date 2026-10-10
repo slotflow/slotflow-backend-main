@@ -1,9 +1,7 @@
 export interface ICacheService {
+  setBlockList(key: string, value: string): Promise<void>;
 
-    setBlockList(key: string, value: string): Promise<void>;
+  getBlockList(key: string): Promise<string | null>;
 
-    getBlockList(key: string): Promise<string | null>;
-
-    deleteBlockList(key: string): Promise<void>;
-    
-};
+  deleteBlockList(key: string): Promise<void>;
+}

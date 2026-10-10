@@ -14,7 +14,6 @@ import { getDateRangeMetrics } from "../../shared/utils/helpers/getDateRangeMetr
 import { IReferralQueries } from "../../application/interfaces/queries/IReferral.queries";
 
 export class ReferralQueriesImpl implements IReferralQueries {
-
   async findReferralDetails(query: GetReferralDetailsQuery): Promise<GetReferralDetailsView> {
     const { userId, startDate, endDate, timeZone } = query;
     const effectiveTimeZone = timeZone || defaultTimezone;
@@ -22,7 +21,7 @@ export class ReferralQueriesImpl implements IReferralQueries {
     const { days, end, prevEnd, prevStart, start } = getDateRangeMetrics({
       startDate,
       endDate,
-      timeZone: effectiveTimeZone
+      timeZone: effectiveTimeZone,
     });
 
     const userObjectId = new mongoose.Types.ObjectId(userId);
@@ -40,14 +39,8 @@ export class ReferralQueriesImpl implements IReferralQueries {
       {
         $facet: {
           total: [{ $count: "count" }],
-          completed: [
-            { $match: { status: "COMPLETED" } },
-            { $count: "count" },
-          ],
-          pending: [
-            { $match: { status: "PENDING" } },
-            { $count: "count" },
-          ],
+          completed: [{ $match: { status: "COMPLETED" } }, { $count: "count" }],
+          pending: [{ $match: { status: "PENDING" } }, { $count: "count" }],
           rewarded: [
             {
               $match: {
@@ -74,14 +67,8 @@ export class ReferralQueriesImpl implements IReferralQueries {
       {
         $facet: {
           total: [{ $count: "count" }],
-          completed: [
-            { $match: { status: "COMPLETED" } },
-            { $count: "count" },
-          ],
-          pending: [
-            { $match: { status: "PENDING" } },
-            { $count: "count" },
-          ],
+          completed: [{ $match: { status: "COMPLETED" } }, { $count: "count" }],
+          pending: [{ $match: { status: "PENDING" } }, { $count: "count" }],
           rewarded: [
             {
               $match: {
@@ -148,10 +135,7 @@ export class ReferralQueriesImpl implements IReferralQueries {
             $sum: {
               $cond: [
                 {
-                  $and: [
-                    { $eq: ["$rewardGiven", true] },
-                    { $eq: ["$status", "COMPLETED"] },
-                  ],
+                  $and: [{ $eq: ["$rewardGiven", true] }, { $eq: ["$status", "COMPLETED"] }],
                 },
                 1,
                 0,
@@ -173,22 +157,17 @@ export class ReferralQueriesImpl implements IReferralQueries {
       rewardedReferrals: item.rewardedReferrals,
     }));
 
-    const dateMap = new Map(
-      rawChartData.map((item) => [item.date, item])
-    );
+    const dateMap = new Map(rawChartData.map((item) => [item.date, item]));
 
     const filledChartData: typeof rawChartData = [];
 
     let currentDate = start;
 
-    while (
-      isBefore(currentDate, end) ||
-      isSameDay(currentDate, end)
-    ) {
+    while (isBefore(currentDate, end) || isSameDay(currentDate, end)) {
       const dateStr = formatDate({
         date: currentDate,
         pattern: dateFormats.ISO_DATE,
-        timeZone
+        timeZone,
       });
 
       filledChartData.push(
@@ -198,7 +177,7 @@ export class ReferralQueriesImpl implements IReferralQueries {
           completedReferrals: 0,
           pendingReferrals: 0,
           rewardedReferrals: 0,
-        }
+        },
       );
 
       currentDate = addDays(currentDate, 1);

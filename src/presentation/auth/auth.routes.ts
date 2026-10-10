@@ -1,44 +1,25 @@
-import { Router } from 'express';
-import { authController } from './auth.controller';
-import { googleAuthController } from './googleAuth.controller';
+import { Router } from "express";
+import { authController } from "./auth.controller";
+import { googleAuthController } from "./googleAuth.controller";
 
 const router = Router();
 
-router.post('/signup', 
-    authController.register
-);
+router.post("/signup", authController.register);
 
-router.post('/verify-otp', 
-    authController.registerOtpVerification
-);
+router.post("/verify-otp", authController.registerOtpVerification);
 
-router.post('/resendOtp', 
-    authController.resendOtp
-);
+router.post("/resendOtp", authController.resendOtp);
 
-router.post('/verify-email', 
-    authController.verifyEmail
-);
+router.post("/verify-email", authController.verifyEmail);
 
-router.post("/signin", 
-    authController.login
-);
+router.post("/signin", authController.login);
 
-router.post('/signout', 
-    authController.logout
-);
+router.post("/signout", authController.logout);
 
-router.patch('/password', 
-    authController.resetPassword
-);
+router.patch("/password", authController.resetPassword);
 
-router.get('/google', 
-    googleAuthController.googleAuth
-);
+router.get("/google", googleAuthController.googleAuth);
 
-router.get('/google/callback', 
-    googleAuthController.googleAuthCallback
-);
+router.get("/google/callback", googleAuthController.googleAuthCallback);
 
 export default router;
- 

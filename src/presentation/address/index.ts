@@ -5,6 +5,9 @@ import { UserCreateAddressUseCase } from "../../application/useCases/address/use
 
 export const getAddressUseCase = new GetAddressUseCase(addressRepository);
 
-export const userCreateAddressUseCase = new UserCreateAddressUseCase(userRepository, addressRepository);
+export const userCreateAddressUseCase = new UserCreateAddressUseCase(
+  userRepository,
+  addressRepository,
+);
 
 export const updateAddressUseCase = new UpdateAddressUseCase(addressRepository);

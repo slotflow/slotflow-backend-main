@@ -13,7 +13,10 @@ export const createPlanUseCase = new CreatePlanUseCase(planRepository, stripePla
 
 export const changePlanBlockStatusUseCase = new ChangePlanBlockStatusUseCase(planRepository);
 
-export const resyncPlanStripeUseCase = new ResyncPlanStripeUseCase(planRepository, stripePlanService);
+export const resyncPlanStripeUseCase = new ResyncPlanStripeUseCase(
+  planRepository,
+  stripePlanService,
+);
 
 export const getPlanDetailsUseCase = new GetPlanDetailsUseCase(planRepository);
 

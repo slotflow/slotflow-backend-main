@@ -3,29 +3,28 @@ import { ICredential } from "../models/credential.model";
 import { Credential } from "../../domain/entities/credential.entity";
 
 export class CredentialMapper {
+  static toDomain(doc: ICredential): Credential {
+    return new Credential({
+      _id: doc._id.toString(),
+      accessToken: doc.accessToken,
+      expiryDate: doc.expiryDate,
+      refreshToken: doc.refreshToken,
+      userId: doc.userId.toString(),
+      createdAt: doc.createdAt,
+      updatedAt: doc.updatedAt,
+    });
+  }
 
-    static toDomain(doc: ICredential): Credential {
-        return new Credential({
-            _id: doc._id.toString(),
-            accessToken: doc.accessToken,
-            expiryDate: doc.expiryDate,
-            refreshToken: doc.refreshToken,
-            userId: doc.userId.toString(),
-            createdAt: doc.createdAt,
-            updatedAt: doc.updatedAt,
-        });
-    }
+  static toPersistence(entity: Credential) {
+    const props = entity.getProps();
 
-    static toPersistence(entity: Credential) {
-        const props = entity.getProps();
-
-        return {
-            accessToken: props.accessToken,
-            expiryDate: props.expiryDate,
-            refreshToken: props.refreshToken,
-            userId: new Types.ObjectId(props.userId),
-            createdAt: props.createdAt,
-            updatedAt: props.updatedAt,
-        };
-    }
+    return {
+      accessToken: props.accessToken,
+      expiryDate: props.expiryDate,
+      refreshToken: props.refreshToken,
+      userId: new Types.ObjectId(props.userId),
+      createdAt: props.createdAt,
+      updatedAt: props.updatedAt,
+    };
+  }
 }

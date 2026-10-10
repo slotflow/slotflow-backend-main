@@ -5,35 +5,30 @@ import { Address } from "../../domain/entities/address.entity";
 import { IAddressRepository } from "../../domain/interfaces/repositories/IAddress.repository";
 
 export class AddressRepositoryImpl implements IAddressRepository {
+  async create(address: Address, session?: ClientSession): Promise<Address | null> {
+    const doc = await AddressModel.create([AddressMapper.toPersistence(address)], { session });
+    return doc && doc.length > 0 ? AddressMapper.toDomain(doc[0]) : null;
+  }
 
-    async create(address: Address, session?: ClientSession): Promise<Address | null> {
-        const doc = await AddressModel.create(
-            [AddressMapper.toPersistence(address)],
-            { session }
-        );
-        return doc && doc.length > 0 ? AddressMapper.toDomain(doc[0]) : null;
-    };
+  async findByUserId(userId: string): Promise<Address | null> {
+    const doc = await AddressModel.findOne({ userId });
+    return doc ? AddressMapper.toDomain(doc) : null;
+  }
 
-    async findByUserId(userId: string): Promise<Address | null> {
-        const doc = await AddressModel.findOne({ userId });
-        return doc ? AddressMapper.toDomain(doc) : null;
-    };
+  async findById(addressId: string): Promise<Address | null> {
+    const doc = await AddressModel.findById(addressId);
+    return doc ? AddressMapper.toDomain(doc) : null;
+  }
 
-    async findById(addressId: string): Promise<Address | null> {
-        const doc = await AddressModel.findById(addressId);
-        return doc ? AddressMapper.toDomain(doc) : null;
-    };
+  async update(address: Address, session?: ClientSession): Promise<Address | null> {
+    const persistence = AddressMapper.toPersistence(address);
 
-    async update(address: Address, session?: ClientSession): Promise<Address | null> {
-        const persistence = AddressMapper.toPersistence(address);
+    const doc = await AddressModel.findByIdAndUpdate(
+      address._id,
+      { $set: persistence },
+      { new: true, session },
+    );
 
-        const doc = await AddressModel.findByIdAndUpdate(
-            address._id,
-            { $set: persistence },
-            { new: true, session }
-        );
-
-        return doc ? AddressMapper.toDomain(doc) : null;
-    };
-
-};
+    return doc ? AddressMapper.toDomain(doc) : null;
+  }
+}

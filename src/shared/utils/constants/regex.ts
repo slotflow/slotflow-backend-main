@@ -2,7 +2,7 @@ export const objectIdRegex = /^[a-fA-F0-9]{24}$/;
 
 export const addressLineRegex = /^[a-zA-Z0-9 .,#-]{10,150}$/;
 
-export const landMarkRegex = /^[A-Za-z0-9 ,./#@()\-]{5,150}$/
+export const landMarkRegex = /^[A-Za-z0-9 ,./#@()*-]{5,150}$/;
 
 export const phoneRegex = /^\+?[0-9\s\-().]{7,20}$/;
 
@@ -38,7 +38,7 @@ export const serviceExperienceRegex = /^[\w\d !"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}
 
 export const verificationRejectionReasonRegex = /^[A-Za-z0-9\s.,\-_'()@#!?&/:]+$/;
 
-export const sessionIdRegex=/^cs_test_[a-zA-Z0-9]{5,200}$/;
+export const sessionIdRegex = /^cs_test_[a-zA-Z0-9]{5,200}$/;
 
 export const timeRegex = /^(0[1-9]|1[0-2]):([0-5][0-9]) (AM|PM)$/;
 

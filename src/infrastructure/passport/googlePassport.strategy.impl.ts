@@ -1,14 +1,12 @@
 import passport from "passport";
 import { googleClientConfig } from "../../config/env";
 import { GoogleOAuthUser } from "../../application/dtos/common.dto";
-import { Strategy as GoogleStrategy, VerifyCallback, Profile } from 'passport-google-oauth20';
+import { Strategy as GoogleStrategy, VerifyCallback, Profile } from "passport-google-oauth20";
 import { IGooglePassportStrategy } from "../../application/interfaces/passport/IGooglePassport.stratergy";
 import { Request } from "express";
 
 export class GooglePassportStrategyImpl implements IGooglePassportStrategy {
-
-  constructor(
-  ) { };
+  constructor() {}
 
   register(): void {
     passport.use(
@@ -20,15 +18,14 @@ export class GooglePassportStrategyImpl implements IGooglePassportStrategy {
           passReqToCallback: true,
         },
         async (
-          req: Request,
+          _req: Request,
           accessToken: string,
           refreshToken: string,
-          params: { expires_in: number },
+          _params: { expires_in: number },
           profile: Profile,
-          done: VerifyCallback
+          done: VerifyCallback,
         ) => {
           try {
-
             const userPayload: GoogleOAuthUser = {
               googleAccessToken: accessToken,
               googleRefreshToken: refreshToken,
@@ -39,12 +36,11 @@ export class GooglePassportStrategyImpl implements IGooglePassportStrategy {
             };
 
             return done(null, userPayload);
-
           } catch (err) {
             return done(err);
-          };
+          }
         },
       ),
     );
-  };
-};
+  }
+}

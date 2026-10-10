@@ -9,7 +9,7 @@ import { userRepository } from "../../infrastructure/repository";
 import { safeDecode } from "../../shared/utils/helpers/safeDecode";
 import { ForbiddenError, UnauthorizedError } from "../../shared/error/appError";
 
-export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+export const authMiddleware = async (req: Request, _res: Response, next: NextFunction) => {
   try {
     const userId = req.headers["x-user-id"];
     const role = req.headers["x-user-role"];
@@ -48,10 +48,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
       !normalizedTimeZone
     ) {
       return next(
-        new UnauthorizedError(
-          "Invalid user identity headers",
-          ERROR_CODES.USER_NOT_FOUND
-        )
+        new UnauthorizedError("Invalid user identity headers", ERROR_CODES.USER_NOT_FOUND),
       );
     }
 
@@ -60,7 +57,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
       role: normalizedRole,
       name: normalizedName,
       email: normalizedEmail,
-      timeZone: normalizedTimeZone as TimeZone
+      timeZone: normalizedTimeZone as TimeZone,
     };
 
     req.user = decodedUser;
@@ -70,49 +67,26 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
 
     if (cachedStatus !== null) {
       if (cachedStatus === "true") {
-        return next(
-          new ForbiddenError(
-            "Your account is blocked",
-            ERROR_CODES.FORBIDDEN
-          )
-        );
-      };
+        return next(new ForbiddenError("Your account is blocked", ERROR_CODES.FORBIDDEN));
+      }
       return next();
-    };
+    }
 
     // Cache miss DB fallback
     const user = await userRepository.findById(cacheKey);
     if (!user) {
-      return next(
-        new UnauthorizedError(
-          "Invalid user",
-          ERROR_CODES.USER_NOT_FOUND
-        )
-      );
-    };
+      return next(new UnauthorizedError("Invalid user", ERROR_CODES.USER_NOT_FOUND));
+    }
 
-    await cacheService.setBlockList(
-      cacheKey,
-      JSON.stringify(user.isBlocked)
-    );
+    await cacheService.setBlockList(cacheKey, JSON.stringify(user.isBlocked));
 
     if (user.isBlocked) {
-      return next(
-        new ForbiddenError(
-          "Your account is blocked",
-          ERROR_CODES.FORBIDDEN
-        )
-      );
-    };
+      return next(new ForbiddenError("Your account is blocked", ERROR_CODES.FORBIDDEN));
+    }
 
     next();
   } catch (error) {
-    log.error("error", error as Error);
-    return next(
-      new UnauthorizedError(
-        "Unauthorized: Invalid token",
-        ERROR_CODES.TOKEN_INVALID
-      )
-    );
-  };
+    log.error("error", { error });
+    return next(new UnauthorizedError("Unauthorized: Invalid token", ERROR_CODES.TOKEN_INVALID));
+  }
 };

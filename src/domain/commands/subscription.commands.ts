@@ -15,11 +15,11 @@ export type CreateSubscriptionInitialProps = Omit<
 >;
 
 export type SubscriptionPaymentSuccessProps = Pick<
-SubscriptionProps, 
-| "currentPeriodEnd" 
-| "currentPeriodStart" 
-| "paymentId"
-| "cancelAt"
-| "cancelAtPeriodEnd" 
-| "lastEventAt"
+  SubscriptionProps,
+  | "currentPeriodEnd"
+  | "currentPeriodStart"
+  | "paymentId"
+  | "cancelAt"
+  | "cancelAtPeriodEnd"
+  | "lastEventAt"
 >;

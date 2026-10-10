@@ -6,34 +6,29 @@ import { FrontendAvailabilityForOutput, FrontendAvailabilityForClientInput } fro
  * service availability queries dtos
  */
 
-// findByProviderId method 
+// findByProviderId method
 export type ServiceAvailabilityQuery = {
-    providerId?: UserProps["_id"];
-    availabilityId?: ServiceAvailabilityProps["_id"];
-    date: string | Date;
-    timeZone: string;
-}
+  providerId?: UserProps["_id"];
+  availabilityId?: ServiceAvailabilityProps["_id"];
+  date: string | Date;
+  timeZone: string;
+};
 export type ServiceAvailabilityView = FrontendAvailabilityForOutput | null;
-
-
-
-
 
 /**
  * service availability usecase dtos
  */
 
-// get provider service availability 
+// get provider service availability
 export interface GetServiceAvailabilityInput {
-    date: string;
-    providerId: string;
+  date: string;
+  providerId: string;
 }
 export type GetServiceAvailabilityOutput = FrontendAvailabilityForOutput | null;
 
-
-// create service availability 
+// create service availability
 export interface CreateServiceAvailabilityInput {
-    providerId: string;
-    timeZone: string;
-    availabilities: FrontendAvailabilityForClientInput[]
+  providerId: string;
+  timeZone: string;
+  availabilities: FrontendAvailabilityForClientInput[];
 }

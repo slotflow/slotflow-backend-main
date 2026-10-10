@@ -8,196 +8,155 @@ import { AppError, BadRequestError } from "../../shared/error/appError";
 import { ISignedUrlService } from "../../application/interfaces/services/ISignedUrl.service";
 
 export class SignedUrlServiceImpl implements ISignedUrlService {
-    constructor(
-        private readonly redis: Redis,
-        private readonly s3Client: S3Client
-    ) { };
+  constructor(
+    private readonly redis: Redis,
+    private readonly s3Client: S3Client,
+  ) {}
 
-    private buildRedisKey(key: string): string {
-        return `signedurl:${key}`;
-    };
+  private buildRedisKey(key: string): string {
+    return `signedurl:${key}`;
+  }
 
-    private isExternalUrl(key: string): boolean {
-        try {
-            const url = new URL(key);
+  private isExternalUrl(key: string): boolean {
+    try {
+      const url = new URL(key);
 
-            return (
-                url.hostname.includes("googleusercontent.com") ||
-                url.hostname.includes("google.com") ||
-                url.hostname.includes("githubusercontent.com")
-            );
+      return (
+        url.hostname.includes("googleusercontent.com") ||
+        url.hostname.includes("google.com") ||
+        url.hostname.includes("githubusercontent.com")
+      );
+    } catch {
+      return false;
+    }
+  }
 
-        } catch {
-            return false;
-        }
-    };
+  async get(key: string): Promise<string> {
+    try {
+      if (!key) {
+        throw new BadRequestError("Invalid key", ERROR_CODES.INVALID_REQUEST);
+      }
 
-    async get(key: string): Promise<string> {
-        try {
-            if (!key) {
-                throw new BadRequestError(
-                    "Invalid key",
-                    ERROR_CODES.INVALID_REQUEST
-                );
-            }
+      if (this.isExternalUrl(key)) {
+        return key;
+      }
 
-            if (this.isExternalUrl(key)) {
-                return key;
-            }
+      const redisKey = this.buildRedisKey(key);
 
-            const redisKey = this.buildRedisKey(key);
+      const cachedSignedUrl = await this.redis.get<string>(redisKey);
 
-            const cachedSignedUrl = await this.redis.get<string>(redisKey);
+      if (cachedSignedUrl) {
+        return cachedSignedUrl;
+      }
 
-            if (cachedSignedUrl) {
-                return cachedSignedUrl;
-            };
+      const command = new GetObjectCommand({
+        Bucket: awsConfig.awsS3BucketName!,
+        Key: key,
+      });
 
-            const command = new GetObjectCommand({
-                Bucket: awsConfig.awsS3BucketName!,
-                Key: key,
-            });
+      const signedUrl = await getSignedUrl(this.s3Client, command, {
+        expiresIn: awsConfig.awsUrlExpires,
+      });
 
-            const signedUrl = await getSignedUrl(
-                this.s3Client,
-                command,
-                { expiresIn: awsConfig.awsUrlExpires }
-            );
+      await this.redis.set(redisKey, signedUrl, { ex: redisConfig.redisSignedUrlTtl });
 
-            await this.redis.set(
-                redisKey,
-                signedUrl,
-                { ex: redisConfig.redisSignedUrlTtl }
-            );
+      return signedUrl;
+    } catch (error) {
+      log.error("SignedUrlService.get failed", { error });
 
-            return signedUrl;
+      if (error instanceof AppError) {
+        throw error;
+      }
 
-        } catch (error) {
-            log.error("SignedUrlService.get failed", error as Error);
+      throw new AppError("Failed to generate signed URL", 502, false, ERROR_CODES.INTERNAL_ERROR);
+    }
+  }
 
-            if (error instanceof AppError) {
-                throw error;
-            }
+  async save(key: string): Promise<string> {
+    try {
+      if (!key) {
+        throw new BadRequestError("Invalid key", ERROR_CODES.INVALID_REQUEST);
+      }
 
-            throw new AppError(
-                "Failed to generate signed URL",
-                502,
-                false,
-                ERROR_CODES.INTERNAL_ERROR
-            );
-        };
-    };
+      const command = new GetObjectCommand({
+        Bucket: awsConfig.awsS3BucketName!,
+        Key: key,
+      });
 
-    async save(key: string): Promise<string> {
-        try {
-            if (!key) {
-                throw new BadRequestError(
-                    "Invalid key",
-                    ERROR_CODES.INVALID_REQUEST
-                );
-            }
+      const signedUrl = await getSignedUrl(this.s3Client, command, {
+        expiresIn: awsConfig.awsUrlExpires,
+      });
 
-            const command = new GetObjectCommand({
-                Bucket: awsConfig.awsS3BucketName!,
-                Key: key,
-            });
+      const redisKey = this.buildRedisKey(key);
 
-            const signedUrl = await getSignedUrl(
-                this.s3Client,
-                command,
-                { expiresIn: awsConfig.awsUrlExpires }
-            );
+      await this.redis.set(redisKey, signedUrl, { ex: redisConfig.redisSignedUrlTtl });
 
-            const redisKey = this.buildRedisKey(key);
+      return signedUrl;
+    } catch (error) {
+      log.error("SignedUrlService.save failed", { error });
 
-            await this.redis.set(
-                redisKey,
-                signedUrl,
-                { ex: redisConfig.redisSignedUrlTtl }
-            );
+      if (error instanceof AppError) {
+        throw error;
+      }
 
-            return signedUrl;
+      throw new AppError("Failed to save signed URL", 502, false, ERROR_CODES.INTERNAL_ERROR);
+    }
+  }
 
-        } catch (error) {
-            log.error("SignedUrlService.save failed", error as Error);
+  async delete(key: string): Promise<boolean> {
+    try {
+      if (!key) {
+        throw new BadRequestError("Invalid key", ERROR_CODES.INVALID_REQUEST);
+      }
 
-            if (error instanceof AppError) {
-                throw error;
-            }
+      const redisKey = this.buildRedisKey(key);
+      const deletedCount = await this.redis.del(redisKey);
+      return deletedCount === 1;
+    } catch (error) {
+      log.error("SignedUrlService delete failed", { error });
 
-            throw new AppError(
-                "Failed to save signed URL",
-                502,
-                false,
-                ERROR_CODES.INTERNAL_ERROR
-            );
-        };
-    };
+      throw new AppError("Failed to delete signed URL", 500, false, ERROR_CODES.INTERNAL_ERROR);
+    }
+  }
 
-    async delete(key: string): Promise<boolean> {
-        try {
-            if (!key) {
-                throw new BadRequestError(
-                    "Invalid key",
-                    ERROR_CODES.INVALID_REQUEST
-                );
-            }
+  async debugLogAllSignedUrls(): Promise<void> {
+    try {
+      let cursor = 0;
+      const allKeys: string[] = [];
+      const allData: Record<string, string | null> = {};
 
-            const redisKey = this.buildRedisKey(key);
-            const deletedCount = await this.redis.del(redisKey);
-            return deletedCount === 1;
-        } catch (error) {
-            log.error("SignedUrlService delete failed", error as Error);
+      do {
+        const [nextCursor, keys] = await this.redis.scan(cursor, {
+          match: "signedurl:*",
+          count: 100,
+        });
 
-            throw new AppError(
-                "Failed to delete signed URL",
-                500,
-                false,
-                ERROR_CODES.INTERNAL_ERROR
-            );
-        };
-    };
+        cursor = Number(nextCursor);
+        allKeys.push(...keys);
+      } while (cursor !== 0);
 
-    async debugLogAllSignedUrls(): Promise<void> {
-        try {
-            let cursor = 0;
-            const allKeys: string[] = [];
-            const allData: Record<string, string | null> = {};
+      for (const key of allKeys) {
+        allData[key] = await this.redis.get<string>(key);
+      }
+    } catch (error) {
+      log.error("Failed to debug redis signed URLs", { error });
+    }
+  }
 
-            do {
-                const [nextCursor, keys] = await this.redis.scan(cursor, {
-                    match: "signedurl:*",
-                    count: 100,
-                });
+  async cleanupInvalidSignedUrls(): Promise<void> {
+    let cursor = 0;
 
-                cursor = Number(nextCursor);
-                allKeys.push(...keys);
-            } while (cursor !== 0);
+    do {
+      const [nextCursor, keys] = await this.redis.scan(cursor, {
+        match: "signedurl:https*",
+        count: 100,
+      });
 
-            for (const key of allKeys) {
-                allData[key] = await this.redis.get<string>(key);
-            }
+      cursor = Number(nextCursor);
 
-        } catch (error) {
-            log.error("Failed to debug redis signed URLs", error as Error);
-        }
-    };
-
-    async cleanupInvalidSignedUrls(): Promise<void> {
-        let cursor = 0;
-
-        do {
-            const [nextCursor, keys] = await this.redis.scan(cursor, {
-                match: "signedurl:https*",
-                count: 100,
-            });
-
-            cursor = Number(nextCursor);
-
-            if (keys.length) {
-                await this.redis.del(...keys);
-            }
-        } while (cursor !== 0);
-    };
-
-};
+      if (keys.length) {
+        await this.redis.del(...keys);
+      }
+    } while (cursor !== 0);
+  }
+}

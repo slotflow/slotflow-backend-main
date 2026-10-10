@@ -1,26 +1,23 @@
-import { z } from 'zod';
-import { timeZoneSchema } from './user.zod';
-import { roleValidationSchema } from './base.zod';
-import { HearAboutUsOptionValue } from '../../domain/enums/common.enum';
-import { strongPasswordRegex, usernameRegex } from '../utils/constants/regex';
+import { z } from "zod";
+import { timeZoneSchema } from "./user.zod";
+import { roleValidationSchema } from "./base.zod";
+import { HearAboutUsOptionValue } from "../../domain/enums/common.enum";
+import { strongPasswordRegex, usernameRegex } from "../utils/constants/regex";
 
 // Regist controller zod validation
-export const registerSchema = z
-  .object({
-    email: z.string().email("Invalid email"),
-    password: z
-      .string()
-      .min(8, "Password must be at least 8 characters")
-      .max(50, "Password cannot exceed 50 characters")
-      .regex(strongPasswordRegex, "Password must contain uppercase, lowercase, number & symbol"),
-    timeZone: timeZoneSchema,
-  });
+export const registerSchema = z.object({
+  email: z.string().email("Invalid email"),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .max(50, "Password cannot exceed 50 characters")
+    .regex(strongPasswordRegex, "Password must contain uppercase, lowercase, number & symbol"),
+  timeZone: timeZoneSchema,
+});
 
 // OTP Verification controller zod validation
 export const otpVerificationSchema = z.object({
-  otp: z
-    .string()
-    .length(6, "OTP must be exactly 6 digits"),
+  otp: z.string().length(6, "OTP must be exactly 6 digits"),
 });
 
 // Login controller zod validation
@@ -44,26 +41,30 @@ export const updatePasswordSchema = z.object({
     .string()
     .min(8, "Password must be at least 8 characters")
     .max(50, "Password cannot exceed 50 characters")
-    .regex(strongPasswordRegex, "Password must contain uppercase, lowercase, number & symbol")
+    .regex(strongPasswordRegex, "Password must contain uppercase, lowercase, number & symbol"),
 });
 
 // Connect google account zod validation schema
-export const connectGoogleSchema = z.object({
-  connectOnly: z.boolean(),
-}).merge(roleValidationSchema)
+export const connectGoogleSchema = z
+  .object({
+    connectOnly: z.boolean(),
+  })
+  .merge(roleValidationSchema);
 
 // preboardgin zod schema
-export const profileSetupSchema = z.object({
-  username: z
-    .string()
-    .min(4, "Username must be at least 4 characters")
-    .max(30, "Username cannot exceed 30 characters")
-    .regex(usernameRegex, "Invalid Username format"),
-  whereDidHearAboutUs: z.enum(HearAboutUsOptionValue),
-  referralCode: z.string().startsWith("SF_REF").min(12).max(15).optional(),
-}).merge(roleValidationSchema);
+export const profileSetupSchema = z
+  .object({
+    username: z
+      .string()
+      .min(4, "Username must be at least 4 characters")
+      .max(30, "Username cannot exceed 30 characters")
+      .regex(usernameRegex, "Invalid Username format"),
+    whereDidHearAboutUs: z.enum(HearAboutUsOptionValue),
+    referralCode: z.string().startsWith("SF_REF").min(12).max(15).optional(),
+  })
+  .merge(roleValidationSchema);
 
 // google auth /auth/google state for redicting route
 export const googleAuthSchema = z.object({
-  redirectingRoute: z.enum(['login', 'register'])
-})
+  redirectingRoute: z.enum(["login", "register"]),
+});

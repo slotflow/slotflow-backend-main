@@ -8,46 +8,46 @@ import { GetCreditDetailsUseCase } from "../../application/useCases/credits/getC
 import { GetCreditTransactionsUseCase } from "../../application/useCases/credits/getCreditTransactions.useCase";
 
 class CreditController {
-    constructor(
-        private readonly getCreditDetailsUseCase: GetCreditDetailsUseCase,
-        private readonly getCreditTransactionsUseCase: GetCreditTransactionsUseCase
-    ) {
-        this.getCreditAccountDetails = this.getCreditAccountDetails.bind(this);
-        this.getCreditTransactions = this.getCreditTransactions.bind(this);
-    }
+  constructor(
+    private readonly getCreditDetailsUseCase: GetCreditDetailsUseCase,
+    private readonly getCreditTransactionsUseCase: GetCreditTransactionsUseCase,
+  ) {
+    this.getCreditAccountDetails = this.getCreditAccountDetails.bind(this);
+    this.getCreditTransactions = this.getCreditTransactions.bind(this);
+  }
 
-    async getCreditAccountDetails(req: Request, res: Response, next: NextFunction) {
-        try {
-            const user = req.user as AuthUser;
-            const validatedData = startAndEndDateSchema.parse(req.query);
-            const result = await this.getCreditDetailsUseCase.execute({
-                ...validatedData,
-                userId: user.id,
-                timeZone: user.timeZone.value
-            });
-            sendResponse(res, result);
-        } catch (error) {
-            next(error);
-        }
+  async getCreditAccountDetails(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = req.user as AuthUser;
+      const validatedData = startAndEndDateSchema.parse(req.query);
+      const result = await this.getCreditDetailsUseCase.execute({
+        ...validatedData,
+        userId: user.id,
+        timeZone: user.timeZone.value,
+      });
+      sendResponse(res, result);
+    } catch (error) {
+      next(error);
     }
+  }
 
-    async getCreditTransactions(req: Request, res: Response, next: NextFunction) {
-        try {
-            const user = req.user as AuthUser;
-            const validatedData = getCreditTransactionsSchema.parse(req.query);
-            const result = await this.getCreditTransactionsUseCase.execute({
-                ...validatedData,
-                userId: user.id,
-                timeZone: user.timeZone.value
-            });
-            sendResponse(res, result);
-        } catch (error) {
-            next(error);
-        }
+  async getCreditTransactions(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = req.user as AuthUser;
+      const validatedData = getCreditTransactionsSchema.parse(req.query);
+      const result = await this.getCreditTransactionsUseCase.execute({
+        ...validatedData,
+        userId: user.id,
+        timeZone: user.timeZone.value,
+      });
+      sendResponse(res, result);
+    } catch (error) {
+      next(error);
     }
+  }
 }
 
 export const creditController = new CreditController(
-    getCreditDetailsUseCase,
-    getCreditTransactionsUseCase
+  getCreditDetailsUseCase,
+  getCreditTransactionsUseCase,
 );

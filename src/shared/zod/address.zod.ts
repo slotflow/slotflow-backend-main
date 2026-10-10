@@ -1,17 +1,19 @@
 import z from "zod";
 import { objectIdRegex } from "../utils/constants/regex";
-import { addressSchema, validateUserIdSchema } from "./base.zod";
+import { addressSchema } from "./base.zod";
 
 // Create address validation schema
 export const createAddressSchema = addressSchema;
 
 // Update address validation schema
-export const updateAddressSchema = z.object({
+export const updateAddressSchema = z
+  .object({
     addressId: z.string().regex(objectIdRegex, "Invalid addressId"),
-}).merge(addressSchema);
+  })
+  .merge(addressSchema);
 
 // get address validation schema
 export const getAddressSchema = z.object({
-    userId: z.string().regex(objectIdRegex, "Invalid addressId").optional(),
-    providerId: z.string().regex(objectIdRegex, "Invalid addressId").optional(),
-})
+  userId: z.string().regex(objectIdRegex, "Invalid addressId").optional(),
+  providerId: z.string().regex(objectIdRegex, "Invalid addressId").optional(),
+});

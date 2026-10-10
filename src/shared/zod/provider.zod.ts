@@ -4,104 +4,105 @@ import { PlanName } from "../../domain/enums/plan.enum";
 import { ServiceType } from "../../domain/enums/service.enum";
 import { paginationSchema, s3FileKeySchema } from "./base.zod";
 import { BillingCycle } from "../../domain/enums/subscription.enum";
-import { objectIdRegex, serviceDescriptionRegex, serviceExperienceRegex, serviceNameRegex } from "../utils/constants/regex";
+import {
+  objectIdRegex,
+  serviceDescriptionRegex,
+  serviceExperienceRegex,
+  serviceNameRegex,
+} from "../utils/constants/regex";
 
 // Provider id with pagination validation schema
-export const providerIdWithPaginationSchema = z.object({
-    providerId: z.string().regex(objectIdRegex, "Invalid providerId").optional()
-}).merge(paginationSchema);
+export const providerIdWithPaginationSchema = z
+  .object({
+    providerId: z.string().regex(objectIdRegex, "Invalid providerId").optional(),
+  })
+  .merge(paginationSchema);
 
 // Provider add service details controller zod schema
 export const serviceDetailsSchema = z.object({
-    serviceName: z
-        .string()
-        .min(4, "Service name must be at least 4 characters")
-        .max(50, "Service name cannot exceed 50 characters")
-        .regex(
-            serviceNameRegex,
-            "Invalid service name. Only alphabets and spaces are allowed (4–50 characters)."
-        ),
-
-    serviceDescription: z
-        .string()
-        .min(10, "Service description must be at least 10 characters")
-        .max(500, "Service description cannot exceed 500 characters")
-        .regex(
-            serviceDescriptionRegex,
-            "Invalid service description. Only alphanumeric characters, spaces, and symbols are allowed (10–500 characters)."
-        ),
-
-    servicePrice: z.preprocess(
-        (val) => {
-            if (typeof val === "string" && val.trim() !== "") return Number(val);
-            return val;
-        },
-        z
-            .number()
-            .min(1, "Service price must be at least 1")
-            .max(1_000_000, "Service price cannot exceed 1,000,000")
+  serviceName: z
+    .string()
+    .min(4, "Service name must be at least 4 characters")
+    .max(50, "Service name cannot exceed 50 characters")
+    .regex(
+      serviceNameRegex,
+      "Invalid service name. Only alphabets and spaces are allowed (4–50 characters).",
     ),
-    serviceExperienceYears: z.number().min(0).max(80),
-    serviceExperience: z
-        .string()
-        .min(1, "Experience must be at least 1 character")
-        .max(500, "Experience cannot exceed 500 characters")
-        .regex(
-            serviceExperienceRegex,
-            "Invalid experience. Only alphanumeric characters, spaces, and symbols allowed (1–500 chars)."
-        ),
 
-    serviceId: z.string().regex(objectIdRegex, "Invalid serviceId"),
+  serviceDescription: z
+    .string()
+    .min(10, "Service description must be at least 10 characters")
+    .max(500, "Service description cannot exceed 500 characters")
+    .regex(
+      serviceDescriptionRegex,
+      "Invalid service description. Only alphanumeric characters, spaces, and symbols are allowed (10–500 characters).",
+    ),
 
-    serviceType: z.enum(ServiceType),
+  servicePrice: z.preprocess(
+    (val) => {
+      if (typeof val === "string" && val.trim() !== "") return Number(val);
+      return val;
+    },
+    z
+      .number()
+      .min(1, "Service price must be at least 1")
+      .max(1_000_000, "Service price cannot exceed 1,000,000"),
+  ),
+  serviceExperienceYears: z.number().min(0).max(80),
+  serviceExperience: z
+    .string()
+    .min(1, "Experience must be at least 1 character")
+    .max(500, "Experience cannot exceed 500 characters")
+    .regex(
+      serviceExperienceRegex,
+      "Invalid experience. Only alphanumeric characters, spaces, and symbols allowed (1–500 chars).",
+    ),
 
-    maxParticipants: z
-        .number()
-        .min(1, "At least 1 participant required")
-        .max(500, "Cannot exceed 500 participants"),
+  serviceId: z.string().regex(objectIdRegex, "Invalid serviceId"),
 
-    tags: z
-        .array(z.string()),
+  serviceType: z.enum(ServiceType),
 
-    isGroupService: z.boolean(),
+  maxParticipants: z
+    .number()
+    .min(1, "At least 1 participant required")
+    .max(500, "Cannot exceed 500 participants"),
 
-    requirements: z
-    .array(
-      z.string().max(200, "Each requirement cannot exceed 200 characters")
-    )
+  tags: z.array(z.string()),
+
+  isGroupService: z.boolean(),
+
+  requirements: z
+    .array(z.string().max(200, "Each requirement cannot exceed 200 characters"))
     .max(10, "You can add at most 10 requirements")
     .optional(),
 
-    videoUrl: z.union([
-    z.string().url("Invalid video URL"),
-    z.literal(""),
-  ]).optional(),
+  videoUrl: z.union([z.string().url("Invalid video URL"), z.literal("")]).optional(),
 
-  portfolioUrl: z.union([
-    z.string().url("Invalid portfolio URL"),
-    z.literal(""),
-  ]).optional(),
+  portfolioUrl: z.union([z.string().url("Invalid portfolio URL"), z.literal("")]).optional(),
 });
 
 // Provider create service details validation schema
 export const providerCreateServiceDetailsSchema = serviceDetailsSchema;
 
 // Provider update service details validation schema
-export const providerUpdateServiceDetailsSchema = z.object({
+export const providerUpdateServiceDetailsSchema = z
+  .object({
     providerServiceId: z.string().regex(objectIdRegex, "Invalid providerServiceId"),
-}).merge(serviceDetailsSchema);
+  })
+  .merge(serviceDetailsSchema);
 
 // Provider plan subscription duration validation
 export const providerPlanSubscribeSchema = z.object({
-    planId: z.string().regex(objectIdRegex, "Invalid planId"),
-    billingCycle: z.enum(BillingCycle),
+  planId: z.string().regex(objectIdRegex, "Invalid planId"),
+  billingCycle: z.enum(BillingCycle),
 });
 
-
 // Provider dashboard validation schema
-export const providerValidateDashboardDataSchema = z.object({
+export const providerValidateDashboardDataSchema = z
+  .object({
     subscription: z.nativeEnum(PlanName).default(PlanName.TRIAL),
-}).merge(startAndEndDateSchema);
+  })
+  .merge(startAndEndDateSchema);
 
 // Provider update file validation schema
 export const providerValidateUpdateFileSchema = s3FileKeySchema;

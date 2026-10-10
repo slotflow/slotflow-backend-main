@@ -5,45 +5,35 @@ import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.r
 import { UpdateUserProfileInfoInput, UpdateUserProfileInfoOutput } from "../../dtos/user.dto";
 
 export class UpdateUserProfileInfoUseCase {
-    constructor(
-        private userRepository: IUserRepository
-    ) { };
+  constructor(private userRepository: IUserRepository) {}
 
-    async execute(input: UpdateUserProfileInfoInput): Promise<UpdateUserProfileInfoOutput> {
-        try {
-            const { userId, username, phone, timeZone } = input;
-            if (!userId || !username || !phone) {
-                throw new BadRequestError();
-            }
+  async execute(input: UpdateUserProfileInfoInput): Promise<UpdateUserProfileInfoOutput> {
+    try {
+      const { userId, username, phone, timeZone } = input;
+      if (!userId || !username || !phone) {
+        throw new BadRequestError();
+      }
 
-            const user = await this.userRepository.findById(userId);
-            if (!user) {
-                throw new NotFoundError(
-                    "User not found",
-                    ERROR_CODES.USER_NOT_FOUND
-                );
-            }
+      const user = await this.userRepository.findById(userId);
+      if (!user) {
+        throw new NotFoundError("User not found", ERROR_CODES.USER_NOT_FOUND);
+      }
 
-            user.updateProfileInfo({
-                phone: phone ?? undefined,
-                username: username ?? undefined
-            });
+      user.updateProfileInfo({
+        phone: phone ?? undefined,
+        username: username ?? undefined,
+      });
 
-            user.updateTimeZone({ timeZone });
+      user.updateTimeZone({ timeZone });
 
-            const updatedUser = await this.userRepository.update(user);
-            if (!updatedUser) {
-                throw new AppError(
-                    "Failed to update info",
-                    500,
-                    true,
-                    ERROR_CODES.INTERNAL_ERROR
-                );
-            }
+      const updatedUser = await this.userRepository.update(user);
+      if (!updatedUser) {
+        throw new AppError("Failed to update info", 500, true, ERROR_CODES.INTERNAL_ERROR);
+      }
 
-            return { username: updatedUser.username, phone: updatedUser.phone };;
-        } catch (error: unknown) {
-            throw toAppError(error, "Failed to update info");
-        };
-    };
-};
+      return { username: updatedUser.username, phone: updatedUser.phone };
+    } catch (error: unknown) {
+      throw toAppError(error, "Failed to update info");
+    }
+  }
+}

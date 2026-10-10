@@ -61,10 +61,7 @@ const SubscriptionSchema = new Schema<ISubscription>(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-export const SubscriptionModel = mongoose.model<ISubscription>(
-  "Subscription",
-  SubscriptionSchema
-);
+export const SubscriptionModel = mongoose.model<ISubscription>("Subscription", SubscriptionSchema);

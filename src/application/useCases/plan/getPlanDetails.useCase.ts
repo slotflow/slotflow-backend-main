@@ -5,26 +5,21 @@ import { GetPlanDetailsInput, GetPlanDetailsOutput } from "../../dtos/plan.dto";
 import { IPlanRepository } from "../../../domain/interfaces/repositories/IPlan.repository";
 
 export class GetPlanDetailsUseCase {
-    constructor(
-        private planRepository: IPlanRepository
-    ) { }
+  constructor(private planRepository: IPlanRepository) {}
 
-    async execute(input: GetPlanDetailsInput): Promise<GetPlanDetailsOutput> {
-        try {
-            const { planId } = input;
+  async execute(input: GetPlanDetailsInput): Promise<GetPlanDetailsOutput> {
+    try {
+      const { planId } = input;
 
-            const plan = await this.planRepository.findById(planId);
-            if (!plan) {
-                throw new NotFoundError(
-                    "Plan not found",
-                    ERROR_CODES.PLAN_NOT_FOUND
-                )
-            }
+      const plan = await this.planRepository.findById(planId);
+      if (!plan) {
+        throw new NotFoundError("Plan not found", ERROR_CODES.PLAN_NOT_FOUND);
+      }
 
-            const { createdAt, updatedAt, ...planData } = plan.getProps();
-            return planData;
-        } catch (error: unknown) {
-            throw toAppError(error, "Failed to get plan details");
-        };
+      const { createdAt: _ct, updatedAt: _ut, ...planData } = plan.getProps();
+      return planData;
+    } catch (error: unknown) {
+      throw toAppError(error, "Failed to get plan details");
     }
+  }
 }

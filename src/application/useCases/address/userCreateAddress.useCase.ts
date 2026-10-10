@@ -8,58 +8,42 @@ import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.r
 import { IAddressRepository } from "../../../domain/interfaces/repositories/IAddress.repository";
 
 export class UserCreateAddressUseCase {
-    constructor(
-        private userRepository: IUserRepository,
-        private addressRepository: IAddressRepository,
-    ) { };
+  constructor(
+    private userRepository: IUserRepository,
+    private addressRepository: IAddressRepository,
+  ) {}
 
-    async execute(input: CreateAddressInput): Promise<void> {
-        const session = await mongoose.startSession();
-        session.startTransaction();
-        try {
-            const { userId, ...addressData } = input;
-            if (!userId || !addressData) {
-                throw new BadRequestError(
-                    "Invalid Request",
-                    ERROR_CODES.INVALID_REQUEST
-                );
-            }
+  async execute(input: CreateAddressInput): Promise<void> {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+      const { userId, ...addressData } = input;
+      if (!userId || !addressData) {
+        throw new BadRequestError("Invalid Request", ERROR_CODES.INVALID_REQUEST);
+      }
 
-            const user = await this.userRepository.findById(userId);
-            if (!user) {
-                throw new NotFoundError(
-                    "User not found",
-                    ERROR_CODES.USER_NOT_FOUND
-                );
-            }
+      const user = await this.userRepository.findById(userId);
+      if (!user) {
+        throw new NotFoundError("User not found", ERROR_CODES.USER_NOT_FOUND);
+      }
 
-            const address = Address.create({ userId, ...addressData });
-            const savedAddress = await this.addressRepository.create(address, session);
-            if (!savedAddress) {
-                throw new AppError(
-                    "Failed to create address",
-                    500,
-                    true,
-                    ERROR_CODES.INTERNAL_ERROR
-                );
-            }
+      const address = Address.create({ userId, ...addressData });
+      const savedAddress = await this.addressRepository.create(address, session);
+      if (!savedAddress) {
+        throw new AppError("Failed to create address", 500, true, ERROR_CODES.INTERNAL_ERROR);
+      }
 
-            user.attachAddress(savedAddress._id)
-            const updatedUser = await this.userRepository.update(user, session);
-            if (!updatedUser) {
-                throw new AppError(
-                    "Failed to attach address",
-                    500,
-                    true,
-                    ERROR_CODES.INTERNAL_ERROR
-                );
-            }
-            await session.commitTransaction();
-        } catch (error: unknown) {
-            await session.abortTransaction();
-            throw toAppError(error, "Failed to create address");
-        } finally {
-            session.endSession();
-        }
+      user.attachAddress(savedAddress._id);
+      const updatedUser = await this.userRepository.update(user, session);
+      if (!updatedUser) {
+        throw new AppError("Failed to attach address", 500, true, ERROR_CODES.INTERNAL_ERROR);
+      }
+      await session.commitTransaction();
+    } catch (error: unknown) {
+      await session.abortTransaction();
+      throw toAppError(error, "Failed to create address");
+    } finally {
+      session.endSession();
     }
-};
+  }
+}

@@ -5,23 +5,24 @@ import { stopCronJobs } from "./cron.init";
 import { log } from "../../shared/logger/logger";
 import { IncomingMessage, Server, ServerResponse } from "http";
 
-export const setupGracefulShutdown = async (server: Server<typeof IncomingMessage, typeof ServerResponse>) => {
+export const setupGracefulShutdown = async (
+  server: Server<typeof IncomingMessage, typeof ServerResponse>,
+) => {
   const shutdown = async () => {
     log.info("Shutting down...");
 
     try {
-        stopCronJobs();
-        await stopKafka();
-        await stopDB();
-        await stopOtel();
+      stopCronJobs();
+      await stopKafka();
+      await stopDB();
+      await stopOtel();
 
       server.close(() => {
         log.info("Server closed");
         process.exit(0);
       });
-
-    } catch (err) {
-      log.error("Shutdown error", err as Error);
+    } catch (error) {
+      log.error("Shutdown error", { error });
       process.exit(1);
     }
   };

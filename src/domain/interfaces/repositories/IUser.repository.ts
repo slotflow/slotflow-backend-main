@@ -2,7 +2,6 @@ import { ClientSession } from "mongoose";
 import { User } from "../../entities/user.entity";
 
 export interface IUserRepository {
-
   create(user: User, session?: ClientSession): Promise<User | null>;
 
   findByEmail(email: string): Promise<User | null>;
@@ -14,5 +13,4 @@ export interface IUserRepository {
   findById(userId: string, session?: ClientSession): Promise<User | null>;
 
   findByReferralCode(referralCode: string): Promise<User | null>;
-
 }

@@ -5,4 +5,6 @@ import { GetCreditDetailsUseCase } from "../../application/useCases/credits/getC
 
 export const getCreditDetailsUseCase = new GetCreditDetailsUseCase(creditAccountQueries);
 
-export const getCreditTransactionsUseCase = new GetCreditTransactionsUseCase(creditTransactionRepository);
+export const getCreditTransactionsUseCase = new GetCreditTransactionsUseCase(
+  creditTransactionRepository,
+);

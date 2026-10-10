@@ -11,12 +11,18 @@ export const getUserStatsDataUseCase = new GetUserStatsDataUseCase(userQueries);
 
 export const getProviderStatsDataUseCase = new GetProviderStatsDataUseCase(userQueries);
 
-export const getSubscriptionStatsDataUseCase = new GetSubscriptionStatsDataUseCase(subscriptionQueries);
+export const getSubscriptionStatsDataUseCase = new GetSubscriptionStatsDataUseCase(
+  subscriptionQueries,
+);
 
 export const getBookingsStatsDataUseCase = new GetBookingsStatsDataUseCase(bookingQueries);
 
-export const getAdminBookingsChartDataUseCase = new GetAdminBookingsChartDataUseCase(bookingQueries);
+export const getAdminBookingsChartDataUseCase = new GetAdminBookingsChartDataUseCase(
+  bookingQueries,
+);
 
 export const getRoleBasedChartDataUseCase = new GetRoleBasedChartDataUseCase(userQueries);
 
-export const getSubscriptionsChartDataUseCase = new GetSubscriptionsChartDataUseCase(subscriptionQueries);
+export const getSubscriptionsChartDataUseCase = new GetSubscriptionsChartDataUseCase(
+  subscriptionQueries,
+);

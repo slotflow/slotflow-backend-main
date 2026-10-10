@@ -7,162 +7,168 @@ import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
 import { ServiceAvailabilityModel } from "../models/serviceAvailability.model";
 import { ServiceAvailabilityProps } from "../../domain/contracts/serviceAvailability.contract";
 import { IServiceAvailabilityQueries } from "../../application/interfaces/queries/IServiceAvailability.queries";
-import { ServiceAvailabilityQuery, ServiceAvailabilityView } from "../../application/dtos/serviceAvailability.dto";
+import {
+  ServiceAvailabilityQuery,
+  ServiceAvailabilityView,
+} from "../../application/dtos/serviceAvailability.dto";
 
 export class ServiceAvailabilityQueriesImpl implements IServiceAvailabilityQueries {
+  async findByProviderId(query: ServiceAvailabilityQuery): Promise<ServiceAvailabilityView> {
+    const { date, availabilityId, providerId, timeZone } = query;
+    const dateStr = typeof date === "string" ? date : date.toISOString().split("T")[0];
 
-    async findByProviderId(query: ServiceAvailabilityQuery): Promise<ServiceAvailabilityView> {
+    const { start: startOfDay, end: endOfDay } = getDayBoundaryMetrics(dateStr, timeZone);
 
-        const { date, availabilityId, providerId, timeZone } = query;
-        const dateStr = typeof date === 'string' ? date : date.toISOString().split('T')[0];
+    const zonedDate = toZonedTime(startOfDay, timeZone);
+    const targetDay = daysOfWeek[zonedDate.getDay()];
 
-        const { start: startOfDay, end: endOfDay } = getDayBoundaryMetrics(
-            dateStr,
-            timeZone
-        );
+    const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
 
-        const zonedDate = toZonedTime(startOfDay, timeZone);
-        const targetDay = daysOfWeek[zonedDate.getDay()];
+    const matchFilter: FilterQuery<ServiceAvailabilityProps> = {};
+    if (availabilityId) matchFilter._id = new Types.ObjectId(availabilityId);
+    if (providerId) matchFilter.providerId = new Types.ObjectId(providerId);
 
-        const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
-
-        const matchFilter: FilterQuery<ServiceAvailabilityProps> = {};
-        if (availabilityId) matchFilter._id = new Types.ObjectId(availabilityId);
-        if (providerId) matchFilter.providerId = new Types.ObjectId(providerId);
-
-        const availability = await ServiceAvailabilityModel.aggregate([
+    const availability = await ServiceAvailabilityModel.aggregate([
+      {
+        $match: matchFilter,
+      },
+      {
+        $addFields: {
+          availabilityForDay: {
+            $arrayElemAt: [
+              {
+                $filter: {
+                  input: "$availabilities",
+                  as: "availability",
+                  cond: { $eq: ["$$availability.day", targetDay] },
+                },
+              },
+              0,
+            ],
+          },
+        },
+      },
+      {
+        $addFields: {
+          availabilityForDay: {
+            $ifNull: [
+              "$availabilityForDay",
+              {
+                day: targetDay,
+                isAvailable: false,
+                startTime: null,
+                endTime: null,
+                duration: null,
+                modes: [],
+                slots: [],
+              },
+            ],
+          },
+        },
+      },
+      {
+        $addFields: {
+          "availabilityForDay.isAvailable": {
+            $ifNull: ["$availabilityForDay.isAvailable", false],
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "bookings",
+          let: { providerId: "$providerId", startOfDay: startOfDay, endOfDay: endOfDay },
+          pipeline: [
             {
-                $match: matchFilter
-            },
-            {
-                $addFields: {
-                    availabilityForDay: {
-                        $arrayElemAt: [
-                            {
-                                $filter: {
-                                    input: "$availabilities",
-                                    as: "availability",
-                                    cond: { $eq: ["$$availability.day", targetDay] }
-                                }
-                            },
-                            0
-                        ]
-                    }
-                }
-            },
-            {
-                $addFields: {
-                    availabilityForDay: {
-                        $ifNull: [
-                            "$availabilityForDay",
-                            {
-                                day: targetDay,
-                                isAvailable: false,
-                                startTime: null,
-                                endTime: null,
-                                duration: null,
-                                modes: [],
-                                slots: []
-                            }
-                        ]
-                    }
-                }
-            },
-            {
-                $addFields: {
-                    "availabilityForDay.isAvailable": {
-                        $ifNull: ["$availabilityForDay.isAvailable", false]
-                    }
-                }
-            },
-            {
-                $lookup: {
-                    from: "bookings",
-                    let: { providerId: "$providerId", startOfDay: startOfDay, endOfDay: endOfDay },
-                    pipeline: [
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$serviceProviderId", "$$providerId"] },
+                    { $gte: ["$appointmentDate", "$$startOfDay"] },
+                    { $lte: ["$appointmentDate", "$$endOfDay"] },
+                    {
+                      $or: [
                         {
-                            $match: {
-                                $expr: {
-                                    $and: [
-                                        { $eq: ["$serviceProviderId", "$$providerId"] },
-                                        { $gte: ["$appointmentDate", "$$startOfDay"] },
-                                        { $lte: ["$appointmentDate", "$$endOfDay"] },
-                                        {
-                                            $or: [
-                                                { $in: ["$appointmentStatus", [AppointmentStatus.BOOKED, AppointmentStatus.CONFIRMED, AppointmentStatus.COMPLETED]] },
-                                                {
-                                                    $and: [
-                                                        { $eq: ["$appointmentStatus", AppointmentStatus.PENDING] },
-                                                        { $gte: ["$createdAt", fifteenMinutesAgo] }
-                                                    ]
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            }
+                          $in: [
+                            "$appointmentStatus",
+                            [
+                              AppointmentStatus.BOOKED,
+                              AppointmentStatus.CONFIRMED,
+                              AppointmentStatus.COMPLETED,
+                            ],
+                          ],
                         },
                         {
-                            $project: {
-                                appointmentDate: 1,
-                                slotId: 1
-                            }
-                        }
-                    ],
-                    as: "providerBookings"
-                }
+                          $and: [
+                            { $eq: ["$appointmentStatus", AppointmentStatus.PENDING] },
+                            { $gte: ["$createdAt", fifteenMinutesAgo] },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              },
             },
             {
-                $addFields: {
-                    bookedSlots: {
-                        $map: {
-                            input: "$providerBookings",
-                            as: "booking",
-                            in: "$$booking.slotId"
-                        }
-                    }
-                }
+              $project: {
+                appointmentDate: 1,
+                slotId: 1,
+              },
             },
-            {
-                $addFields: {
-                    "availabilityForDay.slots": {
-                        $map: {
-                            input: "$availabilityForDay.slots",
-                            as: "slot",
-                            in: {
-                                $mergeObjects: [
-                                    "$$slot",
-                                    {
-                                        available: {
-                                            $not: { $in: ["$$slot._id", "$bookedSlots"] },
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                }
+          ],
+          as: "providerBookings",
+        },
+      },
+      {
+        $addFields: {
+          bookedSlots: {
+            $map: {
+              input: "$providerBookings",
+              as: "booking",
+              in: "$$booking.slotId",
             },
-            {
-                $replaceWith: "$availabilityForDay"
+          },
+        },
+      },
+      {
+        $addFields: {
+          "availabilityForDay.slots": {
+            $map: {
+              input: "$availabilityForDay.slots",
+              as: "slot",
+              in: {
+                $mergeObjects: [
+                  "$$slot",
+                  {
+                    available: {
+                      $not: { $in: ["$$slot._id", "$bookedSlots"] },
+                    },
+                  },
+                ],
+              },
             },
-        ]);
-        const data = availability[0];
-        if (!data) return null;
+          },
+        },
+      },
+      {
+        $replaceWith: "$availabilityForDay",
+      },
+    ]);
+    const data = availability[0];
+    if (!data) return null;
 
-        return {
-            day: data.day,
-            isAvailable: data.isAvailable,
-            duration: data.duration,
-            endTime: data.endTime,
-            modes: data.modes,
-            startTime: data.startTime,
-            slots: (data.slots || []).map((slot: TimeSlotForClientOutput) => ({
-                _id: slot._id.toString(),
-                time: slot.time,
-                available: slot.available
-            }))
-        }
+    return {
+      day: data.day,
+      isAvailable: data.isAvailable,
+      duration: data.duration,
+      endTime: data.endTime,
+      modes: data.modes,
+      startTime: data.startTime,
+      slots: (data.slots || []).map((slot: TimeSlotForClientOutput) => ({
+        _id: slot._id.toString(),
+        time: slot.time,
+        available: slot.available,
+      })),
     };
-
-};
+  }
+}

@@ -10,119 +10,96 @@ import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.r
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
 
 export class CancelBookingUseCase {
-    constructor(
-        private readonly userRepository: IUserRepository,
-        private readonly bookingRepository: IBookingRepository,
-        private readonly paymentServiceClient: IPaymentServiceClient
-    ) { };
+  constructor(
+    private readonly userRepository: IUserRepository,
+    private readonly bookingRepository: IBookingRepository,
+    private readonly paymentServiceClient: IPaymentServiceClient,
+  ) {}
 
-    async execute(input: UserCancelBookingInput): Promise<UserCancelBookingOutput> {
-        const session = await mongoose.startSession();
-        session.startTransaction();
-        try {
-            const { userId, bookingId, reason } = input;
-            if (!userId || !bookingId) {
-                throw new BadRequestError();
-            }
+  async execute(input: UserCancelBookingInput): Promise<UserCancelBookingOutput> {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+      const { userId, bookingId, reason } = input;
+      if (!userId || !bookingId) {
+        throw new BadRequestError();
+      }
 
-            const user = await this.userRepository.findById(userId);
-            if (!user) {
-                throw new NotFoundError(
-                    "User not found",
-                    ERROR_CODES.USER_NOT_FOUND
-                );
-            }
+      const user = await this.userRepository.findById(userId);
+      if (!user) {
+        throw new NotFoundError("User not found", ERROR_CODES.USER_NOT_FOUND);
+      }
 
-            const booking = await this.bookingRepository.findById(bookingId);
-            if (!booking) {
-                throw new NotFoundError(
-                    "Booking not found",
-                    ERROR_CODES.BOOKING_NOT_FOUND
-                );
-            }
+      const booking = await this.bookingRepository.findById(bookingId);
+      if (!booking) {
+        throw new NotFoundError("Booking not found", ERROR_CODES.BOOKING_NOT_FOUND);
+      }
 
-            if (booking.userId !== userId) {
-                throw new BadRequestError(
-                    "You are not authorized to cancel this booking",
-                    ERROR_CODES.UNAUTHORIZED
-                );
-            }
+      if (booking.userId !== userId) {
+        throw new BadRequestError(
+          "You are not authorized to cancel this booking",
+          ERROR_CODES.UNAUTHORIZED,
+        );
+      }
 
-            if (booking.appointmentStatus === AppointmentStatus.CANCELLED) {
-                throw new BadRequestError(
-                    "Booking already cancelled",
-                    ERROR_CODES.INVALID_REQUEST
-                );
-            }
+      if (booking.appointmentStatus === AppointmentStatus.CANCELLED) {
+        throw new BadRequestError("Booking already cancelled", ERROR_CODES.INVALID_REQUEST);
+      }
 
-            if (booking.appointmentStatus === AppointmentStatus.CONFIRMED) {
-                throw new BadRequestError(
-                    "Confirmed appointments cant cancel",
-                    ERROR_CODES.INVALID_REQUEST
-                );
-            }
+      if (booking.appointmentStatus === AppointmentStatus.CONFIRMED) {
+        throw new BadRequestError(
+          "Confirmed appointments cant cancel",
+          ERROR_CODES.INVALID_REQUEST,
+        );
+      }
 
-            if (booking.appointmentStatus === AppointmentStatus.COMPLETED) {
-                throw new BadRequestError(
-                    "Confirmed appointments cant cancel",
-                    ERROR_CODES.INVALID_REQUEST
-                );
-            }
+      if (booking.appointmentStatus === AppointmentStatus.COMPLETED) {
+        throw new BadRequestError(
+          "Confirmed appointments cant cancel",
+          ERROR_CODES.INVALID_REQUEST,
+        );
+      }
 
-            if (booking.appointmentStatus === AppointmentStatus.REJECTED_BY_PROVIDER) {
-                throw new BadRequestError(
-                    "Appointment was rejected by provider",
-                    ERROR_CODES.INVALID_REQUEST
-                );
-            }
+      if (booking.appointmentStatus === AppointmentStatus.REJECTED_BY_PROVIDER) {
+        throw new BadRequestError(
+          "Appointment was rejected by provider",
+          ERROR_CODES.INVALID_REQUEST,
+        );
+      }
 
-            if (!booking.paymentId) {
-                throw new BadRequestError(
-                    "No payment id found",
-                    ERROR_CODES.INVALID_REQUEST
-                );
-            }
+      if (!booking.paymentId) {
+        throw new BadRequestError("No payment id found", ERROR_CODES.INVALID_REQUEST);
+      }
 
-            const refundResult = await this.paymentServiceClient.processRefund({
-                paymentId: booking.paymentId,
-                bookingId,
-                reasonInDetail: reason ?? "Booking cancelled by user",
-                refundFor: RefundFor.CANCEL_BOOKING,
-                refundReason: RefundReason.REQUESTED_BY_CUSTOMER
-            });
+      const refundResult = await this.paymentServiceClient.processRefund({
+        paymentId: booking.paymentId,
+        bookingId,
+        reasonInDetail: reason ?? "Booking cancelled by user",
+        refundFor: RefundFor.CANCEL_BOOKING,
+        refundReason: RefundReason.REQUESTED_BY_CUSTOMER,
+      });
 
-            if (!refundResult.success) {
-                throw new AppError(
-                    "Failed to process refund",
-                    500,
-                    true,
-                    ERROR_CODES.INTERNAL_ERROR
-                );
-            }
+      if (!refundResult.success) {
+        throw new AppError("Failed to process refund", 500, true, ERROR_CODES.INTERNAL_ERROR);
+      }
 
-            booking.cancelAppointment();
-            const updatedBooking = await this.bookingRepository.update(booking);
-            if (!updatedBooking) {
-                throw new AppError(
-                    "Failed to update booking.",
-                    500,
-                    true,
-                    ERROR_CODES.INTERNAL_ERROR
-                );
-            }
+      booking.cancelAppointment();
+      const updatedBooking = await this.bookingRepository.update(booking);
+      if (!updatedBooking) {
+        throw new AppError("Failed to update booking.", 500, true, ERROR_CODES.INTERNAL_ERROR);
+      }
 
-            await session.commitTransaction();
+      await session.commitTransaction();
 
-            return {
-                _id: updatedBooking._id,
-                appointmentStatus: updatedBooking.appointmentStatus
-            }
-
-        } catch (error) {
-            await session.abortTransaction();
-            throw toAppError(error, "Failed to cancel booking");
-        } finally {
-            session.endSession();
-        };
-    };
-};
+      return {
+        _id: updatedBooking._id,
+        appointmentStatus: updatedBooking.appointmentStatus,
+      };
+    } catch (error) {
+      await session.abortTransaction();
+      throw toAppError(error, "Failed to cancel booking");
+    } finally {
+      session.endSession();
+    }
+  }
+}

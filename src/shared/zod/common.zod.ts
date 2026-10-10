@@ -16,6 +16,6 @@ export const changeBlockStatusSchema = z.object({
 
 // start and end date validation schema
 export const startAndEndDateSchema = z.object({
-    startDate: dateOnlySchema,
-    endDate: dateOnlySchema,
+  startDate: dateOnlySchema,
+  endDate: dateOnlySchema,
 });

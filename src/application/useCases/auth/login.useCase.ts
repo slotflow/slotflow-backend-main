@@ -13,108 +13,92 @@ import { IAuthResponseBuilder } from "../../interfaces/services/IAuthResponseBui
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 
 export class LoginUseCase {
-    constructor(
-        private readonly userRepository: IUserRepository,
-        private readonly providerProfileRepository: IProviderProfileRepository,
-        private readonly signedUrlService: ISignedUrlService,
-        private readonly jwtService: IJWT,
-        private readonly passwordHasher: IPasswordHasher,
-        private readonly authResponseBuilder: IAuthResponseBuilder
-    ) { };
+  constructor(
+    private readonly userRepository: IUserRepository,
+    private readonly providerProfileRepository: IProviderProfileRepository,
+    private readonly signedUrlService: ISignedUrlService,
+    private readonly jwtService: IJWT,
+    private readonly passwordHasher: IPasswordHasher,
+    private readonly authResponseBuilder: IAuthResponseBuilder,
+  ) {}
 
-    async execute(input: LoginInput): Promise<LoginOutput> {
-        try {
-            const { email, password } = input;
-            if(!email || !password) {
-                throw new BadRequestError()
-            }
-            
-            const user = await this.userRepository.findByEmail(email);
-            if (!user) {
-                throw new BadRequestError(
-                    "Invalid credentials", 
-                    ERROR_CODES.INVALID_CREDENTIALS
-                );
-            }
+  async execute(input: LoginInput): Promise<LoginOutput> {
+    try {
+      const { email, password } = input;
+      if (!email || !password) {
+        throw new BadRequestError();
+      }
 
-            if (user.isBlocked) {
-                throw new UnauthorizedError(
-                    "Your account is blocked, please contact us",
-                    ERROR_CODES.ACCOUNT_BLOCKED
-                );
-            }
+      const user = await this.userRepository.findByEmail(email);
+      if (!user) {
+        throw new BadRequestError("Invalid credentials", ERROR_CODES.INVALID_CREDENTIALS);
+      }
 
-            if (!user.password) {
-                throw new BadRequestError(
-                    "Invalid request",
-                    ERROR_CODES.INVALID_REQUEST
-                );
-            }
-                        
-            const valid = await this.passwordHasher.comparePassword(
-                password,
-                user.password
-            );
-            if (!valid) {
-                throw new BadRequestError(
-                    "Invalid credentials",
-                    ERROR_CODES.INVALID_CREDENTIALS
-                );
-            }
+      if (user.isBlocked) {
+        throw new UnauthorizedError(
+          "Your account is blocked, please contact us",
+          ERROR_CODES.ACCOUNT_BLOCKED,
+        );
+      }
 
-            const token = await this.jwtService.generateToken({
-                email: email,
-                role: user.role,
-                userId: user._id,
-                name: user.username ?? user.email.split("@")[0],
-                timeZone: user.timeZone
-            });
+      if (!user.password) {
+        throw new BadRequestError("Invalid request", ERROR_CODES.INVALID_REQUEST);
+      }
 
-            let signedProfileImageUrl: string | null = null;
-            if (user.profileImage) {
-                signedProfileImageUrl = await this.signedUrlService.save(user.profileImage);
-            }
+      const valid = await this.passwordHasher.comparePassword(password, user.password);
+      if (!valid) {
+        throw new BadRequestError("Invalid credentials", ERROR_CODES.INVALID_CREDENTIALS);
+      }
 
-            let providerProfile: ProviderProfile | null = null;
-            let providerSubscription: PlanName = PlanName.NO_SUBSCRIPTION;
-            const isProviderFlow = user.onboardingType === Role.PROVIDER;
+      const token = await this.jwtService.generateToken({
+        email: email,
+        role: user.role,
+        userId: user._id,
+        name: user.username ?? user.email.split("@")[0],
+        timeZone: user.timeZone,
+      });
 
-            if (isProviderFlow) {
-                providerProfile = await this.providerProfileRepository.findByUserId(user._id);
-                if (providerProfile) {
-                    providerSubscription = await this.authResponseBuilder.resolveSubscription(
-                        providerProfile
-                    );
-                }
-            }
+      let signedProfileImageUrl: string | null = null;
+      if (user.profileImage) {
+        signedProfileImageUrl = await this.signedUrlService.save(user.profileImage);
+      }
 
-            const baseUser = this.authResponseBuilder.buildBaseUser(user);
+      let providerProfile: ProviderProfile | null = null;
+      let providerSubscription: PlanName = PlanName.NO_SUBSCRIPTION;
+      const isProviderFlow = user.onboardingType === Role.PROVIDER;
 
-            if (isProviderFlow) {
-                return {
-                    token,
-                    user: {
-                        ...baseUser,
-                        ...this.authResponseBuilder.buildProviderFields(
-                            providerProfile,
-                            providerSubscription,
-                        ),
-                        profileImage: signedProfileImageUrl
-                    },
-                };
-            } else if(user.role === Role.USER || user.role === Role.ADMIN) {
-                return {
-                    token,
-                    user: {
-                        ...baseUser,
-                        profileImage: signedProfileImageUrl
-                    },
-                };
-            }
+      if (isProviderFlow) {
+        providerProfile = await this.providerProfileRepository.findByUserId(user._id);
+        if (providerProfile) {
+          providerSubscription =
+            await this.authResponseBuilder.resolveSubscription(providerProfile);
+        }
+      }
 
-            throw new BadRequestError();
-        } catch (error: unknown) {
-            throw toAppError(error, "Login failed")
+      const baseUser = this.authResponseBuilder.buildBaseUser(user);
+
+      if (isProviderFlow) {
+        return {
+          token,
+          user: {
+            ...baseUser,
+            ...this.authResponseBuilder.buildProviderFields(providerProfile, providerSubscription),
+            profileImage: signedProfileImageUrl,
+          },
         };
-    };
-};
+      } else if (user.role === Role.USER || user.role === Role.ADMIN) {
+        return {
+          token,
+          user: {
+            ...baseUser,
+            profileImage: signedProfileImageUrl,
+          },
+        };
+      }
+
+      throw new BadRequestError();
+    } catch (error: unknown) {
+      throw toAppError(error, "Login failed");
+    }
+  }
+}

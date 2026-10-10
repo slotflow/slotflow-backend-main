@@ -47,32 +47,18 @@ export function getDateRangeMetrics(data: DateRangeProps): DateRangeResult {
     throw new Error("startDate cannot be after endDate.");
   }
 
-  const start = fromZonedTime(
-    `${startDateString}T00:00:00.000`,
-    timeZone
-  );
+  const start = fromZonedTime(`${startDateString}T00:00:00.000`, timeZone);
 
-  const end = fromZonedTime(
-    `${endDateString}T23:59:59.999`,
-    timeZone
-  );
+  const end = fromZonedTime(`${endDateString}T23:59:59.999`, timeZone);
 
   const durationInMs = end.getTime() - start.getTime() + 1;
   const days =
-    (parseDate(endDateString).getTime() - parseDate(startDateString).getTime()) /
-      86_400_000 +
-    1;
+    (parseDate(endDateString).getTime() - parseDate(startDateString).getTime()) / 86_400_000 + 1;
 
   const prevStartDateString = shiftDateOnly(startDateString, -days);
   const prevEndDateString = shiftDateOnly(startDateString, -1);
-  const prevStart = fromZonedTime(
-    `${prevStartDateString}T00:00:00.000`,
-    timeZone
-  );
-  const prevEnd = fromZonedTime(
-    `${prevEndDateString}T23:59:59.999`,
-    timeZone
-  );
+  const prevStart = fromZonedTime(`${prevStartDateString}T00:00:00.000`, timeZone);
+  const prevEnd = fromZonedTime(`${prevEndDateString}T23:59:59.999`, timeZone);
 
   return {
     start,
@@ -84,10 +70,7 @@ export function getDateRangeMetrics(data: DateRangeProps): DateRangeResult {
   };
 }
 
-export function getDayBoundaryMetrics(
-  dateStr: string,
-  timeZone?: string
-): DateRangeResult {
+export function getDayBoundaryMetrics(dateStr: string, timeZone?: string): DateRangeResult {
   return getDateRangeMetrics({
     startDate: dateStr,
     endDate: dateStr,

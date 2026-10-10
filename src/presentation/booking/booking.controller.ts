@@ -12,193 +12,214 @@ import { GetBookingDetailsUsecase } from "../../application/useCases/booking/get
 import { ValidateJoinRoomUsecase } from "../../application/useCases/booking/validateJoinRoom.useCase";
 import { ChangeBookingStatusUseCase } from "../../application/useCases/booking/changeBookingStatus.useCase";
 import { UpdateBookingOnlineTrakingUseCase } from "../../application/useCases/booking/updateBookingOnlineTracking.useCase";
-import { bookingCheckoutViaStripeSchema, cancelBookingSchema, changeBookingStatusSchema, getBookingsSchema, validateBookingIdSchema, validateJoinRoomSchema, validateRoomIdSchema } from "../../shared/zod/booking.zod";
-import { checkBookingUseCase, getBookingDetailsUsecase, getBookingsUseCase, bookingCheckoutUseCase, validateJoinRoomUsecase, cancelBookingUseCase, updateBookingOnlineTrakingUseCase, changeBookingStatusUseCase } from ".";
+import {
+  bookingCheckoutViaStripeSchema,
+  cancelBookingSchema,
+  changeBookingStatusSchema,
+  getBookingsSchema,
+  validateBookingIdSchema,
+  validateJoinRoomSchema,
+  validateRoomIdSchema,
+} from "../../shared/zod/booking.zod";
+import {
+  checkBookingUseCase,
+  getBookingDetailsUsecase,
+  getBookingsUseCase,
+  bookingCheckoutUseCase,
+  validateJoinRoomUsecase,
+  cancelBookingUseCase,
+  updateBookingOnlineTrakingUseCase,
+  changeBookingStatusUseCase,
+} from ".";
 
 class BookingController {
-    constructor(
-        private readonly getBookingsUseCase: GetBookingsUseCase,
-        private readonly validateJoinRoomUsecase: ValidateJoinRoomUsecase,
-        private readonly getBookingDetailsUsecase: GetBookingDetailsUsecase,
-        private readonly checkBookingUseCase: CheckBookingUseCase,
-        private readonly bookingCheckoutUseCase: BookingCheckoutUseCase,
-        private readonly cancelBookingUseCase: CancelBookingUseCase,
-        private readonly updateBookingOnlineTrakingUseCase: UpdateBookingOnlineTrakingUseCase,
-        private readonly changeBookingStatusUseCase: ChangeBookingStatusUseCase
-    ) {
-        this.getBookings = this.getBookings.bind(this);
-        this.validateRoomId = this.validateRoomId.bind(this);
-        this.getBookingDetails = this.getBookingDetails.bind(this);
-        this.checkBooking = this.checkBooking.bind(this);
-        this.bookingCheckout = this.bookingCheckout.bind(this);
-        this.cancelBooking = this.cancelBooking.bind(this);
-        this.joinOrLeftRoom = this.joinOrLeftRoom.bind(this);
-        this.updateBookingAppointmentStatus = this.updateBookingAppointmentStatus.bind(this);
+  constructor(
+    private readonly getBookingsUseCase: GetBookingsUseCase,
+    private readonly validateJoinRoomUsecase: ValidateJoinRoomUsecase,
+    private readonly getBookingDetailsUsecase: GetBookingDetailsUsecase,
+    private readonly checkBookingUseCase: CheckBookingUseCase,
+    private readonly bookingCheckoutUseCase: BookingCheckoutUseCase,
+    private readonly cancelBookingUseCase: CancelBookingUseCase,
+    private readonly updateBookingOnlineTrakingUseCase: UpdateBookingOnlineTrakingUseCase,
+    private readonly changeBookingStatusUseCase: ChangeBookingStatusUseCase,
+  ) {
+    this.getBookings = this.getBookings.bind(this);
+    this.validateRoomId = this.validateRoomId.bind(this);
+    this.getBookingDetails = this.getBookingDetails.bind(this);
+    this.checkBooking = this.checkBooking.bind(this);
+    this.bookingCheckout = this.bookingCheckout.bind(this);
+    this.cancelBooking = this.cancelBooking.bind(this);
+    this.joinOrLeftRoom = this.joinOrLeftRoom.bind(this);
+    this.updateBookingAppointmentStatus = this.updateBookingAppointmentStatus.bind(this);
+  }
+
+  async getBookings(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = req.user as AuthUser;
+      if (!user) throw new BadRequestError("User not found", ERROR_CODES.USER_NOT_FOUND);
+
+      const filter: {
+        providerId?: string;
+        userId?: string;
+      } = {};
+
+      if (user.role === Role.USER) {
+        filter.userId = user.id;
+      }
+
+      if (user.role === Role.PROVIDER) {
+        filter.providerId = user.id;
+      }
+
+      const { limit, page, online } = getBookingsSchema.parse({
+        ...filter,
+        ...req.query,
+      });
+
+      const result = await this.getBookingsUseCase.execute({
+        serviceProviderId: filter.providerId,
+        userId: filter.userId,
+        page,
+        limit,
+        online: online ? true : false,
+        role: user.role,
+      });
+      sendResponse(res, result);
+    } catch (error) {
+      next(error);
     }
+  }
 
-    async getBookings(req: Request, res: Response, next: NextFunction) {
-        try {
-            const user = req.user as AuthUser
-            if(!user) throw new BadRequestError("User not found", ERROR_CODES.USER_NOT_FOUND);
-
-            const filter: {
-                providerId?: string,
-                userId?: string,
-            } = {};
-
-            if (user.role === Role.USER) {
-                filter.userId = user.id;
-            }
-
-            if (user.role === Role.PROVIDER) {
-                filter.providerId = user.id;
-            }
-
-            const { limit, page, online } = getBookingsSchema.parse({
-                ...filter,
-                ...req.query
-            });
-            
-            const result = await this.getBookingsUseCase.execute({
-                serviceProviderId: filter.providerId,
-                userId: filter.userId,
-                page,
-                limit,
-                online: online ? true : false,
-                role: user.role
-            });
-            sendResponse(res, result);
-        } catch (error) {
-            next(error);
-        };
-    };
-
-    async validateRoomId(req: Request, res: Response, next: NextFunction) {
-        try {
-            const user = req.user as AuthUser;
-            if(!user) throw new BadRequestError("User not found", ERROR_CODES.USER_NOT_FOUND);
-            const { bookingId, roomId } = validateRoomIdSchema.parse({
-                ...req.params,
-                ...req.query
-            });
-            const result = await this.validateJoinRoomUsecase.execute({
-                bookingId,
-                roomId,
-                role: user.role,
-                userId: user.id
-            });
-            sendResponse(res, result);
-        } catch (error) {
-            next(error);
-        };
-    };
-
-    async getBookingDetails(req: Request, res: Response, next: NextFunction) {
-        try {
-            const { bookingId } = validateBookingIdSchema.parse({ bookingId: req.params.bookingId });
-            const result = await this.getBookingDetailsUsecase.execute({
-                bookingId,
-            });
-            sendResponse(res, result);
-        } catch (error) {
-            next(error);
-        };
-    };
-
-    async checkBooking(req: Request, res: Response, next: NextFunction) {
-        try {
-            const user = req.user as AuthUser;
-            const result = await this.checkBookingUseCase.execute({
-                userId: user.id,
-            });
-            sendResponse(res, result);
-        } catch (error) {
-            next(error);
-        }
+  async validateRoomId(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = req.user as AuthUser;
+      if (!user) throw new BadRequestError("User not found", ERROR_CODES.USER_NOT_FOUND);
+      const { bookingId, roomId } = validateRoomIdSchema.parse({
+        ...req.params,
+        ...req.query,
+      });
+      const result = await this.validateJoinRoomUsecase.execute({
+        bookingId,
+        roomId,
+        role: user.role,
+        userId: user.id,
+      });
+      sendResponse(res, result);
+    } catch (error) {
+      next(error);
     }
+  }
 
-    async bookingCheckout(req: Request, res: Response, next: NextFunction) {
-        try {
-            const user = req.user as AuthUser;
-            const validatedDate = bookingCheckoutViaStripeSchema.parse({
-                ...req.body
-            });
-            const result = await this.bookingCheckoutUseCase.execute({
-                userId: user.id,
-                providerId: validatedDate.providerId,
-                slotId: validatedDate.slotId,
-                selectedServiceMode: validatedDate.selectedServiceMode,
-                date: validatedDate.date,
-                email: user.email,
-                name: user.name,
-                role: user.role,
-                timeZone: user.timeZone
-            });
-            sendResponse(res, result);
-        } catch (error) {
-            next(error);
-        };
-    };
+  async getBookingDetails(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { bookingId } = validateBookingIdSchema.parse({ bookingId: req.params.bookingId });
+      const result = await this.getBookingDetailsUsecase.execute({
+        bookingId,
+      });
+      sendResponse(res, result);
+    } catch (error) {
+      next(error);
+    }
+  }
 
-    async cancelBooking(req: Request, res: Response, next: NextFunction) {
-        try {
-            const user = req.user as AuthUser;
-            const { bookingId, reason } = cancelBookingSchema.parse({
-                bookingId: req.params.bookingId
-            });
-            const result = await this.cancelBookingUseCase.execute({
-                userId: user.id,
-                bookingId,
-                reason
-            });
-            sendResponse(res, result, "Booking cancelled successfully.");
-        } catch (error) {
-            next(error);
-        };
-    };
+  async checkBooking(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = req.user as AuthUser;
+      const result = await this.checkBookingUseCase.execute({
+        userId: user.id,
+      });
+      sendResponse(res, result);
+    } catch (error) {
+      next(error);
+    }
+  }
 
-    async joinOrLeftRoom(req: Request, res: Response, next: NextFunction) {
-        try {
-            const user = req.user as AuthUser;
-            const { joined, roomId, joinedTime, leftCallTime } = validateJoinRoomSchema.parse({
-                roomId: req.params.roomId,
-                ...req.body,
-            });
-            const result = await this.updateBookingOnlineTrakingUseCase.execute({
-                roomId,
-                joined,
-                joinedTime: joinedTime ? new Date(joinedTime) : null,
-                leftCallTime: leftCallTime ? new Date(leftCallTime) : null,
-                role: user.role
-            });
-            sendResponse(res, result);
-        } catch (error) {
-            next(error);
-        };
-    };
+  async bookingCheckout(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = req.user as AuthUser;
+      const validatedDate = bookingCheckoutViaStripeSchema.parse({
+        ...req.body,
+      });
+      const result = await this.bookingCheckoutUseCase.execute({
+        userId: user.id,
+        providerId: validatedDate.providerId,
+        slotId: validatedDate.slotId,
+        selectedServiceMode: validatedDate.selectedServiceMode,
+        date: validatedDate.date,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        timeZone: user.timeZone,
+      });
+      sendResponse(res, result);
+    } catch (error) {
+      next(error);
+    }
+  }
 
-    async updateBookingAppointmentStatus(req: Request, res: Response, next: NextFunction) {
-        try {
-            const user = req.user as AuthUser;
-            const { appointmentStatus, bookingId } = changeBookingStatusSchema.parse({
-                ...req.params,
-                ...req.body,
-            });
-            const result = await this.changeBookingStatusUseCase.execute({ bookingId, appointmentStatus, providerId: user.id });
-            sendResponse(res, result, "Booking status updated successfully");
-        } catch (error) {
-            next(error);
-        };
-    };
+  async cancelBooking(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = req.user as AuthUser;
+      const { bookingId, reason } = cancelBookingSchema.parse({
+        bookingId: req.params.bookingId,
+      });
+      const result = await this.cancelBookingUseCase.execute({
+        userId: user.id,
+        bookingId,
+        reason,
+      });
+      sendResponse(res, result, "Booking cancelled successfully.");
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async joinOrLeftRoom(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = req.user as AuthUser;
+      const { joined, roomId, joinedTime, leftCallTime } = validateJoinRoomSchema.parse({
+        roomId: req.params.roomId,
+        ...req.body,
+      });
+      const result = await this.updateBookingOnlineTrakingUseCase.execute({
+        roomId,
+        joined,
+        joinedTime: joinedTime ? new Date(joinedTime) : null,
+        leftCallTime: leftCallTime ? new Date(leftCallTime) : null,
+        role: user.role,
+      });
+      sendResponse(res, result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async updateBookingAppointmentStatus(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = req.user as AuthUser;
+      const { appointmentStatus, bookingId } = changeBookingStatusSchema.parse({
+        ...req.params,
+        ...req.body,
+      });
+      const result = await this.changeBookingStatusUseCase.execute({
+        bookingId,
+        appointmentStatus,
+        providerId: user.id,
+      });
+      sendResponse(res, result, "Booking status updated successfully");
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const bookingController = new BookingController(
-    getBookingsUseCase,
-    validateJoinRoomUsecase,
-    getBookingDetailsUsecase,
-    checkBookingUseCase,
-    bookingCheckoutUseCase,
-    cancelBookingUseCase,
-    updateBookingOnlineTrakingUseCase,
-    changeBookingStatusUseCase
-)
+  getBookingsUseCase,
+  validateJoinRoomUsecase,
+  getBookingDetailsUsecase,
+  checkBookingUseCase,
+  bookingCheckoutUseCase,
+  cancelBookingUseCase,
+  updateBookingOnlineTrakingUseCase,
+  changeBookingStatusUseCase,
+);

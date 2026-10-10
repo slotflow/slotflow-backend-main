@@ -3,15 +3,20 @@ import { IUserQueries } from "../../interfaces/queries/IUser.queries";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { BadRequestError, NotFoundError } from "../../../shared/error/appError";
 import { ISignedUrlService } from "../../interfaces/services/ISignedUrl.service";
-import { UserGetServiceProviderDetailsInput, UserGetServiceProviderDetailsOutput } from "../../dtos/user.dto";
+import {
+  UserGetServiceProviderDetailsInput,
+  UserGetServiceProviderDetailsOutput,
+} from "../../dtos/user.dto";
 
 export class UserGetProviderDetailsUseCase {
   constructor(
     private userQueries: IUserQueries,
-    private signedUrlService: ISignedUrlService
-  ) { };
+    private signedUrlService: ISignedUrlService,
+  ) {}
 
-  async execute(input: UserGetServiceProviderDetailsInput): Promise<UserGetServiceProviderDetailsOutput> {
+  async execute(
+    input: UserGetServiceProviderDetailsInput,
+  ): Promise<UserGetServiceProviderDetailsOutput> {
     try {
       const { providerId } = input;
       if (!providerId) {
@@ -20,16 +25,13 @@ export class UserGetProviderDetailsUseCase {
 
       const provider = await this.userQueries.findProviderById({ providerId });
       if (!provider) {
-        throw new NotFoundError(
-          "Provider not found",
-          ERROR_CODES.USER_NOT_FOUND
-        );
+        throw new NotFoundError("Provider not found", ERROR_CODES.USER_NOT_FOUND);
       }
 
       let signedProfileImageUrl: string | null = null;
       if (provider.profileImage) {
         signedProfileImageUrl = await this.signedUrlService.get(provider.profileImage);
-      };
+      }
 
       return {
         username: provider.username,
@@ -40,6 +42,6 @@ export class UserGetProviderDetailsUseCase {
       };
     } catch (error: unknown) {
       throw toAppError(error, "Failed to get provider details");
-    };
-  };
-};
+    }
+  }
+}

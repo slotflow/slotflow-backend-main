@@ -4,22 +4,20 @@ import { ISubscriptionQueries } from "../../interfaces/queries/ISubscription.que
 import { GetSubscriptionsInput, GetSubscriptionsOutput } from "../../dtos/subscription.dto";
 
 export class GetSubscriptionsUseCase {
-    constructor(
-        private subscirptionQueries: ISubscriptionQueries
-    ) { };
+  constructor(private subscirptionQueries: ISubscriptionQueries) {}
 
-    async execute(input: GetSubscriptionsInput): Promise<TableData<GetSubscriptionsOutput>> {
-        try {
-            const result = await this.subscirptionQueries.findAll(input);
-            const { items: subscriptions, currentPage, totalCount, totalPages } = result;
-            return {
-                items: subscriptions,
-                totalPages,
-                currentPage,
-                totalCount,
-            };
-        } catch (error: unknown) {
-            throw toAppError(error, "Failed to get subscriptions");
-        };
-    };
-};
+  async execute(input: GetSubscriptionsInput): Promise<TableData<GetSubscriptionsOutput>> {
+    try {
+      const result = await this.subscirptionQueries.findAll(input);
+      const { items: subscriptions, currentPage, totalCount, totalPages } = result;
+      return {
+        items: subscriptions,
+        totalPages,
+        currentPage,
+        totalCount,
+      };
+    } catch (error: unknown) {
+      throw toAppError(error, "Failed to get subscriptions");
+    }
+  }
+}

@@ -10,57 +10,66 @@ export interface IServiceAvailability extends Document {
   availabilities: Availability[];
   createdAt: Date;
   updatedAt: Date;
-};
+}
 
-const slotSchema = new Schema({
-  time: { type: String, required: true }
-}, { _id: true });
-
-const availabilitySchema = new Schema({
-  day: { type: String, required: true },
-  isAvailable: { type: Boolean, required: true },
-  duration: {
-    type: Number,
-    required: function () {
-      return this.isAvailable;
-    }
-  },
-  startTime: {
-    type: String,
-    required: function () {
-      return this.isAvailable;
-    }
-  },
-  endTime: {
-    type: String,
-    required: function () {
-      return this.isAvailable;
-    }
-  },
-  modes: {
-    type: [String],
-    enum: Object.values(ServiceMode),
-    required: function () {
-      return this.isAvailable;
-    }
-  },
-  slots: {
-    type: [slotSchema],
-    required: function () {
-      return this.isAvailable;
-    }
-  }
-}, { _id: true });
-
-
-const serviceAvailabilitySchema = new Schema<IServiceAvailability>({
-  providerId: { type: Schema.Types.ObjectId, ref: "Provider", required: true },
-  timeZone: { type: String, required: true, default: defaultTimezone },
-  availabilities: [availabilitySchema]
-},
+const slotSchema = new Schema(
   {
-    timestamps: true,
-  }
+    time: { type: String, required: true },
+  },
+  { _id: true },
 );
 
-export const ServiceAvailabilityModel = mongoose.model<IServiceAvailability>('ServiceAvailability', serviceAvailabilitySchema)
+const availabilitySchema = new Schema(
+  {
+    day: { type: String, required: true },
+    isAvailable: { type: Boolean, required: true },
+    duration: {
+      type: Number,
+      required: function () {
+        return this.isAvailable;
+      },
+    },
+    startTime: {
+      type: String,
+      required: function () {
+        return this.isAvailable;
+      },
+    },
+    endTime: {
+      type: String,
+      required: function () {
+        return this.isAvailable;
+      },
+    },
+    modes: {
+      type: [String],
+      enum: Object.values(ServiceMode),
+      required: function () {
+        return this.isAvailable;
+      },
+    },
+    slots: {
+      type: [slotSchema],
+      required: function () {
+        return this.isAvailable;
+      },
+    },
+  },
+  { _id: true },
+);
+
+const serviceAvailabilitySchema = new Schema<IServiceAvailability>(
+  {
+    providerId: { type: Schema.Types.ObjectId, ref: "Provider", required: true },
+    timeZone: { type: String, required: true, default: defaultTimezone },
+    availabilities: [availabilitySchema],
+  },
+  {
+    timestamps: true,
+  },
+);
+
+export const ServiceAvailabilityModel = mongoose.model<IServiceAvailability>(
+  "ServiceAvailability",
+  serviceAvailabilitySchema,
+);

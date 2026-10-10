@@ -9,27 +9,27 @@ export const defaultTimezone: string = "Asia/Kolkata";
 export const cookieOptions: {
   maxAge: number;
   httpOnly: boolean;
-  sameSite: 'none' | 'lax' | 'strict';
+  sameSite: "none" | "lax" | "strict";
   secure: boolean;
 } = {
   maxAge: 2 * 24 * 60 * 60 * 1000,
   httpOnly: true,
-  sameSite: appConfig.nodeEnv === 'development' ? 'lax' : 'none',
-  secure: appConfig.nodeEnv !== 'development'
-}
+  sameSite: appConfig.nodeEnv === "development" ? "lax" : "none",
+  secure: appConfig.nodeEnv !== "development",
+};
 
 //
 export const dateFormats = {
-  SHORT: 'dd MMM yyyy',                 // 16 Sep 2026
-  FULL: 'dd MMMM yyyy',                  // 16 September 2026
-  WITH_TIME: 'dd MMM yyyy, hh:mm a',        // 16 Sep 2026, 02:55 PM
-  WITH_FULL_TIME: 'MM/dd/yyyy, hh:mm:ss a', // 09/16/2026, 02:55:16 PM (Replaces toLocaleString)
-  ISO_DATE: 'yyyy-MM-dd',                // 2026-09-16
-  TIME_12H: 'hh:mm a',                   // 02:55 PM
-  TIME_12H_LOWER: 'hh:mm aa',             // 02:55 pm
-  TIME_24H: 'HH:mm',                     // 14:55
-  RANGE_MONTH_DAY: 'LLL dd',             // Sep 16
-  RANGE_FULL: 'LLL dd, yyyy',            // Sep 16, 2026
+  SHORT: "dd MMM yyyy", // 16 Sep 2026
+  FULL: "dd MMMM yyyy", // 16 September 2026
+  WITH_TIME: "dd MMM yyyy, hh:mm a", // 16 Sep 2026, 02:55 PM
+  WITH_FULL_TIME: "MM/dd/yyyy, hh:mm:ss a", // 09/16/2026, 02:55:16 PM (Replaces toLocaleString)
+  ISO_DATE: "yyyy-MM-dd", // 2026-09-16
+  TIME_12H: "hh:mm a", // 02:55 PM
+  TIME_12H_LOWER: "hh:mm aa", // 02:55 pm
+  TIME_24H: "HH:mm", // 14:55
+  RANGE_MONTH_DAY: "LLL dd", // Sep 16
+  RANGE_FULL: "LLL dd, yyyy", // Sep 16, 2026
 } as const;
 
 export const daysOfWeek: Day[] = [
@@ -39,7 +39,7 @@ export const daysOfWeek: Day[] = [
   Day.WEDNESDAY,
   Day.THURSDAY,
   Day.FRIDAY,
-  Day.SATURDAY
+  Day.SATURDAY,
 ];
 
 export const PREFIX_MAP: Record<IdType, string> = {
@@ -49,5 +49,5 @@ export const PREFIX_MAP: Record<IdType, string> = {
   [IdType.IDEMPOTENCY]: "sf_idem_",
   [IdType.FILE]: "sf_file_",
   [IdType.REFERRAL]: "sf_ref_",
-  [IdType.CREDIT_TRANSACTION]: "sf_crtsn"
+  [IdType.CREDIT_TRANSACTION]: "sf_crtsn",
 } as const;

@@ -7,31 +7,35 @@ import { subscriptionController } from "./subscription.controller";
 const router = Router();
 
 // admin or provider get subscriptions
-router.get('/',
-    authMiddleware,
-    authorize(Role.ADMIN, Role.PROVIDER),
-    subscriptionController.getSubscriptions
+router.get(
+  "/",
+  authMiddleware,
+  authorize(Role.ADMIN, Role.PROVIDER),
+  subscriptionController.getSubscriptions,
 );
 
 // provider get subscribed plan
-router.get('/me',
-    authMiddleware,
-    authorize(Role.PROVIDER),
-    subscriptionController.getSubscribedPlan
+router.get(
+  "/me",
+  authMiddleware,
+  authorize(Role.PROVIDER),
+  subscriptionController.getSubscribedPlan,
 );
 
 // provider create subscription checkout session
-router.post('/checkout/session',
-    authMiddleware,
-    authorize(Role.PROVIDER),
-    subscriptionController.subscriptionCheckout
+router.post(
+  "/checkout/session",
+  authMiddleware,
+  authorize(Role.PROVIDER),
+  subscriptionController.subscriptionCheckout,
 );
 
 // admin or provider get subscription details
-router.get('/:subscriptionId',
-    authMiddleware,
-    authorize(Role.ADMIN, Role.PROVIDER),
-    subscriptionController.getSubscriptionDetails
+router.get(
+  "/:subscriptionId",
+  authMiddleware,
+  authorize(Role.ADMIN, Role.PROVIDER),
+  subscriptionController.getSubscriptionDetails,
 );
 
 export default router;

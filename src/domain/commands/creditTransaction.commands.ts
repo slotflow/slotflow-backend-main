@@ -1,4 +1,8 @@
-import { CreditTransactionType, CreditTransactionSource, CreditTransactionStatus } from "../enums/creditTransaction.enum";
+import {
+  CreditTransactionType,
+  CreditTransactionSource,
+  CreditTransactionStatus,
+} from "../enums/creditTransaction.enum";
 
 export type CreateCreditTransactionProps = {
   accountId: string;
