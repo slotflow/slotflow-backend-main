@@ -1,24 +1,53 @@
 import { IdType } from "../types/enums";
+import { CookieOptions } from "express";
 import { appConfig } from "../../../config/env";
 import { Day } from "../../../domain/enums/common.enum";
 
 // time zone default constant
 export const defaultTimezone: string = "Asia/Kolkata";
 
-// cookies options
-export const cookieOptions: {
-  maxAge: number;
-  httpOnly: boolean;
-  sameSite: "none" | "lax" | "strict";
-  secure: boolean;
-} = {
-  maxAge: 2 * 24 * 60 * 60 * 1000,
+// Base cookie options
+const baseCookieOptions: CookieOptions = {
   httpOnly: true,
-  sameSite: appConfig.nodeEnv === "development" ? "lax" : "none",
   secure: appConfig.nodeEnv !== "development",
+  sameSite: appConfig.nodeEnv === "development" ? "lax" : "none",
 };
 
-//
+// Access token - 1 hour
+export const accessTokenCookieOptions: CookieOptions = {
+  ...baseCookieOptions,
+  maxAge: 60 * 60 * 1000,
+  path: "/",
+};
+
+// Refresh token - 2 days
+export const refreshTokenCookieOptions: CookieOptions = {
+  ...baseCookieOptions,
+  maxAge: 2 * 24 * 60 * 60 * 1000,
+  path: "/",
+};
+
+// Registration, reset request, reset grant - 5 minutes
+export const temporaryCookieOptions: CookieOptions = {
+  ...baseCookieOptions,
+  maxAge: 5 * 60 * 1000,
+  path: "/",
+};
+
+// Clear any cookie created with these options
+export const clearAuthCookieOptions: CookieOptions = {
+  ...baseCookieOptions,
+  path: "/",
+};
+
+// Password reset config
+export const passwordRestConfig = {
+  otpTTL: 5 * 60,
+  grantTTL: 5 * 60,
+  maxAttempts: 5,
+} as const;
+
+// Date formats
 export const dateFormats = {
   SHORT: "dd MMM yyyy", // 16 Sep 2026
   FULL: "dd MMMM yyyy", // 16 September 2026

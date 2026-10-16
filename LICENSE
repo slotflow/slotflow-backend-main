@@ -1,25 +1,18 @@
-## License
+Copyright (c) 2026 SlotFlow. All Rights Reserved.
 
-**Proprietary — All Rights Reserved**
+This software and associated documentation files (the "Software") are the
+proprietary property of SlotFlow.
 
-Copyright © 2026 SlotFlow.
+No license or right is granted to any person or organization to use, copy,
+modify, merge, publish, distribute, sublicense, host, deploy, or sell the
+Software, or any part of it, without prior written permission from SlotFlow.
 
-The SlotFlow source code and associated assets are proprietary and confidential
-property of SlotFlow.
+Viewing the source code in this repository does not grant any license or
+rights to the Software.
 
-No permission is granted to any person or organization to:
-
-- Use the software for personal, commercial, or production purposes
-- Copy, reproduce, or redistribute the source code
-- Modify, adapt, or create derivative works
-- Sell, sublicense, lease, or otherwise commercialize the software
-- Incorporate any portion of the software into another product or service
-- Host or deploy the software without explicit written permission
-
-Viewing the source code on GitHub does not grant any license or rights to use,
-modify, distribute, or commercialize the software.
-
-Any use beyond viewing the repository requires prior written permission from
-SlotFlow .
-
-All rights reserved.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+OR OTHER DEALINGS IN THE SOFTWARE.

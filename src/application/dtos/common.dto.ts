@@ -129,13 +129,23 @@ export interface CommonDateInput {
  */
 
 // JWT custom payload
-export interface JwtClaims extends JwtPayload {
-  userId?: string;
-  email?: string;
-  name?: string | null;
-  password?: string;
-  role?: Role;
-  timeZone?: TimeZone | null;
+export interface AccessTokenClaims extends JwtPayload {
+  userId: string;
+  email: string;
+  name: string;
+  role: Role;
+  timeZone: TimeZone;
+}
+
+// JWT Refresh token payload
+export interface RefreshTokenClaims extends JwtPayload {
+  userId: string;
+}
+
+// Auth token
+export interface AuthTokens {
+  accessToken: string;
+  refreshToken: string;
 }
 
 /**

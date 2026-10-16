@@ -4,7 +4,6 @@ import { NextFunction, Request, Response } from "express";
 import { AuthUser } from "../../application/dtos/common.dto";
 import { profileSetupSchema } from "../../shared/zod/auth.zod";
 import { sendResponse } from "../../shared/utils/helpers/response";
-import { cookieOptions } from "../../shared/utils/constants/constant";
 import { adminUserBlockStatusSchema } from "../../shared/zod/admin.zod";
 import { GetUsersUseCase } from "../../application/useCases/user/getUsers.useCase";
 import { paginationSchema, validateUserIdSchema } from "../../shared/zod/base.zod";
@@ -30,6 +29,10 @@ import {
   updateUserProfileInfoUseCase,
   updatePasswordUseCase,
 } from ".";
+import {
+  accessTokenCookieOptions,
+  refreshTokenCookieOptions,
+} from "../../shared/utils/constants/constant";
 
 class UserController {
   constructor(
@@ -148,11 +151,15 @@ class UserController {
     try {
       const user = req.user as AuthUser;
       const validatedData = profileSetupSchema.parse(req.body);
-      const result = await this.profileSetupUseCase.execute({
+      const {
+        tokens: { accessToken, refreshToken },
+        ...result
+      } = await this.profileSetupUseCase.execute({
         ...validatedData,
         _id: user.id,
       });
-      res.cookie("token", result.token, cookieOptions);
+      res.cookie("token", accessToken, accessTokenCookieOptions);
+      res.cookie("refreshToken", refreshToken, refreshTokenCookieOptions);
       sendResponse(res, result, "Setup completed successfully");
     } catch (error) {
       log.error("profileSetupUseCase failed", { error });

@@ -2,8 +2,12 @@ import passport from "passport";
 import { log } from "../../shared/logger/logger";
 import { googleAuthOrchestratorUseCase } from ".";
 import { NextFunction, Request, Response } from "express";
+import { callbackConfig, serviceConfig } from "../../config/env";
 import { GoogleOAuthUser } from "../../application/dtos/common.dto";
-import { appConfig, callbackConfig, serviceConfig } from "../../config/env";
+import {
+  accessTokenCookieOptions,
+  refreshTokenCookieOptions,
+} from "../../shared/utils/constants/constant";
 import { GoogleAuthOrchestratorUseCase } from "../../application/useCases/auth/googleAuthOrchestrate.useCase";
 
 class GoogleAuthController {
@@ -57,7 +61,10 @@ class GoogleAuthController {
             }
           }
 
-          const { token, user: googleUser } = await this.googleAuthOrchestratorUseCase.execute({
+          const {
+            tokens: { accessToken, refreshToken },
+            user: googleUser,
+          } = await this.googleAuthOrchestratorUseCase.execute({
             email: user.email,
             googleId: user.googleId,
             name: user.name,
@@ -65,12 +72,8 @@ class GoogleAuthController {
             timeZone: timeZoneData,
           });
 
-          res.cookie("token", token, {
-            maxAge: 2 * 24 * 60 * 60 * 1000,
-            httpOnly: true,
-            sameSite: appConfig.nodeEnv === "development" ? "lax" : "none",
-            secure: appConfig.nodeEnv !== "development",
-          });
+          res.cookie("token", accessToken, accessTokenCookieOptions);
+          res.cookie("refreshToken", refreshToken, refreshTokenCookieOptions);
 
           const successPayload = {
             success: true,

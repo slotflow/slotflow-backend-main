@@ -1,4 +1,4 @@
-import { CommonDateInput } from "./common.dto";
+import { AuthTokens, CommonDateInput } from "./common.dto";
 import { Role } from "../../domain/enums/common.enum";
 import { ApiPaginationInput, StatMetric } from "./common.dto";
 import { UserProps } from "../../domain/contracts/user.contract";
@@ -131,7 +131,7 @@ export type ProfileSetupInput = Pick<UserProps, "role" | "_id" | "username"> & {
 };
 export type ProfileSetupOutput = Pick<UserProps, "onboardingType" | "onboardingStatus"> & {
   adminVerificationStatus: ProviderProfileProps["adminVerificationStatus"] | null;
-  token: string;
+  tokens: AuthTokens;
 };
 
 // GetUsers

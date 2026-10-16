@@ -1,6 +1,7 @@
 import { UserProps } from "../../domain/contracts/user.contract";
 import { ProviderProfileProps } from "../../domain/contracts/providerProfile.contract";
 import { TimeZone } from "../../domain/commands/user.commands";
+import { AuthTokens } from "./common.dto";
 
 /**
  * Auth usecase dtos
@@ -9,18 +10,26 @@ import { TimeZone } from "../../domain/commands/user.commands";
 // Register
 export type RegisterInput = Pick<UserProps, "email" | "password" | "timeZone">;
 export interface RegisterOutput {
-  token: string;
+  registrationId: string;
+}
+
+// Pending registration
+export interface PendingRegistration {
+  email: string;
+  passwordHash: string;
+  timeZone: RegisterInput["timeZone"];
+  otpHash: string;
 }
 
 // OTP Verification
 export interface RegisterOTPVerificationInput {
-  token: string;
+  registrationId: string;
   otp: string;
 }
 
 // ResendOtp
 export interface ResendOtpOutput {
-  token: string;
+  registrationId: string;
 }
 
 // VerifyEmail
@@ -28,7 +37,32 @@ export interface VerifyEmailInput {
   email: UserProps["email"];
 }
 export interface VerifyEmailOutput {
-  token: string;
+  resetRequestId: string;
+}
+
+// Pending password reset
+export interface PendingPasswordReset {
+  userId: string;
+  email: string;
+  otpHash: string;
+}
+
+// Verify otp for reset password
+export interface VerifyResetOtpInput {
+  resetRequestId: string;
+  otp: string;
+}
+export interface VerifyResetOtpOutput {
+  resetGrant: string;
+}
+
+export interface PasswordResetGrant {
+  userId: string;
+}
+
+export interface ResetPasswordInput {
+  resetGrant: string;
+  password: string;
 }
 
 // Login
@@ -37,7 +71,7 @@ export interface LoginInput {
   password: string;
 }
 export interface LoginOutput {
-  token: string;
+  tokens: AuthTokens;
   user: Pick<
     UserProps,
     | "username"
@@ -79,12 +113,6 @@ export interface LoginOutput {
     };
 }
 
-// UpdatePassword
-export interface ResetPasswordInput {
-  token: string;
-  password: string;
-}
-
 // GoogleAuthOrchestration
 export interface GoogleAuthOrchestrationInput {
   googleId: string;
@@ -94,7 +122,7 @@ export interface GoogleAuthOrchestrationInput {
   timeZone: TimeZone;
 }
 export interface GoogleAuthOrchestrationOutput {
-  token?: string;
+  tokens: AuthTokens;
   user: Pick<
     UserProps,
     | "username"

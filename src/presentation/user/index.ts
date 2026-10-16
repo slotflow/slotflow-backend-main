@@ -1,6 +1,6 @@
 import { kafkaProducer } from "../../infrastructure/messaging";
-import { jwtService, passwordHasher } from "../../infrastructure/security";
-import { cacheService, signedUrlService } from "../../infrastructure/services";
+import { passwordHasher } from "../../infrastructure/security";
+import { authTokenService, cacheService, signedUrlService } from "../../infrastructure/services";
 import { bookingQueries, userQueries } from "../../infrastructure/queries";
 import { GetUsersUseCase } from "../../application/useCases/user/getUsers.useCase";
 import { ProfileSetupUseCase } from "../../application/useCases/user/profileSetup.useCase";
@@ -45,7 +45,7 @@ export const profileSetupUseCase = new ProfileSetupUseCase(
   userRepository,
   providerProfileRepository,
   referralRepository,
-  jwtService,
+  authTokenService,
 );
 
 export const updatePasswordUseCase = new UpdatePasswordUseCase(

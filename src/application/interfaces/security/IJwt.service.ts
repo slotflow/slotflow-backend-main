@@ -1,7 +1,11 @@
-import { JwtClaims } from "../../dtos/common.dto";
+import { AccessTokenClaims, RefreshTokenClaims } from "../../dtos/common.dto";
 
 export interface IJWT {
-  generateToken(input: JwtClaims, expiresIn?: string): Promise<string>;
+  generateAccessToken(input: AccessTokenClaims): Promise<string>;
 
-  verifyToken(token: string): Promise<JwtClaims>;
+  verifyAccessToken(token: string): Promise<AccessTokenClaims>;
+
+  generateRefreshToken(input: RefreshTokenClaims): Promise<string>;
+
+  verifyRefreshToken(token: string): Promise<RefreshTokenClaims>;
 }

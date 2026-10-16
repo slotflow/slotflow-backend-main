@@ -2,8 +2,8 @@ import { Role } from "../../../domain/enums/common.enum";
 import { PlanName } from "../../../domain/enums/plan.enum";
 import { LoginInput, LoginOutput } from "../../dtos/auth.dto";
 import { ERROR_CODES } from "../../../shared/utils/types/enums";
-import { IJWT } from "../../interfaces/security/IJwt.service";
 import { toAppError } from "../../../shared/error/handleUnknownError";
+import { IAuthTokenService } from "../../interfaces/security/IAuthToken.service";
 import { ISignedUrlService } from "../../interfaces/services/ISignedUrl.service";
 import { ProviderProfile } from "../../../domain/entities/providerProfile.entity";
 import { BadRequestError, UnauthorizedError } from "../../../shared/error/appError";
@@ -17,7 +17,7 @@ export class LoginUseCase {
     private readonly userRepository: IUserRepository,
     private readonly providerProfileRepository: IProviderProfileRepository,
     private readonly signedUrlService: ISignedUrlService,
-    private readonly jwtService: IJWT,
+    private readonly authTokenService: IAuthTokenService,
     private readonly passwordHasher: IPasswordHasher,
     private readonly authResponseBuilder: IAuthResponseBuilder,
   ) {}
@@ -50,7 +50,7 @@ export class LoginUseCase {
         throw new BadRequestError("Invalid credentials", ERROR_CODES.INVALID_CREDENTIALS);
       }
 
-      const token = await this.jwtService.generateToken({
+      const tokens = await this.authTokenService.issueTokens({
         email: email,
         role: user.role,
         userId: user._id,
@@ -79,7 +79,7 @@ export class LoginUseCase {
 
       if (isProviderFlow) {
         return {
-          token,
+          tokens,
           user: {
             ...baseUser,
             ...this.authResponseBuilder.buildProviderFields(providerProfile, providerSubscription),
@@ -88,7 +88,7 @@ export class LoginUseCase {
         };
       } else if (user.role === Role.USER || user.role === Role.ADMIN) {
         return {
-          token,
+          tokens,
           user: {
             ...baseUser,
             profileImage: signedProfileImageUrl,

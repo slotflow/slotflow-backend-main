@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import { Validator } from "../shared/validator/validator";
 
 const validator = new Validator();
@@ -10,6 +7,8 @@ export const appConfig = {
   nodeEnv: validator.requireEnv("NODE_ENV"),
   isDev: validator.requireEnv("NODE_ENV") === "development",
   serviceName: validator.requireEnv("SERVICE_NAME"),
+  cookieSameSite: validator.requireEnv("COOKIE_SAME_SITE") as "lax" | "strict" | "none",
+  otpHashSecret: validator.requireEnv("OTP_HASH_SECRET"),
 };
 
 export const callbackConfig = {
@@ -46,7 +45,8 @@ export const serviceConfig = {
 };
 
 export const jwtConfig = {
-  jwtSecret: validator.requireEnv("JWT_SECRET"),
+  jwtAccessSecret: validator.requireEnv("JWT_ACCESS_SECRET"),
+  jwtRefreshSecret: validator.requireEnv("JWT_REFRESH_SECRET"),
 };
 
 export const officialConfig = {

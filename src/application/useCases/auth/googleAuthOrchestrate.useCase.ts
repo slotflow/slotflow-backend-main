@@ -4,12 +4,12 @@ import { Role } from "../../../domain/enums/common.enum";
 import { AppError } from "../../../shared/error/appError";
 import { PlanName } from "../../../domain/enums/plan.enum";
 import { User } from "../../../domain/entities/user.entity";
-import { IJWT } from "../../interfaces/security/IJwt.service";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { generateId } from "../../../shared/utils/helpers/generateId";
 import { EventEnvelope, SendWelcomeEvent } from "../../dtos/kafka.dto";
 import { ERROR_CODES, IdType } from "../../../shared/utils/types/enums";
 import { CreditAccount } from "../../../domain/entities/creditAccount.entity";
+import { IAuthTokenService } from "../../interfaces/security/IAuthToken.service";
 import { ProviderProfile } from "../../../domain/entities/providerProfile.entity";
 import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
@@ -22,10 +22,10 @@ export class GoogleAuthOrchestratorUseCase {
   constructor(
     private readonly userRepository: IUserRepository,
     private readonly providerProfileRepository: IProviderProfileRepository,
-    private readonly jwtService: IJWT,
     private readonly kafkaProducer: IKafkaProducerAdapter,
     private readonly authResponseBuilder: IAuthResponseBuilder,
     private readonly creditAccountRepository: ICreditAccountRepository,
+    private readonly authTokenService: IAuthTokenService,
   ) {}
 
   async execute(input: GoogleAuthOrchestrationInput): Promise<GoogleAuthOrchestrationOutput> {
@@ -131,7 +131,7 @@ export class GoogleAuthOrchestratorUseCase {
         throw new AppError();
       }
 
-      const token = await this.jwtService.generateToken({
+      const tokens = await this.authTokenService.issueTokens({
         email: user.email,
         role: user.role,
         userId: user._id,
@@ -155,7 +155,7 @@ export class GoogleAuthOrchestratorUseCase {
 
       if (isProviderFlow) {
         return {
-          token,
+          tokens,
           user: {
             ...baseUser,
             ...this.authResponseBuilder.buildProviderFields(providerProfile, providerSubscription),
@@ -164,7 +164,7 @@ export class GoogleAuthOrchestratorUseCase {
       }
 
       return {
-        token,
+        tokens,
         user: {
           ...baseUser,
         },

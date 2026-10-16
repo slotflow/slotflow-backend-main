@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { User } from "../../../domain/entities/user.entity";
-import { IJWT } from "../../interfaces/security/IJwt.service";
 import { Referral } from "../../../domain/entities/referral.entity";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { generateId } from "../../../shared/utils/helpers/generateId";
@@ -12,13 +11,14 @@ import { AppError, BadRequestError, NotFoundError } from "../../../shared/error/
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 import { IReferralRepository } from "../../../domain/interfaces/repositories/IReferral.repository";
 import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
+import { IAuthTokenService } from "../../interfaces/security/IAuthToken.service";
 
 export class ProfileSetupUseCase {
   constructor(
     private readonly userRepository: IUserRepository,
     private readonly providerProfile: IProviderProfileRepository,
     private readonly referralRepository: IReferralRepository,
-    private readonly jwtService: IJWT,
+    private readonly authTokenService: IAuthTokenService,
   ) {}
 
   async execute(input: ProfileSetupInput): Promise<ProfileSetupOutput> {
@@ -95,7 +95,7 @@ export class ProfileSetupUseCase {
         }
       }
 
-      const token = await this.jwtService.generateToken({
+      const tokens = await this.authTokenService.issueTokens({
         email: user.email,
         role: user.role,
         userId: user._id,
@@ -111,7 +111,7 @@ export class ProfileSetupUseCase {
           role === Role.PROVIDER && providerProfile
             ? providerProfile.adminVerificationStatus
             : null,
-        token,
+        tokens,
       };
     } catch (error: unknown) {
       await session.abortTransaction();

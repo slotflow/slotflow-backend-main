@@ -8,15 +8,19 @@ router.post("/signup", authController.register);
 
 router.post("/verify-otp", authController.registerOtpVerification);
 
-router.post("/resendOtp", authController.resendOtp);
+router.post("/resend-otp", authController.resendOtp);
 
 router.post("/verify-email", authController.verifyEmail);
 
-router.post("/signin", authController.login);
-
-router.post("/signout", authController.logout);
+router.post("/verify-reset-otp", authController.verifyResetOtp);
 
 router.patch("/password", authController.resetPassword);
+
+router.post("/signin", authController.login);
+
+router.post("/refresh", authController.refresh);
+
+router.post("/signout", authController.logout);
 
 router.get("/google", googleAuthController.googleAuth);
 

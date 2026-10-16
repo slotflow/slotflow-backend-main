@@ -337,15 +337,7 @@ The Main Backend works with other services in the SlotFlow ecosystem.
 
 ## License
 
-**Proprietary — All Rights Reserved**
-
-Copyright © 2026 SlotFlow.
-
-The SlotFlow Main Backend source code and associated assets are proprietary property of SlotFlow Technologies Private Limited.
-
-No permission is granted to use, copy, modify, redistribute, sublicense, or commercialize this software without explicit written permission from SlotFlow.
-
-All rights reserved.
+Proprietary. All Rights Reserved. See [LICENSE](./LICENSE) for details.
 
 ---
 
