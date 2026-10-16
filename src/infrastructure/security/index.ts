@@ -1,9 +1,9 @@
 // Security instance
 
-import { JWTImpl } from "./jwt..impl";
-import { PasswordHasherImpl } from "./passwordHashing.impl";
-import { IJWT } from "../../domain/interfaces/security/IJwt";
-import { IPasswordHasher } from "../../domain/interfaces/security/IPasswordHasher";
+import { JWTImpl } from "./jwt.service.impl";
+import { PasswordHasherImpl } from "./passwordHashing.service.impl";
+import { IJWT } from "../../application/interfaces/security/IJwt.service";
+import { IPasswordHasher } from "../../application/interfaces/security/IPasswordHasher.service";
 
 export const jwtService: IJWT = new JWTImpl();
 

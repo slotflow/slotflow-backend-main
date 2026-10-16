@@ -1,93 +1,63 @@
 export enum Role {
-    ADMIN = "ADMIN",
-    USER = "USER",
-    PROVIDER = "PROVIDER",
-};
-
-export enum Boolean {
-    TRUE = "true",
-    FALSE = "false"
-};
+  ADMIN = "ADMIN",
+  USER = "USER",
+  PROVIDER = "PROVIDER",
+}
 
 export enum FileType {
-    PNG="image/png",
-    JPEG="image/jpeg",
-    JPG="image/jpg"
-};
+  PNG = "image/png",
+  JPEG = "image/jpeg",
+  JPG = "image/jpg",
+}
 
 export enum Day {
-    SUNDAY = "Sunday",
-    MONDAY = "Monday",
-    TUESDAY = "Tuesday",
-    WEDNESDAY = "Wednesday",
-    THURSDAY = "Thursday",
-    FRIDAY = "Friday",
-    SATURDAY = "Saturday",
-};
+  SUNDAY = "SUNDAY",
+  MONDAY = "MONDAY",
+  TUESDAY = "TUESDAY",
+  WEDNESDAY = "WEDNESDAY",
+  THURSDAY = "THURSDAY",
+  FRIDAY = "FRIDAY",
+  SATURDAY = "SATURDAY",
+}
 
 export enum AppConnect {
-    GOOGLE = "GOOGLE",
-    STRIPE = "STRIPE",
-    NOTION = "NOTION",
-    WHATSAPP = "WHATSAPP",
-    RAZORPAY = "RAZORPAY",
-    PAYPAL = "PAYPAL",
-};
+  GOOGLE = "GOOGLE",
+  STRIPE = "STRIPE",
+  NOTION = "NOTION",
+  WHATSAPP = "WHATSAPP",
+  RAZORPAY = "RAZORPAY",
+  PAYPAL = "PAYPAL",
+}
 
 export enum OtpPurpose {
   REGISTRATION = "REGISTRATION",
   PASSWORD_RESET = "PASSWORD_RESET",
-};
-
-export enum NotificationType {
-  BOOKING_CONFIRMED = "BOOKING_CONFIRMED",
-  BOOKING_CANCELLED = "BOOKING_CANCELLED",
-  BOOKING_RESCHEDULED = "BOOKING_RESCHEDULED",
-  BOOKING_REJECTED = "BOOKING_REJECTED",
-  BOOKING_NOT_ATTENDED = "BOOKING_NOT_ATTENDED",
-  BOOKING_APPROVED = "BOOKING_APPROVED",
-
-  APPOINTMENT_CREATED = "APPOINTMENT_CREATED",
-  APPOINTMENT_CANCELLED = "APPOINTMENT_CANCELLED",
-  APPOINTMENT_RESCHEDULED = "APPOINTMENT_RESCHEDULED",
-  APPOINTMENT_NOT_ATTENDED = "APPOINTMENT_NOT_ATTENDED",
-
-  PAYMENT_SUCCESS = "PAYMENT_SUCCESS",
-  PAYMENT_FAILED = "PAYMENT_FAILED",
-
-  SUBSCRIPTION_EXPIRING = "SUBSCRIPTION_EXPIRING",
-  SUBSCRIPTION_EXPIRED = "SUBSCRIPTION_EXPIRED",
-
-  BOOKING = "BOOKING",
-  APPOINTMENT = "APPOINTMENT",
-
-  SYSTEM = "SYSTEM",
-};
+}
 
 export enum CalendarStatus {
-    PENDING = "PENDING",
-    CREATED = "CREATED",
-    FAILED = "FAILED",
+  PENDING = "PENDING",
+  CREATED = "CREATED",
+  FAILED = "FAILED",
 }
 
 export enum EventStatus {
-    SUCCESS = "SUCCESS",
-    FAILED = "FAILED",
-    PENDING = "PENDING",
-    RETRY = "RETRY",
+  SUCCESS = "SUCCESS",
+  FAILED = "FAILED",
+  PENDING = "PENDING",
+  RETRY = "RETRY",
 }
 
 export enum HearAboutUsOptionValue {
-  GOOGLE = "google",
-  REFERRAL = "referral",
-  YOUTUBE = "youtube",
-  LINKEDIN = "linkedin",
-  TWITTER = "twitter",
-  INSTAGRAM = "instagram",
-  WHATSAPP = "whatsapp",
-  FACEBOOK = "facebook",
-  THREADS = "threads",
-  OTHER = "other",
+  GOOGLE = "GOOGLE",
+  REFERRAL = "REFERRAL",
+  YOUTUBE = "YOUTUBE",
+  LINKEDIN = "LINKEDIN",
+  TWITTER = "TWITTER",
+  INSTAGRAM = "INSTAGRAM",
+  WHATSAPP = "WHATSAPP",
+  FACEBOOK = "FACEBOOK",
+  THREADS = "THREADS",
+  OTHER = "OTHER",
 }
 
 export enum OnboardingStatus {
@@ -104,10 +74,15 @@ export enum ReferralStatus {
   REWARDED = "REWARDED",
 }
 
-export enum StripeAccountStatus {
-  PENDING = "pending",
-  ACTIVE = "active",
-  RESTRICTED = "restricted",
-  REVOKED = "revoked",
-  NOT_CONNECTED = "not_connected",
+export enum NotificationChannel {
+  EMAIL = "EMAIL",
+  PUSH = "PUSH",
+  IN_APP = "IN_APP",
+  SMS = "SMS",
+}
+
+export enum NotificationType {
+  ACCOUNT_ACTIVITY = "ACCOUNT_ACTIVITY",
+  SYSTEM_UPDATES = "SYSTEM_UPDATES",
+  PROMOTIONAL_UPDATES = "PROMOTIONAL_UPDATES",
 }

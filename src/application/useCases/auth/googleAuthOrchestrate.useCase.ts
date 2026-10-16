@@ -1,241 +1,179 @@
+import mongoose from "mongoose";
 import { kafkaConfig } from "../../../config/env";
+import { Role } from "../../../domain/enums/common.enum";
+import { AppError } from "../../../shared/error/appError";
 import { PlanName } from "../../../domain/enums/plan.enum";
 import { User } from "../../../domain/entities/user.entity";
-import { generateId } from "../../../shared/utils/generateId";
-import { IJWT } from "../../../domain/interfaces/security/IJwt";
-import { ERROR_CODES, IdType } from '../../../shared/utils/types';
-import { AppConnect, Role } from "../../../domain/enums/common.enum";
-import { toAppError } from '../../../shared/error/handleUnknownError';
-import { Credential } from "../../../domain/entities/credential.entity";
-import { notificationContentMap } from "../../../shared/utils/constants";
-import { AuthResponseBuilder } from '../../services/AuthResponseBuilder';
-import { AppError, BadRequestError } from '../../../shared/error/appError';
-import { ProviderProfile } from '../../../domain/entities/providerProfile.entity';
+import { toAppError } from "../../../shared/error/handleUnknownError";
+import { generateId } from "../../../shared/utils/helpers/generateId";
+import { EventEnvelope, SendWelcomeEvent } from "../../dtos/kafka.dto";
+import { ERROR_CODES, IdType } from "../../../shared/utils/types/enums";
+import { CreditAccount } from "../../../domain/entities/creditAccount.entity";
+import { IAuthTokenService } from "../../interfaces/security/IAuthToken.service";
+import { ProviderProfile } from "../../../domain/entities/providerProfile.entity";
+import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { EventEnvelope, SendAppConnectEvent, SendWelcomeEvent } from "../../dtos/kafka.dto";
+import { IAuthResponseBuilder } from "../../interfaces/services/IAuthResponseBuilder.service";
 import { GoogleAuthOrchestrationInput, GoogleAuthOrchestrationOutput } from "../../dtos/auth.dto";
-import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
-import { IAesEncryptionService } from "../../../domain/interfaces/services/IAesEncryption.service";
-import { ICredentialRepository } from "../../../domain/interfaces/repositories/ICredentialRepository";
-import { IProviderProfileRepository } from '../../../domain/interfaces/repositories/IProviderProfile.repository';
+import { ICreditAccountRepository } from "../../../domain/interfaces/repositories/ICreditAccount.repository";
+import { IProviderProfileRepository } from "../../../domain/interfaces/repositories/IProviderProfile.repository";
 
 export class GoogleAuthOrchestratorUseCase {
-    constructor(
-        private readonly userRepository: IUserRepository,
-        private readonly providerProfileRepository: IProviderProfileRepository,
-        private readonly credentialRepository: ICredentialRepository,
-        private readonly aesEncryption: IAesEncryptionService,
-        private readonly jwtService: IJWT,
-        private readonly kafkaProducer: IKafkaProducerAdapter,
-        private readonly authResponseBuilder: AuthResponseBuilder
-    ) { };
+  constructor(
+    private readonly userRepository: IUserRepository,
+    private readonly providerProfileRepository: IProviderProfileRepository,
+    private readonly kafkaProducer: IKafkaProducerAdapter,
+    private readonly authResponseBuilder: IAuthResponseBuilder,
+    private readonly creditAccountRepository: ICreditAccountRepository,
+    private readonly authTokenService: IAuthTokenService,
+  ) {}
 
-    async execute(input: GoogleAuthOrchestrationInput): Promise<GoogleAuthOrchestrationOutput> {
-        try {
-            const {
-                connectOnly,
-                role,
-                userId,
+  async execute(input: GoogleAuthOrchestrationInput): Promise<GoogleAuthOrchestrationOutput> {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+      const { email, googleId, name, image, timeZone } = input;
+
+      if (!email || !googleId || !name) {
+        throw new AppError(
+          "Invalid Google authentication payload",
+          400,
+          true,
+          ERROR_CODES.INVALID_REQUEST,
+        );
+      }
+
+      let user: User | null = await this.userRepository.findByGoogleId(googleId);
+      if (!user) {
+        user = await this.userRepository.findByEmail(email);
+      }
+
+      let isNewUser = false;
+      if (!user) {
+        isNewUser = true;
+
+        const referralCode = generateId({
+          type: IdType.REFERRAL,
+          options: { name },
+        });
+
+        const userData = User.createGoogle({
+          username: name,
+          email,
+          googleId,
+          profileImage: image ?? "",
+          referralCode,
+          timeZone,
+        });
+
+        user = await this.userRepository.create(userData, session);
+        if (!user) {
+          throw new AppError(
+            "Failed to create Google user account",
+            500,
+            true,
+            ERROR_CODES.INTERNAL_ERROR,
+          );
+        }
+
+        const creditAccount = await this.creditAccountRepository.create(
+          CreditAccount.create({ userId: user._id }),
+          session,
+        );
+
+        if (!creditAccount) {
+          throw new AppError(
+            "Failed to initialize user credit account",
+            500,
+            true,
+            ERROR_CODES.INTERNAL_ERROR,
+          );
+        }
+      } else if (!user.googleId) {
+        user.linkGoogleAccount({
+          googleId: googleId,
+          googleConnected: true,
+        });
+        await this.userRepository.update(user, session);
+      }
+
+      await session.commitTransaction();
+      session.endSession();
+
+      if (isNewUser) {
+        await this.kafkaProducer.publish<EventEnvelope<SendWelcomeEvent>>(
+          kafkaConfig.topics.pub.registerSuccess,
+          {
+            eventId: generateId({ type: IdType.EVENT }),
+            attempt: 1,
+            maxAttempts: 1,
+            occurredAt: new Date(),
+            payload: {
+              emailData: {
                 email,
-                googleId,
                 name,
-                image,
-                accessToken,
-                expiryDate,
-                refreshToken,
-            } = input;
+              },
+            },
+          },
+        );
+      }
 
-            let user: User | null = null;
-            let providerProfile: ProviderProfile | null = null;
-            let token: string | undefined;
+      user.updateName({
+        username: name,
+      });
 
-            if (!connectOnly) {
-                if (!role || !email || !googleId || !name) {
-                    throw new BadRequestError(
-                        "Invalid request",
-                        ERROR_CODES.INVALID_REQUEST
-                    );
-                }
-                user =
-                    (await this.userRepository.findByGoogleId(googleId)) ??
-                    (await this.userRepository.findByEmail(email));
+      user.updateProfileImage({
+        profileImage: image,
+      });
 
-                const referralCode = generateId({
-                    type: IdType.REFERRAL,
-                    options: { name }
-                });
+      const updatedUser = await this.userRepository.update(user);
+      if (!updatedUser) {
+        throw new AppError();
+      }
 
-                if (!user) {
-                    const userData = User.createGoogle({
-                        username: name,
-                        email,
-                        googleId,
-                        profileImage: image ?? "",
-                        referralCode
-                    });
-                    user = await this.userRepository.create(userData);
-                }
+      const tokens = await this.authTokenService.issueTokens({
+        email: user.email,
+        role: user.role,
+        userId: user._id,
+        name: name,
+        timeZone: user.timeZone,
+      });
 
-                if (!user) {
-                    throw new AppError(
-                        "Internal server error",
-                        500,
-                        true,
-                        ERROR_CODES.INTERNAL_ERROR
-                    )
-                };
+      let providerProfile: ProviderProfile | null = null;
+      let providerSubscription: PlanName = PlanName.NO_SUBSCRIPTION;
+      const isProviderFlow = user.onboardingType === Role.PROVIDER;
 
-                if (role === Role.PROVIDER) {
-                    providerProfile = await this.providerProfileRepository.findByUserId(user._id);
+      if (isProviderFlow) {
+        providerProfile = await this.providerProfileRepository.findByUserId(user._id);
+        if (providerProfile) {
+          providerSubscription =
+            await this.authResponseBuilder.resolveSubscription(providerProfile);
+        }
+      }
 
-                    if (!providerProfile) {
-                        const newProfile = ProviderProfile.create({
-                            userId: user._id,
-                        });
-                        providerProfile =
-                            await this.providerProfileRepository.create(newProfile);
-                    }
-                }
+      const baseUser = this.authResponseBuilder.buildBaseUser(user);
 
-                token = await this.jwtService.generateToken({
-                    email,
-                    userId: user._id,
-                    role,
-                });
-            } else {
-                if (!userId || !role) {
-                    throw new BadRequestError(
-                        "Invalid request",
-                        ERROR_CODES.INVALID_REQUEST
-                    );
-                }
-
-                user = await this.userRepository.findById(userId);
-                if (!user) throw new BadRequestError("User not found");
-
-                user.linkGoogleAccount({
-                    googleId,
-                    googleConnected: true,
-                });
-
-                user = await this.userRepository.update(user);
-            }
-
-            if (!user) {
-                throw new BadRequestError(
-                    "Invalid request",
-                    ERROR_CODES.INVALID_REQUEST
-                );
-            }
-
-            if (!accessToken || !expiryDate || !refreshToken) {
-                throw new BadRequestError(
-                    "Invalid request",
-                    ERROR_CODES.INVALID_REQUEST
-                );
-            }
-
-            const encryptedAccessToken =
-                await this.aesEncryption.encrypt(accessToken);
-            const encryptedRefreshToken =
-                await this.aesEncryption.encrypt(refreshToken);
-
-            const existingCredential =
-                await this.credentialRepository.findByUserId(
-                    userId ?? user._id
-                );
-
-            if (existingCredential) {
-                existingCredential.updateCredential({
-                    accessToken: encryptedAccessToken,
-                    refreshToken: encryptedRefreshToken,
-                    expiryDate,
-                });
-                await this.credentialRepository.update(existingCredential);
-            } else {
-                const credentials = Credential.create({
-                    accessToken: encryptedAccessToken,
-                    refreshToken: encryptedRefreshToken,
-                    expiryDate,
-                    userId: userId ?? user._id,
-                });
-                await this.credentialRepository.create(credentials);
-                console.log("credetials : ",credentials)
-            }
-
-            let providerSubscription: PlanName = PlanName.NO_SUBSCRIPTION;
-
-            if (user.role === Role.PROVIDER && providerProfile) {
-                providerSubscription = await this.authResponseBuilder.resolveSubscription(providerProfile);
-            }
-
-            if (!user.googleConnected) {
-                if (connectOnly) {
-                    await this.kafkaProducer.publish<EventEnvelope<SendAppConnectEvent>>(kafkaConfig.topics.pub.appConnect, {
-                        eventId: generateId({ type: IdType.EVENT }),
-                        attempt: 1,
-                        maxAttempts: 1,
-                        occurredAt: new Date().toISOString(),
-                        payload: {
-                            emailData: {
-                                email: user.email,
-                                name: user.username,
-                                appConnect: AppConnect.GOOGLE,
-                            },
-                            notificationData: {
-                                userId: user._id,
-                                pushNotification: user.allowPushNotification ?? false,
-                                title: notificationContentMap.appConnect.title,
-                                body: notificationContentMap.appConnect.body(
-                                    AppConnect.GOOGLE
-                                ),
-                            },
-                        },
-                    });
-                } else {
-                    await this.kafkaProducer.publish<EventEnvelope<SendWelcomeEvent>>(kafkaConfig.topics.pub.registerSuccess, {
-                        eventId: generateId({ type: IdType.EVENT }),
-                        attempt: 1,
-                        maxAttempts: 1,
-                        occurredAt: new Date().toISOString(),
-                        payload: {
-                            emailData: {
-                                email: user.email,
-                                name: user.username,
-                                role,
-                            },
-                        },
-                    });
-                }
-            }
-
-            if (connectOnly) {
-                return {
-                    token,
-                    user: {
-                        googleId,
-                        googleConnected: true,
-                    },
-                };
-            }
-
-            const baseUser = this.authResponseBuilder.buildBaseUser(user);
-
-            return {
-                token,
-                user: {
-                    ...baseUser,
-                    ...this.authResponseBuilder.buildProviderFields(
-                        providerProfile,
-                        providerSubscription
-                    ),
-                    googleId,
-                    googleConnected: true,
-                },
-            };
-
-        } catch (error: unknown) {
-            throw toAppError(error, "Failed to authenticate user");
+      if (isProviderFlow) {
+        return {
+          tokens,
+          user: {
+            ...baseUser,
+            ...this.authResponseBuilder.buildProviderFields(providerProfile, providerSubscription),
+          },
         };
-    };
-};
+      }
+
+      return {
+        tokens,
+        user: {
+          ...baseUser,
+        },
+      };
+    } catch (error: unknown) {
+      await session.abortTransaction();
+      throw toAppError(error, "Failed to verify otp");
+    } finally {
+      session.endSession();
+    }
+  }
+}

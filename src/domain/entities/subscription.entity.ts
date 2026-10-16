@@ -1,87 +1,107 @@
 import { SubscriptionStatus } from "../enums/subscription.enum";
 import { SubscriptionProps } from "../contracts/subscription.contract";
-import { CreateSubscriptionInitialProps, CreateSubscriptionProps, SubscriptionPaymentSuccessProps } from "../commands/subscription.commands";
+import {
+  CreateSubscriptionInitialProps,
+  SubscriptionPaymentSuccessProps,
+} from "../commands/subscription.commands";
 
 export class Subscription {
-    private props: SubscriptionProps;
+  private props: SubscriptionProps;
 
-    constructor(props: SubscriptionProps) {
-        this.props = props;
-    };
+  constructor(props: SubscriptionProps) {
+    this.props = props;
+  }
 
-    private touch() {
-        this.props.updatedAt = new Date();
-    };
+  private touch() {
+    this.props.updatedAt = new Date();
+  }
 
-    static createInitialData(props: CreateSubscriptionInitialProps): Subscription {
-        return new Subscription({
-            _id: "",
-            ...props,
-            startDate: null,
-            endDate: null,
-            subscriptionStatus: SubscriptionStatus.PENDING,
-            paymentId: null,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        })
-    }
+  static createInitialData(props: CreateSubscriptionInitialProps): Subscription {
+    const now = new Date();
+    return new Subscription({
+      _id: "",
+      providerId: props.providerId,
+      subscribedPlanId: props.subscribedPlanId,
+      subscriptionStatus: SubscriptionStatus.INCOMPLETE,
+      currentPeriodStart: null,
+      currentPeriodEnd: null,
+      cancelAtPeriodEnd: false,
+      cancelAt: null,
+      lastEventAt: now,
+      paymentId: null,
+      createdAt: now,
+      updatedAt: now,
+    });
+  }
 
-    static create(props: CreateSubscriptionProps) {
-        return new Subscription({
-            _id: "",
-            ...props,
-            startDate: props.startDate,
-            endDate: props.endDate,
-            subscriptionStatus: props.subscriptionStatus,
-            paymentId: null,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        })
-    };
+  // Getters
+  get _id(): string {
+    return this.props._id;
+  }
 
-    // Getters
-    get _id(): string {
-        return this.props._id;
-    };
+  get providerId(): string {
+    return this.props.providerId;
+  }
 
-    get subscriptionStatus(): SubscriptionStatus {
-        return this.props.subscriptionStatus;
-    };
+  get subscribedPlanId(): string {
+    return this.props.subscribedPlanId;
+  }
 
-    get endDate(): Date {
-        if (!this.props.endDate) {
-            throw new Error("No endDate found");
-        }
-        return this.props.endDate;
-    };
+  get currentPeriodStart(): Date | null {
+    return this.props.currentPeriodStart;
+  }
 
-    get startDate(): Date {
-        if (!this.props.startDate) {
-            throw new Error("No startDate found");
-        }
-        return this.props.startDate;
-    };
+  get currentPeriodEnd(): Date | null {
+    return this.props.currentPeriodEnd;
+  }
 
-    get subscriptionPlanId(): string {
-        return this.props.subscriptionPlanId;
-    }
+  get subscriptionStatus(): SubscriptionStatus {
+    return this.props.subscriptionStatus;
+  }
 
-    // Business Methods
+  get cancelAtPeriodEnd(): boolean | null {
+    return this.props.cancelAtPeriodEnd;
+  }
 
-    getProps(): Readonly<SubscriptionProps> {
-        return { ...this.props };
-    };
+  get cancelAt(): Date | null {
+    return this.props.cancelAt;
+  }
 
-    subscriptionPaymentFailed() {
-        this.props.subscriptionStatus = SubscriptionStatus.FAILED;
-        this.touch();
-    };
+  get lastEventAt(): Date | null {
+    return this.props.lastEventAt;
+  }
 
-    subscriptionPaymentSuccess(props: SubscriptionPaymentSuccessProps) {
-        this.props.subscriptionStatus = SubscriptionStatus.ACTIVE;
-        this.props.startDate = props.startDate;
-        this.props.endDate = props.endDate;
-        this.props.paymentId = props.paymentId;
-        this.touch();
-    };
+  get paymentId(): string | null {
+    return this.props.paymentId;
+  }
+
+  get createdAt(): Date {
+    return this.props.createdAt;
+  }
+
+  get updatedAt(): Date {
+    return this.props.updatedAt;
+  }
+
+  // Business Methods
+
+  getProps(): Readonly<SubscriptionProps> {
+    return { ...this.props };
+  }
+
+  subscriptionPaymentFailed() {
+    this.props.subscriptionStatus = SubscriptionStatus.PAYMENT_FAILED;
+    this.touch();
+  }
+
+  subscriptionPaymentSuccess(props: SubscriptionPaymentSuccessProps) {
+    this.props.subscriptionStatus = SubscriptionStatus.ACTIVE;
+    this.props.currentPeriodStart = props.currentPeriodStart;
+    this.props.currentPeriodEnd = props.currentPeriodEnd;
+    this.props.paymentId = props.paymentId;
+    this.props.cancelAtPeriodEnd = props.cancelAtPeriodEnd;
+    this.props.cancelAt = props.cancelAt;
+    this.props.lastEventAt = props.lastEventAt;
+    this.touch();
+  }
 }

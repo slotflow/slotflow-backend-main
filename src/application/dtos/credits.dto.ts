@@ -1,15 +1,21 @@
-import { CreditTransactionSource, CreditTransactionStatus, CreditTransactionType } from "../../domain/enums/creditTransaction.enum";
-import { CreditAccountDTO, CreditTransactionDTO, MiniCardData, UserDTO } from "./common.dto";
+import {
+  CreditTransactionType,
+  CreditTransactionSource,
+  CreditTransactionStatus,
+} from "../../domain/enums/creditTransaction.enum";
+import { CommonDateInput, MiniCardData } from "./common.dto";
+import { UserProps } from "../../domain/contracts/user.contract";
+import { CreditAccountProps } from "../../domain/contracts/creditAccount.contract";
+import { CreditTransactionProps } from "../../domain/contracts/creditTransation.contract";
 
-//// **** credits  dtos **** ////
+/**
+ * Credit queries dtos
+ */
 
-//// **** credits queries query and view **** ////
-
-// 1. GetCreditAccountDetails method query and view 
-export interface GetCreditAccountDetailsQuery {
-  userId: UserDTO["_id"]
-  startDate: Date;
-  endDate: Date;
+// GetCreditAccountDetails method
+export interface GetCreditAccountDetailsQuery extends CommonDateInput {
+  userId: UserProps["_id"];
+  timeZone: string;
 }
 export interface CreditMainChartData {
   date: string;
@@ -17,36 +23,33 @@ export interface CreditMainChartData {
   spentCredits: number;
   balanceCredits: number;
 }
-export type GetCreditAccountDetailsView = Pick<CreditAccountDTO, "isActive"> & {
+export type GetCreditAccountDetailsView = Pick<CreditAccountProps, "isActive"> & {
   totalCredits: MiniCardData;
   spentCredits: MiniCardData;
-  balanceCredits: MiniCardData
+  balanceCredits: MiniCardData;
   chartData: CreditMainChartData[];
-}
-export type CreditChartKeys =
-    | "totalCredits"
-    | "spentCredits"
-    | "balanceCredits"
+};
+export type CreditChartKeys = "totalCredits" | "spentCredits" | "balanceCredits";
 
+/**
+ * Credit usecase dtos
+ */
 
-
-
-
-//// **** credits usecases input output **** ////
-
-// 1. GetCreditAccountDetails method input output 
+// GetCreditAccountDetails method
 export type GetCreditAccountDetailsInput = GetCreditAccountDetailsQuery;
 export type GetCreditAccountDetailsOutput = GetCreditAccountDetailsView;
 
-// 2. GetCreditTransactions method input output 
-export interface GetCreditTransactionsInput {
-  userId: UserDTO["_id"];
-  startDate: Date;
-  endDate: Date;
+// GetCreditTransactions method
+export interface GetCreditTransactionsInput extends CommonDateInput {
+  userId: UserProps["_id"];
   page: number;
   limit: number;
   status?: CreditTransactionStatus;
   type?: CreditTransactionType;
   source?: CreditTransactionSource;
+  timeZone?: string;
 }
-export type GetCreditTransactionsOutput = Pick<CreditTransactionDTO, "status" | "type" | "source" | "credits" | "balanceAfter">;
+export type GetCreditTransactionsOutput = Pick<
+  CreditTransactionProps,
+  "status" | "type" | "source" | "credits" | "balanceAfter"
+>;

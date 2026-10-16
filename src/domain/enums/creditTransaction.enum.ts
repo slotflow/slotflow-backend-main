@@ -1,6 +1,6 @@
 export enum CreditTransactionType {
   CREDIT = "CREDIT",
-  DEBIT = "DEBIT"
+  DEBIT = "DEBIT",
 }
 
 export enum CreditTransactionSource {
@@ -8,15 +8,15 @@ export enum CreditTransactionSource {
   BOOKING_DISCOUNT = "BOOKING_DISCOUNT",
   SUBSCRIPTION_DISCOUNT = "SUBSCRIPTION_DISCOUNT",
   ADMIN = "ADMIN",
-  PROMOTION = "PROMOTION"
+  PROMOTION = "PROMOTION",
 }
 
 export enum CreditTransactionStatus {
   SUCCESS = "SUCCESS",
-  FAILED = "FAILED"
+  FAILED = "FAILED",
 }
 
 export enum RewardPoints {
   SUBSCRIPTION = 100,
-  BOOKING = 100
+  BOOKING = 50,
 }

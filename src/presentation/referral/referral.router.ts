@@ -6,16 +6,18 @@ import { authMiddleware } from "../middleware/auth.middleware";
 
 const router = Router();
 
-router.get('/me',
-    authMiddleware,
-    authorize(Role.USER, Role.PROVIDER),
-    referralController.getReferralDetails
+router.get(
+  "/me",
+  authMiddleware,
+  authorize(Role.USER, Role.PROVIDER),
+  referralController.getReferralDetails,
 );
 
-router.get('/',
-    authMiddleware,
-    authorize(Role.USER, Role.PROVIDER),
-    referralController.getReferralsList
+router.get(
+  "/",
+  authMiddleware,
+  authorize(Role.USER, Role.PROVIDER),
+  referralController.getReferralsList,
 );
 
 export default router;

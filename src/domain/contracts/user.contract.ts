@@ -1,32 +1,31 @@
-import { HearAboutUsOptionValue, OnboardingStatus, Role, StripeAccountStatus } from "../enums/common.enum";
+import { TimeZone } from "../commands/user.commands";
+import { HearAboutUsOptionValue, OnboardingStatus, Role } from "../enums/common.enum";
 
 export interface UserProps {
-    _id: string
+  _id: string;
 
-    username: string;
-    email: string;
-    password: string | null;
+  username: string;
+  email: string;
+  password: string | null;
 
-    role: Role;
-    onboardingType: Role | null;
-    onboardingStatus: OnboardingStatus;
+  role: Role;
+  onboardingType: Role | null;
+  onboardingStatus: OnboardingStatus;
 
-    isBlocked: boolean;
+  isBlocked: boolean;
 
-    phone: string | null;
-    profileImage: string | null;
-    addressId: string | null;
-    googleConnected: boolean;
-    googleId: string | null;
-    stripeAccountStatus: StripeAccountStatus;
-    stripeAccountId: string | null;
-    stripeCustomerId: string | null;
+  phone: string | null;
+  profileImage: string | null;
+  addressId: string | null;
+  googleConnected: boolean;
+  googleId: string | null;
 
-    allowPushNotification: boolean;
-    whereDidHearAboutUs: HearAboutUsOptionValue | null;
-    referralCode: string | null;
-    referredBy: string | null;
+  whereDidHearAboutUs: HearAboutUsOptionValue | null;
+  referralCode: string | null;
+  referredBy: string | null;
 
-    createdAt: Date,
-    updatedAt: Date
+  timeZone: TimeZone;
+
+  createdAt: Date;
+  updatedAt: Date;
 }

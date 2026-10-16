@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { dateSchema } from "./base.zod";
+import { dateOnlySchema } from "./base.zod";
 import { FileType } from "../../domain/enums/common.enum";
 
 // s3 presigned URL generation validation schema
@@ -11,11 +11,11 @@ export const presignedUrlSchema = z.object({
 
 // change block status validation schema
 export const changeBlockStatusSchema = z.object({
-  blockStatus: z.boolean(),
+  isBlocked: z.boolean(),
 });
 
 // start and end date validation schema
 export const startAndEndDateSchema = z.object({
-    startDate: dateSchema,
-    endDate: dateSchema,
+  startDate: dateOnlySchema,
+  endDate: dateOnlySchema,
 });

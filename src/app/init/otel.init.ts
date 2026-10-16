@@ -1,4 +1,4 @@
-import { otelSDK } from '../../infrastructure/observability/otel';
+import { otelSDK } from "../../infrastructure/observability/otel";
 
 export const initOtel = async () => {
   await otelSDK.start();

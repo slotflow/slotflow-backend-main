@@ -7,17 +7,19 @@ import { authMiddleware } from "../middleware/auth.middleware";
 const router = Router();
 
 // user get credit account details
-router.get('/me',
-    authMiddleware,
-    authorize(Role.USER, Role.PROVIDER),
-    creditController.getCreditAccountDetails
+router.get(
+  "/me",
+  authMiddleware,
+  authorize(Role.USER, Role.PROVIDER),
+  creditController.getCreditAccountDetails,
 );
 
 // user get credit account transactions
-router.get('/me/transactions',
-    authMiddleware,
-    authorize(Role.USER, Role.PROVIDER),
-    creditController.getCreditTransactions
+router.get(
+  "/me/transactions",
+  authMiddleware,
+  authorize(Role.USER, Role.PROVIDER),
+  creditController.getCreditTransactions,
 );
 
 export default router;

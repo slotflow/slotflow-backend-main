@@ -1,5 +1,14 @@
 import { PlanProps } from "../contracts/plan.contract";
 
-export type CreatePlanProps = Omit<PlanProps, "_id" | "createdAt" | "updatedAt" | "isBlocked">;
+export interface StripePlanDetails {
+  productId: string;
+  monthlyPriceId: string;
+  yearlyPriceId: string;
+}
 
-export type UpdatePlanProps = Omit<PlanProps, "_id" | "createdAt" | "updatedAt">;
+export type CreatePlanProps = Omit<
+  PlanProps,
+  "_id" | "createdAt" | "updatedAt" | "isBlocked" | "stripePlanDetails" | "stripeSync"
+>;
+
+export type UpdatePlanProps = Partial<Omit<PlanProps, "_id" | "createdAt" | "updatedAt">>;

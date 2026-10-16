@@ -1,111 +1,122 @@
-import { UserDataQuery, UserDataView } from "./user.dto";
-import { ProviderProfileDTO, ReviewDTO, UserDTO } from "./common.dto";
-import { SubscriptionStatsForAdminQuery, SubscriptionStatsForAdminView } from "./subscription.dto";
+import {
+  UserStatsDataView,
+  UserChartDataView,
+  UserChartDataQuery,
+  UserStatsDataQuery,
+  ProviderStatsDataQuery,
+  ProviderStatsDataView,
+} from "./user.dto";
+import { CommonDateInput } from "./common.dto";
+import { UserProps } from "../../domain/contracts/user.contract";
+import { ReviewProps } from "../../domain/contracts/review.contract";
+import { ProviderProfileProps } from "../../domain/contracts/providerProfile.contract";
+import { BookingsStatsDataAdminQuery, BookingsStatsDataAdminView } from "./booking.dto";
+import { SubscriptionStatsDataQuery, SubscriptionStatsDataView } from "./subscription.dto";
 
-//// **** admin dtos **** ////
+/**
+ * Admin usecase dtos
+ */
 
-// GetStatsDataCommon usecase input output
-export interface GetStatsDataCommonInput {
-    startDate: Date;
-    endDate: Date;
-}
+// GetUserData
+export type GetUserStatsDataInput = UserStatsDataQuery;
+export type GetUserStatsDataOutput = UserStatsDataView;
 
-// GetBookingsData usecase input output
-export interface GetBookingsDataInput extends GetStatsDataCommonInput { }
-export interface GetBookingsDataOutput {
-    totalAppointments: number;
-    completedAppointments: number;
-    cancelledAppointments: number;
-    missedAppointments: number;
-    rejectedAppointments: number;
-};
+// GetProviderData
+export type GetProviderDataInput = ProviderStatsDataQuery;
+export type GetProviderDataOutput = ProviderStatsDataView;
 
-// AdminApproveProvider usecase input
+// GetSubscriptionData
+export type GetSubscriptionStatsDataInput = SubscriptionStatsDataQuery;
+export type GetSubscriptionStatsDataOutput = SubscriptionStatsDataView;
+
+// GetBookingsData
+export type GetBookingsDataInput = BookingsStatsDataAdminQuery;
+export type GetBookingsDataOutput = BookingsStatsDataAdminView;
+
+// AdminApproveProvider
 export interface AdminApproveProviderInput {
-    providerId: UserDTO["_id"];
-};
+  providerId: UserProps["_id"];
+}
+export type AdminApproveProviderOutput = Pick<UserProps, "_id"> &
+  Pick<ProviderProfileProps, "isAdminVerified" | "adminVerificationStatus">;
 
-// AdminRejectProvider usecase input
-export type AdminRejectProviderInput = Pick<ProviderProfileDTO, "verificationRejectionReason" | "isAddressVerified" | "isServiceDetailsVerified" | "isAvailabilityVerified" | "isProofsVerified"> & {
-    providerId: UserDTO["_id"];
+// Reject provider ( by admin )
+export type AdminRejectProviderInput = Pick<
+  ProviderProfileProps,
+  | "verificationRejectionReason"
+  | "isAddressVerified"
+  | "isServiceDetailsVerified"
+  | "isAvailabilityVerified"
+  | "isProofsVerified"
+> & {
+  providerId: UserProps["_id"];
 };
+export type AdminRejectProviderOutput = Pick<UserProps, "_id"> &
+  Pick<
+    ProviderProfileProps,
+    "isAddressVerified" | "isServiceDetailsVerified" | "isAvailabilityVerified" | "isProofsVerified"
+  >;
 
-// AdminChangeProviderBlockStatus usecase input output
-export interface AdminChangeProviderBlockStatusInput {
-    providerId: UserDTO["_id"];
-    isBlocked: UserDTO["isBlocked"];
+// Change provider block status ( by admin )
+export type AdminChangeProviderBlockStatusInput = Pick<UserProps, "isBlocked"> & {
+  providerId: UserProps["_id"];
 };
-export type AdminChangeProviderBlockStatusOutput = AdminChangeProviderBlockStatusInput;
+export type AdminChangeProviderBlockStatusOutput = Pick<UserProps, "_id" | "isBlocked">;
 
-// AdminChangeProviderTrustTag usecase input output
-export interface AdminChangeProviderTrustTagInput {
-    providerId: UserDTO["_id"];
-    trustedBySlotflow: ProviderProfileDTO["trustedBySlotflow"];
+// Change provider trust tag ( by admin )
+export type AdminChangeProviderTrustTagInput = Pick<ProviderProfileProps, "trustedBySlotflow"> & {
+  providerId: UserProps["_id"];
 };
-export type AdminChangeProviderTrustTagOutput = AdminChangeProviderTrustTagInput;
+export type AdminChangeProviderTrustTagOutput = Pick<UserProps, "_id"> &
+  Pick<ProviderProfileProps, "trustedBySlotflow">;
 
-// ToggleReviewBlockStatus usecase input output
-export interface ToggleReviewBlockStatusInput {
-    reviewId: ReviewDTO["_id"];
-    isBlocked: ReviewDTO["isBlocked"];
+// ToggleReviewBlockStatus
+export type ChangeReviewBlockStatusInput = Pick<ReviewProps, "isBlocked"> & {
+  reviewId: ReviewProps["_id"];
 };
-export type ToggleReviewBlockStatusOutput = ToggleReviewBlockStatusInput;
+export type ChangeReviewBlockStatusOutput = Pick<ReviewProps, "_id" | "isBlocked">;
 
-// GetGraphData usecase input output
-export interface GetGraphDataInput extends GetStatsDataCommonInput { }
+// GetGraphData
+export interface GetGraphDataInput extends CommonDateInput {
+  timeZone: string;
+}
 export interface GetGraphDataOutput {
-    appointmentsOvertimeChartData: Array<{
-        date: string;
-        completed: number;
-        missed: number;
-        cancelled: number;
-    }>;
+  appointmentsOvertimeChartData: Array<{
+    date: string;
+    completed: number;
+    missed: number;
+    cancelled: number;
+  }>;
 
-    peakBookingHoursChartData: Array<{
-        date: string;
-        hour: string;
-        bookings: number;
-    }>;
+  peakBookingHoursChartData: Array<{
+    date: string;
+    hour: string;
+    bookings: number;
+  }>;
 
-    appointmentModeChartData: Array<{
-        date: string;
-        online: number;
-        offline: number;
-    }>;
+  appointmentModeChartData: Array<{
+    date: string;
+    online: number;
+    offline: number;
+  }>;
 
-    completionBreakdownChartData: Array<{
-        status: 'completed' | 'missed' | 'cancelled' | 'rejected' | "confirmed" | "booked" | "pending";
-        value: number;
-    }>;
+  completionBreakdownChartData: Array<{
+    status: "completed" | "missed" | "cancelled" | "rejected" | "confirmed" | "booked" | "pending";
+    value: number;
+  }>;
 
-    newVsReturningUsersChartData: Array<{
-        date: string;
-        newUsers: number;
-        returningUsers: number;
-    }>;
+  newVsReturningUsersChartData: Array<{
+    date: string;
+    newUsers: number;
+    returningUsers: number;
+  }>;
 
-    topBookingDaysChartData: Array<{
-        day: string;
-        count: number;
-    }>;
+  topBookingDaysChartData: Array<{
+    day: string;
+    count: number;
+  }>;
 }
 
-// GetProviderData usecase input output
-export interface GetProviderDataInput extends GetStatsDataCommonInput { }
-export interface GetProviderDataOutput {
-    totalProviders: number;
-    adminVerifiedProviders: number;
-    blockedProviders: number;
-    addressAddedProviders: number;
-    serviceAddedProviders: number;
-    availabilityAddedProviders: number;
-    slotflowTrustedProviders: number;
-};
-
-// GetSubscriptionData usecase input output
-export type GetSubscriptionDataInput = SubscriptionStatsForAdminQuery;
-export type GetSubscriptionDataOutput = SubscriptionStatsForAdminView;
-
-// GetUserData usecase input output
-export type GetUserDataInput = UserDataQuery;
-export type GetUserDataOutput = UserDataView;
+// get user chart data
+export type GetUserChartDataInput = UserChartDataQuery;
+export type GetUserChartDataOutput = UserChartDataView;

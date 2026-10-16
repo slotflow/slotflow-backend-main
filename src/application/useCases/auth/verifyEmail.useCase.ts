@@ -1,40 +1,82 @@
-import { ERROR_CODES } from "../../../shared/utils/types";
-import { IJWT } from "../../../domain/interfaces/security/IJwt";
+import { VerifyEmailInput, VerifyEmailOutput, PendingPasswordReset } from "../../dtos/auth.dto";
+import { Redis } from "@upstash/redis";
+import { IdType } from "../../../shared/utils/types/enums";
+import { appConfig, kafkaConfig } from "../../../config/env";
+import { OtpPurpose } from "../../../domain/enums/common.enum";
+import { BadRequestError } from "../../../shared/error/appError";
+import { createHmac, randomBytes, randomInt } from "node:crypto";
+import { EventEnvelope, SendOtpEvent } from "../../dtos/kafka.dto";
+import { generateId } from "../../../shared/utils/helpers/generateId";
 import { toAppError } from "../../../shared/error/handleUnknownError";
-import { VerifyEmailInput, VerifyEmailOutput } from "../../dtos/auth.dto";
-import { IOTPService } from "../../../domain/interfaces/services/IOtp.service";
-import { BadRequestError, NotFoundError } from "../../../shared/error/appError";
+import { passwordRestConfig } from "../../../shared/utils/constants/constant";
+import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 
 export class VerifyEmailUseCase {
-    constructor(
-        private readonly userRepository: IUserRepository,
-        private readonly optService: IOTPService,
-        private readonly jwtService: IJWT,
-    ) { }
+  constructor(
+    private readonly userRepository: IUserRepository,
+    private readonly kafkaProducer: IKafkaProducerAdapter,
+    private readonly redisClient: Redis,
+  ) {}
 
-    async execute(input: VerifyEmailInput): Promise<VerifyEmailOutput> {
-        try {
-            const { email } = input;
-            if (!email) {
-                throw new BadRequestError()
-            }
+  async execute(input: VerifyEmailInput): Promise<VerifyEmailOutput> {
+    try {
+      const { email } = input;
 
-            const user = await this.userRepository.findByEmail(email);
-            if (!user) {
-                throw new NotFoundError(
-                    "Invalid credential",
-                    ERROR_CODES.INVALID_CREDENTIALS
-                );
-            }
+      if (!email) {
+        throw new BadRequestError("Email is required");
+      }
 
-            const token = await this.jwtService.generateToken({ userId: user._id, email: user.email });
+      const normalizedEmail = email.trim().toLowerCase();
 
-            await this.optService.setOtp(email);
+      const user = await this.userRepository.findByEmail(normalizedEmail);
 
-            return { token };
-        } catch (error: unknown) {
-            throw toAppError(error, "Failed to verify email");
-        }
+      const resetRequestId = randomBytes(32).toString("hex");
+
+      if (!user || user.isBlocked) {
+        return { resetRequestId };
+      }
+
+      const otp = randomInt(100000, 1000000).toString();
+
+      const otpHash = createHmac("sha256", appConfig.otpHashSecret)
+        .update(`${resetRequestId}:${otp}`)
+        .digest("hex");
+
+      const pendingReset: PendingPasswordReset = {
+        userId: String(user._id),
+        email: user.email,
+        otpHash,
+      };
+
+      await this.redisClient.set(`password-reset:otp:${resetRequestId}`, pendingReset, {
+        ex: passwordRestConfig.otpTTL,
+      });
+
+      await this.redisClient.set(`password-reset:attempts:${resetRequestId}`, 0, {
+        ex: passwordRestConfig.otpTTL,
+      });
+
+      await this.kafkaProducer.publish<EventEnvelope<SendOtpEvent>>(
+        kafkaConfig.topics.pub.sendOtp,
+        {
+          eventId: generateId({ type: IdType.EVENT }),
+          attempt: 1,
+          maxAttempts: 1,
+          occurredAt: new Date(),
+          payload: {
+            emailData: {
+              email: user.email,
+              otp,
+              purpose: OtpPurpose.PASSWORD_RESET,
+            },
+          },
+        },
+      );
+
+      return { resetRequestId };
+    } catch (error: unknown) {
+      throw toAppError(error, "Failed to send password reset OTP");
     }
+  }
 }

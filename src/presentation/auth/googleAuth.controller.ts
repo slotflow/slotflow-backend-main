@@ -1,112 +1,95 @@
 import passport from "passport";
 import { log } from "../../shared/logger/logger";
 import { googleAuthOrchestratorUseCase } from ".";
-import { Role } from "../../domain/enums/common.enum";
 import { NextFunction, Request, Response } from "express";
-import { appConfig, serviceConfig } from "../../config/env";
-import { roleValidationSchema } from "../../shared/zod/base.zod";
+import { callbackConfig, serviceConfig } from "../../config/env";
+import { GoogleOAuthUser } from "../../application/dtos/common.dto";
+import {
+  accessTokenCookieOptions,
+  refreshTokenCookieOptions,
+} from "../../shared/utils/constants/constant";
 import { GoogleAuthOrchestratorUseCase } from "../../application/useCases/auth/googleAuthOrchestrate.useCase";
 
 class GoogleAuthController {
-    constructor(
-        private googleAuthOrchestratorUseCase: GoogleAuthOrchestratorUseCase,
-    ) {
-        this.googleAuth = this.googleAuth.bind(this);
-        this.googleAuthCallback = this.googleAuthCallback.bind(this);
-    };
+  constructor(private googleAuthOrchestratorUseCase: GoogleAuthOrchestratorUseCase) {
+    this.googleAuth = this.googleAuth.bind(this);
+    this.googleAuthCallback = this.googleAuthCallback.bind(this);
+  }
 
-    async googleAuth(req: Request, res: Response, next: NextFunction) {
-        try {
-            const { role } = roleValidationSchema.parse({ role: req.query.role });
-            passport.authenticate("google", {
-                scope: [
-                    "openid",
-                    "profile",
-                    "email",
-                    "https://www.googleapis.com/auth/calendar.events.owned",
-                    "https://www.googleapis.com/auth/calendar.events.owned.readonly"
-                ],
-                accessType: "offline",
-                prompt: "consent",
-                session: false,
-                state: JSON.stringify({ role, connectOnly: false }),
-            })(req, res, next);
-        } catch (error) {
-            log.error("googleAuth failed", error as Error);
-            next(error);
-        };
-    };
+  async googleAuth(req: Request, res: Response, next: NextFunction) {
+    try {
+      const timeZoneQuery = req.query.timeZone as string;
+      passport.authenticate("google", {
+        scope: ["openid", "profile", "email"],
+        accessType: "offline",
+        prompt: "consent",
+        session: false,
+        state: timeZoneQuery || "",
+      })(req, res, next);
+    } catch (error) {
+      log.error("googleAuth failed", { error });
+      next(error);
+    }
+  }
 
-    async googleAuthCallback(req: Request, res: Response, next: NextFunction) {
-        try {
-            passport.authenticate("google", { session: false }, async (err, user, info) => {
+  async googleAuthCallback(req: Request, res: Response, next: NextFunction) {
+    try {
+      passport.authenticate(
+        "google",
+        { session: false },
+        async (err, user: GoogleOAuthUser, _info) => {
+          const fallbackRoute = callbackConfig.authUrl;
+          if (err || !user) {
+            const errorPayload = {
+              success: false,
+              error: "GOOGLE_AUTH_FAILED",
+            };
 
-                if (err || !user) {
-                    if (info.connectOnly) {
-                        const errorPayload = {
-                            success: false,
-                            error: "GOOGLE_CONNECT_FAILED",
-                            googleConnect: false
-                        };
+            const redirectData = encodeURIComponent(JSON.stringify(errorPayload));
+            return res.redirect(
+              `${serviceConfig.frontendUrl}${fallbackRoute}?response=${redirectData}`,
+            );
+          }
 
-                        const redirectData = encodeURIComponent(JSON.stringify(errorPayload));
-                        return res.redirect(`${serviceConfig.frontendUrl}/${info.role === Role.PROVIDER ? "provider" : "user"}/integrations?response=${redirectData}`);
-                    } else {
-                        return res.redirect(`${serviceConfig.frontendUrl}/login?error=google_auth_failed`);
-                    }
-                }
+          let timeZoneData = null;
+          if (req.query.state) {
+            try {
+              timeZoneData = JSON.parse(decodeURIComponent(req.query.state as string));
+            } catch (parseError) {
+              log.error("Time zone parse error : ", { parseError });
+              timeZoneData = req.query.state;
+            }
+          }
 
-                const role = user.role;
-                const expiryDate = new Date(Date.now() + 60 * 60 * 1000);
+          const {
+            tokens: { accessToken, refreshToken },
+            user: googleUser,
+          } = await this.googleAuthOrchestratorUseCase.execute({
+            email: user.email,
+            googleId: user.googleId,
+            name: user.name,
+            image: user.image,
+            timeZone: timeZoneData,
+          });
 
-                const { token, user: updatedUser } = await this.googleAuthOrchestratorUseCase.execute({
-                    email: user.email,
-                    googleId: user.googleId,
-                    name: user.name,
-                    role,
-                    connectOnly: user.connectOnly,
-                    image: user.image,
-                    userId: user.id,
-                    accessToken: user.googleAccessToken,
-                    refreshToken: user.googleRefreshToken,
-                    expiryDate,
-                });
+          res.cookie("token", accessToken, accessTokenCookieOptions);
+          res.cookie("refreshToken", refreshToken, refreshTokenCookieOptions);
 
-                if (user.connectOnly) {
-                    const successPayload = {
-                        success: true,
-                        ...updatedUser,
-                    };
-                    const redirectData = encodeURIComponent(JSON.stringify(successPayload));
-                    return res.redirect(`${serviceConfig.frontendUrl}/${role === Role.PROVIDER ? "provider" : "user"}/settings/integrations?response=${redirectData}`);
-                };
+          const successPayload = {
+            success: true,
+            user: googleUser,
+          };
 
-                res.cookie("token", token, {
-                    maxAge: 2 * 24 * 60 * 60 * 1000,
-                    httpOnly: true,
-                    sameSite: appConfig.nodeEnv === "development" ? "lax" : "none",
-                    secure: appConfig.nodeEnv !== "development",
-                });
+          const redirectData = JSON.stringify(successPayload);
+          return res.redirect(
+            `${serviceConfig.frontendUrl}${fallbackRoute}?response=${encodeURIComponent(redirectData)}`,
+          );
+        },
+      )(req, res);
+    } catch (error) {
+      next(error);
+    }
+  }
+}
 
-                const authUserWithoutTokenJson = JSON.stringify(updatedUser);
-                const frontendUrl = serviceConfig.frontendUrl;
-                return res.redirect(`${frontendUrl}?authUser=${encodeURIComponent(authUserWithoutTokenJson)}`);
-            })(req, res);
-        } catch (error) {
-            next(error);
-        };
-    };
-};
-
-export const googleAuthController = new GoogleAuthController(
-    googleAuthOrchestratorUseCase
-);
-
-
-
-
-
-
-
-
-
+export const googleAuthController = new GoogleAuthController(googleAuthOrchestratorUseCase);

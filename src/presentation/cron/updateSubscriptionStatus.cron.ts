@@ -1,20 +1,20 @@
-import dayjs from "dayjs";
 import { log } from "../../shared/logger/logger";
+import { formatDate } from "../../shared/utils/helpers/formatDate";
+import { dateFormats } from "../../shared/utils/constants/constant";
 import { UpdateSubscriptionStatusUseCase } from "../../application/useCases/cronJob/updateSubscriptionStatus.useCase";
 
 export class UpdateSubscriptionStatusCron {
-
   private lastRunDate: string | null = null;
   private readonly intervalMs: number;
   private intervalId: NodeJS.Timeout | null = null;
 
   constructor(
     private readonly updateSubscriptionStatusUseCase: UpdateSubscriptionStatusUseCase,
-    intervalHours = 1
+    intervalHours = 1,
   ) {
     this.intervalMs = intervalHours * 60 * 60 * 1000;
     this.intervalId = null;
-  };
+  }
 
   start(): void {
     log.info("UpdateSubscriptionStatusCron started");
@@ -22,7 +22,7 @@ export class UpdateSubscriptionStatusCron {
     this.intervalId = setInterval(async () => {
       await this.run();
     }, this.intervalMs);
-  };
+  }
 
   stop(): void {
     if (this.intervalId) {
@@ -33,12 +33,15 @@ export class UpdateSubscriptionStatusCron {
   }
 
   private async run(): Promise<void> {
-    const today = dayjs().format("YYYY-MM-DD");
+    const today = formatDate({
+      date: new Date(),
+      pattern: dateFormats.ISO_DATE,
+    });
 
     if (this.lastRunDate === today) {
       log.info("[CRON] Subscription status already updated today. Skipping.");
       return;
-    };
+    }
 
     log.info("[CRON] Running UpdateSubscriptionStatusCron");
 
@@ -50,12 +53,9 @@ export class UpdateSubscriptionStatusCron {
         log.info("[CRON] Subscription status updated successfully");
       } else {
         log.info("[CRON] No subscription updates. Will retry later.");
-      };
+      }
     } catch (error) {
-      log.error(
-        "UpdateSubscriptionStatusCron failed",
-        error as Error
-      );
-    };
-  };
-};
+      log.error("UpdateSubscriptionStatusCron failed", { error });
+    }
+  }
+}

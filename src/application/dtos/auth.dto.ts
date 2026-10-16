@@ -1,141 +1,211 @@
-import { OnboardingStatus, Role } from "../../domain/enums/common.enum";
-import { ProviderProfileDTO, UserDTO } from "./common.dto";
+import { UserProps } from "../../domain/contracts/user.contract";
+import { ProviderProfileProps } from "../../domain/contracts/providerProfile.contract";
+import { TimeZone } from "../../domain/commands/user.commands";
+import { AuthTokens } from "./common.dto";
 
-//// **** auth dtos **** ////
+/**
+ * Auth usecase dtos
+ */
 
-// Register usecase input output
-export interface RegisterInput {
-    username: UserDTO["username"];
-    email: UserDTO["email"];
-    password: string;
-}
-
+// Register
+export type RegisterInput = Pick<UserProps, "email" | "password" | "timeZone">;
 export interface RegisterOutput {
-    token: string
+  registrationId: string;
 }
 
-
-// OTP Verification usecase input
-export interface OTPVerificationInput {
-    token: string;
-    otp: string;
+// Pending registration
+export interface PendingRegistration {
+  email: string;
+  passwordHash: string;
+  timeZone: RegisterInput["timeZone"];
+  otpHash: string;
 }
 
+// OTP Verification
+export interface RegisterOTPVerificationInput {
+  registrationId: string;
+  otp: string;
+}
 
-// ResendOtp usecase output
+// ResendOtp
 export interface ResendOtpOutput {
-    token: string;
+  registrationId: string;
 }
 
-// VerifyEmail usecase input output
+// VerifyEmail
 export interface VerifyEmailInput {
-    email: UserDTO["email"];
+  email: UserProps["email"];
 }
 export interface VerifyEmailOutput {
-    token: string;
+  resetRequestId: string;
 }
 
-// Login usecase input output
+// Pending password reset
+export interface PendingPasswordReset {
+  userId: string;
+  email: string;
+  otpHash: string;
+}
+
+// Verify otp for reset password
+export interface VerifyResetOtpInput {
+  resetRequestId: string;
+  otp: string;
+}
+export interface VerifyResetOtpOutput {
+  resetGrant: string;
+}
+
+export interface PasswordResetGrant {
+  userId: string;
+}
+
+export interface ResetPasswordInput {
+  resetGrant: string;
+  password: string;
+}
+
+// Login
 export interface LoginInput {
-    email: UserDTO["email"];
-    password: string;
+  email: UserProps["email"];
+  password: string;
 }
 export interface LoginOutput {
-    token: string;
-    user: {
-        uid: UserDTO["_id"];
-        username: UserDTO["username"];
-        email: UserDTO["email"];
-        role: UserDTO["role"];
-        onboardingType: Role | null;
-        onboardingStatus: OnboardingStatus;
-        isBlocked: UserDTO["isBlocked"];
-        isLoggedIn: boolean;
-        phone: UserDTO["phone"];
-        profileImage: UserDTO["profileImage"];
-        isAddressAdded: boolean;
+  tokens: AuthTokens;
+  user: Pick<
+    UserProps,
+    | "username"
+    | "email"
+    | "role"
+    | "onboardingType"
+    | "onboardingStatus"
+    | "isBlocked"
+    | "phone"
+    | "profileImage"
+  > &
+    Partial<
+      Pick<
+        ProviderProfileProps,
+        | "isAddressVerified"
+        | "isServiceDetailsVerified"
+        | "isAvailabilityVerified"
+        | "isProofsVerified"
+        | "isAdminVerified"
+        | "verificationRejectionReason"
+        | "adminVerificationStatus"
+        | "hasUsedTrial"
+      >
+    > & {
+      uid: UserProps["_id"];
+      isLoggedIn: boolean;
+      isAddressAdded: boolean;
 
-        isServiceDetailsAdded?: boolean;
-        isServiceAvailabilityAdded?: boolean;
-        isProofSubmitted?: {
-            identityProof: boolean;
-            serviceProof: boolean;
-        };
-        isAddressVerified?: ProviderProfileDTO["isAddressVerified"],
-        isServiceDetailsVerified?: ProviderProfileDTO["isServiceDetailsVerified"],
-        isAvailabilityVerified?: ProviderProfileDTO["isAvailabilityVerified"],
-        isProofsVerified?: ProviderProfileDTO["isProofsVerified"],
-        isAdminVerified?: ProviderProfileDTO["isAdminVerified"],
-        providerSubscription?: string;
-        verificationRejectionReason?: ProviderProfileDTO["verificationRejectionReason"],
-        adminVerificationStatus?: ProviderProfileDTO["adminVerificationStatus"],
+      isServiceDetailsAdded?: boolean;
+      isServiceAvailabilityAdded?: boolean;
+      isProofSubmitted?: {
+        identityProof: boolean;
+        serviceProof: boolean;
+      };
 
-        googleConnected: UserDTO["googleConnected"];
-        stripeAccountStatus: UserDTO["stripeAccountStatus"]
-        stripeCustomerId: UserDTO["stripeCustomerId"];
-        allowPushNotification: UserDTO["allowPushNotification"];
-    }
+      providerSubscription?: string;
+
+      timeZone: string;
+    };
 }
 
-
-// UpdatePassword usecase output
-export interface ResetPasswordInput {
-    token: string;
-    password: string;
-}
-
-
-// GoogleAuthOrchestration usecase input output
+// GoogleAuthOrchestration
 export interface GoogleAuthOrchestrationInput {
-    googleId: string;
-    email: string;
-    name: string;
-    image: string | null;
-    role: Role;
-    connectOnly: boolean;
-    userId: string | null;
-    accessToken: string;
-    refreshToken: string;
-    expiryDate: Date;
+  googleId: string;
+  email: string;
+  name: string;
+  image: string | null;
+  timeZone: TimeZone;
 }
 export interface GoogleAuthOrchestrationOutput {
-    token?: string;
-    user: {
-        googleId: string;
-        googleConnected: boolean;
-    } | {
-        uid: UserDTO["_id"];
-        username: UserDTO["username"];
-        email: UserDTO["email"];
-        role: UserDTO["role"];
-        onboardingType: Role | null;
-        onboardingStatus: OnboardingStatus;
-        isBlocked: UserDTO["isBlocked"];
-        isLoggedIn: boolean;
-        phone: UserDTO["phone"];
-        profileImage: UserDTO["profileImage"];
-        isAddressAdded: boolean;
+  tokens: AuthTokens;
+  user: Pick<
+    UserProps,
+    | "username"
+    | "email"
+    | "role"
+    | "onboardingType"
+    | "onboardingStatus"
+    | "isBlocked"
+    | "phone"
+    | "profileImage"
+  > &
+    Partial<
+      Pick<
+        ProviderProfileProps,
+        | "isAddressVerified"
+        | "isServiceDetailsVerified"
+        | "isAvailabilityVerified"
+        | "isProofsVerified"
+        | "isAdminVerified"
+        | "verificationRejectionReason"
+        | "adminVerificationStatus"
+        | "hasUsedTrial"
+      >
+    > & {
+      uid: UserProps["_id"];
+      isAddressAdded: boolean;
+      isLoggedIn: boolean;
 
-        isServiceDetailsAdded?: boolean;
-        isServiceAvailabilityAdded?: boolean;
-        isProofSubmitted?: {
-            identityProof: boolean;
-            serviceProof: boolean;
-        };
-        isAddressVerified?: ProviderProfileDTO["isAddressVerified"],
-        isServiceDetailsVerified?: ProviderProfileDTO["isServiceDetailsVerified"],
-        isAvailabilityVerified?: ProviderProfileDTO["isAvailabilityVerified"],
-        isProofsVerified?: ProviderProfileDTO["isProofsVerified"],
-        isAdminVerified?: ProviderProfileDTO["isAdminVerified"],
-        providerSubscription?: string;
-        verificationRejectionReason?: ProviderProfileDTO["verificationRejectionReason"],
-        adminVerificationStatus?: ProviderProfileDTO["adminVerificationStatus"],
+      isServiceDetailsAdded?: boolean;
+      isServiceAvailabilityAdded?: boolean;
+      isProofSubmitted?: {
+        identityProof: boolean;
+        serviceProof: boolean;
+      };
 
-        googleId: UserDTO["googleId"];
-        googleConnected: UserDTO["googleConnected"];
-        stripeAccountStatus: UserDTO["stripeAccountStatus"]
-        stripeAccountId: UserDTO["stripeAccountId"];
-        stripeCustomerId: UserDTO["stripeCustomerId"];
-        allowPushNotification: UserDTO["allowPushNotification"];
-    }
+      providerSubscription?: string;
+
+      timeZone: string;
+    };
 }
+
+/**
+ * Auth service dtos
+ */
+
+// Base user response
+export type BaseUserResponse = Pick<
+  UserProps,
+  | "username"
+  | "email"
+  | "role"
+  | "onboardingType"
+  | "onboardingStatus"
+  | "isBlocked"
+  | "phone"
+  | "profileImage"
+> & {
+  uid: UserProps["_id"];
+  isLoggedIn: boolean;
+  isAddressAdded: boolean;
+  timeZone: string;
+};
+
+// Provider prrof status
+export interface ProviderProofStatus {
+  identityProof: boolean;
+  serviceProof: boolean;
+}
+
+// Provider ( user with rpvider role ) response
+export type ProviderFieldsResponse = Pick<
+  ProviderProfileProps,
+  | "isAddressVerified"
+  | "isServiceDetailsVerified"
+  | "isAvailabilityVerified"
+  | "isProofsVerified"
+  | "isAdminVerified"
+  | "verificationRejectionReason"
+  | "adminVerificationStatus"
+  | "hasUsedTrial"
+> & {
+  isServiceDetailsAdded: boolean;
+  isServiceAvailabilityAdded: boolean;
+  isProofSubmitted?: ProviderProofStatus;
+  providerSubscription?: string;
+};

@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Compiled output
+dist/
+
+# Environment variables
+.env
+
+# Git
+.git/
+.gitignore
+
+# Husky
+.husky/
+
+# Logs
+logs/
+
+# Code formatting and linting
+.prettierignore
+.prettierrc.json
+eslint.config.js
+
+# Documentation
+README.md
+LICENSE

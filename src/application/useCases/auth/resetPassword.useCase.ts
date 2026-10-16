@@ -1,78 +1,84 @@
+import { Redis } from "@upstash/redis";
+import { PasswordResetGrant, ResetPasswordInput } from "../../dtos/auth.dto";
+import { AppError, BadRequestError, UnauthorizedError } from "../../../shared/error/appError";
 import { kafkaConfig } from "../../../config/env";
-import { ResetPasswordInput } from "../../dtos/auth.dto";
-import { generateId } from '../../../shared/utils/generateId';
-import { IJWT } from '../../../domain/interfaces/security/IJwt';
-import { ERROR_CODES, IdType } from '../../../shared/utils/types';
-import { toAppError } from '../../../shared/error/handleUnknownError';
-import { notificationContentMap } from '../../../shared/utils/constants';
+import { log } from "../../../shared/logger/logger";
+import { generateId } from "../../../shared/utils/helpers/generateId";
+import { toAppError } from "../../../shared/error/handleUnknownError";
+import { ERROR_CODES, IdType } from "../../../shared/utils/types/enums";
 import { EventEnvelope, SendResetPasswordEvent } from "../../dtos/kafka.dto";
-import { IPasswordHasher } from "../../../domain/interfaces/security/IPasswordHasher";
-import { AppError, BadRequestError, NotFoundError } from '../../../shared/error/appError';
+import { IPasswordHasher } from "../../interfaces/security/IPasswordHasher.service";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
+import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
 
 export class ResetPasswordUseCase {
-    constructor(
-        public readonly userRepository: IUserRepository,
-        public readonly passwordHasher: IPasswordHasher,
-        public readonly kafkaProducer: IKafkaProducerAdapter,
-        public readonly jwtService: IJWT,
-    ) { };
+  constructor(
+    private readonly userRepository: IUserRepository,
+    private readonly passwordHasher: IPasswordHasher,
+    private readonly kafkaProducer: IKafkaProducerAdapter,
+    private readonly redisClient: Redis,
+  ) {}
 
-    async execute(input: ResetPasswordInput): Promise<void> {
-        try {
-            const { token, password } = input;
-            if(!token || !password) {
-                throw new BadRequestError()
-            }
+  async execute(input: ResetPasswordInput): Promise<void> {
+    try {
+      const { resetGrant, password } = input;
 
-            const { userId, email } = await this.jwtService.verifyToken(token);
-            if (!userId || !email) {
-                throw new BadRequestError();
-            }
+      if (!resetGrant || !password || !/^[a-f0-9]{64}$/.test(resetGrant)) {
+        throw new BadRequestError("Invalid password reset request");
+      }
 
-            const user = await this.userRepository.findById(userId);
-            if (!user) {
-                throw new NotFoundError(
-                    "User not found",
-                    ERROR_CODES.USER_NOT_FOUND
-                );
-            }
+      const redisKey = `password-reset:grant:${resetGrant}`;
 
-            const hashedPassword = await this.passwordHasher.hashPassword(password);
+      const grant = await this.redisClient.getdel<PasswordResetGrant>(redisKey);
 
-            user.changePassword({ password: hashedPassword });
-            const updatedUser = await this.userRepository.update(user);
-            if(!updatedUser) {
-                throw new AppError(
-                    "Failed to update user",
-                    500,
-                    false,
-                    ERROR_CODES.INTERNAL_ERROR
-                )
-            }
+      if (!grant) {
+        throw new UnauthorizedError(
+          "Password reset session expired or already used",
+          ERROR_CODES.UNAUTHORIZED,
+        );
+      }
 
-            await this.kafkaProducer.publish<EventEnvelope<SendResetPasswordEvent>>(kafkaConfig.topics.pub.passwordReset, {
-                eventId: generateId({ type: IdType.EVENT }),
-                attempt: 1,
-                maxAttempts: 1,
-                occurredAt: new Date().toISOString(),
-                payload: {
-                    emailData: {
-                        email: user.email,
-                        name: user.username,
-                    },
-                    notificationData: {
-                        userId: user._id,
-                        pushNotification: user.allowPushNotification ?? false,
-                        title: notificationContentMap.resetPassword.title,
-                        body: notificationContentMap.resetPassword.body(),
-                    }
-                }
-            });
+      const user = await this.userRepository.findById(grant.userId);
 
-        } catch (error: unknown) {
-            throw toAppError(error, "Failed to reset password");
-        };
-    };
-};
+      if (!user || user.isBlocked) {
+        throw new UnauthorizedError("Password reset is not permitted", ERROR_CODES.UNAUTHORIZED);
+      }
+
+      const hashedPassword = await this.passwordHasher.hashPassword(password);
+
+      user.changePassword({
+        password: hashedPassword,
+      });
+
+      const updatedUser = await this.userRepository.update(user);
+
+      if (!updatedUser) {
+        throw new AppError("Failed to update user", 500, false, ERROR_CODES.INTERNAL_ERROR);
+      }
+
+      try {
+        await this.kafkaProducer.publish<EventEnvelope<SendResetPasswordEvent>>(
+          kafkaConfig.topics.pub.passwordReset,
+          {
+            eventId: generateId({ type: IdType.EVENT }),
+            attempt: 1,
+            maxAttempts: 1,
+            occurredAt: new Date(),
+            payload: {
+              emailData: {
+                email: updatedUser.email,
+                name: updatedUser.username,
+              },
+            },
+          },
+        );
+      } catch (error) {
+        log.error("Failed to publish password reset event", {
+          error,
+        });
+      }
+    } catch (error: unknown) {
+      throw toAppError(error, "Failed to reset password");
+    }
+  }
+}

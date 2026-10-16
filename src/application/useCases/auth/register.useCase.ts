@@ -1,67 +1,83 @@
-import { kafkaConfig } from '../../../config/env';
-import { generateId } from '../../../shared/utils/generateId';
-import { OtpPurpose } from '../../../domain/enums/common.enum';
-import { IJWT } from '../../../domain/interfaces/security/IJwt';
-import { BadRequestError } from '../../../shared/error/appError';
-import { ERROR_CODES, IdType } from '../../../shared/utils/types';
-import { EventEnvelope, SendOtpEvent } from '../../dtos/kafka.dto';
-import { RegisterInput, RegisterOutput } from '../../dtos/auth.dto';
-import { toAppError } from '../../../shared/error/handleUnknownError';
-import { IOTPService } from '../../../domain/interfaces/services/IOtp.service';
-import { IPasswordHasher } from '../../../domain/interfaces/security/IPasswordHasher';
-import { IUserRepository } from '../../../domain/interfaces/repositories/IUser.repository';
-import { IKafkaProducerAdapter } from '../../../domain/interfaces/messaging/IKafkaProducerAdapter';
+import { Redis } from "@upstash/redis";
+import { createHmac, randomBytes } from "crypto";
+import { generateOTP } from "otp-generator-module";
+import { OtpPurpose } from "../../../domain/enums/common.enum";
+import { BadRequestError } from "../../../shared/error/appError";
+import { EventEnvelope, SendOtpEvent } from "../../dtos/kafka.dto";
+import { generateId } from "../../../shared/utils/helpers/generateId";
+import { toAppError } from "../../../shared/error/handleUnknownError";
+import { ERROR_CODES, IdType } from "../../../shared/utils/types/enums";
+import { appConfig, kafkaConfig, redisConfig } from "../../../config/env";
+import { IPasswordHasher } from "../../interfaces/security/IPasswordHasher.service";
+import { PendingRegistration, RegisterInput, RegisterOutput } from "../../dtos/auth.dto";
+import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
+import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
 
 export class RegisterUseCase {
-
   constructor(
-    private userRepository: IUserRepository,
-    private otpService: IOTPService,
-    private jwtService: IJWT,
-    private passwordHasher: IPasswordHasher,
-    private kafkaProducer: IKafkaProducerAdapter
-  ) { };
+    private readonly userRepository: IUserRepository,
+    private readonly passwordHasher: IPasswordHasher,
+    private readonly kafkaProducer: IKafkaProducerAdapter,
+    private readonly redisClient: Redis,
+  ) {}
 
   async execute(input: RegisterInput): Promise<RegisterOutput> {
     try {
-      const { username, email, password } = input;
-      if (!username || !email || !password) {
-        throw new BadRequestError()
+      const { email, password, timeZone } = input;
+      if (!email || !password || !timeZone) {
+        throw new BadRequestError();
       }
 
-      const existUser = await this.userRepository.findByEmail(email);
+      const normalizedEmail = email.trim().toLowerCase();
+
+      const existUser = await this.userRepository.findByEmail(normalizedEmail);
       if (existUser) {
-        throw new BadRequestError(
-          "Invalid credentials",
-          ERROR_CODES.INVALID_CREDENTIALS
-        );
+        throw new BadRequestError("Invalid credentials", ERROR_CODES.INVALID_CREDENTIALS);
       }
 
-      const hashedPassword = await this.passwordHasher.hashPassword(password);
+      const passwordHash = await this.passwordHasher.hashPassword(password);
 
-      const token = await this.jwtService.generateToken({ email, username, password: hashedPassword });
+      const otp = generateOTP({ length: 6 });
 
-      const otp = await this.otpService.setOtp(email);
+      const registrationId = randomBytes(32).toString("hex");
 
-      await this.kafkaProducer.publish<EventEnvelope<SendOtpEvent>>(kafkaConfig.topics.pub.sendOtp, {
-        eventId: generateId({ type: IdType.EVENT }),
-        attempt: 1,
-        maxAttempts: 1,
-        occurredAt: new Date().toISOString(),
-        payload: {
-          emailData: {
-            email,
-            name: username,
-            otp,
-            purpose: OtpPurpose.REGISTRATION
-          },
-        }
+      const otpHash = createHmac("sha256", appConfig.otpHashSecret)
+        .update(`${registrationId}:${otp}`)
+        .digest("hex");
+
+      const pendingRegistration: PendingRegistration = {
+        email: normalizedEmail,
+        passwordHash,
+        timeZone,
+        otpHash,
+      };
+
+      await this.redisClient.set(`registration:pending:${registrationId}`, pendingRegistration, {
+        ex: redisConfig.redisOtpTtl,
       });
 
-      return { token };
-    }
-    catch (error: unknown) {
+      await this.kafkaProducer.publish<EventEnvelope<SendOtpEvent>>(
+        kafkaConfig.topics.pub.sendOtp,
+        {
+          eventId: generateId({ type: IdType.EVENT }),
+          attempt: 1,
+          maxAttempts: 1,
+          occurredAt: new Date(),
+          payload: {
+            emailData: {
+              email,
+              otp,
+              purpose: OtpPurpose.REGISTRATION,
+            },
+          },
+        },
+      );
+
+      return {
+        registrationId,
+      };
+    } catch (error: unknown) {
       throw toAppError(error, "Failed to create account");
-    };
-  };
-};
+    }
+  }
+}

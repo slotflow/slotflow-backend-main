@@ -1,23 +1,100 @@
-# -------------------------------
-# Stage 1: Build
-# -------------------------------
-FROM node:18 AS build
+
+# syntax=docker/dockerfile:1
+
+# Build the TypeScript application
+
+# Use Node.js 24 on Debian Bookworm.
+FROM node:24-bookworm-slim AS builder
+
+# Set the working directory.
+WORKDIR /app
+
+# Install the exact pnpm version used by this project.
+RUN npm install -g pnpm@10.28.1
+
+# Disable Husky Git hook initialization.
+ENV HUSKY=0
+
+# Configure pnpm for slower or unstable networks.
+RUN pnpm config set store-dir /pnpm/store \
+    && pnpm config set network-concurrency 2 \
+    && pnpm config set fetch-retries 5 \
+    && pnpm config set fetch-timeout 180000
+
+# Copy dependency manifests first for Docker layer caching.
+COPY package.json pnpm-lock.yaml ./
+
+# Install all dependencies using a persistent BuildKit cache.
+RUN --mount=type=cache,id=slotflow-gateway-pnpm,target=/pnpm/store,sharing=locked \
+    pnpm install --frozen-lockfile
+
+# Copy application source and TypeScript configuration.
+COPY src ./src
+COPY tsconfig.json ./
+
+# Compile TypeScript.
+RUN pnpm run build
+
+
+# Install production dependencies
+
+FROM node:24-bookworm-slim AS deps
 
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-ENV NODE_OPTIONS="--max-old-space-size=4096"
-RUN npm run bundle
 
-# -------------------------------
-# Stage 2: Run (production)
-# -------------------------------
-FROM node:18-alpine
+# Install the same pnpm version.
+RUN npm install -g pnpm@10.28.1
 
+# Disable Husky Git hook initialization.
+ENV HUSKY=0
+
+# Configure pnpm with the same store and network settings.
+RUN pnpm config set store-dir /pnpm/store \
+    && pnpm config set network-concurrency 2 \
+    && pnpm config set fetch-retries 5 \
+    && pnpm config set fetch-timeout 180000
+
+# Copy dependency manifests.
+COPY package.json pnpm-lock.yaml ./
+
+# Ensure the builder finishes before production installation.
+COPY --from=builder /app/package.json /tmp/builder-package.json
+
+# Remove the prepare script because Husky is a dev dependency.
+RUN npm pkg delete scripts.prepare
+
+# Install production dependencies using the shared pnpm cache.
+RUN --mount=type=cache,id=slotflow-gateway-pnpm,target=/pnpm/store,sharing=locked \
+    pnpm install --prod --frozen-lockfile
+
+
+# Run the Express API Gateway
+
+FROM node:24-bookworm-slim AS runner
+
+# Configure production environment.
+ENV NODE_ENV=production
+
+# Set the working directory.
 WORKDIR /app
-COPY --from=build /app/dist-bundle ./dist-bundle
-COPY package*.json ./
-RUN npm install --omit=dev
-EXPOSE 3000
-CMD ["node", "dist-bundle/server.js"]
+
+# Copy only production dependencies.
+COPY --from=deps --chown=node:node /app/node_modules ./node_modules
+
+# Copy compiled JavaScript.
+COPY --from=builder --chown=node:node /app/dist ./dist
+
+# Copy package metadata, including "type": "module".
+COPY --chown=node:node package.json ./
+
+# Create a writable logs directory.
+RUN mkdir -p /app/logs && chown node:node /app/logs
+
+# Run as a non-root user.
+USER node
+
+# Document the API Gateway port.
+EXPOSE 4000
+
+# Start the compiled Express server.
+CMD ["node", "dist/server.js"]

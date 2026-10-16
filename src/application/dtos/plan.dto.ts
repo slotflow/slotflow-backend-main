@@ -1,24 +1,114 @@
-import { ApiPaginationInput, PlanDTO } from "./common.dto";
+import { ApiPaginationInput } from "./common.dto";
+import { PlanProps } from "../../domain/contracts/plan.contract";
+import { StripePlanDetails } from "../../domain/commands/plan.commands";
 
-//// **** plan dtos **** ////
+/**
+ * Plan usecase dtos
+ */
 
-// CreatePlan usecase input
-export type CreatePlanInput = Pick<PlanDTO, "planName" | "description" | "price" | "features" | "maxBookingPerMonth" | "adVisibility">;
+// Create plan
+export type CreatePlanInput = Pick<
+  PlanProps,
+  | "planName"
+  | "description"
+  | "monthlyPrice"
+  | "yearlyPrice"
+  | "features"
+  | "maxBookingPerMonth"
+  | "adVisibility"
+  | "hasTrial"
+  | "trialDays"
+>;
+export type CreatePlanOutput = Omit<PlanProps, "createdAt" | "updatedAt">;
 
-// GetPlans usecase input and output
+// Get plans ( by admin )
 export interface GetPlansInput extends ApiPaginationInput {
-    isProvider: boolean;
+  isProvider: boolean;
 }
-export type GetPlansOutput = Array<Pick<PlanDTO, "_id" | "planName" | "isBlocked" | "price">> & Partial<Pick<PlanDTO, "maxBookingPerMonth" | "adVisibility" | "features" |"description">>;
+export type GetPlansOutput = Array<
+  Pick<PlanProps, "_id" | "planName" | "isBlocked" | "monthlyPrice" | "yearlyPrice">
+> &
+  Partial<
+    Pick<
+      PlanProps,
+      "maxBookingPerMonth" | "adVisibility" | "features" | "description" | "stripeSync"
+    >
+  >;
 
-// ChangePlanBlockStatus usecase output
-export type ChangePlanBlockStatusOutput = {
-    planId: PlanDTO["_id"];
-    isBlocked: PlanDTO["isBlocked"];
+// Change plan block status
+export type ChangePlanBlockStatusInput = {
+  planId: PlanProps["_id"];
+} & Pick<PlanProps, "isBlocked">;
+export type ChangePlanBlockStatusOutput = Pick<PlanProps, "_id" | "isBlocked">;
+
+// Get plans ( by provider )
+export type ProviderGetPlansOutput =
+  | Array<
+      Pick<
+        PlanProps,
+        "_id" | "planName" | "monthlyPrice" | "yearlyPrice" | "features" | "description"
+      >
+    >
+  | [];
+
+// Resync plan with stripe
+export type ResyncStripePlanInput = {
+  planId: PlanProps["_id"];
 };
+export type ResyncStripePlanOutput = Pick<PlanProps, "_id" | "stripePlanDetails" | "stripeSync">;
 
-// ChangePlanBlockStatus usecase input
-export type ChangePlanBlockStatusInput = ChangePlanBlockStatusOutput;
+// Get plan details
+export type GetPlanDetailsInput = {
+  planId: PlanProps["_id"];
+};
+export type GetPlanDetailsOutput = Omit<PlanProps, "createdAt" | "updatedAt">;
 
-// ProviderGetPlans usecase output
-export type ProviderGetPlansOutput = Array<Pick<PlanDTO, "_id" | "planName" | "price" | "features" | "description">> | [];
+// Update plan
+export type UpdatePlanInput = Partial<
+  Pick<
+    PlanProps,
+    | "planName"
+    | "description"
+    | "monthlyPrice"
+    | "yearlyPrice"
+    | "features"
+    | "maxBookingPerMonth"
+    | "adVisibility"
+    | "hasTrial"
+    | "trialDays"
+  >
+> & {
+  planId: PlanProps["_id"];
+};
+export type UpdatePlanOutput = Omit<PlanProps, "createdAt" | "updatedAt">;
+
+/**
+ * Stripe plan service dtos
+ */
+
+// Create stripe plan
+export type CreateStripePlanInput = Pick<
+  PlanProps,
+  "planName" | "description" | "monthlyPrice" | "yearlyPrice" | "features" | "maxBookingPerMonth"
+>;
+export type CreateStripePlanOutput = StripePlanDetails;
+
+// Update stripe plan
+export type UpdateStripePlanInput = Partial<
+  Pick<PlanProps, "planName" | "description" | "features" | "maxBookingPerMonth">
+> & {
+  productId: StripePlanDetails["productId"];
+  monthlyPrice?: {
+    amount: PlanProps["monthlyPrice"];
+    oldPriceId?: StripePlanDetails["monthlyPriceId"];
+  };
+  yearlyPrice?: {
+    amount: PlanProps["yearlyPrice"];
+    oldPriceId?: StripePlanDetails["yearlyPriceId"];
+  };
+};
+export type UpdateStripePlanOutput = {
+  productId: StripePlanDetails["productId"];
+  monthlyPriceId?: StripePlanDetails["monthlyPriceId"];
+  yearlyPriceId?: StripePlanDetails["yearlyPriceId"];
+};

@@ -5,4 +5,4 @@ export enum AdminVerificationStatus {
   REJECTED = "REJECTED",
   RESUBMITTED = "RESUBMITTED",
   NOT_REQUESTED = "NOT_REQUESTED",
-};
+}

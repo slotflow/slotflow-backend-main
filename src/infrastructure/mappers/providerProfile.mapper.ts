@@ -3,7 +3,6 @@ import { ProviderProfile } from "../../domain/entities/providerProfile.entity";
 import { IProviderProfile } from "../models/providerProfile.model";
 
 export class ProviderProfileMapper {
-
   static toDomain(doc: IProviderProfile): ProviderProfile {
     return new ProviderProfile({
       _id: doc._id.toString(),
@@ -16,11 +15,14 @@ export class ProviderProfileMapper {
       isAvailabilityVerified: doc.isAvailabilityVerified,
       isProofsVerified: doc.isProofsVerified,
       serviceId: doc.serviceId ? doc.serviceId.toString() : null,
-      serviceAvailabilityId: doc.serviceAvailabilityId ? doc.serviceAvailabilityId.toString() : null,
-      subscription: doc.subscription?.map(id => id.toString()) ?? [],
+      serviceAvailabilityId: doc.serviceAvailabilityId
+        ? doc.serviceAvailabilityId.toString()
+        : null,
+      subscriptions: doc.subscriptions?.map((id) => id.toString()) ?? [],
       trustedBySlotflow: doc.trustedBySlotflow,
       identityProof: doc.identityProof ?? null,
       serviceProof: doc.serviceProof ?? null,
+      hasUsedTrial: doc.hasUsedTrial,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
     });
@@ -39,11 +41,14 @@ export class ProviderProfileMapper {
       isAvailabilityVerified: props.isAvailabilityVerified,
       isProofsVerified: props.isProofsVerified,
       serviceId: props.serviceId ? new Types.ObjectId(props.serviceId) : null,
-      serviceAvailabilityId: props.serviceAvailabilityId ? new Types.ObjectId(props.serviceAvailabilityId) : null,
-      subscription: props.subscription.map(id => new Types.ObjectId(id)),
+      serviceAvailabilityId: props.serviceAvailabilityId
+        ? new Types.ObjectId(props.serviceAvailabilityId)
+        : null,
+      subscriptions: props.subscriptions.map((id) => new Types.ObjectId(id)),
       trustedBySlotflow: props.trustedBySlotflow,
       identityProof: props.identityProof,
       serviceProof: props.serviceProof,
+      hasUsedTrial: props.hasUsedTrial,
       createdAt: props.createdAt,
       updatedAt: props.updatedAt,
     };

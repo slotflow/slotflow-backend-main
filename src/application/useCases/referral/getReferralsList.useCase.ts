@@ -4,20 +4,18 @@ import { GetReferralListInput, GetReferralsListOutput } from "../../dtos/referra
 import { IReferralRepository } from "../../../domain/interfaces/repositories/IReferral.repository";
 
 export class GetReferralsListUseCase {
-    constructor(
-        private readonly referralRepository: IReferralRepository
-    ) { }
+  constructor(private readonly referralRepository: IReferralRepository) {}
 
-    async execute(input: GetReferralListInput): Promise<TableData<Array<GetReferralsListOutput>>> {
-        try {
-            return await this.referralRepository.findByUserId(
-                input.page,
-                input.limit,
-                input.referrerUserId,
-                input.status,
-            );
-        } catch (error: unknown) {
-            throw toAppError(error, "Failed to get referrals list");
-        }
+  async execute(input: GetReferralListInput): Promise<TableData<Array<GetReferralsListOutput>>> {
+    try {
+      return await this.referralRepository.findByUserId(
+        input.page,
+        input.limit,
+        input.referrerUserId,
+        input.status,
+      );
+    } catch (error: unknown) {
+      throw toAppError(error, "Failed to get referrals list");
     }
+  }
 }

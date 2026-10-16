@@ -1,265 +1,11 @@
-import { PlanName } from "../../domain/enums/plan.enum";
-import { Day, HearAboutUsOptionValue, OnboardingStatus, ReferralStatus, Role, StripeAccountStatus } from "../../domain/enums/common.enum";
-import { GeoLocation } from "../../domain/contracts/address.contract";
-import { SubscriptionStatus } from "../../domain/enums/subscription.enum";
-import { AppointmentStatus } from "../../domain/enums/appointmentStatus.enum";
-import { AdminVerificationStatus } from "../../domain/enums/adminVerificationStatus.enum";
-import { ServiceCategory, ServiceMode, ServiceType } from "../../domain/enums/service.enum";
-import { CreditTransactionSource, CreditTransactionStatus, CreditTransactionType } from "../../domain/enums/creditTransaction.enum";
-
-// **** ENTITY INTERFACES FOR APPLICATION LAYER **** \\
-
-// **** ADDRESS INTERFACE
-export interface AddressDTO {
-  _id: string,
-  userId: string,
-  addressLine: string,
-  landMark: string,
-  phone: string,
-  place: string,
-  city: string,
-  district: string,
-  pincode: string,
-  state: string,
-  country: string,
-  location: GeoLocation,
-  createdAt: Date,
-  updatedAt: Date,
-}
-
-// **** USER INTERFACE
-export interface UserDTO {
-  _id: string;
-  username: string;
-  email: string;
-  password: string | null;
-  role: Role;
-  onboardingType: Role | null;
-  onboardingStatus: OnboardingStatus;
-  isBlocked: boolean;
-  phone: string | null;
-  profileImage: string | null;
-  addressId: string | null;
-  googleConnected: boolean;
-  googleId: string | null;
-  stripeAccountStatus: StripeAccountStatus;
-  stripeAccountId: string | null;
-  stripeCustomerId: string | null;
-  allowPushNotification: boolean | null;
-  whereDidHearAboutUs: HearAboutUsOptionValue;
-  referralCode: string | null;
-  createdAt: Date;
-  updatedAt: Date
-}
-
-// **** PROVIDER PROFILE INTERFACE
-export interface ProviderProfileDTO {
-  _id: string;
-  userId: string;
-  isAdminVerified: boolean;
-  verificationRejectionReason: string | null;
-  adminVerificationStatus: AdminVerificationStatus;
-  isAddressVerified: boolean;
-  isServiceDetailsVerified: boolean;
-  isAvailabilityVerified: boolean;
-  isProofsVerified: boolean;
-  serviceId: string | null;
-  serviceAvailabilityId: string | null;
-  subscription: string[];
-  trustedBySlotflow: boolean;
-  identityProof: string | null;
-  serviceProof: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-// **** BOOKING INTERFACE
-export interface BookingDTO {
-  _id: string,
-  serviceProviderId: string,
-  userId: string,
-  appointmentDate: Date,
-  appointmentTime: string,
-  appointmentMode: string,
-  appointmentStatus: AppointmentStatus,
-  slotId: string,
-  paymentId: string | null,
-  videoCallRoomId: string | null,
-  googleEventId: string | null,
-  onlineTrack: {
-    user: ParticipantPresence;
-    provider: ParticipantPresence;
-  },
-  statusTrack: statusTrack[],
-  createdAt: Date,
-  updatedAt: Date,
-}
-
-export interface ParticipantPresence {
-  joined: boolean;
-  joinedTime: Date | null;
-  leftCallTime: Date | null;
-}
-
-export interface statusTrack {
-  appointmentStatus: AppointmentStatus;
-  time: Date;
-}
-
-// **** CREDENTIAL INTERFACE
-export interface CredentialDTO {
-  _id: string,
-  userId: string,
-  accessToken: string,
-  refreshToken: string,
-  expiryDate: Date,
-  createdAt: Date,
-  updatedAt: Date,
-}
-
-// **** PLAN INTERFACE
-export interface PlanDTO {
-  _id: string,
-  planName: PlanName,
-  description: string,
-  price: number,
-  features: string[],
-  maxBookingPerMonth: number,
-  adVisibility: boolean,
-  isBlocked: boolean,
-  createdAt: Date,
-  updatedAt: Date,
-}
-
-// **** PROVIDERSERVICE INTERFACE
-export interface ProviderServiceDTO {
-  _id: string,
-  providerId: string,
-  serviceId: ServiceDTO["_id"],
-  serviceName: string,
-  serviceDescription: string,
-  servicePrice: number,
-  serviceExperienceYears: number,
-  serviceExperience: string,
-  serviceType: ServiceType,
-  serviceMode: ServiceMode,
-  tags: string[] | [],
-  requirements: string[] | [],
-  videoUrl: string | null,
-  portfolioUrl: string | null,
-  maxParticipants: number,
-  isGroupService: boolean,
-  createdAt: Date,
-  updatedAt: Date,
-}
-
-// **** SERVICE INTERFACE
-export interface ServiceDTO {
-  _id: string,
-  serviceName: string,
-  serviceCategory: ServiceCategory,
-  isBlocked: boolean,
-  createdAt: Date,
-  updatedAt: Date,
-};
-
-// **** SUBSCRIPTION INTERFACE
-export interface SubscriptionDTO {
-  _id: string,
-  providerId: string,
-  subscriptionPlanId: string,
-  startDate: Date,
-  endDate: Date,
-  subscriptionStatus: SubscriptionStatus,
-  paymentId: string | null,
-  createdAt: Date,
-  updatedAt: Date,
-}
-
-// **** REVIEW INTERFACE
-export interface ReviewDTO {
-  _id: string,
-  userId: string,
-  providerId: string,
-  bookingId: string,
-  reviewText: string,
-  rating: number,
-  reported: boolean,
-  isBlocked: boolean,
-  createdAt: Date,
-  updatedAt: Date,
-}
-
-// **** REFERRAL INTERFACE
-export interface ReferralDTO {
-    _id: string;
-    referrerUserId: string;
-    refereeUserId: string;
-    referralCode: string;
-    status: ReferralStatus;
-    rewardGiven: boolean;
-    completedAt?: Date;
-    createdAt: Date;
-    updatedAt: Date;
-}
-
-
-// **** CREDITTRANSACTION INTERFACE
-export interface CreditTransactionDTO {
-  _id: string;
-  accountId: string;
-  userId: string;
-  type: CreditTransactionType;
-  credits: number;
-  balanceAfter: number;
-  source: CreditTransactionSource;
-  status: CreditTransactionStatus;
-  referenceId?: string; // subscriptionId or appointment / bookingId
-  idempotencyKey?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-// **** CREDITACCOUNT INTERFACE
-export interface CreditAccountDTO {
-  _id: string;
-  userId: string;
-  balance: number;
-  isActive: boolean;
-  version: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-// **** SERVICEAVAILABILITY INTERFACE AND ITS SUPPORTS
-export interface TimeSlot {
-  time: string,
-};
-
-export interface TimeSlotForClientOutput {
-  _id: string,
-  time: string,
-  available: boolean,
-  occupied?: boolean,
-};
-
-export interface Availability {
-  day: Day,
-  isAvailable: boolean,
-  duration?: number,
-  startTime?: string,
-  endTime?: string,
-  modes?: ServiceMode[],
-  slots?: TimeSlot[],
-};
-
-export interface ServiceAvailabilityDTO {
-  _id: string,
-  providerId: string,
-  availabilities: Availability[],
-  createdAt: Date,
-  updatedAt: Date,
-};
+import { JwtPayload } from "jsonwebtoken";
+import { Role } from "../../domain/enums/common.enum";
+import { TimeZone } from "../../domain/commands/user.commands";
+import { PlanProps } from "../../domain/contracts/plan.contract";
+import { BillingCycle } from "../../domain/enums/subscription.enum";
+import { PaymentFor, RefundFor, RefundReason } from "../../domain/enums/payment.enum";
+import { ProviderServiceProps } from "../../domain/contracts/providerService.contract";
+import { Availability, TimeSlot } from "../../domain/commands/serviceAvailability.commands";
 
 // common api pagination input
 export interface ApiPaginationInput {
@@ -268,121 +14,14 @@ export interface ApiPaginationInput {
 }
 
 // Table data output
-export interface TableData<T>{
+export interface TableData<T> {
   totalPages?: number;
   currentPage?: number;
   totalCount?: number;
-  items?: T
-};
-
-// Google Event
-interface GoogleCalendarEventsPropsForBackend {
-  start: {
-    dateTime: string,
-    timeZone: string,
-  };
-  end: {
-    dateTime: string,
-    timeZone: string,
-  };
+  items?: T;
 }
 
-// used in add event to calendar usecase
-interface CombinedStartAndEndProps {
-  start: {
-    dateTime: string,
-    date: string,
-    timeZone: string,
-  } | string;
-  end: {
-    dateTime: string,
-    date: string,
-    timeZone: string,
-  } | string;
-}
-
-// used in add event to calendar usecase
-export interface GoogleCalendarEvent extends Partial<BookingDTO> {
-  id: string;
-  iCalUID?: string;
-  kind?: string;
-  eventType?: string;
-
-  summary?: string;
-  description?: string;
-
-  start: {
-    dateTime?: string,
-    date?: string,
-    timeZone?: string,
-  } | string;
-  end: {
-    dateTime?: string,
-    date?: string,
-    timeZone?: string,
-  } | string;
-
-  created?: string;
-  updated?: string;
-
-  htmlLink?: string;
-  status?: string;
-
-  creator?: {
-    email: string;
-    self?: boolean;
-  };
-
-  organizer?: {
-    email: string;
-    self?: boolean;
-  };
-
-  reminders?: {
-    useDefault: boolean;
-    overrides?: {
-      method: string;
-      minutes: number;
-    }[];
-  };
-
-  sequence?: number;
-  etag?: string;
-
-  extendedProperties?: {
-    private: {
-      bookingStatus?: string;
-      bookingId?: string;
-      title?: string;
-      backgroundColor?: string;
-      textColor?: string;
-    },
-  },
-};
-
-// used in add event to calendar usecase
-export type AddEventToCalendarProps = Pick<GoogleCalendarEvent, "summary" | "description" | "extendedProperties"> & GoogleCalendarEventsPropsForBackend;
-
-// used in get events from calendar usecase
-export type GetEventsFromCalendarProps = Pick<GoogleCalendarEvent, "id" | "summary" | "description" | "creator" | "organizer" | "iCalUID" | "reminders" | "eventType" | "extendedProperties"> & CombinedStartAndEndProps;
-
-// used in update google calendar event usecase
-export interface UpdateGoogleCalendarEventInput {
-  eventId: string,
-  appointmentDate: BookingDTO["appointmentDate"],
-  appointmentStatus: BookingDTO["appointmentStatus"],
-  accessToken: string,
-}
-
-// used in create google calendar event usecase
-export interface CreateGoogleCalendarEventInput {
-  appointmentDate: BookingDTO["appointmentDate"],
-  appointmentStatus: BookingDTO["appointmentStatus"],
-  slotDuration: number,
-  accessToken: CredentialDTO["accessToken"];
-}
-
-// used in create file upload presigned url usecase input output
+// Create file upload presigned url usecase input output
 export interface CreateFileUploadPresignedUrlInput {
   fileName: string;
   fileType: string;
@@ -391,80 +30,188 @@ export interface CreateFileUploadPresignedUrlInput {
 export interface CreateFileUploadPresignedUrlOutput {
   uploadUrl: string;
   key: string;
-};
+}
 
-// used in create file signed url usecase
+// Create file signed url usecase
 export interface CreateFileSignedUrlInput {
   key: string;
-};
+}
 
-// used in find provider service usecase
-type FindProviderServiceProps = Omit<ProviderServiceDTO, "service" | "updatedAt" | "createdAt">;
+// Find provider service usecase
+type FindProviderServiceProps = Omit<ProviderServiceProps, "service" | "updatedAt" | "createdAt">;
 export interface FindProviderServiceOutput extends FindProviderServiceProps {
-  service: { serviceName: string }
+  service: { serviceName: string };
 }
 
-// used in create service availability usecase
+// Create service availability usecase
 export interface PlanNameOnly {
-  subscriptionPlanId: {
-    planName: PlanDTO["planName"];
-  }
+  subscribedPlanId: {
+    planName: PlanProps["planName"];
+  };
 }
 
-// used in create service availability usecase
+// Availability time slot for client view
+export interface TimeSlotForClientOutput {
+  _id: string;
+  time: string;
+  available: boolean;
+  occupied?: boolean;
+}
+
+// Create service availability usecase
 export interface FrontendAvailabilityForOutput extends Omit<Availability, "slots"> {
-  slots: TimeSlotForClientOutput[]
+  slots: TimeSlotForClientOutput[];
 }
 
-// used in create service availability usecase
+// Create service availability usecase
 export interface FrontendAvailabilityForClientInput extends Omit<Availability, "slots"> {
   slots?: string[];
 }
 
-// used in create service availability usecase
+// Create service availability usecase
 export interface FrontendAvailabilityUpdatedSlots extends Omit<Availability, "slots"> {
   slots?: TimeSlot[];
 }
 
-// used in auth controller
-export interface DecodedUser {
+// Auth user
+export interface AuthUser {
   id: string;
   role: Role;
-  googleAccessToken?: string;
-  googleRefreshToken?: string;
-  googleId?: string;
-  email?: string;
-  name?: string;
-  image: string | null;
-  connectOnly?: boolean;
-  exp?: number;
-  iat?: number;
-  userId?: string;
-};
+  email: string;
+  name: string;
+  timeZone: TimeZone;
+}
 
-// used in count query
+// Google auth user
+export interface GoogleOAuthUser {
+  googleAccessToken: string;
+  googleRefreshToken: string;
+  googleId: string;
+  email: string;
+  name: string;
+  image: string | null;
+}
+
+// Count query result
 export type CountResult = { count: number };
 
-// GetGoogleCalendarUseCase usecase input output
-export interface GetGoogleCalendarInput {
-    userId: string;
-}
-export type GetGoogleCalendarOutput = Array<GetEventsFromCalendarProps>;
-
-
-// queries
-
+// Aggregate count query result
 export type AggregateCountResult = { count: number };
 
-// Chart DTOS
+// Mini chart data
 export interface MiniChartData {
   date: string;
   value: number;
 }
 
+// Mini card data
 export interface MiniCardData {
   count: number;
   percentage: number;
   days: number;
   chartData: MiniChartData[];
+}
+
+// Stats metric data
+export interface StatMetric {
+  value: number;
+  trend: string;
+}
+
+// Common date
+export interface CommonDateInput {
+  startDate: string;
+  endDate: string;
+}
+
+/**
+ * JWT Service dtos
+ */
+
+// JWT custom payload
+export interface AccessTokenClaims extends JwtPayload {
+  userId: string;
+  email: string;
+  name: string;
+  role: Role;
+  timeZone: TimeZone;
+}
+
+// JWT Refresh token payload
+export interface RefreshTokenClaims extends JwtPayload {
+  userId: string;
+}
+
+// Auth token
+export interface AuthTokens {
+  accessToken: string;
+  refreshToken: string;
+}
+
+/**
+ * Payment Client Service dtos
+ */
+
+// Create subscription checkout
+export interface CreateSubscriptionCheckoutSessionInput {
+  subscriptionData: {
+    subscriptionId: string;
+    billingCycle: BillingCycle;
+    paymentFor: PaymentFor;
+    paymentDate: Date;
+    priceId: string;
+    unitAmount: number;
+    trialPeriodDays?: number;
+    alreadyUsedTrial: boolean;
+    isTrial: boolean;
+  };
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    role: Role;
+    timeZone: TimeZone;
+  };
+}
+export interface CreateSubscriptionCheckoutSessionOutput {
+  status: boolean;
+  message: string;
+  data: string;
+}
+
+// Create booking checkout
+export interface CreateBookingCheckoutSessionInput {
+  bookingData: {
+    serviceName: string;
+    description: string;
+    unitAmount: number;
+    providerId: string;
+    bookingId: string;
+    paymentFor: PaymentFor;
+  };
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    role: Role;
+    timeZone: TimeZone;
+  };
+}
+export interface CreateBookingCheckoutSessionOutput {
+  status: boolean;
+  message: string;
+  data: string;
+}
+
+// Create refund
+export interface ProcessRefundInput {
+  bookingId: string;
+  paymentId: string;
+  refundFor: RefundFor;
+  refundReason: RefundReason;
+  reasonInDetail: string;
+}
+export interface ProcessRefundOutput {
+  success: boolean;
+  message: string;
 }

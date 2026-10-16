@@ -1,156 +1,215 @@
 import { kafkaConfig } from "../../../config/env";
-import { generateId } from '../../../shared/utils/generateId';
-import { ERROR_CODES, IdType } from '../../../shared/utils/types';
-import { formatUtcDateTime } from "../../../shared/utils/dateTime";
-import { toAppError } from '../../../shared/error/handleUnknownError';
-import { notificationContentMap } from "../../../shared/utils/constants";
+import { ServiceMode } from "../../../domain/enums/service.enum";
+import { formatDate } from "../../../shared/utils/helpers/formatDate";
+import { toAppError } from "../../../shared/error/handleUnknownError";
+import { generateId } from "../../../shared/utils/helpers/generateId";
+import { ERROR_CODES, IdType } from "../../../shared/utils/types/enums";
+import { dateFormats } from "../../../shared/utils/constants/constant";
+import { formatString } from "../../../shared/utils/helpers/formatString";
 import { NotificationType, Role } from "../../../domain/enums/common.enum";
-import { BadRequestError, NotFoundError } from '../../../shared/error/appError';
-import { ProviderChangeBookingAppointmentStatusInput } from '../../dtos/booking.dto';
+import { AppointmentStatus } from "../../../domain/enums/appointmentStatus.enum";
+import { createGoogleMapsUrl } from "../../../shared/utils/helpers/createGooglemapLink";
+import { AppError, BadRequestError, NotFoundError } from "../../../shared/error/appError";
+import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUser.repository";
-import { IGoogleTokenService } from "../../../domain/interfaces/services/IGoogleToken.service";
 import { IBookingRepository } from "../../../domain/interfaces/repositories/IBooking.repository";
-import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
-import { EventEnvelope, CreateGoogleCalendarEvent, SendAppointmentStatusChangeForProviderEvent, SendAppointmentStatusChangeForUserEvent } from "../../dtos/kafka.dto";
+import { IAddressRepository } from "../../../domain/interfaces/repositories/IAddress.repository";
+import {
+  ProviderChangeBookingAppointmentStatusInput,
+  ProviderChangeBookingAppointmentStatusOutput,
+} from "../../dtos/booking.dto";
+import {
+  EventEnvelope,
+  CreateGoogleCalendarEvent,
+  SendAppointmentStatusChangeForProviderEvent,
+  SendAppointmentStatusChangeForUserEvent,
+  ProviderAddressForUser,
+} from "../../dtos/kafka.dto";
 
 export class ChangeBookingStatusUseCase {
-    constructor(
-        private readonly bookingRepository: IBookingRepository,
-        private readonly userRepository: IUserRepository,
-        private readonly googleTokenService: IGoogleTokenService,
-        private readonly kafkaProducer: IKafkaProducerAdapter,
-    ) { };
+  constructor(
+    private readonly bookingRepository: IBookingRepository,
+    private readonly userRepository: IUserRepository,
+    private readonly kafkaProducer: IKafkaProducerAdapter,
+    private readonly addressRepository: IAddressRepository,
+  ) {}
 
-    async execute(input: ProviderChangeBookingAppointmentStatusInput): Promise<void> {
-        try {
-            const { bookingId, appointmentStatus, providerId } = input;
-            if (!bookingId || !appointmentStatus || !providerId) {
-                throw new BadRequestError();
-            }
+  async execute(
+    input: ProviderChangeBookingAppointmentStatusInput,
+  ): Promise<ProviderChangeBookingAppointmentStatusOutput> {
+    try {
+      const { bookingId, appointmentStatus, providerId } = input;
+      if (!bookingId || !appointmentStatus || !providerId) {
+        throw new BadRequestError();
+      }
 
-            const booking = await this.bookingRepository.findById(bookingId);
-            if (!booking) {
-                throw new NotFoundError(
-                    "Booking not found",
-                    ERROR_CODES.BOOKING_NOT_FOUND
-                );
-            }
+      const booking = await this.bookingRepository.findById(bookingId);
+      if (!booking) {
+        throw new NotFoundError("Booking not found", ERROR_CODES.BOOKING_NOT_FOUND);
+      }
 
-            const user = await this.userRepository.findById(booking.userId);
-            if (!user) {
-                throw new NotFoundError(
-                    "User not found",
-                    ERROR_CODES.USER_NOT_FOUND
-                );
-            }
+      const user = await this.userRepository.findById(booking.userId);
+      if (!user) {
+        throw new NotFoundError("User not found", ERROR_CODES.USER_NOT_FOUND);
+      }
 
-            const provider = await this.userRepository.findById(providerId);
-            if (!provider) {
-                throw new NotFoundError(
-                    "Provider not found",
-                    ERROR_CODES.USER_NOT_FOUND
-                );
-            }
+      const provider = await this.userRepository.findById(providerId);
+      if (!provider) {
+        throw new NotFoundError("Provider not found", ERROR_CODES.USER_NOT_FOUND);
+      }
 
-            let userAccessToken: string | null = null;
-            if (user.googleConnected) {
-                userAccessToken = await this.googleTokenService.getAccessToken(user._id);
-            }
+      const now = new Date();
+      if (appointmentStatus === AppointmentStatus.COMPLETED && now < booking.sessionStartTime) {
+        throw new BadRequestError(
+          "A future appointment cannot be marked completed",
+          ERROR_CODES.INVALID_REQUEST,
+        );
+      }
 
-            let providerAccessToken: string | null = null;
-            if (provider.googleConnected) {
-                providerAccessToken = await this.googleTokenService.getAccessToken(providerId);
-            }
+      if (appointmentStatus === AppointmentStatus.NOT_ATTENDED && now < booking.sessionEndTime) {
+        throw new BadRequestError(
+          "An appointment cannot be marked not attended before it ends",
+          ERROR_CODES.INVALID_REQUEST,
+        );
+      }
 
-            booking.updateAppointmentStatus({ appointmentStatus });
+      booking.updateAppointmentStatus({ appointmentStatus });
 
-            await this.bookingRepository.update(booking);
+      const updatedBooking = await this.bookingRepository.update(booking);
+      if (!updatedBooking) {
+        throw new AppError("Failed to update booking.", 500, true, ERROR_CODES.INTERNAL_ERROR);
+      }
 
-            const { date, time } = formatUtcDateTime(booking.appointmentDate);
+      const providerAddress = await this.addressRepository.findByUserId(providerId);
+      const formattedAddress: ProviderAddressForUser = providerAddress
+        ? {
+            addressLine: providerAddress.addressLine,
+            landmark: providerAddress.landmark,
+            city: providerAddress.city,
+            state: providerAddress.state,
+            pincode: providerAddress.pincode,
+            location: providerAddress.location,
+            googleMapsUrl: createGoogleMapsUrl(providerAddress.location),
+          }
+        : null;
 
-            await this.kafkaProducer.publish<EventEnvelope<SendAppointmentStatusChangeForUserEvent>>(kafkaConfig.topics.pub.providerAppointmentStatusForUser, {
-                eventId: generateId({ type: IdType.EVENT }),
-                attempt: 1,
-                maxAttempts: 2,
-                occurredAt: new Date().toISOString(),
-                payload: {
-                    emailData: {
-                        email: user.email,
-                        name: user.username,
-                        appointmentDate: date,
-                        appointmentMode: booking.appointmentMode,
-                        appointmentStatus: booking.appointmentStatus,
-                        appointmentTime: time,
-                    },
-                    notificationData: {
-                        userId: user._id,
-                        pushNotification: user.allowPushNotification ?? false,
-                        title: notificationContentMap.appointmentStatusChangeForUser.title,
-                        body: notificationContentMap.appointmentStatusChangeForUser.body(booking.appointmentStatus),
-                    }
-                }
-            });
+      const sessionStartTime: Date = booking.sessionStartTime ?? booking.appointmentDate;
+      const userTimeZone: string = user.timeZone?.value;
+      const providerTimeZone: string = provider.timeZone?.value;
 
-            await this.kafkaProducer.publish<EventEnvelope<SendAppointmentStatusChangeForProviderEvent>>(kafkaConfig.topics.pub.providerAppointmentStatusForProvider, {
-                eventId: generateId({ type: IdType.EVENT }),
-                attempt: 1,
-                maxAttempts: 2,
-                occurredAt: new Date().toISOString(),
-                payload: {
-                    notificationData: {
-                        userId: provider._id,
-                        pushNotification: provider.allowPushNotification ?? false,
-                        title: notificationContentMap.appointmentStatusChangeForProvider.title,
-                        body: notificationContentMap.appointmentStatusChangeForProvider.body(booking.appointmentStatus),
-                        data: {
-                            appointmentDate: date,
-                            appointmentMode: booking.appointmentMode,
-                            appointmentStatus: booking.appointmentStatus,
-                            appointmentTime: time,
-                            notificationType: NotificationType.APPOINTMENT,
-                        }
-                    }
-                }
-            });
+      await this.kafkaProducer.publish<EventEnvelope<SendAppointmentStatusChangeForUserEvent>>(
+        kafkaConfig.topics.pub.providerAppointmentStatusForUser,
+        {
+          eventId: generateId({ type: IdType.EVENT }),
+          attempt: 1,
+          maxAttempts: 2,
+          occurredAt: new Date(),
+          payload: {
+            emailData: {
+              email: user.email,
+              name: user.username ?? undefined,
+              appointmentDate: formatDate({
+                date: sessionStartTime,
+                pattern: dateFormats.SHORT,
+                timeZone: userTimeZone,
+              }),
+              appointmentTime: formatDate({
+                date: sessionStartTime,
+                pattern: dateFormats.TIME_12H_LOWER,
+                timeZone: userTimeZone,
+              }),
+              appointmentMode: formatString(booking.appointmentMode),
+              appointmentStatus: booking.appointmentStatus,
+              address: booking.appointmentMode === ServiceMode.OFFLINE ? formattedAddress : null,
+            },
+            notificationData: {
+              userId: user._id,
+              appointmentStatus: booking.appointmentStatus,
+              notificationType: NotificationType.ACCOUNT_ACTIVITY,
+              address: booking.appointmentMode === ServiceMode.OFFLINE ? formattedAddress : null,
+            },
+          },
+        },
+      );
 
-            if (userAccessToken) {
-                await this.kafkaProducer.publish<EventEnvelope<CreateGoogleCalendarEvent>>(kafkaConfig.topics.pub.createGoogleCalendarEvent, {
-                    eventId: generateId({ type: IdType.EVENT }),
-                    occurredAt: new Date().toString(),
-                    attempt: 1,
-                    maxAttempts: 2,
-                    payload: {
-                        calendarData: {
-                            bookingId: booking._id,
-                            role: Role.USER,
-                            accessToken: userAccessToken,
-                            appointmentDate: booking.appointmentDate,
-                            appointmentStatus: booking.appointmentStatus,
-                        }
-                    }
-                });
-            };
+      await this.kafkaProducer.publish<EventEnvelope<SendAppointmentStatusChangeForProviderEvent>>(
+        kafkaConfig.topics.pub.providerAppointmentStatusForProvider,
+        {
+          eventId: generateId({ type: IdType.EVENT }),
+          attempt: 1,
+          maxAttempts: 2,
+          occurredAt: new Date(),
+          payload: {
+            notificationData: {
+              userId: provider._id,
+              appointmentDate: formatDate({
+                date: sessionStartTime,
+                pattern: dateFormats.SHORT,
+                timeZone: providerTimeZone,
+              }),
+              appointmentTime: formatDate({
+                date: sessionStartTime,
+                pattern: dateFormats.TIME_12H_LOWER,
+                timeZone: providerTimeZone,
+              }),
+              appointmentMode: booking.appointmentMode,
+              appointmentStatus: booking.appointmentStatus,
+              notificationType: NotificationType.ACCOUNT_ACTIVITY,
+            },
+          },
+        },
+      );
 
-            if (providerAccessToken) {
-                await this.kafkaProducer.publish<EventEnvelope<CreateGoogleCalendarEvent>>(kafkaConfig.topics.pub.createGoogleCalendarEvent, {
-                    eventId: generateId({ type: IdType.EVENT }),
-                    occurredAt: new Date().toString(),
-                    attempt: 1,
-                    maxAttempts: 2,
-                    payload: {
-                        calendarData: {
-                            bookingId: booking._id,
-                            role: Role.PROVIDER,
-                            accessToken: providerAccessToken,
-                            appointmentDate: booking.appointmentDate,
-                            appointmentStatus: booking.appointmentStatus,
-                        }
-                    }
-                });
-            };
+      if (updatedBooking.appointmentStatus === AppointmentStatus.CONFIRMED) {
+        await this.kafkaProducer.publish<EventEnvelope<CreateGoogleCalendarEvent>>(
+          kafkaConfig.topics.pub.createGoogleCalendarEvent,
+          {
+            eventId: generateId({ type: IdType.EVENT }),
+            occurredAt: new Date(),
+            attempt: 1,
+            maxAttempts: 2,
+            payload: {
+              calendarData: {
+                userId: updatedBooking.userId,
+                bookingId: updatedBooking._id,
+                role: Role.USER,
+                appointmentDate: updatedBooking.appointmentDate,
+                appointmentStatus: updatedBooking.appointmentStatus,
+                slotDuration: booking.sessionDuration,
+              },
+            },
+          },
+        );
+      }
 
-        } catch (error: unknown) {
-            throw toAppError(error, "Failed to change booking status");
-        };
-    };
-};
+      if (updatedBooking.appointmentStatus === AppointmentStatus.CONFIRMED) {
+        await this.kafkaProducer.publish<EventEnvelope<CreateGoogleCalendarEvent>>(
+          kafkaConfig.topics.pub.createGoogleCalendarEvent,
+          {
+            eventId: generateId({ type: IdType.EVENT }),
+            occurredAt: new Date(),
+            attempt: 1,
+            maxAttempts: 2,
+            payload: {
+              calendarData: {
+                userId: updatedBooking.userId,
+                bookingId: updatedBooking._id,
+                role: Role.PROVIDER,
+                appointmentDate: updatedBooking.appointmentDate,
+                appointmentStatus: updatedBooking.appointmentStatus,
+                slotDuration: booking.sessionDuration,
+              },
+            },
+          },
+        );
+      }
+
+      return {
+        _id: updatedBooking?._id,
+        appointmentStatus: updatedBooking?.appointmentStatus,
+      };
+    } catch (error: unknown) {
+      throw toAppError(error, "Failed to change booking status");
+    }
+  }
+}

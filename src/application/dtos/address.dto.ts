@@ -1,18 +1,89 @@
-import { AddressDTO, UserDTO } from "./common.dto";
+import { UserProps } from "../../domain/contracts/user.contract";
+import { AddressProps } from "../../domain/contracts/address.contract";
 
-//// **** address usecase dtos **** ////
+/**
+ * Address usecase dtos
+ */
 
-// GetAddress usecase input output
+// GetAddress
 export interface GetAddressInput {
-    userId: UserDTO["_id"];
-    isMyAddress?: boolean;
+  userId: UserProps["_id"];
+  isMyAddress?: boolean;
 }
-export type GetAddressOutput = Pick<AddressDTO, "addressLine" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "landMark" | "location"> & Partial<Pick<AddressDTO, "_id">> | null;
+export type GetAddressOutput =
+  | (Pick<
+      AddressProps,
+      | "addressLine"
+      | "phone"
+      | "place"
+      | "city"
+      | "district"
+      | "pincode"
+      | "state"
+      | "country"
+      | "landmark"
+      | "location"
+    > &
+      Partial<Pick<AddressProps, "_id">>)
+  | null;
 
-// CreateAddress usecase input output
-export type CreateAddressInput = Pick<AddressDTO, "userId" | "addressLine" | "landMark" | "place" | "phone" | "city" | "country" | "district" | "pincode" | "state" | "location">;
-export type CreateAddressOutput = Pick<AddressDTO, "_id" | "addressLine" | "landMark" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location" | "updatedAt">;
+// CreateAddress
+export type CreateAddressInput = Pick<
+  AddressProps,
+  | "userId"
+  | "addressLine"
+  | "landmark"
+  | "place"
+  | "phone"
+  | "city"
+  | "country"
+  | "district"
+  | "pincode"
+  | "state"
+  | "location"
+>;
+export type CreateAddressOutput = Pick<
+  AddressProps,
+  | "_id"
+  | "addressLine"
+  | "landmark"
+  | "phone"
+  | "place"
+  | "city"
+  | "district"
+  | "pincode"
+  | "state"
+  | "country"
+  | "location"
+  | "updatedAt"
+>;
 
-// UpdateAddress usecase input output
-export type UpdateAddressInput = Pick<AddressDTO, "_id" | "addressLine" | "landMark" | "place" | "phone" | "city" | "country" | "district" | "pincode" | "state" | "location">;
-export type UpdateAddressOutput = Pick<AddressDTO, "_id" | "addressLine" | "landMark" | "phone" | "place" | "city" | "district" | "pincode" | "state" | "country" | "location">;
+// UpdateAddress
+export type UpdateAddressInput = Pick<
+  AddressProps,
+  | "_id"
+  | "addressLine"
+  | "landmark"
+  | "place"
+  | "phone"
+  | "city"
+  | "country"
+  | "district"
+  | "pincode"
+  | "state"
+  | "location"
+>;
+export type UpdateAddressOutput = Pick<
+  AddressProps,
+  | "_id"
+  | "addressLine"
+  | "landmark"
+  | "phone"
+  | "place"
+  | "city"
+  | "district"
+  | "pincode"
+  | "state"
+  | "country"
+  | "location"
+>;
